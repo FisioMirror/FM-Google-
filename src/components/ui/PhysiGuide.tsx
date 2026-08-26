@@ -1,8 +1,9 @@
 import { useState, useRef, useEffect, useCallback, type ReactNode } from 'react';
 import { useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bot, X, Send, RotateCcw } from 'lucide-react';
-import { PHYSI_FAQS, type FAQ } from '../../data/physiFAQs';
+import { HelpCircle, X, Send, RotateCcw, Compass, ExternalLink } from 'lucide-react';
+import { PHYSI_FAQS_FISIO, PHYSI_FAQS_PATIENT, matchFAQ } from '../../data/physiFAQs';
+import { useAuthStore } from '../../stores/authStore';
 
 interface Message {
   id: string;
@@ -10,88 +11,11 @@ interface Message {
   text: string;
 }
 
-const WELCOME =
-  '¡Hola! Soy Physi, tu guía rápida de FisioMirror. Selecciona una sugerencia o escribe tu consulta y te ayudaré al instante.';
+const NO_MATCH_FISIO =
+  'No encontré esa sección exacta. Prueba preguntando por **pacientes**, **tokens**, **rutinas**, **reportes PDF** o **estadísticas avanzadas**.\n\nSoporte técnico: **fisioMirror@proton.me**';
 
-const NO_MATCH =
-  'No he entendido tu pregunta. Prueba con términos como **paciente**, **rutina**, **AR** o contacta a soporte: **fisioMirror@proton.me**';
-
-/** Preguntas frecuentes según la ruta actual */
-function getFAQs(pathname: string): string[] {
-  if (pathname.includes('dashboard')) {
-    return ['¿Cómo veo mis pacientes activos?', '¿Qué significa cada color en el dashboard?'];
-  }
-  if (pathname.includes('exercise')) {
-    return ['¿Cómo creo una rutina de ejercicios?', '¿Cómo asigno ejercicios a un paciente?'];
-  }
-  if (pathname.includes('setting')) {
-    return ['¿Cómo cambio mi contraseña?', '¿Cómo activo el modo oscuro?'];
-  }
-  if (pathname.includes('assistant')) {
-    return ['¿Cómo uso las herramientas de IA?', '¿Cómo uso el chatbot Physi?'];
-  }
-  if (pathname.includes('mirror')) {
-    return ['¿Cómo uso el modo espejo AR?', '¿Qué hago si la cámara no funciona?'];
-  }
-  return ['¿Qué puedo hacer en FisioMirror?', '¿Cómo contacto a soporte?'];
-}
-
-// ---------------------------------------------------------------------------
-// Matcher offline — puntúa FAQs por coincidencia de palabras clave.
-// ---------------------------------------------------------------------------
-
-/** Quita acentos y pasa a minúsculas para comparar de forma tolerante. */
-function normalize(text: string): string {
-  return text
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '') // separa y elimina diacríticos
-    .trim();
-}
-
-/**
- * Busca el FAQ que mejor encaja con el texto del usuario.
- * Cuenta cuántas palabras clave aparecen en el texto y devuelve el de mayor
- * puntuación. Si hay empate, gana el primero. Si ninguna coincide (score 0)
- * devuelve null para que el llamador muestre el mensaje por defecto.
- */
-function matchFAQ(input: string): FAQ | null {
-  const normalized = normalize(input);
-  if (!normalized) return null;
-
-  // Tokens del usuario para coincidencia por palabra completa.
-  const tokens = new Set(normalized.split(/\s+/).filter((t) => t.length > 1));
-
-  let best: FAQ | null = null;
-  let bestScore = 0;
-
-  for (const faq of PHYSI_FAQS) {
-    let score = 0;
-    for (const kw of faq.keywords) {
-      const nkw = normalize(kw);
-      if (!nkw) continue;
-      // Coincidencia de frase completa (ej: "modo espejo")
-      if (normalized.includes(nkw)) {
-        score += nkw.includes(' ') ? 3 : 2;
-        continue;
-      }
-      // Coincidencia por palabra completa para keywords de una sola palabra
-      if (!nkw.includes(' ') && tokens.has(nkw)) {
-        score += 1;
-      }
-    }
-    if (score > bestScore) {
-      bestScore = score;
-      best = faq;
-    }
-  }
-
-  return bestScore > 0 ? best : null;
-}
-
-// ---------------------------------------------------------------------------
-// Formato de texto — convierte la respuesta (markdown básico) en React.
-// ---------------------------------------------------------------------------
+const NO_MATCH_PATIENT =
+  'No encontré esa opción en la guía. Prueba preguntando por **mi rutina**, **espejo AR**, **demostración 3D**, **contactar terapeuta** o **progreso**.\n\nSoporte: **fisioMirror@proton.me**';
 
 /** Renderiza **negritas** inline */
 function renderInline(text: string): ReactNode[] {
@@ -108,7 +32,7 @@ function renderInline(text: string): ReactNode[] {
   });
 }
 
-/** Renderiza texto con formato markdown básico (bullet points, encabezados, negritas) */
+/** Renderiza texto con formato markdown básico (bullet points, numerados, negritas) */
 function renderMarkdown(text: string): ReactNode {
   const lines = text.split('\n');
   const blocks: ReactNode[] = [];
@@ -117,226 +41,178 @@ function renderMarkdown(text: string): ReactNode {
   const flushList = (key: string) => {
     if (listItems.length > 0) {
       blocks.push(
-        <ul key={key} className="space-y-1.5">
+        <ul key={key} className="space-y-1.5 my-1.5 pl-2 text-xs">
           {listItems}
-        </ul>,
+        </ul>
       );
       listItems = [];
     }
   };
 
-  lines.forEach((line, i) => {
+  lines.forEach((line, lineIndex) => {
     const trimmed = line.trim();
-    if (!trimmed) {
-      flushList(`list-${i}`);
-      return;
-    }
-    const isBullet = /^[-•*]\s/.test(trimmed);
-    const isNumbered = /^\d+[.)]\s/.test(trimmed);
-    const isHeader = /^#{1,3}\s/.test(trimmed);
 
-    if (isBullet || isNumbered) {
-      const content = trimmed.replace(/^[-•*]\s*/, '').replace(/^\d+[.)]\s*/, '');
+    if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
       listItems.push(
-        <li key={i} className="flex gap-2 text-sm leading-relaxed">
-          <span className="text-primary mt-0.5 shrink-0">•</span>
-          <span>{renderInline(content)}</span>
-        </li>,
+        <li key={lineIndex} className="flex items-start gap-1.5 text-on-surface-variant">
+          <span className="text-primary font-bold mt-0.5">•</span>
+          <span className="flex-1">{renderInline(trimmed.slice(2))}</span>
+        </li>
       );
-    } else if (isHeader) {
-      flushList(`list-${i}`);
-      const level = (trimmed.match(/^#+/) ?? ['#'])[0].length;
-      const content = trimmed.replace(/^#+\s/, '');
-      blocks.push(
-        <p
-          key={i}
-          className={`font-bold text-primary ${level <= 1 ? 'text-base' : 'text-sm'}`}
-        >
-          {renderInline(content)}
-        </p>,
-      );
+    } else if (/^\d+\.\s/.test(trimmed)) {
+      const match = trimmed.match(/^(\d+)\.\s(.*)$/);
+      if (match) {
+        listItems.push(
+          <li key={lineIndex} className="flex items-start gap-1.5 text-on-surface-variant">
+            <span className="text-primary font-bold text-[11px] shrink-0 mt-0.5">{match[1]}.</span>
+            <span className="flex-1">{renderInline(match[2])}</span>
+          </li>
+        );
+      }
+    } else if (trimmed === '') {
+      flushList(`list-${lineIndex}`);
+      blocks.push(<div key={`space-${lineIndex}`} className="h-1" />);
     } else {
-      flushList(`list-${i}`);
+      flushList(`list-${lineIndex}`);
       blocks.push(
-        <p key={i} className="text-sm leading-relaxed">
+        <p key={lineIndex} className="text-on-surface text-xs leading-relaxed">
           {renderInline(trimmed)}
-        </p>,
+        </p>
       );
     }
   });
-  flushList('list-final');
-  return <div className="space-y-2">{blocks}</div>;
-}
 
-// ---------------------------------------------------------------------------
-// Componente principal — burbuja flotante de chat
-// ---------------------------------------------------------------------------
+  flushList('list-end');
+  return <div className="space-y-1">{blocks}</div>;
+}
 
 interface PhysiGuideProps {
-  className?: string;
-  variant?: 'header' | 'floating';
-  controlledOpen?: boolean;
-  onControlledClose?: () => void;
+  variant?: 'floating' | 'header';
 }
 
-export function PhysiGuide({ className = '', variant = 'header', controlledOpen, onControlledClose }: PhysiGuideProps) {
-  const [internalOpen, setInternalOpen] = useState(false);
-  const open = controlledOpen ?? internalOpen;
-  const setOpen = (v: boolean) => {
-    if (controlledOpen !== undefined) {
-      if (!v && onControlledClose) onControlledClose();
-    } else {
-      setInternalOpen(v);
-    }
-  };
+export function PhysiGuide({ variant = 'floating' }: PhysiGuideProps) {
+  const [open, setOpen] = useState(false);
+  const location = useLocation();
+  const user = useAuthStore((s) => s.user);
+  const isFisio = user?.role === 'fisioterapeuta';
+
+  const initialGreeting = isFisio
+    ? '¡Hola Fisioterapeuta! Soy **Physi - Guía de la App**. Te ayudo a navegar por FisioMirror, gestionar pacientes, tokens, rutinas y reportes.'
+    : '¡Hola! Soy **Physi - Guía de la App**. Te oriento para encontrar tu rutina diaria, iniciar el Espejo AR, ver tu progreso y contactar a tu terapeuta.';
+
   const [messages, setMessages] = useState<Message[]>([
-    { id: 'welcome', role: 'assistant', text: WELCOME },
+    { id: '1', role: 'assistant', text: initialGreeting },
   ]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
-  const location = useLocation();
   const scrollRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  const faqs = getFAQs(location.pathname);
-  const showFAQs = messages.length <= 1 && !loading;
+  // Suggestions depending on role
+  const suggestions = isFisio
+    ? [
+        '¿Cómo agrego o cargo un nuevo paciente?',
+        '¿Cómo genero y gestiono tokens?',
+        '¿Cómo creo o asigno una rutina?',
+        '¿Dónde consulto las estadísticas y ROM?',
+        '¿Cómo exporto un informe PDF?',
+      ]
+    : [
+        '¿Dónde está mi rutina de hoy?',
+        '¿Cómo inicio una sesión con el Espejo AR?',
+        '¿Cómo veo la demostración 3D?',
+        '¿Cómo me comunico con mi fisioterapeuta?',
+        '¿Qué hago si siento dolor?',
+      ];
 
-  // Auto-scroll al final del chat
+  const scrollToBottom = useCallback(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }, []);
+
   useEffect(() => {
-    scrollRef.current?.scrollTo({
-      top: scrollRef.current.scrollHeight,
-      behavior: 'smooth',
-    });
-  }, [messages, loading]);
+    scrollToBottom();
+  }, [messages, loading, scrollToBottom]);
 
-  // Cerrar con tecla Escape
-  useEffect(() => {
-    if (!open) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setOpen(false);
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [open]);
-
-  // Enfocar el textarea al abrir
   useEffect(() => {
     if (open) {
-      const t = setTimeout(() => textareaRef.current?.focus(), 250);
-      return () => clearTimeout(t);
+      setTimeout(() => textareaRef.current?.focus(), 150);
     }
   }, [open]);
 
-  // Auto-resize del textarea
+  // Actualizar saludo si cambia el rol
   useEffect(() => {
-    const ta = textareaRef.current;
-    if (!ta) return;
-    ta.style.height = 'auto';
-    ta.style.height = `${Math.min(ta.scrollHeight, 96)}px`;
-  }, [input]);
+    setMessages([{ id: '1', role: 'assistant', text: initialGreeting }]);
+  }, [isFisio, initialGreeting]);
 
-  // Respuesta offline: busca el mejor FAQ sin llamar a ningún servicio.
-  const sendMessage = useCallback((text: string) => {
+  const sendMessage = (text: string) => {
     const trimmed = text.trim();
-    if (!trimmed || loading) return;
+    if (!trimmed) return;
 
-    const userMsg: Message = {
-      id: `u-${Date.now()}`,
-      role: 'user',
-      text: trimmed,
-    };
+    const userMsg: Message = { id: String(Date.now()), role: 'user', text: trimmed };
     setMessages((prev) => [...prev, userMsg]);
     setInput('');
     setLoading(true);
 
-    // Pequeña pausa para que el indicador de escritura sea visible y natural.
     setTimeout(() => {
-      const match = matchFAQ(trimmed);
-      const replyText = match ? match.answer : NO_MATCH;
-      setMessages((prev) => [
-        ...prev,
-        { id: `a-${Date.now()}`, role: 'assistant', text: replyText },
-      ]);
-      setLoading(false);
-    }, 450);
-  }, [loading]);
+      const match = matchFAQ(trimmed, isFisio);
+      let reply: string;
+      if (match) {
+        reply = match.answer;
+      } else {
+        reply = isFisio ? NO_MATCH_FISIO : NO_MATCH_PATIENT;
+      }
 
-  const handleSend = () => sendMessage(input);
+      setMessages((prev) => [...prev, { id: String(Date.now() + 1), role: 'assistant', text: reply }]);
+      setLoading(false);
+    }, 400);
+  };
 
   const resetChat = () => {
-    setMessages([{ id: 'welcome', role: 'assistant', text: WELCOME }]);
+    setMessages([{ id: String(Date.now()), role: 'assistant', text: initialGreeting }]);
     setInput('');
   };
 
-  const controlled = controlledOpen !== undefined;
-
   return (
-    <div className={className}>
-      {/* Botón en modo header */}
-      {!controlled && variant === 'header' && (
-        <motion.button
-          onClick={() => setOpen(!open)}
-          whileTap={{ scale: 0.92 }}
-          whileHover={{ scale: 1.05 }}
-          aria-label={open ? 'Cerrar guía de Physi' : 'Abrir guía de Physi'}
+    <div className="relative">
+      {/* Botón activador */}
+      {variant === 'header' ? (
+        <button
+          onClick={() => setOpen((prev) => !prev)}
+          title="Guía de Navegación"
+          aria-label="Abrir guía de navegación de la aplicación"
           aria-expanded={open}
-          title="Consultar a Physi (Asistente IA)"
-          className="relative text-on-surface-variant hover:text-primary transition-all p-2 rounded-xl flex items-center justify-center bg-primary/10 hover:bg-primary/20 ring-1 ring-primary/20"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full glass-panel border border-primary/20 text-xs font-semibold text-on-surface hover:text-primary transition-all duration-200"
         >
-          <Bot size={20} className="text-primary animate-breathe-icon" />
-          <span className="absolute -top-1 -right-1 bg-amber-400 text-amber-950 text-[8px] font-black px-1 rounded-full shadow-sm">
-            IA
-          </span>
-        </motion.button>
-      )}
-
-      {/* Botón flotante opcional */}
-      {!controlled && variant === 'floating' && (
+          <Compass size={16} className="text-primary animate-pulse" />
+          <span className="hidden sm:inline">Guía de la App</span>
+        </button>
+      ) : (
         <motion.button
-          onClick={() => setOpen(!open)}
-          whileTap={{ scale: 0.92 }}
-          whileHover={{ scale: 1.05 }}
-          aria-label={open ? 'Cerrar guía de Physi' : 'Abrir guía de Physi'}
+          whileHover={{ scale: 1.06 }}
+          whileTap={{ scale: 0.94 }}
+          onClick={() => setOpen((prev) => !prev)}
+          aria-label="Abrir guía de navegación de la aplicación"
           aria-expanded={open}
-          className="fixed bottom-24 left-4 lg:bottom-8 lg:left-8 z-[120] flex items-center justify-center w-14 h-14 rounded-full min-h-[56px] min-w-[56px] touch-manipulation active:scale-95 pb-[env(safe-area-inset-bottom)] relative group"
+          className="fixed bottom-24 left-4 lg:bottom-8 lg:left-8 z-[120] flex items-center justify-center w-13 h-13 rounded-full min-h-[52px] min-w-[52px] touch-manipulation active:scale-95 shadow-xl bg-gradient-to-br from-teal-500 to-teal-700 text-white border-2 border-white/20"
         >
-          {!open && (
-            <motion.span
-              className="absolute inset-0 rounded-full bg-primary/30"
-              animate={{ scale: [1, 1.4, 1], opacity: [0.5, 0, 0.5] }}
-              transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
-            />
-          )}
-          <motion.span
-            className="absolute inset-0 rounded-full bg-gradient-to-br from-teal-500 to-cyan-600 shadow-lg shadow-primary/30"
-            animate={{ scale: open ? 0.95 : 1 }}
-          />
-          {!open && (
-            <span className="absolute -top-1 -right-1 bg-amber-400 text-amber-950 text-[9px] font-black px-1.5 py-0.5 rounded-full shadow-md z-10">
-              IA
-            </span>
-          )}
-          <motion.div
-            animate={{ rotate: open ? 90 : 0 }}
-            transition={{ duration: 0.2 }}
-            className="flex items-center justify-center relative z-10 text-white"
-          >
-            {open ? <X size={24} /> : <Bot size={28} />}
+          <motion.div animate={{ rotate: open ? 90 : 0 }} transition={{ duration: 0.2 }}>
+            {open ? <X size={22} /> : <Compass size={24} />}
           </motion.div>
         </motion.button>
       )}
 
-      {/* Ventana flotante de chat con Backdrop */}
+      {/* Modal flotante */}
       <AnimatePresence>
         {open && (
           <>
-            {/* Backdrop clicable para cerrar */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setOpen(false)}
-              className="fixed inset-0 bg-black/25 backdrop-blur-[2px] z-[115]"
+              className="fixed inset-0 bg-black/30 backdrop-blur-[2px] z-[125]"
             />
 
             <motion.div
@@ -344,38 +220,38 @@ export function PhysiGuide({ className = '', variant = 'header', controlledOpen,
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 12, scale: 0.96 }}
               transition={{ type: 'spring', damping: 26, stiffness: 320 }}
-              className={`fixed z-[120] w-[calc(100vw-2rem)] max-w-sm sm:max-w-md flex flex-col glass-panel rounded-3xl border border-primary/20 shadow-2xl overflow-hidden ${
+              className={`fixed z-[130] w-[calc(100vw-2rem)] max-w-sm sm:max-w-md flex flex-col bg-surface rounded-3xl border border-primary/20 shadow-2xl overflow-hidden ${
                 variant === 'header'
                   ? 'top-20 right-4 sm:right-6 max-h-[75vh]'
-                  : 'bottom-28 left-4 sm:left-8 max-h-[60vh]'
+                  : 'bottom-24 left-4 sm:left-8 max-h-[70vh]'
               }`}
             >
-              {/* Cabecera */}
-              <div className="flex items-center justify-between px-4 py-3.5 border-b border-primary/15 shrink-0 bg-primary/10">
+              {/* Cabecera limpia sin tag 'IA' */}
+              <div className="flex items-center justify-between px-4 py-3.5 border-b border-outline-variant/30 shrink-0 bg-surface-container-low">
                 <div className="flex items-center gap-2.5 min-w-0">
-                  <div className="w-9 h-9 rounded-xl bg-primary/20 flex items-center justify-center text-primary shrink-0 ring-1 ring-primary/30">
-                    <Bot size={20} className="animate-breathe-icon" />
+                  <div className="w-8 h-8 rounded-xl bg-primary/15 flex items-center justify-center text-primary shrink-0">
+                    <Compass size={18} />
                   </div>
                   <div className="min-w-0">
-                    <div className="flex items-center gap-1.5">
+                    <div className="flex items-center gap-2">
                       <h3 className="font-bold text-sm text-on-surface truncate">
-                        Physi - Guía Rápida
+                        Physi - Guía de la App
                       </h3>
-                      <span className="text-[9px] font-black uppercase px-1.5 py-0.5 rounded-full bg-primary text-white">
-                        IA
+                      <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-surface-container-high text-on-surface-variant">
+                        {isFisio ? 'Fisioterapeuta' : 'Paciente'}
                       </span>
                     </div>
                     <p className="text-[11px] text-on-surface-variant truncate">
-                      Asistente virtual de rehabilitación
+                      Orientación de navegación y uso del sistema
                     </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-1 shrink-0">
                   <button
                     onClick={resetChat}
-                    aria-label="Nueva consulta"
+                    aria-label="Reiniciar chat"
                     title="Reiniciar chat"
-                    className="text-on-surface-variant hover:text-primary transition-colors p-2 rounded-lg hover:bg-primary/10 min-h-[36px] min-w-[36px] flex items-center justify-center"
+                    className="text-on-surface-variant hover:text-primary transition-colors p-2 rounded-lg hover:bg-surface-container-high"
                   >
                     <RotateCcw size={16} />
                   </button>
@@ -383,7 +259,7 @@ export function PhysiGuide({ className = '', variant = 'header', controlledOpen,
                     onClick={() => setOpen(false)}
                     aria-label="Cerrar guía"
                     title="Cerrar"
-                    className="text-on-surface-variant hover:text-error transition-colors p-2 rounded-lg hover:bg-error/10 min-h-[36px] min-w-[36px] flex items-center justify-center"
+                    className="text-on-surface-variant hover:text-error transition-colors p-2 rounded-lg hover:bg-error/10"
                   >
                     <X size={18} />
                   </button>
@@ -393,36 +269,33 @@ export function PhysiGuide({ className = '', variant = 'header', controlledOpen,
               {/* Mensajes */}
               <div
                 ref={scrollRef}
-                className="flex-1 overflow-y-auto p-3.5 space-y-3 scrollbar-thin max-h-[48vh]"
+                className="flex-1 overflow-y-auto p-3.5 space-y-3 scrollbar-thin max-h-[42vh]"
               >
                 {messages.map((msg) => (
                   <motion.div
                     key={msg.id}
-                    initial={{ opacity: 0, y: 8 }}
+                    initial={{ opacity: 0, y: 6 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.25 }}
+                    transition={{ duration: 0.2 }}
                     className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
                   >
                     <div
-                      className={`max-w-[90%] flex gap-2 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}
+                      className={`max-w-[92%] flex gap-2 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}
                     >
-                      {/* Avatar */}
                       <div
-                        className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${
+                        className={`w-6 h-6 rounded-lg flex items-center justify-center shrink-0 mt-0.5 text-xs font-bold ${
                           msg.role === 'user'
-                            ? 'bg-primary text-white font-bold text-[10px]'
+                            ? 'bg-primary text-white text-[10px]'
                             : 'bg-primary/15 text-primary'
                         }`}
                       >
-                        {msg.role === 'user' ? 'Tú' : <Bot size={14} />}
+                        {msg.role === 'user' ? 'Tú' : <Compass size={13} />}
                       </div>
-
-                      {/* Burbuja */}
                       <div
-                        className={`p-3 rounded-2xl text-sm leading-relaxed shadow-sm ${
+                        className={`p-3 rounded-2xl text-xs leading-relaxed shadow-xs ${
                           msg.role === 'user'
                             ? 'bg-primary text-white rounded-tr-xs'
-                            : 'bg-surface-container-high text-on-surface rounded-tl-xs border border-primary/10'
+                            : 'bg-surface-container-high text-on-surface rounded-tl-xs border border-outline-variant/30'
                         }`}
                       >
                         {msg.role === 'assistant' ? renderMarkdown(msg.text) : msg.text}
@@ -431,85 +304,59 @@ export function PhysiGuide({ className = '', variant = 'header', controlledOpen,
                   </motion.div>
                 ))}
 
-                {/* Indicador de escritura */}
                 {loading && (
                   <div className="flex justify-start">
-                    <div className="flex gap-2">
-                      <div className="w-7 h-7 rounded-lg bg-primary/15 flex items-center justify-center shrink-0">
-                        <Bot size={14} className="text-primary animate-pulse" />
+                    <div className="flex gap-2 items-center text-xs text-on-surface-variant">
+                      <div className="w-6 h-6 rounded-lg bg-primary/15 flex items-center justify-center text-primary">
+                        <Compass size={13} className="animate-spin" />
                       </div>
-                      <div className="bg-surface-container-high p-3 rounded-2xl rounded-tl-xs border border-primary/10">
-                        <div className="flex gap-1.5 items-center">
-                          {[0, 1, 2].map((i) => (
-                            <motion.span
-                              key={i}
-                              animate={{
-                                scale: [1, 1.3, 1],
-                                opacity: [0.4, 1, 0.4],
-                              }}
-                              transition={{
-                                duration: 1,
-                                repeat: Infinity,
-                                delay: i * 0.18,
-                              }}
-                              className="w-2 h-2 bg-primary rounded-full"
-                            />
-                          ))}
-                        </div>
-                      </div>
+                      <span>Buscando en la guía...</span>
                     </div>
                   </div>
                 )}
               </div>
 
-              {/* Sugerencias frecuentes según la ruta */}
-              {showFAQs && (
-                <div className="px-3 pb-2.5 shrink-0">
-                  <p className="text-[11px] font-bold uppercase tracking-wider text-on-surface-variant mb-1.5">
-                    Sugerencias
-                  </p>
-                  <div className="flex flex-wrap gap-1.5 max-h-20 overflow-y-auto scrollbar-thin">
-                    {faqs.map((faq, i) => (
-                      <motion.button
-                        key={faq}
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: i * 0.06 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={() => sendMessage(faq)}
-                        className="px-2.5 py-1.5 rounded-full bg-primary/10 text-xs font-medium hover:bg-primary/20 transition-all text-primary border border-primary/15"
-                      >
-                        {faq}
-                      </motion.button>
-                    ))}
-                  </div>
+              {/* Sugerencias de navegación según el rol */}
+              <div className="px-3 py-2 border-t border-outline-variant/20 bg-surface-container-low shrink-0">
+                <p className="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant mb-1.5">
+                  Preguntas Frecuentes ({isFisio ? 'Fisioterapeuta' : 'Paciente'})
+                </p>
+                <div className="flex flex-wrap gap-1.5 max-h-24 overflow-y-auto scrollbar-thin">
+                  {suggestions.map((sug, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => sendMessage(sug)}
+                      className="px-2.5 py-1 text-[11px] rounded-full bg-surface border border-outline-variant/40 hover:border-primary text-on-surface-variant hover:text-primary transition-all text-left"
+                    >
+                      {sug}
+                    </button>
+                  ))}
                 </div>
-              )}
+              </div>
 
-              {/* Entrada de texto */}
-              <div className="p-3 border-t border-primary/10 shrink-0 bg-surface-container-low/50">
-                <div className="flex gap-2 items-end">
-                  <textarea
+              {/* Input */}
+              <div className="p-3 border-t border-outline-variant/30 shrink-0 bg-surface">
+                <div className="flex gap-2 items-center">
+                  <input
                     ref={textareaRef}
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     onKeyDown={(e) => {
-                      if (e.key === 'Enter' && !e.shiftKey) {
+                      if (e.key === 'Enter') {
                         e.preventDefault();
-                        handleSend();
+                        sendMessage(input);
                       }
                     }}
-                    placeholder="Escribe tu consulta médica o de la app..."
-                    rows={1}
-                    className="flex-1 px-3.5 py-2.5 rounded-xl bg-surface border border-primary/15 outline-none focus:ring-2 focus:ring-primary/20 resize-none text-sm text-on-surface placeholder:text-on-surface-variant/60 max-h-24"
+                    placeholder="Escribe una pregunta sobre la app..."
+                    className="flex-1 px-3.5 py-2 rounded-xl bg-surface-container-low border border-outline-variant/40 outline-none focus:border-primary text-xs text-on-surface placeholder:text-on-surface-variant/60"
                   />
                   <button
-                    onClick={handleSend}
+                    onClick={() => sendMessage(input)}
                     disabled={loading || !input.trim()}
-                    aria-label="Enviar consulta"
-                    className="w-10 h-10 rounded-xl bg-primary text-white flex items-center justify-center hover:scale-105 active:scale-95 transition-all disabled:opacity-40 shrink-0 shadow-sm"
+                    aria-label="Enviar"
+                    className="w-8 h-8 rounded-xl bg-primary text-white flex items-center justify-center hover:opacity-90 disabled:opacity-40 shrink-0"
                   >
-                    <Send size={18} />
+                    <Send size={14} />
                   </button>
                 </div>
               </div>

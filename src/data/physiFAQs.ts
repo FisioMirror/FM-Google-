@@ -2,333 +2,182 @@ export interface FAQ {
   keywords: string[];
   question: string;
   answer: string;
+  category?: string;
 }
 
 /**
- * Base de conocimientos local de Physi (offline).
- * El matcher puntúa por coincidencia de palabras clave en el texto del usuario.
- * Todas las respuestas están en español y usan formato markdown básico.
+ * Base de conocimientos para Fisioterapeutas (Guía y Navegación)
  */
-export const PHYSI_FAQS: FAQ[] = [
+export const PHYSI_FAQS_FISIO: FAQ[] = [
   {
-    keywords: ['agregar', 'añadir', 'cargar', 'registrar', 'nuevo', 'crear', 'paciente', 'alta'],
-    question: '¿Cómo agrego o cargo un paciente?',
+    category: 'Pacientes',
+    keywords: ['paciente', 'agregar', 'nuevo', 'crear', 'alta', 'registrar', 'cargar'],
+    question: '¿Cómo agrego o cargo un nuevo paciente?',
     answer:
-      'Para agregar un paciente nuevo:\n\n' +
-      '- Ve al **Dashboard** y pulsa el botón **"+ Paciente"** (esquina superior derecha).\n' +
-      '- Completa los datos: nombre, diagnóstico, fecha de nacimiento y teléfono.\n' +
-      '- Pulsa **Guardar** y el paciente aparecerá en tu lista de activos.\n\n' +
-      'También puedes importar recetas médicas con **OCR** desde la ficha del paciente.',
+      'Para agregar un nuevo paciente:\n\n' +
+      '1. Ve a **Pacientes** en el menú superior o lateral.\n' +
+      '2. Haz clic en el botón **"+ Nuevo Paciente"** o usa la **Gestión de Tokens**.\n' +
+      '3. También puedes usar el **Escáner OCR** en Herramientas para extraer automáticamente los datos desde una receta médica o informe clínico.',
   },
   {
-    keywords: ['rutina', 'ejercicio', 'crear', 'asignar', 'plan', 'programa', 'serie', 'repeticion', 'frecuencia'],
-    question: '¿Cómo creo una rutina de ejercicios?',
+    category: 'Tokens',
+    keywords: ['token', 'codigo', 'generar', 'vincular', 'acceso', 'invitar', 'clave'],
+    question: '¿Cómo genero y gestiono tokens para mis pacientes?',
     answer:
-      'Para crear una rutina de ejercicios:\n\n' +
-      '1. Abre la ficha del paciente y selecciona **Rutinas**.\n' +
-      '2. Pulsa **"+ Nueva rutina"** y elige los ejercicios del catálogo.\n' +
-      '3. Define **series**, **repeticiones** y **frecuencia semanal**.\n' +
-      '4. Añade notas opcionales (postura, ritmo, precauciones).\n' +
-      '5. Guarda la rutina y estará disponible para el paciente.\n\n' +
-      'Las rutinas activas se resaltan en el progreso del paciente.',
+      'Los tokens permiten que tus pacientes se registren y se vinculen de forma segura a tu cuenta:\n\n' +
+      '1. Dirígete a la sección **Pacientes**.\n' +
+      '2. En el panel superior encontrarás la pestaña o botón **"Gestión de Tokens"**.\n' +
+      '3. Pulsa **"Generar Token de 6 Dígitos"**, asigna el nombre o déjalo disponible y copia el código para entregárselo a tu paciente.',
   },
   {
-    keywords: ['ar', 'espejo', 'espejo ar', 'calibrar', 'calibracion', 'camara', 'pose', 'movimiento', 'tracking'],
-    question: '¿Cómo uso el modo espejo AR y la calibración?',
+    category: 'Rutinas',
+    keywords: ['rutina', 'ejercicio', 'asignar', 'crear rutina', 'prescribir', 'series', 'repeticiones'],
+    question: '¿Cómo creo o asigno una rutina de ejercicios?',
     answer:
-      'El modo espejo AR te permite guiar al paciente en tiempo real:\n\n' +
-      '- Pulsa **"Modo Espejo"** en la ficha del paciente o en la barra flotante.\n' +
-      '- Permite el acceso a la cámara cuando el navegador lo solicite.\n' +
-      '- Realiza la **calibración inicial**: ponte de frente a la cámara y mantén la pose 3 segundos.\n' +
-      '- Una vez calibrado, el sistema detecta tu postura y la muestra superpuesta al paciente.\n\n' +
-      'Si necesitas recalibrar, pulsa **"Recalibrar"** en cualquier momento.',
+      'Para prescribir una rutina:\n\n' +
+      '1. Entra al detalle del paciente desde la lista de **Pacientes**.\n' +
+      '2. Haz clic en la pestaña **"Rutina / Ejercicios"** o accede a la **Biblioteca de Ejercicios**.\n' +
+      '3. Selecciona los ejercicios requeridos, ajusta las **series, repeticiones, descansos y notas clínicas**, y pulsa **Guardar Asignación**.',
   },
   {
-    keywords: ['informe', 'pdf', 'reporte', 'exportar', 'descargar', 'documento'],
-    question: '¿Cómo genero un informe PDF?',
+    category: 'Estadísticas',
+    keywords: ['estadisticas', 'adherencia', 'rom', 'metricas', 'graficos', 'progreso', 'analiticas'],
+    question: '¿Dónde consulto los reportes y estadísticas avanzadas?',
     answer:
-      'Para exportar un informe en PDF:\n\n' +
-      '- Entra en la ficha del paciente y abre la pestaña **Progreso**.\n' +
-      '- Pulsa el ícono **"Descargar PDF"** (arriba a la derecha).\n' +
-      '- Elige el rango de fechas si lo necesitas y confirma.\n' +
-      '- El informe incluye sesiones, métricas de calidad y evolución del paciente.\n\n' +
-      'El PDF se descarga automáticamente a tu dispositivo.',
+      'En la sección **Estadísticas** (menú superior) encontrarás:\n\n' +
+      '- **Índice de Adherencia Ponderada (%)**: Cumplimiento del plan terapéutico.\n' +
+      '- **Amplitud Articular (ROM) y Simetría**: Medición biomecánica en grados capturada por el Espejo AR.\n' +
+      '- **Control Motor y Velocidad Angular**: Estabilidad del movimiento.\n' +
+      '- **Correlación Dolor EVA vs. Calidad**: Monitoreo de seguridad clínica.',
   },
   {
-    keywords: ['estadistica', 'metrica', 'progreso', 'grafico', 'evolucion', 'dato', 'porcentaje', 'calidad'],
-    question: '¿Cómo interpreto las estadísticas?',
+    category: 'Reportes',
+    keywords: ['pdf', 'informe', 'reporte', 'exportar', 'descargar', 'imprimir'],
+    question: '¿Cómo genero y exporto un informe clínico en PDF?',
     answer:
-      'Las estadísticas del dashboard muestran:\n\n' +
-      '- **Sesiones completadas**: total de sesiones realizadas por el paciente.\n' +
-      '- **Calidad de ejecución**: porcentaje medio de precisión del movimiento.\n' +
-      '- **Dolor reportado**: escala 0-10 reportada por el paciente tras cada sesión.\n' +
-      '- **Racha actual**: días consecutivos con sesiones registradas.\n' +
-      '- **Tendencia**: flechas verde/roja que indican mejora o empeoramiento.\n\n' +
-      'Una **calidad >80%** y **dolor ≤3** indican buena evolución.',
+      'Para generar un reporte profesional:\n\n' +
+      '1. Abre la ficha de cualquier paciente en **Pacientes**.\n' +
+      '2. Pulsa en la acción **"Exportar Reporte PDF"**.\n' +
+      '3. El sistema compilará automáticamente las sesiones, evolución del dolor, rango articular y notas de evolución en un documento descargable listo para imprimir.',
   },
   {
-    keywords: ['ocr', 'receta', 'escanear', 'foto receta', 'reconocimiento', 'texto', 'prescripcion'],
-    question: '¿Cómo funciona el OCR de recetas?',
+    category: 'Herramientas',
+    keywords: ['ocr', 'escaner', 'receta', 'documento', 'extraer', 'herramientas'],
+    question: '¿Cómo funciona el Escáner OCR de Documentos?',
     answer:
-      'El OCR reconoce automáticamente el texto de una receta médica:\n\n' +
-      '- En la ficha del paciente pulsa **"Escanear receta"**.\n' +
-      '- Sube o toma una foto legible de la receta.\n' +
-      '- El sistema extrae **diagnóstico, medicamentos y indicaciones**.\n' +
-      '- Revisa los datos detectados y confirma para guardarlos en la ficha.\n\n' +
-      'Consejo: usa buena iluminación y encuadra todo el texto para mayor precisión.',
+      'El OCR Clínico procesa recetas médicas e informes:\n\n' +
+      '1. Ve a **Herramientas** y abre **Escáner OCR**.\n' +
+      '2. Carga una fotografía nítida o escaneo del informe.\n' +
+      '3. El sistema reconocerá automáticamente diagnósticos, zonas anatómicas y precauciones para autocompletar el expediente.',
   },
   {
-    keywords: ['tamaño', 'letra', 'texto', 'tipografia', 'fuente', 'zoom', 'accesibilidad', 'legibilidad'],
-    question: '¿Cómo cambio el tamaño de letra?',
+    category: 'Asistencia',
+    keywords: ['ia', 'asistente', 'diferencia', 'pisi', 'physi', 'ayuda'],
+    question: '¿Cuál es la diferencia entre Physi Guía y el Asistente Clínico IA?',
     answer:
-      'Para ajustar el tamaño de letra:\n\n' +
-      '- Ve a **Configuración → Accesibilidad**.\n' +
-      '- Usa el control deslizante **"Tamaño de texto"**.\n' +
-      '- Hay tres niveles: **Pequeño, Normal y Grande**.\n' +
-      '- El cambio se aplica al instante a toda la app.\n\n' +
-      'Esta opción es ideal para pacientes con baja visión.',
-  },
-  {
-    keywords: ['modo oscuro', 'oscuro', 'dark', 'tema', 'noche', 'claro', 'claro oscuro'],
-    question: '¿Cómo activo el modo oscuro?',
-    answer:
-      'Para activar el modo oscuro:\n\n' +
-      '- Ve a **Configuración → Apariencia**.\n' +
-      '- Activa el interruptor **"Modo oscuro"**.\n' +
-      '- La app cambia inmediatamente a la paleta oscura (teal sobre fondo oscuro).\n\n' +
-      'También puedes elegir **"Automático"** para seguir el tema del sistema operativo.',
-  },
-  {
-    keywords: ['foto', 'perfil', 'avatar', 'imagen perfil', 'subir foto', 'cambiar foto'],
-    question: '¿Cómo subo mi foto de perfil?',
-    answer:
-      'Para actualizar tu foto de perfil:\n\n' +
-      '- Ve a **Configuración → Mi perfil**.\n' +
-      '- Pulsa sobre el círculo con tu avatar actual.\n' +
-      '- Selecciona una imagen desde tu dispositivo (JPG o PNG).\n' +
-      '- Recorta la imagen si es necesario y guarda.\n\n' +
-      'La foto se sincroniza y aparece en el header y tus mensajes.',
-  },
-  {
-    keywords: ['soporte', 'contacto', 'ayuda', 'contactar', 'email', 'correo', 'fisiomirror', 'proton', 'problema', 'bug'],
-    question: '¿Cómo contacto al soporte?',
-    answer:
-      'Si necesitas ayuda puedes escribirnos a:\n\n' +
-      '📧 **fisioMirror@proton.me**\n\n' +
-      'Incluye en el correo:\n' +
-      '- Tu nombre de clínica o usuario.\n' +
-      '- Una captura del problema si es posible.\n' +
-      '- Una breve descripción de los pasos que seguiste.\n\n' +
-      'Respondemos normalmente en menos de 24 horas.',
-  },
-  {
-    keywords: ['ia', 'ai', 'herramientas ia', 'asistente', 'inteligencia artificial', 'analisis', 'fisiomirror asistent'],
-    question: '¿Cómo uso las herramientas de IA?',
-    answer:
-      'FisioMirror integra IA de dos formas:\n\n' +
-      '- **Asistente IA** (página dedicada): analiza tus movimientos y sugiere ejercicios personalizados. Permite enviar texto, imágenes y voz.\n' +
-      '- **Physi** (este chatbot): guía rápida offline sobre el uso de la app.\n\n' +
-      'Para abrir el Asistente IA pulsa el ícono **"Asistente IA"** en la barra lateral o el menú flotante.',
-  },
-  {
-    keywords: ['ver', 'progreso', 'evolucion', 'historial', 'sesiones', 'registro'],
-    question: '¿Cómo veo el progreso del paciente?',
-    answer:
-      'Para consultar el progreso de un paciente:\n\n' +
-      '- Abre la ficha del paciente y selecciona **"Progreso"**.\n' +
-      '- Verás un gráfico con **sesiones, calidad y dolor** a lo largo del tiempo.\n' +
-      '- Abajo aparece el listado cronológico de sesiones completadas.\n' +
-      '- Usa el selector de fechas para filtrar un periodo concreto.\n\n' +
-      'Desde aquí también puedes **descargar el informe PDF**.',
-  },
-  {
-    keywords: ['asignar', 'ejercicio', 'prescribir', 'dar ejercicio', 'enviar ejercicio', 'asignar ejercicio'],
-    question: '¿Cómo asigno ejercicios a un paciente?',
-    answer:
-      'Para asignar ejercicios:\n\n' +
-      '1. Abre la ficha del paciente y ve a **Rutinas**.\n' +
-      '2. Crea una rutina nueva o edita una existente.\n' +
-      '3. Añade ejercicios del catálogo y define series y repeticiones.\n' +
-      '4. Pulsa **Guardar** para asignar la rutina al paciente.\n\n' +
-      'El paciente verá los ejercicios activos en su vista.',
-  },
-  {
-    keywords: ['videollamada', 'video', 'llamada', 'video llamada', 'llamar', 'remoto', 'teleconsulta'],
-    question: '¿Cómo inicio una videollamada?',
-    answer:
-      'Para iniciar una videollamada con un paciente:\n\n' +
-      '- Abre la ficha del paciente y pulsa **"Videollamada"**.\n' +
-      '- Permite acceso a cámara y micrófono.\n' +
-      '- Comparte el enlace de la sesión con el paciente.\n' +
-      '- Cuando el paciente se conecte, la sesión comienza automáticamente.\n\n' +
-      'Durante la llamada puedes activar el modo espejo AR para guiar movimientos.',
-  },
-  {
-    keywords: ['chatbot', 'physi', 'guia', 'este chat', 'como usas', 'que eres', 'quien eres'],
-    question: '¿Cómo uso el chatbot Physi?',
-    answer:
-      '¡Estás usándolo ahora! Soy **Physi**, tu guía rápida offline de FisioMirror.\n\n' +
-      '- Escribe tu pregunta en lenguaje natural (ej: "¿cómo creo una rutina?").\n' +
-      '- O pulsa una de las **sugerencias** que aparecen según la pantalla donde estés.\n' +
-      '- Te responderé al instante sin necesidad de conexión al servidor.\n\n' +
-      'Si no entiendo tu pregunta, prueba con términos como **paciente, rutina, AR** o contacta a soporte.',
-  },
-  {
-    keywords: ['vitrina', 'logro', 'trofeo', 'insignia', 'badge', 'recompensa', 'medalla'],
-    question: '¿Qué es la vitrina de logros?',
-    answer:
-      'La **Vitrina de logros** muestra los hitos alcanzados por el paciente:\n\n' +
-      '- **Racha de 7 días** de sesiones consecutivas.\n' +
-      '- **Primera sesión completada**.\n' +
-      '- **Calidad perfecta** (100% en una sesión).\n' +
-      '- **Sin dolor** durante una semana.\n' +
-      '- **30 sesiones** acumuladas.\n\n' +
-      'Cada logro desbloquea una insignia animada que el paciente puede ver en su perfil.',
-  },
-  {
-    keywords: ['notificacion', 'alerta', 'aviso', 'recordatorio', 'configurar notificaciones', 'push'],
-    question: '¿Cómo configuro las notificaciones?',
-    answer:
-      'Para gestionar las notificaciones:\n\n' +
-      '- Ve a **Configuración → Notificaciones**.\n' +
-      '- Activa o desactiva cada tipo:\n' +
-      '  - **Nuevos pacientes** asignados.\n' +
-      '  - **Sesiones completadas** por tus pacientes.\n' +
-      '  - **Reportes de dolor** altos (≥7).\n' +
-      '  - **Recordatorios** de rutinas pendientes.\n' +
-      '- Guarda los cambios.\n\n' +
-      'Las notificaciones aparecen en la campana del header.',
-  },
-  {
-    keywords: ['clinica', 'nombre clinica', 'editar clinica', 'cambiar nombre', 'configuracion clinica'],
-    question: '¿Cómo edito el nombre de mi clínica?',
-    answer:
-      'Para cambiar el nombre de la clínica:\n\n' +
-      '- Ve a **Configuración → Clínica**.\n' +
-      '- Pulsa sobre el campo **"Nombre de la clínica"**.\n' +
-      '- Escribe el nuevo nombre y pulsa **Guardar**.\n\n' +
-      'El nombre se actualiza en el header, los informes PDF y los correos de invitación.',
-  },
-  {
-    keywords: ['omitir', 'saltar', 'calibracion', 'saltar calibracion', 'omitir calibracion', 'sin calibrar'],
-    question: '¿Cómo omito la calibración del modo espejo?',
-    answer:
-      'Puedes saltar la calibración inicial del modo espejo AR:\n\n' +
-      '- Cuando aparezca la pantalla de calibración, pulsa **"Omitir"** (abajo a la derecha).\n' +
-      '- Entrarás directamente al modo espejo con detección de pose estándar.\n\n' +
-      '⚠️ Sin calibrar, la precisión del seguimiento puede ser menor. Recomendamos calibrar la primera vez.',
-  },
-  {
-    keywords: ['camara', 'no funciona', 'no se ve', 'error camara', 'permisos camara', 'webcam', 'no detecta'],
-    question: '¿Qué hago si la cámara no funciona?',
-    answer:
-      'Si la cámara no se inicia en el modo espejo AR:\n\n' +
-      '1. **Verifica los permisos** del navegador: el sitio debe tener acceso a la cámara.\n' +
-      '2. **Cierra otras apps** que estén usando la cámara (Zoom, Teams, etc.).\n' +
-      '3. **Recarga la página** e inténtalo de nuevo.\n' +
-      '4. Prueba con **Chrome o Edge** (mejor soporte para AR).\n' +
-      '5. Si persiste, revisa que ninguna pestaña bloquea la cámara.\n\n' +
-      'Si el problema continúa, contacta a soporte: **fisioMirror@proton.me**.',
-  },
-  {
-    keywords: ['pacientes activos', 'activos', 'lista pacientes', 'ver pacientes', 'cuantos pacientes', 'mis pacientes'],
-    question: '¿Cómo veo mis pacientes activos?',
-    answer:
-      'Para ver tus pacientes activos:\n\n' +
-      '- En el **Dashboard** aparecerá la tarjeta **"Pacientes activos"** con el total.\n' +
-      '- Pulsa la tarjeta para abrir la lista completa.\n' +
-      '- Cada paciente muestra nombre, diagnóstico y última sesión.\n' +
-      '- Usa el buscador superior para filtrar por nombre.\n\n' +
-      'Los pacientes dados de baja aparecen en una pestaña separada **"Inactivos"**.',
-  },
-  {
-    keywords: ['fab', 'menu flotante', 'boton flotante', 'flotante', 'menu', 'acceso rapido'],
-    question: '¿Cómo uso el menú flotante (FAB)?',
-    answer:
-      'El **menú flotante (FAB)** es el botón redondo que aparece en la esquina inferior derecha:\n\n' +
-      '- **Púlsalo una vez** para expandir accesos rápidos.\n' +
-      '- Contiene: **Modo Espejo, Nueva rutina, Asistente IA y Videollamada**.\n' +
-      '- Pulsa cualquier ícono para ir directo a esa función.\n' +
-      '- Pulsa fuera del menú o vuelve a pulsar el FAB para cerrarlo.\n\n' +
-      'El FAB está disponible en todas las pantallas principales.',
-  },
-  {
-    keywords: ['cerrar', 'cerrar sesion', 'logout', 'salir', 'desconectar', 'cerrar cuenta'],
-    question: '¿Cómo cierro sesión?',
-    answer:
-      'Para cerrar sesión en FisioMirror:\n\n' +
-      '- Ve a **Configuración → Cuenta**.\n' +
-      '- Pulsa el botón rojo **"Cerrar sesión"** al final.\n' +
-      '- Confirma en el diálogo emergente.\n\n' +
-      'Se cerrará tu sesión y volverás a la pantalla de inicio. Tus datos quedan guardados.',
-  },
-  {
-    keywords: ['contraseña', 'password', 'cambiar contraseña', 'clave', 'seguridad', 'cambiar clave'],
-    question: '¿Cómo cambio mi contraseña?',
-    answer:
-      'Para cambiar tu contraseña:\n\n' +
-      '- Ve a **Configuración → Cuenta → Seguridad**.\n' +
-      '- Introduce tu contraseña actual.\n' +
-      '- Escribe la nueva contraseña (mínimo 8 caracteres).\n' +
-      '- Confírmala y pulsa **"Actualizar contraseña"**.\n\n' +
-      'Si la olvidaste, usa **"Recuperar contraseña"** en la pantalla de inicio para recibir un correo.',
-  },
-  {
-    keywords: ['color', 'colores', 'dashboard', 'que significa', 'verde', 'amarillo', 'rojo', 'teal', 'semáforo'],
-    question: '¿Qué significa cada color en el dashboard?',
-    answer:
-      'El dashboard usa un código de colores tipo semáforo:\n\n' +
-      '- 🟢 **Verde / Teal**: estado bueno — calidad alta, dolor bajo, racha activa.\n' +
-      '- 🟡 **Amarillo**: estado regular — atención recomendada, métricas medias.\n' +
-      '- 🔴 **Rojo**: estado crítico — dolor alto o calidad baja, requiere intervención.\n' +
-      '- 🔵 **Azul**: información general o neutra.\n\n' +
-      'Cada tarjeta del dashboard muestra un punto de color con su estado actual.',
-  },
-  {
-    keywords: ['bienvenida', 'empezar', 'inicio', 'que puedo hacer', 'funciones', 'usar fisiomirror', 'para que sirve'],
-    question: '¿Qué puedo hacer en FisioMirror?',
-    answer:
-      'FisioMirror es una plataforma de fisioterapia que te permite:\n\n' +
-      '- **Gestionar pacientes** y sus fichas clínicas.\n' +
-      '- **Crear rutinas** de ejercicios personalizadas.\n' +
-      '- Usar el **modo espejo AR** para guiar movimientos en tiempo real.\n' +
-      '- **Escanear recetas** con OCR.\n' +
-      '- **Generar informes PDF** de progreso.\n' +
-      '- Realizar **videollamadas** con tus pacientes.\n' +
-      '- Consultar **estadísticas** y **logros**.\n\n' +
-      'Usa el menú flotante (FAB) para acceder rápido a las funciones principales.',
-  },
-  {
-    keywords: ['recuperar', 'olvide', 'olvide contraseña', 'resetear', 'olvidé', 'no recuerdo', 'recuperar contraseña'],
-    question: 'Olvidé mi contraseña, ¿qué hago?',
-    answer:
-      'Si olvidaste tu contraseña:\n\n' +
-      '- En la pantalla de inicio pulsa **"Recuperar contraseña"**.\n' +
-      '- Introduce tu correo electrónico.\n' +
-      '- Te enviaremos un enlace para restablecerla (revisa spam si no lo ves).\n' +
-      '- Abre el enlace y define una nueva contraseña.\n\n' +
-      'Si no recibes el correo, escríbenos a **fisioMirror@proton.me**.',
-  },
-  {
-    keywords: ['invitar', 'invitacion', 'enlace', 'compartir', 'paciente nuevo', 'vincular'],
-    question: '¿Cómo invito a un paciente a la plataforma?',
-    answer:
-      'Para invitar a un paciente:\n\n' +
-      '- En la ficha del paciente pulsa **"Invitar"**.\n' +
-      '- Se generará un enlace único de acceso.\n' +
-      '- Compártelo por correo o WhatsApp.\n' +
-      '- El paciente se registra con ese enlace y queda vinculado a tu cuenta.\n\n' +
-      'El nombre de tu clínica aparecerá en la invitación.',
-  },
-  {
-    keywords: ['datos', 'seguridad', 'privacidad', 'proteccion', 'gdpr', 'informacion', 'almacenamiento'],
-    question: '¿Cómo se protegen mis datos y los de mis pacientes?',
-    answer:
-      'FisioMirror protege la información así:\n\n' +
-      '- **Cifrado** de datos en tránsito (HTTPS) y en reposo.\n' +
-      '- **Row Level Security**: cada fisioterapeuta solo ve a sus propios pacientes.\n' +
-      '- **Autenticación** con sesiones JWT seguras.\n' +
-      '- Las imágenes de recetas se procesan y almacenan de forma privada.\n\n' +
-      'Para más detalle consulta la política de privacidad o escríbenos a **fisioMirror@proton.me**.',
+      'Existen dos herramientas diferenciadas:\n\n' +
+      '- **Physi (Guía de la App)**: Este chatbot de navegación que te orienta rápidamente dentro de las funciones y menús de FisioMirror.\n' +
+      '- **Physi Asistente Clínico IA**: La herramienta clínica avanzada (en el menú "Asistente IA") que procesa análisis posturales, consultas biomecánicas e interpreta imágenes con modelos de IA médica.',
   },
 ];
+
+/**
+ * Base de conocimientos para Pacientes (Guía y Navegación)
+ */
+export const PHYSI_FAQS_PATIENT: FAQ[] = [
+  {
+    category: 'Mi Rutina',
+    keywords: ['rutina', 'ejercicios', 'mi rutina', 'donde', 'hacer', 'hoy', 'tarea'],
+    question: '¿Dónde está mi rutina de ejercicios de hoy?',
+    answer:
+      'Puedes encontrar tus ejercicios asignados en:\n\n' +
+      '1. En la pestaña **"Mi Rutina"** en el menú inferior o en el botón principal **"Iniciar Sesión de Hoy"** en tu Inicio.\n' +
+      '2. Cada tarjeta te indica las series, repeticiones recomendadas y el objetivo asignado por tu fisioterapeuta.',
+  },
+  {
+    category: 'Espejo AR',
+    keywords: ['ar', 'espejo', 'camara', 'iniciar', 'empezar', 'sesion', 'espejo ar'],
+    question: '¿Cómo inicio una sesión con el Espejo AR?',
+    answer:
+      'Para entrenar con guía visual en tiempo real:\n\n' +
+      '1. Pulsa el botón **"Iniciar Sesión AR"** en tu pantalla principal o selecciona un ejercicio y toca **"Entrenar con AR"**.\n' +
+      '2. Permite el acceso a la cámara de tu dispositivo.\n' +
+      '3. Colócate a unos 2 metros de distancia donde se vea tu cuerpo completo para que el sensor trace tus articulaciones.',
+  },
+  {
+    category: 'Demostración 3D',
+    keywords: ['3d', 'modelo', 'demostracion', 'avatar', 'esqueleto', 'ver como se hace'],
+    question: '¿Cómo veo la demostración 3D de un ejercicio?',
+    answer:
+      'En la lista de ejercicios de **Mi Rutina**, cada ejercicio cuenta con un botón dedicado **"Demostración 3D"**.\n\n' +
+      'Al pulsarlo, se abrirá el visor tridimensional interactivo con el avatar anatómico mostrando los ángulos exactos y el movimiento correcto.',
+  },
+  {
+    category: 'Terapeuta',
+    keywords: ['contacto', 'terapeuta', 'fisioterapeuta', 'llamar', 'whatsapp', 'telefono', 'hablar'],
+    question: '¿Cómo me comunico con mi fisioterapeuta?',
+    answer:
+      'En tu pantalla de inicio o en la barra superior dispones del botón de **Contacto Rápido** (ícono de teléfono/médico).\n\n' +
+      'Desde allí puedes realizar una llamada telefónica directa o iniciar una conversación de WhatsApp con tu fisioterapeuta asignado.',
+  },
+  {
+    category: 'Progreso',
+    keywords: ['progreso', 'estadisticas', 'racha', 'puntos', 'dias', 'historial'],
+    question: '¿Cómo veo mi racha y mi progreso de recuperación?',
+    answer:
+      'En tu **Inicio** y en la pestaña **"Progreso"** puedes ver:\n\n' +
+      '- **Tu Racha Actual**: Número de días consecutivos que has entrenado.\n' +
+      '- **Calidad Media de Ejecución**: Porcentaje de precisión en tus movimientos.\n' +
+      '- **Historial de Sesiones**: Fecha, duración y nivel de esfuerzo de cada sesión completada.',
+  },
+  {
+    category: 'Seguridad',
+    keywords: ['dolor', 'molestia', 'lastima', 'parar', 'detener', 'emergencia'],
+    question: '¿Qué hago si siento dolor durante un ejercicio?',
+    answer:
+      '**Tu seguridad es lo primero**:\n\n' +
+      '1. Detén el ejercicio inmediatamente si experimentas dolor agudo o punzante.\n' +
+      '2. Al finalizar la sesión, califica tu nivel de dolor en la escala visual (0 al 10) para que tu fisioterapeuta lo revise.\n' +
+      '3. Utiliza el botón de contacto para avisarle a tu fisioterapeuta.',
+  },
+  {
+    category: 'Asistencia',
+    keywords: ['ia', 'asistente', 'pisi', 'physi', 'ayuda', 'clinica'],
+    question: '¿Para qué sirve Physi Guía frente al Asistente IA?',
+    answer:
+      '- **Physi Guía**: Este chatbot te acompaña y te explica dónde está cada sección y cómo usar la app.\n' +
+      '- **Asistente Clínico IA**: En el menú "Asistente IA", puedes resolver dudas específicas sobre tu recuperación, estiramientos y subir fotos de tus posturas.',
+  },
+];
+
+/**
+ * Busca respuestas en la base de datos de FAQs según el rol
+ */
+export function matchFAQ(query: string, isFisio = false): { answer: string; question: string } | null {
+  const normalizedQuery = query.toLowerCase().trim();
+  const faqList = isFisio ? PHYSI_FAQS_FISIO : PHYSI_FAQS_PATIENT;
+
+  let bestMatch: FAQ | null = null;
+  let maxScore = 0;
+
+  for (const faq of faqList) {
+    let score = 0;
+    for (const kw of faq.keywords) {
+      if (normalizedQuery.includes(kw)) {
+        score += kw.length;
+      }
+    }
+    if (score > maxScore) {
+      maxScore = score;
+      bestMatch = faq;
+    }
+  }
+
+  if (bestMatch && maxScore >= 3) {
+    return { question: bestMatch.question, answer: bestMatch.answer };
+  }
+
+  return null;
+}
+
+export const PHYSI_FAQS = PHYSI_FAQS_FISIO;

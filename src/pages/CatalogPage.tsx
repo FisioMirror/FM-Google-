@@ -35,6 +35,7 @@ import {
   CardWithAvatar,
   CardWithImage,
   PremiumCard,
+  StatusChips,
   ChipStatuses,
   DisclosureConfig,
   Placements,

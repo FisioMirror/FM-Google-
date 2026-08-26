@@ -75,7 +75,7 @@ const MASCOT_CONFIG: Record<
  * <MascotAnimation type="greeting" />
  * <MascotAnimation type="scanning" size="md" className="mx-auto mb-4" />
  */
-export default function MascotAnimation({
+export function MascotAnimation({
   type,
   size = 'md',
   alt,
@@ -101,3 +101,5 @@ export default function MascotAnimation({
     </div>
   );
 }
+
+export default MascotAnimation;

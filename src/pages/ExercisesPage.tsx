@@ -32,6 +32,7 @@ const DEFAULT_CLINICAL_EXERCISES: Exercise[] = [
     fase_recuperacion: 'intermedia',
     lado: 'bilateral',
     categoria: 'movilidad',
+    complejidad: 'media',
   },
   {
     id: 'ex-2',
@@ -47,6 +48,7 @@ const DEFAULT_CLINICAL_EXERCISES: Exercise[] = [
     fase_recuperacion: 'inicial',
     lado: 'bilateral',
     categoria: 'fuerza',
+    complejidad: 'baja',
   },
   {
     id: 'ex-3',
@@ -62,6 +64,7 @@ const DEFAULT_CLINICAL_EXERCISES: Exercise[] = [
     fase_recuperacion: 'inicial',
     lado: 'bilateral',
     categoria: 'fuerza',
+    complejidad: 'baja',
   },
   {
     id: 'ex-4',
@@ -77,6 +80,7 @@ const DEFAULT_CLINICAL_EXERCISES: Exercise[] = [
     fase_recuperacion: 'intermedia',
     lado: 'bilateral',
     categoria: 'control motor',
+    complejidad: 'alta',
   },
   {
     id: 'ex-5',
@@ -92,6 +96,7 @@ const DEFAULT_CLINICAL_EXERCISES: Exercise[] = [
     fase_recuperacion: 'inicial',
     lado: 'bilateral',
     categoria: 'movilidad',
+    complejidad: 'baja',
   },
   {
     id: 'ex-6',
@@ -107,6 +112,7 @@ const DEFAULT_CLINICAL_EXERCISES: Exercise[] = [
     fase_recuperacion: 'inicial',
     lado: 'bilateral',
     categoria: 'fuerza',
+    complejidad: 'baja',
   },
 ];
 
@@ -124,6 +130,7 @@ interface Exercise {
   fase_recuperacion: string | null;
   lado: string | null;
   categoria: string | null;
+  complejidad?: 'baja' | 'media' | 'alta' | null;
 }
 
 
@@ -430,124 +437,225 @@ export function ExercisesPage() {
   });
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6 overflow-x-hidden">
-      <div className="flex justify-between items-end">
+    <div className="max-w-7xl mx-auto space-y-8 pb-12">
+      {/* Header */}
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
         <div>
-          <h1 className="font-headline-lg text-headline-lg-mobile lg:text-headline-lg gradient-text-living">Biblioteca de Ejercicios</h1>
-          <p className="text-on-surface-variant font-body-lg">Crea, edita y gestiona ejercicios para tus pacientes.</p>
+          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-teal-600 dark:text-teal-400 mb-1">
+            <MedicalIcon name="exercise" size={16} />
+            <span>Biblioteca Clínica Kinesiológica</span>
+          </div>
+          <h1 className="text-3xl lg:text-4xl font-extrabold tracking-tight text-on-surface">
+            Catálogo de Ejercicios y Biofeedback
+          </h1>
+          <p className="text-sm text-on-surface-variant mt-1">
+            Configura y asigna protocolos de movilidad, fuerza y estabilidad articular con seguimiento AR.
+          </p>
         </div>
+
         {isFisio && (
-        <button onClick={openCreate} className="hidden lg:flex premium-btn bg-primary text-on-primary px-6 py-3 rounded-2xl font-bold shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 items-center gap-2 transition-all">
-          <Icon name="add" size={20} /> Nuevo Ejercicio
-        </button>
+          <button
+            onClick={openCreate}
+            className="px-5 py-2.5 rounded-2xl bg-primary text-on-primary font-bold text-xs hover:bg-primary/90 transition-all shadow-md shadow-primary/20 flex items-center gap-2 self-start lg:self-auto"
+          >
+            <Icon name="add" size={18} />
+            <span>Nuevo Ejercicio</span>
+          </button>
         )}
       </div>
 
-      {/* Floating action button — visible on mobile only */}
+      {/* Floating action button — mobile only */}
       {isFisio && (
-        <button onClick={openCreate} aria-label="Nuevo Ejercicio" className="lg:hidden fixed bottom-6 right-6 z-50 w-14 h-14 rounded-2xl bg-primary text-on-primary shadow-xl shadow-primary/30 hover:scale-105 active:scale-95 flex items-center justify-center transition-all">
+        <button
+          onClick={openCreate}
+          aria-label="Nuevo Ejercicio"
+          className="lg:hidden fixed bottom-6 right-6 z-50 size-14 rounded-2xl bg-primary text-on-primary shadow-xl shadow-primary/30 hover:scale-105 active:scale-95 flex items-center justify-center transition-all"
+        >
           <Icon name="add" size={28} />
         </button>
       )}
 
-      {/* Search + Filters */}
-      <div className="flex flex-col md:flex-row gap-4">
+      {/* Search and Anatomical Filters */}
+      <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 p-2 rounded-3xl bg-surface/60 dark:bg-surface-container-low/40 border border-outline/10">
         <div className="relative flex-1">
-          <Icon name="search" size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-outline" />
+          <Icon name="search" size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-outline" />
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Buscar ejercicios..."
-            className="w-full pl-12 pr-4 py-3 rounded-xl glass-teal border border-outline-variant/30 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
+            placeholder="Buscar por nombre, articulación o grupo muscular..."
+            className="w-full pl-11 pr-4 py-2.5 rounded-2xl bg-surface-container/60 border border-transparent focus:border-teal-500/40 focus:bg-surface text-sm text-on-surface placeholder:text-outline/70 outline-none transition-all"
           />
         </div>
-        <div className="flex items-center gap-2 overflow-x-auto pb-2 hide-scrollbar">
-          {filters.map((f, i) => (
-            <button
-              key={f}
-              onClick={() => setActiveFilter(i)}
-              className={cn(
-                'px-4 py-2 rounded-full font-label-md whitespace-nowrap transition-all',
-                i === activeFilter ? 'bg-primary text-white' : 'bg-surface-container text-on-surface-variant hover:bg-surface-container-high',
-              )}
-            >
-              {f}
-            </button>
-          ))}
+
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0 hide-scrollbar">
+          {filters.map((f, i) => {
+            const count =
+              i === 0
+                ? exercises.length
+                : exercises.filter(
+                    (e) => (e.grupo_muscular ?? e.articulacion)?.toLowerCase() === f.toLowerCase()
+                  ).length;
+            const isSelected = i === activeFilter;
+
+            return (
+              <button
+                key={f}
+                onClick={() => setActiveFilter(i)}
+                className={cn(
+                  'px-3.5 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all flex items-center gap-1.5',
+                  isSelected
+                    ? 'bg-primary text-on-primary shadow-sm'
+                    : 'bg-surface-container/70 text-on-surface-variant hover:bg-surface-container-high'
+                )}
+              >
+                <span>{f}</span>
+                <span
+                  className={cn(
+                    'text-[10px] px-1.5 py-0.2 rounded-full font-bold',
+                    isSelected ? 'bg-white/20 text-white' : 'bg-surface-container-highest text-outline'
+                  )}
+                >
+                  {count}
+                </span>
+              </button>
+            );
+          })}
         </div>
       </div>
 
       {/* Exercise grid */}
       {loading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i} />)}
+          {Array.from({ length: 6 }).map((_, i) => (
+            <SkeletonCard key={i} />
+          ))}
         </div>
       ) : filtered.length === 0 ? (
-        <div className="empty-state-premium flex flex-col items-center justify-center py-16 text-center">
-          <MedicalIcon name="exercise" size={56} className="text-primary/40 mb-4 animate-breathe-icon" />
-          <p className="text-on-surface-variant font-body-lg">No se encontraron ejercicios para tu búsqueda. ¡No te desanimes! Cada esfuerzo te acerca a tu recuperación. Prueba ajustar los filtros o crea un nuevo ejercicio.</p>
+        <div className="p-12 text-center rounded-3xl bg-surface/40 border border-dashed border-outline/20">
+          <MedicalIcon name="exercise" size={48} className="mx-auto text-primary/40 mb-3" />
+          <h3 className="text-base font-bold text-on-surface">No se encontraron ejercicios</h3>
+          <p className="text-xs text-on-surface-variant max-w-sm mx-auto mt-1 mb-4">
+            Intenta con otro término de búsqueda o cambia la categoría anatómica seleccionada.
+          </p>
+          <button
+            onClick={() => {
+              setSearch('');
+              setActiveFilter(0);
+            }}
+            className="px-4 py-2 rounded-xl bg-primary/10 text-primary text-xs font-bold hover:bg-primary/20 transition-colors"
+          >
+            Restablecer búsqueda
+          </button>
         </div>
       ) : (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filtered.map((ex, i) => (
-          <motion.div
-            key={ex.id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.1 }}
-            whileHover={{ y: -6, scale: 1.02 }}
-          >
-            <GlassPanel className="p-6 rounded-3xl group card-glow-hover vibrant-hover">
-              <ExerciseImage src={getExerciseImage(ex.id)} name={ex.nombre} />
-              <p className="text-sm text-on-surface-variant -mt-2 mb-4 line-clamp-2">{ex.descripcion || 'Sin descripción'}</p>
-              <div className="grid grid-cols-3 gap-2 py-4 border-y border-outline-variant/10">
-                <div>
-                  <p className="text-[10px] uppercase text-outline font-bold">Series</p>
-                  <span className="font-bold">{ex.series ?? '-'}</span>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filtered.map((ex, i) => (
+            <motion.div
+              key={ex.id}
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.05 }}
+              whileHover={{ y: -4 }}
+              className="group rounded-3xl p-5 bg-surface/85 dark:bg-surface-container-low/70 border border-outline/15 hover:border-teal-500/40 shadow-sm hover:shadow-lg transition-all flex flex-col justify-between"
+            >
+              <div>
+                <ExerciseImage src={getExerciseImage(ex.id)} name={ex.nombre} />
+
+                <div className="flex items-center justify-between gap-2 mt-3 mb-2">
+                  <h3 className="text-base font-bold text-on-surface group-hover:text-primary transition-colors truncate">
+                    {ex.nombre}
+                  </h3>
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    {ex.complejidad && (
+                      <span className={cn(
+                        'text-[10px] font-bold uppercase px-2 py-0.5 rounded-full border',
+                        ex.complejidad === 'alta'
+                          ? 'bg-amber-500/10 text-amber-600 border-amber-500/20'
+                          : ex.complejidad === 'media'
+                          ? 'bg-blue-500/10 text-blue-600 border-blue-500/20'
+                          : 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20'
+                      )}>
+                        {ex.complejidad}
+                      </span>
+                    )}
+                    <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-600 border border-teal-500/20">
+                      {ex.categoria || 'Movilidad'}
+                    </span>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-[10px] uppercase text-outline font-bold">Repet.</p>
-                  <span className="font-bold">{ex.repeticiones ?? '-'}</span>
-                </div>
-                <div>
-                  <p className="text-[10px] uppercase text-outline font-bold">Grupo</p>
-                  <span className="font-bold text-sm flex items-center gap-1">
-                    {ex.grupo_muscular === 'Hombro' || ex.articulacion === 'hombro' ? (
-                      <MedicalIcon name="shoulder" size={16} className="text-primary" />
-                    ) : ex.grupo_muscular === 'Rodilla' || ex.articulacion === 'rodilla' ? (
-                      <MedicalIcon name="knee" size={16} className="text-primary" />
-                    ) : ex.grupo_muscular === 'Cuello' || ex.articulacion === 'cervical' ? (
-                      <MedicalIcon name="spine" size={16} className="text-primary" />
-                    ) : null}
-                    {ex.grupo_muscular ?? ex.articulacion ?? '-'}
-                  </span>
+
+                <p className="text-xs text-on-surface-variant line-clamp-2 mb-4 leading-relaxed">
+                  {ex.descripcion || 'Ejercicio kinesiológico guiado.'}
+                </p>
+
+                {/* Metrics row */}
+                <div className="grid grid-cols-3 gap-2 p-3 rounded-2xl bg-surface-container/50 border border-outline/5 text-center mb-4">
+                  <div>
+                    <p className="text-[10px] uppercase font-bold text-outline">Series</p>
+                    <p className="text-sm font-extrabold text-on-surface">{ex.series ?? 3}</p>
+                  </div>
+                  <div>
+                    <p className="text-[10px] uppercase font-bold text-outline">Reps</p>
+                    <p className="text-sm font-extrabold text-on-surface">{ex.repeticiones ?? 10}</p>
+                  </div>
+                  <div>
+                    <p className="text-[10px] uppercase font-bold text-outline">Ángulo</p>
+                    <p className="text-sm font-extrabold text-teal-600 dark:text-teal-400">
+                      {ex.angulo_objetivo ? `${ex.angulo_objetivo}°` : '—'}
+                    </p>
+                  </div>
                 </div>
               </div>
-              <button onClick={() => setDescriptionExercise(ex)} className="w-full mt-4 py-2.5 rounded-xl bg-surface-variant/20 text-on-surface-variant font-bold text-sm hover:bg-surface-variant/40 transition-all flex items-center justify-center gap-1.5">
-                <Icon name="menu_book" size={16} /> Ver descripción
-              </button>
-              {isFisio && (
-              <button onClick={() => openAssignModal(ex)} className="w-full mt-2 py-2.5 rounded-xl bg-primary/10 text-primary font-bold text-sm hover:bg-primary/20 transition-all flex items-center justify-center gap-1.5">
-                <Icon name="person_add" size={16} /> Asignar a paciente
-              </button>
-              )}
-              {isFisio && (
-              <div className="flex gap-2 mt-2">
-                <button onClick={() => openEdit(ex)} className="flex-1 py-3 rounded-xl bg-primary/10 text-primary font-bold text-sm hover:bg-primary/20 transition-all flex items-center justify-center gap-1">
-                  <Icon name="edit" size={16} /> Editar
+
+              {/* Action Buttons */}
+              <div className="space-y-2 pt-2 border-t border-outline/10">
+                <button
+                  onClick={() => setDescriptionExercise(ex)}
+                  className="w-full py-2 px-3 rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface text-xs font-bold transition-all flex items-center justify-center gap-1.5"
+                >
+                  <Icon name="menu_book" size={15} />
+                  <span>Ver Guía Anatómica</span>
                 </button>
-                <button onClick={() => cloneExercise(ex)} className="flex-1 py-3 rounded-xl bg-surface-variant/30 text-on-surface-variant font-bold text-sm hover:bg-surface-variant/50 transition-all flex items-center justify-center gap-1">
-                  <Icon name="content_copy" size={16} /> Clonar
-                </button>
-                <button onClick={() => deleteExercise(ex.id)} aria-label="Eliminar ejercicio" className="py-3 px-3 rounded-xl bg-error/10 text-error hover:bg-error/20 transition-all">
-                  <Icon name="delete" size={16} />
-                </button>
+
+                {isFisio && (
+                  <button
+                    onClick={() => openAssignModal(ex)}
+                    className="w-full py-2 px-3 rounded-xl bg-primary text-on-primary hover:bg-primary/90 text-xs font-bold transition-all flex items-center justify-center gap-1.5 shadow-sm"
+                  >
+                    <Icon name="person_add" size={15} />
+                    <span>Asignar a Paciente</span>
+                  </button>
+                )}
+
+                {isFisio && (
+                  <div className="flex gap-2 pt-1">
+                    <button
+                      onClick={() => openEdit(ex)}
+                      className="flex-1 py-2 rounded-xl bg-surface-container/80 hover:bg-primary/10 hover:text-primary text-on-surface-variant text-xs font-bold transition-all flex items-center justify-center gap-1"
+                    >
+                      <Icon name="edit" size={14} />
+                      <span>Editar</span>
+                    </button>
+                    <button
+                      onClick={() => cloneExercise(ex)}
+                      className="flex-1 py-2 rounded-xl bg-surface-container/80 hover:bg-surface-container-high text-on-surface-variant text-xs font-bold transition-all flex items-center justify-center gap-1"
+                    >
+                      <Icon name="content_copy" size={14} />
+                      <span>Clonar</span>
+                    </button>
+                    <button
+                      onClick={() => deleteExercise(ex.id)}
+                      aria-label="Eliminar ejercicio"
+                      className="p-2 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-600 transition-all"
+                    >
+                      <Icon name="delete" size={15} />
+                    </button>
+                  </div>
+                )}
               </div>
-              )}
-            </GlassPanel>
-          </motion.div>
-        ))}
-      </div>
+            </motion.div>
+          ))}
+        </div>
       )}
 
       {/* Create/Edit modal */}

@@ -43,11 +43,11 @@ function PageLoader() {
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
       <motion.div
-        animate={{ scale: [1, 1.15, 1], opacity: [0.5, 1, 0.5] }}
-        transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
-        className="w-14 h-14 rounded-2xl bg-gradient-to-br from-teal-500 to-cyan-500 flex items-center justify-center shadow-lg shadow-teal-500/20"
+        animate={{ scale: [1, 1.08, 1], opacity: [0.7, 1, 0.7] }}
+        transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+        className="w-14 h-14 rounded-2xl bg-teal-50 dark:bg-slate-800 border border-teal-500/20 flex items-center justify-center shadow-lg shadow-teal-500/10 p-2"
       >
-        <span className="text-white font-black text-xl">F</span>
+        <img src="/logo.png" alt="FisioMirror" className="w-full h-full object-contain" />
       </motion.div>
       <div className="flex gap-1.5">
         {[0, 1, 2].map((i) => (

@@ -19,6 +19,9 @@ import MascotAnimation from '../components/ui/MascotAnimation';
 import { AuroraText } from '../components/ui/AuroraText';
 import { BorderBeam } from '../components/ui/BorderBeam';
 import { ConfettiStars } from '../components/ui/ConfettiButton';
+import { UNIFIED_DEMO_PATIENTS } from '../data/unifiedDemoData';
+import { AvatarWithBadge } from '../components/heroui';
+import { ArrowRight, ChevronRight } from 'lucide-react';
 
 interface KpiData {
   activePatients: number;
@@ -351,9 +354,9 @@ export function DashboardFisio() {
 
   const quickActions = [
     { title: 'Nueva Sesión AR', desc: 'Inicia un seguimiento remoto con biofeedback en tiempo real.', icon: 'videocam', color: 'bg-primary', cta: 'Comenzar ahora', route: '/patients' },
-    { title: 'Cargar Paciente', desc: 'Sube historias clínicas o importa perfiles desde el sistema central.', icon: 'person_add', color: 'bg-secondary', cta: 'Importar', route: '/ocr-scanner' },
-    { title: 'Generar Token', desc: 'Crea accesos temporales para nuevos usuarios o pacientes externos.', icon: 'generating_tokens', color: 'bg-tertiary', cta: 'Emitir llave', route: '/tokens' },
-    { title: 'Catálogo UI', desc: 'Explora los 40+ componentes interactivos y cinéticos de la app.', icon: 'auto_awesome', color: 'bg-emerald-600', cta: 'Explorar UI', route: '/catalogo' },
+    { title: 'Cargar Paciente', desc: 'Sube historias clínicas o importa perfiles con OCR inteligente.', icon: 'person_add', color: 'bg-secondary', cta: 'Importar', route: '/ocr-scanner' },
+    { title: 'Generar Token', desc: 'Crea accesos seguros de un solo uso para pacientes.', icon: 'generating_tokens', color: 'bg-tertiary', cta: 'Emitir llave', route: '/tokens' },
+    { title: 'Biblioteca Clínica', desc: 'Explora ejercicios validados y ajusta rangos articulares.', icon: 'fitness_center', color: 'bg-emerald-600', cta: 'Ver ejercicios', route: '/fisio-exercises' },
   ];
 
   const greeting = (() => {
@@ -702,36 +705,93 @@ export function DashboardFisio() {
         </div>
       </GlassPanel>
 
-      {/* Exercises section */}
+      {/* Exercises & active treatments section */}
       <section className="section-bg-cyan relative">
-        <div className="flex items-center gap-3 mb-6 relative z-10">
-          <div className="w-12 h-12 rounded-2xl bg-cyan-500/10 flex items-center justify-center ring-1 ring-cyan-500/20">
-            <Icon name="self_improvement" size={26} className="icon-accent-cyan animate-breathe-icon" />
+        <div className="flex items-center justify-between mb-6 relative z-10">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 rounded-2xl bg-cyan-500/10 flex items-center justify-center ring-1 ring-cyan-500/20">
+              <Icon name="self_improvement" size={26} className="icon-accent-cyan animate-breathe-icon" />
+            </div>
+            <div>
+              <h3 className="font-headline-md text-headline-sm lg:text-headline-md text-on-surface">Pacientes en Tratamiento Activo</h3>
+              <p className="text-xs text-on-surface-variant font-semibold uppercase tracking-wider mt-0.5">Seguimiento y adherencia en tiempo real</p>
+            </div>
           </div>
-          <div>
-            <h3 className="font-headline-md text-headline-sm lg:text-headline-md text-on-surface">Ejercicios Asignados</h3>
-            <p className="text-xs text-on-surface-variant font-semibold uppercase tracking-wider mt-0.5">Rutinas activas</p>
-          </div>
+          <button
+            onClick={() => navigate('/patients')}
+            className="hidden sm:flex items-center gap-1.5 text-xs font-bold text-primary hover:underline"
+          >
+            Ver todos ({UNIFIED_DEMO_PATIENTS.length}) <ChevronRight className="size-4" />
+          </button>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 relative z-10">
-          {realIsEmpty ? (
-            <div className="col-span-full flex flex-col items-center justify-center text-center py-12 gap-3">
-              <Icon name="sports_gymnastics" size={32} className="text-primary/40" />
-              <p className="text-sm text-on-surface-variant leading-relaxed max-w-xs">Aún no has asignado rutinas a tus pacientes. Carga un paciente o crea una rutina para verla aquí.</p>
-            </div>
-          ) : (
-            <div className="col-span-full glass-card p-6 rounded-2xl accent-cyan relative overflow-hidden">
-              <div className="flex items-center justify-between">
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 relative z-10">
+          {UNIFIED_DEMO_PATIENTS.slice(0, 3).map((p, idx) => {
+            const patientName = p.name || 'Paciente';
+            const initials = patientName.split(' ').filter(Boolean).map((n) => n[0]).join('').slice(0, 2) || 'PA';
+            const isOnline = p.status === 'Activo';
+            const isWarning = p.status === 'Requiere Revisión' || p.status === 'En pausa';
+
+            return (
+              <motion.div
+                key={p.id}
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: idx * 0.1 }}
+                whileHover={{ y: -4 }}
+                onClick={() => navigate(`/paciente/${p.id}`)}
+                className="group p-5 rounded-3xl bg-surface/80 dark:bg-surface-container-low/60 border border-outline/15 hover:border-teal-500/40 shadow-sm hover:shadow-lg transition-all cursor-pointer flex flex-col justify-between"
+              >
                 <div>
-                  <h4 className="font-title-md text-title-md text-on-surface">Rutinas activas</h4>
-                  <p className="text-sm text-on-surface-variant mt-1">{kpi.activePatients} paciente(s) con rutinas asignadas</p>
+                  <div className="flex items-start justify-between gap-3 mb-3">
+                    <div className="flex items-center gap-3">
+                      <AvatarWithBadge
+                        fallback={initials}
+                        status={isOnline ? 'online' : isWarning ? 'warning' : 'offline'}
+                      />
+                      <div className="min-w-0">
+                        <h4 className="text-sm font-bold text-on-surface group-hover:text-primary transition-colors truncate">
+                          {patientName}
+                        </h4>
+                        <p className="text-xs text-on-surface-variant truncate">{p.diagnosis || p.patologia || 'En tratamiento'}</p>
+                      </div>
+                    </div>
+                    <span className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-full border ${
+                      p.status === 'Activo'
+                        ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20'
+                        : p.status === 'Requiere Revisión'
+                        ? 'bg-amber-500/10 text-amber-600 border-amber-500/20'
+                        : 'bg-teal-500/10 text-teal-600 border-teal-500/20'
+                    }`}>
+                      {p.status}
+                    </span>
+                  </div>
+
+                  <div className="space-y-2 mt-4 pt-3 border-t border-outline/10 text-xs">
+                    <div className="flex justify-between items-center text-on-surface-variant">
+                      <span>Adherencia</span>
+                      <span className="font-bold text-on-surface">{p.adherence || p.progress || 0}%</span>
+                    </div>
+                    <div className="h-2 w-full rounded-full bg-surface-container-highest overflow-hidden">
+                      <div
+                        className="h-full rounded-full bg-gradient-to-r from-teal-500 to-emerald-500"
+                        style={{ width: `${p.adherence || p.progress || 0}%` }}
+                      />
+                    </div>
+                    <div className="flex justify-between items-center text-[11px] text-outline pt-1">
+                      <span>{p.sessionsCompleted || 0}/{p.sessionsTotal || 0} sesiones</span>
+                      <span>{p.routine || 'Rutina activa'}</span>
+                    </div>
+                  </div>
                 </div>
-                <button onClick={() => navigate('/patients')} className="px-4 py-2 rounded-xl bg-primary/10 text-primary font-bold text-sm hover:bg-primary/20 transition-colors">
-                  Ver pacientes
-                </button>
-              </div>
-            </div>
-          )}
+
+                <div className="mt-4 pt-3 border-t border-outline/10 flex items-center justify-between text-xs font-semibold text-primary">
+                  <span>Ver expediente</span>
+                  <ArrowRight className="size-4 group-hover:translate-x-1 transition-transform" />
+                </div>
+              </motion.div>
+            );
+          })}
         </div>
       </section>
 

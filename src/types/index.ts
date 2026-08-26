@@ -44,6 +44,7 @@ export interface Profile {
   tutor_nombre?: string | null;
   tutor_telefono?: string | null;
   tutor_email?: string | null;
+  consentimiento?: boolean | null;
 }
 
 export interface Ejercicio {
@@ -55,6 +56,7 @@ export interface Ejercicio {
   angulo_objetivo: number;
   articulacion: 'hombro' | 'codo' | 'rodilla' | 'cadera' | 'tobillo';
   lado: 'izquierdo' | 'derecho' | 'ambos';
+  complejidad?: 'baja' | 'media' | 'alta';
 }
 
 export interface ExerciseSession {

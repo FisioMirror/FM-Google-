@@ -366,45 +366,78 @@ export function PatientDetailPage() {
   }
 
   return (
-    <div className="space-y-6 overflow-x-hidden">
-      <div className="flex flex-col md:flex-row justify-between items-start gap-6">
+    <div className="space-y-8 max-w-7xl mx-auto pb-12">
+      {/* Patient Header Section */}
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 p-6 rounded-3xl bg-surface/85 dark:bg-surface-container-low/70 border border-outline/15 shadow-sm">
         <div className="flex items-center gap-4">
-          <div className="w-16 h-16 rounded-2xl bg-primary-container text-on-primary-container flex items-center justify-center text-2xl font-bold">
+          <div className="size-16 rounded-2xl bg-gradient-to-br from-teal-500 to-emerald-600 text-white flex items-center justify-center text-2xl font-black shadow-md shadow-teal-500/20">
             {patient.full_name.charAt(0)}
           </div>
           <div>
-            <h1 className="font-headline-lg text-headline-lg-mobile lg:text-headline-lg gradient-text-editorial">{patient.full_name}</h1>
-            <p className="text-on-surface-variant">{patient.diagnostico || 'Sin diagnóstico registrado'}</p>
-            <div className="flex items-center gap-3 mt-2">
-              <span className="text-xs font-bold text-outline">ID: #{patient.id.slice(0, 8)}</span>
-              {daysSinceLast !== null && (
-                <span className={`text-xs px-2 py-1 rounded-full font-bold ${daysSinceLast > 7 ? 'bg-error-container text-on-error-container' : 'bg-success/15 text-success'}`}>
-                  {daysSinceLast > 7 ? `Hace ${daysSinceLast} días` : 'Sesión reciente'}
+            <div className="flex items-center gap-2">
+              <h1 className="text-2xl lg:text-3xl font-extrabold tracking-tight text-on-surface">
+                {patient.full_name}
+              </h1>
+              <span className="text-xs px-2.5 py-0.5 rounded-full font-bold bg-primary/10 text-primary border border-primary/20">
+                {adherenceLevel}
+              </span>
+            </div>
+            <p className="text-sm text-on-surface-variant font-medium mt-0.5">
+              {patient.diagnostico || patient.patologia || 'Sin diagnóstico registrado'}
+            </p>
+            <div className="flex items-center gap-3 mt-2 text-xs text-outline">
+              <span className="font-bold">ID: #{patient.id.slice(0, 8)}</span>
+              <span>•</span>
+              {daysSinceLast !== null ? (
+                <span className={daysSinceLast > 7 ? 'text-amber-600 font-bold' : 'text-emerald-600 font-bold'}>
+                  {daysSinceLast > 7 ? `Inactivo hace ${daysSinceLast} días` : 'Sesión reciente'}
                 </span>
+              ) : (
+                <span>Nuevo ingreso</span>
               )}
-              <span className="text-xs px-2 py-1 rounded-full font-bold bg-primary/10 text-primary">{adherenceLevel}</span>
             </div>
           </div>
         </div>
-        <div className="flex flex-wrap gap-2">
-          <button onClick={() => setShowOcrUpdateModal(true)} className="bg-teal-600 text-white px-4 py-3 rounded-xl font-bold flex items-center gap-2 hover:bg-teal-800 transition-all min-h-[44px] shadow-md">
-            <Icon name="upload_file" size={20} /> Actualizar Expediente
+
+        {/* Action Buttons */}
+        <div className="flex flex-wrap items-center gap-2.5">
+          <button
+            onClick={() => setShowOcrUpdateModal(true)}
+            className="px-4 py-2.5 rounded-2xl bg-surface-container hover:bg-surface-container-high border border-outline/10 text-on-surface text-xs font-bold transition-all flex items-center gap-2"
+          >
+            <Icon name="upload_file" size={16} className="text-primary" />
+            <span>Actualizar con OCR</span>
           </button>
-          <button onClick={() => navigate('/ar-mirror')} className="premium-btn bg-primary text-on-primary px-4 py-3 rounded-xl font-bold flex items-center gap-2 hover:scale-105 active:scale-95 transition-all">
-            <Icon name="videocam" size={18} /> Iniciar Sesión AR
+
+          <button
+            onClick={() => setShowPDFModal(true)}
+            className="px-4 py-2.5 rounded-2xl bg-surface-container hover:bg-surface-container-high border border-outline/10 text-on-surface text-xs font-bold transition-all flex items-center gap-2"
+          >
+            <Icon name="picture_as_pdf" size={16} />
+            <span>Exportar PDF</span>
           </button>
-          <button onClick={() => setShowPDFModal(true)} className="bg-surface-container text-on-surface px-4 py-3 rounded-xl font-bold flex items-center gap-2 hover:bg-surface-container-high transition-all">
-            <Icon name="picture_as_pdf" size={18} /> Exportar Reporte
+
+          <button
+            onClick={() => navigate(`/ar-mirror?patientId=${patient.id}`)}
+            className="px-5 py-2.5 rounded-2xl bg-primary text-on-primary hover:bg-primary/90 text-xs font-bold transition-all shadow-md shadow-primary/20 flex items-center gap-2"
+          >
+            <Icon name="videocam" size={16} />
+            <span>Iniciar Sesión AR</span>
           </button>
         </div>
       </div>
 
-      <div className="flex gap-2 border-b border-outline-variant/20 overflow-x-auto hide-scrollbar">
+      {/* Navigation Tabs */}
+      <div className="flex gap-1.5 p-1 rounded-2xl bg-surface-container/60 border border-outline/10 overflow-x-auto hide-scrollbar">
         {tabs.map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`px-4 py-3 font-bold whitespace-nowrap transition-all border-b-2 ${activeTab === tab.id ? 'border-primary text-primary' : 'border-transparent text-on-surface-variant hover:text-on-surface'}`}
+            className={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all ${
+              activeTab === tab.id
+                ? 'bg-surface text-primary shadow-xs'
+                : 'text-on-surface-variant hover:text-on-surface'
+            }`}
           >
             {tab.label}
           </button>

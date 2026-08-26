@@ -1,8 +1,12 @@
 import { useState, useEffect, type ReactNode } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Mail, FileText, Shield, Code2, Palette, Heart, BookOpen, HelpCircle, Smartphone, MessageCircle, Phone } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import { Mail, FileText, Shield, Code2, Palette, Heart, BookOpen, HelpCircle, Smartphone, MessageCircle, Phone, Globe, Cpu, Volume2 } from 'lucide-react';
 import { useTheme, FONT_SIZE_LEVELS } from '../context/ThemeContext';
 import { useAuthStore } from '../stores/authStore';
+import { useMediaPipeModel, type ModelPreference } from '../hooks/useMediaPipeModel';
+import { changeAppLanguage } from '../i18n';
+import { talkBack } from '../lib/talkback';
 import { GlassPanel } from '../components/ui/Glass';
 import { Icon } from '../components/ui/Icon';
 import { AnimatedTabs } from '../components/ui/AnimatedTabs';
@@ -49,6 +53,8 @@ export function SettingsPage() {
   const { theme, toggleTheme, zoom, setZoom, fontSize, setFontSize, resetDefaults } = useTheme();
   const { user, signOut } = useAuthStore();
   const { show } = useGlassToast();
+  const { i18n } = useTranslation();
+  const { preference: arPreference, setPreference: setArPreference, activeModel: currentArModel } = useMediaPipeModel();
 
   /* ── Persistent settings ────────────────────────────────────── */
   const [reduceMotion, setReduceMotion] = usePersistentBool('fisio-reduce-motion', false);
@@ -94,7 +100,13 @@ export function SettingsPage() {
 
   useEffect(() => {
     const cl = document.documentElement.classList;
-    if (talkback) { cl.add('talkback'); } else { cl.remove('talkback'); }
+    if (talkback) {
+      cl.add('talkback');
+      talkBack.setEnabled(true);
+    } else {
+      cl.remove('talkback');
+      talkBack.setEnabled(false);
+    }
   }, [talkback]);
 
   useEffect(() => {
@@ -244,6 +256,90 @@ export function SettingsPage() {
             </div>
           </div>
           <Toggle value={glassmorphism} onChange={setGlassmorphism} label="Glassmorfismo" />
+        </div>
+      </GlassPanel>
+
+      {/* Idioma / Language */}
+      <GlassPanel className="p-6 rounded-2xl relative overflow-hidden">
+        <div className="blob-blue absolute -top-12 -right-12 w-32 h-32 opacity-20 pointer-events-none" />
+        <div className="relative">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center">
+              <Globe size={24} className="text-blue-500" />
+            </div>
+            <div>
+              <p className="font-semibold text-on-surface">Idioma / Language</p>
+              <p className="text-sm text-on-surface-variant">Selecciona tu idioma preferido para la interfaz</p>
+            </div>
+          </div>
+          <div className="grid grid-cols-3 gap-3">
+            {[
+              { code: 'es', label: 'Español', flag: '🇪🇸' },
+              { code: 'en', label: 'English', flag: '🇺🇸' },
+              { code: 'pt', label: 'Português', flag: '🇧🇷' },
+            ].map((lang) => (
+              <button
+                key={lang.code}
+                onClick={() => {
+                  changeAppLanguage(lang.code as 'es' | 'en' | 'pt');
+                  show(`Idioma cambiado a ${lang.label}`, 'success');
+                }}
+                className={cn(
+                  'flex items-center justify-center gap-2 py-3 rounded-xl font-semibold text-sm transition-all duration-200 border',
+                  (i18n.language || 'es').startsWith(lang.code)
+                    ? 'bg-primary text-on-primary border-primary shadow-glow-primary'
+                    : 'bg-surface-container-low text-on-surface-variant border-outline-variant/30 hover:bg-surface-container-high'
+                )}
+              >
+                <span className="text-lg">{lang.flag}</span>
+                <span>{lang.label}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      </GlassPanel>
+
+      {/* Modelo de Visión AR Adaptativo */}
+      <GlassPanel className="p-6 rounded-2xl relative overflow-hidden">
+        <div className="blob-teal absolute -top-12 -right-12 w-32 h-32 opacity-20 pointer-events-none" />
+        <div className="relative">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-12 h-12 rounded-xl bg-teal-500/10 flex items-center justify-center">
+              <Cpu size={24} className="text-primary" />
+            </div>
+            <div>
+              <p className="font-semibold text-on-surface">Motor de Visión AR (MediaPipe)</p>
+              <p className="text-sm text-on-surface-variant">
+                Modo activo: <span className="font-bold text-primary capitalize">{currentArModel}</span> (FPS óptimo)
+              </p>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+            {[
+              { id: 'auto', title: 'Automático', desc: 'Recomendado según dispositivo' },
+              { id: 'pose', title: 'Pose (Rápido)', desc: '33 puntos corporales (60 FPS)' },
+              { id: 'holistic', title: 'Holistic (Preciso)', desc: 'Cuerpo + Manos + Rostro' },
+            ].map((m) => (
+              <button
+                key={m.id}
+                onClick={() => {
+                  setArPreference(m.id as ModelPreference);
+                  show(`Modelo de visión configurado a ${m.title}`, 'success');
+                }}
+                className={cn(
+                  'flex flex-col items-start p-3.5 rounded-xl text-left transition-all border',
+                  arPreference === m.id
+                    ? 'bg-primary text-on-primary border-primary shadow-glow-primary'
+                    : 'bg-surface-container-low text-on-surface border-outline-variant/30 hover:bg-surface-container-high'
+                )}
+              >
+                <span className="font-semibold text-sm">{m.title}</span>
+                <span className={cn('text-xs mt-0.5', arPreference === m.id ? 'text-on-primary/80' : 'text-on-surface-variant')}>
+                  {m.desc}
+                </span>
+              </button>
+            ))}
+          </div>
         </div>
       </GlassPanel>
     </div>

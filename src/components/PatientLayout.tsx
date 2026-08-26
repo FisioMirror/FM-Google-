@@ -25,7 +25,6 @@ const primaryNavItems = [
 
 const secondaryNavItems = [
   { to: '/profile', label: 'Perfil', icon: 'person', accent: 'teal' },
-  { to: '/catalog', label: 'Catálogo UI', icon: 'auto_awesome', accent: 'cyan' },
   { to: '/settings', label: 'Configuración', icon: 'settings', accent: 'teal' },
 ];
 
@@ -37,7 +36,6 @@ const breadcrumbMap: Record<string, string> = {
   '/stats': 'Progreso',
   '/ai-assistant': 'Physi',
   '/profile': 'Perfil',
-  '/catalog': 'Catálogo UI',
   '/settings': 'Configuración',
 };
 
