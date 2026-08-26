@@ -1,0 +1,11 @@
+{
+  "name": "FisioMirror",
+  "description": "Plataforma de tele-rehabilitación con espejo de realidad aumentada para fisioterapia en casa, seguimiento de pacientes y análisis biomecánico con IA.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
