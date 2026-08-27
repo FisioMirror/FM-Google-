@@ -5,7 +5,7 @@ let configuredUrl = import.meta.env.VITE_SUPABASE_URL as string | undefined;
 let configuredAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined;
 
 if (!configuredUrl || configuredUrl.includes('knbgeddxslrtfkhcohgb')) {
-  console.warn('⚠️ Detectadas credenciales antiguas. Usando respaldo de seguridad.');
+  console.warn('[FisioMirror] Detectadas credenciales antiguas. Usando respaldo de seguridad.');
   configuredUrl = SUPABASE_FALLBACK.url;
   configuredAnonKey = SUPABASE_FALLBACK.anonKey;
 }

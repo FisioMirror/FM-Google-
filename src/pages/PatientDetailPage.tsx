@@ -11,8 +11,10 @@ import { useToast } from '../components/ui/ToastProvider';
 import { PDFExportModal } from '../components/ui/PDFExportModal';
 import { ReassignRoutineModal } from '../components/ReassignRoutineModal';
 import { runAIJob, ocrUpdatePatient, fileToBase64 } from '../lib/ai';
+import { formatAIReport } from '../lib/formatReport';
 import { useAuthStore } from '../stores/authStore';
 import { getUnifiedPatientById } from '../data/unifiedDemoData';
+import { isValidUUID } from '../lib/utils';
 
 interface SessionRow {
   id: string;
@@ -109,8 +111,48 @@ export function PatientDetailPage() {
   const loadPatient = async (patientId: string) => {
     setLoading(true);
     const demoPatient = getUnifiedPatientById(patientId);
+    const isRealUUID = isValidUUID(patientId);
 
     try {
+      if (!isRealUUID) {
+        if (demoPatient) {
+          setPatient({
+            id: demoPatient.id,
+            full_name: demoPatient.name,
+            email: demoPatient.email,
+            diagnostico: demoPatient.diagnosis,
+            patologia: demoPatient.patologia,
+            telefono: demoPatient.phone,
+            tipo_sangre: demoPatient.bloodType,
+            ocupacion: demoPatient.occupation,
+            nivel_actividad: demoPatient.activityLevel,
+            estatura_cm: demoPatient.heightCm,
+            peso_kg: demoPatient.weightKg,
+            extremidad_afectada: demoPatient.affectedLimb,
+            rom_objetivo: demoPatient.targetRom,
+            frecuencia_sesiones: demoPatient.frequency,
+            medico_remitente: demoPatient.referringDoctor,
+            contacto_emergencia_nombre: demoPatient.emergencyContact.name,
+            contacto_emergencia_telefono: demoPatient.emergencyContact.phone,
+            fecha_nacimiento: '1990-05-14',
+            documento_identidad: demoPatient.fmId,
+            es_menor_edad: false,
+            diagnostico_secundario: null,
+            medicamentos_actuales: null,
+            alergias: null,
+            enfermedades_cronicas: null,
+            lesiones_previas: null,
+            tutor_nombre: null,
+            tutor_telefono: null,
+            tutor_email: null,
+          } as unknown as PatientProfile);
+          setSessions(demoPatient.sessions as unknown as SessionRow[]);
+          setExercises(demoPatient.exercises as unknown as ExerciseRow[]);
+        }
+        setLoading(false);
+        return;
+      }
+
       const { data: profile } = await supabase
         .from('profiles')
         .select(`
@@ -282,6 +324,18 @@ export function PatientDetailPage() {
 
   const loadRoutineHistory = async () => {
     if (!id) return;
+    if (!isValidUUID(id)) {
+      setRoutineHistory([
+        {
+          id: 'demo-routine-1',
+          nombre: 'Rutina Fase I - Movilidad Articular',
+          descripcion: 'Rutina asignada para incremento de rango de movimiento',
+          ejercicios: exercises,
+        },
+      ]);
+      setShowRoutineHistory(true);
+      return;
+    }
     try {
       const { data } = await supabase
         .from('rutinas')
@@ -297,6 +351,11 @@ export function PatientDetailPage() {
 
   const handleReassignRoutine = async (mode: 'replace' | 'additional') => {
     if (!id || !user?.id) return;
+    if (!isValidUUID(id) || !isValidUUID(user.id)) {
+      toast.success(mode === 'replace' ? 'Rutina anterior archivada y nueva rutina activa (Modo Demo)' : 'Rutina adicional creada (Modo Demo)');
+      setShowReassignModal(false);
+      return;
+    }
     try {
       if (mode === 'replace') {
         const { error: archiveErr } = await supabase
@@ -566,7 +625,9 @@ export function PatientDetailPage() {
                     <Spinner size={16} className="text-on-primary-container" /> Analizando datos del paciente...
                   </div>
                 ) : aiInsight ? (
-                  <p className="text-sm text-on-primary-container/90 leading-relaxed">{aiInsight}</p>
+                  <div className="text-sm text-on-primary-container/90 leading-relaxed mt-2 bg-white/10 p-4 rounded-xl backdrop-blur-sm border border-white/10">
+                    {formatAIReport(aiInsight)}
+                  </div>
                 ) : (
                   <p className="text-sm text-on-primary-container/80">Genera un insight basado en los datos reales de {patient.full_name}.</p>
                 )}
@@ -909,6 +970,14 @@ export function PatientDetailPage() {
                       else updates[dbField] = newValue;
                     }
                     updates['updated_at'] = new Date().toISOString();
+                    if (!isValidUUID(patient.id)) {
+                      setPatient((prev) => prev ? { ...prev, ...updates } : null);
+                      toast.success('Expediente actualizado en memoria (Modo Demo)');
+                      setShowOcrUpdateModal(false);
+                      setOcrSuggestedChanges(null);
+                      setOcrUpdateFile(null);
+                      return;
+                    }
                     try {
                       const { error } = await supabase.from('profiles').update(updates).eq('id', patient.id);
                       if (error) {

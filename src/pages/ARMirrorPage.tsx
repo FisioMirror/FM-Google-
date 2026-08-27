@@ -7,6 +7,8 @@ import { useAuthStore } from '../stores/authStore';
 import { supabase } from '../lib/supabase';
 import { celebrateSession } from '../lib/confetti';
 import { usePoseDetection } from '../hooks/usePoseDetection';
+import { isValidUUID } from '../lib/utils';
+import { speakHumanVoice } from '../lib/humanVoice';
 
 // Rep completion particle burst
 function repParticleBurst() {
@@ -103,18 +105,15 @@ export function ARMirrorPage() {
   const speak = (text: string) => {
     if (volumeLevel === 'muted') return;
     const now = Date.now();
-    if (now - lastSpokenRef.current < 3000) return;
+    if (now - lastSpokenRef.current < 2500) return;
     lastSpokenRef.current = now;
-    try {
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'es-ES';
-      utterance.rate = volumeLevel === 'low' ? 0.9 : 1.1;
-      utterance.volume = volumeLevel === 'low' ? 0.4 : 1.0;
-      window.speechSynthesis.cancel();
-      window.speechSynthesis.speak(utterance);
-    } catch {
-      // SpeechSynthesis not available
-    }
+    
+    speakHumanVoice(text, {
+      rate: volumeLevel === 'low' ? 0.94 : 1.0,
+      volume: volumeLevel === 'low' ? 0.5 : 1.0,
+      pitch: 1.02,
+      interrupt: true,
+    });
   };
 
   // Timer
@@ -249,32 +248,61 @@ export function ARMirrorPage() {
       const targetTotal = TARGET_REPS * TOTAL_SETS;
       const adherencia = targetTotal > 0 ? Math.min(100, Math.round((repCount * currentSet / targetTotal) * 100)) : 0;
 
-      const { data: sessionData, error: sessionError } = await supabase.from('sesiones_completadas').insert({
-        paciente_id: user.id,
-        ejercicio_nombre: exerciseName,
-        duracion_segundos: timer,
-        repeticiones: repCount,
-        calidad_ejecucion: qualityScore,
-        calidad_promedio: qualityScore,
-        ejercicios: ejerciciosData,
-        adherencia: adherencia,
-        notas: aiFeedbackRef.current,
-        compensaciones_detectadas: compensation ? { tipo: compensation } : null,
-        dolor_reportado: reportData?.dolor_despues ?? null,
-      }).select('id').single();
+      const isRealUser = isValidUUID(user.id);
 
-      if (sessionError) throw sessionError;
-
-      if (reportData && sessionData?.id) {
-        const { error: reportError } = await supabase.from('post_session_reports').insert({
+      if (isRealUser) {
+        const { data: sessionData, error: sessionError } = await supabase.from('sesiones_completadas').insert({
           paciente_id: user.id,
-          sesion_id: sessionData.id,
-          dolor_antes: reportData.dolor_antes,
-          dolor_despues: reportData.dolor_despues,
-          fatiga_nivel: reportData.fatiga,
-          comentario: reportData.comentario || null,
-        });
-        if (reportError) console.error('Error saving pain report:', reportError.message);
+          ejercicio_nombre: exerciseName,
+          duracion_segundos: timer,
+          repeticiones: repCount,
+          calidad_ejecucion: qualityScore,
+          calidad_promedio: qualityScore,
+          ejercicios: ejerciciosData,
+          adherencia: adherencia,
+          notas: aiFeedbackRef.current,
+          compensaciones_detectadas: compensation ? { tipo: compensation } : null,
+          dolor_reportado: reportData?.dolor_despues ?? null,
+        }).select('id').single();
+
+        if (sessionError) throw sessionError;
+
+        if (reportData && sessionData?.id) {
+          const { error: reportError } = await supabase.from('post_session_reports').insert({
+            paciente_id: user.id,
+            sesion_id: sessionData.id,
+            dolor_antes: reportData.dolor_antes,
+            dolor_despues: reportData.dolor_despues,
+            fatiga_nivel: reportData.fatiga,
+            comentario: reportData.comentario || null,
+          });
+          if (reportError) console.error('Error saving pain report:', reportError.message);
+        }
+      } else {
+        // Modo demostración: guardar la sesión localmente sin error de UUID
+        try {
+          const demoSessionRecord = {
+            id: `demo-session-${Date.now()}`,
+            paciente_id: user.id,
+            fecha: new Date().toISOString(),
+            ejercicio_nombre: exerciseName,
+            duracion_segundos: timer,
+            repeticiones: repCount,
+            calidad_ejecucion: qualityScore,
+            calidad_promedio: qualityScore,
+            ejercicios: ejerciciosData,
+            adherencia: adherencia,
+            notas: aiFeedbackRef.current,
+            compensaciones_detectadas: compensation ? { tipo: compensation } : null,
+            dolor_reportado: reportData?.dolor_despues ?? null,
+          };
+          const existingDemoRaw = localStorage.getItem('fisiomirror_demo_sessions');
+          const existingDemo = existingDemoRaw ? JSON.parse(existingDemoRaw) : [];
+          existingDemo.unshift(demoSessionRecord);
+          localStorage.setItem('fisiomirror_demo_sessions', JSON.stringify(existingDemo));
+        } catch {
+          // Ignorar fallo de almacenamiento local
+        }
       }
 
       toast.success('Sesión guardada correctamente');

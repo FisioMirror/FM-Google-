@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { Download, Loader2, CheckCircle2, RotateCcw } from 'lucide-react';
 
 const CIRCUMFERENCE = 314.16;
 
@@ -42,12 +43,16 @@ const RingToBar = () => {
       <div className="w-52 h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
         <div className="h-full bg-gradient-to-r from-teal-500 to-emerald-500 rounded-full transition-all duration-100" style={{ width: `${progress}%` }} />
       </div>
-      <button className="px-6 py-3 bg-teal-500 text-white rounded-full font-semibold disabled:opacity-50" onClick={startSimulation} disabled={progressState === 'running'}>
-        {progressState === 'idle' && '🚀 Simular Descarga'}
-        {progressState === 'running' && '⏳ Descargando...'}
-        {progressState === 'complete' && '✅ Descarga Completa'}
+      <button className="flex items-center gap-2 px-6 py-3 bg-teal-500 text-white rounded-full font-semibold disabled:opacity-50" onClick={startSimulation} disabled={progressState === 'running'}>
+        {progressState === 'idle' && <><Download size={18} /> <span>Simular Descarga</span></>}
+        {progressState === 'running' && <><Loader2 size={18} className="animate-spin" /> <span>Descargando...</span></>}
+        {progressState === 'complete' && <><CheckCircle2 size={18} /> <span>Descarga Completa</span></>}
       </button>
-      {progressState === 'complete' && <button className="px-4 py-2 border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 rounded-full" onClick={resetProgress}>🔄 Reiniciar</button>}
+      {progressState === 'complete' && (
+        <button className="flex items-center gap-2 px-4 py-2 border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 rounded-full text-sm font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" onClick={resetProgress}>
+          <RotateCcw size={16} /> <span>Reiniciar</span>
+        </button>
+      )}
     </div>
   );
 };

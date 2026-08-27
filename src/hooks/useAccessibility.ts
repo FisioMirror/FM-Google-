@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { speakHumanVoice, stopHumanVoice } from '../lib/humanVoice';
 
 export interface AccessibilitySettings {
   talkback: boolean;
@@ -47,16 +48,15 @@ export function useAccessibility() {
   }, []);
 
   const speak = useCallback((text: string) => {
-    if (!settings.talkback || typeof speechSynthesis === 'undefined') return;
-    speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'es-ES';
-    utterance.rate = 0.95;
-    speechSynthesis.speak(utterance);
-  }, [settings.talkback]);
+    speakHumanVoice(text, {
+      rate: 0.98,
+      pitch: 1.02,
+      interrupt: true,
+    });
+  }, []);
 
   const stopSpeaking = useCallback(() => {
-    if (typeof speechSynthesis !== 'undefined') speechSynthesis.cancel();
+    stopHumanVoice();
   }, []);
 
   return { settings, update, speak, stopSpeaking };

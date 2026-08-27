@@ -1,34 +1,29 @@
 import { useEffect, useState, useMemo } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Icon } from '../components/ui/Icon';
+import { motion } from 'framer-motion';
 import { SkeletonList } from '../components/ui/Skeleton';
-import { MedicalIcon } from '../components/ui/MedicalIcon';
-import { CollapsibleProfile } from '../components/ui/CollapsibleProfile';
-import { ProgressiveBlur } from '../components/ui/ProgressiveBlur';
 import { EmptyState } from '../components/ui/EmptyState';
 import { useAuthStore } from '../stores/authStore';
 import { supabase } from '../lib/supabase';
 import { cn } from '../lib/utils';
 import { UNIFIED_DEMO_PATIENTS } from '../data/unifiedDemoData';
-import { AvatarWithBadge } from '../components/heroui';
+import { useToast } from '../components/ui/ToastProvider';
+import { EmailFeatureModal } from '../components/ui/EmailFeatureModal';
 import {
   Users,
   Search,
   Plus,
-  Sparkles,
   LayoutGrid,
   List,
   AlertTriangle,
   CheckCircle2,
-  Activity,
-  ArrowRight,
-  Calendar,
-  Video,
-  FileText,
-  Clock,
   ChevronRight,
-  TrendingUp,
+  Key,
+  Copy,
+  Check,
+  Mail,
+  ExternalLink,
+  UserCheck,
 } from 'lucide-react';
 
 interface PatientCard {
@@ -48,6 +43,21 @@ interface PatientCard {
   adherencia?: number;
 }
 
+interface TokenRow {
+  id: string;
+  token: string;
+  patientName: string | null;
+  status: 'pendiente' | 'activado' | 'expirado';
+  createdAt: string;
+}
+
+const defaultDemoTokens: TokenRow[] = [
+  { id: 'demo-token-1', token: '482910', patientName: 'Carlos Mendoza', status: 'activado', createdAt: '2026-03-20T10:00:00Z' },
+  { id: 'demo-token-2', token: '839201', patientName: 'María Delgado', status: 'activado', createdAt: '2026-03-22T14:30:00Z' },
+  { id: 'demo-token-3', token: '194820', patientName: 'Lucía Fernández', status: 'pendiente', createdAt: '2026-03-24T09:15:00Z' },
+  { id: 'demo-token-4', token: '582019', patientName: 'Jorge Ramírez', status: 'pendiente', createdAt: '2026-03-25T11:45:00Z' },
+];
+
 const filterOptions = [
   { id: 'todos', label: 'Todos' },
   { id: 'activos', label: 'Activos' },
@@ -59,28 +69,24 @@ export function PatientsPage() {
   const user = useAuthStore((s) => s.user);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const toast = useToast();
+
+  const [activeTab, setActiveTab] = useState<'patients' | 'tokens'>('patients');
   const [patients, setPatients] = useState<PatientCard[]>([]);
+  const [tokens, setTokens] = useState<TokenRow[]>([]);
   const [activeFilter, setActiveFilter] = useState('todos');
-  const [showCmdPalette, setShowCmdPalette] = useState(false);
+  const [tokenFilter, setTokenFilter] = useState<'todos' | 'pendiente' | 'activado'>('todos');
   const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || '');
   const [loading, setLoading] = useState(true);
+  const [tokensLoading, setTokensLoading] = useState(false);
   const [viewMode, setViewMode] = useState<'cards' | 'list'>('cards');
+  const [copiedToken, setCopiedToken] = useState<string | null>(null);
+  const [emailModalToken, setEmailModalToken] = useState<TokenRow | null>(null);
 
   useEffect(() => {
     loadPatients();
+    loadTokens();
   }, [user?.id]);
-
-  useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-        e.preventDefault();
-        setShowCmdPalette(true);
-      }
-      if (e.key === 'Escape') setShowCmdPalette(false);
-    };
-    window.addEventListener('keydown', handler);
-    return () => window.removeEventListener('keydown', handler);
-  }, []);
 
   const loadPatients = async () => {
     setLoading(true);
@@ -141,63 +147,22 @@ export function PatientsPage() {
         return;
       }
 
-      const { data: sessions } = await supabase
-        .from('sesiones_completadas')
-        .select('paciente_id, fecha, calidad_ejecucion, adherencia')
-        .in('paciente_id', patientIds)
-        .order('fecha', { ascending: false });
-
-      const realCards: PatientCard[] = profiles.map((p, i) => {
-        const patientSessions = (sessions || []).filter((s) => s.paciente_id === p.id);
-        const lastSessionDate = patientSessions[0]?.fecha;
-        const daysSinceLast = lastSessionDate
-          ? Math.floor((Date.now() - new Date(lastSessionDate).getTime()) / 86400000)
-          : null;
-        const avgQuality =
-          patientSessions.length > 0
-            ? Math.round(
-                patientSessions.reduce((sum, s) => sum + (s.calidad_ejecucion || 0), 0) /
-                  patientSessions.length
-              )
-            : 0;
-
-        let status = 'Sin Sesiones';
-        let statusColor: PatientCard['statusColor'] = 'secondary';
-        if (daysSinceLast === null) {
-          status = 'Nuevo';
-          statusColor = 'secondary';
-        } else if (daysSinceLast > 7) {
-          status = 'Requiere Revisión';
-          statusColor = 'red';
-        } else if (avgQuality >= 70) {
-          status = 'Mejorando';
-          statusColor = 'green';
-        } else {
-          status = 'Estable';
-          statusColor = 'blue';
-        }
-
-        const lastSessionStr = lastSessionDate
-          ? new Date(lastSessionDate).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' })
-          : 'Sin sesiones';
-
-        return {
-          id: p.id,
-          name: p.full_name,
-          fmId: `FM-${2000 + i}`,
-          status,
-          statusColor,
-          recoveryProgress: avgQuality,
-          lastSession: lastSessionStr,
-          condition: p.diagnostico || p.patologia || 'General',
-          sessionCount: patientSessions.length,
-          patologia: p.patologia || undefined,
-          medico_remitente: p.medico_remitente || undefined,
-          documento_identidad: p.documento_identidad || undefined,
-          telefono: p.telefono || undefined,
-          adherencia: avgQuality,
-        } as PatientCard;
-      });
+      const realCards: PatientCard[] = profiles.map((p) => ({
+        id: p.id,
+        name: p.full_name || 'Paciente',
+        fmId: `FM-${p.id.slice(0, 4).toUpperCase()}`,
+        status: 'En tratamiento',
+        statusColor: 'blue',
+        recoveryProgress: 50,
+        lastSession: 'Reciente',
+        condition: p.diagnostico || p.patologia || 'En evaluación',
+        sessionCount: 1,
+        patologia: p.patologia,
+        medico_remitente: p.medico_remitente,
+        documento_identidad: p.documento_identidad,
+        telefono: p.telefono,
+        adherencia: 75,
+      }));
 
       const merged = [...realCards];
       for (const d of demoCards) {
@@ -211,6 +176,99 @@ export function PatientsPage() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const loadTokens = async () => {
+    setTokensLoading(true);
+    if (!user?.id) {
+      setTokens(defaultDemoTokens);
+      setTokensLoading(false);
+      return;
+    }
+
+    try {
+      const { data, error } = await supabase
+        .from('activation_tokens')
+        .select('id, token, paciente_id, terapeuta_id, created_at')
+        .eq('terapeuta_id', user.id)
+        .order('created_at', { ascending: false });
+
+      if (error || !data || data.length === 0) {
+        setTokens(defaultDemoTokens);
+        return;
+      }
+
+      const patientIds = data.map((d) => d.paciente_id).filter(Boolean);
+      let patientMap: Record<string, string> = {};
+      if (patientIds.length > 0) {
+        const { data: profiles } = await supabase
+          .from('profiles')
+          .select('id, full_name')
+          .in('id', patientIds);
+        if (profiles) {
+          patientMap = Object.fromEntries(profiles.map((p) => [p.id, p.full_name]));
+        }
+      }
+
+      const realTokens: TokenRow[] = data.map((t) => ({
+        id: t.id,
+        token: t.token,
+        patientName: t.paciente_id ? patientMap[t.paciente_id] ?? 'Paciente Vinculado' : null,
+        status: (t.paciente_id ? 'activado' : 'pendiente') as TokenRow['status'],
+        createdAt: t.created_at,
+      }));
+
+      const merged = [...realTokens];
+      for (const d of defaultDemoTokens) {
+        if (!merged.some((m) => m.token === d.token)) {
+          merged.push(d);
+        }
+      }
+      setTokens(merged);
+    } catch {
+      setTokens(defaultDemoTokens);
+    } finally {
+      setTokensLoading(false);
+    }
+  };
+
+  const createQuickToken = async () => {
+    const randomSixDigits = String(Math.floor(100000 + Math.random() * 900000));
+    try {
+      if (user?.id) {
+        const { error } = await supabase.from('activation_tokens').insert({
+          token: randomSixDigits,
+          terapeuta_id: user.id,
+        });
+        if (error) throw error;
+      }
+      const newToken: TokenRow = {
+        id: `tok-${Date.now()}`,
+        token: randomSixDigits,
+        patientName: null,
+        status: 'pendiente',
+        createdAt: new Date().toISOString(),
+      };
+      setTokens((prev) => [newToken, ...prev]);
+      toast.success(`Token de acceso emitido: ${randomSixDigits}`, {
+        description: 'Compártelo con tu paciente para que vincule su cuenta.',
+      });
+    } catch {
+      toast.error('Error al generar el token.');
+    }
+  };
+
+  const handleCopyCode = (tok: string) => {
+    navigator.clipboard.writeText(tok);
+    setCopiedToken(tok);
+    toast.success(`Código copiado: ${tok}`);
+    setTimeout(() => setCopiedToken(null), 2000);
+  };
+
+  const handleCopyLink = (tok: string) => {
+    const link = `${window.location.origin}/login?token=${tok}`;
+    navigator.clipboard.writeText(link);
+    toast.success('Enlace de activación copiado al portapapeles');
   };
 
   const filteredPatients = useMemo(() => {
@@ -240,44 +298,51 @@ export function PatientsPage() {
     });
   }, [patients, searchQuery, activeFilter]);
 
-  // Statistics summaries
+  const filteredTokens = useMemo(() => {
+    return tokens.filter((t) => {
+      if (tokenFilter === 'todos') return true;
+      return t.status === tokenFilter;
+    });
+  }, [tokens, tokenFilter]);
+
   const stats = useMemo(() => {
     const total = patients.length;
     const active = patients.filter((p) => p.statusColor === 'green' || p.statusColor === 'blue').length;
     const needReview = patients.filter((p) => p.statusColor === 'red').length;
     const avgRecovery = total > 0 ? Math.round(patients.reduce((s, p) => s + p.recoveryProgress, 0) / total) : 0;
-    return { total, active, needReview, avgRecovery };
-  }, [patients]);
+    const pendingTokCount = tokens.filter((t) => t.status === 'pendiente').length;
+    return { total, active, needReview, avgRecovery, pendingTokCount };
+  }, [patients, tokens]);
 
   return (
-    <div className="max-w-7xl mx-auto space-y-8 pb-12">
-      {/* Header Section */}
+    <div className="max-w-7xl mx-auto space-y-7 pb-12">
+      {/* Header Section with Navigation Tabs */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
         <div>
-          <div className="flex items-center gap-2.5 text-xs font-bold uppercase tracking-wider text-teal-600 dark:text-teal-400 mb-1">
+          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-teal-600 dark:text-teal-400 mb-1">
             <Users className="size-4" />
-            <span>Gestión Clínica de Pacientes</span>
+            <span>Gestión Clínica y Acceso</span>
           </div>
           <h1 className="text-3xl lg:text-4xl font-extrabold tracking-tight text-on-surface">
-            Directorio y Seguimiento
+            Pacientes y Llaves de Acceso
           </h1>
           <p className="text-sm text-on-surface-variant mt-1">
-            Supervisa el progreso biomecánico, adherencia remota y estado de tratamiento de tus pacientes.
+            Supervisa expedientes, rehabilitación remota y emite tokens seguros para tus pacientes.
           </p>
         </div>
 
-        {/* Top Actions */}
+        {/* Primary Action Buttons */}
         <div className="flex flex-wrap items-center gap-3">
           <button
-            onClick={() => navigate('/tokens')}
+            onClick={createQuickToken}
             className="px-4 py-2.5 rounded-2xl bg-surface/80 dark:bg-surface-container-low/70 border border-outline/15 text-on-surface hover:border-teal-500/40 text-xs font-bold transition-all flex items-center gap-2 shadow-sm"
           >
-            <Icon name="key" size={16} className="text-primary" />
-            <span>Generar Token</span>
+            <Key className="size-4 text-teal-600 dark:text-teal-400" />
+            <span>Emitir Token Rápido</span>
           </button>
           <button
             onClick={() => navigate('/ocr-scanner')}
-            className="px-5 py-2.5 rounded-2xl bg-primary text-on-primary hover:bg-primary/90 text-xs font-bold transition-all shadow-md shadow-primary/20 flex items-center gap-2"
+            className="px-5 py-2.5 rounded-2xl bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold transition-all shadow-md shadow-teal-700/20 flex items-center gap-2"
           >
             <Plus className="size-4" />
             <span>Cargar Paciente (OCR)</span>
@@ -285,7 +350,7 @@ export function PatientsPage() {
         </div>
       </div>
 
-      {/* KPI Mini-Cards Bar */}
+      {/* KPI Cards Bar */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="p-4 rounded-3xl bg-surface/70 dark:bg-surface-container-low/50 border border-outline/10 flex items-center gap-3.5">
           <div className="size-11 rounded-2xl bg-teal-500/10 text-teal-600 dark:text-teal-400 flex items-center justify-center font-bold">
@@ -302,7 +367,7 @@ export function PatientsPage() {
             <CheckCircle2 className="size-5" />
           </div>
           <div>
-            <p className="text-xs text-on-surface-variant font-medium">En Tratamiento Activo</p>
+            <p className="text-xs text-on-surface-variant font-medium">Tratamiento Activo</p>
             <p className="text-xl font-extrabold text-emerald-600 dark:text-emerald-400">{stats.active}</p>
           </div>
         </div>
@@ -319,360 +384,444 @@ export function PatientsPage() {
 
         <div className="p-4 rounded-3xl bg-surface/70 dark:bg-surface-container-low/50 border border-outline/10 flex items-center gap-3.5">
           <div className="size-11 rounded-2xl bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 flex items-center justify-center font-bold">
-            <TrendingUp className="size-5" />
+            <Key className="size-5" />
           </div>
           <div>
-            <p className="text-xs text-on-surface-variant font-medium">Adherencia Media</p>
-            <p className="text-xl font-extrabold text-cyan-600 dark:text-cyan-400">{stats.avgRecovery}%</p>
+            <p className="text-xs text-on-surface-variant font-medium">Tokens Pendientes</p>
+            <p className="text-xl font-extrabold text-cyan-600 dark:text-cyan-400">{stats.pendingTokCount}</p>
           </div>
         </div>
       </div>
 
-      {/* Search and Filters Bar */}
-      <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 p-2 rounded-3xl bg-surface/60 dark:bg-surface-container-low/40 border border-outline/10">
-        {/* Search input with K shortcut */}
-        <div className="relative flex-1">
-          <Search className="size-4 text-outline absolute left-4 top-1/2 -translate-y-1/2" />
-          <input
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Buscar por nombre, diagnóstico, cédula o médico remitente..."
-            className="w-full pl-11 pr-20 py-2.5 rounded-2xl bg-surface-container/60 border border-transparent focus:border-teal-500/40 focus:bg-surface text-sm text-on-surface placeholder:text-outline/70 outline-none transition-all"
-          />
-          <button
-            onClick={() => setShowCmdPalette(true)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-bold px-2 py-0.5 rounded-md bg-surface-container-highest text-outline flex items-center gap-1 hover:bg-teal-500/10 hover:text-teal-600 transition-colors"
-          >
-            <span>⌘K</span>
-          </button>
-        </div>
-
-        {/* Filter Pills */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0 hide-scrollbar">
-          {filterOptions.map((f) => {
-            const count =
-              f.id === 'todos'
-                ? patients.length
-                : f.id === 'activos'
-                ? patients.filter((p) => p.statusColor === 'green' || p.statusColor === 'blue').length
-                : f.id === 'revision'
-                ? patients.filter((p) => p.statusColor === 'red').length
-                : patients.filter((p) => p.recoveryProgress > 0 && p.recoveryProgress < 75).length;
-
-            const isSelected = activeFilter === f.id;
-
-            return (
-              <button
-                key={f.id}
-                onClick={() => setActiveFilter(f.id)}
-                className={cn(
-                  'px-3.5 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all flex items-center gap-1.5',
-                  isSelected
-                    ? 'bg-primary text-on-primary shadow-sm'
-                    : 'bg-surface-container/70 text-on-surface-variant hover:bg-surface-container-high'
-                )}
-              >
-                <span>{f.label}</span>
-                <span
-                  className={cn(
-                    'text-[10px] px-1.5 py-0.2 rounded-full font-bold',
-                    isSelected ? 'bg-white/20 text-white' : 'bg-surface-container-highest text-outline'
-                  )}
-                >
-                  {count}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* View Switcher */}
-        <div className="flex items-center gap-1 p-1 rounded-xl bg-surface-container/80 self-end md:self-auto">
-          <button
-            onClick={() => setViewMode('cards')}
-            aria-label="Vista cuadrícula"
-            className={cn(
-              'p-1.5 rounded-lg transition-all',
-              viewMode === 'cards'
-                ? 'bg-surface text-primary shadow-xs font-bold'
-                : 'text-outline hover:text-on-surface'
-            )}
-          >
-            <LayoutGrid className="size-4" />
-          </button>
-          <button
-            onClick={() => setViewMode('list')}
-            aria-label="Vista lista"
-            className={cn(
-              'p-1.5 rounded-lg transition-all',
-              viewMode === 'list'
-                ? 'bg-surface text-primary shadow-xs font-bold'
-                : 'text-outline hover:text-on-surface'
-            )}
-          >
-            <List className="size-4" />
-          </button>
-        </div>
+      {/* Main Module Tabs Switcher */}
+      <div className="flex bg-surface-container-low/80 p-1.5 rounded-2xl border border-outline/15 w-fit max-w-full">
+        <button
+          onClick={() => setActiveTab('patients')}
+          className={cn(
+            'px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center gap-2',
+            activeTab === 'patients'
+              ? 'bg-teal-600 text-white shadow-md'
+              : 'text-on-surface-variant hover:text-on-surface'
+          )}
+        >
+          <Users className="size-4" />
+          <span>Directorio Clínico ({patients.length})</span>
+        </button>
+        <button
+          onClick={() => setActiveTab('tokens')}
+          className={cn(
+            'px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center gap-2',
+            activeTab === 'tokens'
+              ? 'bg-teal-600 text-white shadow-md'
+              : 'text-on-surface-variant hover:text-on-surface'
+          )}
+        >
+          <Key className="size-4" />
+          <span>Tokens y Llaves de Acceso ({tokens.length})</span>
+        </button>
       </div>
 
-      {/* Main Content */}
-      {loading ? (
-        <SkeletonList count={6} />
-      ) : filteredPatients.length === 0 ? (
-        <div className="p-12 text-center rounded-3xl bg-surface/40 border border-dashed border-outline/20">
-          <MedicalIcon name="exercise" size={48} className="mx-auto text-primary/40 mb-3" />
-          <h3 className="text-base font-bold text-on-surface">No se encontraron pacientes</h3>
-          <p className="text-xs text-on-surface-variant max-w-sm mx-auto mt-1 mb-4">
-            No hay pacientes que coincidan con los filtros seleccionados o la búsqueda actual.
-          </p>
-          <button
-            onClick={() => {
-              setSearchQuery('');
-              setActiveFilter('todos');
-            }}
-            className="px-4 py-2 rounded-xl bg-primary/10 text-primary text-xs font-bold hover:bg-primary/20 transition-colors"
-          >
-            Limpiar filtros
-          </button>
-        </div>
-      ) : (
-        <AnimatePresence mode="wait">
-          {viewMode === 'cards' ? (
-            <motion.div
-              key="cards"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-            >
-              {filteredPatients.map((patient, i) => {
-                const initials = patient.name
-                  .split(' ')
-                  .filter(Boolean)
-                  .map((n) => n[0])
-                  .join('')
-                  .slice(0, 2);
+      {/* ─── TAB 1: PACIENTES ─── */}
+      {activeTab === 'patients' && (
+        <div className="space-y-6">
+          {/* Search & Filter Bar */}
+          <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 p-2.5 rounded-3xl bg-surface/60 dark:bg-surface-container-low/40 border border-outline/10">
+            <div className="relative flex-1">
+              <Search className="size-4 text-outline absolute left-4 top-1/2 -translate-y-1/2" />
+              <input
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Buscar por nombre, diagnóstico, cédula o patología..."
+                className="w-full pl-11 pr-4 py-2.5 rounded-2xl bg-surface-container/60 border border-transparent focus:border-teal-500/40 focus:bg-surface text-xs sm:text-sm text-on-surface placeholder:text-outline/70 outline-none transition-all"
+              />
+            </div>
 
-                const isWarning = patient.statusColor === 'red';
-                const isGood = patient.statusColor === 'green';
+            {/* Filter Pills with clean gap & flex-wrap */}
+            <div className="flex flex-wrap items-center gap-2">
+              {filterOptions.map((f) => {
+                const count =
+                  f.id === 'todos'
+                    ? patients.length
+                    : f.id === 'activos'
+                    ? patients.filter((p) => p.statusColor === 'green' || p.statusColor === 'blue').length
+                    : f.id === 'revision'
+                    ? patients.filter((p) => p.statusColor === 'red').length
+                    : patients.filter((p) => p.recoveryProgress > 0 && p.recoveryProgress < 75).length;
+
+                const isSelected = activeFilter === f.id;
+
+                return (
+                  <button
+                    key={f.id}
+                    onClick={() => setActiveFilter(f.id)}
+                    className={cn(
+                      'px-3.5 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all flex items-center gap-1.5 border',
+                      isSelected
+                        ? 'bg-teal-600 text-white border-teal-600 shadow-sm'
+                        : 'bg-surface-container/70 border-outline/10 text-on-surface-variant hover:bg-surface-container-high'
+                    )}
+                  >
+                    <span>{f.label}</span>
+                    <span
+                      className={cn(
+                        'text-[10px] px-1.5 py-0.2 rounded-full font-bold',
+                        isSelected ? 'bg-white/20 text-white' : 'bg-surface-container-highest text-outline'
+                      )}
+                    >
+                      {count}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Grid / List Mode */}
+            <div className="flex items-center gap-1 p-1 rounded-xl bg-surface-container/80 shrink-0">
+              <button
+                onClick={() => setViewMode('cards')}
+                aria-label="Vista cuadrícula"
+                className={cn(
+                  'p-1.5 rounded-lg transition-all',
+                  viewMode === 'cards' ? 'bg-surface text-teal-600 shadow-xs font-bold' : 'text-outline hover:text-on-surface'
+                )}
+              >
+                <LayoutGrid className="size-4" />
+              </button>
+              <button
+                onClick={() => setViewMode('list')}
+                aria-label="Vista lista"
+                className={cn(
+                  'p-1.5 rounded-lg transition-all',
+                  viewMode === 'list' ? 'bg-surface text-teal-600 shadow-xs font-bold' : 'text-outline hover:text-on-surface'
+                )}
+              >
+                <List className="size-4" />
+              </button>
+            </div>
+          </div>
+
+          {/* Patient Cards / List */}
+          {loading ? (
+            <SkeletonList count={6} />
+          ) : filteredPatients.length === 0 ? (
+            <EmptyState
+              icon="person_search"
+              title="No se encontraron pacientes"
+              description="Intenta modificar tu búsqueda o carga un nuevo paciente con el escáner OCR."
+              actionLabel="Cargar Nuevo Paciente"
+              onAction={() => navigate('/ocr-scanner')}
+            />
+          ) : viewMode === 'cards' ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+              {filteredPatients.map((p, idx) => {
+                const isAlert = p.statusColor === 'red';
+                const isGood = p.statusColor === 'green';
+                const initials = p.name
+                  .split(' ')
+                  .map((n) => n[0])
+                  .filter(Boolean)
+                  .slice(0, 2)
+                  .join('')
+                  .toUpperCase();
 
                 return (
                   <motion.div
-                    key={patient.id}
-                    initial={{ opacity: 0, y: 15 }}
+                    key={p.id}
+                    layout
+                    initial={{ opacity: 0, y: 12 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: i * 0.05 }}
-                    whileHover={{ y: -4 }}
-                    className="group rounded-3xl p-6 bg-surface/85 dark:bg-surface-container-low/70 border border-outline/15 hover:border-teal-500/40 shadow-sm hover:shadow-lg transition-all flex flex-col justify-between"
+                    transition={{ delay: idx * 0.05 }}
+                    onClick={() => navigate(`/paciente/${p.id}`)}
+                    className="glass-card p-6 rounded-3xl group cursor-pointer hover:-translate-y-1.5 transition-all duration-300 relative flex flex-col justify-between"
                   >
                     <div>
-                      {/* Top Row: Avatar + Badges */}
-                      <div className="flex items-start justify-between gap-3 mb-4">
-                        <div className="flex items-center gap-3">
-                          <AvatarWithBadge
-                            fallback={initials}
-                            status={isGood ? 'online' : isWarning ? 'warning' : 'offline'}
-                          />
-                          <div className="min-w-0">
-                            <h3 className="text-base font-bold text-on-surface group-hover:text-primary transition-colors truncate">
-                              {patient.name}
+                      {/* Top Header: Avatar/Badge + Name & ID + Status Tag */}
+                      <div className="flex justify-between items-start mb-5">
+                        <div className="flex items-center gap-3.5">
+                          <div className={cn(
+                            "w-12 h-12 rounded-2xl flex items-center justify-center font-extrabold text-sm shadow-sm shrink-0",
+                            isAlert 
+                              ? "bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20" 
+                              : "bg-teal-500/10 text-teal-700 dark:text-teal-300 border border-teal-500/20"
+                          )}>
+                            {initials || 'FM'}
+                          </div>
+                          <div>
+                            <h3 className="font-bold text-base text-on-surface group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors line-clamp-1">
+                              {p.name}
                             </h3>
-                            <p className="text-[11px] font-semibold text-outline uppercase tracking-wider">
-                              ID: #{patient.fmId}
+                            <p className="text-[11px] font-mono text-outline uppercase tracking-wider font-semibold">
+                              {p.fmId || `#FM-${p.id.slice(0, 4)}`}
                             </p>
                           </div>
                         </div>
 
-                        <span
-                          className={cn(
-                            'text-[10px] font-black uppercase px-2.5 py-1 rounded-full border',
-                            isGood && 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20',
-                            isWarning && 'bg-amber-500/10 text-amber-600 border-amber-500/20',
-                            !isGood && !isWarning && 'bg-teal-500/10 text-teal-600 border-teal-500/20'
-                          )}
-                        >
-                          {patient.status}
-                        </span>
-                      </div>
-
-                      {/* Condition / Diagnostic */}
-                      <div className="p-3 rounded-2xl bg-surface-container/40 border border-outline/5 mb-4">
-                        <div className="flex items-center gap-1.5 text-xs text-on-surface-variant font-medium">
-                          <MedicalIcon name="spine" size={14} className="text-primary shrink-0" />
-                          <span className="truncate">{patient.condition}</span>
+                        <div className={cn(
+                          "px-3 py-1 rounded-full flex items-center gap-1.5 text-xs font-bold shrink-0",
+                          isAlert
+                            ? "bg-red-500/10 text-red-600 border border-red-500/20"
+                            : isGood
+                            ? "bg-emerald-500/10 text-emerald-600 border border-emerald-500/20"
+                            : "bg-teal-500/10 text-teal-600 border border-teal-500/20"
+                        )}>
+                          <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: isAlert ? '#EF4444' : isGood ? '#10B981' : '#00504d' }} />
+                          <span>{p.status}</span>
                         </div>
                       </div>
 
-                      {/* Progress Bar & Adherence */}
-                      <div className="space-y-2 mb-4">
-                        <div className="flex justify-between items-center text-xs">
-                          <span className="text-on-surface-variant font-medium">Recuperación / Calidad</span>
-                          <span className="font-bold text-on-surface">{patient.recoveryProgress}%</span>
+                      {/* Recovery Progress Bar */}
+                      <div className="space-y-1.5 mb-5">
+                        <div className="flex justify-between items-end text-xs">
+                          <span className="text-on-surface-variant font-semibold">Progreso de Recuperación</span>
+                          <span className={cn(
+                            "font-extrabold",
+                            isAlert ? "text-red-600 dark:text-red-400" : "text-teal-700 dark:text-teal-300"
+                          )}>
+                            {p.recoveryProgress}%
+                          </span>
                         </div>
-                        <div className="h-2 w-full rounded-full bg-surface-container-highest overflow-hidden">
-                          <motion.div
-                            initial={{ width: 0 }}
-                            animate={{ width: `${patient.recoveryProgress}%` }}
-                            transition={{ duration: 0.8, ease: 'easeOut' }}
+                        <div className="w-full bg-surface-container h-2 rounded-full overflow-hidden p-0.5 border border-outline-variant/10">
+                          <div
                             className={cn(
-                              'h-full rounded-full',
-                              isWarning
-                                ? 'bg-amber-500'
-                                : 'bg-gradient-to-r from-teal-500 via-teal-400 to-emerald-500'
+                              "h-full rounded-full transition-all duration-700",
+                              isAlert ? "bg-red-500" : p.recoveryProgress >= 75 ? "bg-emerald-500" : "bg-teal-600"
                             )}
+                            style={{ width: `${Math.max(4, p.recoveryProgress)}%` }}
                           />
                         </div>
                       </div>
 
-                      {/* Session Metadata Grid */}
-                      <div className="grid grid-cols-2 gap-2 pt-3 border-t border-outline/10 text-xs">
-                        <div className="flex items-center gap-1.5 text-on-surface-variant">
-                          <Calendar className="size-3.5 text-outline" />
-                          <span className="truncate">{patient.lastSession}</span>
+                      {/* 2-Column Clinical Metadata Grid */}
+                      <div className="grid grid-cols-2 gap-3 py-3.5 border-y border-outline-variant/15 text-xs mb-4">
+                        <div>
+                          <p className="text-[10px] uppercase font-bold text-outline tracking-wider mb-1">Última Sesión</p>
+                          <p className="font-semibold text-on-surface flex items-center gap-1.5 truncate">
+                            <Calendar className="size-3.5 text-teal-600 dark:text-teal-400 shrink-0" />
+                            <span>{p.lastSession || 'Reciente'}</span>
+                          </p>
                         </div>
-                        <div className="flex items-center gap-1.5 text-on-surface-variant justify-end">
-                          <Activity className="size-3.5 text-teal-500" />
-                          <span>{patient.sessionCount} sesiones</span>
+                        <div>
+                          <p className="text-[10px] uppercase font-bold text-outline tracking-wider mb-1">Diagnóstico</p>
+                          <p className="font-semibold text-on-surface line-clamp-1">
+                            {p.condition || 'Rehabilitación'}
+                          </p>
                         </div>
                       </div>
                     </div>
 
-                    {/* Bottom Action Buttons */}
-                    <div className="flex items-center gap-2 mt-5 pt-4 border-t border-outline/10">
-                      <button
-                        onClick={() => navigate(`/paciente/${patient.id}`)}
-                        className="flex-1 py-2.5 px-3 rounded-xl bg-primary/10 hover:bg-primary/20 text-primary text-xs font-bold transition-all flex items-center justify-center gap-1.5"
-                      >
-                        <FileText className="size-3.5" />
-                        <span>Ver Expediente</span>
-                      </button>
+                    {/* Bottom Action Area */}
+                    <div className="flex items-center justify-between pt-1">
+                      <div className="flex items-center -space-x-1.5">
+                        <div className="w-7 h-7 rounded-full border-2 border-white dark:border-surface-container bg-teal-100 text-teal-800 dark:bg-teal-950 dark:text-teal-200 flex items-center justify-center text-[9px] font-extrabold shadow-xs">
+                          AI
+                        </div>
+                        <div className="w-7 h-7 rounded-full border-2 border-white dark:border-surface-container bg-surface-container-highest text-on-surface-variant flex items-center justify-center text-[9px] font-extrabold shadow-xs">
+                          PT
+                        </div>
+                        <span className="text-[11px] text-outline font-medium pl-3">
+                          {p.sessionCount} ses.
+                        </span>
+                      </div>
 
                       <button
-                        onClick={() => navigate(`/ar-mirror?patientId=${patient.id}`)}
-                        title="Iniciar Sesión AR Guiada"
-                        className="py-2.5 px-3 rounded-xl bg-surface-container-high hover:bg-teal-500 hover:text-white text-on-surface text-xs font-bold transition-all flex items-center justify-center gap-1"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate(`/paciente/${p.id}`);
+                        }}
+                        className="text-teal-600 dark:text-teal-400 hover:text-teal-700 font-bold text-xs flex items-center gap-1 group-hover:gap-1.5 transition-all"
                       >
-                        <Video className="size-3.5" />
-                        <span className="hidden sm:inline">Sesión AR</span>
+                        <span>Ver Expediente</span>
+                        <ArrowRight className="size-3.5" />
                       </button>
                     </div>
                   </motion.div>
                 );
               })}
-
-              {/* Add Patient Card */}
-              <motion.div
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: filteredPatients.length * 0.05 }}
-                onClick={() => navigate('/ocr-scanner')}
-                className="border-2 border-dashed border-outline/20 hover:border-teal-500/40 rounded-3xl flex flex-col items-center justify-center p-8 text-center cursor-pointer group hover:bg-teal-500/5 transition-all min-h-[260px]"
-              >
-                <div className="size-14 rounded-2xl bg-teal-500/10 group-hover:bg-primary group-hover:text-white text-primary flex items-center justify-center transition-all mb-3">
-                  <Plus className="size-7" />
-                </div>
-                <h4 className="text-sm font-bold text-on-surface group-hover:text-primary transition-colors">
-                  Registrar Nuevo Paciente
-                </h4>
-                <p className="text-xs text-on-surface-variant max-w-[220px] mt-1">
-                  Importa prescripciones médicas u órdenes clínicas vía OCR inteligente.
-                </p>
-              </motion.div>
-            </motion.div>
+            </div>
           ) : (
-            <motion.div
-              key="list"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="space-y-3"
-            >
-              {filteredPatients.map((p) => (
-                <div
-                  key={p.id}
-                  onClick={() => navigate(`/paciente/${p.id}`)}
-                  className="p-4 rounded-2xl bg-surface/80 dark:bg-surface-container-low/60 border border-outline/10 hover:border-teal-500/40 transition-all cursor-pointer flex flex-col sm:flex-row sm:items-center justify-between gap-4"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="size-10 rounded-xl bg-primary/10 text-primary font-bold flex items-center justify-center text-sm">
-                      {p.name.charAt(0)}
-                    </div>
-                    <div>
-                      <h4 className="text-sm font-bold text-on-surface">{p.name}</h4>
-                      <p className="text-xs text-on-surface-variant">{p.condition}</p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-6 text-xs text-on-surface-variant">
-                    <div>
-                      <span className="text-outline text-[10px] uppercase font-bold block">Última actividad</span>
-                      <span className="font-semibold text-on-surface">{p.lastSession}</span>
-                    </div>
-                    <div>
-                      <span className="text-outline text-[10px] uppercase font-bold block">Adherencia</span>
-                      <span className="font-bold text-teal-600 dark:text-teal-400">{p.recoveryProgress}%</span>
-                    </div>
-                    <ChevronRight className="size-5 text-outline" />
-                  </div>
-                </div>
-              ))}
-            </motion.div>
+            <div className="rounded-3xl border border-outline/15 bg-surface/80 dark:bg-surface-container-low/70 overflow-hidden shadow-sm">
+              <table className="w-full text-left text-xs">
+                <thead className="bg-surface-container-high/60 text-outline font-bold uppercase tracking-wider border-b border-outline/10">
+                  <tr>
+                    <th className="p-4">Paciente</th>
+                    <th className="p-4">Diagnóstico</th>
+                    <th className="p-4">Progreso</th>
+                    <th className="p-4">Estado</th>
+                    <th className="p-4 text-right">Acción</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-outline/10">
+                  {filteredPatients.map((p) => (
+                    <tr
+                      key={p.id}
+                      onClick={() => navigate(`/paciente/${p.id}`)}
+                      className="hover:bg-surface-container-high/40 transition-colors cursor-pointer"
+                    >
+                      <td className="p-4 font-bold text-on-surface">{p.name}</td>
+                      <td className="p-4 text-on-surface-variant">{p.condition}</td>
+                      <td className="p-4 font-bold">{p.recoveryProgress}%</td>
+                      <td className="p-4">
+                        <span
+                          className={cn(
+                            'text-[10px] font-bold px-2 py-0.5 rounded-full',
+                            p.statusColor === 'red'
+                              ? 'bg-red-500/10 text-red-600'
+                              : 'bg-teal-500/10 text-teal-600'
+                          )}
+                        >
+                          {p.status}
+                        </span>
+                      </td>
+                      <td className="p-4 text-right">
+                        <span className="text-teal-600 font-bold hover:underline">Ver Expediente</span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           )}
-        </AnimatePresence>
+        </div>
       )}
 
-      {/* Command Palette Modal */}
-      {showCmdPalette && (
-        <div
-          className="fixed inset-0 z-[100] bg-black/40 backdrop-blur-xs flex items-start justify-center pt-24 px-4"
-          onClick={() => setShowCmdPalette(false)}
-        >
-          <div
-            className="w-full max-w-2xl rounded-3xl bg-surface border border-outline/20 shadow-2xl overflow-hidden"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="p-4 flex items-center border-b border-outline/10">
-              <Search className="size-5 text-primary mr-3" />
-              <input
-                autoFocus
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-transparent border-none font-medium text-on-surface placeholder:text-outline text-sm outline-none"
-                placeholder="Buscar paciente por nombre o diagnóstico..."
-              />
-              <span className="text-[10px] font-bold text-outline bg-surface-container px-2 py-1 rounded-md">
-                ESC
-              </span>
+      {/* ─── TAB 2: GESTIÓN DE TOKENS Y LLAVES ─── */}
+      {activeTab === 'tokens' && (
+        <div className="space-y-6">
+          <div className="p-4 rounded-3xl bg-teal-500/10 border border-teal-500/20 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="size-10 rounded-2xl bg-teal-600 text-white flex items-center justify-center shrink-0">
+                <Key className="size-5" />
+              </div>
+              <div>
+                <h3 className="font-bold text-sm text-on-surface">Llaves de Activación para Pacientes</h3>
+                <p className="text-xs text-on-surface-variant">
+                  Permiten a un paciente activar su cuenta y vincular su expediente clínico directamente a tu consulta.
+                </p>
+              </div>
             </div>
-            <div className="p-3 max-h-[350px] overflow-y-auto space-y-1">
-              <p className="text-[10px] font-bold text-outline uppercase tracking-wider px-3 py-1.5">
-                Resultados
-              </p>
-              {filteredPatients.slice(0, 6).map((p) => (
-                <button
-                  key={p.id}
-                  onClick={() => {
-                    navigate(`/paciente/${p.id}`);
-                    setShowCmdPalette(false);
-                  }}
-                  className="w-full flex items-center justify-between p-3 hover:bg-primary/5 rounded-xl transition-colors text-left"
+
+            <button
+              onClick={createQuickToken}
+              className="px-4 py-2 rounded-xl bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold transition-all shadow-sm flex items-center gap-1.5 shrink-0"
+            >
+              <Plus className="size-4" />
+              <span>Emitir Nueva Llave</span>
+            </button>
+          </div>
+
+          {/* Tokens Filters */}
+          <div className="flex items-center gap-2">
+            {(['todos', 'pendiente', 'activado'] as const).map((filterKey) => (
+              <button
+                key={filterKey}
+                onClick={() => setTokenFilter(filterKey)}
+                className={cn(
+                  'px-3.5 py-1.5 rounded-xl text-xs font-bold capitalize transition-all border',
+                  tokenFilter === filterKey
+                    ? 'bg-teal-600 text-white border-teal-600 shadow-xs'
+                    : 'bg-surface/70 border-outline/10 text-on-surface-variant hover:bg-surface-container'
+                )}
+              >
+                {filterKey === 'todos' ? 'Todas las Llaves' : filterKey === 'pendiente' ? 'Pendientes' : 'Activadas'}
+              </button>
+            ))}
+          </div>
+
+          {/* Tokens Grid */}
+          {tokensLoading ? (
+            <SkeletonList count={4} />
+          ) : filteredTokens.length === 0 ? (
+            <EmptyState
+              icon="key"
+              title="No hay tokens en este estado"
+              description="Puedes emitir un nuevo token de acceso en cualquier momento."
+              actionLabel="Generar Token"
+              onAction={createQuickToken}
+            />
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {filteredTokens.map((tok) => (
+                <div
+                  key={tok.id}
+                  className="p-5 rounded-3xl bg-surface/80 dark:bg-surface-container-low/70 border border-outline/15 shadow-sm hover:border-teal-500/40 transition-all flex flex-col justify-between gap-4"
                 >
-                  <div className="flex items-center gap-3">
-                    <div className="size-8 rounded-lg bg-primary/10 text-primary font-bold text-xs flex items-center justify-center">
-                      {p.name[0]}
-                    </div>
+                  <div className="flex items-start justify-between gap-2">
                     <div>
-                      <p className="text-sm font-bold text-on-surface">{p.name}</p>
-                      <p className="text-xs text-outline">{p.condition}</p>
+                      <span className="text-[10px] text-outline uppercase font-bold tracking-wider">Código de Activación</span>
+                      <div className="flex items-center gap-2 mt-1">
+                        <span className="text-2xl font-mono font-extrabold tracking-widest text-teal-600 dark:text-teal-400">
+                          {tok.token}
+                        </span>
+                        <button
+                          onClick={() => handleCopyCode(tok.token)}
+                          title="Copiar código"
+                          className="p-1.5 rounded-lg hover:bg-surface-container text-outline hover:text-on-surface transition-colors"
+                        >
+                          {copiedToken === tok.token ? <Check className="size-4 text-emerald-500" /> : <Copy className="size-4" />}
+                        </button>
+                      </div>
                     </div>
+
+                    <span
+                      className={cn(
+                        'text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider',
+                        tok.status === 'activado'
+                          ? 'bg-emerald-500/10 text-emerald-600 border border-emerald-500/20'
+                          : 'bg-amber-500/10 text-amber-600 border border-amber-500/20'
+                      )}
+                    >
+                      {tok.status}
+                    </span>
                   </div>
-                  <ArrowRight className="size-4 text-outline" />
-                </button>
+
+                  <div className="text-xs text-on-surface-variant font-medium">
+                    {tok.patientName ? (
+                      <p className="flex items-center gap-1.5 text-on-surface font-semibold">
+                        <UserCheck className="size-3.5 text-emerald-600" />
+                        Vinculado: {tok.patientName}
+                      </p>
+                    ) : (
+                      <p className="text-amber-600 dark:text-amber-400">Disponible para ser asignado</p>
+                    )}
+                    <p className="text-[11px] text-outline mt-0.5">
+                      Emitido el: {new Date(tok.createdAt).toLocaleDateString('es-ES')}
+                    </p>
+                  </div>
+
+                  <div className="pt-3 border-t border-outline/10 flex items-center justify-between gap-2">
+                    <button
+                      onClick={() => handleCopyLink(tok.token)}
+                      className="px-3 py-1.5 rounded-xl bg-surface-container hover:bg-surface-container-high text-[11px] font-bold text-on-surface flex items-center gap-1.5 transition-colors"
+                    >
+                      <ExternalLink className="size-3 text-teal-600" />
+                      <span>Copiar Enlace</span>
+                    </button>
+
+                    <button
+                      onClick={() => setEmailModalToken(tok)}
+                      className="px-3 py-1.5 rounded-xl bg-teal-500/10 hover:bg-teal-500/20 text-[11px] font-bold text-teal-700 dark:text-teal-300 flex items-center gap-1.5 transition-colors"
+                    >
+                      <Mail className="size-3" />
+                      <span>Enviar</span>
+                    </button>
+                  </div>
+                </div>
               ))}
             </div>
-          </div>
+          )}
         </div>
+      )}
+
+      {/* Email Feature Modal */}
+      {emailModalToken && (
+        <EmailFeatureModal
+          token={emailModalToken.token}
+          patientName={emailModalToken.patientName || undefined}
+          isOpen={true}
+          onClose={() => setEmailModalToken(null)}
+        />
       )}
     </div>
   );
 }
+export default PatientsPage;

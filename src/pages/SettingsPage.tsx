@@ -54,6 +54,7 @@ export function SettingsPage() {
   const { user, signOut } = useAuthStore();
   const { show } = useGlassToast();
   const { i18n } = useTranslation();
+  const [currentLang, setCurrentLang] = useState<string>(() => i18n.language || localStorage.getItem('fisio_language') || 'es');
   const { preference: arPreference, setPreference: setArPreference, activeModel: currentArModel } = useMediaPipeModel();
 
   /* ── Persistent settings ────────────────────────────────────── */
@@ -274,24 +275,30 @@ export function SettingsPage() {
           </div>
           <div className="grid grid-cols-3 gap-3">
             {[
-              { code: 'es', label: 'Español', flag: '🇪🇸' },
-              { code: 'en', label: 'English', flag: '🇺🇸' },
-              { code: 'pt', label: 'Português', flag: '🇧🇷' },
+              { code: 'es', label: 'Español', badge: 'ES' },
+              { code: 'en', label: 'English', badge: 'EN' },
+              { code: 'pt', label: 'Português', badge: 'PT' },
             ].map((lang) => (
               <button
                 key={lang.code}
                 onClick={() => {
                   changeAppLanguage(lang.code as 'es' | 'en' | 'pt');
+                  setCurrentLang(lang.code);
                   show(`Idioma cambiado a ${lang.label}`, 'success');
                 }}
                 className={cn(
                   'flex items-center justify-center gap-2 py-3 rounded-xl font-semibold text-sm transition-all duration-200 border',
-                  (i18n.language || 'es').startsWith(lang.code)
+                  currentLang.startsWith(lang.code)
                     ? 'bg-primary text-on-primary border-primary shadow-glow-primary'
                     : 'bg-surface-container-low text-on-surface-variant border-outline-variant/30 hover:bg-surface-container-high'
                 )}
               >
-                <span className="text-lg">{lang.flag}</span>
+                <span className={cn(
+                  'text-xs font-bold px-2 py-0.5 rounded-md uppercase tracking-wider',
+                  currentLang.startsWith(lang.code) ? 'bg-on-primary/20 text-on-primary' : 'bg-primary/10 text-primary'
+                )}>
+                  {lang.badge}
+                </span>
                 <span>{lang.label}</span>
               </button>
             ))}

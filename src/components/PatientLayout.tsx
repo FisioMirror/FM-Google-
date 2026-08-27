@@ -1,13 +1,12 @@
 import { type ReactNode, useState, useEffect } from 'react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Video, Phone, MessageCircle, Mail } from 'lucide-react';
+import { Video, Phone, MessageCircle, Mail, Bot } from 'lucide-react';
 import { Icon } from './ui/Icon';
 import { BackButton } from './ui/BackButton';
 
 import { FloatingMenu, type FloatingMenuItem } from './ui/FloatingMenu';
-import { PhysiGuide } from './ui/PhysiGuide';
-import { HelpGuideButton } from './ui/HelpGuideButton';
+import { PhysiChatbot } from './ui/PhysiChatbot';
 import { LegalModal, type LegalDocType } from './ui/LegalModal';
 import { useAuthStore } from '../stores/authStore';
 import { useTheme } from '../context/ThemeContext';
@@ -67,6 +66,7 @@ export function PatientLayout({ children }: PatientLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(() => localStorage.getItem('patient-sidebar-collapsed') === 'true');
   const [showNotifications, setShowNotifications] = useState(false);
+  const [physiChatOpen, setPhysiChatOpen] = useState(false);
   const [notifs, setNotifs] = useState<Notif[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [isOnline, setIsOnline] = useState(navigator.onLine);
@@ -274,20 +274,25 @@ export function PatientLayout({ children }: PatientLayoutProps) {
 
   const sidebarContent = (collapsed: boolean, opts?: { onNavigate?: () => void; showToggle?: boolean }) => (
     <>
-      <div className="flex items-center px-5 h-16 border-b border-teal-100 dark:border-slate-700 shrink-0 relative">
+      <div className="flex items-center px-4 h-16 border-b border-teal-100/60 dark:border-slate-800/80 shrink-0 relative">
         {!collapsed ? (
-          <div className="flex items-center gap-2 min-w-0">
-            <img src="/logo.png" alt="" className="h-10 w-auto shrink-0" />
-            <h1 className="font-headline-lg-mobile text-headline-lg-mobile gradient-text-editorial tracking-tight leading-none truncate">FisioMirror</h1>
+          <div className="flex items-center gap-2.5 min-w-0 pr-7">
+            <img src="/logo.png" alt="FisioMirror" className="h-9 w-9 object-contain shrink-0 aspect-square" />
+            <div className="flex flex-col min-w-0">
+              <h1 className="text-base sm:text-lg font-extrabold gradient-text-editorial tracking-tight leading-tight whitespace-nowrap">FisioMirror</h1>
+              <p className="text-[10px] uppercase tracking-wider text-teal-600 dark:text-teal-400 font-bold whitespace-nowrap">Portal Paciente</p>
+            </div>
           </div>
         ) : (
-          <img src="/logo.png" alt="" className="h-9 w-auto" />
+          <div className="w-full flex justify-center">
+            <img src="/logo.png" alt="FisioMirror" className="h-8 w-8 object-contain shrink-0 aspect-square" />
+          </div>
         )}
         {opts?.showToggle && (
           <button
             onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
             aria-label={sidebarCollapsed ? 'Expandir menú' : 'Colapsar menú'}
-            className="hidden lg:flex absolute top-5 right-2 w-6 h-6 rounded-full bg-primary text-on-primary items-center justify-center text-xs shadow-md hover:scale-110 transition-transform z-10"
+            className="hidden lg:flex absolute top-1/2 -translate-y-1/2 right-2 w-6 h-6 rounded-full bg-primary text-on-primary items-center justify-center text-xs shadow-md hover:scale-110 transition-transform z-10"
           >
             <Icon name={sidebarCollapsed ? 'chevron_right' : 'chevron_left'} size={14} />
           </button>
@@ -402,29 +407,32 @@ export function PatientLayout({ children }: PatientLayoutProps) {
       {/* Main content area with sticky header */}
       <main className="flex-1 flex flex-col overflow-hidden lg:ml-[var(--patient-sidebar-w)]" data-scroll-root>
         {/* Sticky header — mobile (hamburger + title + actions) and desktop (breadcrumb + actions) */}
-        <header className="glass-panel sticky top-0 z-30 flex items-center justify-between px-3 sm:px-6 h-16 border-b divider-teal shrink-0">
+        <header className="glass-panel sticky top-0 z-30 flex items-center justify-between px-3 sm:px-6 h-16 border-b divider-teal shrink-0 gap-2">
           {/* Left: hamburger (mobile) + breadcrumb (desktop) */}
-          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
             <button
               onClick={() => setSidebarOpen(true)}
               aria-label="Abrir menú"
-              className="lg:hidden text-primary shrink-0 p-2 rounded-full hover:bg-primary/10 transition-colors"
+              className="lg:hidden text-primary shrink-0 p-1.5 rounded-lg hover:bg-primary/10 transition-colors"
             >
-              <Icon name="menu" size={24} />
+              <Icon name="menu" size={22} />
             </button>
             <BackButton />
-            {/* Mobile title */}
-            <img src="/logo.png" alt="" className="lg:hidden h-9 w-auto shrink-0" />
+            {/* Mobile title & logo */}
+            <div className="flex items-center gap-2 lg:hidden min-w-0">
+              <img src="/logo.png" alt="FisioMirror" className="h-8 w-8 object-contain shrink-0 aspect-square" />
+              <span className="text-on-surface font-bold text-sm truncate max-w-[130px] sm:max-w-[180px]">{currentCrumb}</span>
+            </div>
             {/* Desktop breadcrumb */}
-            <div className="hidden lg:flex items-center text-outline text-label-sm gap-2">
-              <span className="hover:text-primary cursor-pointer">Inicio</span>
-              <Icon name="chevron_right" size={14} />
-              <span className="text-on-surface font-bold">{currentCrumb}</span>
+            <div className="hidden lg:flex items-center text-outline text-label-sm gap-2 min-w-0 truncate">
+              <span onClick={() => navigate('/dashboard-paciente')} className="hover:text-primary cursor-pointer shrink-0">Inicio</span>
+              <Icon name="chevron_right" size={14} className="shrink-0" />
+              <span className="text-on-surface font-bold truncate">{currentCrumb}</span>
             </div>
           </div>
-          {/* Right: actions — all 4 buttons directly in header */}
+          {/* Right: actions — all buttons directly in header */}
           <div className="flex items-center gap-1 sm:gap-2 shrink-0">
-            <div className={`online-indicator is-${isOnline ? 'online' : 'offline'} hidden sm:flex`}>
+            <div className={`online-indicator is-${isOnline ? 'online' : 'offline'} hidden md:inline-flex`}>
               <span className="dot" />
               <span>{isOnline ? 'Online' : 'Offline'}</span>
             </div>
@@ -445,8 +453,17 @@ export function PatientLayout({ children }: PatientLayoutProps) {
             >
               <Icon name={theme === 'dark' ? 'light_mode' : 'dark_mode'} size={20} />
             </button>
-            <HelpGuideButton />
-            <PhysiGuide />
+            <button
+              onClick={() => setPhysiChatOpen(true)}
+              className="p-2 rounded-xl text-on-surface-variant hover:text-primary hover:bg-primary/5 transition-colors active-scale flex items-center gap-1.5"
+              aria-label="Abrir Chatbot IA Physi"
+              title="Chatbot IA Physi"
+            >
+              <Bot size={20} className="text-primary" />
+              <span className="hidden xl:inline text-xs font-semibold text-primary">
+                Chatbot Physi
+              </span>
+            </button>
             <button
               onClick={() => setShowLogout(true)}
               className="text-on-surface-variant hover:text-error transition-colors active-scale p-2 rounded-full"
@@ -582,6 +599,8 @@ export function PatientLayout({ children }: PatientLayoutProps) {
       </AnimatePresence>
 
       <LegalModal isOpen={legalModal !== null} onClose={() => setLegalModal(null)} type={legalModal ?? 'privacy'} />
+
+      <PhysiChatbot isOpen={physiChatOpen} onClose={() => setPhysiChatOpen(false)} />
     </div>
   );
 }

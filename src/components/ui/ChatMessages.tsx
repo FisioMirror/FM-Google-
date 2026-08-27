@@ -30,7 +30,7 @@ interface ChatMessagesProps {
 }
 
 const DEFAULT_MESSAGES: ChatMessage[] = [
-  { id: 1, text: '¡Hola! Soy Physi, tu asistente de fisioterapia 💪', sender: 'assistant' },
+  { id: 1, text: '¡Hola! Soy Physi, tu asistente de fisioterapia.', sender: 'assistant' },
   { id: 2, text: '¿Qué puedo hacer por ti hoy?', sender: 'assistant' },
   { id: 3, text: 'Tengo dolor en el hombro derecho al levantar el brazo', sender: 'user' },
   {
@@ -41,7 +41,7 @@ const DEFAULT_MESSAGES: ChatMessage[] = [
   { id: 5, text: 'Empezó hace tres días, después de entrenar', sender: 'user' },
   {
     id: 6,
-    text: 'Perfecto, te prepararé una rutina de movilidad suave para el hombro 🧘',
+    text: 'Perfecto, te prepararé una rutina de movilidad suave para el hombro.',
     sender: 'assistant',
   },
 ];

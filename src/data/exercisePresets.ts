@@ -201,6 +201,69 @@ const EXERCISE_OVERRIDES: Record<string, ExerciseJointPreset> = {
     ],
     holdDurationSec: 10,
   },
+  'flexoextensión de codo': {
+    description: 'Flexión y extensión activa de codo para rango articular completo.',
+    detailedDescription: 'Comienza con el brazo extendido a lo largo del cuerpo. Flexiona el codo acercando la mano hacia el hombro hasta los 130° sin mover el húmero. Sostén 1 segundo y extiende controladamente hasta 0° sin bloquear bruscamente la articulación. Mantén los hombros relajados y el tronco erguido.',
+    targetJoints: [
+      { joint: 'codo_izquierdo', targetAngle: 130, neutralAngle: 0, tolerance: 8, axis: 'x' },
+      { joint: 'hombro_izquierdo', targetAngle: 0, neutralAngle: 0, tolerance: 10, axis: 'x' },
+      { joint: 'codo_derecho', targetAngle: 130, neutralAngle: 0, tolerance: 8, axis: 'x' },
+      { joint: 'hombro_derecho', targetAngle: 0, neutralAngle: 0, tolerance: 10, axis: 'x' },
+    ],
+    holdDurationSec: 2,
+  },
+  'abducción de cadera de pie': {
+    description: 'Elevación lateral de la pierna manteniendo la pelvis neutra.',
+    detailedDescription: 'De pie con apoyo unipodal suave sobre una superficie firme. Separa la pierna hacia el lado en el plano frontal alcanzando 40° de abducción. La pelvis debe mantenerse completamente nivelada sin inclinar el tronco hacia el lado opuesto. Sostén 2 segundos y desciende con control.',
+    targetJoints: [
+      { joint: 'cadera_derecha', targetAngle: 40, neutralAngle: 0, tolerance: 8, axis: 'z' },
+      { joint: 'rodilla_derecha', targetAngle: 0, neutralAngle: 0, tolerance: 10, axis: 'x' },
+      { joint: 'cadera_izquierda', targetAngle: 40, neutralAngle: 0, tolerance: 8, axis: 'z' },
+      { joint: 'rodilla_izquierda', targetAngle: 0, neutralAngle: 0, tolerance: 10, axis: 'x' },
+    ],
+    holdDurationSec: 2,
+  },
+  'extensión activa de rodilla': {
+    description: 'Extensión terminal de rodilla en sedestación para activación de cuádriceps.',
+    detailedDescription: 'Sentado en una silla con la espalda recta y los muslos apoyados. Extiende la rodilla hacia adelante hasta la horizontal completa (0°). Aprieta el cuádriceps en la parte superior durante 3 segundos. Regresa lentamente a la posición de 90° sin dejar caer la pierna.',
+    targetJoints: [
+      { joint: 'rodilla_izquierda', targetAngle: 0, neutralAngle: 90, tolerance: 8, axis: 'x' },
+      { joint: 'cadera_izquierda', targetAngle: 90, neutralAngle: 90, tolerance: 10, axis: 'x' },
+      { joint: 'rodilla_derecha', targetAngle: 0, neutralAngle: 90, tolerance: 8, axis: 'x' },
+      { joint: 'cadera_derecha', targetAngle: 90, neutralAngle: 90, tolerance: 10, axis: 'x' },
+    ],
+    holdDurationSec: 3,
+  },
+  'flexión cervical suave': {
+    description: 'Inclinación anterior suave del cuello para elongación cervicodorsal.',
+    detailedDescription: 'Sentado con postura erguida y hombros relajados. Realiza una suave flexión anterior de la cabeza llevando el mentón hacia el esternón hasta alcanzar 30°. Mantén una respiración suave durante 3 segundos. Regresa a la posición neutra con lentitud evitando movimientos bruscos.',
+    targetJoints: [
+      { joint: 'cabeza', targetAngle: 30, neutralAngle: 0, tolerance: 6, axis: 'x' },
+      { joint: 'tronco_torax', targetAngle: 0, neutralAngle: 0, tolerance: 10, axis: 'x' },
+    ],
+    holdDurationSec: 3,
+  },
+  'rotación externa con banda': {
+    description: 'Rotación externa glenohumeral manteniendo el codo a 90° adosado al cuerpo.',
+    detailedDescription: 'Con el codo pegado a las costillas y doblado a 90°, rota el antebrazo hacia afuera en contra de la resistencia elástica. Alcanza 45° de rotación externa sin descolocar la escápula ni compensar con la columna lumbar. Sostén 2 segundos y retorna lentamente.',
+    targetJoints: [
+      { joint: 'hombro_izquierdo', targetAngle: 45, neutralAngle: 0, tolerance: 8, axis: 'y' },
+      { joint: 'codo_izquierdo', targetAngle: 90, neutralAngle: 90, tolerance: 10, axis: 'x' },
+      { joint: 'hombro_derecho', targetAngle: 45, neutralAngle: 0, tolerance: 8, axis: 'y' },
+      { joint: 'codo_derecho', targetAngle: 90, neutralAngle: 90, tolerance: 10, axis: 'x' },
+    ],
+    holdDurationSec: 2,
+  },
+  'circunducción escapular': {
+    description: 'Movilización circular escapulotorácica para descompresión de cintura escapular.',
+    detailedDescription: 'De pie o sentado erguido. Realiza círculos amplios y controlados con ambos hombros: elevación hacia las orejas, retracción hacia atrás, descenso y protracción anterior. Realiza el ciclo en 4 segundos de forma continua y simétrica.',
+    targetJoints: [
+      { joint: 'hombro_izquierdo', targetAngle: 60, neutralAngle: 0, tolerance: 12, axis: 'x' },
+      { joint: 'hombro_derecho', targetAngle: 60, neutralAngle: 0, tolerance: 12, axis: 'x' },
+      { joint: 'tronco_torax', targetAngle: 0, neutralAngle: 0, tolerance: 10, axis: 'x' },
+    ],
+    holdDurationSec: 2,
+  },
   'movilidad cervical': {
     description: 'Rotación cervical suave hacia ambos lados con hombros relajados.',
     detailedDescription: 'Siéntate con la columna recta y hombros relajados. Rota lentamente la cabeza hacia la derecha hasta alcanzar 45° de rotación. Mantén 2 segundos y retorna al centro. Repite hacia la izquierda. Los hombros deben permanecer quietos y bajos. El movimiento es suave y sin rebotes. Si sientes mareo, reduce el rango.',

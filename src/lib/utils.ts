@@ -6,6 +6,15 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 /**
+ * Validates whether a string is a valid standard UUID format.
+ */
+export function isValidUUID(id: string | null | undefined): boolean {
+  if (!id || typeof id !== 'string') return false;
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id) ||
+         /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+}
+
+/**
  * Devuelve una marca de tiempo relativa en español, p. ej. "hace 5 min", "hace 2 h",
  * "hace 3 días", o la fecha completa si es más antigua que una semana.
  */

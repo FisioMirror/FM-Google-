@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { Check } from 'lucide-react';
 
 const OtpFold = () => {
   const [values, setValues] = useState(['', '', '', '']);
@@ -35,7 +36,9 @@ const OtpFold = () => {
             className={`w-14 h-16 text-center text-2xl bg-slate-100 dark:bg-slate-700 border-2 border-slate-300 dark:border-slate-600 rounded-xl text-slate-900 dark:text-white outline-none focus:border-teal-500 transition-all duration-300 ${isFolded ? 'scale-0 opacity-0 w-0' : ''}`}
             value={val} onChange={(e) => handleChange(idx, e.target.value)} onKeyDown={(e) => handleKeyDown(idx, e)} disabled={isFolded} />
         ))}
-        <div className={`${isFolded ? 'flex' : 'hidden'} w-14 h-16 bg-teal-500 text-white rounded-xl items-center justify-center text-3xl cursor-pointer`} onClick={resetOtp}>✓</div>
+        <div className={`${isFolded ? 'flex' : 'hidden'} w-14 h-16 bg-teal-500 text-white rounded-xl items-center justify-center text-2xl cursor-pointer`} onClick={resetOtp}>
+          <Check size={28} />
+        </div>
       </div>
       <p className="text-sm text-slate-500">Escribe el código de 4 dígitos</p>
     </div>

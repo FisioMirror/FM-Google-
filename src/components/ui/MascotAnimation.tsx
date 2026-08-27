@@ -18,14 +18,14 @@ export type MascotType =
 
 /** Tamaños predefinidos responsivos (móvil / escritorio) en píxeles. */
 const SIZE_PRESETS: Record<string, { mobile: string; desktop: string }> = {
-  // 80px móvil → 120px escritorio (por defecto)
-  md: { mobile: 'w-20 h-20', desktop: 'lg:w-[120px] lg:h-[120px]' },
-  // 64px móvil → 96px escritorio (avatares de chat, iconos compactos)
-  sm: { mobile: 'w-16 h-16', desktop: 'lg:w-24 lg:h-24' },
+  // 80px móvil → 96px tablet → 112px escritorio (por defecto)
+  md: { mobile: 'w-20 h-20 sm:w-24 sm:h-24', desktop: 'lg:w-28 lg:h-28' },
+  // 64px móvil → 80px escritorio (avatares de chat, iconos compactos)
+  sm: { mobile: 'w-16 h-16', desktop: 'lg:w-20 lg:h-20' },
   // 44px móvil → 56px escritorio (badges, cabeceras de panel)
   xs: { mobile: 'w-11 h-11', desktop: 'lg:w-14 lg:h-14' },
-  // 56px móvil → 80px escritorio (racha, tarjetas pequeñas)
-  racha: { mobile: 'w-14 h-14', desktop: 'lg:w-20 lg:h-20' },
+  // 56px móvil → 72px escritorio (racha, tarjetas pequeñas)
+  racha: { mobile: 'w-14 h-14', desktop: 'lg:w-[72px] lg:h-[72px]' },
 };
 
 interface MascotAnimationProps {
@@ -89,12 +89,12 @@ export function MascotAnimation({
 
   return (
     <div
-      className={`mascot-container ${preset.mobile} ${preset.desktop} ${className}`.trim()}
+      className={`mascot-container ${preset.mobile} ${preset.desktop} rounded-full aspect-square overflow-hidden shrink-0 ${className}`.trim()}
     >
       <img
         src={config.src}
         alt={alt ?? config.alt}
-        className="w-full h-full object-contain animate-breathe will-change-transform"
+        className="w-full h-full object-cover rounded-full animate-breathe will-change-transform"
         onError={() => setVisible(false)}
         draggable={false}
       />

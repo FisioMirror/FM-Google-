@@ -83,92 +83,68 @@ export function BarLoader({ className }: { className?: string }) {
  * framer-motion. Two staggered pulse rings emanate outward for a refined,
  * clinical feel that matches the app's teal aesthetic.
  */
-export function LogoLoader({ size = 96, className }: { size?: number; className?: string }) {
-  const logoSize = Math.round(size * 0.5);
-  const ringThickness = Math.max(2, Math.round(size * 0.035));
+export function LogoLoader({ size = 110, className }: { size?: number; className?: string }) {
+  const logoSize = Math.round(size * 0.72);
 
   return (
     <div
-      className={cn('relative flex items-center justify-center', className)}
-      style={{ width: size, height: size }}
+      className={cn('relative flex flex-col items-center justify-center gap-4', className)}
       role="status"
       aria-live="polite"
       aria-label="Cargando"
     >
       {/* Ambient halo behind the logo */}
-      <div
-        className="absolute inset-0 rounded-full blur-xl opacity-60 pointer-events-none"
-        style={{
-          background:
-            'radial-gradient(circle at 50% 45%, rgba(138,211,207,0.35) 0%, transparent 65%)',
-        }}
-      />
-
-      {/* Expanding pulse rings */}
-      {[0, 1].map((i) => (
-        <motion.span
-          key={i}
-          className="absolute rounded-full border border-primary/30 pointer-events-none"
-          style={{ width: size, height: size }}
-          initial={{ scale: 0.85, opacity: 0.55 }}
-          animate={{ scale: 1.35, opacity: 0 }}
-          transition={{
-            duration: 2.4,
-            repeat: Infinity,
-            ease: 'easeOut',
-            delay: i * 1.2,
+      <div className="relative flex items-center justify-center">
+        <div
+          className="absolute inset-0 rounded-full blur-2xl opacity-60 pointer-events-none scale-150"
+          style={{
+            background:
+              'radial-gradient(circle, rgba(21,105,102,0.4) 0%, rgba(34,211,238,0.2) 65%, transparent 80%)',
           }}
         />
-      ))}
 
-      {/* Spinning conic-gradient ring */}
-      <motion.div
-        className="absolute rounded-full"
-        style={{
-          width: size,
-          height: size,
-          padding: ringThickness,
-          background: `conic-gradient(from 0deg, transparent 0deg, var(--c-primary-300, #8ad3cf) 90deg, var(--c-primary, #156966) 180deg, transparent 260deg)`,
-          WebkitMask: 'radial-gradient(farthest-side, transparent calc(100% - ' + ringThickness + 'px), #000 calc(100% - ' + ringThickness + 'px))',
-          mask: 'radial-gradient(farthest-side, transparent calc(100% - ' + ringThickness + 'px), #000 calc(100% - ' + ringThickness + 'px))',
-        }}
-        animate={{ rotate: 360 }}
-        transition={{ duration: 1.6, repeat: Infinity, ease: 'linear' }}
-      />
-
-      {/* Subtle track behind the ring */}
-      <div
-        className="absolute rounded-full border pointer-events-none"
-        style={{
-          width: size,
-          height: size,
-          borderWidth: ringThickness,
-          borderColor: 'rgba(21, 105, 102, 0.08)',
-        }}
-      />
-
-      {/* Glass disc holding the logo — gentle breathing scale */}
-      <motion.div
-        className="relative rounded-full flex items-center justify-center shadow-ambient-teal"
-        style={{
-          width: size - ringThickness * 2 - 6,
-          height: size - ringThickness * 2 - 6,
-          background:
-            'linear-gradient(135deg, rgba(255,255,255,0.10) 0%, rgba(138,211,207,0.06) 100%)',
-          backdropFilter: 'blur(4px)',
-          border: '1px solid rgba(255,255,255,0.12)',
-        }}
-        animate={{ scale: [1, 1.04, 1] }}
-        transition={{ duration: 2.6, repeat: Infinity, ease: 'easeInOut' }}
-      >
-        <img
-          src="/logo.png"
-          alt="FisioMirror"
-          className="object-contain select-none"
+        {/* Breathing Logo */}
+        <motion.div
+          animate={{
+            scale: [1, 1.07, 1],
+            filter: [
+              'drop-shadow(0 4px 14px rgba(21,105,102,0.25))',
+              'drop-shadow(0 8px 28px rgba(21,105,102,0.45))',
+              'drop-shadow(0 4px 14px rgba(21,105,102,0.25))',
+            ],
+          }}
+          transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut' }}
+          className="relative flex items-center justify-center"
           style={{ width: logoSize, height: logoSize }}
-          draggable={false}
-        />
-      </motion.div>
+        >
+          <img
+            src="/logo.png"
+            alt="FisioMirror"
+            className="w-full h-full object-contain select-none"
+            draggable={false}
+          />
+        </motion.div>
+      </div>
+
+      {/* 3 Animated Bouncing Dots */}
+      <div className="flex items-center gap-2">
+        {[0, 1, 2].map((i) => (
+          <motion.span
+            key={i}
+            animate={{
+              scale: [0.8, 1.35, 0.8],
+              opacity: [0.35, 1, 0.35],
+            }}
+            transition={{
+              duration: 1.4,
+              repeat: Infinity,
+              ease: 'easeInOut',
+              delay: i * 0.2,
+            }}
+            className="w-2.5 h-2.5 rounded-full bg-teal-600 dark:bg-teal-400 shadow-sm"
+          />
+        ))}
+      </div>
     </div>
   );
 }

@@ -805,13 +805,13 @@ export const ToastVariants = () => {
 
   return (
     <div className="flex flex-wrap gap-2 relative">
-      <button onClick={() => trigger('✅ Paciente guardado')} className="px-3 py-1.5 rounded-xl bg-emerald-500/15 text-emerald-600 text-xs font-semibold">
+      <button onClick={() => trigger('Paciente guardado')} className="px-3 py-1.5 rounded-xl bg-emerald-500/15 text-emerald-600 text-xs font-semibold">
         Éxito
       </button>
-      <button onClick={() => trigger('⚠️ Advertencia: Sesión pendiente')} className="px-3 py-1.5 rounded-xl bg-amber-500/15 text-amber-600 text-xs font-semibold">
+      <button onClick={() => trigger('Advertencia: Sesión pendiente')} className="px-3 py-1.5 rounded-xl bg-amber-500/15 text-amber-600 text-xs font-semibold">
         Alerta
       </button>
-      <button onClick={() => trigger('❌ Error de conexión')} className="px-3 py-1.5 rounded-xl bg-red-500/15 text-red-600 text-xs font-semibold">
+      <button onClick={() => trigger('Error de conexión')} className="px-3 py-1.5 rounded-xl bg-red-500/15 text-red-600 text-xs font-semibold">
         Error
       </button>
 

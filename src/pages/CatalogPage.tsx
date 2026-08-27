@@ -76,7 +76,7 @@ export function CatalogPage() {
 
           <div className="flex flex-wrap gap-2 shrink-0">
             <ConfettiButton className="rounded-xl px-4 py-2.5 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white font-medium shadow-md shadow-teal-500/20 text-xs">
-              🎉 Probar Confeti
+              Probar Confeti
             </ConfettiButton>
             <div className="p-1 rounded-xl bg-surface-container-high border border-outline/15 flex items-center">
               <AnimatedThemeToggler variant="circle" />

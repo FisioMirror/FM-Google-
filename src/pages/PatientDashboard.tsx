@@ -13,10 +13,12 @@ import { useGamification } from '../hooks/useGamification';
 import { AchievementShowcase, AchievementUnlockModal } from '../components/AchievementShowcase';
 import { CollapsibleSection } from '../components/ui/CollapsibleSection';
 import { PRIMARY_DEMO_PATIENT } from '../data/unifiedDemoData';
+import { isValidUUID } from '../lib/utils';
 import { BorderBeam } from '../components/ui/BorderBeam';
 import { MascotAnimation } from '../components/ui/MascotAnimation';
 import { AuroraText } from '../components/ui/AuroraText';
 import { HelpGuideButton } from '../components/ui/HelpGuideButton';
+import { PatientRecoveryHub } from '../components/patient/PatientRecoveryHub';
 import {
   Flame,
   CheckCircle2,
@@ -84,6 +86,62 @@ export function PatientDashboard() {
     if (!user?.id) return;
     setLoading(true);
     try {
+      const isRealUser = isValidUUID(user.id);
+
+      if (!isRealUser) {
+        // Cargar sesiones demo desde local storage + datos de demostración
+        const existingDemoRaw = localStorage.getItem('fisiomirror_demo_sessions');
+        const localDemoSessions: Array<{ fecha: string; duracion_segundos?: number }> = existingDemoRaw ? JSON.parse(existingDemoRaw) : [];
+        const combinedSessions = [...localDemoSessions, ...PRIMARY_DEMO_PATIENT.sessions];
+
+        const streak = computeStreak(combinedSessions.map((s) => s.fecha));
+        const allDates = combinedSessions.map((s) => new Date(s.fecha)).filter((d) => !isNaN(d.getTime()));
+        setAllSessionDates(allDates);
+
+        const dayMap = new Map<string, number>();
+        for (let i = 6; i >= 0; i--) {
+          const d = new Date(Date.now() - i * 86400000);
+          const key = d.toISOString().split('T')[0];
+          dayMap.set(key, 0);
+        }
+
+        const weekAgo = new Date(Date.now() - 7 * 86400000);
+        const recent = combinedSessions.filter((s) => new Date(s.fecha) >= weekAgo);
+        const weeklyMin = recent.reduce((sum, s) => sum + (s.duracion_segundos ?? 0), 0) / 60;
+
+        recent.forEach((s) => {
+          const key = new Date(s.fecha).toISOString().split('T')[0];
+          if (dayMap.has(key)) dayMap.set(key, (dayMap.get(key) || 0) + (s.duracion_segundos ?? 0) / 60);
+        });
+
+        const activity: WeekActivity[] = [];
+        const keys = Array.from(dayMap.keys());
+        keys.forEach((k, idx) => {
+          activity.push({ day: weekDays[idx], minutes: Math.round(dayMap.get(k) || 0) });
+        });
+        setWeekActivity(activity);
+
+        setTherapist('Dr. Roberto Silva');
+        setKpi({
+          streak: Math.max(streak, 4),
+          totalSessions: combinedSessions.length,
+          weeklyMinutes: Math.round(weeklyMin) || 52,
+          isDemo: true,
+        });
+
+        setExercises(
+          PRIMARY_DEMO_PATIENT.exercises.map((ex) => ({
+            id: ex.id,
+            name: ex.ejercicio_nombre,
+            subtitle: `${ex.series} series · ${ex.repeticiones} reps`,
+            icon: 'self_improvement',
+          }))
+        );
+
+        setLoading(false);
+        return;
+      }
+
       const { count: sessions } = await supabase
         .from('sesiones_completadas')
         .select('*', { count: 'exact', head: true })
@@ -289,6 +347,9 @@ export function PatientDashboard() {
         </div>
       </div>
 
+      {/* Patient Recovery & Wellness Hub */}
+      <PatientRecoveryHub />
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left 2 Cols: Daily Routine & Primary Action */}
         <div className="lg:col-span-2 space-y-6">
@@ -489,3 +550,5 @@ export function PatientDashboard() {
     </div>
   );
 }
+
+export default PatientDashboard;

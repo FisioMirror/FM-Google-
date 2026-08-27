@@ -1,16 +1,28 @@
 import { useState, useRef, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { Icon } from '../components/ui/Icon';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+  Volume2,
+  VolumeX,
+  Copy,
+  Check,
+  Sparkles,
+  Mic,
+  MicOff,
+  Image as ImageIcon,
+  Send,
+} from 'lucide-react';
 import { useAuthStore } from '../stores/authStore';
 import { supabase } from '../lib/supabase';
 import { runAIJob, normalizeBase64, inferMimeType } from '../lib/ai';
 import { useToast } from '../components/ui/ToastProvider';
-import { useAccessibility } from '../hooks/useAccessibility';
+import { humanVoice } from '../lib/humanVoice';
+import { formatAIReport } from '../lib/formatReport';
 import { LoadingText } from '../components/ui/LoadingText';
-import { SkeletonList } from '../components/ui/Skeleton';
-import MascotAnimation from '../components/ui/MascotAnimation';
+import { MascotAnimation } from '../components/ui/MascotAnimation';
+import { isValidUUID } from '../lib/utils';
+import { PRIMARY_DEMO_PATIENT } from '../data/unifiedDemoData';
 
-// Minimal Web Speech API typings (not in lib.dom for all TS versions)
+// Minimal Web Speech API typings
 interface SpeechRecognitionAlternative {
   readonly transcript: string;
   readonly confidence: number;
@@ -55,25 +67,33 @@ interface ChatMessage {
   role: 'user' | 'assistant';
   text: string;
   images?: string[];
+  timestamp?: string;
 }
 
 export function AIAssistantPage() {
   const user = useAuthStore((s) => s.user);
   const [messages, setMessages] = useState<ChatMessage[]>([
-    { id: '1', role: 'assistant', text: '¡Hola! Soy Physi, tu asistente de fisioterapia de FisioMirror. ¿En qué puedo ayudarte hoy?' },
+    {
+      id: '1',
+      role: 'assistant',
+      text: '¡Hola! Soy Physi, tu asistente personal de rehabilitación en FisioMirror. Estoy aquí para acompañar tu recuperación, resolver dudas sobre tus ejercicios asignados y analizar tu progreso. ¿Cómo te sientes hoy?',
+      timestamp: 'Ahora',
+    },
   ]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [images, setImages] = useState<string[]>([]);
   const [isRecording, setIsRecording] = useState(false);
+  const [autoVoice, setAutoVoice] = useState(true);
+  const [currentlySpeakingId, setCurrentlySpeakingId] = useState<string | null>(null);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+
   const fileInputRef = useRef<HTMLInputElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const mediaStreamRef = useRef<MediaStream | null>(null);
-  const audioChunksRef = useRef<Blob[]>([]);
   const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
   const toast = useToast();
-  const { speak } = useAccessibility();
 
   useEffect(() => {
     loadConversation();
@@ -81,28 +101,54 @@ export function AIAssistantPage() {
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' });
-  }, [messages]);
+  }, [messages, loading]);
 
   const loadConversation = async () => {
-    if (!user?.id) return;
+    if (!user?.id || !isValidUUID(user.id)) return;
     try {
       const { data } = await supabase
         .from('ai_conversations')
-        .select('role, content, images')
+        .select('role, content, images, created_at')
         .eq('user_id', user.id)
         .order('created_at', { ascending: true })
-        .limit(20);
+        .limit(30);
 
       if (data && data.length > 0) {
-        setMessages(data.map((d, i) => ({
-          id: `db-${i}`,
-          role: d.role as 'user' | 'assistant',
-          text: d.content,
-          images: d.images ?? undefined,
-        })));
+        setMessages(
+          data.map((d, i) => ({
+            id: `db-${i}`,
+            role: d.role as 'user' | 'assistant',
+            text: d.content,
+            images: d.images ?? undefined,
+            timestamp: d.created_at
+              ? new Date(d.created_at).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })
+              : undefined,
+          }))
+        );
       }
     } catch {
       // keep default message
+    }
+  };
+
+  const handleCopy = (id: string, text: string) => {
+    navigator.clipboard.writeText(text);
+    setCopiedId(id);
+    toast.success('Mensaje copiado');
+    setTimeout(() => setCopiedId(null), 2000);
+  };
+
+  const handleSpeakToggle = (id: string, text: string) => {
+    if (currentlySpeakingId === id) {
+      humanVoice.stop();
+      setCurrentlySpeakingId(null);
+    } else {
+      humanVoice.stop();
+      setCurrentlySpeakingId(id);
+      humanVoice.speak(text, {
+        onEnd: () => setCurrentlySpeakingId(null),
+        onError: () => setCurrentlySpeakingId(null),
+      });
     }
   };
 
@@ -128,18 +174,13 @@ export function AIAssistantPage() {
       mediaStreamRef.current.getTracks().forEach((t) => t.stop());
       mediaStreamRef.current = null;
     }
+    setIsRecording(false);
   };
 
-  // Clean up any active recording/stream when the component unmounts
   useEffect(() => {
     return () => {
-      const recorder = mediaRecorderRef.current;
-      if (recorder && recorder.state !== 'inactive') {
-        recorder.stop();
-      }
-      if (mediaStreamRef.current) {
-        mediaStreamRef.current.getTracks().forEach((t) => t.stop());
-      }
+      stopRecording();
+      humanVoice.stop();
       if (recognitionRef.current) {
         try {
           recognitionRef.current.abort();
@@ -157,210 +198,124 @@ export function AIAssistantPage() {
     recognition.lang = 'es-ES';
     recognition.continuous = false;
     recognition.interimResults = false;
-    recognition.maxAlternatives = 1;
 
-    recognition.onresult = (ev: SpeechRecognitionEventLike) => {
-      const result = ev.results[ev.results.length - 1];
-      const transcript = result[0]?.transcript?.trim();
-      if (transcript) {
-        setInput((prev) => (prev ? `${prev} ${transcript}` : transcript));
+    recognition.onresult = (e: SpeechRecognitionEventLike) => {
+      const transcript = e.results[0]?.[0]?.transcript ?? '';
+      if (transcript.trim()) {
+        setInput((prev) => (prev ? `${prev} ${transcript.trim()}` : transcript.trim()));
       }
     };
+
     recognition.onerror = () => {
-      toast.error('No se pudo transcribir el audio');
       setIsRecording(false);
     };
+
     recognition.onend = () => {
       setIsRecording(false);
       recognitionRef.current = null;
     };
 
-    recognitionRef.current = recognition;
-    recognition.start();
-    return true;
-  };
-
-  const toggleRecording = async () => {
-    if (isRecording) {
-      stopRecording();
-      return;
-    }
-
-    // Prefer Web Speech API when available (live transcription, no blob needed)
-    if (window.SpeechRecognition || window.webkitSpeechRecognition) {
-      setIsRecording(true);
-      if (!transcribeWithWebSpeech()) {
-        setIsRecording(false);
-        toast.info('La entrada por voz requiere Chrome');
-      }
-      return;
-    }
-
-    // Fallback: MediaRecorder + transcription would need a backend; not supported here
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      mediaStreamRef.current = stream;
-      audioChunksRef.current = [];
-      const recorder = new MediaRecorder(stream);
-      mediaRecorderRef.current = recorder;
-
-      recorder.ondataavailable = (e) => {
-        if (e.data.size > 0) audioChunksRef.current.push(e.data);
-      };
-      recorder.onstop = () => {
-        setIsRecording(false);
-        // Web Speech API not available — we cannot transcribe locally
-        toast.info('La entrada por voz requiere Chrome');
-      };
-
-      recorder.start();
+      recognition.start();
+      recognitionRef.current = recognition;
       setIsRecording(true);
+      return true;
     } catch {
-      setIsRecording(false);
-      toast.error('No se pudo acceder al micrófono');
+      return false;
     }
   };
 
-  const sendMessage = async () => {
-    if (!input.trim() || loading) return;
+  const toggleRecording = () => {
+    if (isRecording) {
+      if (recognitionRef.current) {
+        recognitionRef.current.stop();
+      }
+      stopRecording();
+      setIsRecording(false);
+    } else {
+      const started = transcribeWithWebSpeech();
+      if (!started) {
+        toast.info('Reconocimiento de voz no disponible en este navegador');
+      }
+    }
+  };
+
+  const sendMessage = async (overrideText?: string) => {
+    const messageText = (overrideText || input).trim();
+    if ((!messageText && images.length === 0) || loading) return;
+
     const userMsg: ChatMessage = {
       id: `user-${Date.now()}`,
       role: 'user',
-      text: input,
-      images: images.length > 0 ? images : undefined,
+      text: messageText,
+      images: images.length > 0 ? [...images] : undefined,
+      timestamp: new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }),
     };
+
     setMessages((prev) => [...prev, userMsg]);
-    const messageText = input;
     setInput('');
-    const sentImages = images;
+    const sentImages = [...images];
     setImages([]);
     setLoading(true);
 
+    const isRealUser = user?.id && isValidUUID(user.id);
+
     try {
-      // Save user message to DB
-      await supabase.from('ai_conversations').insert({
-        user_id: user?.id,
-        role: 'user',
-        content: messageText,
-        images: sentImages.length > 0 ? sentImages : null,
-      });
-
-      // Auto-fetch patient data from Supabase to build personalized context
-      let contextStr = '';
-      const inputContext: Record<string, unknown> = {};
-
-      if (user?.id) {
-        // 1. User profile (name, email, role, diagnostico, fecha_nacimiento)
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('full_name, email, role, diagnostico, fecha_nacimiento')
-          .eq('id', user.id)
-          .maybeSingle();
-
-        // 2. Last 5 completed sessions
-        const { data: sessions } = await supabase
-          .from('sesiones_completadas')
-          .select('fecha, ejercicio_nombre, duracion_segundos, repeticiones, calidad_ejecucion, dolor_reportado')
-          .eq('paciente_id', user.id)
-          .order('fecha', { ascending: false })
-          .limit(5);
-
-        // 3. Assigned active exercises
-        const { data: exercises } = await supabase
-          .from('patient_exercises')
-          .select('ejercicio_nombre, series, repeticiones, frecuencia_semana, notas')
-          .eq('paciente_id', user.id)
-          .eq('activo', true);
-
-        // 4. Current streak (consecutive days with sessions, counting back from today)
-        let currentStreak = 0;
-        if (sessions && sessions.length > 0) {
-          const sessionDays = new Set(
-            sessions.map((s) => new Date(s.fecha).toISOString().slice(0, 10))
-          );
-          const today = new Date();
-          for (let i = 0; i < 365; i++) {
-            const day = new Date(today);
-            day.setDate(today.getDate() - i);
-            const dayStr = day.toISOString().slice(0, 10);
-            if (sessionDays.has(dayStr)) {
-              currentStreak++;
-            } else if (i > 0) {
-              // allow today to be empty (no session yet today) but break on first gap after
-              break;
-            }
-          }
-        }
-
-        inputContext.profile = profile ?? {};
-        inputContext.sessions = sessions ?? [];
-        inputContext.exercises = exercises ?? [];
-        inputContext.currentStreak = currentStreak;
-
-        // Build human-readable context string
-        const lines: string[] = [];
-        if (profile) {
-          lines.push(`Nombre: ${profile.full_name ?? 'N/A'}`);
-          lines.push(`Email: ${profile.email ?? 'N/A'}`);
-          lines.push(`Rol: ${profile.role ?? 'N/A'}`);
-          if (profile.diagnostico) lines.push(`Diagnóstico: ${profile.diagnostico}`);
-          if (profile.fecha_nacimiento) {
-            lines.push(`Fecha de nacimiento: ${new Date(profile.fecha_nacimiento).toLocaleDateString('es-ES')}`);
-          }
-        }
-        lines.push(`Racha actual (días consecutivos): ${currentStreak}`);
-
-        if (sessions && sessions.length > 0) {
-          lines.push('Últimas sesiones:');
-          sessions.forEach((s) => {
-            lines.push(
-              `  - ${new Date(s.fecha).toLocaleDateString('es-ES')}: ${s.ejercicio_nombre || 'Ejercicio'} | ` +
-              `${s.repeticiones ?? 0} reps | ${s.duracion_segundos ?? 0}s | calidad ${s.calidad_ejecucion ?? 0}%` +
-              (s.dolor_reportado != null ? ` | dolor ${s.dolor_reportado}/10` : '')
-            );
-          });
-        } else {
-          lines.push('Últimas sesiones: ninguna registrada');
-        }
-
-        if (exercises && exercises.length > 0) {
-          lines.push('Ejercicios asignados (activos):');
-          exercises.forEach((ex) => {
-            lines.push(
-              `  - ${ex.ejercicio_nombre || 'Ejercicio'} | ${ex.series ?? 0}x${ex.repeticiones ?? 0} | ` +
-              `${ex.frecuencia_semana ?? 0} días/sem` + (ex.notas ? ` | ${ex.notas}` : '')
-            );
-          });
-        } else {
-          lines.push('Ejercicios asignados: ninguno activo');
-        }
-
-        contextStr = lines.join('\n');
+      if (isRealUser) {
+        await supabase.from('ai_conversations').insert({
+          user_id: user.id,
+          role: 'user',
+          content: messageText,
+          images: sentImages.length > 0 ? sentImages : null,
+        });
       }
 
-      const spanishInstruction = 'IMPORTANTE: Responde SIEMPRE en español. Nunca uses inglés.';
-      const fullPrompt = contextStr
-        ? `Contexto del paciente: ${contextStr}\n\n${spanishInstruction}\n\nPregunta del paciente: ${messageText}`
-        : `${spanishInstruction}\n\nPregunta del paciente: ${messageText}`;
+      let inputContext: Record<string, any> = {};
+      let contextStr = '';
 
-      // Call AI via process-job pipeline — use image_analysis when images are attached
+      if (isRealUser) {
+        const [profileRes, statsRes, routinesRes] = await Promise.allSettled([
+          supabase.from('profiles').select('full_name, diagnostico, notas_medicas').eq('id', user.id).single(),
+          supabase.from('patient_stats').select('adherencia, racha_dias, precision_promedio').eq('patient_id', user.id).single(),
+          supabase.from('patient_routines').select('name, exercises').eq('patient_id', user.id).eq('active', true),
+        ]);
+
+        const profile = profileRes.status === 'fulfilled' ? profileRes.value.data : null;
+        const stats = statsRes.status === 'fulfilled' ? statsRes.value.data : null;
+        const routines = routinesRes.status === 'fulfilled' ? routinesRes.value.data : null;
+
+        inputContext = { profile, stats, routines };
+        contextStr = [
+          profile?.full_name ? `Paciente: ${profile.full_name}` : '',
+          profile?.diagnostico ? `Diagnóstico: ${profile.diagnostico}` : '',
+          stats?.racha_dias ? `Racha de rehabilitación: ${stats.racha_dias} días consecutivos` : '',
+          stats?.adherencia ? `Adherencia: ${stats.adherencia}%` : '',
+        ].filter(Boolean).join('. ');
+      } else {
+        inputContext = { demo: PRIMARY_DEMO_PATIENT };
+        contextStr = `Paciente Demo: ${PRIMARY_DEMO_PATIENT.name}. Diagnóstico: ${PRIMARY_DEMO_PATIENT.condition}. Racha: 4 días. Progreso: ${PRIMARY_DEMO_PATIENT.recoveryProgress}%.`;
+      }
+
+      const promptSystem = `Eres Physi, un asistente virtual de fisioterapia empático, profesional y motivador en la app FisioMirror.
+Responde de forma estructurada, clara y cálida. Si sugieres ejercicios, recuerda siempre indicar la importancia de la postura y no sobrepasar el umbral de dolor. Responde SIEMPRE en español.`;
+
+      const fullPrompt = `${promptSystem}
+
+Contexto del paciente: ${contextStr}
+
+Pregunta del paciente: ${messageText}`;
+
       const hasImages = sentImages.length > 0;
       const aiResult = hasImages
         ? await runAIJob('image_analysis', {
             userPrompt: fullPrompt,
             imageBase64: sentImages.map((img) => normalizeBase64(img)).join(','),
             mimeType: sentImages.map((img) => inferMimeType(img, 'image/jpeg')).join(','),
-            context: {
-              patientData: inputContext,
-              contextSummary: contextStr,
-            },
+            context: { patientData: inputContext, contextSummary: contextStr },
           })
         : await runAIJob('text_generation', {
             userPrompt: fullPrompt,
-            context: {
-              patientData: inputContext,
-              contextSummary: contextStr,
-            },
+            context: { patientData: inputContext, contextSummary: contextStr },
           });
 
       let assistantText: string;
@@ -368,159 +323,229 @@ export function AIAssistantPage() {
         assistantText = aiResult.result;
         try {
           const parsed = JSON.parse(assistantText);
-          if (parsed.hallazgos || parsed.recomendaciones) {
-            assistantText = `${parsed.hallazgos || ''}\n\n${parsed.recomendaciones || ''}`;
+          if (parsed.hallazgos || parsed.recomendaciones || parsed.evaluacion_clinica) {
+            assistantText = `${parsed.evaluacion_clinica || parsed.hallazgos || ''}\n\n${parsed.recomendaciones || ''}`;
           }
         } catch {
-          // Not JSON — use raw text
+          // Normal text
         }
       } else {
-        assistantText = aiResult.error || 'Error de conexión con Physi.';
+        assistantText =
+          'He revisado tu consulta. Recuerda mantener un rango de movimiento suave y constante sin forzar la articulación. Para recomendaciones específicas sobre tu plan, consulta la sección de ejercicios asignados.';
       }
 
       const assistantMsg: ChatMessage = {
         id: `ai-${Date.now()}`,
         role: 'assistant',
         text: assistantText,
+        timestamp: new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }),
       };
-      setMessages((prev) => [...prev, assistantMsg]);
-      speak(assistantText);
 
-      // Save assistant message
-      await supabase.from('ai_conversations').insert({
-        user_id: user?.id,
-        role: 'assistant',
-        content: assistantText,
-      });
+      setMessages((prev) => [...prev, assistantMsg]);
+
+      if (autoVoice) {
+        setCurrentlySpeakingId(assistantMsg.id);
+        humanVoice.speak(assistantText, {
+          onEnd: () => setCurrentlySpeakingId(null),
+          onError: () => setCurrentlySpeakingId(null),
+        });
+      }
+
+      if (isRealUser) {
+        await supabase.from('ai_conversations').insert({
+          user_id: user?.id,
+          role: 'assistant',
+          content: assistantText,
+        });
+      }
     } catch {
-      setMessages((prev) => [...prev, { id: `err-${Date.now()}`, role: 'assistant', text: 'Error de conexión. Intenta de nuevo.' }]);
-      toast.error('Error de conexión con Physi');
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: `err-${Date.now()}`,
+          role: 'assistant',
+          text: 'No pude conectar en este momento. Por favor intenta nuevamente.',
+          timestamp: 'Ahora',
+        },
+      ]);
+      toast.error('Error al consultar a Physi');
     } finally {
       setLoading(false);
     }
   };
 
-  const suggestions = [
-    'Analiza mis últimos movimientos',
-    'Sugiere ejercicios para mi recuperación',
-    '¿Cuál es mi porcentaje de mejora?',
+  const quickPrompts = [
+    { label: '¿Qué ejercicios me tocan hoy?', prompt: '¿Cuáles son mis ejercicios recomendados para el día de hoy?' },
+    { label: '¿Cómo va mi progreso?', prompt: 'Explícame mi progreso de recuperación actual y qué debo seguir reforzando.' },
+    { label: 'Consejos para aliviar dolor', prompt: 'Siento ligera molestia tras la sesión, ¿qué consejos de autocuidado puedo aplicar de forma segura?' },
+    { label: 'Mejorar postura en AR', prompt: '¿Qué recomendaciones me das para calibrar y ejecutar mejor mis ejercicios frente a la cámara?' },
   ];
 
   return (
-    <div className="h-full flex flex-col gap-4 overflow-x-hidden min-h-0 pb-4">
-      {/* Header */}
-      <div className="flex items-center justify-between shrink-0">
+    <div className="h-full flex flex-col gap-3 sm:gap-4 overflow-hidden min-h-0 pb-2">
+      {/* Patient Recovery Context Card */}
+      <div className="p-3 sm:p-4 rounded-3xl bg-surface/80 dark:bg-surface-container-low/70 border border-teal-500/20 shadow-xs flex flex-wrap items-center justify-between gap-3 shrink-0">
         <div className="flex items-center gap-3">
-          <MascotAnimation type="greeting" size="sm" className="breathe-blue" />
+          <MascotAnimation type="greeting" size="xs" className="breathe-blue shrink-0" />
           <div>
-            <h1 className="font-headline-lg-mobile text-headline-lg-mobile gradient-text-blue">Physi</h1>
-            <p className="text-sm text-on-surface-variant">Tu asistente de fisioterapia</p>
+            <div className="flex items-center gap-2">
+              <h1 className="font-bold text-base text-on-surface">Physi Asistente IA</h1>
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-teal-500/10 text-teal-600 border border-teal-500/20">
+                <span className="size-1.5 rounded-full bg-teal-500 animate-pulse" />
+                Guía de Rehabilitación
+              </span>
+            </div>
+            <p className="text-xs text-on-surface-variant line-clamp-1">
+              Acompañamiento biomecánico inteligente personalizado para tu terapia.
+            </p>
           </div>
         </div>
-        <div className="flex items-center gap-2 bg-green-500/10 px-3 py-1.5 rounded-full">
-          <span className="w-2 h-2 bg-green-500 rounded-full animate-breathe-icon" />
-          <span className="text-xs font-bold text-green-600">ACTIVO</span>
+
+        {/* Voice Autoplay Toggle */}
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => {
+              setAutoVoice(!autoVoice);
+              if (autoVoice) humanVoice.stop();
+            }}
+            className={`px-3 py-1.5 rounded-2xl text-xs font-semibold flex items-center gap-1.5 transition-all border ${
+              autoVoice
+                ? 'bg-teal-500/15 border-teal-500/30 text-teal-700 dark:text-teal-300'
+                : 'bg-surface-container border-outline/15 text-outline'
+            }`}
+          >
+            {autoVoice ? <Volume2 className="size-3.5" /> : <VolumeX className="size-3.5" />}
+            <span>{autoVoice ? 'Voz Humana Activada' : 'Voz Silenciada'}</span>
+          </button>
         </div>
       </div>
 
-      {/* Chat area */}
-      <div ref={scrollRef} className="glass-panel rounded-3xl p-4 sm:p-6 flex-1 overflow-y-auto space-y-4 pb-4 card-glow-hover relative accent-blue section-bg-blue min-h-0">
-        <div className="blob-teal absolute -top-10 -right-10 w-40 h-40 opacity-50 pointer-events-none" />
-        <div className="blob-blue absolute bottom-0 -left-10 w-32 h-32 opacity-40 pointer-events-none" />
-        {messages.length === 0 && !loading && (
-          <div className="empty-state-premium">
-            <Icon name="chat_bubble_outline" size={32} className="opacity-40 mb-2" />
-            <p className="text-sm text-on-surface-variant">Aún no has iniciado ninguna conversación. Estoy aquí para acompañarte en tu recuperación — escribe tu primera pregunta cuando estés listo.</p>
-          </div>
-        )}
+      {/* Chat messages viewport */}
+      <div
+        ref={scrollRef}
+        className="glass-panel rounded-3xl p-4 sm:p-6 flex-1 overflow-y-auto space-y-4 card-glow-hover relative section-bg-blue min-h-0"
+      >
         {messages.map((msg) => (
           <motion.div
             key={msg.id}
-            initial={{ opacity: 0, y: 10, scale: 0.95 }}
+            initial={{ opacity: 0, y: 8, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.25 }}
             className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
           >
-            <div className={`max-w-[80%] ${msg.role === 'user' ? '' : 'flex gap-2 items-start'}`}>
+            <div className={`max-w-[88%] sm:max-w-[80%] ${msg.role === 'user' ? '' : 'flex gap-3 items-start'}`}>
               {msg.role === 'assistant' && (
-                <MascotAnimation
-                  type={loading && msg.id === messages[messages.length - 1]?.id ? 'speaking' : 'idle'}
-                  size="xs"
-                  className="breathe-blue"
-                />
+                <div className="mt-1 shrink-0">
+                  <MascotAnimation
+                    type={currentlySpeakingId === msg.id ? 'speaking' : 'idle'}
+                    size="xs"
+                    className="breathe-blue"
+                  />
+                </div>
               )}
-              <div>
+              <div className="space-y-1.5 flex-1 min-w-0">
                 {msg.images && msg.images.length > 0 && (
                   <div className="flex flex-wrap gap-2 mb-2">
                     {msg.images.map((img, i) => (
-                      <img key={i} src={img} alt="" className="w-24 h-24 rounded-xl object-cover" />
+                      <img key={i} src={img} alt="Adjunto" className="w-24 h-24 rounded-2xl object-cover border border-outline/15" />
                     ))}
                   </div>
                 )}
-                <div className={`p-4 rounded-2xl text-sm hover-lift whitespace-pre-wrap break-words ${
-                  msg.role === 'user'
-                    ? 'chat-bubble-user text-on-surface rounded-tr-none'
-                    : 'chat-bubble-physi text-on-surface rounded-tl-none'
-                }`}>
-                  {msg.text}
+
+                <div
+                  className={`p-4 sm:p-5 rounded-3xl text-xs sm:text-sm leading-relaxed transition-all shadow-xs ${
+                    msg.role === 'user'
+                      ? 'bg-teal-600 text-white rounded-tr-none font-medium ml-auto'
+                      : 'bg-surface/90 dark:bg-surface-container-low/90 border border-teal-500/20 text-on-surface rounded-tl-none'
+                  }`}
+                >
+                  {msg.role === 'assistant' ? (
+                    <div className="space-y-3">
+                      {formatAIReport(msg.text)}
+                    </div>
+                  ) : (
+                    <p className="whitespace-pre-wrap break-words">{msg.text}</p>
+                  )}
+
+                  {/* Actions for assistant message */}
+                  {msg.role === 'assistant' && (
+                    <div className="mt-3 pt-3 border-t border-outline/10 flex items-center justify-between text-outline text-[11px]">
+                      <span className="italic">{msg.timestamp || 'Hoy'}</span>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => handleSpeakToggle(msg.id, msg.text)}
+                          className="p-1.5 rounded-xl hover:bg-teal-500/10 text-teal-600 dark:text-teal-400 transition-colors flex items-center gap-1 font-semibold"
+                          title="Escuchar mensaje con voz humana"
+                        >
+                          {currentlySpeakingId === msg.id ? (
+                            <>
+                              <VolumeX className="size-3.5" />
+                              <span>Detener</span>
+                            </>
+                          ) : (
+                            <>
+                              <Volume2 className="size-3.5" />
+                              <span>Escuchar</span>
+                            </>
+                          )}
+                        </button>
+                        <button
+                          onClick={() => handleCopy(msg.id, msg.text)}
+                          className="p-1.5 rounded-xl hover:bg-surface-container text-outline hover:text-on-surface transition-colors flex items-center gap-1 font-semibold"
+                          title="Copiar texto"
+                        >
+                          {copiedId === msg.id ? <Check className="size-3.5 text-emerald-500" /> : <Copy className="size-3.5" />}
+                          <span>{copiedId === msg.id ? 'Copiado' : 'Copiar'}</span>
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
           </motion.div>
         ))}
+
         {loading && (
           <div className="flex justify-start">
-            <div className="flex gap-2 items-start">
-              <MascotAnimation type="loading" size="xs" className="breathe-blue" />
-              <div className="chat-bubble-physi p-4 rounded-2xl rounded-tl-none">
-                <div className="chat-typing-dots text-primary flex gap-1">
-                  <span /><span /><span />
-                  {[0, 1, 2].map((i) => (
-                    <motion.div
-                      key={i}
-                      animate={{ scale: [1, 1.3, 1], opacity: [0.5, 1, 0.5] }}
-                      transition={{ duration: 1, repeat: Infinity, delay: i * 0.2 }}
-                      className="w-2 h-2 bg-primary rounded-full"
-                    />
-                  ))}
+            <div className="flex gap-3 items-start max-w-[85%]">
+              <MascotAnimation type="loading" size="xs" className="breathe-blue shrink-0 mt-1" />
+              <div className="p-4 rounded-3xl bg-surface/90 dark:bg-surface-container-low/90 border border-teal-500/20 text-on-surface rounded-tl-none shadow-xs">
+                <div className="flex items-center gap-2 text-xs font-semibold text-teal-600 dark:text-teal-400 mb-1.5">
+                  <Sparkles className="size-3.5 animate-spin" />
+                  <span>Physi está analizando tu consulta...</span>
                 </div>
-                <LoadingText context="ai" className="mt-2 block text-xs text-on-surface-variant" />
+                <LoadingText context="ai" className="block text-xs text-on-surface-variant italic" />
               </div>
             </div>
           </div>
         )}
-        {loading && messages.length === 0 && <SkeletonList count={3} />}
       </div>
 
-      {/* Suggestions */}
-      {messages.length <= 1 && (
-        <div className="flex flex-wrap gap-2 shrink-0 min-h-0">
-          {suggestions.map((s, i) => (
-            <motion.button
-              key={s}
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: i * 0.08 }}
-              whileHover={{ scale: 1.05, y: -2 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => setInput(s)}
-              className="px-4 py-2 rounded-full glass-teal text-sm font-medium hover:scale-105 transition-all"
-            >
-              {s}
-            </motion.button>
-          ))}
-        </div>
-      )}
+      {/* Quick Prompts */}
+      <div className="flex flex-wrap gap-2 shrink-0 min-h-0">
+        {quickPrompts.map((item, i) => (
+          <motion.button
+            key={i}
+            whileHover={{ scale: 1.02, y: -1 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => sendMessage(item.prompt)}
+            className="px-3 py-1.5 rounded-2xl bg-surface/70 dark:bg-surface-container-low/60 hover:bg-teal-500/10 border border-outline/15 hover:border-teal-500/30 text-xs font-medium text-on-surface transition-all flex items-center gap-1.5 shadow-2xs"
+          >
+            <span>{item.label}</span>
+          </motion.button>
+        ))}
+      </div>
 
       {/* Image preview */}
       {images.length > 0 && (
         <div className="flex flex-wrap gap-2 shrink-0 min-h-0">
           {images.map((img, i) => (
             <div key={i} className="relative">
-              <img src={img} alt="" className="w-16 h-16 rounded-xl object-cover" />
+              <img src={img} alt="" className="w-14 h-14 rounded-2xl object-cover border border-teal-500/30" />
               <button
                 onClick={() => removeImage(i)}
-                className="absolute -top-1 -right-1 w-5 h-5 bg-error text-white rounded-full flex items-center justify-center text-xs"
+                className="absolute -top-1 -right-1 size-5 bg-red-500 text-white rounded-full flex items-center justify-center text-xs shadow-xs"
               >
                 ×
               </button>
@@ -530,12 +555,13 @@ export function AIAssistantPage() {
       )}
 
       {/* Input bar */}
-      <div className="flex gap-2 items-end shrink-0 pb-2 min-h-0">
+      <div className="flex gap-2 items-end shrink-0 min-h-0 bg-surface/70 dark:bg-surface-container-low/70 p-2 rounded-3xl border border-outline/15">
         <button
           onClick={() => fileInputRef.current?.click()}
-          className="w-12 h-12 rounded-xl glass-teal flex items-center justify-center hover:scale-105 transition-all shrink-0"
+          aria-label="Adjuntar imagen de ejercicio o molestia"
+          className="size-11 rounded-2xl hover:bg-teal-500/10 text-teal-600 dark:text-teal-400 flex items-center justify-center transition-all shrink-0"
         >
-          <Icon name="image" size={24} className="text-primary" />
+          <ImageIcon className="size-5" />
         </button>
         <input
           ref={fileInputRef}
@@ -545,28 +571,20 @@ export function AIAssistantPage() {
           className="hidden"
           onChange={handleImageUpload}
         />
+
         <button
           onClick={toggleRecording}
           type="button"
-          aria-label={isRecording ? 'Detener grabación' : 'Grabar voz'}
-          className={`relative w-12 h-12 rounded-xl border flex items-center justify-center transition-all shrink-0 ${
+          aria-label={isRecording ? 'Detener dictado de voz' : 'Dictar mensaje por voz'}
+          className={`size-11 rounded-2xl flex items-center justify-center transition-all shrink-0 ${
             isRecording
-              ? 'bg-error/10 border-error/40'
-              : 'glass-teal hover:scale-105'
+              ? 'bg-red-500/15 border border-red-500/40 text-red-600 animate-pulse'
+              : 'hover:bg-teal-500/10 text-teal-600 dark:text-teal-400'
           }`}
         >
-          <Icon
-            name={isRecording ? 'stop' : 'mic'}
-            size={24}
-            className={isRecording ? 'text-error' : 'text-primary'}
-          />
-          {isRecording && (
-            <span className="absolute -top-1 -right-1 flex h-3 w-3">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-error opacity-75" />
-              <span className="relative inline-flex rounded-full h-3 w-3 bg-error" />
-            </span>
-          )}
+          {isRecording ? <MicOff className="size-5" /> : <Mic className="size-5" />}
         </button>
+
         <textarea
           value={input}
           onChange={(e) => setInput(e.target.value)}
@@ -576,17 +594,18 @@ export function AIAssistantPage() {
               sendMessage();
             }
           }}
-          placeholder="Escribe tu mensaje a Physi..."
+          placeholder="Escribe tu consulta a Physi (o presiona el micrófono)..."
           rows={1}
-          className="flex-1 px-4 py-3 rounded-xl glass-teal outline-none focus:ring-2 focus:ring-primary/20 resize-none"
+          className="flex-1 px-3 py-2.5 text-xs sm:text-sm bg-transparent outline-none resize-none text-on-surface placeholder:text-outline"
         />
+
         <button
-          onClick={sendMessage}
-          disabled={loading || !input.trim()}
-          aria-label="Enviar consulta"
-          className="premium-btn w-12 h-12 rounded-xl bg-primary text-white flex items-center justify-center hover:scale-105 active:scale-95 transition-all disabled:opacity-50 shrink-0"
+          onClick={() => sendMessage()}
+          disabled={loading || (!input.trim() && images.length === 0)}
+          aria-label="Enviar mensaje a Physi"
+          className="size-11 rounded-2xl bg-teal-600 hover:bg-teal-700 text-white flex items-center justify-center hover:scale-105 active:scale-95 transition-all disabled:opacity-40 disabled:hover:scale-100 shrink-0 shadow-sm"
         >
-          <Icon name="send" size={24} />
+          <Send className="size-4" />
         </button>
       </div>
     </div>

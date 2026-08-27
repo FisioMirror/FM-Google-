@@ -28,8 +28,11 @@ import { AnimatedTabs } from '../components/ui/AnimatedTabs';
 import { KpiCardSkeleton } from '../components/ui/PremiumSkeleton';
 import { EmptyState } from '../components/ui/EmptyState';
 import { runAIJob } from '../lib/ai';
-import { CollapsibleSection } from '../components/ui/CollapsibleSection';
+import { formatAIReport } from '../lib/formatReport';
 import { UNIFIED_DEMO_PATIENTS, PRIMARY_DEMO_PATIENT } from '../data/unifiedDemoData';
+import { isValidUUID } from '../lib/utils';
+import { ClinicalAnalyticsHub } from '../components/clinical/ClinicalAnalyticsHub';
+import { PatientRecoveryHub } from '../components/patient/PatientRecoveryHub';
 
 const dayLabels = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
 
@@ -159,7 +162,7 @@ export function StatsPage() {
 
     try {
       if (isFisio) {
-        if (!user?.id) {
+        if (!user?.id || !isValidUUID(user.id)) {
           setPatients(demoPw);
           setTotalPatients(demoPw.length);
           setActivePatients(demoPw.filter(p => p.sessionCount > 0).length);
@@ -220,8 +223,10 @@ export function StatsPage() {
         }
       } else {
         // ---- Paciente: keep existing progress/streak display ----
-        if (!user?.id) {
-          const s = PRIMARY_DEMO_PATIENT.sessions as unknown as SessionRow[];
+        if (!user?.id || !isValidUUID(user.id)) {
+          const existingDemoRaw = localStorage.getItem('fisiomirror_demo_sessions');
+          const localDemoSessions: SessionRow[] = existingDemoRaw ? JSON.parse(existingDemoRaw) : [];
+          const s = [...localDemoSessions, ...(PRIMARY_DEMO_PATIENT.sessions as unknown as SessionRow[])];
           setSessions(s);
           setTotalSessions(s.length);
           setTotalMinutes(Math.round(s.reduce((sum, r) => sum + (r.duracion_segundos || 0), 0) / 60));
@@ -812,9 +817,17 @@ export function StatsPage() {
                   </div>
                 </GlassPanel>
               )}
+
+              {/* Advanced Clinical Analytics for Fisioterapeuta */}
+              <div className="mt-4">
+                <ClinicalAnalyticsHub />
+              </div>
             </>
           ) : (
             <>
+              {/* Empathetic Personal Recovery Hub for Paciente */}
+              <PatientRecoveryHub />
+
               {/* Paciente: biomechanics evolution chart + recent sessions */}
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                 <GlassPanel className="lg:col-span-2 p-8 rounded-[2rem] flex flex-col relative overflow-hidden">
@@ -1090,25 +1103,43 @@ export function StatsPage() {
 
           {/* AI recommendation + PDF report (both roles) */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <GlassPanel className="p-8 rounded-[2rem] bg-primary/5 border-primary/10">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="mascot-container w-14 h-14 lg:w-16 lg:h-16 rounded-full overflow-hidden bg-primary/10 flex items-center justify-center shrink-0">
-                  <img src="/animations/mascot/consejo.webp" alt="Physi aconsejando" className="w-full h-full object-contain animate-breathe" onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }} />
+            <GlassPanel className="p-8 rounded-[2rem] bg-primary/5 border-primary/10 md:col-span-2">
+              <div className="flex flex-col gap-4 mb-4">
+                <div className="flex items-center gap-3">
+                  <div className="mascot-container w-12 h-12 rounded-full overflow-hidden bg-primary/10 flex items-center justify-center shrink-0">
+                    <img src="/animations/mascot/consejo.webp" alt="Physi aconsejando" className="w-full h-full object-contain animate-breathe" onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }} />
+                  </div>
+                  <div>
+                    <p className="font-bold text-primary text-base">Asesoramiento Clínico de Physi</p>
+                    <p className="text-xs text-on-surface-variant">Análisis biomecánico y recomendaciones personalizadas</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="font-bold text-primary">Recomendación de Physi</p>
+
+                <div className="mt-1">
                   {aiLoading ? (
-                    <div className="flex items-center gap-2 text-sm text-on-surface-variant"><Icon name="progress_activity" size={16} className="text-primary animate-spin" /> Analizando datos...</div>
+                    <div className="flex items-center gap-2 text-sm text-on-surface-variant py-4">
+                      <Icon name="progress_activity" size={18} className="text-primary animate-spin" />
+                      <span>Analizando métricas biomecánicas y adherencia...</span>
+                    </div>
                   ) : aiInsight ? (
-                    <p className="text-sm text-on-surface-variant">{aiInsight}</p>
+                    <div className="p-4 rounded-2xl bg-surface/80 dark:bg-surface-container-low/70 border border-outline/10 shadow-inner">
+                      {formatAIReport(aiInsight)}
+                    </div>
                   ) : (
-                    <p className="text-sm text-on-surface-variant">Genera una recomendación basada en tus datos reales de progreso.</p>
+                    <p className="text-sm text-on-surface-variant">
+                      Genera un análisis clínico automatizado basado en tus datos reales de ejecución y regularidad.
+                    </p>
                   )}
                 </div>
               </div>
               <div className="flex gap-3">
-                <button onClick={generateInsight} disabled={aiLoading} className="premium-btn text-primary font-bold text-sm underline decoration-primary/30 hover:decoration-primary disabled:opacity-50">
-                  Generar Recomendación
+                <button
+                  onClick={generateInsight}
+                  disabled={aiLoading}
+                  className="px-5 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs flex items-center gap-2 shadow-sm transition-all disabled:opacity-50"
+                >
+                  <Icon name="psychology" size={16} />
+                  <span>{aiLoading ? 'Generando...' : 'Generar Análisis Clínico'}</span>
                 </button>
               </div>
             </GlassPanel>

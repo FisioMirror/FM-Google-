@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { User, Stethoscope } from 'lucide-react';
 import type { ExerciseDefinition, CharacterRole, JointRotationAxis } from '../../types/character.types';
 import { KidModel3D } from '../characters3d/KidModel3D';
 import { PhysioModel3D } from '../characters3d/PhysioModel3D';
@@ -81,7 +82,7 @@ export const SkeletonDemo: React.FC<SkeletonDemoProps> = ({ exercise, userRole =
             selectedRole === 'patient' ? 'bg-primary text-on-primary font-semibold' : 'text-on-surface-variant hover:text-on-surface'
           }`}
         >
-          <span aria-hidden="true">🧒</span>
+          <User size={16} />
           Niño
         </button>
         <button
@@ -92,7 +93,7 @@ export const SkeletonDemo: React.FC<SkeletonDemoProps> = ({ exercise, userRole =
             selectedRole === 'physio' ? 'bg-primary text-on-primary font-semibold' : 'text-on-surface-variant hover:text-on-surface'
           }`}
         >
-          <span aria-hidden="true">🩺</span>
+          <Stethoscope size={16} />
           Fisioterapeuta
         </button>
       </div>

@@ -4,49 +4,44 @@
  * button roles, navigation headings, and live screen announcements.
  */
 
+import { speakHumanVoice, stopHumanVoice, cleanTextForNaturalSpeech } from './humanVoice';
+
 class TalkBackService {
   private enabled = false;
-  private synth: SpeechSynthesis | null = null;
-  private voice: SpeechSynthesisVoice | null = null;
   private lastSpokenText = '';
   private debounceTimer: number | null = null;
+  private listenersAttached = false;
 
-  constructor() {
-    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-      this.synth = window.speechSynthesis;
-      this.loadVoices();
-      if (this.synth.onvoiceschanged !== undefined) {
-        this.synth.onvoiceschanged = () => this.loadVoices();
-      }
-    }
-  }
+  constructor() {}
 
-  private loadVoices() {
-    if (!this.synth) return;
-    const voices = this.synth.getVoices();
-    const lang = localStorage.getItem('fisio_language') || 'es';
-    const targetPrefix = lang === 'pt' ? 'pt' : lang === 'en' ? 'en' : 'es';
-    this.voice =
-      voices.find((v) => v.lang.startsWith(targetPrefix)) ||
-      voices.find((v) => v.lang.startsWith('es')) ||
-      voices[0] ||
-      null;
+  public loadVoices() {
+    // Handled automatically by humanVoice engine
   }
 
   public init() {
     if (typeof window === 'undefined') return;
     const stored = localStorage.getItem('fisio-talkback') === 'true';
-    this.setEnabled(stored);
+    if (stored) {
+      this.setEnabled(true, false);
+    }
   }
 
-  public setEnabled(val: boolean) {
+  public setEnabled(val: boolean, announce = true) {
     this.enabled = val;
     if (typeof window !== 'undefined') {
       localStorage.setItem('fisio-talkback', String(val));
       if (val) {
         document.documentElement.classList.add('talkback');
         this.attachGlobalListeners();
-        this.speak('TalkBack activado. Modo de lectura de pantalla interactivo listo.');
+        if (announce) {
+          const lang = localStorage.getItem('fisio_language') || 'es';
+          const msg = lang === 'en' 
+            ? 'TalkBack enabled. Interactive screen reader mode active.' 
+            : lang === 'pt' 
+            ? 'TalkBack ativado. Leitor de tela interativo pronto.' 
+            : 'TalkBack activado. Modo de lectura de pantalla interactivo listo.';
+          this.speak(msg, true);
+        }
       } else {
         document.documentElement.classList.remove('talkback');
         this.detachGlobalListeners();
@@ -60,32 +55,28 @@ class TalkBackService {
   }
 
   public speak(text: string, interrupt = true) {
-    if (!this.enabled || !this.synth || !text.trim()) return;
-    if (interrupt) {
-      this.synth.cancel();
-    }
-    const cleanText = text.replace(/[*_#`]/g, '').trim();
-    if (!cleanText || cleanText === this.lastSpokenText) return;
+    if (!this.enabled || !text || !text.trim()) return;
+    
+    const clean = cleanTextForNaturalSpeech(text);
+    if (!clean || clean === this.lastSpokenText) return;
 
-    this.lastSpokenText = cleanText;
-    const utterance = new SpeechSynthesisUtterance(cleanText);
-    if (this.voice) utterance.voice = this.voice;
-    utterance.rate = 1.05;
-    utterance.pitch = 1.0;
+    this.lastSpokenText = clean;
 
-    this.synth.speak(utterance);
+    speakHumanVoice(clean, {
+      interrupt,
+      rate: 1.0,
+      pitch: 1.02,
+    });
 
-    // Reset last text memory after 3s
+    // Reset last text memory after 2.5s
     if (this.debounceTimer) window.clearTimeout(this.debounceTimer);
     this.debounceTimer = window.setTimeout(() => {
       this.lastSpokenText = '';
-    }, 3000);
+    }, 2500);
   }
 
   public stop() {
-    if (this.synth) {
-      this.synth.cancel();
-    }
+    stopHumanVoice();
   }
 
   private handleFocusOrHover = (e: Event) => {
@@ -95,7 +86,7 @@ class TalkBackService {
 
     // Check if target or ancestor is interactive/accessible
     const interactive = target.closest(
-      'button, a, input, select, textarea, [role="button"], [role="switch"], [role="tab"], h1, h2, h3, [data-talkback]'
+      'button, a, input, select, textarea, [role="button"], [role="switch"], [role="tab"], h1, h2, h3, h4, [data-talkback], label'
     ) as HTMLElement | null;
 
     if (!interactive) return;
@@ -111,11 +102,11 @@ class TalkBackService {
         const input = interactive as HTMLInputElement;
         textToSpeak = `${input.placeholder || 'Campo de texto'}, ${input.type}: ${input.value || 'vacío'}`;
       } else if (interactive.tagName === 'BUTTON' || interactive.getAttribute('role') === 'button') {
-        textToSpeak = `Botón: ${interactive.innerText || 'sin texto'}`;
+        textToSpeak = `Botón: ${interactive.innerText?.trim() || 'sin texto'}`;
       } else if (interactive.tagName === 'A') {
-        textToSpeak = `Enlace: ${interactive.innerText || 'ir a destino'}`;
+        textToSpeak = `Enlace: ${interactive.innerText?.trim() || 'ir a enlace'}`;
       } else {
-        textToSpeak = interactive.innerText?.slice(0, 100) || '';
+        textToSpeak = interactive.innerText?.trim().slice(0, 120) || '';
       }
     }
 
@@ -125,13 +116,19 @@ class TalkBackService {
   };
 
   private attachGlobalListeners() {
+    if (this.listenersAttached || typeof window === 'undefined') return;
     window.addEventListener('focusin', this.handleFocusOrHover, true);
     window.addEventListener('mouseover', this.handleFocusOrHover, true);
+    window.addEventListener('click', this.handleFocusOrHover, true);
+    this.listenersAttached = true;
   }
 
   private detachGlobalListeners() {
+    if (!this.listenersAttached || typeof window === 'undefined') return;
     window.removeEventListener('focusin', this.handleFocusOrHover, true);
     window.removeEventListener('mouseover', this.handleFocusOrHover, true);
+    window.removeEventListener('click', this.handleFocusOrHover, true);
+    this.listenersAttached = false;
   }
 }
 

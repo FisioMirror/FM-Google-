@@ -310,7 +310,7 @@ export function buildPremiumHTML(data: PDFPatientData, aiNarrative?: string): st
     <div style="background:linear-gradient(135deg,#00504d 0%,#00837a 100%);padding:28px 40px;display:flex;justify-content:space-between;align-items:center">
       <div style="display:flex;align-items:center;gap:12px">
         <div style="width:42px;height:42px;background:rgba(255,255,255,0.15);border-radius:12px;display:flex;align-items:center;justify-content:center">
-          <span style="font-size:22px">⚕</span>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M2 12h20"/></svg>
         </div>
         <div>
           <div style="font-size:22px;font-weight:800;color:#fff;letter-spacing:-0.5px">FisioMirror</div>

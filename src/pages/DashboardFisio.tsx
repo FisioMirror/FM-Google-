@@ -22,6 +22,7 @@ import { ConfettiStars } from '../components/ui/ConfettiButton';
 import { UNIFIED_DEMO_PATIENTS } from '../data/unifiedDemoData';
 import { AvatarWithBadge } from '../components/heroui';
 import { ArrowRight, ChevronRight } from 'lucide-react';
+import { isValidUUID } from '../lib/utils';
 
 interface KpiData {
   activePatients: number;
@@ -205,6 +206,12 @@ export function DashboardFisio() {
 
   const loadKpis = async () => {
     if (!user?.id) return;
+    if (!isValidUUID(user.id)) {
+      setKpi(demoKpi);
+      setEvolution(demoEvolution);
+      setLoadingKpis(false);
+      return;
+    }
     try {
       const { count: patientCount } = await supabase
         .from('pacientes_terapeutas')
@@ -261,12 +268,21 @@ export function DashboardFisio() {
 
   const loadPriorities = async () => {
     if (!user?.id) return;
+    if (!isValidUUID(user.id)) {
+      setPriorities(demoPriorities);
+      setCheckedPriorities(new Array(demoPriorities.length).fill(false));
+      return;
+    }
     try {
       const { data: links } = await supabase
         .from('pacientes_terapeutas')
         .select('paciente_id')
         .eq('terapeuta_id', user.id);
-      if (!links || links.length === 0) return;
+      if (!links || links.length === 0) {
+        setPriorities(demoPriorities);
+        setCheckedPriorities(new Array(demoPriorities.length).fill(false));
+        return;
+      }
 
       const patientIds = links.map((l) => l.paciente_id);
       const { data: profiles } = await supabase
@@ -355,7 +371,7 @@ export function DashboardFisio() {
   const quickActions = [
     { title: 'Nueva Sesión AR', desc: 'Inicia un seguimiento remoto con biofeedback en tiempo real.', icon: 'videocam', color: 'bg-primary', cta: 'Comenzar ahora', route: '/patients' },
     { title: 'Cargar Paciente', desc: 'Sube historias clínicas o importa perfiles con OCR inteligente.', icon: 'person_add', color: 'bg-secondary', cta: 'Importar', route: '/ocr-scanner' },
-    { title: 'Generar Token', desc: 'Crea accesos seguros de un solo uso para pacientes.', icon: 'generating_tokens', color: 'bg-tertiary', cta: 'Emitir llave', route: '/tokens' },
+    { title: 'Directorio Clínico', desc: 'Gestión integral de pacientes, expedientes y tokens de vinculación.', icon: 'group', color: 'bg-tertiary', cta: 'Ver pacientes', route: '/patients' },
     { title: 'Biblioteca Clínica', desc: 'Explora ejercicios validados y ajusta rangos articulares.', icon: 'fitness_center', color: 'bg-emerald-600', cta: 'Ver ejercicios', route: '/fisio-exercises' },
   ];
 

@@ -17,12 +17,17 @@ i18n.use(initReactI18next).init({
   interpolation: {
     escapeValue: false,
   },
+  react: {
+    useSuspense: false,
+  },
 });
 
 export function changeAppLanguage(lang: 'es' | 'en' | 'pt') {
   i18n.changeLanguage(lang);
   if (typeof window !== 'undefined') {
     localStorage.setItem('fisio_language', lang);
+    document.documentElement.lang = lang;
+    window.dispatchEvent(new CustomEvent('fisio_language_changed', { detail: { lang } }));
   }
 }
 

@@ -23,10 +23,13 @@ export function CalibrationPage() {
   const [countdown, setCountdown] = useState(COUNTDOWN_FROM);
   const [showSkipConfirm, setShowSkipConfirm] = useState(false);
   const [detectElapsed, setDetectElapsed] = useState(0);
+  const [handRaisedDetected, setHandRaisedDetected] = useState(false);
 
   const detectStartRef = useRef<number>(0);
   const errorTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const countdownTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const isCountingDownRef = useRef<boolean>(false);
+  const countdownValRef = useRef<number>(COUNTDOWN_FROM);
   const elapsedTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
@@ -64,41 +67,78 @@ export function CalibrationPage() {
     };
   }, [state]);
 
+  // Calibration pose detection & countdown handling
   useEffect(() => {
-    if (state !== 'calibrating') return;
-    if (elapsedTimerRef.current) { clearInterval(elapsedTimerRef.current); elapsedTimerRef.current = null; }
+    if (state !== 'calibrating') {
+      if (countdownTimerRef.current) {
+        clearInterval(countdownTimerRef.current);
+        countdownTimerRef.current = null;
+      }
+      isCountingDownRef.current = false;
+      return;
+    }
+
+    if (elapsedTimerRef.current) {
+      clearInterval(elapsedTimerRef.current);
+      elapsedTimerRef.current = null;
+    }
+
     const lm = poseData?.landmarks;
-    if (!lm) return;
+    if (!lm) {
+      setHandRaisedDetected(false);
+      return;
+    }
+
     const rightWrist = lm[16];
     const rightShoulder = lm[12];
     const leftWrist = lm[15];
     const leftShoulder = lm[11];
-    if (!rightWrist || !rightShoulder || !leftWrist || !leftShoulder) return;
-    const handRaised = rightWrist.y < rightShoulder.y || leftWrist.y < leftShoulder.y;
-    if (!handRaised) return;
 
-    let n = COUNTDOWN_FROM;
-    setCountdown(n);
-    countdownTimerRef.current = setInterval(() => {
-      n -= 1;
-      if (n <= 0) {
-        if (countdownTimerRef.current) clearInterval(countdownTimerRef.current);
-        countdownTimerRef.current = null;
-        try {
-          localStorage.setItem(STORAGE_KEY, 'true');
-          localStorage.removeItem(SKIP_KEY);
-        } catch { /* */ }
-        toast.success('Calibracion completada correctamente');
-        setState('success');
-      } else {
-        setCountdown(n);
+    const isHandRaised = Boolean(
+      (rightWrist && rightShoulder && rightWrist.y < rightShoulder.y && rightWrist.visibility > 0.4) ||
+      (leftWrist && leftShoulder && leftWrist.y < leftShoulder.y && leftWrist.visibility > 0.4)
+    );
+
+    setHandRaisedDetected(isHandRaised);
+
+    if (isHandRaised) {
+      if (!isCountingDownRef.current) {
+        isCountingDownRef.current = true;
+        countdownValRef.current = COUNTDOWN_FROM;
+        setCountdown(COUNTDOWN_FROM);
+
+        countdownTimerRef.current = setInterval(() => {
+          countdownValRef.current -= 1;
+          const currentVal = countdownValRef.current;
+          setCountdown(currentVal);
+
+          if (currentVal <= 0) {
+            if (countdownTimerRef.current) {
+              clearInterval(countdownTimerRef.current);
+              countdownTimerRef.current = null;
+            }
+            isCountingDownRef.current = false;
+            try {
+              localStorage.setItem(STORAGE_KEY, 'true');
+              localStorage.removeItem(SKIP_KEY);
+            } catch { /* storage fallback */ }
+            toast.success('¡Calibración completada con éxito!');
+            setState('success');
+          }
+        }, 1000);
       }
-    }, 1000);
-
-    return () => {
-      if (countdownTimerRef.current) clearInterval(countdownTimerRef.current);
-      countdownTimerRef.current = null;
-    };
+    } else {
+      // Hand lowered before countdown finished
+      if (isCountingDownRef.current) {
+        if (countdownTimerRef.current) {
+          clearInterval(countdownTimerRef.current);
+          countdownTimerRef.current = null;
+        }
+        isCountingDownRef.current = false;
+        countdownValRef.current = COUNTDOWN_FROM;
+        setCountdown(COUNTDOWN_FROM);
+      }
+    }
   }, [state, poseData, toast]);
 
   useEffect(() => {
@@ -106,6 +146,7 @@ export function CalibrationPage() {
       if (errorTimerRef.current) clearTimeout(errorTimerRef.current);
       if (countdownTimerRef.current) clearInterval(countdownTimerRef.current);
       if (elapsedTimerRef.current) clearInterval(elapsedTimerRef.current);
+      isCountingDownRef.current = false;
     };
   }, []);
 
@@ -122,6 +163,8 @@ export function CalibrationPage() {
 
   const retry = () => {
     setCountdown(COUNTDOWN_FROM);
+    countdownValRef.current = COUNTDOWN_FROM;
+    isCountingDownRef.current = false;
     setDetectElapsed(0);
     setState('detecting');
     detectStartRef.current = Date.now();

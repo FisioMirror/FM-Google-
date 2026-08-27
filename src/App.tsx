@@ -21,41 +21,103 @@ import { OnboardingTour } from './components/OnboardingTour';
 import { hasCompletedOnboarding } from './hooks/useGamification';
 import type { CharacterRole } from './types/character.types';
 
-const DashboardFisio = lazy(() => import('./pages/DashboardFisio').then(m => ({ default: m.DashboardFisio })));
-const PatientDashboard = lazy(() => import('./pages/PatientDashboard').then(m => ({ default: m.PatientDashboard })));
-const PatientsPage = lazy(() => import('./pages/PatientsPage').then(m => ({ default: m.PatientsPage })));
-const PatientDetailPage = lazy(() => import('./pages/PatientDetailPage').then(m => ({ default: m.PatientDetailPage })));
-const OCRScannerPage = lazy(() => import('./pages/OCRScannerPage').then(m => ({ default: m.OCRScannerPage })));
-const TokenGeneratorPage = lazy(() => import('./pages/TokenGeneratorPage').then(m => ({ default: m.TokenGeneratorPage })));
-const ExercisesPage = lazy(() => import('./pages/ExercisesPage').then(m => ({ default: m.ExercisesPage })));
-const StatsPage = lazy(() => import('./pages/StatsPage').then(m => ({ default: m.StatsPage })));
-const ToolsPage = lazy(() => import('./pages/ToolsPage').then(m => ({ default: m.ToolsPage })));
-const ProfilePage = lazy(() => import('./pages/ProfilePage').then(m => ({ default: m.ProfilePage })));
-const ARMirrorPage = lazy(() => import('./pages/ARMirrorPage').then(m => ({ default: m.ARMirrorPage })));
-const CalibrationPage = lazy(() => import('./pages/CalibrationPage').then(m => ({ default: m.CalibrationPage })));
-const AIAssistantPage = lazy(() => import('./pages/AIAssistantPage').then(m => ({ default: m.AIAssistantPage })));
-const PatientExercisesPage = lazy(() => import('./pages/PatientExercisesPage').then(m => ({ default: m.PatientExercisesPage })));
-const SettingsPage = lazy(() => import('./pages/SettingsPage').then(m => ({ default: m.SettingsPage })));
-const CatalogPage = lazy(() => import('./pages/CatalogPage').then(m => ({ default: m.CatalogPage })));
-const NotFound = lazy(() => import('./pages/NotFound').then(m => ({ default: m.NotFound })));
+function lazyPage<T extends React.ComponentType<any>>(
+  factory: () => Promise<any>,
+  exportName?: string
+) {
+  return lazy(async () => {
+    try {
+      const module = await factory();
+      if (exportName && module[exportName]) {
+        return { default: module[exportName] };
+      }
+      if (module.default) {
+        return { default: module.default };
+      }
+      const candidate = Object.values(module).find((v) => typeof v === 'function');
+      if (candidate) return { default: candidate as T };
+      return { default: (() => null) as unknown as T };
+    } catch {
+      await new Promise((r) => setTimeout(r, 400));
+      const retryModule = await factory();
+      if (exportName && retryModule[exportName]) {
+        return { default: retryModule[exportName] };
+      }
+      if (retryModule.default) {
+        return { default: retryModule.default };
+      }
+      const candidate = Object.values(retryModule).find((v) => typeof v === 'function');
+      return { default: (candidate || (() => null)) as unknown as T };
+    }
+  });
+}
+
+const DashboardFisio = lazyPage(() => import('./pages/DashboardFisio'), 'DashboardFisio');
+const PatientDashboard = lazyPage(() => import('./pages/PatientDashboard'), 'PatientDashboard');
+const PatientsPage = lazyPage(() => import('./pages/PatientsPage'), 'PatientsPage');
+const PatientDetailPage = lazyPage(() => import('./pages/PatientDetailPage'), 'PatientDetailPage');
+const OCRScannerPage = lazyPage(() => import('./pages/OCRScannerPage'), 'OCRScannerPage');
+const TokenGeneratorPage = lazyPage(() => import('./pages/TokenGeneratorPage'), 'TokenGeneratorPage');
+const ExercisesPage = lazyPage(() => import('./pages/ExercisesPage'), 'ExercisesPage');
+const StatsPage = lazyPage(() => import('./pages/StatsPage'), 'StatsPage');
+const ToolsPage = lazyPage(() => import('./pages/ToolsPage'), 'ToolsPage');
+const ProfilePage = lazyPage(() => import('./pages/ProfilePage'), 'ProfilePage');
+const ARMirrorPage = lazyPage(() => import('./pages/ARMirrorPage'), 'ARMirrorPage');
+const CalibrationPage = lazyPage(() => import('./pages/CalibrationPage'), 'CalibrationPage');
+const AIAssistantPage = lazyPage(() => import('./pages/AIAssistantPage'), 'AIAssistantPage');
+const PatientExercisesPage = lazyPage(() => import('./pages/PatientExercisesPage'), 'PatientExercisesPage');
+const SettingsPage = lazyPage(() => import('./pages/SettingsPage'), 'SettingsPage');
+const CatalogPage = lazyPage(() => import('./pages/CatalogPage'), 'CatalogPage');
+const NotFound = lazyPage(() => import('./pages/NotFound'), 'NotFound');
 
 function PageLoader() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
-      <motion.div
-        animate={{ scale: [1, 1.08, 1], opacity: [0.7, 1, 0.7] }}
-        transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-        className="w-14 h-14 rounded-2xl bg-teal-50 dark:bg-slate-800 border border-teal-500/20 flex items-center justify-center shadow-lg shadow-teal-500/10 p-2"
-      >
-        <img src="/logo.png" alt="FisioMirror" className="w-full h-full object-contain" />
-      </motion.div>
-      <div className="flex gap-1.5">
+    <div className="flex flex-col items-center justify-center min-h-[65vh] gap-6" role="status" aria-label="Cargando aplicación">
+      {/* Halo and App Logo without confining square box */}
+      <div className="relative flex items-center justify-center">
+        <div
+          className="absolute inset-0 rounded-full blur-2xl opacity-50 pointer-events-none scale-150"
+          style={{
+            background: 'radial-gradient(circle, rgba(21,105,102,0.35) 0%, rgba(34,211,238,0.2) 60%, transparent 80%)',
+          }}
+        />
+        <motion.div
+          animate={{
+            scale: [1, 1.06, 1],
+            filter: [
+              'drop-shadow(0 4px 12px rgba(21,105,102,0.2))',
+              'drop-shadow(0 8px 24px rgba(21,105,102,0.4))',
+              'drop-shadow(0 4px 12px rgba(21,105,102,0.2))',
+            ],
+          }}
+          transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut' }}
+          className="relative w-20 h-20 sm:w-24 sm:h-24 flex items-center justify-center"
+        >
+          <img
+            src="/logo.png"
+            alt="FisioMirror"
+            className="w-full h-full object-contain select-none"
+            draggable={false}
+          />
+        </motion.div>
+      </div>
+
+      {/* 3 Animated Breathing Dots */}
+      <div className="flex items-center gap-2">
         {[0, 1, 2].map((i) => (
-          <motion.div
+          <motion.span
             key={i}
-            animate={{ opacity: [0.3, 1, 0.3] }}
-            transition={{ duration: 1.2, repeat: Infinity, delay: i * 0.2 }}
-            className="w-2 h-2 rounded-full bg-teal-500"
+            animate={{
+              scale: [0.8, 1.3, 0.8],
+              opacity: [0.4, 1, 0.4],
+            }}
+            transition={{
+              duration: 1.4,
+              repeat: Infinity,
+              ease: 'easeInOut',
+              delay: i * 0.2,
+            }}
+            className="w-2.5 h-2.5 rounded-full bg-teal-600 dark:bg-teal-400 shadow-sm"
           />
         ))}
       </div>
@@ -91,6 +153,7 @@ function AppRoutes() {
       <Route path="/dashboard-fisio" element={<ProtectedRoute role="fisioterapeuta"><FisioLayout><Suspense fallback={<PageLoader />}><DashboardFisio /></Suspense></FisioLayout></ProtectedRoute>} />
       <Route path="/patients" element={<ProtectedRoute role="fisioterapeuta"><FisioLayout><Suspense fallback={<PageLoader />}><PatientsPage /></Suspense></FisioLayout></ProtectedRoute>} />
       <Route path="/paciente/:id" element={<ProtectedRoute role="fisioterapeuta"><FisioLayout><Suspense fallback={<PageLoader />}><PatientDetailPage /></Suspense></FisioLayout></ProtectedRoute>} />
+      <Route path="/patient/:id" element={<ProtectedRoute role="fisioterapeuta"><FisioLayout><Suspense fallback={<PageLoader />}><PatientDetailPage /></Suspense></FisioLayout></ProtectedRoute>} />
       <Route path="/ocr-scanner" element={<ProtectedRoute role="fisioterapeuta"><FisioLayout><Suspense fallback={<PageLoader />}><OCRScannerPage /></Suspense></FisioLayout></ProtectedRoute>} />
       <Route path="/tokens" element={<ProtectedRoute role="fisioterapeuta"><FisioLayout><Suspense fallback={<PageLoader />}><TokenGeneratorPage /></Suspense></FisioLayout></ProtectedRoute>} />
       <Route path="/fisio-exercises" element={<ProtectedRoute role="fisioterapeuta"><FisioLayout><Suspense fallback={<PageLoader />}><ExercisesPage /></Suspense></FisioLayout></ProtectedRoute>} />

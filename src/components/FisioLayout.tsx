@@ -10,8 +10,7 @@ import { useAuthStore } from '../stores/authStore';
 import { useTheme } from '../context/ThemeContext';
 import { useToast } from './ui/ToastProvider';
 import { useInstall } from '../lib/installContext';
-import { PhysiGuide } from './ui/PhysiGuide';
-import { HelpGuideButton } from './ui/HelpGuideButton';
+import { PhysiChatbot } from './ui/PhysiChatbot';
 import { supabase } from '../lib/supabase';
 import { cn, timeAgo } from '../lib/utils';
 import MascotAnimation from './ui/MascotAnimation';
@@ -415,25 +414,25 @@ export function FisioLayout({ children }: FisioLayoutProps) {
 
   const sidebarContent = (collapsed: boolean, opts?: { onNavigate?: () => void; showToggle?: boolean }) => (
     <>
-      <div className="p-5 shrink-0 relative flex items-center" style={{ minHeight: 64 }}>
+      <div className="px-4 py-3 shrink-0 relative flex items-center border-b border-teal-100/60 dark:border-slate-800/80" style={{ minHeight: 64 }}>
         {!collapsed ? (
-          <div className="flex items-center gap-2 min-w-0">
-            <img src="/logo.png" alt="" className="h-10 w-auto shrink-0" />
-            <div className="flex flex-col min-w-0 overflow-hidden">
-              <h1 className="font-headline-lg text-headline-lg gradient-text-editorial tracking-tight leading-none truncate">FisioMirror</h1>
-              <p className="text-[10px] uppercase tracking-widest text-teal-600 dark:text-teal-400 mt-0.5 font-bold truncate">Edición Clínica v2.0</p>
+          <div className="flex items-center gap-2.5 min-w-0 pr-7">
+            <img src="/logo.png" alt="FisioMirror" className="h-9 w-9 object-contain shrink-0 aspect-square" />
+            <div className="flex flex-col min-w-0">
+              <h1 className="text-base sm:text-lg font-extrabold gradient-text-editorial tracking-tight leading-tight whitespace-nowrap">FisioMirror</h1>
+              <p className="text-[10px] uppercase tracking-wider text-teal-600 dark:text-teal-400 font-bold whitespace-nowrap">Edición Clínica</p>
             </div>
           </div>
         ) : (
           <div className="w-full flex justify-center">
-            <img src="/logo.png" alt="" className="h-9 w-auto" />
+            <img src="/logo.png" alt="FisioMirror" className="h-8 w-8 object-contain shrink-0 aspect-square" />
           </div>
         )}
         {opts?.showToggle && (
           <button
             onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
             aria-label={sidebarCollapsed ? 'Expandir menú' : 'Colapsar menú'}
-            className="hidden lg:flex absolute top-4 right-2 w-6 h-6 rounded-full bg-primary text-on-primary items-center justify-center text-xs shadow-md hover:scale-110 transition-transform z-10"
+            className="hidden lg:flex absolute top-1/2 -translate-y-1/2 right-2 w-6 h-6 rounded-full bg-primary text-on-primary items-center justify-center text-xs shadow-md hover:scale-110 transition-transform z-10"
           >
             <Icon name={sidebarCollapsed ? 'chevron_right' : 'chevron_left'} size={14} />
           </button>
@@ -488,25 +487,30 @@ export function FisioLayout({ children }: FisioLayoutProps) {
 
       {/* Main content */}
       <main className="flex-1 flex flex-col h-full overflow-y-auto lg:ml-[var(--fisio-sidebar-w)]" data-scroll-root>
-        <header className="h-16 glass-panel sticky top-0 z-30 flex items-center justify-between px-3 sm:px-6">
-          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+        <header className="h-16 glass-panel sticky top-0 z-30 flex items-center justify-between px-3 sm:px-6 gap-2">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
             <button
               onClick={() => setSidebarOpen(true)}
               aria-label="Abrir menú"
-              className="lg:hidden text-primary shrink-0"
+              className="lg:hidden text-primary shrink-0 p-1.5 rounded-lg hover:bg-primary/10 transition-colors"
             >
-              <Icon name="menu" size={24} />
+              <Icon name="menu" size={22} />
             </button>
             <BackButton />
-            <div className="hidden sm:flex items-center text-outline text-label-sm gap-2">
-              <span className="hover:text-primary cursor-pointer">Inicio</span>
-              <Icon name="chevron_right" size={14} />
-              <span className="text-on-surface font-bold">{currentCrumb}</span>
+            {/* Mobile title & logo */}
+            <div className="flex items-center gap-2 lg:hidden min-w-0">
+              <img src="/logo.png" alt="FisioMirror" className="h-8 w-8 object-contain shrink-0 aspect-square" />
+              <span className="text-on-surface font-bold text-sm truncate max-w-[130px] sm:max-w-[180px]">{currentCrumb}</span>
             </div>
-            <span className="sm:hidden text-on-surface font-bold text-sm truncate">{currentCrumb}</span>
+            {/* Desktop breadcrumb */}
+            <div className="hidden lg:flex items-center text-outline text-label-sm gap-2 min-w-0 truncate">
+              <span onClick={() => navigate('/dashboard-fisio')} className="hover:text-primary cursor-pointer shrink-0">Inicio</span>
+              <Icon name="chevron_right" size={14} className="shrink-0" />
+              <span className="text-on-surface font-bold truncate">{currentCrumb}</span>
+            </div>
           </div>
-          <div className="flex items-center gap-1.5 sm:gap-4 shrink-0">
-            <div className={`hidden sm:inline-flex online-indicator is-${isOnline ? 'online' : 'offline'}`}>
+          <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
+            <div className={`hidden md:inline-flex online-indicator is-${isOnline ? 'online' : 'offline'}`}>
               <span className="dot" />
               <span>{isOnline ? 'Online' : 'Offline'}</span>
             </div>
@@ -553,13 +557,16 @@ export function FisioLayout({ children }: FisioLayoutProps) {
                 </div>
               )}
             </form>
-            <HelpGuideButton onStartTour={() => setPhysiGuideOpen(true)} />
             <button
               onClick={() => setPhysiGuideOpen(true)}
-              className="text-on-surface-variant hover:text-primary transition-colors active-scale"
-              aria-label="Abrir guía de Physi"
+              className="p-2 rounded-xl text-on-surface-variant hover:text-primary hover:bg-primary/5 transition-colors active-scale flex items-center gap-1.5"
+              aria-label="Abrir Chatbot IA Physi"
+              title="Chatbot IA Physi"
             >
-              <Bot size={20} />
+              <Bot size={20} className="text-primary" />
+              <span className="hidden xl:inline text-xs font-semibold text-primary">
+                Chatbot Physi
+              </span>
             </button>
             <button
               onClick={toggleTheme}
@@ -791,7 +798,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
 
       <LegalModal isOpen={legalModal !== null} onClose={() => setLegalModal(null)} type={legalModal ?? 'privacy'} />
 
-      <PhysiGuide controlledOpen={physiGuideOpen} onControlledClose={() => setPhysiGuideOpen(false)} />
+      <PhysiChatbot isOpen={physiGuideOpen} onClose={() => setPhysiGuideOpen(false)} />
     </div>
   );
 }
