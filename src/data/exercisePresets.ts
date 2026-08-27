@@ -1,10 +1,11 @@
-import type { JointAngleConfig, ExerciseDefinition, JointRotationAxis } from '../types/character.types';
+import type { JointAngleConfig, ExerciseDefinition, JointRotationAxis, ExercisePosition } from '../types/character.types';
 
 export interface ExerciseJointPreset {
   description: string;
   detailedDescription: string;
   targetJoints: JointAngleConfig[];
   holdDurationSec: number;
+  position?: ExercisePosition;
 }
 
 type Articulacion = 'hombro' | 'codo' | 'rodilla' | 'cadera' | 'tobillo' | 'cervical';
@@ -21,6 +22,7 @@ const PRESets: Record<Articulacion, ExerciseJointPreset> = {
       { joint: 'codo_derecho', targetAngle: 0, neutralAngle: 0, tolerance: 10, axis: 'x' },
     ],
     holdDurationSec: 3,
+    position: 'pie',
   },
   codo: {
     description: 'Flexión de codo llevando la mano hacia el hombro con control.',
@@ -32,6 +34,7 @@ const PRESets: Record<Articulacion, ExerciseJointPreset> = {
       { joint: 'hombro_derecho', targetAngle: 0, neutralAngle: 0, tolerance: 12, axis: 'x' },
     ],
     holdDurationSec: 2,
+    position: 'pie',
   },
   rodilla: {
     description: 'Extensión de rodilla desde posición sentada hasta completa extensión.',
@@ -43,6 +46,7 @@ const PRESets: Record<Articulacion, ExerciseJointPreset> = {
       { joint: 'cadera_derecha', targetAngle: 90, neutralAngle: 90, tolerance: 12, axis: 'x' },
     ],
     holdDurationSec: 3,
+    position: 'sentado',
   },
   cadera: {
     description: 'Abducción de cadera llevando la pierna hacia el lado con control.',
@@ -54,6 +58,7 @@ const PRESets: Record<Articulacion, ExerciseJointPreset> = {
       { joint: 'rodilla_derecha', targetAngle: 0, neutralAngle: 0, tolerance: 10, axis: 'x' },
     ],
     holdDurationSec: 2,
+    position: 'pie',
   },
   tobillo: {
     description: 'Movilidad de tobillo con dorsiflexión y flexión plantar alternantes.',
@@ -65,6 +70,7 @@ const PRESets: Record<Articulacion, ExerciseJointPreset> = {
       { joint: 'rodilla_derecha', targetAngle: 0, neutralAngle: 0, tolerance: 12, axis: 'x' },
     ],
     holdDurationSec: 2,
+    position: 'sentado',
   },
   cervical: {
     description: 'Inclinación lateral cervical controlada hacia ambos lados.',
@@ -74,6 +80,7 @@ const PRESets: Record<Articulacion, ExerciseJointPreset> = {
       { joint: 'tronco_torax', targetAngle: 0, neutralAngle: 0, tolerance: 10, axis: 'x' },
     ],
     holdDurationSec: 3,
+    position: 'sentado',
   },
 };
 
@@ -88,6 +95,7 @@ const EXERCISE_OVERRIDES: Record<string, ExerciseJointPreset> = {
       { joint: 'codo_derecho', targetAngle: 0, neutralAngle: 0, tolerance: 10, axis: 'x' },
     ],
     holdDurationSec: 3,
+    position: 'pie',
   },
   'abducción de hombro': {
     description: 'Apertura del brazo hacia el lado hasta 90° con codo extendido.',
@@ -99,6 +107,7 @@ const EXERCISE_OVERRIDES: Record<string, ExerciseJointPreset> = {
       { joint: 'codo_derecho', targetAngle: 0, neutralAngle: 0, tolerance: 10, axis: 'x' },
     ],
     holdDurationSec: 3,
+    position: 'pie',
   },
   'rotación externa de hombro': {
     description: 'Rotación externa del hombro con el codo fijo a 90°.',
@@ -110,6 +119,7 @@ const EXERCISE_OVERRIDES: Record<string, ExerciseJointPreset> = {
       { joint: 'codo_derecho', targetAngle: 90, neutralAngle: 90, tolerance: 10, axis: 'x' },
     ],
     holdDurationSec: 2,
+    position: 'pie',
   },
   'circunducción de hombro': {
     description: 'Círculos completos del brazo con codo extendido en el plano sagital.',
@@ -121,6 +131,7 @@ const EXERCISE_OVERRIDES: Record<string, ExerciseJointPreset> = {
       { joint: 'codo_derecho', targetAngle: 0, neutralAngle: 0, tolerance: 12, axis: 'x' },
     ],
     holdDurationSec: 1,
+    position: 'pie',
   },
   'flexión de codo': {
     description: 'Curl de bíceps llevando la mano al hombro con control.',
@@ -132,6 +143,7 @@ const EXERCISE_OVERRIDES: Record<string, ExerciseJointPreset> = {
       { joint: 'hombro_derecho', targetAngle: 0, neutralAngle: 0, tolerance: 12, axis: 'x' },
     ],
     holdDurationSec: 1,
+    position: 'pie',
   },
   'extensión de rodilla': {
     description: 'Extensión completa de rodilla desde flexión de 90° sentado.',
@@ -143,6 +155,7 @@ const EXERCISE_OVERRIDES: Record<string, ExerciseJointPreset> = {
       { joint: 'cadera_derecha', targetAngle: 90, neutralAngle: 90, tolerance: 12, axis: 'x' },
     ],
     holdDurationSec: 3,
+    position: 'sentado',
   },
   'flexión de rodilla en pie': {
     description: 'Lleva el talón al glúteo de pie manteniendo el muslo vertical.',
@@ -154,6 +167,7 @@ const EXERCISE_OVERRIDES: Record<string, ExerciseJointPreset> = {
       { joint: 'cadera_derecha', targetAngle: 0, neutralAngle: 0, tolerance: 12, axis: 'x' },
     ],
     holdDurationSec: 2,
+    position: 'pie',
   },
   'sentadilla parcial': {
     description: 'Sentadilla a 45° de flexión de rodilla con peso en los talones.',
@@ -166,6 +180,7 @@ const EXERCISE_OVERRIDES: Record<string, ExerciseJointPreset> = {
       { joint: 'tronco_torax', targetAngle: 20, neutralAngle: 0, tolerance: 15, axis: 'x' },
     ],
     holdDurationSec: 2,
+    position: 'pie',
   },
   'puente de glúteos': {
     description: 'Elevación de cadera desde supino extendiendo completamente la cadera.',
@@ -178,6 +193,7 @@ const EXERCISE_OVERRIDES: Record<string, ExerciseJointPreset> = {
       { joint: 'tronco_torax', targetAngle: 0, neutralAngle: 0, tolerance: 10, axis: 'x' },
     ],
     holdDurationSec: 3,
+    position: 'acostado',
   },
   'estiramiento de trapecio': {
     description: 'Inclinación cervical con tracción suave del brazo opuesto.',
@@ -189,6 +205,7 @@ const EXERCISE_OVERRIDES: Record<string, ExerciseJointPreset> = {
       { joint: 'hombro_derecho', targetAngle: 10, neutralAngle: 0, tolerance: 15, axis: 'x' },
     ],
     holdDurationSec: 15,
+    position: 'sentado',
   },
   'equilibrio sobre una pierna': {
     description: 'Apoyo unipodal con leve flexión de rodilla y cadera estable.',
@@ -200,6 +217,7 @@ const EXERCISE_OVERRIDES: Record<string, ExerciseJointPreset> = {
       { joint: 'cadera_izquierda', targetAngle: 0, neutralAngle: 0, tolerance: 12, axis: 'x' },
     ],
     holdDurationSec: 10,
+    position: 'pie',
   },
   'flexoextensión de codo': {
     description: 'Flexión y extensión activa de codo para rango articular completo.',
@@ -211,6 +229,7 @@ const EXERCISE_OVERRIDES: Record<string, ExerciseJointPreset> = {
       { joint: 'hombro_derecho', targetAngle: 0, neutralAngle: 0, tolerance: 10, axis: 'x' },
     ],
     holdDurationSec: 2,
+    position: 'pie',
   },
   'abducción de cadera de pie': {
     description: 'Elevación lateral de la pierna manteniendo la pelvis neutra.',
@@ -222,6 +241,7 @@ const EXERCISE_OVERRIDES: Record<string, ExerciseJointPreset> = {
       { joint: 'rodilla_izquierda', targetAngle: 0, neutralAngle: 0, tolerance: 10, axis: 'x' },
     ],
     holdDurationSec: 2,
+    position: 'pie',
   },
   'extensión activa de rodilla': {
     description: 'Extensión terminal de rodilla en sedestación para activación de cuádriceps.',
@@ -233,6 +253,7 @@ const EXERCISE_OVERRIDES: Record<string, ExerciseJointPreset> = {
       { joint: 'cadera_derecha', targetAngle: 90, neutralAngle: 90, tolerance: 10, axis: 'x' },
     ],
     holdDurationSec: 3,
+    position: 'sentado',
   },
   'flexión cervical suave': {
     description: 'Inclinación anterior suave del cuello para elongación cervicodorsal.',
@@ -242,6 +263,7 @@ const EXERCISE_OVERRIDES: Record<string, ExerciseJointPreset> = {
       { joint: 'tronco_torax', targetAngle: 0, neutralAngle: 0, tolerance: 10, axis: 'x' },
     ],
     holdDurationSec: 3,
+    position: 'sentado',
   },
   'rotación externa con banda': {
     description: 'Rotación externa glenohumeral manteniendo el codo a 90° adosado al cuerpo.',
@@ -253,6 +275,7 @@ const EXERCISE_OVERRIDES: Record<string, ExerciseJointPreset> = {
       { joint: 'codo_derecho', targetAngle: 90, neutralAngle: 90, tolerance: 10, axis: 'x' },
     ],
     holdDurationSec: 2,
+    position: 'pie',
   },
   'circunducción escapular': {
     description: 'Movilización circular escapulotorácica para descompresión de cintura escapular.',
@@ -263,6 +286,7 @@ const EXERCISE_OVERRIDES: Record<string, ExerciseJointPreset> = {
       { joint: 'tronco_torax', targetAngle: 0, neutralAngle: 0, tolerance: 10, axis: 'x' },
     ],
     holdDurationSec: 2,
+    position: 'pie',
   },
   'movilidad cervical': {
     description: 'Rotación cervical suave hacia ambos lados con hombros relajados.',
@@ -272,6 +296,7 @@ const EXERCISE_OVERRIDES: Record<string, ExerciseJointPreset> = {
       { joint: 'tronco_torax', targetAngle: 0, neutralAngle: 0, tolerance: 10, axis: 'x' },
     ],
     holdDurationSec: 2,
+    position: 'sentado',
   },
 };
 
@@ -351,6 +376,7 @@ export function buildExerciseDefinition(
     sets: series || 3,
     reps: repeticiones || 10,
     holdDurationSec: preset.holdDurationSec,
+    position: preset.position ?? 'pie',
   };
 }
 

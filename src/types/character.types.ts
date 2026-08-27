@@ -75,6 +75,7 @@ export interface ExerciseDefinition {
   sets: number;
   reps: number;
   holdDurationSec: number;
+  position?: ExercisePosition;
 }
 
 export interface JointAngle {

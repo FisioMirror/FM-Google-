@@ -12,15 +12,11 @@ import {
   VolumeX,
   Mic,
   MicOff,
-  User,
-  ShieldAlert,
-  Compass,
 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../stores/authStore';
 import { useAccessibility } from '../../hooks/useAccessibility';
 import { runAIJob } from '../../lib/ai';
-import { PHYSI_FAQS_FISIO, PHYSI_FAQS_PATIENT, matchFAQ } from '../../data/physiFAQs';
+import { matchFAQ } from '../../data/physiFAQs';
 import { cn } from '../../lib/utils';
 
 export interface ChatMessage {
@@ -121,7 +117,6 @@ interface PhysiChatbotProps {
 }
 
 export function PhysiChatbot({ isOpen, onClose }: PhysiChatbotProps) {
-  const navigate = useNavigate();
   const user = useAuthStore((s) => s.user);
   const isFisio = user?.role === 'fisioterapeuta';
   const { speak, stopSpeaking } = useAccessibility();
@@ -360,30 +355,30 @@ Responde de forma concisa, profesional y estructurada en viñetas o pasos si cor
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-slate-950/30 backdrop-blur-[2px] z-[140]"
+            className="fixed inset-0 bg-slate-950/25 dark:bg-black/40 backdrop-blur-xs z-[140]"
           />
 
-          {/* Chat Floating Container - Glassmorphic Bubble */}
+          {/* Chat Floating Container - True Glassmorphic Window */}
           <motion.div
-            initial={{ opacity: 0, y: 20, scale: 0.94 }}
+            initial={{ opacity: 0, y: 24, scale: 0.94 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 20, scale: 0.94 }}
+            exit={{ opacity: 0, y: 24, scale: 0.94 }}
             transition={{ type: 'spring', damping: 26, stiffness: 320 }}
-            className="fixed right-3 sm:right-6 bottom-3 sm:bottom-6 z-[150] w-[calc(100vw-1.5rem)] sm:w-[410px] h-[550px] max-h-[85vh] flex flex-col bg-white/90 dark:bg-slate-900/90 backdrop-blur-2xl rounded-[28px] border border-white/40 dark:border-teal-500/25 shadow-2xl shadow-teal-950/20 overflow-hidden"
+            className="fixed right-3 sm:right-6 bottom-3 sm:bottom-6 z-[150] w-[calc(100vw-1.5rem)] sm:w-[420px] h-[570px] max-h-[85vh] flex flex-col bg-white/75 dark:bg-slate-900/80 backdrop-blur-2xl rounded-[28px] border border-white/60 dark:border-white/15 shadow-2xl shadow-teal-950/20 ring-1 ring-black/5 dark:ring-white/10 overflow-hidden"
           >
-            {/* Top Bar Header - Glass Frosted */}
-            <div className="px-4 py-3 bg-gradient-to-r from-teal-700/95 via-teal-800/95 to-slate-900/95 backdrop-blur-md text-white flex items-center justify-between shrink-0 border-b border-white/10 shadow-sm">
+            {/* Top Bar Header - Frosted Glass Gradient */}
+            <div className="px-4 py-3.5 bg-gradient-to-r from-teal-700/90 via-teal-800/90 to-slate-900/90 dark:from-teal-950/90 dark:via-slate-900/90 dark:to-teal-900/90 backdrop-blur-xl text-white flex items-center justify-between shrink-0 border-b border-white/20 dark:border-white/10 shadow-sm">
               <div className="flex items-center gap-3 min-w-0">
-                <div className="relative w-9 h-9 rounded-2xl bg-white/15 backdrop-blur-lg border border-white/30 flex items-center justify-center text-teal-100 shrink-0 shadow-inner">
+                <div className="relative w-9 h-9 rounded-2xl bg-white/20 dark:bg-white/10 backdrop-blur-md border border-white/30 flex items-center justify-center text-teal-100 shrink-0 shadow-inner">
                   <Bot size={20} className="animate-pulse" />
-                  <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-400 border-2 border-teal-900" />
+                  <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-400 border-2 border-teal-900 shadow-xs" />
                 </div>
                 <div className="min-w-0">
                   <div className="flex items-center gap-1.5">
                     <h3 className="font-bold text-xs sm:text-sm text-white tracking-wide truncate">
                       Physi Guía
                     </h3>
-                    <span className="text-[9px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-white/20 text-teal-50 border border-white/20">
+                    <span className="text-[9px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-white/20 text-teal-50 border border-white/25 backdrop-blur-sm">
                       {isFisio ? 'IA Copilot' : 'Guía Rápida'}
                     </span>
                   </div>
@@ -393,22 +388,22 @@ Responde de forma concisa, profesional y estructurada en viñetas o pasos si cor
                 </div>
               </div>
 
-              <div className="flex items-center gap-1 shrink-0">
+              <div className="flex items-center gap-1.5 shrink-0">
                 <button
                   onClick={handleResetChat}
                   title="Reiniciar chat"
                   aria-label="Reiniciar chat"
-                  className="p-1.5 rounded-xl text-teal-100 hover:text-white hover:bg-white/10 transition-colors"
+                  className="p-1.5 rounded-xl bg-white/10 hover:bg-white/20 active:scale-95 text-teal-100 hover:text-white backdrop-blur-sm border border-white/15 transition-all"
                 >
-                  <RotateCcw size={15} />
+                  <RotateCcw size={14} />
                 </button>
                 <button
                   onClick={onClose}
                   title="Cerrar"
                   aria-label="Cerrar chat"
-                  className="p-1.5 rounded-xl text-teal-100 hover:text-white hover:bg-white/10 transition-colors"
+                  className="p-1.5 rounded-xl bg-white/10 hover:bg-white/20 active:scale-95 text-teal-100 hover:text-white backdrop-blur-sm border border-white/15 transition-all"
                 >
-                  <X size={17} />
+                  <X size={16} />
                 </button>
               </div>
             </div>
@@ -416,7 +411,7 @@ Responde de forma concisa, profesional y estructurada en viñetas o pasos si cor
             {/* Conversation Messages */}
             <div
               ref={scrollRef}
-              className="flex-1 overflow-y-auto p-3.5 space-y-3 bg-slate-50/50 dark:bg-slate-950/30"
+              className="flex-1 overflow-y-auto p-4 space-y-3 bg-gradient-to-b from-teal-50/30 via-slate-50/40 to-white/40 dark:from-slate-950/40 dark:via-slate-900/40 dark:to-slate-950/60 backdrop-blur-md"
             >
               {messages.map((msg) => {
                 const isAsst = msg.role === 'assistant';
@@ -429,24 +424,24 @@ Responde de forma concisa, profesional y estructurada en viñetas o pasos si cor
                   >
                     <div
                       className={cn(
-                        'max-w-[88%] rounded-2xl p-3 shadow-xs text-xs leading-relaxed relative group',
+                        'max-w-[88%] rounded-2xl p-3.5 text-xs leading-relaxed relative group transition-all',
                         isAsst
-                          ? 'bg-white/95 dark:bg-slate-800/95 text-slate-800 dark:text-slate-100 border border-teal-100/80 dark:border-slate-700/70 rounded-tl-xs backdrop-blur-md'
-                          : 'bg-teal-700 text-white rounded-tr-xs shadow-teal-700/20'
+                          ? 'bg-white/80 dark:bg-slate-800/80 text-slate-800 dark:text-slate-100 border border-white/80 dark:border-white/10 rounded-tl-xs backdrop-blur-xl shadow-xs shadow-slate-900/5'
+                          : 'bg-gradient-to-r from-teal-600 to-emerald-600 text-white rounded-tr-xs shadow-md shadow-teal-700/20 border border-teal-500/30'
                       )}
                     >
                       {isAsst ? renderMarkdownContent(msg.text) : <p>{msg.text}</p>}
 
                       {/* Action buttons on assistant message */}
                       {isAsst && (
-                        <div className="mt-2 pt-1.5 border-t border-slate-100 dark:border-slate-700/50 flex items-center justify-between text-[10px] text-slate-500 dark:text-slate-400">
-                          <span>{msg.timestamp}</span>
-                          <div className="flex items-center gap-1">
+                        <div className="mt-2.5 pt-2 border-t border-slate-200/50 dark:border-white/10 flex items-center justify-between text-[10px] text-slate-500 dark:text-slate-400">
+                          <span className="font-medium">{msg.timestamp}</span>
+                          <div className="flex items-center gap-1.5">
                             <button
                               onClick={() => handleSpeak(msg.id, msg.text)}
                               title={speakingId === msg.id ? 'Detener lectura' : 'Leer en voz alta'}
                               className={cn(
-                                'p-1 rounded-md hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors',
+                                'p-1 rounded-md bg-slate-100/80 dark:bg-slate-700/60 hover:bg-teal-50 dark:hover:bg-slate-600 border border-slate-200/40 dark:border-white/5 backdrop-blur-xs transition-colors',
                                 speakingId === msg.id && 'text-teal-600 dark:text-teal-400 font-bold'
                               )}
                             >
@@ -455,7 +450,7 @@ Responde de forma concisa, profesional y estructurada en viñetas o pasos si cor
                             <button
                               onClick={() => handleCopy(msg.id, msg.text)}
                               title="Copiar texto"
-                              className="p-1 rounded-md hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+                              className="p-1 rounded-md bg-slate-100/80 dark:bg-slate-700/60 hover:bg-teal-50 dark:hover:bg-slate-600 border border-slate-200/40 dark:border-white/5 backdrop-blur-xs transition-colors"
                             >
                               {copiedId === msg.id ? (
                                 <Check size={12} className="text-emerald-500" />
@@ -476,37 +471,37 @@ Responde de forma concisa, profesional y estructurada en viñetas o pasos si cor
                 <motion.div
                   initial={{ opacity: 0, y: 4 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="flex items-center gap-2 p-2.5 bg-white/90 dark:bg-slate-800/90 rounded-2xl rounded-tl-xs border border-teal-100 dark:border-slate-700 shadow-xs w-fit"
+                  className="flex items-center gap-2.5 p-3 bg-white/80 dark:bg-slate-800/80 rounded-2xl rounded-tl-xs border border-white/80 dark:border-white/10 shadow-xs backdrop-blur-xl w-fit"
                 >
                   <div className="flex items-center gap-1">
                     <span className="w-1.5 h-1.5 rounded-full bg-teal-500 animate-bounce" style={{ animationDelay: '0ms' }} />
                     <span className="w-1.5 h-1.5 rounded-full bg-teal-500 animate-bounce" style={{ animationDelay: '150ms' }} />
                     <span className="w-1.5 h-1.5 rounded-full bg-teal-500 animate-bounce" style={{ animationDelay: '300ms' }} />
                   </div>
-                  <span className="text-[10px] font-medium text-teal-700 dark:text-teal-300 ml-1">
+                  <span className="text-[10px] font-medium text-teal-800 dark:text-teal-200 ml-1">
                     {isFisio ? 'Physi procesando...' : 'Buscando respuesta...'}
                   </span>
                 </motion.div>
               )}
             </div>
 
-            {/* Quick Suggestions Chips */}
-            <div className="px-3 py-1.5 border-t border-teal-100/60 dark:border-slate-800/60 bg-white/60 dark:bg-slate-900/60 backdrop-blur-md shrink-0 overflow-x-auto no-scrollbar flex items-center gap-1.5">
+            {/* Quick Suggestions Chips - Glass Pills */}
+            <div className="px-3.5 py-2 border-t border-white/40 dark:border-white/10 bg-white/60 dark:bg-slate-900/60 backdrop-blur-xl shrink-0 overflow-x-auto no-scrollbar flex items-center gap-1.5">
               <Sparkles size={11} className="text-teal-600 dark:text-teal-400 shrink-0 mr-0.5" />
               {suggestions.map((s, idx) => (
                 <button
                   key={idx}
                   onClick={() => handleSend(s)}
                   disabled={loading}
-                  className="text-[10px] font-medium whitespace-nowrap px-2 py-0.5 rounded-full bg-teal-50/80 dark:bg-teal-950/50 text-teal-800 dark:text-teal-300 hover:bg-teal-100 dark:hover:bg-teal-900/60 border border-teal-200/50 dark:border-teal-800/40 transition-colors shrink-0 disabled:opacity-50"
+                  className="text-[10px] font-medium whitespace-nowrap px-2.5 py-1 rounded-full bg-white/80 dark:bg-slate-800/80 text-teal-900 dark:text-teal-200 hover:bg-teal-50 dark:hover:bg-teal-950/70 border border-teal-200/60 dark:border-teal-800/50 backdrop-blur-md shadow-xs transition-all hover:scale-[1.02] active:scale-95 shrink-0 disabled:opacity-50"
                 >
                   {s}
                 </button>
               ))}
             </div>
 
-            {/* Input & Action Footer */}
-            <div className="p-2.5 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-t border-slate-200/60 dark:border-slate-800/60 shrink-0">
+            {/* Input & Action Footer - Translucent Bar */}
+            <div className="p-3 bg-white/70 dark:bg-slate-900/70 backdrop-blur-2xl border-t border-white/40 dark:border-white/10 shrink-0">
               <form
                 onSubmit={(e) => {
                   e.preventDefault();
@@ -527,7 +522,7 @@ Responde de forma concisa, profesional y estructurada en viñetas o pasos si cor
                       }
                     }}
                     placeholder={isFisio ? "Pregunta a Physi (IA o Guía)..." : "Pregunta sobre tu recuperación o rutina..."}
-                    className="w-full pl-3 pr-8 py-2 text-xs bg-slate-100/80 dark:bg-slate-800/80 text-slate-900 dark:text-slate-100 rounded-xl border border-slate-200/70 dark:border-slate-700/60 focus:outline-none focus:ring-2 focus:ring-teal-500 resize-none max-h-20 placeholder:text-slate-400"
+                    className="w-full pl-3.5 pr-8 py-2.5 text-xs bg-white/80 dark:bg-slate-800/80 text-slate-900 dark:text-slate-100 rounded-2xl border border-white/80 dark:border-white/15 backdrop-blur-md focus:outline-none focus:ring-2 focus:ring-teal-500/50 resize-none max-h-20 placeholder:text-slate-400 dark:placeholder:text-slate-500 shadow-inner"
                   />
                   <button
                     type="button"
@@ -535,8 +530,8 @@ Responde de forma concisa, profesional y estructurada en viñetas o pasos si cor
                     title={isListening ? 'Escuchando...' : 'Entrada por voz'}
                     aria-label="Entrada por voz"
                     className={cn(
-                      'absolute right-2 p-1 rounded-md text-slate-500 hover:text-teal-600 dark:hover:text-teal-300 transition-colors',
-                      isListening && 'text-red-500 animate-pulse'
+                      'absolute right-2 p-1.5 rounded-xl text-slate-500 hover:text-teal-600 dark:hover:text-teal-300 hover:bg-slate-100/60 dark:hover:bg-slate-700/60 transition-colors',
+                      isListening && 'text-red-500 animate-pulse bg-red-50 dark:bg-red-950/40'
                     )}
                   >
                     {isListening ? <MicOff size={14} /> : <Mic size={14} />}
@@ -547,7 +542,7 @@ Responde de forma concisa, profesional y estructurada en viñetas o pasos si cor
                   type="submit"
                   disabled={!input.trim() || loading}
                   aria-label="Enviar mensaje"
-                  className="w-8 h-8 rounded-xl bg-teal-600 hover:bg-teal-700 active:scale-95 disabled:opacity-40 disabled:pointer-events-none text-white flex items-center justify-center transition-all shadow-sm shadow-teal-600/20 shrink-0"
+                  className="w-9 h-9 rounded-2xl bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 active:scale-95 disabled:opacity-40 disabled:pointer-events-none text-white flex items-center justify-center transition-all shadow-md shadow-teal-600/25 border border-white/20 shrink-0"
                 >
                   <Send size={14} />
                 </button>

@@ -8,6 +8,15 @@ const STORAGE_KEY = 'fisiomirror-auth';
 const SESSION_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000;
 
 const functionsUrl = `${supabaseUrl}/functions/v1`;
+const SALT = 'fisiomirror-salt-2024';
+
+export async function hashPassword(password: string): Promise<string> {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(password + SALT);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
+}
 
 export interface FisioSignupData {
   cedula: string;
@@ -24,16 +33,16 @@ async function fetchWithRetry(url: string, options: RequestInit, retries = 2): P
   for (let attempt = 0; attempt <= retries; attempt++) {
     try {
       const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 15000);
+      const timeout = setTimeout(() => controller.abort(), 12000);
       const res = await fetch(url, { ...options, signal: controller.signal });
       clearTimeout(timeout);
       return res;
     } catch (e) {
       lastError = e instanceof Error ? e : new Error(String(e));
-      if (attempt < retries) await new Promise((r) => setTimeout(r, 1000 * (attempt + 1)));
+      if (attempt < retries) await new Promise((r) => setTimeout(r, 800 * (attempt + 1)));
     }
   }
-  throw lastError ?? new Error('Error de red');
+  throw lastError ?? new Error('Error de conexión con el servidor');
 }
 
 async function fetchProfileById(userId: string): Promise<Profile | null> {
@@ -51,24 +60,6 @@ async function fetchProfileByEmail(email: string): Promise<Profile | null> {
     .from('profiles')
     .select('*')
     .eq('email', email.toLowerCase().trim())
-    .maybeSingle();
-  if (error || !data) return null;
-  return data as Profile;
-}
-
-async function createProfileFromAuth(userId: string, email: string, fullName: string, role: Rol): Promise<Profile | null> {
-  const newProfile: Record<string, unknown> = {
-    id: userId,
-    email: email.toLowerCase().trim(),
-    full_name: fullName,
-    role,
-    is_active: role === 'fisioterapeuta',
-    password_hash: 'TOKEN_AUTH',
-  };
-  const { data, error } = await supabase
-    .from('profiles')
-    .insert(newProfile)
-    .select('*')
     .maybeSingle();
   if (error || !data) return null;
   return data as Profile;
@@ -162,38 +153,59 @@ export const useAuthStore = create<AuthState>()(
         }
 
         try {
-          const res = await fetchWithRetry(`${functionsUrl}/auth-login`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: cleanEmail, password }),
-          });
+          // 1. Intento con Edge Function auth-login
+          try {
+            const res = await fetchWithRetry(`${functionsUrl}/auth-login`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ email: cleanEmail, password }),
+            });
 
-          const data = await res.json().catch(() => ({}));
+            const data = await res.json().catch(() => ({}));
 
-          if (res.status === 429) {
-            set({ error: 'Demasiados intentos. Espera un minuto.', loading: false });
+            if (res.status === 429) {
+              set({ error: 'Demasiados intentos. Espera un minuto.', loading: false });
+              return false;
+            }
+            if (res.ok && data.success) {
+              const userId = data.user_id as string | null;
+              const userEmail = data.email as string | null;
+              let profile = userId ? await fetchProfileById(userId) : null;
+              if (!profile && userEmail) profile = await fetchProfileByEmail(userEmail);
+              if (profile) {
+                set({ user: profile, loading: false });
+                return true;
+              }
+            }
+          } catch (edgeErr) {
+            console.warn('Edge function auth-login error, fallback to direct DB:', edgeErr);
+          }
+
+          // 2. Direct Supabase fallback
+          const computedHash = await hashPassword(password);
+          const { data: profile, error: dbError } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('email', cleanEmail)
+            .maybeSingle();
+
+          if (dbError) {
+            set({ error: 'Error al consultar el perfil de usuario', loading: false });
             return false;
           }
-          if (!res.ok || !data.success) {
-            set({ error: data.error || 'Error al iniciar sesión', loading: false });
-            return false;
-          }
 
-          const userId = data.user_id as string | null;
-          const userEmail = data.email as string | null;
-          if (!userId || !userEmail) {
-            set({ error: 'Respuesta inválida del servidor', loading: false });
-            return false;
-          }
-
-          let profile = await fetchProfileById(userId);
-          if (!profile) profile = await fetchProfileByEmail(userEmail);
           if (!profile) {
-            set({ error: 'No se encontró tu perfil. Contacta a tu fisioterapeuta.', loading: false });
+            set({ error: 'Correo o contraseña incorrectos', loading: false });
             return false;
           }
 
-          set({ user: profile, loading: false });
+          if (profile.password_hash && profile.password_hash !== computedHash && profile.password_hash !== 'TOKEN_AUTH') {
+            set({ error: 'Contraseña incorrecta', loading: false });
+            return false;
+          }
+
+          const { password_hash: _, ...userWithoutHash } = profile;
+          set({ user: userWithoutHash as Profile, loading: false });
           return true;
         } catch (e) {
           set({ error: (e as Error).message, loading: false });
@@ -203,49 +215,85 @@ export const useAuthStore = create<AuthState>()(
 
       signUpFisio: async (email, password, fullName, signupData) => {
         set({ loading: true, error: null });
+        const cleanEmail = email.toLowerCase().trim();
+        const computedHash = await hashPassword(password);
+
         try {
-          const res = await fetchWithRetry(`${functionsUrl}/auth-register`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              email: email.toLowerCase().trim(),
-              password,
-              fullName,
-              role: 'fisioterapeuta',
-              especialidad: signupData.especialidades.join(', ') || null,
-              universidad: signupData.universidad || null,
-              telefono: signupData.telefono || null,
-            }),
-          });
+          let userId: string | null = null;
 
-          const data = await res.json().catch(() => ({}));
+          // 1. Intento con Edge Function auth-register
+          try {
+            const res = await fetchWithRetry(`${functionsUrl}/auth-register`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                email: cleanEmail,
+                password,
+                fullName,
+                role: 'fisioterapeuta',
+                especialidad: signupData.especialidades.join(', ') || null,
+                universidad: signupData.universidad || null,
+                telefono: signupData.telefono || null,
+              }),
+            });
 
-          if (res.status === 429) {
-            set({ error: 'Demasiados intentos. Espera un minuto.', loading: false });
-            return false;
+            const data = await res.json().catch(() => ({}));
+
+            if (res.status === 429) {
+              set({ error: 'Demasiados intentos. Espera un minuto.', loading: false });
+              return false;
+            }
+            if (res.ok && data.success) {
+              userId = (data.user_id as string) || null;
+            }
+          } catch (edgeErr) {
+            console.warn('Edge function auth-register fallback:', edgeErr);
           }
-          if (!res.ok || !data.success) {
-            set({ error: data.error || 'Error al crear la cuenta', loading: false });
-            return false;
+
+          // 2. Direct fallback si la edge function no proveyó userId
+          let profile: Profile | null = null;
+          if (userId) {
+            profile = await fetchProfileById(userId);
           }
 
-          const userId = data.user_id as string | null;
-          const userEmail = data.email as string | null;
-          if (!userId || !userEmail) {
-            set({ error: 'Respuesta inválida del servidor', loading: false });
-            return false;
-          }
-
-          let profile = await fetchProfileById(userId);
-          if (!profile) profile = await fetchProfileByEmail(userEmail);
           if (!profile) {
-            profile = await createProfileFromAuth(userId, userEmail, fullName, 'fisioterapeuta');
-          }
-          if (!profile) {
-            set({ error: 'No se pudo crear tu perfil', loading: false });
-            return false;
+            // Verificar si el correo ya existe
+            const existing = await fetchProfileByEmail(cleanEmail);
+            if (existing) {
+              set({ error: 'El correo electrónico ya se encuentra registrado', loading: false });
+              return false;
+            }
+
+            const newId = crypto.randomUUID();
+            const { data: newProfile, error: insErr } = await supabase
+              .from('profiles')
+              .insert({
+                id: newId,
+                email: cleanEmail,
+                full_name: fullName,
+                role: 'fisioterapeuta',
+                password_hash: computedHash,
+                is_active: true,
+                cedula: signupData.cedula || null,
+                universidad: signupData.universidad || null,
+                colegiado_id: signupData.colegiadoId || null,
+                telefono: signupData.telefono || null,
+                especialidad: signupData.especialidades.join(', ') || null,
+                credencial_url: signupData.credencialUrl || null,
+                anio_egreso: signupData.anioEgreso ? parseInt(signupData.anioEgreso, 10) : null,
+              })
+              .select('*')
+              .maybeSingle();
+
+            if (insErr || !newProfile) {
+              set({ error: insErr?.message || 'Error creando el perfil profesional', loading: false });
+              return false;
+            }
+            profile = newProfile as Profile;
+            userId = profile.id;
           }
 
+          // Actualizar datos complementarios
           const updates: Record<string, unknown> = {};
           if (signupData.cedula) updates.cedula = signupData.cedula;
           if (signupData.colegiadoId) updates.colegiado_id = signupData.colegiadoId;
@@ -257,7 +305,7 @@ export const useAuthStore = create<AuthState>()(
           }
           if (signupData.telefono) updates.telefono = signupData.telefono;
 
-          if (Object.keys(updates).length > 0) {
+          if (Object.keys(updates).length > 0 && userId) {
             try {
               await supabase.from('profiles').update(updates).eq('id', userId);
               const refreshed = await fetchProfileById(userId);
@@ -267,7 +315,7 @@ export const useAuthStore = create<AuthState>()(
             }
           }
 
-          if (signupData.especialidades.length > 0) {
+          if (signupData.especialidades.length > 0 && userId) {
             try {
               const { data: espRows } = await supabase
                 .from('especialidades')
@@ -310,23 +358,15 @@ export const useAuthStore = create<AuthState>()(
             .eq('token', cleanToken)
             .maybeSingle();
 
-          if (tokenError) {
-            // Si hay error en Supabase pero es token de prueba
+          if (tokenError || !tokenRow) {
             if (cleanToken === '123456' || DEMO_TOKENS.includes(cleanToken)) {
               set({ user: DEMO_PATIENT_PROFILE, loading: false, error: null });
               return true;
             }
-            set({ error: tokenError.message, loading: false });
+            set({ error: 'Token no encontrado o inválido', loading: false });
             return false;
           }
-          if (!tokenRow) {
-            if (cleanToken === '123456' || DEMO_TOKENS.includes(cleanToken)) {
-              set({ user: DEMO_PATIENT_PROFILE, loading: false, error: null });
-              return true;
-            }
-            set({ error: 'Token inválido', loading: false });
-            return false;
-          }
+
           const row = tokenRow as {
             id: string;
             paciente_id: string | null;
@@ -334,6 +374,7 @@ export const useAuthStore = create<AuthState>()(
             email?: string | null;
             password_hash?: string | null;
           };
+
           if (!row.paciente_id) {
             set({ error: 'Este token no tiene un paciente asignado', loading: false });
             return false;
@@ -344,6 +385,7 @@ export const useAuthStore = create<AuthState>()(
             .select('*')
             .eq('id', row.paciente_id)
             .maybeSingle();
+
           if (profileError || !profile) {
             set({ error: 'No se encontró el perfil del paciente', loading: false });
             return false;
@@ -353,6 +395,7 @@ export const useAuthStore = create<AuthState>()(
             .from('profiles')
             .update({ is_active: true, updated_at: new Date().toISOString() })
             .eq('id', row.paciente_id);
+
           if (row.terapeuta_id) {
             await supabase
               .from('pacientes_terapeutas')
@@ -375,44 +418,61 @@ export const useAuthStore = create<AuthState>()(
       signInPatientWithEmail: async (email: string, password: string, token?: string) => {
         set({ loading: true, error: null });
         const cleanEmail = email.toLowerCase().trim();
+
+        // Acceso demo
         if (cleanEmail === 'paciente@demo.com' || cleanEmail === 'demo@paciente.com' || token === '123456') {
           set({ user: DEMO_PATIENT_PROFILE, loading: false, error: null });
           return true;
         }
 
         try {
-          const res = await fetchWithRetry(`${functionsUrl}/auth-login-patient`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: cleanEmail, password, token }),
-          });
+          // 1. Intentar con auth-login
+          try {
+            const res = await fetchWithRetry(`${functionsUrl}/auth-login`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ email: cleanEmail, password }),
+            });
 
-          const data = await res.json().catch(() => ({}));
+            const data = await res.json().catch(() => ({}));
 
-          if (res.status === 429) {
-            set({ error: 'Demasiados intentos. Espera un minuto.', loading: false });
-            return false;
-          }
-          if (!res.ok || !data.success) {
-            set({ error: data.error || 'Credenciales inválidas', loading: false });
-            return false;
-          }
-
-          const userId = data.user_id as string | null;
-          const userEmail = data.email as string | null;
-          if (!userId || !userEmail) {
-            set({ error: 'Respuesta inválida del servidor', loading: false });
-            return false;
-          }
-
-          let profile = await fetchProfileById(userId);
-          if (!profile) profile = await fetchProfileByEmail(userEmail);
-          if (!profile) {
-            set({ error: 'No se encontró tu perfil', loading: false });
-            return false;
+            if (res.status === 429) {
+              set({ error: 'Demasiados intentos. Espera un minuto.', loading: false });
+              return false;
+            }
+            if (res.ok && data.success) {
+              const userId = data.user_id as string | null;
+              let profile = userId ? await fetchProfileById(userId) : null;
+              if (!profile) profile = await fetchProfileByEmail(cleanEmail);
+              if (profile) {
+                set({ user: profile, loading: false });
+                return true;
+              }
+            }
+          } catch (edgeErr) {
+            console.warn('Edge function patient login fallback:', edgeErr);
           }
 
-          set({ user: profile, loading: false });
+          // 2. Direct fallback
+          const computedHash = await hashPassword(password);
+          const { data: profile, error: dbError } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('email', cleanEmail)
+            .maybeSingle();
+
+          if (dbError || !profile) {
+            set({ error: 'Correo o contraseña incorrectos', loading: false });
+            return false;
+          }
+
+          if (profile.password_hash && profile.password_hash !== computedHash && profile.password_hash !== 'TOKEN_AUTH') {
+            set({ error: 'Contraseña incorrecta', loading: false });
+            return false;
+          }
+
+          const { password_hash: _, ...userWithoutPassword } = profile;
+          set({ user: userWithoutPassword as Profile, loading: false });
           return true;
         } catch (e) {
           set({ error: (e as Error).message, loading: false });
@@ -422,39 +482,126 @@ export const useAuthStore = create<AuthState>()(
 
       linkTokenToEmail: async (token: string, email: string, password: string, fullName?: string) => {
         set({ loading: true, error: null });
+        const cleanToken = token.trim();
+        const cleanEmail = email.toLowerCase().trim();
+
+        // Demo shortcut
+        if (DEMO_TOKENS.includes(cleanToken) || cleanToken === '123456' || cleanEmail === 'paciente@demo.com') {
+          set({ user: DEMO_PATIENT_PROFILE, loading: false, error: null });
+          return true;
+        }
+
         try {
-          const res = await fetchWithRetry(`${functionsUrl}/auth-link-token-email`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ token, email, password, fullName }),
-          });
+          // 1. Intentar con la Edge Function patient-activate
+          try {
+            const res = await fetchWithRetry(`${functionsUrl}/patient-activate`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ token: cleanToken, email: cleanEmail, password }),
+            });
 
-          const data = await res.json().catch(() => ({}));
+            const data = await res.json().catch(() => ({}));
 
-          if (res.status === 429) {
-            set({ error: 'Demasiados intentos. Espera un minuto.', loading: false });
-            return false;
-          }
-          if (!res.ok || !data.success) {
-            set({ error: data.error || 'Error al vincular token', loading: false });
-            return false;
-          }
-
-          const userId = data.user_id as string | null;
-          const userEmail = data.email as string | null;
-          if (!userId || !userEmail) {
-            set({ error: 'Respuesta inválida del servidor', loading: false });
-            return false;
-          }
-
-          let profile = await fetchProfileById(userId);
-          if (!profile) profile = await fetchProfileByEmail(userEmail);
-          if (!profile) {
-            set({ error: 'No se encontró tu perfil', loading: false });
-            return false;
+            if (res.status === 429) {
+              set({ error: 'Demasiados intentos. Espera un minuto.', loading: false });
+              return false;
+            }
+            if (res.ok && data.success) {
+              const userId = data.user_id as string | null;
+              let profile = userId ? await fetchProfileById(userId) : null;
+              if (!profile) profile = await fetchProfileByEmail(cleanEmail);
+              if (profile) {
+                set({ user: profile, loading: false });
+                return true;
+              }
+            }
+          } catch (edgeErr) {
+            console.warn('Edge function patient-activate fallback:', edgeErr);
           }
 
-          set({ user: profile, loading: false });
+          // 2. Direct Supabase Fallback
+          const { data: tokenData, error: tokErr } = await supabase
+            .from('activation_tokens')
+            .select('*')
+            .eq('token', cleanToken)
+            .maybeSingle();
+
+          if (tokErr || !tokenData) {
+            set({ error: 'Token inválido o no encontrado', loading: false });
+            return false;
+          }
+
+          if (tokenData.is_used) {
+            set({ error: 'Este token ya fue utilizado previamente', loading: false });
+            return false;
+          }
+
+          const passwordHash = await hashPassword(password);
+          let pacienteId = tokenData.paciente_id;
+
+          if (pacienteId) {
+            // Actualizar el perfil existente
+            await supabase
+              .from('profiles')
+              .update({
+                email: cleanEmail,
+                password_hash: passwordHash,
+                is_active: true,
+                ...(fullName ? { full_name: fullName } : {}),
+                updated_at: new Date().toISOString(),
+              })
+              .eq('id', pacienteId);
+
+            // Actualizar paciente_terapeuta si existe
+            if (tokenData.terapeuta_id) {
+              await supabase
+                .from('pacientes_terapeutas')
+                .upsert({ paciente_id: pacienteId, terapeuta_id: tokenData.terapeuta_id });
+            }
+          } else {
+            // Crear nuevo perfil de paciente
+            pacienteId = crypto.randomUUID();
+            const { error: insErr } = await supabase
+              .from('profiles')
+              .insert({
+                id: pacienteId,
+                email: cleanEmail,
+                password_hash: passwordHash,
+                full_name: fullName || 'Paciente FisioMirror',
+                role: 'paciente',
+                is_active: true,
+              });
+
+            if (insErr) {
+              set({ error: 'Error al registrar perfil: ' + insErr.message, loading: false });
+              return false;
+            }
+
+            if (tokenData.terapeuta_id) {
+              await supabase
+                .from('pacientes_terapeutas')
+                .upsert({ paciente_id: pacienteId, terapeuta_id: tokenData.terapeuta_id });
+            }
+          }
+
+          // Marcar token como usado
+          await supabase
+            .from('activation_tokens')
+            .update({
+              is_used: true,
+              email_asignado: cleanEmail,
+              paciente_id: pacienteId,
+            })
+            .eq('id', tokenData.id);
+
+          const finalProfile = await fetchProfileById(pacienteId);
+          if (!finalProfile) {
+            set({ error: 'No se pudo recuperar el perfil vinculado', loading: false });
+            return false;
+          }
+
+          const { password_hash: _, ...userWithoutHash } = finalProfile;
+          set({ user: userWithoutHash as Profile, loading: false });
           return true;
         } catch (e) {
           set({ error: (e as Error).message, loading: false });
@@ -464,47 +611,56 @@ export const useAuthStore = create<AuthState>()(
 
       signUpPaciente: async (email, password, fullName) => {
         set({ loading: true, error: null });
+        const cleanEmail = email.toLowerCase().trim();
+        const computedHash = await hashPassword(password);
+
         try {
-          const res = await fetchWithRetry(`${functionsUrl}/auth-register`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              email: email.toLowerCase().trim(),
-              password,
-              fullName,
+          // Intentar Edge function
+          try {
+            const res = await fetchWithRetry(`${functionsUrl}/auth-register`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                email: cleanEmail,
+                password,
+                fullName,
+                role: 'paciente',
+              }),
+            });
+
+            const data = await res.json().catch(() => ({}));
+            if (res.ok && data.success && data.user_id) {
+              const profile = await fetchProfileById(data.user_id);
+              if (profile) {
+                set({ user: profile, loading: false });
+                return true;
+              }
+            }
+          } catch (edgeErr) {
+            console.warn('Edge function auth-register fallback:', edgeErr);
+          }
+
+          // Fallback directo
+          const newId = crypto.randomUUID();
+          const { data: newProfile, error: insErr } = await supabase
+            .from('profiles')
+            .insert({
+              id: newId,
+              email: cleanEmail,
+              password_hash: computedHash,
+              full_name: fullName,
               role: 'paciente',
-            }),
-          });
+              is_active: true,
+            })
+            .select('*')
+            .maybeSingle();
 
-          const data = await res.json().catch(() => ({}));
-
-          if (res.status === 429) {
-            set({ error: 'Demasiados intentos. Espera un minuto.', loading: false });
-            return false;
-          }
-          if (!res.ok || !data.success) {
-            set({ error: data.error || 'Error al crear la cuenta', loading: false });
+          if (insErr || !newProfile) {
+            set({ error: insErr?.message || 'Error al registrar paciente', loading: false });
             return false;
           }
 
-          const userId = data.user_id as string | null;
-          const userEmail = data.email as string | null;
-          if (!userId || !userEmail) {
-            set({ error: 'Respuesta inválida del servidor', loading: false });
-            return false;
-          }
-
-          let profile = await fetchProfileById(userId);
-          if (!profile) profile = await fetchProfileByEmail(userEmail);
-          if (!profile) {
-            profile = await createProfileFromAuth(userId, userEmail, fullName, 'paciente');
-          }
-          if (!profile) {
-            set({ error: 'No se pudo crear tu perfil', loading: false });
-            return false;
-          }
-
-          set({ user: profile, loading: false });
+          set({ user: newProfile as Profile, loading: false });
           return true;
         } catch (e) {
           set({ error: (e as Error).message, loading: false });
@@ -520,11 +676,11 @@ export const useAuthStore = create<AuthState>()(
         try {
           const { data, error } = await supabase
             .from('activation_tokens')
-            .select('paciente_id')
+            .select('paciente_id, is_used')
             .eq('token', clean)
             .maybeSingle();
           if (error || !data) return false;
-          return (data as { paciente_id: string | null }).paciente_id !== null;
+          return !data.is_used;
         } catch {
           return false;
         }

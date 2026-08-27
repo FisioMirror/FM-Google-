@@ -1,66 +1,193 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useAnimation, useReducedMotion } from 'framer-motion';
+import { Icon } from '../components/ui/Icon';
 import { Spinner } from '../components/ui/Loader';
+import { PinInput } from '../components/ui/PinInput';
 import { useAuthStore } from '../stores/authStore';
+import { useTheme } from '../context/ThemeContext';
 import { useToast } from '../components/ui/ToastProvider';
 import { supabase } from '../lib/supabase';
 import { cn } from '../lib/utils';
-import { PinInput } from '../components/ui/PinInput';
-import {
-  Lock,
-  Mail,
-  User,
-  Key,
-  Stethoscope,
-  Eye,
-  EyeOff,
-  Sparkles,
-  ArrowRight,
-  ShieldCheck,
-  Building2,
-  GraduationCap,
-  ChevronRight,
-} from 'lucide-react';
+import { SparkleEffect } from '../components/auth/SparkleEffect';
 
-type AuthTab = 'login' | 'register';
-type RegisterType = 'paciente' | 'fisio';
+type AuthMode = 'login' | 'register';
+type LoginRole = 'paciente' | 'fisioterapeuta';
+type FisioStep = 1 | 2;
+type ImageState = 'idle' | 'typing' | 'loading' | 'error';
+type GlowPhase = 'pulse' | 'settled' | 'error';
+
+interface EspecialidadRow {
+  id: string;
+  nombre: string;
+}
+
+const GLOW_COLORS = {
+  teal: '0, 80, 77',
+  cyan: '6, 182, 212',
+  coral: '234, 88, 12',
+  red: '186, 26, 26',
+};
+
+const DEFAULT_ESPECIALIDADES = [
+  'Fisioterapia Deportiva',
+  'Rehabilitación Traumatológica',
+  'Fisioterapia Neurológica',
+  'Rehabilitación Postquirúrgica',
+  'Fisioterapia Geriátrica',
+  'Terapia Manual Ortopédica',
+  'Fisioterapia Pediátrica',
+  'Fisioterapia Cardiorrespiratoria',
+  'Fisioterapia en Suelo Pélvico',
+  'Ergonomía y Salud Laboral',
+];
+
+const LOGIN_BG_URL = '/login.png';
+
+function CharacterGlow({
+  side,
+  colorRgb,
+  phase,
+  reduceMotion,
+}: {
+  side: 'left' | 'right';
+  colorRgb: string;
+  phase: GlowPhase;
+  reduceMotion: boolean | null;
+}) {
+  const variants = {
+    pulse: {
+      opacity: [0.25, 0.75, 0.25, 0.75, 0.35],
+      scale: [1, 1.04, 1, 1.04, 1],
+      transition: { duration: 1.2, times: [0, 0.25, 0.5, 0.75, 1], ease: 'easeInOut' as const },
+    },
+    settled: {
+      opacity: 0.35,
+      scale: 1,
+      transition: { duration: 0.5, ease: 'easeInOut' as const },
+    },
+    error: {
+      opacity: [0.35, 0.9, 0.35, 0.9, 0.35],
+      transition: { duration: 1, ease: 'easeInOut' as const },
+    },
+  };
+
+  return (
+    <motion.div
+      className={cn(
+        'pointer-events-none absolute top-0 h-full w-3/5',
+        side === 'left' ? 'left-0' : 'right-0'
+      )}
+      initial={{ opacity: 0 }}
+      animate={reduceMotion ? { opacity: 0.35 } : variants[phase]}
+      exit={{ opacity: 0, transition: { duration: 0.4, ease: 'easeInOut' } }}
+    >
+      <div
+        className="absolute inset-0"
+        style={{
+          background: `radial-gradient(circle at ${side === 'left' ? '60%' : '40%'} 50%, rgba(${colorRgb}, 0.5) 0%, rgba(${colorRgb}, 0.2) 35%, rgba(${colorRgb}, 0) 70%)`,
+          filter: 'blur(40px)',
+        }}
+      />
+      <div
+        className="absolute"
+        style={{
+          [side]: '12%',
+          top: '25%',
+          width: '55%',
+          height: '55%',
+          borderRadius: '9999px',
+          boxShadow: `0 0 120px 60px rgba(${colorRgb}, 0.35)`,
+        } as React.CSSProperties}
+      />
+    </motion.div>
+  );
+}
+
+function getPasswordStrength(pw: string): { score: number; label: string; color: string } {
+  let score = 0;
+  if (pw.length >= 8) score++;
+  if (/[A-Z]/.test(pw)) score++;
+  if (/[0-9]/.test(pw)) score++;
+  if (/[^A-Za-z0-9]/.test(pw)) score++;
+  const labels = ['Muy débil', 'Débil', 'Aceptable', 'Fuerte', 'Muy fuerte'];
+  const colors = ['bg-red-500', 'bg-red-500', 'bg-amber-500', 'bg-teal-600', 'bg-teal-600'];
+  return { score, label: labels[score] || 'Muy débil', color: colors[score] || 'bg-red-500' };
+}
+
+function getTimeGreeting(): string {
+  const h = new Date().getHours();
+  if (h < 12) return 'Buenos días';
+  if (h < 19) return 'Buenas tardes';
+  return 'Buenas noches';
+}
 
 export function Login() {
-  const { signIn, linkTokenToEmail, signUpFisio, loading, error, clearError } = useAuthStore();
+  const {
+    signIn,
+    signInPatientWithEmail,
+    linkTokenToEmail,
+    signUpFisio,
+    loading,
+    error,
+    clearError,
+  } = useAuthStore();
   const user = useAuthStore((s) => s.user);
+  const { theme, toggleTheme } = useTheme();
   const toast = useToast();
   const navigate = useNavigate();
+  const reduceMotion = useReducedMotion();
+  const imageControls = useAnimation();
 
-  const [activeTab, setActiveTab] = useState<AuthTab>('login');
-  const [registerType, setRegisterType] = useState<RegisterType>('paciente');
+  const [mode, setMode] = useState<AuthMode>('login');
+  const [loginRole, setLoginRole] = useState<LoginRole>('paciente');
+  const [fisioStep, setFisioStep] = useState<FisioStep>(1);
 
-  // Form Fields - Login
+  // Form states
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [token, setToken] = useState('');
+  const [fullName, setFullName] = useState('');
 
-  // Form Fields - Register Paciente (Token + Email + Password)
-  const [patientToken, setPatientToken] = useState('');
-  const [patientName, setPatientName] = useState('');
-  const [patientEmail, setPatientEmail] = useState('');
-  const [patientPassword, setPatientPassword] = useState('');
-  const [confirmPatientPassword, setConfirmPatientPassword] = useState('');
-  const [showPatientPassword, setShowPatientPassword] = useState(false);
+  // Physio specific fields
+  const [cedula, setCedula] = useState('');
+  const [universidad, setUniversidad] = useState('');
+  const [colegiadoId, setColegiadoId] = useState('');
+  const [telefono, setTelefono] = useState('');
+  const [anioEgreso, setAnioEgreso] = useState('');
+  const [especialidadesSel, setEspecialidadesSel] = useState<string[]>([]);
+  const [especialidadesOpts, setEspecialidadesOpts] = useState<string[]>(DEFAULT_ESPECIALIDADES);
+  const [especialidadInput, setEspecialidadInput] = useState('');
+  const [credencialFile, setCredencialFile] = useState<File | null>(null);
+  const [credencialPreview, setCredencialPreview] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
 
-  // Form Fields - Register Fisioterapeuta
-  const [fisioName, setFisioName] = useState('');
-  const [fisioEmail, setFisioEmail] = useState('');
-  const [fisioPassword, setFisioPassword] = useState('');
-  const [fisioCedula, setFisioCedula] = useState('');
-  const [fisioUniversidad, setFisioUniversidad] = useState('');
-  const [fisioEspecialidad, setFisioEspecialidad] = useState('');
-  const [showFisioPassword, setShowFisioPassword] = useState(false);
-
-  // Reset Password Modal
+  // Modals & Feedback
+  const [showSuccess, setShowSuccess] = useState(false);
   const [showResetModal, setShowResetModal] = useState(false);
   const [resetEmail, setResetEmail] = useState('');
   const [resetLoading, setResetLoading] = useState(false);
+
+  const [failedAttempts, setFailedAttempts] = useState(0);
+  const [cooldown, setCooldown] = useState(0);
+
+  const [imageState, setImageState] = useState<ImageState>('idle');
+  const [glowPhase, setGlowPhase] = useState<GlowPhase>('pulse');
+  const [errorShake, setErrorShake] = useState(false);
+
+  const glowTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const errorTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const emailRef = useRef<HTMLInputElement>(null);
+
+  const isPaciente = loginRole === 'paciente';
+  const isFisio = loginRole === 'fisioterapeuta';
+  const isRegister = mode === 'register';
+
+  const isTyping = email.length > 0 || password.length > 0 || token.length > 0;
+  const pwStrength = useMemo(() => getPasswordStrength(password), [password]);
+  const greeting = useMemo(() => getTimeGreeting(), []);
 
   useEffect(() => {
     if (user) {
@@ -70,596 +197,1463 @@ export function Login() {
     }
   }, [user, navigate]);
 
-  const handleLoginSubmit = async (e: React.FormEvent) => {
+  useEffect(() => {
+    if (cooldown > 0) {
+      const t = setTimeout(() => setCooldown(cooldown - 1), 1000);
+      return () => clearTimeout(t);
+    }
+  }, [cooldown]);
+
+  useEffect(() => {
+    if (loading) {
+      setImageState('loading');
+      return;
+    }
+    if (error) {
+      setImageState('error');
+      setGlowPhase('error');
+      setErrorShake(true);
+      if (!reduceMotion) {
+        void imageControls.start({
+          x: [0, -12, 12, -10, 10, 0],
+          transition: { duration: 0.6, ease: 'easeInOut' },
+        });
+      }
+      if (errorTimeoutRef.current) clearTimeout(errorTimeoutRef.current);
+      errorTimeoutRef.current = setTimeout(() => {
+        setGlowPhase('settled');
+        setErrorShake(false);
+        setImageState(isTyping ? 'typing' : 'idle');
+      }, 1500);
+      return () => {
+        if (errorTimeoutRef.current) clearTimeout(errorTimeoutRef.current);
+      };
+    }
+    setImageState(isTyping ? 'typing' : 'idle');
+  }, [loading, error, isTyping, reduceMotion, imageControls]);
+
+  useEffect(() => {
+    return () => {
+      if (glowTimeoutRef.current) clearTimeout(glowTimeoutRef.current);
+      if (errorTimeoutRef.current) clearTimeout(errorTimeoutRef.current);
+    };
+  }, []);
+
+  const loadEspecialidades = async () => {
+    if (especialidadesOpts.length > 0) return;
+    try {
+      const { data, error: err } = await supabase
+        .from('especialidades')
+        .select('id, nombre')
+        .order('nombre');
+      if (err) {
+        toast.error('Error cargando especialidades');
+        return;
+      }
+      if (data) setEspecialidadesOpts((data as EspecialidadRow[]).map((e) => e.nombre));
+    } catch {
+      toast.error('Error cargando especialidades');
+    }
+  };
+
+  const switchRole = (role: LoginRole) => {
+    setLoginRole(role);
+    clearError();
+    setToken('');
+    setEmail('');
+    setPassword('');
+    setConfirmPassword('');
+    setGlowPhase('pulse');
+    if (glowTimeoutRef.current) clearTimeout(glowTimeoutRef.current);
+    glowTimeoutRef.current = setTimeout(() => setGlowPhase('settled'), 1000);
+    if (role === 'fisioterapeuta' && mode === 'register') loadEspecialidades();
+    setTimeout(() => {
+      if (window.innerWidth >= 768) emailRef.current?.focus();
+    }, 300);
+  };
+
+  const switchMode = (m: AuthMode) => {
+    setMode(m);
+    setFisioStep(1);
+    clearError();
+    if (m === 'register' && isFisio) loadEspecialidades();
+  };
+
+  const handleCredencialFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setCredencialFile(file);
+    const reader = new FileReader();
+    reader.onload = () => setCredencialPreview(reader.result as string);
+    reader.readAsDataURL(file);
+  };
+
+  const uploadCredencial = async (userId: string): Promise<string | null> => {
+    if (!credencialFile) return null;
+    setUploading(true);
+    try {
+      const ext = credencialFile.name.split('.').pop() ?? 'jpg';
+      const path = `${userId}/credencial-${Date.now()}.${ext}`;
+      const { error: upErr } = await supabase.storage
+        .from('credenciales_profesionales')
+        .upload(path, credencialFile, { upsert: true });
+      if (upErr) throw new Error(upErr.message);
+      const { data } = supabase.storage
+        .from('credenciales_profesionales')
+        .getPublicUrl(path);
+      return data.publicUrl;
+    } catch {
+      toast.warning('No se pudo subir la credencial', {
+        description:
+          'Puedes subirla más tarde desde tu perfil. Tu cuenta se creará igualmente.',
+      });
+      return null;
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email.trim() || !password.trim()) {
-      toast.error('Por favor ingresa tu correo y contraseña');
+    if (cooldown > 0) return;
+
+    // ─────────────────────────────────────────────
+    // PACIENTE: INICIAR SESIÓN (EMAIL Y PASSWORD)
+    // ─────────────────────────────────────────────
+    if (isPaciente && mode === 'login') {
+      if (!email.trim() || !password.trim()) {
+        toast.error('Ingresa tu correo y contraseña');
+        return;
+      }
+      const ok = await signInPatientWithEmail(email, password);
+      if (ok) {
+        toast.success('Bienvenido a FisioMirror');
+      } else {
+        const newAttempts = failedAttempts + 1;
+        setFailedAttempts(newAttempts);
+        if (newAttempts >= 5) {
+          setCooldown(900);
+          toast.error('Cuenta bloqueada por 15 minutos.');
+        } else if (newAttempts >= 3) {
+          setCooldown(60);
+          toast.error('Demasiados intentos. Espera 60 segundos.');
+        }
+      }
       return;
     }
 
-    const ok = await signIn(email.trim(), password);
-    if (ok) {
-      toast.success('Bienvenido a FisioMirror');
-    } else {
-      const err = useAuthStore.getState().error;
-      toast.error(err || 'Credenciales no válidas');
+    // ─────────────────────────────────────────────
+    // PACIENTE: REGISTRO (TOKEN + EMAIL + PASSWORD)
+    // ─────────────────────────────────────────────
+    if (isPaciente && mode === 'register') {
+      const cleanTok = token.trim();
+      if (!cleanTok || cleanTok.length < 4) {
+        toast.error('Ingresa el código de 6 dígitos asignado por tu fisioterapeuta');
+        return;
+      }
+      if (!email.trim() || !password.trim()) {
+        toast.error('Completa tu correo y contraseña para crear tu cuenta');
+        return;
+      }
+      if (password !== confirmPassword) {
+        toast.error('Las contraseñas no coinciden');
+        return;
+      }
+      if (password.length < 6) {
+        toast.error('La contraseña debe tener al menos 6 caracteres');
+        return;
+      }
+
+      // Special demo shortcut
+      if (cleanTok === '123456' || email === 'paciente@demo.com') {
+        const ok = await linkTokenToEmail(cleanTok, email, password, fullName || undefined);
+        if (ok) toast.success('Cuenta creada y vinculada con éxito. ¡Bienvenido!');
+        return;
+      }
+
+      const ok = await linkTokenToEmail(cleanTok, email, password, fullName || undefined);
+      if (ok) {
+        toast.success('¡Cuenta creada con éxito! Tu token ha sido vinculado.');
+      } else {
+        const currentError = useAuthStore.getState().error;
+        if (currentError?.includes('Demasiados intentos')) {
+          setCooldown(60);
+          toast.error('Demasiados intentos. Espera un minuto.');
+        }
+      }
+      return;
+    }
+
+    // ─────────────────────────────────────────────
+    // FISIOTERAPEUTA: INICIAR SESIÓN (EMAIL Y PASSWORD)
+    // ─────────────────────────────────────────────
+    if (isFisio && mode === 'login') {
+      if (!email.trim() || !password.trim()) {
+        toast.error('Ingresa tu correo y contraseña');
+        return;
+      }
+      const ok = await signIn(email, password);
+      if (ok) {
+        toast.success('Bienvenido a FisioMirror');
+      } else {
+        const currentError = useAuthStore.getState().error;
+        if (currentError?.includes('Demasiados intentos')) {
+          setCooldown(60);
+          toast.error('Demasiados intentos. Espera un minuto.');
+        }
+      }
+      return;
+    }
+
+    // ─────────────────────────────────────────────
+    // FISIOTERAPEUTA: REGISTRO PROFESIONAL
+    // ─────────────────────────────────────────────
+    if (isFisio && mode === 'register') {
+      if (password !== confirmPassword) {
+        toast.error('Las contraseñas no coinciden');
+        return;
+      }
+      if (fisioStep === 1) {
+        if (!fullName.trim() || !email.trim() || !password.trim() || !cedula.trim()) {
+          toast.error('Completa los campos requeridos');
+          return;
+        }
+        if (!telefono.trim()) {
+          toast.error('El número de teléfono es obligatorio');
+          return;
+        }
+        setFisioStep(2);
+        return;
+      }
+
+      const tempId = crypto.randomUUID();
+      const url = await uploadCredencial(tempId);
+      const ok = await signUpFisio(email, password, fullName, {
+        cedula,
+        universidad,
+        colegiadoId,
+        especialidades: especialidadesSel,
+        credencialUrl: url ?? undefined,
+        anioEgreso: anioEgreso || undefined,
+        telefono: telefono.trim(),
+      });
+      if (ok) {
+        setShowSuccess(true);
+        toast.success('Cuenta creada. Bienvenido a FisioMirror');
+      } else {
+        const currentError = useAuthStore.getState().error;
+        if (currentError?.includes('Demasiados intentos')) {
+          setCooldown(60);
+          toast.error('Demasiados intentos. Espera un minuto.');
+        }
+      }
     }
   };
 
-  const handleRegisterPatientSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const cleanToken = patientToken.trim();
-    if (!cleanToken) {
-      toast.error('Por favor ingresa el token de 6 dígitos emitido por tu fisioterapeuta');
-      return;
-    }
-    if (!patientEmail.trim() || !patientPassword.trim()) {
-      toast.error('Completa tu correo electrónico y define una contraseña');
-      return;
-    }
-    if (patientPassword !== confirmPatientPassword) {
-      toast.error('Las contraseñas no coinciden');
-      return;
-    }
-    if (patientPassword.length < 6) {
-      toast.error('La contraseña debe contener al menos 6 caracteres');
-      return;
-    }
+  const fillFisioDemo = () => {
+    switchRole('fisioterapeuta');
+    setMode('login');
+    setEmail('fisio@demo.com');
+    setPassword('demo1234');
+  };
 
-    const ok = await linkTokenToEmail(
-      cleanToken,
-      patientEmail.trim(),
-      patientPassword,
-      patientName.trim() || undefined
-    );
+  const fillPacienteDemo = () => {
+    switchRole('paciente');
+    setMode('login');
+    setEmail('paciente@demo.com');
+    setPassword('demo1234');
+  };
 
-    if (ok) {
-      toast.success('¡Cuenta activada y vinculada exitosamente! Bienvenido.');
-    } else {
-      const err = useAuthStore.getState().error;
-      toast.error(err || 'No se pudo activar el token. Verifica que sea válido.');
+  const addEspecialidad = () => {
+    const val = especialidadInput.trim();
+    if (val && !especialidadesSel.includes(val)) {
+      setEspecialidadesSel([...especialidadesSel, val]);
+      setEspecialidadInput('');
     }
   };
 
-  const handleRegisterFisioSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!fisioName.trim() || !fisioEmail.trim() || !fisioPassword.trim()) {
-      toast.error('Completa los campos obligatorios del registro profesional');
-      return;
-    }
-    if (fisioPassword.length < 6) {
-      toast.error('La contraseña debe contener al menos 6 caracteres');
-      return;
-    }
-
-    const ok = await signUpFisio(fisioEmail.trim(), fisioPassword, fisioName.trim(), {
-      cedula: fisioCedula.trim() || 'Pendiente',
-      colegiadoId: fisioCedula.trim() || 'Pendiente',
-      universidad: fisioUniversidad.trim() || 'Colegiado Nacional',
-      especialidades: fisioEspecialidad ? [fisioEspecialidad.trim()] : ['Fisioterapia y Rehabilitación'],
-    });
-
-    if (ok) {
-      toast.success('¡Registro clínico completado! Bienvenido.');
-    } else {
-      const err = useAuthStore.getState().error;
-      toast.error(err || 'Error al crear la cuenta clínica.');
-    }
+  const removeEspecialidad = (esp: string) => {
+    setEspecialidadesSel(especialidadesSel.filter((e) => e !== esp));
   };
 
-  const handleDemoFisio = async () => {
-    await signIn('fisio@demo.com', 'demo1234');
-    toast.success('Acceso Demo Fisioterapeuta');
-  };
+  const canSubmitFisioStep1 =
+    fullName.trim() &&
+    email.trim() &&
+    password.trim() &&
+    confirmPassword.trim() &&
+    password === confirmPassword &&
+    cedula.trim() &&
+    telefono.trim();
 
-  const handleDemoPatient = async () => {
-    await signIn('paciente@demo.com', 'demo1234');
-    toast.success('Acceso Demo Paciente');
-  };
-
-  const handleResetPassword = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleResetPassword = async () => {
     if (!resetEmail.trim()) {
       toast.error('Ingresa tu correo electrónico');
       return;
     }
     setResetLoading(true);
     try {
-      const { error: resetErr } = await supabase.auth.resetPasswordForEmail(resetEmail.trim(), {
-        redirectTo: `${window.location.origin}/reset-password`,
-      });
-      if (resetErr) throw resetErr;
-      toast.success('Enlace de recuperación enviado', {
-        description: 'Revisa tu bandeja de entrada o spam.',
-      });
-      setShowResetModal(false);
-      setResetEmail('');
+      const { error: err } = await supabase.auth.resetPasswordForEmail(
+        resetEmail.trim().toLowerCase(),
+        { redirectTo: window.location.origin + '/reset-password' }
+      );
+      if (err) throw err;
+      toast.success('Si el correo está registrado, recibirás un enlace de recuperación.');
     } catch {
-      toast.info('Instrucciones enviadas', {
-        description: 'Si el correo está registrado, recibirás un enlace de acceso.',
-      });
-      setShowResetModal(false);
+      toast.success('Si el correo está registrado, recibirás un enlace de recuperación.');
     } finally {
       setResetLoading(false);
+      setShowResetModal(false);
+      setResetEmail('');
     }
   };
 
+  const breathingScale = imageState === 'typing' ? [1, 1.01, 1] : [1, 1.025, 1];
+  const breathingDuration = imageState === 'typing' ? 3 : 5;
+  const glowColorRgb =
+    glowPhase === 'error'
+      ? GLOW_COLORS.red
+      : isPaciente
+      ? GLOW_COLORS.coral
+      : GLOW_COLORS.teal;
+
+  const statusMessage =
+    loading
+      ? 'Preparando tu espacio...'
+      : error
+      ? 'Revisa tus credenciales'
+      : isPaciente
+      ? mode === 'register'
+        ? 'Vincula tu token de recuperación'
+        : 'Tu recuperación empieza aquí'
+      : mode === 'register'
+      ? 'Evolución clínica personalizada'
+      : 'Gestión clínica de alto rendimiento';
+
+  // Dynamic titles and subtitles
+  const getHeaderTitle = () => {
+    if (isPaciente) {
+      return mode === 'register'
+        ? 'Registro de Paciente'
+        : 'Comienza tu recuperación hoy';
+    }
+    return mode === 'register'
+      ? 'Registro Profesional'
+      : 'Gestión Clínica de Alto Rendimiento';
+  };
+
+  const getHeaderSubtitle = () => {
+    if (isPaciente) {
+      return mode === 'register'
+        ? 'Ingresa tu código de 6 dígitos asignado por tu fisioterapeuta para vincular tu cuenta.'
+        : 'Ingresa con tu correo y contraseña para acceder a tus terapias.';
+    }
+    return mode === 'register'
+      ? 'Crea tu cuenta clínica para gestionar pacientes, métricas y prescripción digital.'
+      : 'Accede a tu panel de control clínico y seguimiento de pacientes.';
+  };
+
   return (
-    <div className="min-h-screen w-full flex flex-col justify-center items-center p-4 sm:p-6 bg-gradient-to-br from-teal-950 via-slate-900 to-slate-950 relative overflow-hidden selection:bg-teal-500 selection:text-white">
-      {/* Dynamic Background Ambient Light */}
-      <div className="absolute -top-32 -left-32 w-96 h-96 bg-teal-500/20 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute -bottom-32 -right-32 w-96 h-96 bg-cyan-500/20 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-teal-800/10 rounded-full blur-[120px] pointer-events-none" />
+    <div className="min-h-screen w-full flex font-sans text-slate-900 dark:text-slate-100 relative overflow-hidden bg-[#f9f9fc] dark:bg-slate-950">
+      {/* ── MESH BACKGROUND GRADIENT ── */}
+      <div
+        className="pointer-events-none absolute inset-0 z-0"
+        style={{
+          backgroundImage:
+            'radial-gradient(at 0% 0%, rgba(0, 80, 77, 0.12) 0px, transparent 50%), radial-gradient(at 100% 0%, rgba(234, 88, 12, 0.08) 0px, transparent 50%), radial-gradient(at 100% 100%, rgba(13, 148, 136, 0.15) 0px, transparent 50%), radial-gradient(at 0% 100%, rgba(6, 182, 212, 0.10) 0px, transparent 50%)',
+        }}
+      />
+      {/* Ambient glowing orbs */}
+      <div className="pointer-events-none absolute -left-12 top-16 h-72 w-72 rounded-full bg-[#00504d]/10 dark:bg-teal-500/10 blur-[90px]" />
+      <div className="pointer-events-none absolute bottom-10 right-0 h-64 w-64 rounded-full bg-cyan-500/10 blur-[90px]" />
 
-      {/* Main Card Container */}
-      <div className="w-full max-w-md sm:max-w-lg z-10 my-4">
-        {/* Brand Header */}
-        <div className="text-center mb-6">
-          <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.4 }}
-            className="inline-flex items-center justify-center w-20 h-20 mb-3 relative"
-          >
-            <div className="absolute inset-0 rounded-full bg-teal-500/25 blur-xl pointer-events-none" />
-            <img src="/logo.png" alt="FisioMirror" className="w-full h-full object-contain relative z-10 drop-shadow-md select-none" />
-          </motion.div>
-
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-            FisioMirror
-          </h1>
-          <p className="text-xs sm:text-sm text-teal-200/80 mt-1 font-medium">
-            Rehabilitación Inteligente con Espejo AR & Asistencia Clínica
-          </p>
-        </div>
-
-        {/* Tab Selector (Glassmorphic) */}
-        <div className="flex bg-slate-900/80 p-1.5 rounded-2xl border border-teal-500/25 mb-5 shadow-lg backdrop-blur-xl">
+      {/* ═══════════════════════════════════════════════════
+          LEFT PANEL — MAIN FORM
+          ═══════════════════════════════════════════════════ */}
+      <div className="w-full md:w-[45%] lg:w-[42%] flex flex-col items-center justify-center px-4 py-8 md:px-8 relative z-20 overflow-y-auto">
+        {/* Top bar: logo + theme toggle */}
+        <div className="w-full max-w-[480px] flex items-center justify-between mb-5">
+          <div className="flex items-center gap-2.5">
+            <img src="/logo.png" alt="FisioMirror Logo" className="h-10 w-auto shrink-0 drop-shadow-sm" />
+            <span className="font-extrabold text-2xl tracking-tight text-[#00504d] dark:text-[#8ad3cf]">
+              FisioMirror
+            </span>
+          </div>
           <button
-            type="button"
-            onClick={() => {
-              setActiveTab('login');
-              clearError();
-            }}
-            className={cn(
-              'flex-1 py-2.5 text-xs sm:text-sm font-bold rounded-xl transition-all duration-200 flex items-center justify-center gap-1.5',
-              activeTab === 'login'
-                ? 'bg-gradient-to-r from-teal-600 to-teal-500 text-white shadow-md shadow-teal-900/40'
-                : 'text-slate-400 hover:text-slate-200'
-            )}
+            onClick={toggleTheme}
+            aria-label="Cambiar tema"
+            className="p-2.5 rounded-full border border-slate-200/80 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 backdrop-blur-md hover:scale-105 transition-all text-[#00504d] dark:text-[#8ad3cf] shadow-sm hover:shadow"
           >
-            <Lock className="size-3.5" />
-            <span>Iniciar Sesión</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              setActiveTab('register');
-              clearError();
-            }}
-            className={cn(
-              'flex-1 py-2.5 text-xs sm:text-sm font-bold rounded-xl transition-all duration-200 flex items-center justify-center gap-1.5',
-              activeTab === 'register'
-                ? 'bg-gradient-to-r from-teal-600 to-teal-500 text-white shadow-md shadow-teal-900/40'
-                : 'text-slate-400 hover:text-slate-200'
-            )}
-          >
-            <Key className="size-3.5" />
-            <span>Registro / Activar Token</span>
+            <Icon name={theme === 'dark' ? 'light_mode' : 'dark_mode'} size={18} />
           </button>
         </div>
 
-        {/* Card Body Panel */}
-        <div className="bg-slate-900/90 border border-teal-500/25 rounded-3xl p-6 sm:p-8 shadow-2xl backdrop-blur-2xl relative overflow-hidden">
-          <AnimatePresence mode="wait">
-            {activeTab === 'login' ? (
-              /* ─── TAB 1: INICIAR SESIÓN (Email & Password) ─── */
-              <motion.form
-                key="login-tab"
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 10 }}
-                transition={{ duration: 0.25 }}
-                onSubmit={handleLoginSubmit}
-                className="space-y-4"
-              >
-                <div>
-                  <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
-                    Correo Electrónico
-                  </label>
-                  <div className="relative">
-                    <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 size-4" />
-                    <input
-                      type="email"
-                      required
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="usuario@correo.com"
-                      className="w-full pl-10 pr-4 py-3 rounded-xl bg-slate-800/80 border border-slate-700/80 focus:border-teal-400 text-sm text-white placeholder:text-slate-500 outline-none transition-all focus:bg-slate-800"
-                    />
-                  </div>
+        {/* Main Card */}
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+          className={cn(
+            'w-full rounded-[2.5rem] border border-white/60 dark:border-slate-800/80 bg-white/45 dark:bg-slate-900/50 backdrop-blur-2xl shadow-[0_12px_40px_rgba(0,0,0,0.06)] dark:shadow-[0_12px_40px_rgba(0,0,0,0.3)] p-6 sm:p-9 flex flex-col relative overflow-hidden',
+            isFisio && isRegister ? 'max-w-2xl gap-y-5' : 'max-w-[480px] gap-y-5'
+          )}
+        >
+          {/* Internal ambient color spots */}
+          <div className="pointer-events-none absolute -top-12 -right-12 h-40 w-40 rounded-full bg-teal-500/15 blur-2xl" />
+          <div className="pointer-events-none absolute -bottom-10 -left-10 h-36 w-36 rounded-full bg-cyan-500/10 blur-2xl" />
+
+          {/* Registration Progress Indicator (Physio Multi-step) */}
+          {isFisio && isRegister && (
+            <div className="hidden md:flex items-center justify-between border-b border-slate-200/60 dark:border-slate-800 pb-3">
+              <div>
+                <span className="font-extrabold text-xl text-[#00504d] dark:text-[#8ad3cf]">
+                  FisioMirror Profesional
+                </span>
+                <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5">
+                  Tu evolución profesional comienza aquí.
+                </p>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="h-1.5 w-24 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-[#00504d] dark:bg-[#8ad3cf] transition-all duration-500 ease-out"
+                    style={{ width: fisioStep === 1 ? '50%' : '100%' }}
+                  />
                 </div>
+                <span className="text-xs font-bold text-[#00504d] dark:text-[#8ad3cf] whitespace-nowrap">
+                  Paso {fisioStep}/2
+                </span>
+              </div>
+            </div>
+          )}
 
-                <div>
-                  <div className="flex items-center justify-between mb-1.5">
-                    <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider">
-                      Contraseña
-                    </label>
+          {/* Segmented Control / Role Selector */}
+          {(!isFisio || !isRegister) && (
+            <div className="relative bg-slate-200/50 dark:bg-slate-800/60 p-1 rounded-2xl flex items-center w-full shadow-inner">
+              <motion.div
+                className="absolute h-[calc(100%-8px)] w-[calc(50%-4px)] bg-white dark:bg-slate-900 rounded-xl shadow-sm"
+                animate={{ left: isPaciente ? '4px' : 'calc(50% + 0px)' }}
+                transition={{ type: 'spring', stiffness: 350, damping: 32 }}
+              />
+              <button
+                type="button"
+                onClick={() => switchRole('paciente')}
+                className={cn(
+                  'relative flex-1 py-3 text-sm font-bold z-10 transition-colors flex items-center justify-center gap-2 rounded-xl',
+                  isPaciente
+                    ? 'text-[#00504d] dark:text-[#8ad3cf]'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
+                )}
+              >
+                <Icon name="person" filled={isPaciente} size={18} />
+                Paciente
+              </button>
+              <button
+                type="button"
+                onClick={() => switchRole('fisioterapeuta')}
+                className={cn(
+                  'relative flex-1 py-3 text-sm font-bold z-10 transition-colors flex items-center justify-center gap-2 rounded-xl',
+                  isFisio
+                    ? 'text-[#00504d] dark:text-[#8ad3cf]'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
+                )}
+              >
+                <Icon name="medical_services" filled={isFisio} size={18} />
+                Fisioterapeuta
+              </button>
+            </div>
+          )}
+
+          {/* Header Typography matching HTML document */}
+          {(!isFisio || !isRegister) && (
+            <div className="text-center space-y-1.5 pt-1">
+              <span className="text-[11px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">
+                {greeting}
+              </span>
+              <h2 className="font-extrabold text-2xl sm:text-[26px] tracking-tight text-[#00504d] dark:text-[#8ad3cf] leading-tight">
+                {getHeaderTitle()}
+              </h2>
+              <p className="text-sm text-slate-600 dark:text-slate-400 leading-snug px-1">
+                {getHeaderSubtitle()}
+              </p>
+            </div>
+          )}
+
+          {/* Registration Header (Mobile Only for Fisio) */}
+          {isFisio && isRegister && (
+            <div className="md:hidden">
+              <div className="flex items-center justify-between mb-1.5">
+                <h2 className="font-extrabold text-xl text-[#00504d] dark:text-[#8ad3cf]">
+                  Registro Profesional
+                </h2>
+                <span className="px-2.5 py-1 bg-[#00504d]/10 dark:bg-teal-500/20 text-[#00504d] dark:text-[#8ad3cf] rounded-full text-xs font-bold">
+                  Etapa {fisioStep}/2
+                </span>
+              </div>
+              <p className="text-xs text-slate-600 dark:text-slate-400">
+                Completa tus datos profesionales para validar tu acceso.
+              </p>
+            </div>
+          )}
+
+          {/* Form Flows */}
+          <form onSubmit={handleSubmit} className="relative overflow-hidden min-h-[260px] space-y-4">
+            <AnimatePresence mode="wait">
+              {/* ─────────────────────────────────────────────────────────────
+                  1. PACIENTE — INICIAR SESIÓN (EMAIL Y CONTRASEÑA)
+                  ───────────────────────────────────────────────────────────── */}
+              {isPaciente && mode === 'login' && (
+                <motion.div
+                  key="patient-login-flow"
+                  initial={{ opacity: 0, x: -15 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -15 }}
+                  transition={{ duration: 0.3 }}
+                  className="space-y-4 pt-1"
+                >
+                  <div className="space-y-3">
+                    <div className="relative">
+                      <Icon
+                        name="alternate_email"
+                        size={19}
+                        className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+                      />
+                      <input
+                        ref={emailRef}
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="Correo electrónico"
+                        aria-label="Correo electrónico del paciente"
+                        autoComplete="email"
+                        required
+                        className="w-full rounded-2xl border border-slate-200/80 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 pl-11 pr-4 py-3.5 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 outline-none transition-all focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20 dark:focus:border-teal-400 dark:focus:ring-teal-400/20 shadow-sm"
+                      />
+                    </div>
+
+                    <div className="relative">
+                      <Icon
+                        name="lock"
+                        size={19}
+                        className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+                      />
+                      <input
+                        type={showPassword ? 'text' : 'password'}
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder="Contraseña"
+                        aria-label="Contraseña del paciente"
+                        autoComplete="current-password"
+                        required
+                        className="w-full rounded-2xl border border-slate-200/80 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 pl-11 pr-11 py-3.5 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 outline-none transition-all focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20 dark:focus:border-teal-400 dark:focus:ring-teal-400/20 shadow-sm"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                        className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1"
+                      >
+                        <Icon name={showPassword ? 'visibility_off' : 'visibility'} size={19} />
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="flex justify-end px-1">
                     <button
                       type="button"
                       onClick={() => setShowResetModal(true)}
-                      className="text-xs text-teal-400 hover:text-teal-300 transition-colors font-medium"
+                      className="text-xs font-semibold text-[#00504d] dark:text-[#8ad3cf] hover:underline"
                     >
                       ¿Olvidaste tu contraseña?
                     </button>
                   </div>
-                  <div className="relative">
-                    <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 size-4" />
-                    <input
-                      type={showPassword ? 'text' : 'password'}
-                      required
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      placeholder="••••••••"
-                      className="w-full pl-10 pr-10 py-3 rounded-xl bg-slate-800/80 border border-slate-700/80 focus:border-teal-400 text-sm text-white placeholder:text-slate-500 outline-none transition-all focus:bg-slate-800"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200 transition-colors"
-                      aria-label="Ver contraseña"
+
+                  {error && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -4 }}
+                      animate={errorShake ? { x: [-8, 8, -6, 6, 0] } : { y: 0 }}
+                      className="p-3 rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800/50 text-red-600 dark:text-red-400 text-xs font-bold text-center"
                     >
-                      {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
-                    </button>
-                  </div>
-                </div>
+                      {error}
+                    </motion.div>
+                  )}
 
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full py-3.5 rounded-xl bg-gradient-to-r from-teal-600 to-teal-500 hover:from-teal-500 hover:to-teal-400 text-white font-bold text-sm transition-all shadow-lg shadow-teal-900/40 flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-50 mt-2"
+                  <button
+                    type="submit"
+                    disabled={loading || cooldown > 0}
+                    className="w-full rounded-2xl bg-[#00504d] dark:bg-teal-600 py-3.5 text-sm font-bold text-white shadow-md shadow-teal-900/20 hover:bg-[#0c403d] dark:hover:bg-teal-500 active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                  >
+                    {loading ? (
+                      <Spinner size={18} className="text-white" />
+                    ) : cooldown > 0 ? (
+                      `Espera ${cooldown}s`
+                    ) : (
+                      <>
+                        Iniciar Sesión
+                        <Icon name="arrow_forward" size={18} />
+                      </>
+                    )}
+                  </button>
+
+                  <div className="pt-2 text-center text-xs text-slate-600 dark:text-slate-400 space-y-1.5">
+                    <p>
+                      ¿Tienes un código de tu fisioterapeuta?{' '}
+                      <button
+                        type="button"
+                        onClick={() => switchMode('register')}
+                        className="font-bold text-[#00504d] dark:text-[#8ad3cf] hover:underline"
+                      >
+                        Crear Cuenta / Registrarse
+                      </button>
+                    </p>
+                  </div>
+                </motion.div>
+              )}
+
+              {/* ─────────────────────────────────────────────────────────────
+                  2. PACIENTE — REGISTRO (TOKEN + EMAIL + CONTRASEÑA)
+                  ───────────────────────────────────────────────────────────── */}
+              {isPaciente && mode === 'register' && (
+                <motion.div
+                  key="patient-register-flow"
+                  initial={{ opacity: 0, x: 15 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 15 }}
+                  transition={{ duration: 0.3 }}
+                  className="space-y-4 pt-1"
                 >
-                  {loading ? <Spinner size={18} /> : <span>Ingresar al Sistema</span>}
-                </button>
-
-                {/* Separator */}
-                <div className="relative my-4">
-                  <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-slate-800" />
-                  </div>
-                  <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-slate-900 px-3 text-slate-500 font-semibold tracking-wider">
-                      Acceso Rápido de Evaluación
-                    </span>
-                  </div>
-                </div>
-
-                {/* Demo Quick Access */}
-                <div className="grid grid-cols-2 gap-2.5">
-                  <button
-                    type="button"
-                    onClick={handleDemoFisio}
-                    disabled={loading}
-                    className="py-2.5 px-3 rounded-xl bg-slate-800/80 hover:bg-slate-800 border border-teal-500/20 text-teal-300 hover:text-teal-200 text-xs font-bold transition-all flex items-center justify-center gap-1.5 hover:border-teal-500/40"
-                  >
-                    <Stethoscope className="size-3.5" />
-                    <span>Demo Terapeuta</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={handleDemoPatient}
-                    disabled={loading}
-                    className="py-2.5 px-3 rounded-xl bg-slate-800/80 hover:bg-slate-800 border border-cyan-500/20 text-cyan-300 hover:text-cyan-200 text-xs font-bold transition-all flex items-center justify-center gap-1.5 hover:border-cyan-500/40"
-                  >
-                    <User className="size-3.5" />
-                    <span>Demo Paciente</span>
-                  </button>
-                </div>
-              </motion.form>
-            ) : (
-              /* ─── TAB 2: REGISTRO / ACTIVAR TOKEN ─── */
-              <motion.div
-                key="register-tab"
-                initial={{ opacity: 0, x: 10 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -10 }}
-                transition={{ duration: 0.25 }}
-                className="space-y-4"
-              >
-                {/* Sub-Role Selector */}
-                <div className="flex p-1 bg-slate-800/90 rounded-xl border border-slate-700/80 gap-1">
-                  <button
-                    type="button"
-                    onClick={() => setRegisterType('paciente')}
-                    className={cn(
-                      'flex-1 py-2 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5',
-                      registerType === 'paciente'
-                        ? 'bg-teal-600 text-white shadow-sm'
-                        : 'text-slate-400 hover:text-slate-200'
-                    )}
-                  >
-                    <Key className="size-3.5" />
-                    <span>Soy Paciente (Tengo Token)</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setRegisterType('fisio')}
-                    className={cn(
-                      'flex-1 py-2 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5',
-                      registerType === 'fisio'
-                        ? 'bg-teal-600 text-white shadow-sm'
-                        : 'text-slate-400 hover:text-slate-200'
-                    )}
-                  >
-                    <Stethoscope className="size-3.5" />
-                    <span>Soy Profesional</span>
-                  </button>
-                </div>
-
-                {registerType === 'paciente' ? (
-                  /* Formulario Paciente con Token */
-                  <form onSubmit={handleRegisterPatientSubmit} className="space-y-3.5">
-                    <div className="p-3 rounded-2xl bg-teal-500/10 border border-teal-500/20 text-xs text-teal-200/90">
-                      <p className="font-semibold text-teal-100 flex items-center gap-1.5">
-                        <Key className="size-3.5 text-teal-400" />
-                        Activación con Llave de 6 Dígitos
-                      </p>
-                      <p className="text-[11px] text-teal-200/70 mt-0.5 leading-relaxed">
-                        Ingresa el código proporcionado por tu fisioterapeuta para vincular tu expediente clínico.
-                      </p>
-                    </div>
-
+                  <div className="space-y-3">
                     <div>
-                      <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
-                        Token de Acceso (6 Dígitos)
+                      <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5 text-center">
+                        Código de Acceso (6 dígitos)
                       </label>
                       <PinInput
-                        value={patientToken}
-                        onChange={setPatientToken}
-                        length={6}
-                        boxClassName="!h-12 !w-10 !text-xl !bg-slate-800/90 !border-slate-700 text-teal-300 focus:!border-teal-400"
+                        value={token}
+                        onChange={setToken}
+                        onComplete={(full) => setToken(full)}
+                        disabled={loading || cooldown > 0}
+                        autoFocus
                       />
                     </div>
 
-                    <div>
-                      <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
-                        Nombre Completo (Opcional)
-                      </label>
-                      <div className="relative">
-                        <User className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 size-4" />
-                        <input
-                          type="text"
-                          value={patientName}
-                          onChange={(e) => setPatientName(e.target.value)}
-                          placeholder="Tu nombre y apellido"
-                          className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-800/80 border border-slate-700 text-xs sm:text-sm text-white placeholder:text-slate-500 outline-none focus:border-teal-400"
-                        />
-                      </div>
+                    <div className="relative">
+                      <Icon
+                        name="alternate_email"
+                        size={19}
+                        className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+                      />
+                      <input
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="Tu correo electrónico personal"
+                        autoComplete="email"
+                        required
+                        className="w-full rounded-2xl border border-slate-200/80 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 pl-11 pr-4 py-3 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 outline-none transition-all focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20 dark:focus:border-teal-400 dark:focus:ring-teal-400/20 shadow-sm"
+                      />
                     </div>
 
-                    <div>
-                      <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
-                        Correo Electrónico
-                      </label>
-                      <div className="relative">
-                        <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 size-4" />
-                        <input
-                          type="email"
-                          required
-                          value={patientEmail}
-                          onChange={(e) => setPatientEmail(e.target.value)}
-                          placeholder="tu@correo.com"
-                          className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-800/80 border border-slate-700 text-xs sm:text-sm text-white placeholder:text-slate-500 outline-none focus:border-teal-400"
-                        />
-                      </div>
+                    <div className="relative">
+                      <Icon
+                        name="lock"
+                        size={19}
+                        className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+                      />
+                      <input
+                        type={showPassword ? 'text' : 'password'}
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder="Crear contraseña"
+                        autoComplete="new-password"
+                        required
+                        className="w-full rounded-2xl border border-slate-200/80 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 pl-11 pr-11 py-3 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 outline-none transition-all focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20 dark:focus:border-teal-400 dark:focus:ring-teal-400/20 shadow-sm"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1"
+                      >
+                        <Icon name={showPassword ? 'visibility_off' : 'visibility'} size={19} />
+                      </button>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      <div>
-                        <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
-                          Contraseña
-                        </label>
-                        <div className="relative">
-                          <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 size-3.5" />
-                          <input
-                            type={showPatientPassword ? 'text' : 'password'}
-                            required
-                            value={patientPassword}
-                            onChange={(e) => setPatientPassword(e.target.value)}
-                            placeholder="Mín. 6 caracteres"
-                            className="w-full pl-9 pr-8 py-2.5 rounded-xl bg-slate-800/80 border border-slate-700 text-xs sm:text-sm text-white placeholder:text-slate-500 outline-none focus:border-teal-400"
+                    <div className="relative">
+                      <Icon
+                        name="lock_reset"
+                        size={19}
+                        className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+                      />
+                      <input
+                        type={showPassword ? 'text' : 'password'}
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        placeholder="Confirmar contraseña"
+                        autoComplete="new-password"
+                        required
+                        className={cn(
+                          'w-full rounded-2xl border bg-white/80 dark:bg-slate-800/80 pl-11 pr-4 py-3 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 outline-none transition-all shadow-sm',
+                          confirmPassword && password !== confirmPassword
+                            ? 'border-red-500 focus:ring-2 focus:ring-red-400/20'
+                            : 'border-slate-200/80 dark:border-slate-700 focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20 dark:focus:border-teal-400'
+                        )}
+                      />
+                    </div>
+
+                    {password.length > 0 && (
+                      <div className="flex items-center gap-2 px-1">
+                        <div className="flex-1 h-1.5 rounded-full bg-slate-200 dark:bg-slate-800 overflow-hidden">
+                          <motion.div
+                            className={cn('h-full rounded-full', pwStrength.color)}
+                            initial={{ width: 0 }}
+                            animate={{ width: `${(pwStrength.score / 4) * 100}%` }}
+                            transition={{ duration: 0.3 }}
                           />
+                        </div>
+                        <span className="text-[11px] font-bold text-slate-600 dark:text-slate-400 whitespace-nowrap">
+                          {pwStrength.label}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+
+                  {error && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -4 }}
+                      animate={errorShake ? { x: [-8, 8, -6, 6, 0] } : { y: 0 }}
+                      className="p-3 rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800/50 text-red-600 dark:text-red-400 text-xs font-bold text-center"
+                    >
+                      {error}
+                    </motion.div>
+                  )}
+
+                  <button
+                    type="submit"
+                    disabled={loading || cooldown > 0 || token.length < 4 || !email.trim() || !password.trim()}
+                    className="w-full rounded-2xl bg-[#00504d] dark:bg-teal-600 py-3.5 text-sm font-bold text-white shadow-md shadow-teal-900/20 hover:bg-[#0c403d] dark:hover:bg-teal-500 active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                  >
+                    {loading ? (
+                      <Spinner size={18} className="text-white" />
+                    ) : (
+                      <>
+                        Crear Cuenta y Vincular Token
+                        <Icon name="arrow_forward" size={18} />
+                      </>
+                    )}
+                  </button>
+
+                  <div className="text-center text-xs text-slate-600 dark:text-slate-400 pt-1">
+                    <span>¿Ya vinculaste tu cuenta? </span>
+                    <button
+                      type="button"
+                      onClick={() => switchMode('login')}
+                      className="font-bold text-[#00504d] dark:text-[#8ad3cf] hover:underline"
+                    >
+                      Iniciar Sesión
+                    </button>
+                  </div>
+                </motion.div>
+              )}
+
+              {/* ─────────────────────────────────────────────────────────────
+                  3. FISIOTERAPEUTA — INICIAR SESIÓN (EMAIL Y CONTRASEÑA)
+                  ───────────────────────────────────────────────────────────── */}
+              {isFisio && mode === 'login' && (
+                <motion.div
+                  key="physio-login-flow"
+                  initial={{ opacity: 0, x: 15 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 15 }}
+                  transition={{ duration: 0.3 }}
+                  className="space-y-4 pt-1"
+                >
+                  <div className="space-y-3">
+                    <div className="relative">
+                      <Icon
+                        name="alternate_email"
+                        size={19}
+                        className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+                      />
+                      <input
+                        ref={emailRef}
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="Correo profesional"
+                        aria-label="Correo del fisioterapeuta"
+                        autoComplete="email"
+                        required
+                        className="w-full rounded-2xl border border-slate-200/80 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 pl-11 pr-4 py-3.5 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 outline-none transition-all focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20 dark:focus:border-teal-400 dark:focus:ring-teal-400/20 shadow-sm"
+                      />
+                    </div>
+
+                    <div className="relative">
+                      <Icon
+                        name="lock"
+                        size={19}
+                        className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+                      />
+                      <input
+                        type={showPassword ? 'text' : 'password'}
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder="Contraseña"
+                        aria-label="Contraseña del fisioterapeuta"
+                        autoComplete="current-password"
+                        required
+                        className="w-full rounded-2xl border border-slate-200/80 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 pl-11 pr-11 py-3.5 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 outline-none transition-all focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20 dark:focus:border-teal-400 dark:focus:ring-teal-400/20 shadow-sm"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1"
+                      >
+                        <Icon name={showPassword ? 'visibility_off' : 'visibility'} size={19} />
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="flex justify-end px-1">
+                    <button
+                      type="button"
+                      onClick={() => setShowResetModal(true)}
+                      className="text-xs font-semibold text-[#00504d] dark:text-[#8ad3cf] hover:underline"
+                    >
+                      ¿Olvidaste tu contraseña?
+                    </button>
+                  </div>
+
+                  {error && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -4 }}
+                      animate={errorShake ? { x: [-8, 8, -6, 6, 0] } : { y: 0 }}
+                      className="p-3 rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800/50 text-red-600 dark:text-red-400 text-xs font-bold text-center"
+                    >
+                      {error}
+                    </motion.div>
+                  )}
+
+                  <button
+                    type="submit"
+                    disabled={loading || cooldown > 0}
+                    className="w-full rounded-2xl bg-[#00504d] dark:bg-teal-600 py-3.5 text-sm font-bold text-white shadow-md shadow-teal-900/20 hover:bg-[#0c403d] dark:hover:bg-teal-500 active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                  >
+                    {loading ? (
+                      <Spinner size={18} className="text-white" />
+                    ) : (
+                      <>
+                        Iniciar Sesión
+                        <Icon name="login" size={18} />
+                      </>
+                    )}
+                  </button>
+
+                  <div className="pt-2 text-center text-xs text-slate-600 dark:text-slate-400">
+                    <span>¿Nuevo profesional en FisioMirror? </span>
+                    <button
+                      type="button"
+                      onClick={() => switchMode('register')}
+                      className="font-bold text-[#00504d] dark:text-[#8ad3cf] hover:underline"
+                    >
+                      Crear Cuenta Profesional
+                    </button>
+                  </div>
+                </motion.div>
+              )}
+
+              {/* ─────────────────────────────────────────────────────────────
+                  4. FISIOTERAPEUTA — REGISTRO PROFESIONAL COMPLETO
+                  ───────────────────────────────────────────────────────────── */}
+              {isFisio && isRegister && (
+                <motion.div
+                  key="physio-register-flow"
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 20 }}
+                  transition={{ duration: 0.35 }}
+                  className="space-y-4"
+                >
+                  <AnimatePresence mode="wait">
+                    {fisioStep === 1 ? (
+                      <motion.div
+                        key="fisio-step-1"
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: 10 }}
+                        className="space-y-3.5"
+                      >
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                          <div>
+                            <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                              Nombre Completo <span className="text-red-500">*</span>
+                            </label>
+                            <input
+                              value={fullName}
+                              onChange={(e) => setFullName(e.target.value)}
+                              placeholder="Lic. Roberto Silva"
+                              required
+                              className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 px-3.5 py-2.5 text-sm text-slate-900 dark:text-slate-100 outline-none focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                              Email Profesional <span className="text-red-500">*</span>
+                            </label>
+                            <input
+                              type="email"
+                              value={email}
+                              onChange={(e) => setEmail(e.target.value)}
+                              placeholder="roberto.fisio@ejemplo.com"
+                              required
+                              className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 px-3.5 py-2.5 text-sm text-slate-900 dark:text-slate-100 outline-none focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                              Contraseña <span className="text-red-500">*</span>
+                            </label>
+                            <input
+                              type={showPassword ? 'text' : 'password'}
+                              value={password}
+                              onChange={(e) => setPassword(e.target.value)}
+                              placeholder="••••••••"
+                              required
+                              className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 px-3.5 py-2.5 text-sm text-slate-900 dark:text-slate-100 outline-none focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                              Confirmar Contraseña <span className="text-red-500">*</span>
+                            </label>
+                            <input
+                              type={showPassword ? 'text' : 'password'}
+                              value={confirmPassword}
+                              onChange={(e) => setConfirmPassword(e.target.value)}
+                              placeholder="••••••••"
+                              required
+                              className={cn(
+                                'w-full rounded-xl border bg-white/80 dark:bg-slate-800/80 px-3.5 py-2.5 text-sm text-slate-900 dark:text-slate-100 outline-none',
+                                confirmPassword && password !== confirmPassword
+                                  ? 'border-red-500 focus:ring-2 focus:ring-red-400/20'
+                                  : 'border-slate-200 dark:border-slate-700 focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20'
+                              )}
+                            />
+                          </div>
+                        </div>
+
+                        {password.length > 0 && (
+                          <div className="flex items-center gap-2 px-1">
+                            <div className="flex-1 h-1.5 rounded-full bg-slate-200 dark:bg-slate-800 overflow-hidden">
+                              <motion.div
+                                className={cn('h-full rounded-full', pwStrength.color)}
+                                initial={{ width: 0 }}
+                                animate={{ width: `${(pwStrength.score / 4) * 100}%` }}
+                                transition={{ duration: 0.3 }}
+                              />
+                            </div>
+                            <span className="text-xs font-bold text-slate-600 dark:text-slate-400">
+                              {pwStrength.label}
+                            </span>
+                          </div>
+                        )}
+
+                        <div className="h-px bg-slate-200/80 dark:bg-slate-800 my-1" />
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                          <div>
+                            <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                              Cédula / Documento <span className="text-red-500">*</span>
+                            </label>
+                            <input
+                              value={cedula}
+                              onChange={(e) => setCedula(e.target.value)}
+                              placeholder="000000-F"
+                              required
+                              className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 px-3.5 py-2.5 text-sm text-slate-900 dark:text-slate-100 outline-none focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                              Teléfono / WhatsApp <span className="text-red-500">*</span>
+                            </label>
+                            <input
+                              value={telefono}
+                              onChange={(e) => setTelefono(e.target.value)}
+                              placeholder="+58 412-1234567"
+                              inputMode="tel"
+                              required
+                              className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 px-3.5 py-2.5 text-sm text-slate-900 dark:text-slate-100 outline-none focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                              Universidad de Egreso
+                            </label>
+                            <input
+                              value={universidad}
+                              onChange={(e) => setUniversidad(e.target.value)}
+                              placeholder="Nombre de la Institución"
+                              className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 px-3.5 py-2.5 text-sm text-slate-900 dark:text-slate-100 outline-none focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                              Nº Colegiado (opcional)
+                            </label>
+                            <input
+                              value={colegiadoId}
+                              onChange={(e) => setColegiadoId(e.target.value)}
+                              placeholder="Ej: COL-12345"
+                              className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 px-3.5 py-2.5 text-sm text-slate-900 dark:text-slate-100 outline-none focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                              Año de Formación
+                            </label>
+                            <select
+                              value={anioEgreso}
+                              onChange={(e) => setAnioEgreso(e.target.value)}
+                              className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 px-3.5 py-2.5 text-sm text-slate-900 dark:text-slate-100 outline-none focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20 cursor-pointer"
+                            >
+                              <option value="">Selecciona un año</option>
+                              {[2025, 2024, 2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016, 2015].map((y) => (
+                                <option key={y} value={y}>
+                                  {y}
+                                </option>
+                              ))}
+                              <option value="anterior">Anterior a 2015</option>
+                            </select>
+                          </div>
+                        </div>
+
+                        <div>
+                          <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                            Especialidades Clínicas
+                          </label>
+                          <div className="flex flex-wrap gap-2 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 min-h-[46px] items-center">
+                            {especialidadesSel.map((esp) => (
+                              <span
+                                key={esp}
+                                className="bg-[#00504d] text-white flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold"
+                              >
+                                {esp}
+                                <button
+                                  type="button"
+                                  onClick={() => removeEspecialidad(esp)}
+                                  className="hover:opacity-75"
+                                >
+                                  <Icon name="close" size={13} />
+                                </button>
+                              </span>
+                            ))}
+                            {especialidadesOpts.length > 0 && (
+                              <select
+                                value=""
+                                onChange={(e) => {
+                                  if (e.target.value && !especialidadesSel.includes(e.target.value)) {
+                                    setEspecialidadesSel([...especialidadesSel, e.target.value]);
+                                  }
+                                }}
+                                className="bg-transparent text-xs text-slate-700 dark:text-slate-300 outline-none cursor-pointer"
+                              >
+                                <option value="">+ Añadir...</option>
+                                {especialidadesOpts
+                                  .filter((o) => !especialidadesSel.includes(o))
+                                  .map((o) => (
+                                    <option key={o} value={o}>
+                                      {o}
+                                    </option>
+                                  ))}
+                              </select>
+                            )}
+                            <input
+                              value={especialidadInput}
+                              onChange={(e) => setEspecialidadInput(e.target.value)}
+                              onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                  e.preventDefault();
+                                  addEspecialidad();
+                                }
+                              }}
+                              placeholder="O escribe una..."
+                              className="bg-transparent text-xs text-slate-900 dark:text-slate-100 flex-grow min-w-[100px] outline-none"
+                            />
+                          </div>
+                        </div>
+                      </motion.div>
+                    ) : (
+                      <motion.div
+                        key="fisio-step-2"
+                        initial={{ opacity: 0, x: 10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: -10 }}
+                        className="space-y-4"
+                      >
+                        <div>
+                          <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-2">
+                            Carga de credencial profesional (opcional)
+                          </label>
+                          <div
+                            onClick={() => document.getElementById('credencial-file-input')?.click()}
+                            className="border-2 border-dashed border-[#00504d]/30 dark:border-teal-500/30 rounded-2xl p-6 text-center cursor-pointer hover:border-[#00504d] dark:hover:border-teal-400 hover:bg-[#00504d]/5 transition-all"
+                          >
+                            {credencialPreview ? (
+                              <div className="flex flex-col items-center gap-2">
+                                {credencialFile?.type.startsWith('image/') ? (
+                                  <img
+                                    src={credencialPreview}
+                                    alt="Vista previa credencial"
+                                    className="max-h-28 rounded-lg shadow-sm"
+                                  />
+                                ) : (
+                                  <div className="flex items-center gap-2 text-[#00504d] dark:text-[#8ad3cf]">
+                                    <Icon name="description" size={30} />
+                                    <span className="text-xs font-bold">{credencialFile?.name}</span>
+                                  </div>
+                                )}
+                                <span className="text-[11px] text-slate-500">
+                                  Click para cambiar de archivo
+                                </span>
+                              </div>
+                            ) : (
+                              <div className="flex flex-col items-center gap-2">
+                                <div className="w-12 h-12 rounded-full bg-[#00504d]/10 dark:bg-teal-500/20 flex items-center justify-center text-[#00504d] dark:text-[#8ad3cf]">
+                                  <Icon name="upload_file" size={26} />
+                                </div>
+                                <span className="font-bold text-sm text-[#00504d] dark:text-[#8ad3cf]">
+                                  Cédula Profesional o Título
+                                </span>
+                                <p className="text-xs text-slate-500">
+                                  Arrastra o selecciona un archivo (PDF o Imagen)
+                                </p>
+                              </div>
+                            )}
+                            <input
+                              id="credencial-file-input"
+                              type="file"
+                              accept="image/*,application/pdf"
+                              onChange={handleCredencialFile}
+                              className="hidden"
+                            />
+                          </div>
+                        </div>
+
+                        <div className="flex gap-3 p-3.5 bg-teal-50 dark:bg-teal-950/40 rounded-xl border border-teal-200/60 dark:border-teal-800/40">
+                          <Icon name="verified_user" filled size={20} className="text-[#00504d] dark:text-teal-400 shrink-0 mt-0.5" />
+                          <p className="text-xs text-[#00504d] dark:text-teal-200 leading-relaxed font-medium">
+                            Tu cuenta se activará tras la validación administrativa. Podrás acceder de inmediato en modo preliminar.
+                          </p>
+                        </div>
+
+                        <div className="flex items-center justify-between pt-1">
                           <button
                             type="button"
-                            onClick={() => setShowPatientPassword(!showPatientPassword)}
-                            className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400"
+                            onClick={() => setFisioStep(1)}
+                            className="flex items-center gap-1.5 text-xs font-bold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100"
                           >
-                            {showPatientPassword ? <EyeOff className="size-3.5" /> : <Eye className="size-3.5" />}
+                            <Icon name="arrow_back" size={16} /> Volver
+                          </button>
+
+                          <button
+                            type="button"
+                            disabled={loading || uploading}
+                            onClick={async () => {
+                              setCredencialFile(null);
+                              setCredencialPreview(null);
+                              const ok = await signUpFisio(email, password, fullName, {
+                                cedula,
+                                universidad,
+                                colegiadoId,
+                                especialidades: especialidadesSel,
+                                anioEgreso: anioEgreso || undefined,
+                                telefono: telefono.trim(),
+                              });
+                              if (ok) {
+                                setShowSuccess(true);
+                                toast.success('Cuenta creada exitosamente');
+                              }
+                            }}
+                            className="text-xs font-semibold text-[#00504d] dark:text-[#8ad3cf] hover:underline"
+                          >
+                            Omitir por ahora →
                           </button>
                         </div>
-                      </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
 
-                      <div>
-                        <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
-                          Confirmar
-                        </label>
-                        <div className="relative">
-                          <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 size-3.5" />
-                          <input
-                            type={showPatientPassword ? 'text' : 'password'}
-                            required
-                            value={confirmPatientPassword}
-                            onChange={(e) => setConfirmPatientPassword(e.target.value)}
-                            placeholder="Repite la clave"
-                            className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-slate-800/80 border border-slate-700 text-xs sm:text-sm text-white placeholder:text-slate-500 outline-none focus:border-teal-400"
-                          />
-                        </div>
-                      </div>
-                    </div>
-
-                    <button
-                      type="submit"
-                      disabled={loading}
-                      className="w-full py-3.5 rounded-xl bg-gradient-to-r from-teal-600 to-teal-500 hover:from-teal-500 hover:to-teal-400 text-white font-bold text-sm transition-all shadow-lg shadow-teal-900/40 flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-50 mt-2"
+                  {error && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -4 }}
+                      animate={errorShake ? { x: [-8, 8, -6, 6, 0] } : { y: 0 }}
+                      className="p-3 rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800/50 text-red-600 dark:text-red-400 text-xs font-bold text-center"
                     >
-                      {loading ? <Spinner size={18} /> : <span>Activar y Vincular Cuenta</span>}
-                    </button>
-                  </form>
-                ) : (
-                  /* Formulario Registro Profesional Fisioterapeuta */
-                  <form onSubmit={handleRegisterFisioSubmit} className="space-y-3">
-                    <div>
-                      <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
-                        Nombre del Profesional
-                      </label>
-                      <div className="relative">
-                        <User className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 size-4" />
-                        <input
-                          type="text"
-                          required
-                          value={fisioName}
-                          onChange={(e) => setFisioName(e.target.value)}
-                          placeholder="Dr(a). Nombre y Apellido"
-                          className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-800/80 border border-slate-700 text-xs sm:text-sm text-white placeholder:text-slate-500 outline-none focus:border-teal-400"
-                        />
-                      </div>
-                    </div>
+                      {error}
+                    </motion.div>
+                  )}
 
-                    <div>
-                      <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
-                        Correo Profesional
-                      </label>
-                      <div className="relative">
-                        <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 size-4" />
-                        <input
-                          type="email"
-                          required
-                          value={fisioEmail}
-                          onChange={(e) => setFisioEmail(e.target.value)}
-                          placeholder="doctor@clinica.com"
-                          className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-800/80 border border-slate-700 text-xs sm:text-sm text-white placeholder:text-slate-500 outline-none focus:border-teal-400"
-                        />
-                      </div>
-                    </div>
+                  <button
+                    type="submit"
+                    disabled={loading || uploading || cooldown > 0 || (fisioStep === 1 && !canSubmitFisioStep1)}
+                    className="w-full rounded-2xl bg-[#00504d] dark:bg-teal-600 py-3.5 text-sm font-bold text-white shadow-md shadow-teal-900/20 hover:bg-[#0c403d] dark:hover:bg-teal-500 active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                  >
+                    {loading || uploading ? (
+                      <Spinner size={18} className="text-white" />
+                    ) : fisioStep === 1 ? (
+                      <>
+                        Continuar al Paso 2
+                        <Icon name="arrow_forward" size={18} />
+                      </>
+                    ) : (
+                      <>
+                        Crear Cuenta y Finalizar
+                        <Icon name="arrow_forward" size={18} />
+                      </>
+                    )}
+                  </button>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      <div>
-                        <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
-                          Cédula / Colegiado
-                        </label>
-                        <div className="relative">
-                          <Building2 className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 size-3.5" />
-                          <input
-                            type="text"
-                            value={fisioCedula}
-                            onChange={(e) => setFisioCedula(e.target.value)}
-                            placeholder="Nº Colegiado"
-                            className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-slate-800/80 border border-slate-700 text-xs sm:text-sm text-white placeholder:text-slate-500 outline-none focus:border-teal-400"
-                          />
-                        </div>
-                      </div>
-
-                      <div>
-                        <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
-                          Especialidad
-                        </label>
-                        <div className="relative">
-                          <GraduationCap className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 size-3.5" />
-                          <input
-                            type="text"
-                            value={fisioEspecialidad}
-                            onChange={(e) => setFisioEspecialidad(e.target.value)}
-                            placeholder="Traumatología, etc."
-                            className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-slate-800/80 border border-slate-700 text-xs sm:text-sm text-white placeholder:text-slate-500 outline-none focus:border-teal-400"
-                          />
-                        </div>
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
-                        Contraseña
-                      </label>
-                      <div className="relative">
-                        <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 size-4" />
-                        <input
-                          type={showFisioPassword ? 'text' : 'password'}
-                          required
-                          value={fisioPassword}
-                          onChange={(e) => setFisioPassword(e.target.value)}
-                          placeholder="••••••••"
-                          className="w-full pl-10 pr-10 py-2.5 rounded-xl bg-slate-800/80 border border-slate-700 text-xs sm:text-sm text-white placeholder:text-slate-500 outline-none focus:border-teal-400"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => setShowFisioPassword(!showFisioPassword)}
-                          className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400"
-                        >
-                          {showFisioPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
-                        </button>
-                      </div>
-                    </div>
-
+                  <div className="text-center text-xs text-slate-600 dark:text-slate-400 pt-1">
+                    <span>¿Ya tienes cuenta profesional? </span>
                     <button
-                      type="submit"
-                      disabled={loading}
-                      className="w-full py-3.5 rounded-xl bg-gradient-to-r from-teal-600 to-teal-500 hover:from-teal-500 hover:to-teal-400 text-white font-bold text-sm transition-all shadow-lg shadow-teal-900/40 flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-50 mt-2"
+                      type="button"
+                      onClick={() => switchMode('login')}
+                      className="font-bold text-[#00504d] dark:text-[#8ad3cf] hover:underline"
                     >
-                      {loading ? <Spinner size={18} /> : <span>Registrar Cuenta Clínica</span>}
+                      Iniciar Sesión
                     </button>
-                  </form>
-                )}
-              </motion.div>
-            )}
-          </AnimatePresence>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </form>
+        </motion.div>
+
+        {/* Demo Fast Access Buttons */}
+        <div className="w-full max-w-[480px] flex flex-col items-center gap-y-2 mt-5">
+          <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">
+            Acceso Rápido de Prueba
+          </span>
+          <div className="flex gap-2.5">
+            <button
+              onClick={fillFisioDemo}
+              className="px-4 py-2 rounded-full border border-slate-200/80 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 backdrop-blur-md hover:bg-white dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-bold shadow-sm transition-all flex items-center gap-1.5 active:scale-95"
+            >
+              <Icon name="medical_services" size={15} className="text-[#00504d] dark:text-teal-400" />
+              Demo Fisio
+            </button>
+            <button
+              onClick={fillPacienteDemo}
+              className="px-4 py-2 rounded-full border border-slate-200/80 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 backdrop-blur-md hover:bg-white dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-bold shadow-sm transition-all flex items-center gap-1.5 active:scale-95"
+            >
+              <Icon name="personal_injury" size={15} className="text-orange-500" />
+              Demo Paciente
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Reset Password Modal */}
+      {/* ═══════════════════════════════════════════════════
+          RIGHT PANEL — INTERACTIVE IMAGE & AMBIENT EFFECTS
+          (No Mascot, pure clean visual experience)
+          ═══════════════════════════════════════════════════ */}
+      <div className="relative hidden md:block md:w-[55%] lg:w-[58%] overflow-hidden bg-slate-900">
+        <motion.div className="relative h-full w-full" animate={imageControls}>
+          {/* Breathing background image */}
+          <motion.div
+            className="h-full w-full"
+            animate={reduceMotion ? undefined : { scale: breathingScale }}
+            transition={{ duration: breathingDuration, repeat: Infinity, ease: 'easeInOut' }}
+          >
+            <img
+              src={LOGIN_BG_URL}
+              alt="Sesión de rehabilitación interactiva"
+              className="h-full w-full object-cover object-center brightness-95 dark:brightness-90"
+              onError={(e) => {
+                (e.currentTarget as HTMLImageElement).style.display = 'none';
+              }}
+            />
+            {/* Color Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-tr from-[#00504d]/30 via-transparent to-black/40 pointer-events-none" />
+
+            {/* Edge fades */}
+            <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-[#f9f9fc]/80 dark:from-slate-950/80 to-transparent backdrop-blur-sm pointer-events-none" />
+            <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-[#f9f9fc]/80 dark:from-slate-950/80 to-transparent backdrop-blur-sm pointer-events-none" />
+          </motion.div>
+
+          {/* Sparkles & Glow Effects without mascot */}
+          <SparkleEffect active={true} color={isPaciente ? 'coral' : 'teal'} />
+          <CharacterGlow
+            side={isPaciente ? 'right' : 'left'}
+            colorRgb={glowColorRgb}
+            phase={glowPhase}
+            reduceMotion={reduceMotion}
+          />
+
+          {/* Floating Status Pill */}
+          <AnimatePresence>
+            {!loading && !error && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="absolute bottom-12 left-1/2 -translate-x-1/2 pointer-events-none"
+              >
+                <div className="rounded-full bg-white/75 dark:bg-slate-900/80 backdrop-blur-xl border border-white/40 dark:border-slate-700 px-6 py-2.5 shadow-xl">
+                  <p className="text-xs font-bold text-[#00504d] dark:text-[#8ad3cf] tracking-wide">
+                    {statusMessage}
+                  </p>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Loading Overlay */}
+          <AnimatePresence>
+            {loading && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.3 }}
+                className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-slate-900/60 backdrop-blur-md z-30"
+              >
+                <Spinner size={44} className="text-teal-400 animate-spin" />
+                <p className="text-white font-bold text-lg tracking-wide">
+                  Preparando tu espacio...
+                </p>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Error Flash Overlay */}
+          <AnimatePresence>
+            {error && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="absolute inset-0 flex items-center justify-center pointer-events-none z-30"
+              >
+                <div className="rounded-2xl bg-red-900/60 backdrop-blur-md px-8 py-4 border border-red-500/40 shadow-2xl">
+                  <div className="flex items-center gap-3 text-red-200">
+                    <Icon name="error" filled size={24} />
+                    <span className="text-sm font-bold">
+                      Revisa tus credenciales e intenta de nuevo
+                    </span>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.div>
+      </div>
+
+      {/* ─────────────────────────────────────────────────────────────
+          PASSWORD RECOVERY MODAL
+          ───────────────────────────────────────────────────────────── */}
       <AnimatePresence>
         {showResetModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-sm p-4"
+            onClick={() => setShowResetModal(false)}
+          >
             <motion.div
-              initial={{ scale: 0.95, opacity: 0 }}
+              initial={{ scale: 0.92, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.95, opacity: 0 }}
-              className="w-full max-w-sm bg-slate-900 border border-teal-500/30 rounded-3xl p-6 shadow-2xl space-y-4"
+              exit={{ scale: 0.92, opacity: 0 }}
+              className="bg-white dark:bg-slate-900 rounded-3xl p-7 max-w-sm w-full shadow-2xl border border-slate-200 dark:border-slate-800"
+              onClick={(e) => e.stopPropagation()}
             >
-              <h3 className="text-lg font-bold text-white">Recuperar Contraseña</h3>
-              <p className="text-xs text-slate-400">
-                Ingresa tu correo registrado y te enviaremos las instrucciones de restablecimiento.
+              <div className="w-12 h-12 bg-teal-50 dark:bg-teal-950/60 rounded-full flex items-center justify-center mx-auto mb-3 text-[#00504d] dark:text-teal-400">
+                <Icon name="lock_reset" filled size={24} />
+              </div>
+              <h3 className="font-extrabold text-xl text-center text-[#00504d] dark:text-[#8ad3cf] mb-1">
+                Recuperar Contraseña
+              </h3>
+              <p className="text-xs text-slate-600 dark:text-slate-400 text-center mb-5 leading-relaxed">
+                Ingresa tu correo y te enviaremos un enlace seguro para restablecer tu acceso.
               </p>
-              <form onSubmit={handleResetPassword} className="space-y-3">
+
+              <div className="relative mb-4">
+                <Icon
+                  name="alternate_email"
+                  size={18}
+                  className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"
+                />
                 <input
                   type="email"
-                  required
                   value={resetEmail}
                   onChange={(e) => setResetEmail(e.target.value)}
-                  placeholder="tu@correo.com"
-                  className="w-full px-4 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-sm text-white placeholder:text-slate-500 outline-none focus:border-teal-400"
+                  placeholder="Correo electrónico"
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl text-sm border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 outline-none focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20"
                 />
-                <div className="flex gap-2 justify-end">
-                  <button
-                    type="button"
-                    onClick={() => setShowResetModal(false)}
-                    className="px-4 py-2 rounded-xl text-xs font-bold text-slate-400 hover:text-slate-200"
-                  >
-                    Cancelar
-                  </button>
-                  <button
-                    type="submit"
-                    disabled={resetLoading}
-                    className="px-4 py-2 rounded-xl bg-teal-600 hover:bg-teal-500 text-white text-xs font-bold flex items-center gap-1.5"
-                  >
-                    {resetLoading ? <Spinner size={14} /> : <span>Enviar Enlace</span>}
-                  </button>
-                </div>
-              </form>
+              </div>
+
+              <div className="flex gap-2.5">
+                <button
+                  type="button"
+                  onClick={() => setShowResetModal(false)}
+                  className="flex-1 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold text-xs hover:bg-slate-200 dark:hover:bg-slate-700 transition-all"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="button"
+                  onClick={handleResetPassword}
+                  disabled={resetLoading}
+                  className="flex-1 py-2.5 rounded-xl bg-[#00504d] dark:bg-teal-600 text-white font-bold text-xs hover:bg-[#0c403d] dark:hover:bg-teal-500 transition-all disabled:opacity-50 flex items-center justify-center gap-1.5"
+                >
+                  {resetLoading ? <Spinner size={16} className="text-white" /> : <Icon name="send" size={16} />}
+                  {resetLoading ? 'Enviando...' : 'Enviar enlace'}
+                </button>
+              </div>
             </motion.div>
-          </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ─────────────────────────────────────────────────────────────
+          SUCCESS MODAL (FOR REGISTRATIONS)
+          ───────────────────────────────────────────────────────────── */}
+      <AnimatePresence>
+        {showSuccess && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/40 backdrop-blur-md"
+          >
+            <motion.div
+              initial={{ scale: 0.92, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              className="max-w-md w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-8 rounded-[2.5rem] text-center space-y-5 shadow-2xl"
+            >
+              <div className="w-16 h-16 bg-teal-50 dark:bg-teal-950/60 rounded-full flex items-center justify-center mx-auto text-[#00504d] dark:text-teal-400 shadow-inner">
+                <Icon name="check_circle" filled size={38} />
+              </div>
+              <h3 className="font-extrabold text-2xl text-[#00504d] dark:text-[#8ad3cf]">
+                ¡Cuenta Creada con Éxito!
+              </h3>
+              <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                Tus datos han sido registrados correctamente en FisioMirror. Ya puedes iniciar sesión para acceder a tu plataforma clínica.
+              </p>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowSuccess(false);
+                  setMode('login');
+                  setFisioStep(1);
+                }}
+                className="w-full py-3.5 bg-[#00504d] dark:bg-teal-600 text-white rounded-2xl font-bold text-sm hover:bg-[#0c403d] dark:hover:bg-teal-500 active:scale-95 transition-all shadow-md"
+              >
+                Ir a Iniciar Sesión
+              </button>
+            </motion.div>
+          </motion.div>
         )}
       </AnimatePresence>
     </div>
   );
 }
-export default Login;

@@ -17,13 +17,14 @@ import {
   List,
   AlertTriangle,
   CheckCircle2,
-  ChevronRight,
   Key,
   Copy,
   Check,
   Mail,
   ExternalLink,
   UserCheck,
+  Calendar,
+  ArrowRight,
 } from 'lucide-react';
 
 interface PatientCard {
