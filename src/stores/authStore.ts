@@ -1,8 +1,9 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { Profile, Rol } from '../types';
-import { supabase, supabaseUrl } from '../lib/supabase';
+import type { Profile } from '../types';
+import { supabase, supabaseUrl, supabaseAnonKey } from '../lib/supabase';
 import { DEMO_PATIENT_PROFILE, DEMO_FISIO_PROFILE, DEMO_TOKENS } from '../data/demoProfiles';
+import { isDemoAccount } from '../lib/demoAuth';
 
 const STORAGE_KEY = 'fisiomirror-auth';
 const SESSION_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000;
@@ -84,13 +85,14 @@ interface AuthState {
   ) => Promise<boolean>;
   signUpPaciente: (email: string, password: string, fullName: string) => Promise<boolean>;
   validateToken: (token: string) => Promise<boolean>;
+  updatePassword: (currentPassword: string, newPassword: string) => Promise<{ success: boolean; error?: string }>;
   signOut: () => void;
   clearError: () => void;
 }
 
 export const useAuthStore = create<AuthState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       user: null,
       loading: false,
       error: null,
@@ -341,7 +343,7 @@ export const useAuthStore = create<AuthState>()(
         }
       },
 
-      signInWithToken: async (token, email?: string, password?: string) => {
+      signInWithToken: async (token, _email?: string, _password?: string) => {
         set({ loading: true, error: null });
         const cleanToken = token.trim();
 
@@ -683,6 +685,99 @@ export const useAuthStore = create<AuthState>()(
           return !data.is_used;
         } catch {
           return false;
+        }
+      },
+
+      updatePassword: async (currentPassword: string, newPassword: string) => {
+        const currentUser = get().user;
+        if (!currentUser?.id) {
+          return { success: false, error: 'No hay usuario autenticado' };
+        }
+
+        // Demo user simulation
+        if (isDemoAccount(currentUser)) {
+          return { success: true };
+        }
+
+        try {
+          const currentHash = await hashPassword(currentPassword);
+          const newHash = await hashPassword(newPassword);
+
+          // 1. Verify current password in profiles table if password_hash exists
+          const { data: prof } = await supabase
+            .from('profiles')
+            .select('id, password_hash, email')
+            .eq('id', currentUser.id)
+            .maybeSingle();
+
+          if (prof?.password_hash && prof.password_hash !== currentHash) {
+            return { success: false, error: 'La contraseña actual es incorrecta' };
+          }
+
+          // 2. Update password_hash in profiles table
+          const { error: updateError } = await supabase
+            .from('profiles')
+            .update({ password_hash: newHash, updated_at: new Date().toISOString() })
+            .eq('id', currentUser.id);
+
+          if (updateError) {
+            console.warn('Profile password update notice:', updateError);
+          }
+
+          // 3. Try edge function with correct headers if available
+          try {
+            await fetchWithRetry(`${functionsUrl}/auth-update-password`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'apikey': supabaseAnonKey,
+                'Authorization': `Bearer ${supabaseAnonKey}`,
+              },
+              body: JSON.stringify({
+                userId: currentUser.id,
+                currentPassword,
+                newPassword,
+              }),
+            });
+          } catch (edgeErr) {
+            console.warn('Edge function auth-update-password notice:', edgeErr);
+          }
+
+          // 4. Also update Supabase Auth user if session is present
+          try {
+            await supabase.auth.updateUser({ password: newPassword });
+          } catch {
+            // non-critical
+          }
+
+          // 5. Security audit notification & security email alert
+          try {
+            await supabase.from('notifications').insert({
+              user_id: currentUser.id,
+              title: 'Contraseña Actualizada',
+              message: `La contraseña de tu cuenta fue actualizada el ${new Date().toLocaleString()}. Si no fuiste tú, contacta inmediatamente a soporte.`,
+              type: 'seguridad',
+              read: false,
+            });
+
+            if (currentUser.email) {
+              fetch('/api/send-security-email', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  email: currentUser.email,
+                  event: 'password_updated',
+                  userName: currentUser.full_name || 'Usuario',
+                }),
+              }).catch(() => {});
+            }
+          } catch {
+            // non-critical
+          }
+
+          return { success: true };
+        } catch (err) {
+          return { success: false, error: (err as Error).message || 'Error al cambiar contraseña' };
         }
       },
 

@@ -349,49 +349,6 @@ export function PatientDetailPage() {
     }
   };
 
-  const handleReassignRoutine = async (mode: 'replace' | 'additional') => {
-    if (!id || !user?.id) return;
-    if (!isValidUUID(id) || !isValidUUID(user.id)) {
-      toast.success(mode === 'replace' ? 'Rutina anterior archivada y nueva rutina activa (Modo Demo)' : 'Rutina adicional creada (Modo Demo)');
-      setShowReassignModal(false);
-      return;
-    }
-    try {
-      if (mode === 'replace') {
-        const { error: archiveErr } = await supabase
-          .from('rutinas')
-          .update({ status: 'archivada', activa: false, updated_at: new Date().toISOString() })
-          .eq('paciente_id', id)
-          .eq('activa', true);
-        if (archiveErr) throw archiveErr;
-      }
-
-      const newRoutineName = `Rutina ${mode === 'replace' ? 'Reemplazo' : 'Adicional'} - ${new Date().toLocaleDateString('es-ES')}`;
-      const { error: rutinaErr } = await supabase.from('rutinas').insert({
-        paciente_id: id,
-        fisioterapeuta_id: user.id,
-        nombre: newRoutineName,
-        descripcion: 'Rutina asignada desde el expediente del paciente',
-        ejercicios: exercises.map(ex => ({ nombre: ex.ejercicio_nombre, series: ex.series, repeticiones: ex.repeticiones })),
-        activa: true,
-        status: 'activa',
-        fecha_inicio: new Date().toISOString().split('T')[0],
-      });
-
-      if (rutinaErr) throw rutinaErr;
-
-      if (mode === 'replace') {
-        await supabase.from('patient_exercises').delete().eq('paciente_id', id);
-      }
-
-      toast.success(mode === 'replace' ? 'Rutina anterior archivada y nueva rutina activa' : 'Rutina adicional creada');
-      setShowReassignModal(false);
-      if (id) loadPatient(id);
-    } catch (e) {
-      toast.error('Error al reasignar la rutina: ' + (e as Error).message);
-    }
-  };
-
   const tabs: { id: Tab; label: string; icon: string }[] = [
     { id: 'overview', label: 'Resumen', icon: 'dashboard' },
     { id: 'history', label: 'Historial Clínico', icon: 'history' },

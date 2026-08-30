@@ -40,6 +40,7 @@ import { getExerciseImage } from '../data/exerciseImages';
 import { SkeletonDemo } from '../components/rehabilitation/SkeletonDemo';
 import { buildExerciseDefinition, getExerciseDescription } from '../data/exercisePresets';
 import { UNIFIED_DEMO_PATIENTS } from '../data/unifiedDemoData';
+import { isDemoAccount } from '../lib/demoAuth';
 
 export interface Exercise {
   id: string;
@@ -299,6 +300,7 @@ export function ExercisesPage() {
   };
 
   const loadPatients = async () => {
+    const isDemo = isDemoAccount(user);
     const demoPatientOptions = UNIFIED_DEMO_PATIENTS.map((p) => ({
       id: p.id,
       nombre: p.name,
@@ -306,22 +308,43 @@ export function ExercisesPage() {
     }));
 
     try {
-      const { data, error } = await supabase.from('profiles').select('id, full_name').order('full_name');
+      // If user is a therapist, load their linked patients
+      let realPatientsData: any[] = [];
+      if (user?.id) {
+        const { data: links } = await supabase
+          .from('pacientes_terapeutas')
+          .select('paciente_id')
+          .eq('terapeuta_id', user.id);
 
-      if (!error && data && data.length > 0) {
-        const real = data.map((p: any) => ({ id: p.id, nombre: p.full_name, apellido: null }));
-        const merged = [...real];
-        for (const d of demoPatientOptions) {
-          if (!merged.some((m) => m.nombre.toLowerCase() === d.nombre.toLowerCase())) {
-            merged.push(d);
-          }
+        if (links && links.length > 0) {
+          const pIds = links.map(l => l.paciente_id);
+          const { data: profs } = await supabase
+            .from('profiles')
+            .select('id, full_name')
+            .in('id', pIds)
+            .order('full_name');
+          if (profs) realPatientsData = profs;
         }
-        setPatients(merged);
+      }
+
+      if (realPatientsData.length > 0) {
+        const real = realPatientsData.map((p: any) => ({ id: p.id, nombre: p.full_name, apellido: null }));
+        if (isDemo) {
+          const merged = [...real];
+          for (const d of demoPatientOptions) {
+            if (!merged.some((m) => m.nombre.toLowerCase() === d.nombre.toLowerCase())) {
+              merged.push(d);
+            }
+          }
+          setPatients(merged);
+        } else {
+          setPatients(real);
+        }
       } else {
-        setPatients(demoPatientOptions);
+        setPatients(isDemo ? demoPatientOptions : []);
       }
     } catch {
-      setPatients(demoPatientOptions);
+      setPatients(isDemo ? demoPatientOptions : []);
     }
   };
 

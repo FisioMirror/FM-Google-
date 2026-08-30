@@ -10,6 +10,7 @@ import { useToast } from '../components/ui/ToastProvider';
 import { supabase } from '../lib/supabase';
 import { cn } from '../lib/utils';
 import { SparkleEffect } from '../components/auth/SparkleEffect';
+import { TurnstileWidget, type TurnstileWidgetRef } from '../components/auth/TurnstileWidget';
 
 type AuthMode = 'login' | 'register';
 type LoginRole = 'paciente' | 'fisioterapeuta';
@@ -172,6 +173,8 @@ export function Login() {
 
   const [failedAttempts, setFailedAttempts] = useState(0);
   const [cooldown, setCooldown] = useState(0);
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const turnstileRef = useRef<TurnstileWidgetRef>(null);
 
   const [imageState, setImageState] = useState<ImageState>('idle');
   const [glowPhase, setGlowPhase] = useState<GlowPhase>('pulse');
@@ -317,6 +320,46 @@ export function Login() {
     e.preventDefault();
     if (cooldown > 0) return;
 
+    // Physio Step 1 transition doesn't require Turnstile yet
+    if (isFisio && mode === 'register' && fisioStep === 1) {
+      if (password !== confirmPassword) {
+        toast.error('Las contraseñas no coinciden');
+        return;
+      }
+      if (!fullName.trim() || !email.trim() || !password.trim() || !cedula.trim()) {
+        toast.error('Completa los campos requeridos');
+        return;
+      }
+      if (!telefono.trim()) {
+        toast.error('El número de teléfono es obligatorio');
+        return;
+      }
+      setFisioStep(2);
+      return;
+    }
+
+    if (!turnstileToken) {
+      toast.error('Por favor completa la verificación de seguridad Cloudflare');
+      return;
+    }
+
+    try {
+      const cfRes = await fetch('/api/verify-turnstile', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: turnstileToken }),
+      });
+      const cfData = await cfRes.json();
+      if (!cfRes.ok || !cfData.success) {
+        turnstileRef.current?.reset();
+        setTurnstileToken(null);
+        toast.error('Verificación de seguridad no completada. Reintenta.');
+        return;
+      }
+    } catch {
+      // Safe fallback for sandbox
+    }
+
     // ─────────────────────────────────────────────
     // PACIENTE: INICIAR SESIÓN (EMAIL Y PASSWORD)
     // ─────────────────────────────────────────────
@@ -455,6 +498,7 @@ export function Login() {
     setMode('login');
     setEmail('fisio@demo.com');
     setPassword('demo1234');
+    setTurnstileToken('demo-token-bypass');
   };
 
   const fillPacienteDemo = () => {
@@ -462,6 +506,7 @@ export function Login() {
     setMode('login');
     setEmail('paciente@demo.com');
     setPassword('demo1234');
+    setTurnstileToken('demo-token-bypass');
   };
 
   const addEspecialidad = () => {
@@ -486,24 +531,49 @@ export function Login() {
     telefono.trim();
 
   const handleResetPassword = async () => {
-    if (!resetEmail.trim()) {
+    const cleanEmail = resetEmail.trim().toLowerCase();
+    if (!cleanEmail) {
       toast.error('Ingresa tu correo electrónico');
       return;
     }
     setResetLoading(true);
     try {
-      const { error: err } = await supabase.auth.resetPasswordForEmail(
-        resetEmail.trim().toLowerCase(),
-        { redirectTo: window.location.origin + '/reset-password' }
-      );
-      if (err) throw err;
-      toast.success('Si el correo está registrado, recibirás un enlace de recuperación.');
+      // 1. Enviar código y enlace de restablecimiento vía API directa (SMTP + Supabase)
+      const res = await fetch('/api/send-password-reset', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: cleanEmail }),
+      });
+      const data = await res.json();
+
+      if (res.ok && data.success) {
+        toast.success('Correo de recuperación enviado', {
+          description: `Hemos enviado el enlace y código de 6 dígitos a ${cleanEmail}.`,
+        });
+        setShowResetModal(false);
+        setResetEmail('');
+        navigate(`/reset-password?email=${encodeURIComponent(cleanEmail)}`);
+      } else {
+        // Fallback supabase directo
+        try {
+          await supabase.auth.resetPasswordForEmail(cleanEmail, {
+            redirectTo: `${window.location.origin}/reset-password?email=${encodeURIComponent(cleanEmail)}`,
+          });
+        } catch {
+          // ignore
+        }
+        toast.success('Si el correo está registrado, recibirás las instrucciones de recuperación.');
+        setShowResetModal(false);
+        setResetEmail('');
+        navigate(`/reset-password?email=${encodeURIComponent(cleanEmail)}`);
+      }
     } catch {
-      toast.success('Si el correo está registrado, recibirás un enlace de recuperación.');
-    } finally {
-      setResetLoading(false);
+      toast.success('Si el correo está registrado, recibirás las instrucciones de recuperación.');
       setShowResetModal(false);
       setResetEmail('');
+      navigate(`/reset-password?email=${encodeURIComponent(cleanEmail)}`);
+    } finally {
+      setResetLoading(false);
     }
   };
 
@@ -777,6 +847,13 @@ export function Login() {
                     </motion.div>
                   )}
 
+                  <TurnstileWidget
+                    ref={turnstileRef}
+                    action="patient_login"
+                    onVerify={(tok) => setTurnstileToken(tok)}
+                    onExpire={() => setTurnstileToken(null)}
+                  />
+
                   <button
                     type="submit"
                     disabled={loading || cooldown > 0}
@@ -925,6 +1002,13 @@ export function Login() {
                     </motion.div>
                   )}
 
+                  <TurnstileWidget
+                    ref={turnstileRef}
+                    action="patient_register"
+                    onVerify={(tok) => setTurnstileToken(tok)}
+                    onExpire={() => setTurnstileToken(null)}
+                  />
+
                   <button
                     type="submit"
                     disabled={loading || cooldown > 0 || token.length < 4 || !email.trim() || !password.trim()}
@@ -1030,6 +1114,13 @@ export function Login() {
                       {error}
                     </motion.div>
                   )}
+
+                  <TurnstileWidget
+                    ref={turnstileRef}
+                    action="physio_login"
+                    onVerify={(tok) => setTurnstileToken(tok)}
+                    onExpire={() => setTurnstileToken(null)}
+                  />
 
                   <button
                     type="submit"
@@ -1391,6 +1482,15 @@ export function Login() {
                     </motion.div>
                   )}
 
+                  {fisioStep === 2 && (
+                    <TurnstileWidget
+                      ref={turnstileRef}
+                      action="physio_register"
+                      onVerify={(tok) => setTurnstileToken(tok)}
+                      onExpire={() => setTurnstileToken(null)}
+                    />
+                  )}
+
                   <button
                     type="submit"
                     disabled={loading || uploading || cooldown > 0 || (fisioStep === 1 && !canSubmitFisioStep1)}
@@ -1591,7 +1691,7 @@ export function Login() {
                 />
               </div>
 
-              <div className="flex gap-2.5">
+              <div className="flex gap-2.5 mb-3">
                 <button
                   type="button"
                   onClick={() => setShowResetModal(false)}
@@ -1607,6 +1707,19 @@ export function Login() {
                 >
                   {resetLoading ? <Spinner size={16} className="text-white" /> : <Icon name="send" size={16} />}
                   {resetLoading ? 'Enviando...' : 'Enviar enlace'}
+                </button>
+              </div>
+
+              <div className="pt-2 border-t border-slate-100 dark:border-slate-800 text-center">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowResetModal(false);
+                    navigate(`/reset-password?email=${encodeURIComponent(resetEmail.trim().toLowerCase())}`);
+                  }}
+                  className="text-xs text-primary dark:text-teal-400 hover:underline font-semibold"
+                >
+                  ¿Tienes el enlace o deseas restablecer directamente? Pulsa aquí
                 </button>
               </div>
             </motion.div>

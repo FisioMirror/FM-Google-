@@ -1,8 +1,10 @@
 import { motion, AnimatePresence } from 'framer-motion';
+import { BookOpen } from 'lucide-react';
 import { Icon } from './ui/Icon';
 import MascotAnimation from './ui/MascotAnimation';
 import { SparkleEffect } from './auth/SparkleEffect';
 import { getTierMeta, type Achievement } from '../hooks/useGamification';
+import { isSpiritualModeEnabled, getVersiculoForLogro } from '../lib/versiculosService';
 
 interface AchievementUnlockModalProps {
   achievement: Achievement | null;
@@ -59,9 +61,24 @@ export function AchievementUnlockModal({ achievement, role, onClose }: Achieveme
               <h3 className="font-headline-md text-headline-md-mobile lg:text-headline-md gradient-text-editorial mb-2">
                 {achievement.title}
               </h3>
-              <p className="text-on-surface-variant font-body-lg mb-6">
+              <p className="text-on-surface-variant font-body-lg mb-4">
                 {achievement.description}
               </p>
+
+              {isSpiritualModeEnabled() && (
+                <div className="mb-6 p-4 rounded-2xl bg-teal-500/10 border border-teal-500/20 text-left">
+                  <div className="flex items-center gap-1.5 mb-1.5 text-[11px] font-bold uppercase tracking-wider text-teal-700 dark:text-teal-300">
+                    <BookOpen size={14} />
+                    <span>Palabra de Victoria & Fortaleza</span>
+                  </div>
+                  <p className="text-xs text-on-surface italic font-medium leading-relaxed">
+                    «{getVersiculoForLogro(achievement.id).texto}»
+                  </p>
+                  <p className="text-[11px] font-bold text-teal-700 dark:text-teal-300 text-right mt-1.5 font-mono">
+                    — {getVersiculoForLogro(achievement.id).cita}
+                  </p>
+                </div>
+              )}
 
               <button
                 onClick={onClose}

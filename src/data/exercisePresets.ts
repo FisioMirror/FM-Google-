@@ -8,8 +8,8 @@ export interface ExerciseJointPreset {
   position?: ExercisePosition;
 }
 
-type Articulacion = 'hombro' | 'codo' | 'rodilla' | 'cadera' | 'tobillo' | 'cervical';
-type Lado = 'bilateral' | 'derecho' | 'izquierdo';
+export type Articulacion = 'hombro' | 'codo' | 'rodilla' | 'cadera' | 'tobillo' | 'cervical';
+export type Lado = 'bilateral' | 'derecho' | 'izquierdo';
 
 const PRESets: Record<Articulacion, ExerciseJointPreset> = {
   hombro: {
@@ -371,7 +371,7 @@ export function buildExerciseDefinition(
   return {
     id,
     name,
-    description: preset.description,
+    description: detailedDescription || preset.description,
     targetJoints,
     sets: series || 3,
     reps: repeticiones || 10,

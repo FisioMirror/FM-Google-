@@ -1,7 +1,7 @@
 import { useState, useEffect, type ReactNode } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { Mail, FileText, Shield, Code2, Palette, Heart, BookOpen, HelpCircle, Smartphone, MessageCircle, Phone, Globe, Cpu, Volume2 } from 'lucide-react';
+import { Mail, FileText, Shield, Code2, Palette, Heart, BookOpen, Smartphone, MessageCircle, Phone, Globe, Cpu } from 'lucide-react';
 import { useTheme, FONT_SIZE_LEVELS } from '../context/ThemeContext';
 import { useAuthStore } from '../stores/authStore';
 import { useMediaPipeModel, type ModelPreference } from '../hooks/useMediaPipeModel';
@@ -13,8 +13,10 @@ import { AnimatedTabs } from '../components/ui/AnimatedTabs';
 import { useGlassToast } from '../components/ui/GlassToast';
 import { HelpSection } from '../components/ui/HelpSection';
 import { IOSInstallModal } from '../components/ui/IOSInstallModal';
+import { EmailSystemStatusCard } from '../components/ui/EmailSystemStatusCard';
 import { cn } from '../lib/utils';
 import { supabaseUrl } from '../lib/supabase';
+import { setSpiritualModeEnabled, SPIRITUAL_SETTING_KEY } from '../lib/versiculosService';
 
 /* ── localStorage helpers ─────────────────────────────────────── */
 function usePersistentBool(key: string, defaultValue: boolean) {
@@ -64,6 +66,7 @@ export function SettingsPage() {
   const [easyReading, setEasyReading] = usePersistentBool('fisio-easy-reading', false);
   const [largeTouch, setLargeTouch] = usePersistentBool('fisio-large-touch', false);
   const [glassmorphism, setGlassmorphism] = usePersistentBool('fisio-glassmorphism', true);
+  const [spiritualMode, setSpiritualMode] = usePersistentBool(SPIRITUAL_SETTING_KEY, true);
   const [notifEmail, setNotifEmail] = usePersistentBool('fisio-notif-email', true);
   const [notifPush, setNotifPush] = usePersistentBool('fisio-notif-push', true);
   const [notifSound, setNotifSound] = usePersistentBool('fisio-notif-sound', true);
@@ -129,17 +132,19 @@ export function SettingsPage() {
     if (pwNew.length < 6) { show('La nueva contraseña debe tener al menos 6 caracteres', 'warning'); return; }
     setPwLoading(true);
     try {
-      const fnUrl = `${supabaseUrl}/functions/v1`;
-      const res = await fetch(`${fnUrl}/auth-update-password`, {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId: user?.id, currentPassword: pwCurrent, newPassword: pwNew }),
-      });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok || !data.success) { show(data.error || 'Error al cambiar la contraseña', 'error'); return; }
+      const result = await useAuthStore.getState().updatePassword(pwCurrent, pwNew);
+      if (!result.success) {
+        show(result.error || 'Error al cambiar la contraseña', 'error');
+        return;
+      }
       show('Contraseña actualizada correctamente', 'success');
       setPwCurrent(''); setPwNew(''); setPwConfirm('');
       setShowPasswordModal(false);
-    } catch { show('Error de conexión', 'error'); } finally { setPwLoading(false); }
+    } catch {
+      show('Error de conexión al actualizar contraseña', 'error');
+    } finally {
+      setPwLoading(false);
+    }
   };
 
   const handleDeleteAccount = async () => {
@@ -257,6 +262,33 @@ export function SettingsPage() {
             </div>
           </div>
           <Toggle value={glassmorphism} onChange={setGlassmorphism} label="Glassmorfismo" />
+        </div>
+      </GlassPanel>
+
+      {/* Palabra de Fortaleza & Fe (Inspiración Bíblica) */}
+      <GlassPanel className="p-6 rounded-2xl relative overflow-hidden">
+        <div className="blob-teal absolute -top-12 -right-12 w-32 h-32 opacity-20 pointer-events-none" />
+        <div className="relative flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 rounded-xl bg-teal-500/10 flex items-center justify-center">
+              <BookOpen size={24} className="text-teal-600 dark:text-teal-400" />
+            </div>
+            <div>
+              <p className="font-semibold text-on-surface">Palabra de Fortaleza & Fe</p>
+              <p className="text-sm text-on-surface-variant">
+                Muestra versículos de sanidad, constancia y perseverancia en tu recuperación
+              </p>
+            </div>
+          </div>
+          <Toggle
+            value={spiritualMode}
+            onChange={(v) => {
+              setSpiritualMode(v);
+              setSpiritualModeEnabled(v);
+              show(v ? 'Inspiración de Fe activada' : 'Inspiración de Fe desactivada', 'success');
+            }}
+            label="Palabra de Fortaleza & Fe"
+          />
         </div>
       </GlassPanel>
 
@@ -437,30 +469,34 @@ export function SettingsPage() {
      NOTIFICACIONES
      ══════════════════════════════════════════════════════════════ */
   const NotificacionesTab: ReactNode = (
-    <GlassPanel className="p-6 rounded-2xl relative overflow-hidden">
-      <div className="blob-cyan absolute -top-12 -right-12 w-32 h-32 opacity-20 pointer-events-none" />
-      <div className="relative space-y-5">
-        <h3 className="font-semibold text-on-surface gradient-text-cyan">Preferencias de Notificaciones</h3>
-        {[
-          { icon: 'mail', color: 'text-primary', bg: 'bg-primary/10', title: 'Notificaciones por Email', desc: 'Recibe actualizaciones y recordatorios en tu correo', value: notifEmail, onChange: setNotifEmail },
-          { icon: 'notifications_active', color: 'text-secondary', bg: 'bg-secondary-container/20', title: 'Notificaciones Push', desc: 'Recibe alertas en tiempo real en tu dispositivo', value: notifPush, onChange: setNotifPush },
-          { icon: 'volume_up', color: 'icon-accent-cyan', bg: 'bg-cyan-500/10', title: 'Sonido', desc: 'Reproduce un sonido al recibir notificaciones', value: notifSound, onChange: setNotifSound },
-        ].map((item) => (
-          <div key={item.title} className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className={`w-12 h-12 rounded-xl ${item.bg} flex items-center justify-center`}>
-                <Icon name={item.icon} size={22} className={item.color} />
+    <div className="space-y-6">
+      <GlassPanel className="p-6 rounded-2xl relative overflow-hidden">
+        <div className="blob-cyan absolute -top-12 -right-12 w-32 h-32 opacity-20 pointer-events-none" />
+        <div className="relative space-y-5">
+          <h3 className="font-semibold text-on-surface gradient-text-cyan">Preferencias de Notificaciones</h3>
+          {[
+            { icon: 'mail', color: 'text-primary', bg: 'bg-primary/10', title: 'Notificaciones por Email', desc: 'Recibe actualizaciones y recordatorios en tu correo', value: notifEmail, onChange: setNotifEmail },
+            { icon: 'notifications_active', color: 'text-secondary', bg: 'bg-secondary-container/20', title: 'Notificaciones Push', desc: 'Recibe alertas en tiempo real en tu dispositivo', value: notifPush, onChange: setNotifPush },
+            { icon: 'volume_up', color: 'icon-accent-cyan', bg: 'bg-cyan-500/10', title: 'Sonido', desc: 'Reproduce un sonido al recibir notificaciones', value: notifSound, onChange: setNotifSound },
+          ].map((item) => (
+            <div key={item.title} className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className={`w-12 h-12 rounded-xl ${item.bg} flex items-center justify-center`}>
+                  <Icon name={item.icon} size={22} className={item.color} />
+                </div>
+                <div>
+                  <p className="font-medium text-on-surface">{item.title}</p>
+                  <p className="text-sm text-on-surface-variant">{item.desc}</p>
+                </div>
               </div>
-              <div>
-                <p className="font-medium text-on-surface">{item.title}</p>
-                <p className="text-sm text-on-surface-variant">{item.desc}</p>
-              </div>
+              <Toggle value={item.value} onChange={item.onChange} label={item.title} />
             </div>
-            <Toggle value={item.value} onChange={item.onChange} label={item.title} />
-          </div>
-        ))}
-      </div>
-    </GlassPanel>
+          ))}
+        </div>
+      </GlassPanel>
+
+      <EmailSystemStatusCard />
+    </div>
   );
 
   /* ══════════════════════════════════════════════════════════════

@@ -7,8 +7,12 @@ import { useAuthStore } from '../stores/authStore';
 import { supabase } from '../lib/supabase';
 import { celebrateSession } from '../lib/confetti';
 import { usePoseDetection } from '../hooks/usePoseDetection';
-import { isValidUUID } from '../lib/utils';
+import { isValidUUID, cn } from '../lib/utils';
 import { speakHumanVoice } from '../lib/humanVoice';
+import { notifySessionCompleted, createNotification } from '../lib/notificationService';
+import { updatePresenceStatus } from '../lib/presenceService';
+import { isSpiritualModeEnabled, getVersiculoContextual, type Versiculo } from '../lib/versiculosService';
+import { BookOpen } from 'lucide-react';
 
 // Rep completion particle burst
 function repParticleBurst() {
@@ -75,16 +79,37 @@ export function ARMirrorPage() {
 
   const exerciseName = searchParams.get('ejercicio') || 'Sesión AR';
 
-  const { videoRef, canvasRef, poseData, isReady, error, repCount, resetReps, startCamera, cameraStarted, setTargetAngle } = usePoseDetection();
+  const {
+    videoRef,
+    canvasRef,
+    poseData,
+    isReady,
+    error,
+    repCount,
+    resetReps,
+    startCamera,
+    cameraStarted,
+    setTargetAngle,
+    facingMode,
+    toggleFacingMode,
+  } = usePoseDetection();
   const vRef = videoRef as React.RefObject<HTMLVideoElement>;
   const cRef = canvasRef as React.RefObject<HTMLCanvasElement>;
 
   const [state, setState] = useState<SessionState>('active');
+  const [isMirrored, setIsMirrored] = useState(true);
   const [timer, setTimer] = useState(0);
   const [bpm] = useState(0);
   const [currentSet, setCurrentSet] = useState(1);
   const [restCountdown, setRestCountdown] = useState(REST_DURATION);
   const [showFinishModal, setShowFinishModal] = useState(false);
+  const [finishVerse, setFinishVerse] = useState<Versiculo | null>(null);
+
+  useEffect(() => {
+    if (showFinishModal && isSpiritualModeEnabled()) {
+      getVersiculoContextual('sanidad').then(setFinishVerse);
+    }
+  }, [showFinishModal]);
   const [qualityScore, setQualityScore] = useState(0);
   const [showSettings, setShowSettings] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -142,6 +167,14 @@ export function ARMirrorPage() {
   useEffect(() => {
     startCamera();
   }, [startCamera]);
+
+  // Actualizar presencia: paciente realizando sesión de ejercicios
+  useEffect(() => {
+    updatePresenceStatus('en_ejercicio', window.location.pathname);
+    return () => {
+      updatePresenceStatus('online', '/');
+    };
+  }, []);
 
   // Mark session as started once the camera is live
   useEffect(() => {
@@ -278,6 +311,38 @@ export function ARMirrorPage() {
           });
           if (reportError) console.error('Error saving pain report:', reportError.message);
         }
+
+        // Notificar en tiempo real al terapeuta asignado
+        try {
+          const { data: link } = await supabase
+            .from('pacientes_terapeutas')
+            .select('terapeuta_id')
+            .eq('paciente_id', user.id)
+            .maybeSingle();
+
+          if (link?.terapeuta_id) {
+            notifySessionCompleted({
+              therapistId: link.terapeuta_id,
+              patientName: user.full_name || 'Paciente',
+              exerciseTitle: exerciseName,
+              precision: qualityScore,
+              durationSeconds: timer,
+            });
+          }
+
+          // Notificación de logro y reconocimiento al paciente
+          if (qualityScore >= 70) {
+            createNotification({
+              userId: user.id,
+              type: 'logro',
+              title: '¡Sesión de rehabilitación completada!',
+              message: `Lograste ${Math.round(qualityScore)}% de precisión en "${exerciseName}" con ${repCount} repeticiones completadas.`,
+              link: '/stats',
+            });
+          }
+        } catch {
+          // Ignorar fallo de notificación
+        }
       } else {
         // Modo demostración: guardar la sesión localmente sin error de UUID
         try {
@@ -347,23 +412,59 @@ export function ARMirrorPage() {
       <canvas id="particle-canvas" className="absolute inset-0 pointer-events-none" style={{ zIndex: 25 }} />
 
       {/* Video as real background + canvas overlay on top */}
-      <video ref={vRef} className="absolute inset-0 w-full h-full object-cover" style={{ zIndex: 1, filter: 'brightness(0.75) contrast(1.15)' }} muted playsInline autoPlay />
+      <video
+        ref={vRef}
+        className={cn(
+          'absolute inset-0 w-full h-full object-cover transition-transform duration-200',
+          isMirrored && '-scale-x-100'
+        )}
+        style={{ zIndex: 1, filter: 'brightness(0.75) contrast(1.15)' }}
+        muted
+        playsInline
+        autoPlay
+      />
       <canvas
         ref={cRef}
-        className="absolute inset-0 w-full h-full object-cover"
+        className={cn(
+          'absolute inset-0 w-full h-full object-cover transition-transform duration-200',
+          isMirrored && '-scale-x-100'
+        )}
         style={{ zIndex: 2 }}
       />
 
-      {/* HUD visibility toggle — floating eye button */}
+      {/* Floating camera / HUD controls */}
       {sessionStarted && !error && (
-        <button
-          onClick={() => { setHudVisible(!hudVisible); setHudMode(hudMode === 'full' ? 'minimal' : 'full'); }}
-          aria-label={hudVisible ? 'Ocultar panel' : 'Mostrar panel'}
-          className="glass-panel rounded-full p-3 text-white hover:scale-110 active:scale-95 transition-all fixed top-4 right-4 z-[35]"
-          style={{ background: 'rgba(255,255,255,0.08)', backdropFilter: 'blur(24px)', border: '1px solid rgba(255,255,255,0.15)' }}
-        >
-          <Icon name={hudVisible ? 'visibility_off' : 'visibility'} size={22} />
-        </button>
+        <div className="fixed top-4 right-4 z-[35] flex items-center gap-2">
+          <button
+            onClick={toggleFacingMode}
+            title={facingMode === 'user' ? 'Cambiar a cámara trasera' : 'Cambiar a cámara frontal'}
+            aria-label="Cambiar cámara"
+            className="glass-panel rounded-full p-3 text-white hover:scale-110 active:scale-95 transition-all"
+            style={{ background: 'rgba(255,255,255,0.08)', backdropFilter: 'blur(24px)', border: '1px solid rgba(255,255,255,0.15)' }}
+          >
+            <Icon name="flip_camera_ios" size={22} />
+          </button>
+          <button
+            onClick={() => setIsMirrored((prev) => !prev)}
+            title={isMirrored ? 'Desactivar modo espejo' : 'Activar modo espejo'}
+            aria-label="Modo espejo"
+            className={cn(
+              'glass-panel rounded-full p-3 transition-all hover:scale-110 active:scale-95',
+              isMirrored ? 'text-[#8ad3cf] border-[#8ad3cf]/40' : 'text-white/60'
+            )}
+            style={{ background: 'rgba(255,255,255,0.08)', backdropFilter: 'blur(24px)', border: '1px solid rgba(255,255,255,0.15)' }}
+          >
+            <Icon name="sync_alt" size={22} />
+          </button>
+          <button
+            onClick={() => { setHudVisible(!hudVisible); setHudMode(hudMode === 'full' ? 'minimal' : 'full'); }}
+            aria-label={hudVisible ? 'Ocultar panel' : 'Mostrar panel'}
+            className="glass-panel rounded-full p-3 text-white hover:scale-110 active:scale-95 transition-all"
+            style={{ background: 'rgba(255,255,255,0.08)', backdropFilter: 'blur(24px)', border: '1px solid rgba(255,255,255,0.15)' }}
+          >
+            <Icon name={hudVisible ? 'visibility_off' : 'visibility'} size={22} />
+          </button>
+        </div>
       )}
 
       {/* Camera loading / scanning state — escaneando.webp durante calibración AR */}
@@ -652,6 +753,14 @@ export function ARMirrorPage() {
                   <span>Audio</span>
                   <Icon name={volumeLevel !== 'muted' ? 'toggle_on' : 'toggle_off'} size={28} className={volumeLevel !== 'muted' ? 'text-green-400' : 'text-white/40'} />
                 </button>
+                <button onClick={toggleFacingMode} className="w-full flex items-center justify-between p-3 rounded-xl bg-white/10 text-white hover:bg-white/20 transition-colors">
+                  <span>Cámara ({facingMode === 'user' ? 'Frontal' : 'Trasera'})</span>
+                  <Icon name="flip_camera_ios" size={20} className="text-[#8ad3cf]" />
+                </button>
+                <button onClick={() => setIsMirrored((prev) => !prev)} className="w-full flex items-center justify-between p-3 rounded-xl bg-white/10 text-white hover:bg-white/20 transition-colors">
+                  <span>Modo Espejo</span>
+                  <Icon name={isMirrored ? 'toggle_on' : 'toggle_off'} size={28} className={isMirrored ? 'text-green-400' : 'text-white/40'} />
+                </button>
                 <button onClick={() => { handleRestart(); setShowSettings(false); }} className="w-full flex items-center justify-between p-3 rounded-xl bg-white/10 text-white hover:bg-white/20 transition-colors">
                   <span>Reiniciar sesión</span>
                   <Icon name="refresh" size={20} />
@@ -755,6 +864,22 @@ export function ARMirrorPage() {
                 <div><p className="text-white/40 text-xs">Repeticiones</p><p className="text-white text-xl font-bold">{repCount}</p></div>
                 <div><p className="text-white/40 text-xs">Calidad</p><p className="text-white text-xl font-bold">{qualityScore}%</p></div>
               </div>
+
+              {isSpiritualModeEnabled() && finishVerse && (
+                <div className="mb-6 p-4 rounded-2xl bg-white/10 border border-white/15 text-left">
+                  <div className="flex items-center gap-1.5 mb-1.5 text-[11px] font-bold uppercase tracking-wider text-teal-300">
+                    <BookOpen className="size-3.5" />
+                    <span>Palabra de Sanidad & Fortaleza</span>
+                  </div>
+                  <p className="text-xs text-white/95 italic font-medium leading-relaxed">
+                    «{finishVerse.texto}»
+                  </p>
+                  <p className="text-[10px] font-bold text-teal-300 text-right mt-1.5 font-mono">
+                    — {finishVerse.cita}
+                  </p>
+                </div>
+              )}
+
               <div className="flex gap-3">
                 <button onClick={() => navigate('/stats')} className="premium-btn flex-1 py-4 bg-primary text-white rounded-2xl font-bold hover:scale-[1.02] active:scale-95 transition-all">
                   Ver Progreso

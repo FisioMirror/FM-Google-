@@ -12,8 +12,14 @@ import { useToast } from './ui/ToastProvider';
 import { useInstall } from '../lib/installContext';
 import { PhysiChatbot } from './ui/PhysiChatbot';
 import { supabase } from '../lib/supabase';
-import { cn, timeAgo } from '../lib/utils';
+import { cn } from '../lib/utils';
 import MascotAnimation from './ui/MascotAnimation';
+import { isDemoAccount } from '../lib/demoAuth';
+import { UNIFIED_DEMO_PATIENTS } from '../data/unifiedDemoData';
+import { NotificationDrawer } from './notifications/NotificationDrawer';
+import { useRealtimeNotifications } from '../hooks/useRealtimeNotifications';
+import { initGlobalPresence, updatePresenceStatus } from '../lib/presenceService';
+import { notifyVideoCall } from '../lib/notificationService';
 
 const navItems = [
   { to: '/dashboard-fisio', label: 'Inicio', icon: 'dashboard' },
@@ -36,17 +42,6 @@ const breadcrumbMap: Record<string, string> = {
   '/fisio-profile': 'Perfil',
   '/fisio-settings': 'Configuración',
 };
-
-interface Notif {
-  id: string;
-  user_id: string;
-  type: string;
-  title: string;
-  message: string | null;
-  link: string | null;
-  read: boolean;
-  created_at: string;
-}
 
 interface FisioLayoutProps {
   children: ReactNode;
@@ -74,8 +69,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
   const [searchResults, setSearchResults] = useState<{ patients: Array<{ id: string; name: string; email: string; diagnostico: string }>; exercises: Array<{ id: string; name: string; group: string }> }>({ patients: [], exercises: [] });
   const [showSearchDropdown, setShowSearchDropdown] = useState(false);
   const searchDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const [notifs, setNotifs] = useState<Notif[]>([]);
-  const [unreadCount, setUnreadCount] = useState(0);
+  const { unreadCount } = useRealtimeNotifications(user?.id);
   const [isOnline, setIsOnline] = useState(navigator.onLine);
 
   // Selector de paciente para iniciar videollamada desde el FAB
@@ -99,114 +93,16 @@ export function FisioLayout({ children }: FisioLayoutProps) {
     };
   }, []);
 
+  // Inicializar Presencia Realtime en Supabase
   useEffect(() => {
-    if (!user?.id) return;
-    loadNotifications();
-    fetchUnreadCount();
-
-    // Real-time subscription: update unread count + list when notifications change
-    const channel = supabase
-      .channel('notifications-realtime')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'notifications',
-          filter: `user_id=eq.${user.id}`,
-        },
-        () => {
-          loadNotifications();
-          fetchUnreadCount();
-        },
-      )
-      .subscribe();
-
-    // Polling fallback: refresh every 30s in case realtime misses an event
-    const pollInterval = setInterval(() => {
-      loadNotifications();
-      fetchUnreadCount();
-    }, 30_000);
-
-    return () => {
-      supabase.removeChannel(channel);
-      clearInterval(pollInterval);
-    };
-  }, [user?.id]);
-
-  // Mark notifications as read when the dropdown is opened
-  useEffect(() => {
-    if (!showNotifications || !user?.id || unreadCount === 0) return;
-    const markRead = async () => {
-      await supabase
-        .from('notifications')
-        .update({ read: true })
-        .eq('user_id', user.id)
-        .eq('read', false);
-      setNotifs((prev) => prev.map((n) => ({ ...n, read: true })));
-      setUnreadCount(0);
-    };
-    markRead();
-  }, [showNotifications, user?.id]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const loadNotifications = async () => {
-    if (!user?.id) return;
-    try {
-      const { data } = await supabase
-        .from('notifications')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false })
-        .limit(20);
-      if (data) {
-        setNotifs(data as Notif[]);
-      }
-    } catch {
-      // keep empty
+    if (user?.id) {
+      initGlobalPresence({
+        id: user.id,
+        role: user.role || 'fisioterapeuta',
+        full_name: user.full_name || 'Fisioterapeuta',
+      });
     }
-  };
-
-  const fetchUnreadCount = async () => {
-    if (!user?.id) return;
-    try {
-      const { count } = await supabase
-        .from('notifications')
-        .select('*', { count: 'exact', head: true })
-        .eq('user_id', user.id)
-        .eq('read', false);
-      setUnreadCount(count ?? 0);
-    } catch {
-      // keep current count
-    }
-  };
-
-  const handleJoinNotif = async (notif: Notif) => {
-    if (notif.link) window.open(notif.link, '_blank');
-    try {
-      await supabase.from('notifications').update({ read: true }).eq('id', notif.id);
-      setNotifs((prev) => prev.map((n) => n.id === notif.id ? { ...n, read: true } : n));
-      setUnreadCount((prev) => Math.max(0, prev - 1));
-    } catch { /* network error — ignore */ }
-  };
-
-  const markAllRead = async () => {
-    if (!user?.id) return;
-    try {
-      await supabase.from('notifications').update({ read: true }).eq('user_id', user.id).eq('read', false);
-      setNotifs((prev) => prev.map((n) => ({ ...n, read: true })));
-      setUnreadCount(0);
-      toast.info('Todas las notificaciones marcadas como leídas');
-    } catch {
-      toast.error('No se pudieron marcar las notificaciones');
-    }
-  };
-
-  const notifIcon = (type: string): string => {
-    if (type === 'videollamada') return 'videocam';
-    if (type === 'rutina') return 'fitness_center';
-    if (type === 'sistema') return 'info';
-    return 'notifications';
-  };
+  }, [user?.id, user?.role, user?.full_name]);
 
   const handleSignOut = () => {
     signOut();
@@ -230,17 +126,69 @@ export function FisioLayout({ children }: FisioLayoutProps) {
   const performSearch = async (query: string) => {
     if (!query.trim() || query.trim().length < 2) { setSearchResults({ patients: [], exercises: [] }); return; }
     try {
-      const [patRes, exRes] = await Promise.all([
-        supabase.from('profiles')
-          .select('id, full_name, email, diagnostico, documento_identidad, patologia')
-          .or(`full_name.ilike.%${query}%,email.ilike.%${query}%,diagnostico.ilike.%${query}%,documento_identidad.ilike.%${query}%,patologia.ilike.%${query}%`)
-          .eq('role', 'paciente')
-          .limit(8),
-        supabase.from('exercises').select('id, name, muscle_group').or(`name.ilike.%${query}%,muscle_group.ilike.%${query}%`).limit(5),
-      ]);
+      const isDemo = isDemoAccount(user);
+      const safeQ = query.trim().replace(/[%,"']/g, '');
+      let foundPatients: Array<{ id: string; name: string; email: string; diagnostico: string }> = [];
+
+      // 1. Search Supabase profiles and exercises safely
+      const patPromise = supabase
+        .from('profiles')
+        .select('id, full_name, email, diagnostico, documento_identidad, patologia')
+        .or(`full_name.ilike."%${safeQ}%",email.ilike."%${safeQ}%",diagnostico.ilike."%${safeQ}%",patologia.ilike."%${safeQ}%"`)
+        .limit(8);
+
+      const exPromise = supabase
+        .from('exercises')
+        .select('id, nombre, grupo_muscular')
+        .or(`nombre.ilike."%${safeQ}%",grupo_muscular.ilike."%${safeQ}%"`)
+        .limit(5);
+
+      const [patSettled, exSettled] = await Promise.allSettled([patPromise, exPromise]);
+
+      if (patSettled.status === 'fulfilled' && patSettled.value.data) {
+        foundPatients = (patSettled.value.data as Array<any>).map((p) => ({
+          id: p.id,
+          name: p.full_name || p.name || 'Paciente',
+          email: p.email?.includes('@fisiomirror.paciente') ? '' : (p.email || ''),
+          diagnostico: p.diagnostico || p.patologia || '',
+        }));
+      }
+
+      const foundExercises: Array<{ id: string; name: string; group: string }> = [];
+      if (exSettled.status === 'fulfilled' && exSettled.value.data) {
+        (exSettled.value.data as Array<any>).forEach((e) => {
+          foundExercises.push({
+            id: e.id,
+            name: e.nombre || e.name || 'Ejercicio',
+            group: e.grupo_muscular || e.muscle_group || '',
+          });
+        });
+      }
+
+      // 2. Only add demo patients if logged in as a demo user
+      if (isDemo) {
+        const q = query.toLowerCase();
+        const demoMatches = UNIFIED_DEMO_PATIENTS.filter(p =>
+          p.name.toLowerCase().includes(q) ||
+          p.email.toLowerCase().includes(q) ||
+          (p.diagnosis && p.diagnosis.toLowerCase().includes(q))
+        ).map(p => ({
+          id: p.id,
+          name: p.name,
+          email: p.email,
+          diagnostico: p.diagnosis || '',
+        }));
+
+        for (const dm of demoMatches) {
+          if (!foundPatients.some(fp => fp.id === dm.id || fp.name.toLowerCase() === dm.name.toLowerCase())) {
+            foundPatients.push(dm);
+          }
+        }
+      }
+
       setSearchResults({
-        patients: (patRes.data as Array<{ id: string; name: string; email: string; diagnostico: string }> | null)?.map((p) => ({ id: p.id, name: (p as any).full_name || p.name, email: p.email || '', diagnostico: (p as any).diagnostico || (p as any).patologia || '' })) || [],
-        exercises: (exRes.data as Array<{ id: string; name: string; group: string }> | null)?.map((e) => ({ id: e.id, name: (e as any).name || e.name, group: (e as any).muscle_group || e.group || '' })) || [],
+        patients: foundPatients,
+        exercises: foundExercises,
       });
     } catch { /* keep empty */ }
   };
@@ -287,28 +235,38 @@ export function FisioLayout({ children }: FisioLayoutProps) {
     try {
       const jitsiUrl = `https://meet.jit.si/FisioMirror-${user.id}-${paciente.id}`;
       window.open(jitsiUrl, '_blank');
-      // Notificar al paciente a través de la edge function (service_role),
-      // que es la única vía autorizada para crear notificaciones.
-      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string;
-      const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string;
-      const res = await fetch(`${supabaseUrl}/functions/v1/send-notification`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${supabaseAnonKey}`,
-        },
-        body: JSON.stringify({
-          fisio_id: paciente.id,
-          type: 'videollamada',
-          title: 'Videollamada entrante',
-          message: `${user.full_name || 'Tu fisioterapeuta'} quiere iniciar una videollamada`,
-          link: jitsiUrl,
-        }),
+      updatePresenceStatus('videoconsulta', window.location.pathname);
+
+      // Notificar al paciente con la función centralizada y garantizada
+      await notifyVideoCall({
+        targetUserId: paciente.id,
+        callerName: user.full_name || 'Tu fisioterapeuta',
+        meetLink: jitsiUrl,
       });
-      if (!res.ok) {
-        throw new Error(`send-notification respondió ${res.status}`);
+
+      // Intento complementario de Edge Function si existe
+      try {
+        const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string;
+        const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string;
+        await fetch(`${supabaseUrl}/functions/v1/send-notification`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${supabaseAnonKey}`,
+          },
+          body: JSON.stringify({
+            fisio_id: paciente.id,
+            type: 'videollamada',
+            title: 'Videollamada entrante',
+            message: `${user.full_name || 'Tu fisioterapeuta'} quiere iniciar una videollamada`,
+            link: jitsiUrl,
+          }),
+        });
+      } catch {
+        // Edge function opcional
       }
-      toast.success(`Videollamada iniciada con ${paciente.name}. Se envió la notificación.`);
+
+      toast.success(`Videollamada iniciada con ${paciente.name}. Notificación enviada en tiempo real.`);
       setShowVideoModal(false);
     } catch {
       toast.error('No se pudo iniciar la videollamada');
@@ -726,75 +684,12 @@ export function FisioLayout({ children }: FisioLayoutProps) {
         )}
       </AnimatePresence>
 
-      {/* Notifications panel */}
-      <AnimatePresence>
-        {showNotifications && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setShowNotifications(false)}
-            className="fixed inset-0 z-[100]"
-          >
-            <motion.div
-              initial={{ opacity: 0, x: 20, y: -10 }}
-              animate={{ opacity: 1, x: 0, y: 0 }}
-              exit={{ opacity: 0, x: 20, y: -10 }}
-              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              onClick={(e) => e.stopPropagation()}
-              className="fixed top-20 right-4 sm:right-6 z-[101] glass-dropdown rounded-3xl p-4 w-[calc(100vw-2rem)] sm:w-80 shadow-2xl"
-            >
-              <div className="flex items-center justify-between mb-4 px-2">
-                <div className="flex items-center gap-3">
-                  <MascotAnimation type="notification" size="xs" />
-                  <h3 className="font-title-md text-title-md text-on-surface">Notificaciones</h3>
-                </div>
-                <button onClick={() => setShowNotifications(false)} aria-label="Cerrar notificaciones" className="text-outline hover:text-error transition-colors">
-                  <Icon name="close" size={20} />
-                </button>
-              </div>
-              <div className="space-y-2 max-h-80 overflow-y-auto">
-                {notifs.length === 0 && (
-                  <p className="text-center text-on-surface-variant text-sm py-8">No tienes notificaciones</p>
-                )}
-                {notifs.map((n, i) => (
-                  <motion.div
-                    key={n.id}
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: i * 0.04 }}
-                    className={`flex items-start gap-3 p-3 rounded-2xl hover:bg-primary/5 cursor-pointer transition-colors ${!n.read ? 'bg-primary/5' : ''}`}
-                  >
-                    <div className={'w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0'}>
-                      <Icon name={notifIcon(n.type)} size={20} />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="font-bold text-sm text-on-surface truncate">{n.title}</p>
-                      {n.message && <p className="text-xs text-on-surface-variant truncate">{n.message}</p>}
-                      <p className="text-[10px] text-outline mt-1">{timeAgo(n.created_at)}</p>
-                      {n.type === 'videollamada' && n.link && (
-                        <button
-                          onClick={(e) => { e.stopPropagation(); handleJoinNotif(n); }}
-                          className="text-primary font-bold text-xs mt-1 hover:underline flex items-center gap-1"
-                        >
-                          Unirse <Icon name="open_in_new" size={12} />
-                        </button>
-                      )}
-                    </div>
-                    {!n.read && <span className="w-2 h-2 bg-primary rounded-full mt-2 shrink-0" />}
-                  </motion.div>
-                ))}
-              </div>
-              <button
-                onClick={markAllRead}
-                className="w-full mt-3 py-2 text-center text-primary font-bold text-sm hover:bg-primary/5 rounded-xl transition-colors"
-              >
-                Marcar todas como leídas
-              </button>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Centro de Notificaciones Clínico Avanzado */}
+      <NotificationDrawer
+        isOpen={showNotifications}
+        onClose={() => setShowNotifications(false)}
+        userId={user?.id}
+      />
 
       <LegalModal isOpen={legalModal !== null} onClose={() => setLegalModal(null)} type={legalModal ?? 'privacy'} />
 

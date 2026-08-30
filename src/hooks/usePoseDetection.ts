@@ -37,6 +37,8 @@ interface UsePoseDetectionResult {
   startCamera: () => void;
   cameraStarted: boolean;
   setTargetAngle: (angle: number) => void;
+  facingMode: 'user' | 'environment';
+  toggleFacingMode: () => void;
 }
 
 // MediaPipe pose landmark indices
@@ -104,6 +106,7 @@ export function usePoseDetection(): UsePoseDetectionResult {
   const [error, setError] = useState<string | null>(null);
   const [repCount, setRepCount] = useState(0);
   const [cameraStarted, setCameraStarted] = useState(false);
+  const [facingMode, setFacingMode] = useState<'user' | 'environment'>('user');
 
   const repPhaseRef = useRef<'up' | 'down'>('down');
   const targetAngleRef = useRef<number>(90);
@@ -111,6 +114,11 @@ export function usePoseDetection(): UsePoseDetectionResult {
   const resetReps = useCallback(() => {
     setRepCount(0);
     repPhaseRef.current = 'down';
+  }, []);
+
+  const toggleFacingMode = useCallback(() => {
+    setIsReady(false);
+    setFacingMode((prev) => (prev === 'user' ? 'environment' : 'user'));
   }, []);
 
   const startCamera = useCallback(() => {
@@ -130,7 +138,7 @@ export function usePoseDetection(): UsePoseDetectionResult {
         // 1) Request the camera with the spec'd constraints.
         const stream = await navigator.mediaDevices.getUserMedia({
           video: {
-            facingMode: 'user',
+            facingMode: { ideal: facingMode },
             width: { ideal: 640 },
             height: { ideal: 480 },
           },
@@ -356,7 +364,7 @@ export function usePoseDetection(): UsePoseDetectionResult {
         streamRef.current = null;
       }
     };
-  }, [cameraStarted]);
+  }, [cameraStarted, facingMode]);
 
   return {
     videoRef,
@@ -369,5 +377,7 @@ export function usePoseDetection(): UsePoseDetectionResult {
     startCamera,
     cameraStarted,
     setTargetAngle,
+    facingMode,
+    toggleFacingMode,
   };
 }

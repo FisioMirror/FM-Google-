@@ -67,7 +67,7 @@ const playNotificationSound = (type: NotificationType) => {
     if (navigator.vibrate) {
       navigator.vibrate(type === 'success' ? 50 : [30, 50, 30])
     }
-  } catch (e) {
+  } catch {
     // Silenciosamente ignorar si el audio no está disponible
   }
 }

@@ -2,6 +2,7 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 import path from 'path';
+import { apiDevPlugin } from './vite-api-plugin';
 export default defineConfig({
   server: {
     host: '0.0.0.0',
@@ -14,6 +15,7 @@ export default defineConfig({
   },
   plugins: [
     react(),
+    apiDevPlugin(),
     VitePWA({
       registerType: 'autoUpdate',
       // Inyecta el service worker directamente en el HTML

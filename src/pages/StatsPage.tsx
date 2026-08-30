@@ -31,6 +31,7 @@ import { runAIJob } from '../lib/ai';
 import { formatAIReport } from '../lib/formatReport';
 import { UNIFIED_DEMO_PATIENTS, PRIMARY_DEMO_PATIENT } from '../data/unifiedDemoData';
 import { isValidUUID } from '../lib/utils';
+import { isDemoAccount } from '../lib/demoAuth';
 import { ClinicalAnalyticsHub } from '../components/clinical/ClinicalAnalyticsHub';
 import { PatientRecoveryHub } from '../components/patient/PatientRecoveryHub';
 
@@ -161,12 +162,20 @@ export function StatsPage() {
     );
 
     try {
+      const isDemo = isDemoAccount(user);
       if (isFisio) {
         if (!user?.id || !isValidUUID(user.id)) {
-          setPatients(demoPw);
-          setTotalPatients(demoPw.length);
-          setActivePatients(demoPw.filter(p => p.sessionCount > 0).length);
-          applyFisioFilter(demoAllSessions, demoPw, '');
+          if (isDemo) {
+            setPatients(demoPw);
+            setTotalPatients(demoPw.length);
+            setActivePatients(demoPw.filter(p => p.sessionCount > 0).length);
+            applyFisioFilter(demoAllSessions, demoPw, '');
+          } else {
+            setPatients([]);
+            setTotalPatients(0);
+            setActivePatients(0);
+            applyFisioFilter([], [], '');
+          }
           return;
         }
 
@@ -202,37 +211,59 @@ export function StatsPage() {
             };
           });
 
-          // Merge real patients with demo patients
-          const mergedPw = [...pw];
-          for (const d of demoPw) {
-            if (!mergedPw.some(m => m.full_name.toLowerCase() === d.full_name.toLowerCase() || m.id === d.id)) {
-              mergedPw.push(d);
+          if (isDemo) {
+            // Merge real patients with demo patients only for demo accounts
+            const mergedPw = [...pw];
+            for (const d of demoPw) {
+              if (!mergedPw.some(m => m.full_name.toLowerCase() === d.full_name.toLowerCase() || m.id === d.id)) {
+                mergedPw.push(d);
+              }
             }
+            const mergedSessions = [...s, ...demoAllSessions];
+            setPatients(mergedPw);
+            setTotalPatients(mergedPw.length);
+            setActivePatients(mergedPw.filter(p => p.sessionCount > 0).length);
+            applyFisioFilter(mergedSessions, mergedPw, '');
+          } else {
+            setPatients(pw);
+            setTotalPatients(pw.length);
+            setActivePatients(pw.filter(p => p.sessionCount > 0).length);
+            applyFisioFilter(s, pw, '');
           }
-          const mergedSessions = [...s, ...demoAllSessions];
-
-          setPatients(mergedPw);
-          setTotalPatients(mergedPw.length);
-          setActivePatients(mergedPw.filter(p => p.sessionCount > 0).length);
-          applyFisioFilter(mergedSessions, mergedPw, '');
         } else {
-          setPatients(demoPw);
-          setTotalPatients(demoPw.length);
-          setActivePatients(demoPw.filter(p => p.sessionCount > 0).length);
-          applyFisioFilter(demoAllSessions, demoPw, '');
+          if (isDemo) {
+            setPatients(demoPw);
+            setTotalPatients(demoPw.length);
+            setActivePatients(demoPw.filter(p => p.sessionCount > 0).length);
+            applyFisioFilter(demoAllSessions, demoPw, '');
+          } else {
+            setPatients([]);
+            setTotalPatients(0);
+            setActivePatients(0);
+            applyFisioFilter([], [], '');
+          }
         }
       } else {
         // ---- Paciente: keep existing progress/streak display ----
         if (!user?.id || !isValidUUID(user.id)) {
-          const existingDemoRaw = localStorage.getItem('fisiomirror_demo_sessions');
-          const localDemoSessions: SessionRow[] = existingDemoRaw ? JSON.parse(existingDemoRaw) : [];
-          const s = [...localDemoSessions, ...(PRIMARY_DEMO_PATIENT.sessions as unknown as SessionRow[])];
-          setSessions(s);
-          setTotalSessions(s.length);
-          setTotalMinutes(Math.round(s.reduce((sum, r) => sum + (r.duracion_segundos || 0), 0) / 60));
-          setAvgPrecision(s.length > 0 ? Math.round(s.reduce((sum, r) => sum + (r.calidad_ejecucion || 0), 0) / s.length) : 0);
-          setStreak(computeStreak(s.map(x => x.fecha)));
-          loadWeekChart(s);
+          if (isDemo) {
+            const existingDemoRaw = localStorage.getItem('fisiomirror_demo_sessions');
+            const localDemoSessions: SessionRow[] = existingDemoRaw ? JSON.parse(existingDemoRaw) : [];
+            const s = [...localDemoSessions, ...(PRIMARY_DEMO_PATIENT.sessions as unknown as SessionRow[])];
+            setSessions(s);
+            setTotalSessions(s.length);
+            setTotalMinutes(Math.round(s.reduce((sum, r) => sum + (r.duracion_segundos || 0), 0) / 60));
+            setAvgPrecision(s.length > 0 ? Math.round(s.reduce((sum, r) => sum + (r.calidad_ejecucion || 0), 0) / s.length) : 0);
+            setStreak(computeStreak(s.map(x => x.fecha)));
+            loadWeekChart(s);
+          } else {
+            setSessions([]);
+            setTotalSessions(0);
+            setTotalMinutes(0);
+            setAvgPrecision(0);
+            setStreak(0);
+            loadWeekChart([]);
+          }
           return;
         }
 

@@ -15,6 +15,7 @@ import { buildExerciseDefinition, getExerciseDescription } from '../data/exercis
 import { saveExercises, getExercises } from '../lib/offlineDB';
 import { buildGoogleCalendarUrl, buildIcsFileContent, type CalendarExercise } from '../lib/calendarExport';
 import { Play, BookOpen, Layers, Calendar, Download } from 'lucide-react';
+import { VersiculoCard } from '../components/spiritual/VersiculoCard';
 
 interface AssignedExercise {
   id: string;
@@ -219,6 +220,24 @@ export function PatientExercisesPage() {
           <span>Modo sin conexión — usando rutina local almacenada</span>
         </div>
       )}
+
+      {error && !loading && (
+        <div className="flex items-center justify-between gap-2 px-4 py-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-xs text-rose-700 dark:text-rose-300 font-medium">
+          <div className="flex items-center gap-2">
+            <Icon name="error_outline" size={16} />
+            <span>No se pudo sincronizar la rutina con el servidor. Mostrando ejercicios guardados.</span>
+          </div>
+          <button
+            onClick={() => loadExercises()}
+            className="px-3 py-1 rounded-lg bg-rose-500/20 hover:bg-rose-500/30 text-rose-700 dark:text-rose-200 font-semibold transition-colors"
+          >
+            Reintentar
+          </button>
+        </div>
+      )}
+
+      {/* Tarjeta de inspiración y fortaleza para la sesión */}
+      <VersiculoCard categoriaInicial="fortaleza" className="mb-2" />
 
       {loading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

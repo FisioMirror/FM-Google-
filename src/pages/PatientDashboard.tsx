@@ -19,6 +19,7 @@ import { MascotAnimation } from '../components/ui/MascotAnimation';
 import { AuroraText } from '../components/ui/AuroraText';
 import { HelpGuideButton } from '../components/ui/HelpGuideButton';
 import { PatientRecoveryHub } from '../components/patient/PatientRecoveryHub';
+import { VersiculoCard } from '../components/spiritual/VersiculoCard';
 import {
   Flame,
   CheckCircle2,
@@ -347,6 +348,11 @@ export function PatientDashboard() {
         </div>
       </div>
 
+      {/* Palabra de Fortaleza & Fe (Reflexión Bíblica Contextual) */}
+      <VersiculoCard
+        categoriaInicial={kpi.streak >= 3 ? 'racha' : kpi.totalSessions > 0 ? 'fortaleza' : 'sanidad'}
+      />
+
       {/* Patient Recovery & Wellness Hub */}
       <PatientRecoveryHub />
 
@@ -466,6 +472,28 @@ export function PatientDashboard() {
                 ))}
               </div>
             </div>
+
+            {evolution && (
+              <div className="p-4 rounded-2xl bg-surface/80 dark:bg-surface-container-low/60 border border-outline/10 mt-4 space-y-2">
+                <div className="flex justify-between items-center text-xs text-on-surface-variant mb-1">
+                  <span className="font-semibold">Evolución de Rango Articular</span>
+                  <span className="font-bold text-teal-600 dark:text-teal-400">
+                    +{evolution[evolution.length - 1].pct - evolution[0].pct}% global
+                  </span>
+                </div>
+                <div className="grid grid-cols-4 gap-2 text-center">
+                  {evolution.map((w, idx) => (
+                    <div key={idx} className="space-y-1">
+                      <div className="h-1.5 w-full bg-surface-container-highest rounded-full overflow-hidden">
+                        <div className="h-full bg-teal-500 rounded-full" style={{ width: `${w.pct}%` }} />
+                      </div>
+                      <span className="text-[10px] text-outline block">{w.label}</span>
+                      <span className="text-xs font-bold text-on-surface block">{w.pct}%</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {therapist && (
               <div className="p-4 rounded-2xl bg-teal-500/5 border border-teal-500/15 flex items-center gap-3 mt-4">

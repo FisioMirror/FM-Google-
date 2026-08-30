@@ -425,7 +425,8 @@ Pregunta del paciente: ${messageText}`;
         ref={scrollRef}
         className="glass-panel rounded-3xl p-4 sm:p-6 flex-1 overflow-y-auto space-y-4 card-glow-hover relative section-bg-blue min-h-0"
       >
-        {messages.map((msg) => (
+        <AnimatePresence initial={false}>
+          {messages.map((msg) => (
           <motion.div
             key={msg.id}
             initial={{ opacity: 0, y: 8, scale: 0.98 }}
@@ -505,6 +506,7 @@ Pregunta del paciente: ${messageText}`;
             </div>
           </motion.div>
         ))}
+        </AnimatePresence>
 
         {loading && (
           <div className="flex justify-start">

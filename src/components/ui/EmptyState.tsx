@@ -2,14 +2,17 @@ import { motion } from 'framer-motion';
 import { Icon } from './Icon';
 
 interface EmptyStateProps {
-  type: 'patients' | 'exercises' | 'notifications' | 'sessions' | 'tokens' | 'achievements' | 'generic';
+  type?: 'patients' | 'exercises' | 'notifications' | 'sessions' | 'tokens' | 'achievements' | 'generic' | string;
+  icon?: string;
   title?: string;
   message?: string;
+  description?: string;
   actionLabel?: string;
   onAction?: () => void;
+  className?: string;
 }
 
-const CONFIG: Record<EmptyStateProps['type'], { icon: string; title: string; message: string; color: string }> = {
+const CONFIG: Record<string, { icon: string; title: string; message: string; color: string }> = {
   patients: {
     icon: 'group',
     title: 'Aún no tienes pacientes',
@@ -54,21 +57,32 @@ const CONFIG: Record<EmptyStateProps['type'], { icon: string; title: string; mes
   },
 };
 
-export function EmptyState({ type, title, message, actionLabel, onAction }: EmptyStateProps) {
-  const config = CONFIG[type];
+export function EmptyState({
+  type = 'generic',
+  icon,
+  title,
+  message,
+  description,
+  actionLabel,
+  onAction,
+  className = '',
+}: EmptyStateProps) {
+  const config = (type && CONFIG[type]) ? CONFIG[type] : CONFIG.generic;
+  const finalIcon = icon || config.icon;
   const finalTitle = title || config.title;
-  const finalMessage = message || config.message;
+  const finalMessage = description || message || config.message;
+  const finalColor = config.color;
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="flex flex-col items-center justify-center py-16 px-6 text-center gap-4"
+      className={`flex flex-col items-center justify-center py-16 px-6 text-center gap-4 ${className}`}
     >
       <div className="empty-state-premium">
         <div className="empty-icon animate-breathe-icon">
-          <Icon name={config.icon} size={36} className={config.color} />
+          <Icon name={finalIcon} size={36} className={finalColor} />
         </div>
       </div>
       <h3 className="font-title-md text-title-md text-on-surface">{finalTitle}</h3>

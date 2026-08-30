@@ -13,6 +13,7 @@ export interface Achievement {
   unlockedAt: string | null;
   progress: number;
   maxProgress: number;
+  versiculo?: { cita: string; texto: string };
 }
 
 export interface PlayerLevel {
@@ -47,16 +48,16 @@ export function getTierMeta(tier: AchievementTier) {
 }
 
 const DEFAULT_ACHIEVEMENTS: Achievement[] = [
-  { id: 'first_session', title: 'Primer Paso', description: 'Completa tu primera sesión de rehabilitación', tier: 'bronce', icon: 'directions_walk', unlocked: false, unlockedAt: null, progress: 0, maxProgress: 1 },
-  { id: 'three_sessions', title: 'Constancia', description: 'Completa 3 sesiones de rehabilitación', tier: 'plata', icon: 'repeat', unlocked: false, unlockedAt: null, progress: 0, maxProgress: 3 },
-  { id: 'five_sessions', title: 'Dedicación', description: 'Completa 5 sesiones de rehabilitación', tier: 'oro', icon: 'self_improvement', unlocked: false, unlockedAt: null, progress: 0, maxProgress: 5 },
-  { id: 'ten_sessions', title: 'Guerrero de la Recuperación', description: 'Completa 10 sesiones de rehabilitación', tier: 'diamante', icon: 'emoji_events', unlocked: false, unlockedAt: null, progress: 0, maxProgress: 10 },
-  { id: 'streak_3', title: 'Racha de 3 Días', description: ' Practica 3 días seguidos sin interrupciones', tier: 'bronce', icon: 'local_fire_department', unlocked: false, unlockedAt: null, progress: 0, maxProgress: 3 },
-  { id: 'streak_7', title: 'Racha de 7 Días', description: 'Practica 7 días seguidos sin interrupciones', tier: 'oro', icon: 'whatshot', unlocked: false, unlockedAt: null, progress: 0, maxProgress: 7 },
-  { id: 'perfect_form', title: 'Forma Perfecta', description: 'Alcanza el rango óptimo en un ejercicio', tier: 'plata', icon: 'verified', unlocked: false, unlockedAt: null, progress: 0, maxProgress: 1 },
-  { id: 'night_owl', title: 'Lechuza Nocturna', description: 'Completa una sesión después de las 8 PM', tier: 'bronce', icon: 'nights_stay', unlocked: false, unlockedAt: null, progress: 0, maxProgress: 1 },
-  { id: 'early_bird', title: 'Madrugador', description: 'Completa una sesión antes de las 7 AM', tier: 'bronce', icon: 'wb_sunny', unlocked: false, unlockedAt: null, progress: 0, maxProgress: 1 },
-  { id: 'all_exercises', title: 'Explorador', description: 'Practica todos tus ejercicios asignados al menos una vez', tier: 'oro', icon: 'explore', unlocked: false, unlockedAt: null, progress: 0, maxProgress: 5 },
+  { id: 'first_session', title: 'Primer Paso', description: 'Completa tu primera sesión de rehabilitación', tier: 'bronce', icon: 'directions_walk', unlocked: false, unlockedAt: null, progress: 0, maxProgress: 1, versiculo: { cita: 'Salmos 139:14', texto: 'Te alabaré; porque formidables, maravillosas son tus obras.' } },
+  { id: 'three_sessions', title: 'Constancia', description: 'Completa 3 sesiones de rehabilitación', tier: 'plata', icon: 'repeat', unlocked: false, unlockedAt: null, progress: 0, maxProgress: 3, versiculo: { cita: 'Gálatas 6:9', texto: 'No nos cansemos, pues, de hacer el bien; porque a su tiempo segaremos, si no desmayamos.' } },
+  { id: 'five_sessions', title: 'Dedicación', description: 'Completa 5 sesiones de rehabilitación', tier: 'oro', icon: 'self_improvement', unlocked: false, unlockedAt: null, progress: 0, maxProgress: 5, versiculo: { cita: 'Proverbios 16:3', texto: 'Encomienda a Jehová tus obras, y tus pensamientos serán afirmados.' } },
+  { id: 'ten_sessions', title: 'Guerrero de la Recuperación', description: 'Completa 10 sesiones de rehabilitación', tier: 'diamante', icon: 'emoji_events', unlocked: false, unlockedAt: null, progress: 0, maxProgress: 10, versiculo: { cita: 'Isaías 40:31', texto: 'Los que esperan a Jehová tendrán nuevas fuerzas; levantarán alas como las águilas; correrán, y no se cansarán.' } },
+  { id: 'streak_3', title: 'Racha de 3 Días', description: ' Practica 3 días seguidos sin interrupciones', tier: 'bronce', icon: 'local_fire_department', unlocked: false, unlockedAt: null, progress: 0, maxProgress: 3, versiculo: { cita: 'Josué 1:9', texto: 'Esfuérzate y sé valiente; no temas ni desmayes, porque Jehová tu Dios estará contigo.' } },
+  { id: 'streak_7', title: 'Racha de 7 Días', description: 'Practica 7 días seguidos sin interrupciones', tier: 'oro', icon: 'whatshot', unlocked: false, unlockedAt: null, progress: 0, maxProgress: 7, versiculo: { cita: 'Deuteronomio 31:6', texto: 'Esforzaos y cobrad ánimo; no temáis, porque Jehová tu Dios es el que va contigo.' } },
+  { id: 'perfect_form', title: 'Forma Perfecta', description: 'Alcanza el rango óptimo en un ejercicio', tier: 'plata', icon: 'verified', unlocked: false, unlockedAt: null, progress: 0, maxProgress: 1, versiculo: { cita: 'Filipenses 4:13', texto: 'Todo lo puedo en Cristo que me fortalece.' } },
+  { id: 'night_owl', title: 'Lechuza Nocturna', description: 'Completa una sesión después de las 8 PM', tier: 'bronce', icon: 'nights_stay', unlocked: false, unlockedAt: null, progress: 0, maxProgress: 1, versiculo: { cita: 'Salmos 4:8', texto: 'En paz me acostaré, y asimismo dormiré; porque solo tú, Jehová, me haces vivir confiado.' } },
+  { id: 'early_bird', title: 'Madrugador', description: 'Completa una sesión antes de las 7 AM', tier: 'bronce', icon: 'wb_sunny', unlocked: false, unlockedAt: null, progress: 0, maxProgress: 1, versiculo: { cita: 'Salmos 143:8', texto: 'Hazme oír por la mañana tu misericordia, porque en ti he confiado.' } },
+  { id: 'all_exercises', title: 'Explorador', description: 'Practica todos tus ejercicios asignados al menos una vez', tier: 'oro', icon: 'explore', unlocked: false, unlockedAt: null, progress: 0, maxProgress: 5, versiculo: { cita: 'Colosenses 3:23', texto: 'Y todo lo que hagáis, hacedlo de corazón, como para el Señor.' } },
 ];
 
 function loadAchievements(): Achievement[] {

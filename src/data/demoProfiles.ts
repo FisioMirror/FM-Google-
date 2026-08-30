@@ -1,7 +1,7 @@
 import type { Profile } from '../types';
 
 export const DEMO_PATIENT_PROFILE: Profile = {
-  id: 'demo-patient-001',
+  id: '5093ac77-e391-49ba-994a-8c75572c8313',
   email: 'paciente@demo.com',
   full_name: 'Carlos Mendoza',
   role: 'paciente',
@@ -29,7 +29,7 @@ export const DEMO_PATIENT_PROFILE: Profile = {
 };
 
 export const DEMO_FISIO_PROFILE: Profile = {
-  id: 'demo-fisio-001',
+  id: 'fdf7cc26-59e3-413b-9e3a-43e54976a8e0',
   email: 'fisio@demo.com',
   full_name: 'Dr. Roberto Silva',
   role: 'fisioterapeuta',

@@ -9,6 +9,7 @@ import { cn } from '../lib/utils';
 import { UNIFIED_DEMO_PATIENTS } from '../data/unifiedDemoData';
 import { useToast } from '../components/ui/ToastProvider';
 import { EmailFeatureModal } from '../components/ui/EmailFeatureModal';
+import { isDemoAccount } from '../lib/demoAuth';
 import {
   Users,
   Search,
@@ -26,6 +27,7 @@ import {
   Calendar,
   ArrowRight,
 } from 'lucide-react';
+import { useRealtimePresence } from '../lib/presenceService';
 
 interface PatientCard {
   id: string;
@@ -48,15 +50,17 @@ interface TokenRow {
   id: string;
   token: string;
   patientName: string | null;
+  patientEmail?: string | null;
+  patientPhone?: string | null;
   status: 'pendiente' | 'activado' | 'expirado';
   createdAt: string;
 }
 
 const defaultDemoTokens: TokenRow[] = [
-  { id: 'demo-token-1', token: '482910', patientName: 'Carlos Mendoza', status: 'activado', createdAt: '2026-03-20T10:00:00Z' },
-  { id: 'demo-token-2', token: '839201', patientName: 'María Delgado', status: 'activado', createdAt: '2026-03-22T14:30:00Z' },
-  { id: 'demo-token-3', token: '194820', patientName: 'Lucía Fernández', status: 'pendiente', createdAt: '2026-03-24T09:15:00Z' },
-  { id: 'demo-token-4', token: '582019', patientName: 'Jorge Ramírez', status: 'pendiente', createdAt: '2026-03-25T11:45:00Z' },
+  { id: 'demo-token-1', token: '482910', patientName: 'Carlos Mendoza', patientEmail: 'paciente@demo.com', patientPhone: '+58 412 1234567', status: 'activado', createdAt: '2026-03-20T10:00:00Z' },
+  { id: 'demo-token-2', token: '839201', patientName: 'María Delgado', patientEmail: 'maria.delgado@example.com', patientPhone: '+58 414 9876543', status: 'activado', createdAt: '2026-03-22T14:30:00Z' },
+  { id: 'demo-token-3', token: '194820', patientName: 'Lucía Fernández', patientEmail: 'lucia.f@example.com', patientPhone: '+58 424 5551234', status: 'pendiente', createdAt: '2026-03-24T09:15:00Z' },
+  { id: 'demo-token-4', token: '582019', patientName: 'Jorge Ramírez', patientEmail: 'jorge.ramirez@example.com', patientPhone: '+58 416 3338899', status: 'pendiente', createdAt: '2026-03-25T11:45:00Z' },
 ];
 
 const filterOptions = [
@@ -84,13 +88,24 @@ export function PatientsPage() {
   const [copiedToken, setCopiedToken] = useState<string | null>(null);
   const [emailModalToken, setEmailModalToken] = useState<TokenRow | null>(null);
 
+  const { getUserStatus, onlineCount } = useRealtimePresence();
+
   useEffect(() => {
     loadPatients();
     loadTokens();
   }, [user?.id]);
 
+  useEffect(() => {
+    const q = searchParams.get('q');
+    if (q !== null) {
+      setSearchQuery(q);
+      setActiveTab('pacientes');
+    }
+  }, [searchParams]);
+
   const loadPatients = async () => {
     setLoading(true);
+    const isDemo = isDemoAccount(user);
     const demoCards: PatientCard[] = UNIFIED_DEMO_PATIENTS.map((p) => ({
       id: p.id,
       name: p.name,
@@ -115,7 +130,7 @@ export function PatientsPage() {
     }));
 
     if (!user?.id) {
-      setPatients(demoCards);
+      setPatients(isDemo ? demoCards : []);
       setLoading(false);
       return;
     }
@@ -126,24 +141,26 @@ export function PatientsPage() {
         .select('paciente_id')
         .eq('terapeuta_id', user.id);
 
-      if (!links || links.length === 0) {
-        setPatients(demoCards);
-        setLoading(false);
-        return;
-      }
+      const patientIds = links?.map((l) => l.paciente_id).filter(Boolean) || [];
 
-      const patientIds = links.map((l) => l.paciente_id);
-      const { data: profiles } = await supabase
+      let profQuery = supabase
         .from('profiles')
         .select(`
-          id, full_name, diagnostico,
+          id, full_name, email, diagnostico,
           patologia, medico_remitente, documento_identidad,
-          telefono, fecha_nacimiento, extremidad_afectada
-        `)
-        .in('id', patientIds);
+          telefono, fecha_nacimiento, extremidad_afectada, role
+        `);
+
+      if (patientIds.length > 0) {
+        profQuery = profQuery.or(`id.in.(${patientIds.join(',')}),role.eq.paciente`);
+      } else {
+        profQuery = profQuery.eq('role', 'paciente');
+      }
+
+      const { data: profiles } = await profQuery;
 
       if (!profiles || profiles.length === 0) {
-        setPatients(demoCards);
+        setPatients(isDemo ? demoCards : []);
         setLoading(false);
         return;
       }
@@ -165,15 +182,19 @@ export function PatientsPage() {
         adherencia: 75,
       }));
 
-      const merged = [...realCards];
-      for (const d of demoCards) {
-        if (!merged.some((m) => m.name.toLowerCase() === d.name.toLowerCase() || m.id === d.id)) {
-          merged.push(d);
+      if (isDemo) {
+        const merged = [...realCards];
+        for (const d of demoCards) {
+          if (!merged.some((m) => m.name.toLowerCase() === d.name.toLowerCase() || m.id === d.id)) {
+            merged.push(d);
+          }
         }
+        setPatients(merged);
+      } else {
+        setPatients(realCards);
       }
-      setPatients(merged);
     } catch {
-      setPatients(demoCards);
+      setPatients(isDemo ? demoCards : []);
     } finally {
       setLoading(false);
     }
@@ -181,8 +202,9 @@ export function PatientsPage() {
 
   const loadTokens = async () => {
     setTokensLoading(true);
+    const isDemo = isDemoAccount(user);
     if (!user?.id) {
-      setTokens(defaultDemoTokens);
+      setTokens(isDemo ? defaultDemoTokens : []);
       setTokensLoading(false);
       return;
     }
@@ -195,39 +217,54 @@ export function PatientsPage() {
         .order('created_at', { ascending: false });
 
       if (error || !data || data.length === 0) {
-        setTokens(defaultDemoTokens);
+        setTokens(isDemo ? defaultDemoTokens : []);
         return;
       }
 
       const patientIds = data.map((d) => d.paciente_id).filter(Boolean);
-      let patientMap: Record<string, string> = {};
+      let patientMap: Record<string, { name: string; email?: string | null; phone?: string | null }> = {};
       if (patientIds.length > 0) {
         const { data: profiles } = await supabase
           .from('profiles')
-          .select('id, full_name')
+          .select('id, full_name, email, telefono')
           .in('id', patientIds);
         if (profiles) {
-          patientMap = Object.fromEntries(profiles.map((p) => [p.id, p.full_name]));
+          patientMap = Object.fromEntries(
+            profiles.map((p) => [
+              p.id,
+              {
+                name: p.full_name,
+                email: p.email?.includes('@fisiomirror.paciente') ? null : p.email,
+                phone: p.telefono,
+              },
+            ]),
+          );
         }
       }
 
       const realTokens: TokenRow[] = data.map((t) => ({
         id: t.id,
         token: t.token,
-        patientName: t.paciente_id ? patientMap[t.paciente_id] ?? 'Paciente Vinculado' : null,
+        patientName: t.paciente_id ? (patientMap[t.paciente_id]?.name ?? 'Paciente Vinculado') : null,
+        patientEmail: t.paciente_id ? patientMap[t.paciente_id]?.email : null,
+        patientPhone: t.paciente_id ? patientMap[t.paciente_id]?.phone : null,
         status: (t.paciente_id ? 'activado' : 'pendiente') as TokenRow['status'],
         createdAt: t.created_at,
       }));
 
-      const merged = [...realTokens];
-      for (const d of defaultDemoTokens) {
-        if (!merged.some((m) => m.token === d.token)) {
-          merged.push(d);
+      if (isDemo) {
+        const merged = [...realTokens];
+        for (const d of defaultDemoTokens) {
+          if (!merged.some((m) => m.token === d.token)) {
+            merged.push(d);
+          }
         }
+        setTokens(merged);
+      } else {
+        setTokens(realTokens);
       }
-      setTokens(merged);
     } catch {
-      setTokens(defaultDemoTokens);
+      setTokens(isDemo ? defaultDemoTokens : []);
     } finally {
       setTokensLoading(false);
     }
@@ -267,21 +304,23 @@ export function PatientsPage() {
   };
 
   const handleCopyLink = (tok: string) => {
-    const link = `${window.location.origin}/login?token=${tok}`;
+    const link = `${window.location.origin}/registro-paciente?token=${encodeURIComponent(tok)}`;
     navigator.clipboard.writeText(link);
     toast.success('Enlace de activación copiado al portapapeles');
   };
 
   const filteredPatients = useMemo(() => {
     return patients.filter((p) => {
-      const q = searchQuery.toLowerCase();
+      const q = searchQuery.toLowerCase().trim();
       const matchesSearch =
         !q ||
         p.name.toLowerCase().includes(q) ||
+        p.fmId?.toLowerCase().includes(q) ||
         p.patologia?.toLowerCase().includes(q) ||
         p.medico_remitente?.toLowerCase().includes(q) ||
         p.documento_identidad?.toLowerCase().includes(q) ||
         p.telefono?.toLowerCase().includes(q) ||
+        (p as any).email?.toLowerCase().includes(q) ||
         p.condition.toLowerCase().includes(q);
 
       if (!matchesSearch) return false;
@@ -357,9 +396,17 @@ export function PatientsPage() {
           <div className="size-11 rounded-2xl bg-teal-500/10 text-teal-600 dark:text-teal-400 flex items-center justify-center font-bold">
             <Users className="size-5" />
           </div>
-          <div>
+          <div className="flex-1">
             <p className="text-xs text-on-surface-variant font-medium">Total Pacientes</p>
-            <p className="text-xl font-extrabold text-on-surface">{stats.total}</p>
+            <div className="flex items-center justify-between gap-2">
+              <p className="text-xl font-extrabold text-on-surface">{stats.total}</p>
+              {onlineCount > 0 && (
+                <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  {onlineCount} en vivo
+                </span>
+              )}
+            </div>
           </div>
         </div>
 
@@ -506,6 +553,7 @@ export function PatientsPage() {
             <SkeletonList count={6} />
           ) : filteredPatients.length === 0 ? (
             <EmptyState
+              type="patients"
               icon="person_search"
               title="No se encontraron pacientes"
               description="Intenta modificar tu búsqueda o carga un nuevo paciente con el escáner OCR."
@@ -517,6 +565,7 @@ export function PatientsPage() {
               {filteredPatients.map((p, idx) => {
                 const isAlert = p.statusColor === 'red';
                 const isGood = p.statusColor === 'green';
+                const presence = getUserStatus(p.id);
                 const initials = p.name
                   .split(' ')
                   .map((n) => n[0])
@@ -551,9 +600,28 @@ export function PatientsPage() {
                             <h3 className="font-bold text-base text-on-surface group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors line-clamp-1">
                               {p.name}
                             </h3>
-                            <p className="text-[11px] font-mono text-outline uppercase tracking-wider font-semibold">
-                              {p.fmId || `#FM-${p.id.slice(0, 4)}`}
-                            </p>
+                            <div className="flex items-center gap-2 mt-0.5">
+                              <p className="text-[11px] font-mono text-outline uppercase tracking-wider font-semibold">
+                                {p.fmId || `#FM-${p.id.slice(0, 4)}`}
+                              </p>
+                              {presence && (
+                                <span className={cn(
+                                  "inline-flex items-center gap-1 text-[10px] font-bold px-1.5 py-0.2 rounded-full border",
+                                  presence.status === 'en_ejercicio'
+                                    ? "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border-emerald-500/30"
+                                    : presence.status === 'videoconsulta'
+                                    ? "bg-indigo-500/15 text-indigo-700 dark:text-indigo-300 border-indigo-500/30"
+                                    : "bg-teal-500/15 text-teal-700 dark:text-teal-300 border-teal-500/30"
+                                )}>
+                                  <span className={cn(
+                                    "w-1.5 h-1.5 rounded-full",
+                                    presence.status === 'en_ejercicio' ? "bg-emerald-500 animate-pulse" :
+                                    presence.status === 'videoconsulta' ? "bg-indigo-500 animate-ping" : "bg-teal-500"
+                                  )} />
+                                  {presence.status === 'en_ejercicio' ? 'En ejercicio' : presence.status === 'videoconsulta' ? 'En videollamada' : 'En línea'}
+                                </span>
+                              )}
+                            </div>
                           </div>
                         </div>
 
@@ -652,13 +720,36 @@ export function PatientsPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-outline/10">
-                  {filteredPatients.map((p) => (
+                  {filteredPatients.map((p) => {
+                    const rowPresence = getUserStatus(p.id);
+                    return (
                     <tr
                       key={p.id}
                       onClick={() => navigate(`/paciente/${p.id}`)}
                       className="hover:bg-surface-container-high/40 transition-colors cursor-pointer"
                     >
-                      <td className="p-4 font-bold text-on-surface">{p.name}</td>
+                      <td className="p-4 font-bold text-on-surface">
+                        <div className="flex items-center gap-2">
+                          <span>{p.name}</span>
+                          {rowPresence && (
+                            <span className={cn(
+                              "inline-flex items-center gap-1 text-[10px] font-bold px-1.5 py-0.2 rounded-full border",
+                              rowPresence.status === 'en_ejercicio'
+                                ? "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border-emerald-500/30"
+                                : rowPresence.status === 'videoconsulta'
+                                ? "bg-indigo-500/15 text-indigo-700 dark:text-indigo-300 border-indigo-500/30"
+                                : "bg-teal-500/15 text-teal-700 dark:text-teal-300 border-teal-500/30"
+                            )}>
+                              <span className={cn(
+                                "w-1.5 h-1.5 rounded-full",
+                                rowPresence.status === 'en_ejercicio' ? "bg-emerald-500 animate-pulse" :
+                                rowPresence.status === 'videoconsulta' ? "bg-indigo-500 animate-ping" : "bg-teal-500"
+                              )} />
+                              {rowPresence.status === 'en_ejercicio' ? 'En ejercicio' : rowPresence.status === 'videoconsulta' ? 'En llamada' : 'En línea'}
+                            </span>
+                          )}
+                        </div>
+                      </td>
                       <td className="p-4 text-on-surface-variant">{p.condition}</td>
                       <td className="p-4 font-bold">{p.recoveryProgress}%</td>
                       <td className="p-4">
@@ -677,7 +768,8 @@ export function PatientsPage() {
                         <span className="text-teal-600 font-bold hover:underline">Ver Expediente</span>
                       </td>
                     </tr>
-                  ))}
+                  );
+                })}
                 </tbody>
               </table>
             </div>
@@ -733,6 +825,7 @@ export function PatientsPage() {
             <SkeletonList count={4} />
           ) : filteredTokens.length === 0 ? (
             <EmptyState
+              type="tokens"
               icon="key"
               title="No hay tokens en este estado"
               description="Puedes emitir un nuevo token de acceso en cualquier momento."
@@ -818,6 +911,9 @@ export function PatientsPage() {
         <EmailFeatureModal
           token={emailModalToken.token}
           patientName={emailModalToken.patientName || undefined}
+          recipientName={emailModalToken.patientName || undefined}
+          recipientEmail={emailModalToken.patientEmail || undefined}
+          recipientPhone={emailModalToken.patientPhone || undefined}
           isOpen={true}
           onClose={() => setEmailModalToken(null)}
         />

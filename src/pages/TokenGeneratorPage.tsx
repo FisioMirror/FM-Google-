@@ -8,6 +8,7 @@ import { supabase } from '../lib/supabase';
 import { useToast } from '../components/ui/ToastProvider';
 import { cn } from '../lib/utils';
 import { EmailFeatureModal } from '../components/ui/EmailFeatureModal';
+import { isDemoAccount } from '../lib/demoAuth';
 
 interface TokenRow {
   id: string;
@@ -42,7 +43,7 @@ export function TokenGeneratorPage() {
   const loadTokens = async () => {
     setLoading(true);
     if (!user?.id) {
-      setTokens(defaultDemoTokens);
+      setTokens(isDemoAccount(user) ? defaultDemoTokens : []);
       setLoading(false);
       return;
     }
@@ -54,7 +55,7 @@ export function TokenGeneratorPage() {
         .order('created_at', { ascending: false });
 
       if (error || !data || data.length === 0) {
-        setTokens(defaultDemoTokens);
+        setTokens(isDemoAccount(user) ? defaultDemoTokens : []);
         return;
       }
 
@@ -79,16 +80,19 @@ export function TokenGeneratorPage() {
         createdAt: t.created_at,
       }));
 
-      // Merge real with demo
-      const merged = [...realTokens];
-      for (const d of defaultDemoTokens) {
-        if (!merged.some(m => m.token === d.token)) {
-          merged.push(d);
+      if (isDemoAccount(user)) {
+        const merged = [...realTokens];
+        for (const d of defaultDemoTokens) {
+          if (!merged.some(m => m.token === d.token)) {
+            merged.push(d);
+          }
         }
+        setTokens(merged);
+      } else {
+        setTokens(realTokens);
       }
-      setTokens(merged);
     } catch {
-      setTokens(defaultDemoTokens);
+      setTokens(isDemoAccount(user) ? defaultDemoTokens : []);
     } finally {
       setLoading(false);
     }
@@ -276,10 +280,7 @@ export function TokenGeneratorPage() {
                     <Icon name="refresh" size={16} /> Regenerar
                   </button>
                   <button
-                    onClick={() => {
-                      if (t.patientName) setEmailModalToken(t);
-                      else toast.error('Token sin paciente asignado');
-                    }}
+                    onClick={() => setEmailModalToken(t)}
                     className="flex-1 py-3 rounded-xl bg-surface-variant/30 text-on-surface-variant font-bold text-sm hover:bg-surface-variant/50 transition-all flex items-center justify-center gap-1"
                   >
                     <Icon name="mail" size={16} /> Enviar
@@ -302,6 +303,7 @@ export function TokenGeneratorPage() {
         open={emailModalToken !== null}
         onClose={() => setEmailModalToken(null)}
         recipientName={emailModalToken?.patientName}
+        token={emailModalToken?.token}
       />
     </div>
   );

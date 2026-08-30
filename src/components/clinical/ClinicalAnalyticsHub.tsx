@@ -1,20 +1,16 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import {
   ResponsiveContainer,
   BarChart,
   Bar,
-  LineChart,
-  Line,
   AreaChart,
   Area,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
   ReferenceArea,
-  ReferenceLine,
 } from 'recharts';
 import {
   Activity,
@@ -22,18 +18,13 @@ import {
   ArrowUpRight,
   CheckCircle2,
   ChevronRight,
-  Flame,
   Info,
   Layers,
-  Sparkles,
   Stethoscope,
   Target,
-  TrendingDown,
-  TrendingUp,
   UserCheck,
   Zap,
 } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
 import { GlassPanel } from '../ui/Glass';
 import { useNavigate } from 'react-router-dom';
 
@@ -255,7 +246,6 @@ const customTooltipStyle = {
 };
 
 export function ClinicalAnalyticsHub() {
-  const { t } = useTranslation();
   const navigate = useNavigate();
   const [selectedJoint, setSelectedJoint] = useState<string>(ROM_DATA[0].joint);
   const [activeTab, setActiveTab] = useState<'rom' | 'vas' | 'cohorts'>('rom');

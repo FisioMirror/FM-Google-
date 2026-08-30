@@ -234,9 +234,13 @@ export function CalibrationPage() {
               </motion.div>
             ) : null}
           </AnimatePresence>
-          <div className="rounded-2xl px-5 py-3" style={{ background: 'rgba(15,23,42,0.7)', backdropFilter: 'blur(12px)', border: '1px solid rgba(255,255,255,0.1)' }}>
-            <p className="text-white font-bold text-center">Levanta tu mano por encima del hombro!</p>
-            <p className="text-white/60 text-sm text-center mt-1">Manten la posicion durante la cuenta atras</p>
+          <div className="rounded-2xl px-5 py-3" style={{ background: 'rgba(15,23,42,0.7)', backdropFilter: 'blur(12px)', border: handRaisedDetected ? '1px solid rgba(45,212,191,0.5)' : '1px solid rgba(255,255,255,0.1)' }}>
+            <p className={`font-bold text-center ${handRaisedDetected ? 'text-teal-300' : 'text-white'}`}>
+              {handRaisedDetected ? '¡Mano detectada! Mantén la posición...' : '¡Levanta tu mano por encima del hombro!'}
+            </p>
+            <p className="text-white/60 text-sm text-center mt-1">
+              {handRaisedDetected ? 'Completando calibración postural' : 'Mantén la posición durante la cuenta atrás'}
+            </p>
           </div>
         </div>
       )}

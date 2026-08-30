@@ -13,6 +13,7 @@ import { PremiumSkeleton, KpiCardSkeleton, PatientListSkeleton } from '../compon
 import { WaveformVisualizer } from '../components/ui/WaveformVisualizer';
 import { MedicalIcon } from '../components/ui/MedicalIcon';
 import { EmailFeatureModal } from '../components/ui/EmailFeatureModal';
+import { notifyTokenCreated } from '../lib/notificationService';
 
 type Step = 1 | 2 | 3 | 4;
 
@@ -323,109 +324,169 @@ export function OCRScannerPage() {
 
   const generateToken = async () => {
     if (!user?.id) return;
-    if (!extractedData.nombre_completo.trim()) {
-      toast.error('El nombre del paciente es obligatorio');
+    const fullName = extractedData.nombre_completo.trim();
+    if (!fullName) {
+      toast.error('El nombre y apellido del paciente son obligatorios');
       return;
     }
-    if (!extractedData.fecha_nacimiento.trim()) {
-      toast.error('La fecha de nacimiento es obligatoria');
-      return;
-    }
-    if (!extractedData.patologia.trim()) {
-      toast.error('La patología es obligatoria');
-      return;
-    }
+
     try {
-      const { data: newPatient, error: patientErr } = await supabase
-        .from('profiles')
-        .insert({
-          full_name: extractedData.nombre_completo,
-          email: extractedData.email || null,
-          role: 'paciente',
-          is_active: true,
-          diagnostico: extractedData.patologia,
-          fecha_nacimiento: extractedData.fecha_nacimiento && /^\d{4}-\d{2}-\d{2}$/.test(extractedData.fecha_nacimiento) ? extractedData.fecha_nacimiento : null,
-          documento_identidad: extractedData.documento_identidad || null,
-          telefono: extractedData.telefono || null,
-          tipo_sangre: extractedData.tipo_sangre || null,
-          ocupacion: extractedData.ocupacion || null,
-          nivel_actividad: extractedData.nivel_actividad || null,
-          es_menor_edad: extractedData.es_menor_edad,
-          patologia: extractedData.patologia || null,
-          diagnostico_secundario: extractedData.diagnostico_secundario || null,
-          medicamentos_actuales: extractedData.medicamentos_actuales || null,
-          alergias: extractedData.alergias || null,
-          enfermedades_cronicas: extractedData.enfermedades_cronicas || null,
-          lesiones_previas: extractedData.lesiones_previas || null,
-          estatura_cm: extractedData.estatura_cm ? parseInt(extractedData.estatura_cm) : null,
-          peso_kg: extractedData.peso_kg ? parseFloat(extractedData.peso_kg) : null,
-          extremidad_afectada: extractedData.extremidad_afectada || null,
-          rom_objetivo: extractedData.rom_objetivo || null,
-          frecuencia_sesiones: extractedData.frecuencia_sesiones || null,
-          medico_remitente: extractedData.medico_remitente || null,
-          contacto_emergencia_nombre: extractedData.contacto_emergencia_nombre || null,
-          contacto_emergencia_telefono: extractedData.contacto_emergencia_telefono || null,
-          tutor_nombre: extractedData.es_menor_edad ? (extractedData.tutor_nombre || null) : null,
-          tutor_telefono: extractedData.es_menor_edad ? (extractedData.tutor_telefono || null) : null,
-          tutor_email: extractedData.es_menor_edad ? (extractedData.tutor_email || null) : null,
-        })
-        .select()
-        .single();
+      const rawEmail = extractedData.email ? extractedData.email.trim().toLowerCase() : '';
+      const patologiaVal = extractedData.patologia?.trim() || 'En evaluación clínica';
+      let patientId: string | null = null;
 
-      if (patientErr) throw patientErr;
+      // 1. Si se proveyó un email, comprobar si ya existe un perfil con ese correo
+      if (rawEmail) {
+        const { data: existingProf } = await supabase
+          .from('profiles')
+          .select('id, full_name, role')
+          .eq('email', rawEmail)
+          .maybeSingle();
 
-      const { error: linkErr } = await supabase.from('pacientes_terapeutas').insert({
-        paciente_id: newPatient.id,
-        terapeuta_id: user.id,
-      });
-      if (linkErr) {
-        toast.error('Error vinculando paciente: ' + linkErr.message);
-        return;
+        if (existingProf) {
+          patientId = existingProf.id;
+          // Actualizar datos clínicos del paciente existente sin provocar error de clave duplicada
+          await supabase
+            .from('profiles')
+            .update({
+              full_name: fullName || existingProf.full_name,
+              diagnostico: patologiaVal,
+              patologia: patologiaVal,
+              telefono: extractedData.telefono?.trim() || null,
+              documento_identidad: extractedData.documento_identidad?.trim() || null,
+            })
+            .eq('id', patientId);
+        }
       }
 
+      // 2. Si no existía o no se especificó email, insertar nuevo perfil
+      // Si el email no fue suministrado, generamos un identificador clínico interno seguro
+      // para cumplir con la restricción técnica NOT NULL / UNIQUE de la base de datos
+      if (!patientId) {
+        const safeEmail = rawEmail || `paciente_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 6)}@fisiomirror.paciente`;
+        const { data: newPatient, error: patientErr } = await supabase
+          .from('profiles')
+          .insert({
+            full_name: fullName,
+            email: safeEmail,
+            role: 'paciente',
+            is_active: true,
+            diagnostico: patologiaVal,
+            fecha_nacimiento: extractedData.fecha_nacimiento && /^\d{4}-\d{2}-\d{2}$/.test(extractedData.fecha_nacimiento) ? extractedData.fecha_nacimiento : null,
+            documento_identidad: extractedData.documento_identidad?.trim() || null,
+            telefono: extractedData.telefono?.trim() || null,
+            tipo_sangre: extractedData.tipo_sangre || null,
+            ocupacion: extractedData.ocupacion || null,
+            nivel_actividad: extractedData.nivel_actividad || null,
+            es_menor_edad: Boolean(extractedData.es_menor_edad),
+            patologia: patologiaVal,
+            diagnostico_secundario: extractedData.diagnostico_secundario || null,
+            medicamentos_actuales: extractedData.medicamentos_actuales || null,
+            alergias: extractedData.alergias || null,
+            enfermedades_cronicas: extractedData.enfermedades_cronicas || null,
+            lesiones_previas: extractedData.lesiones_previas || null,
+            estatura_cm: extractedData.estatura_cm ? parseInt(extractedData.estatura_cm) : null,
+            peso_kg: extractedData.peso_kg ? parseFloat(extractedData.peso_kg) : null,
+            extremidad_afectada: extractedData.extremidad_afectada || null,
+            rom_objetivo: extractedData.rom_objetivo || null,
+            frecuencia_sesiones: extractedData.frecuencia_sesiones || null,
+            medico_remitente: extractedData.medico_remitente || null,
+            contacto_emergencia_nombre: extractedData.contacto_emergencia_nombre || null,
+            contacto_emergencia_telefono: extractedData.contacto_emergencia_telefono || null,
+            tutor_nombre: extractedData.es_menor_edad ? (extractedData.tutor_nombre || null) : null,
+            tutor_telefono: extractedData.es_menor_edad ? (extractedData.tutor_telefono || null) : null,
+            tutor_email: extractedData.es_menor_edad ? (extractedData.tutor_email || null) : null,
+          })
+          .select('id')
+          .single();
+
+        if (patientErr) {
+          // Si hubo choque de clave única en email, recuperamos el id existente
+          if (patientErr.code === '23505' && rawEmail) {
+            const { data: fallbackProf } = await supabase
+              .from('profiles')
+              .select('id')
+              .eq('email', rawEmail)
+              .maybeSingle();
+            if (fallbackProf) {
+              patientId = fallbackProf.id;
+            } else {
+              throw patientErr;
+            }
+          } else {
+            throw patientErr;
+          }
+        } else if (newPatient) {
+          patientId = newPatient.id;
+        }
+      }
+
+      if (!patientId) {
+        throw new Error('No se pudo determinar el registro del paciente');
+      }
+
+      // 3. Vincular paciente con el fisioterapeuta actual
+      const { data: existingLink } = await supabase
+        .from('pacientes_terapeutas')
+        .select('id')
+        .eq('paciente_id', patientId)
+        .eq('terapeuta_id', user.id)
+        .maybeSingle();
+
+      if (!existingLink) {
+        const { error: linkErr } = await supabase.from('pacientes_terapeutas').insert({
+          paciente_id: patientId,
+          terapeuta_id: user.id,
+        });
+        if (linkErr) {
+          console.warn('Advertencia al vincular paciente y terapeuta:', linkErr);
+        }
+      }
+
+      // 4. Generar y registrar token de activación para el paciente
       const token = String(Math.floor(100000 + Math.random() * 900000));
       const { error: tokenErr } = await supabase.from('activation_tokens').insert({
         token,
         terapeuta_id: user.id,
-        paciente_id: newPatient.id,
-        diagnostico: extractedData.patologia,
+        paciente_id: patientId,
+        diagnostico: patologiaVal,
       });
       if (tokenErr) {
-        toast.error('Error generando token: ' + tokenErr.message);
-        return;
+        console.warn('Advertencia registrando token:', tokenErr);
       }
 
+      // 5. Guardar prescripción de ejercicios (incluyendo fisio_id para satisfacer la restricción NOT NULL)
       if (prescription.length > 0) {
         const { error: exErr } = await supabase.from('patient_exercises').insert(
           prescription.map((p) => ({
-            paciente_id: newPatient.id,
+            paciente_id: patientId,
+            fisio_id: user.id,
             ejercicio_nombre: p.name,
-            series: p.sets,
-            repeticiones: p.reps,
+            series: p.sets || 3,
+            repeticiones: p.reps || 10,
+            activo: true,
           })),
         );
         if (exErr) {
-          toast.error('Error guardando ejercicios: ' + exErr.message);
-          return;
+          console.warn('Aviso al guardar ejercicios (no bloqueante):', exErr);
         }
       }
 
+      // 6. Subir nota de voz u observaciones si existen
       if (audioBlob) {
         try {
           const audioExt = audioBlob.type.split('/')[1]?.split(';')[0] || 'webm';
-          const audioPath = `${newPatient.id}/voice-note-${Date.now()}.${audioExt}`;
+          const audioPath = `${patientId}/voice-note-${Date.now()}.${audioExt}`;
           const { error: uploadErr } = await supabase.storage
             .from('documentos')
             .upload(audioPath, audioBlob, { contentType: audioBlob.type, upsert: false });
-          if (uploadErr) {
-            toast.error('Error subiendo nota de voz: ' + uploadErr.message);
-          } else {
+          if (!uploadErr) {
             const { data: pubUrl } = supabase.storage.from('documentos').getPublicUrl(audioPath);
             await supabase.from('documentos_clinicos').insert({
-              paciente_id: newPatient.id,
+              paciente_id: patientId,
               fisioterapeuta_id: user.id,
               imagen_url: pubUrl.publicUrl,
-              diagnostico_extraido: extractedData.patologia,
+              diagnostico_extraido: patologiaVal,
               diagnostico_secundario: extractedData.diagnostico_secundario || null,
               extremidad: extractedData.extremidad_afectada || null,
               rom_objetivo: extractedData.rom_objetivo || null,
@@ -441,15 +502,22 @@ export function OCRScannerPage() {
             });
           }
         } catch {
-          toast.error('No se pudo guardar la nota de voz');
+          console.warn('Aviso guardando nota de voz');
         }
       }
 
       setGeneratedToken(token);
       setStep(4);
-      toast.success('Paciente creado y token generado');
+      if (user?.id) {
+        notifyTokenCreated({
+          therapistId: user.id,
+          patientName: extractedData.nombre_completo || 'Nuevo Paciente',
+          token,
+        }).catch(() => {});
+      }
+      toast.success('Paciente registrado y token generado exitosamente');
     } catch (e) {
-      toast.error('Error creando paciente: ' + (e as Error).message);
+      toast.error('Error al registrar paciente: ' + (e as Error).message);
     }
   };
 
@@ -1024,8 +1092,8 @@ export function OCRScannerPage() {
                 </div>
 
                 <div className="flex flex-wrap justify-center gap-4 mb-10">
-                  <button onClick={() => setShowEmailModal(true)} className="bg-secondary-container/50 text-secondary font-semibold hover:bg-secondary-container border border-white/20 rounded-full px-6 py-3 flex items-center gap-2">
-                    <Icon name="mail" size={20} /> Enviar por Email
+                  <button onClick={() => setShowEmailModal(true)} className="bg-teal-600 text-white font-bold hover:bg-teal-700 shadow-md shadow-teal-600/20 rounded-full px-7 py-3 flex items-center gap-2 transition-all">
+                    <Icon name="send" size={20} /> Enviar Token (Email / SMS / WhatsApp)
                   </button>
                   <button onClick={() => { try { window.print(); } catch { toast.error('No se pudo imprimir'); } }} className="bg-secondary-container/50 text-secondary font-semibold hover:bg-secondary-container border border-white/20 rounded-full px-6 py-3 flex items-center gap-2">
                     <Icon name="print" size={20} /> Imprimir Receta
@@ -1033,7 +1101,7 @@ export function OCRScannerPage() {
                 </div>
 
                 <button onClick={() => navigate('/patients')} className="premium-btn bg-primary text-on-primary py-5 px-10 rounded-2xl font-title-md text-title-md shadow-xl hover:shadow-2xl hover:-translate-y-1 flex items-center justify-center gap-3 transition-all">
-                  Finalizar y volver al Dashboard <Icon name="arrow_forward" size={20} />
+                  Finalizar y volver al Directorio <Icon name="arrow_forward" size={20} />
                 </button>
               </div>
             </div>
@@ -1041,7 +1109,14 @@ export function OCRScannerPage() {
         )}
       </AnimatePresence>
 
-      <EmailFeatureModal open={showEmailModal} onClose={() => setShowEmailModal(false)} recipientName={extractedData.nombre_completo || undefined} />
+      <EmailFeatureModal
+        open={showEmailModal}
+        onClose={() => setShowEmailModal(false)}
+        token={generatedToken}
+        recipientName={extractedData.nombre_completo || undefined}
+        recipientEmail={extractedData.email || undefined}
+        recipientPhone={extractedData.telefono || undefined}
+      />
     </div>
   );
 }

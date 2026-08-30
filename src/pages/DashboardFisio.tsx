@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Icon } from '../components/ui/Icon';
@@ -23,6 +23,7 @@ import { UNIFIED_DEMO_PATIENTS } from '../data/unifiedDemoData';
 import { AvatarWithBadge } from '../components/heroui';
 import { ArrowRight, ChevronRight } from 'lucide-react';
 import { isValidUUID } from '../lib/utils';
+import { isDemoAccount } from '../lib/demoAuth';
 
 interface KpiData {
   activePatients: number;
@@ -171,18 +172,12 @@ const demoEvolution = [
   { week: 'Semana 4', value: 79 },
 ];
 
-const demoRoutines = [
-  { patient: 'María Fernández', routine: 'Core + movilidad lumbar', exercises: 8, completion: 78 },
-  { patient: 'Carlos Domínguez', routine: 'Fortalecimiento cuádriceps', exercises: 6, completion: 45 },
-  { patient: 'Lucía Romero', routine: 'Eccéntricos + estiramientos', exercises: 5, completion: 62 },
-  { patient: 'Elena Castillo', routine: 'Propiocepción + retorno a carrera', exercises: 7, completion: 88 },
+const quickActions = [
+  { title: 'Nueva Sesión AR', desc: 'Inicia un seguimiento remoto con biofeedback en tiempo real.', icon: 'videocam', color: 'bg-primary', cta: 'Comenzar ahora', route: '/patients' },
+  { title: 'Cargar Paciente', desc: 'Sube historias clínicas o importa perfiles con OCR inteligente.', icon: 'person_add', color: 'bg-secondary', cta: 'Importar', route: '/ocr-scanner' },
+  { title: 'Directorio Clínico', desc: 'Gestión integral de pacientes, expedientes y tokens de vinculación.', icon: 'group', color: 'bg-tertiary', cta: 'Ver pacientes', route: '/patients' },
+  { title: 'Biblioteca Clínica', desc: 'Explora ejercicios validados y ajusta rangos articulares.', icon: 'fitness_center', color: 'bg-emerald-600', cta: 'Ver ejercicios', route: '/fisio-exercises' },
 ];
-
-const statusBadge: Record<DemoPatient['status'], string> = {
-  'Activo': 'bg-emerald-500/15 text-emerald-600 ring-emerald-500/20',
-  'En pausa': 'bg-amber-500/15 text-amber-600 ring-amber-500/20',
-  'Alta próxima': 'bg-cyan-500/15 text-cyan-600 ring-cyan-500/20',
-};
 
 export function DashboardFisio() {
   const user = useAuthStore((s) => s.user);
@@ -194,6 +189,9 @@ export function DashboardFisio() {
   const [checkedPriorities, setCheckedPriorities] = useState<boolean[]>([]);
   const [loadingKpis, setLoadingKpis] = useState(true);
   const [evolution, setEvolution] = useState<{ week: string; value: number }[]>([]);
+  const [displayedPatients, setDisplayedPatients] = useState<any[]>([]);
+  const [allPatientsForSearch, setAllPatientsForSearch] = useState<Array<{ id: string; name: string; condition?: string; email?: string }>>([]);
+  const [allExercisesForSearch, setAllExercisesForSearch] = useState<Array<{ id: string; name: string; group?: string }>>([]);
 
   useEffect(() => {
     loadKpis();
@@ -206,9 +204,26 @@ export function DashboardFisio() {
 
   const loadKpis = async () => {
     if (!user?.id) return;
+    const isDemo = isDemoAccount(user);
     if (!isValidUUID(user.id)) {
-      setKpi(demoKpi);
-      setEvolution(demoEvolution);
+      if (isDemo) {
+        setKpi(demoKpi);
+        setEvolution(demoEvolution);
+        setDisplayedPatients(UNIFIED_DEMO_PATIENTS.slice(0, 3));
+        setAllPatientsForSearch(
+          UNIFIED_DEMO_PATIENTS.map((dp) => ({
+            id: dp.id,
+            name: dp.name,
+            condition: dp.diagnosis || 'En tratamiento',
+            email: dp.email,
+          })),
+        );
+      } else {
+        setKpi(emptyKpi);
+        setEvolution([]);
+        setDisplayedPatients([]);
+        setAllPatientsForSearch([]);
+      }
       setLoadingKpis(false);
       return;
     }
@@ -246,18 +261,115 @@ export function DashboardFisio() {
         sessionsToday: sessionCount ?? 0,
         weeklyAdherence: adherence,
         pendingTokens: tokenCount ?? 0,
-        isDemo: false,
+        isDemo: isDemo,
       });
 
-      // Si no hay datos reales, inyecta datos de demostración para la cuenta demo.
+      // Load patient cards & search list from both links and patient profiles
+      const { data: links } = await supabase
+        .from('pacientes_terapeutas')
+        .select('paciente_id')
+        .eq('terapeuta_id', user.id);
+
+      const pIds = links?.map((l) => l.paciente_id).filter(Boolean) || [];
+
+      let queryProfs = supabase
+        .from('profiles')
+        .select('id, full_name, email, diagnostico, patologia, documento_identidad, role');
+
+      if (pIds.length > 0) {
+        queryProfs = queryProfs.or(`id.in.(${pIds.join(',')}),role.eq.paciente`);
+      } else {
+        queryProfs = queryProfs.eq('role', 'paciente');
+      }
+
+      const { data: profs } = await queryProfs.limit(50);
+
+      if (profs && profs.length > 0) {
+        setDisplayedPatients(
+          profs.map((p) => ({
+            id: p.id,
+            name: p.full_name || 'Paciente',
+            diagnosis: p.diagnostico || p.patologia || 'En evaluación',
+            status: 'Activo',
+            adherence: 80,
+            progress: 60,
+            sessionsCompleted: 1,
+            sessionsTotal: 10,
+            routine: 'Plan prescrito',
+          }))
+        );
+
+        const searchList = profs.map((p) => ({
+          id: p.id,
+          name: p.full_name || 'Paciente',
+          condition: p.diagnostico || p.patologia || 'En tratamiento',
+          email: p.email?.includes('@fisiomirror.paciente') ? undefined : p.email,
+        }));
+
+        if (isDemo) {
+          const merged = [...searchList];
+          UNIFIED_DEMO_PATIENTS.forEach((dp) => {
+            if (!merged.some((m) => m.id === dp.id || m.name.toLowerCase() === dp.name.toLowerCase())) {
+              merged.push({
+                id: dp.id,
+                name: dp.name,
+                condition: dp.diagnosis || 'En tratamiento',
+                email: dp.email,
+              });
+            }
+          });
+          setAllPatientsForSearch(merged);
+        } else {
+          setAllPatientsForSearch(searchList);
+        }
+      } else {
+        setDisplayedPatients(isDemo ? UNIFIED_DEMO_PATIENTS.slice(0, 3) : []);
+        if (isDemo) {
+          setAllPatientsForSearch(
+            UNIFIED_DEMO_PATIENTS.map((dp) => ({
+              id: dp.id,
+              name: dp.name,
+              condition: dp.diagnosis || 'En tratamiento',
+              email: dp.email,
+            }))
+          );
+        } else {
+          setAllPatientsForSearch([]);
+        }
+      }
+
+      // Cargar ejercicios de apoyo para el buscador
+      try {
+        const { data: exData } = await supabase
+          .from('exercises')
+          .select('id, nombre, grupo_muscular')
+          .limit(15);
+        if (exData && exData.length > 0) {
+          setAllExercisesForSearch(
+            exData.map((e: any) => ({
+              id: e.id,
+              name: e.nombre || e.name || 'Ejercicio',
+              group: e.grupo_muscular || e.categoria || '',
+            })),
+          );
+        }
+      } catch {
+        // silencioso
+      }
+
+      // Si no hay datos reales, inyecta datos de demostración solo si es cuenta demo
       const isEmpty =
         (patientCount ?? 0) === 0 &&
         (sessionCount ?? 0) === 0 &&
         adherence === 0 &&
         (tokenCount ?? 0) === 0;
       if (isEmpty) {
-        setKpi(demoKpi);
-        setEvolution(demoEvolution);
+        if (isDemo) {
+          setKpi(demoKpi);
+          setEvolution(demoEvolution);
+        } else {
+          setEvolution([]);
+        }
       }
     } catch {
       // keep empty defaults
@@ -268,9 +380,15 @@ export function DashboardFisio() {
 
   const loadPriorities = async () => {
     if (!user?.id) return;
+    const isDemo = isDemoAccount(user);
     if (!isValidUUID(user.id)) {
-      setPriorities(demoPriorities);
-      setCheckedPriorities(new Array(demoPriorities.length).fill(false));
+      if (isDemo) {
+        setPriorities(demoPriorities);
+        setCheckedPriorities(new Array(demoPriorities.length).fill(false));
+      } else {
+        setPriorities([]);
+        setCheckedPriorities([]);
+      }
       return;
     }
     try {
@@ -279,8 +397,13 @@ export function DashboardFisio() {
         .select('paciente_id')
         .eq('terapeuta_id', user.id);
       if (!links || links.length === 0) {
-        setPriorities(demoPriorities);
-        setCheckedPriorities(new Array(demoPriorities.length).fill(false));
+        if (isDemo) {
+          setPriorities(demoPriorities);
+          setCheckedPriorities(new Array(demoPriorities.length).fill(false));
+        } else {
+          setPriorities([]);
+          setCheckedPriorities([]);
+        }
         return;
       }
 
@@ -313,9 +436,13 @@ export function DashboardFisio() {
         setPriorities(newPriorities);
         setCheckedPriorities(new Array(newPriorities.length).fill(false));
       } else {
-        // Sin pacientes reales: usa prioridades de demostración.
-        setPriorities(demoPriorities);
-        setCheckedPriorities(new Array(demoPriorities.length).fill(false));
+        if (isDemo) {
+          setPriorities(demoPriorities);
+          setCheckedPriorities(new Array(demoPriorities.length).fill(false));
+        } else {
+          setPriorities([]);
+          setCheckedPriorities([]);
+        }
       }
     } catch {
       // silently fail
@@ -368,13 +495,6 @@ export function DashboardFisio() {
     }
   };
 
-  const quickActions = [
-    { title: 'Nueva Sesión AR', desc: 'Inicia un seguimiento remoto con biofeedback en tiempo real.', icon: 'videocam', color: 'bg-primary', cta: 'Comenzar ahora', route: '/patients' },
-    { title: 'Cargar Paciente', desc: 'Sube historias clínicas o importa perfiles con OCR inteligente.', icon: 'person_add', color: 'bg-secondary', cta: 'Importar', route: '/ocr-scanner' },
-    { title: 'Directorio Clínico', desc: 'Gestión integral de pacientes, expedientes y tokens de vinculación.', icon: 'group', color: 'bg-tertiary', cta: 'Ver pacientes', route: '/patients' },
-    { title: 'Biblioteca Clínica', desc: 'Explora ejercicios validados y ajusta rangos articulares.', icon: 'fitness_center', color: 'bg-emerald-600', cta: 'Ver ejercicios', route: '/fisio-exercises' },
-  ];
-
   const greeting = (() => {
     const hour = new Date().getHours();
     if (hour < 12) return 'Buenos días';
@@ -382,11 +502,68 @@ export function DashboardFisio() {
     return 'Buenas noches';
   })();
 
-  const commandItems: CommandItem[] = quickActions.map((action) => ({
-    label: action.title,
-    icon: <Icon name={action.icon} size={18} className="text-primary" />,
-    onSelect: () => navigate(action.route),
-  }));
+  const commandItems: CommandItem[] = useMemo(() => {
+    const list: CommandItem[] = [];
+
+    // 1. Pacientes registrados / vinculados
+    allPatientsForSearch.forEach((p) => {
+      list.push({
+        id: `pat-${p.id}`,
+        label: p.name,
+        subtitle: `${p.condition || 'Expediente clínico'}${p.email ? ` • ${p.email}` : ''}`,
+        category: 'Pacientes',
+        icon: <Icon name="person" size={18} className="text-teal-600 dark:text-teal-400" />,
+        badge: 'Historial',
+        onSelect: () => navigate(`/paciente/${p.id}`),
+      });
+    });
+
+    // 2. Ejercicios clínicos
+    allExercisesForSearch.forEach((ex) => {
+      list.push({
+        id: `ex-${ex.id}`,
+        label: ex.name,
+        subtitle: ex.group || 'Ejercicio terapéutico',
+        category: 'Ejercicios',
+        icon: <Icon name="fitness_center" size={18} className="text-emerald-600 dark:text-emerald-400" />,
+        badge: 'Biblioteca',
+        onSelect: () => navigate('/fisio-exercises'),
+      });
+    });
+
+    // 3. Acciones rápidas de la plataforma
+    quickActions.forEach((action) => {
+      list.push({
+        id: `act-${action.route}`,
+        label: action.title,
+        subtitle: action.desc,
+        category: 'Acciones',
+        icon: <Icon name={action.icon} size={18} className="text-primary" />,
+        onSelect: () => navigate(action.route),
+      });
+    });
+
+    // 4. Accesos directos convenientes
+    list.push({
+      id: 'quick-tokens',
+      label: 'Gestión de Tokens y Envíos',
+      subtitle: 'Envía tokens por Email, SMS o WhatsApp a pacientes',
+      category: 'Acciones',
+      icon: <Icon name="key" size={18} className="text-amber-500" />,
+      onSelect: () => navigate('/patients?tab=tokens'),
+    });
+
+    list.push({
+      id: 'quick-new-patient',
+      label: 'Registrar Nuevo Paciente (OCR / Voz)',
+      subtitle: 'Creación rápida basada en nombre y apellido',
+      category: 'Acciones',
+      icon: <Icon name="person_add" size={18} className="text-emerald-500" />,
+      onSelect: () => navigate('/ocr-scanner'),
+    });
+
+    return list;
+  }, [allPatientsForSearch, allExercisesForSearch, navigate]);
 
   const realIsEmpty =
     kpi.activePatients === 0 && kpi.sessionsToday === 0 && kpi.weeklyAdherence === 0 && kpi.pendingTokens === 0;
@@ -423,7 +600,11 @@ export function DashboardFisio() {
 
       {/* Search / Command palette */}
       <div className="w-full">
-        <CommandPalette items={commandItems} />
+        <CommandPalette
+          items={commandItems}
+          placeholder="Buscar pacientes por nombre, condición o ejercicios... (⌘K)"
+          onEnterFallback={(q) => navigate(`/patients?q=${encodeURIComponent(q)}`)}
+        />
       </div>
 
       {/* Insight banner */}
@@ -697,14 +878,21 @@ export function DashboardFisio() {
           </div>
           <div className="flex items-center gap-2 mb-6">
             <div className="flex -space-x-4">
-              {[1, 2, 3].map((i) => (
-                <div key={i} className="w-12 h-12 rounded-full border-4 border-white bg-primary-container flex items-center justify-center text-on-primary-container font-bold">
-                  P{i}
+              {displayedPatients.slice(0, 3).map((p, i) => (
+                <div key={p.id || i} className="w-12 h-12 rounded-full border-4 border-white bg-primary-container flex items-center justify-center text-on-primary-container font-bold text-xs" title={p.name}>
+                  {p.name.charAt(0)}
                 </div>
               ))}
-              <div className="w-12 h-12 rounded-full border-4 border-white bg-surface-container-highest flex items-center justify-center text-outline font-bold text-sm">
-                +{Math.max(0, UNIFIED_DEMO_PATIENTS.length - 3)}
-              </div>
+              {displayedPatients.length === 0 && (
+                <div className="w-12 h-12 rounded-full border-4 border-white bg-surface-container-highest flex items-center justify-center text-outline font-bold text-sm">
+                  0
+                </div>
+              )}
+              {displayedPatients.length > 3 && (
+                <div className="w-12 h-12 rounded-full border-4 border-white bg-surface-container-highest flex items-center justify-center text-outline font-bold text-sm">
+                  +{displayedPatients.length - 3}
+                </div>
+              )}
             </div>
           </div>
           <div className="flex items-center gap-3">
@@ -737,78 +925,104 @@ export function DashboardFisio() {
             onClick={() => navigate('/patients')}
             className="hidden sm:flex items-center gap-1.5 text-xs font-bold text-primary hover:underline"
           >
-            Ver todos ({UNIFIED_DEMO_PATIENTS.length}) <ChevronRight className="size-4" />
+            Ver todos ({displayedPatients.length}) <ChevronRight className="size-4" />
           </button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 relative z-10">
-          {UNIFIED_DEMO_PATIENTS.slice(0, 3).map((p, idx) => {
-            const patientName = p.name || 'Paciente';
-            const initials = patientName.split(' ').filter(Boolean).map((n) => n[0]).join('').slice(0, 2) || 'PA';
-            const isOnline = p.status === 'Activo';
-            const isWarning = p.status === 'Requiere Revisión' || p.status === 'En pausa';
-
-            return (
-              <motion.div
-                key={p.id}
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: idx * 0.1 }}
-                whileHover={{ y: -4 }}
-                onClick={() => navigate(`/paciente/${p.id}`)}
-                className="group p-5 rounded-3xl bg-surface/80 dark:bg-surface-container-low/60 border border-outline/15 hover:border-teal-500/40 shadow-sm hover:shadow-lg transition-all cursor-pointer flex flex-col justify-between"
+        {displayedPatients.length === 0 ? (
+          <div className="p-8 rounded-3xl bg-surface/80 dark:bg-surface-container-low/60 border border-outline/15 text-center flex flex-col items-center justify-center gap-3">
+            <div className="w-12 h-12 rounded-2xl bg-teal-500/10 text-teal-600 dark:text-teal-400 flex items-center justify-center">
+              <Icon name="groups" size={26} />
+            </div>
+            <h4 className="font-bold text-on-surface text-base">Sin pacientes activos registrados</h4>
+            <p className="text-xs text-on-surface-variant max-w-md">
+              Genera un token de activación o registra a tu primer paciente para ver su seguimiento y adherencia aquí.
+            </p>
+            <div className="flex gap-2.5 mt-2">
+              <button
+                onClick={() => navigate('/tokens')}
+                className="px-4 py-2 rounded-xl bg-primary text-white text-xs font-bold shadow-xs hover:bg-primary/90 transition-all"
               >
-                <div>
-                  <div className="flex items-start justify-between gap-3 mb-3">
-                    <div className="flex items-center gap-3">
-                      <AvatarWithBadge
-                        fallback={initials}
-                        status={isOnline ? 'online' : isWarning ? 'warning' : 'offline'}
-                      />
-                      <div className="min-w-0">
-                        <h4 className="text-sm font-bold text-on-surface group-hover:text-primary transition-colors truncate">
-                          {patientName}
-                        </h4>
-                        <p className="text-xs text-on-surface-variant truncate">{p.diagnosis || p.patologia || 'En tratamiento'}</p>
+                Generar Token
+              </button>
+              <button
+                onClick={() => navigate('/nuevo-paciente')}
+                className="px-4 py-2 rounded-xl bg-surface-container text-on-surface text-xs font-bold hover:bg-surface-container-high transition-all"
+              >
+                Nuevo Paciente
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 relative z-10">
+            {displayedPatients.slice(0, 3).map((p, idx) => {
+              const patientName = p.name || 'Paciente';
+              const initials = patientName.split(' ').filter(Boolean).map((n: string) => n[0]).join('').slice(0, 2) || 'PA';
+              const isOnline = p.status === 'Activo';
+              const isWarning = p.status === 'Requiere Revisión' || p.status === 'En pausa';
+
+              return (
+                <motion.div
+                  key={p.id}
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: idx * 0.1 }}
+                  whileHover={{ y: -4 }}
+                  onClick={() => navigate(`/paciente/${p.id}`)}
+                  className="group p-5 rounded-3xl bg-surface/80 dark:bg-surface-container-low/60 border border-outline/15 hover:border-teal-500/40 shadow-sm hover:shadow-lg transition-all cursor-pointer flex flex-col justify-between"
+                >
+                  <div>
+                    <div className="flex items-start justify-between gap-3 mb-3">
+                      <div className="flex items-center gap-3">
+                        <AvatarWithBadge
+                          fallback={initials}
+                          status={isOnline ? 'online' : isWarning ? 'warning' : 'offline'}
+                        />
+                        <div className="min-w-0">
+                          <h4 className="text-sm font-bold text-on-surface group-hover:text-primary transition-colors truncate">
+                            {patientName}
+                          </h4>
+                          <p className="text-xs text-on-surface-variant truncate">{p.diagnosis || p.patologia || 'En tratamiento'}</p>
+                        </div>
+                      </div>
+                      <span className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-full border ${
+                        p.status === 'Activo'
+                          ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20'
+                          : p.status === 'Requiere Revisión'
+                          ? 'bg-amber-500/10 text-amber-600 border-amber-500/20'
+                          : 'bg-teal-500/10 text-teal-600 border-teal-500/20'
+                      }`}>
+                        {p.status}
+                      </span>
+                    </div>
+
+                    <div className="space-y-2 mt-4 pt-3 border-t border-outline/10 text-xs">
+                      <div className="flex justify-between items-center text-on-surface-variant">
+                        <span>Adherencia</span>
+                        <span className="font-bold text-on-surface">{p.adherence || p.progress || 0}%</span>
+                      </div>
+                      <div className="h-2 w-full rounded-full bg-surface-container-highest overflow-hidden">
+                        <div
+                          className="h-full rounded-full bg-gradient-to-r from-teal-500 to-emerald-500"
+                          style={{ width: `${p.adherence || p.progress || 0}%` }}
+                        />
+                      </div>
+                      <div className="flex justify-between items-center text-[11px] text-outline pt-1">
+                        <span>{p.sessionsCompleted || 0}/{p.sessionsTotal || 0} sesiones</span>
+                        <span>{p.routine || 'Rutina activa'}</span>
                       </div>
                     </div>
-                    <span className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-full border ${
-                      p.status === 'Activo'
-                        ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20'
-                        : p.status === 'Requiere Revisión'
-                        ? 'bg-amber-500/10 text-amber-600 border-amber-500/20'
-                        : 'bg-teal-500/10 text-teal-600 border-teal-500/20'
-                    }`}>
-                      {p.status}
-                    </span>
                   </div>
 
-                  <div className="space-y-2 mt-4 pt-3 border-t border-outline/10 text-xs">
-                    <div className="flex justify-between items-center text-on-surface-variant">
-                      <span>Adherencia</span>
-                      <span className="font-bold text-on-surface">{p.adherence || p.progress || 0}%</span>
-                    </div>
-                    <div className="h-2 w-full rounded-full bg-surface-container-highest overflow-hidden">
-                      <div
-                        className="h-full rounded-full bg-gradient-to-r from-teal-500 to-emerald-500"
-                        style={{ width: `${p.adherence || p.progress || 0}%` }}
-                      />
-                    </div>
-                    <div className="flex justify-between items-center text-[11px] text-outline pt-1">
-                      <span>{p.sessionsCompleted || 0}/{p.sessionsTotal || 0} sesiones</span>
-                      <span>{p.routine || 'Rutina activa'}</span>
-                    </div>
+                  <div className="mt-4 pt-3 border-t border-outline/10 flex items-center justify-between text-xs font-semibold text-primary">
+                    <span>Ver expediente</span>
+                    <ArrowRight className="size-4 group-hover:translate-x-1 transition-transform" />
                   </div>
-                </div>
-
-                <div className="mt-4 pt-3 border-t border-outline/10 flex items-center justify-between text-xs font-semibold text-primary">
-                  <span>Ver expediente</span>
-                  <ArrowRight className="size-4 group-hover:translate-x-1 transition-transform" />
-                </div>
-              </motion.div>
-            );
-          })}
-        </div>
+                </motion.div>
+              );
+            })}
+          </div>
+        )}
       </section>
 
       {/* Progress section */}
