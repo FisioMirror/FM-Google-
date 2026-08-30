@@ -219,16 +219,16 @@ export function PatientLayout({ children }: PatientLayoutProps) {
     <>
       <div className="flex items-center px-4 h-16 border-b border-teal-100/60 dark:border-slate-800/80 shrink-0 relative">
         {!collapsed ? (
-          <div className="flex items-center gap-2.5 min-w-0 pr-7">
-            <img src="/logo.png" alt="FisioMirror" className="h-9 w-9 object-contain shrink-0 aspect-square" />
+          <div className="flex items-center gap-3 min-w-0 pr-6">
+            <img src="/logo.png" alt="FisioMirror" className="h-9 w-9 min-w-[36px] min-h-[36px] object-contain shrink-0 aspect-square" />
             <div className="flex flex-col min-w-0">
-              <h1 className="text-base sm:text-lg font-extrabold gradient-text-editorial tracking-tight leading-tight whitespace-nowrap">FisioMirror</h1>
+              <h1 className="text-base font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight whitespace-nowrap">FisioMirror</h1>
               <p className="text-[10px] uppercase tracking-wider text-teal-600 dark:text-teal-400 font-bold whitespace-nowrap">Portal Paciente</p>
             </div>
           </div>
         ) : (
           <div className="w-full flex justify-center">
-            <img src="/logo.png" alt="FisioMirror" className="h-8 w-8 object-contain shrink-0 aspect-square" />
+            <img src="/logo.png" alt="FisioMirror" className="h-8 w-8 min-w-[32px] min-h-[32px] object-contain shrink-0 aspect-square" />
           </div>
         )}
         {opts?.showToggle && (
@@ -363,7 +363,7 @@ export function PatientLayout({ children }: PatientLayoutProps) {
             <BackButton />
             {/* Mobile title & logo */}
             <div className="flex items-center gap-2 lg:hidden min-w-0">
-              <img src="/logo.png" alt="FisioMirror" className="h-8 w-8 object-contain shrink-0 aspect-square" />
+              <img src="/logo.png" alt="FisioMirror" className="h-8 w-8 min-w-[32px] min-h-[32px] object-contain shrink-0 aspect-square" />
               <span className="text-on-surface font-bold text-sm truncate max-w-[130px] sm:max-w-[180px]">{currentCrumb}</span>
             </div>
             {/* Desktop breadcrumb */}

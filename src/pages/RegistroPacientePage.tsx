@@ -384,7 +384,7 @@ export function RegistroPacientePage() {
 
         <div className="mt-5 text-center text-xs text-slate-500">
           ¿Ya tienes cuenta activa?{' '}
-          <Link to="/auth" className="text-teal-600 dark:text-teal-400 font-bold hover:underline">
+          <Link to="/login" className="text-teal-600 dark:text-teal-400 font-bold hover:underline">
             Iniciar Sesión
           </Link>
         </div>

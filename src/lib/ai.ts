@@ -80,25 +80,7 @@ export async function createAIJob(type: AIJobType, input_data: AIJobInput): Prom
     console.warn('Edge function create-job direct call failed, attempting database fallback:', err);
   }
 
-  // 2. Try proxy /api/create-job if available
-  try {
-    const response = await fetchWithRetry('/api/create-job', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${supabaseAnonKey}`,
-      },
-      body: JSON.stringify({ type, input_data }),
-    });
-    if (response.ok) {
-      const data = await response.json();
-      if (data.job_id) return data.job_id as string;
-    }
-  } catch {
-    // Continue to database insert fallback
-  }
-
-  // 3. Fallback: Insert directly into Supabase 'ai_jobs' table
+  // 2. Fallback: Insert directly into Supabase 'ai_jobs' table
   try {
     const { data, error } = await supabase
       .from('ai_jobs')

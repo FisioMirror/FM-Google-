@@ -192,7 +192,7 @@ export function ResetPassword() {
 
       // Redirigir al login después de 2.5 segundos
       setTimeout(() => {
-        navigate('/auth', { replace: true });
+        navigate('/login', { replace: true });
       }, 2500);
     } catch (err: any) {
       setErrorMessage(err.message || 'Error al actualizar la contraseña');
@@ -280,7 +280,7 @@ export function ResetPassword() {
               </div>
 
               <Link
-                to="/auth"
+                to="/login"
                 className="w-full py-3.5 px-4 rounded-2xl bg-teal-600 hover:bg-teal-700 active:scale-98 text-white font-bold text-xs transition-all flex items-center justify-center gap-2 shadow-md shadow-teal-600/20"
               >
                 <span>Iniciar Sesión Ahora</span>
@@ -529,7 +529,7 @@ export function ResetPassword() {
         {/* Footer */}
         <div className="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800 text-center">
           <Link
-            to="/auth"
+            to="/login"
             className="inline-flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 hover:text-teal-600 dark:hover:text-teal-400 font-bold transition-colors"
           >
             <ArrowLeft size={14} />

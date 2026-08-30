@@ -30,6 +30,7 @@ import {
   Bot,
   User,
 } from 'lucide-react';
+import { staggerContainer, staggerItem, springTactile } from '../lib/motionVariants';
 
 interface PatientKpi {
   streak: number;
@@ -316,8 +317,17 @@ export function PatientDashboard() {
       </div>
 
       {/* Main KPI Row */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="p-5 rounded-3xl bg-surface/80 dark:bg-surface-container-low/60 border border-outline/10 flex items-center gap-4">
+      <motion.div
+        variants={staggerContainer}
+        initial="hidden"
+        animate="show"
+        className="grid grid-cols-1 sm:grid-cols-3 gap-4"
+      >
+        <motion.div
+          variants={staggerItem}
+          whileHover={{ y: -3, scale: 1.015, transition: springTactile }}
+          className="p-5 rounded-3xl bg-surface/80 dark:bg-surface-container-low/60 border border-outline/10 flex items-center gap-4 cursor-default"
+        >
           <div className="size-12 rounded-2xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center">
             <Flame className="size-6" />
           </div>
@@ -325,9 +335,13 @@ export function PatientDashboard() {
             <p className="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Racha Activa</p>
             <p className="text-2xl font-extrabold text-on-surface">{kpi.streak} <span className="text-xs font-normal text-outline">días</span></p>
           </div>
-        </div>
+        </motion.div>
 
-        <div className="p-5 rounded-3xl bg-surface/80 dark:bg-surface-container-low/60 border border-outline/10 flex items-center gap-4">
+        <motion.div
+          variants={staggerItem}
+          whileHover={{ y: -3, scale: 1.015, transition: springTactile }}
+          className="p-5 rounded-3xl bg-surface/80 dark:bg-surface-container-low/60 border border-outline/10 flex items-center gap-4 cursor-default"
+        >
           <div className="size-12 rounded-2xl bg-teal-500/10 text-teal-600 dark:text-teal-400 flex items-center justify-center">
             <CheckCircle2 className="size-6" />
           </div>
@@ -335,9 +349,13 @@ export function PatientDashboard() {
             <p className="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Sesiones Totales</p>
             <p className="text-2xl font-extrabold text-on-surface">{kpi.totalSessions} <span className="text-xs font-normal text-outline">completadas</span></p>
           </div>
-        </div>
+        </motion.div>
 
-        <div className="p-5 rounded-3xl bg-surface/80 dark:bg-surface-container-low/60 border border-outline/10 flex items-center gap-4">
+        <motion.div
+          variants={staggerItem}
+          whileHover={{ y: -3, scale: 1.015, transition: springTactile }}
+          className="p-5 rounded-3xl bg-surface/80 dark:bg-surface-container-low/60 border border-outline/10 flex items-center gap-4 cursor-default"
+        >
           <div className="size-12 rounded-2xl bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 flex items-center justify-center">
             <Clock className="size-6" />
           </div>
@@ -345,8 +363,8 @@ export function PatientDashboard() {
             <p className="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Minutos Esta Semana</p>
             <p className="text-2xl font-extrabold text-on-surface">{kpi.weeklyMinutes} <span className="text-xs font-normal text-outline">min</span></p>
           </div>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
 
       {/* Palabra de Fortaleza & Fe (Reflexión Bíblica Contextual) */}
       <VersiculoCard
@@ -404,14 +422,18 @@ export function PatientDashboard() {
                 ))}
               </div>
             ) : exercises.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {exercises.map((ex, i) => (
+              <motion.div
+                variants={staggerContainer}
+                initial="hidden"
+                animate="show"
+                className="grid grid-cols-1 sm:grid-cols-2 gap-4"
+              >
+                {exercises.map((ex) => (
                   <motion.div
                     key={ex.id}
-                    initial={{ opacity: 0, y: 15 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: i * 0.05 }}
-                    whileHover={{ y: -3 }}
+                    variants={staggerItem}
+                    whileHover={{ y: -3, scale: 1.015, transition: springTactile }}
+                    whileTap={{ scale: 0.98 }}
                     onClick={() => navigate('/calibration')}
                     className="p-4 rounded-2xl bg-surface/80 dark:bg-surface-container-low/60 border border-outline/10 hover:border-teal-500/40 transition-all cursor-pointer flex items-center justify-between gap-3 group"
                   >
@@ -431,7 +453,7 @@ export function PatientDashboard() {
                     </div>
                   </motion.div>
                 ))}
-              </div>
+              </motion.div>
             ) : (
               <div className="p-8 text-center rounded-2xl bg-surface/40 border border-dashed border-outline/20">
                 <MedicalIcon name="clipboard" size={40} className="mx-auto text-primary/40 mb-2" />

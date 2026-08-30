@@ -27,6 +27,22 @@ const ICON_MAP: Record<string, string> = {
   walk: 'directions_walk',
   run: 'directions_run',
   tools: 'build',
+  scapula: 'sports_martial_arts',
+  lumbar: 'airline_seat_recline_normal',
+  core: 'shield',
+  posture: 'person_outline',
+  stretch: 'airline_seat_legroom_extra',
+  mobility: 'rotate_left',
+  balance: 'explore',
+  proprioception: 'radar',
+  cardio: 'cardiology',
+  wrist: 'pan_tool',
+  hand: 'front_hand',
+  goniometer: 'straighten',
+  telemetry: 'speed',
+  pain: 'healing',
+  target: 'adjust',
+  check: 'check_circle',
 };
 
 export function MedicalIcon({ name, className = '', style, size }: MedicalIconProps) {

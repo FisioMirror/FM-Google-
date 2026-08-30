@@ -24,6 +24,7 @@ import { AvatarWithBadge } from '../components/heroui';
 import { ArrowRight, ChevronRight } from 'lucide-react';
 import { isValidUUID } from '../lib/utils';
 import { isDemoAccount } from '../lib/demoAuth';
+import { staggerContainer, staggerItem, springTactile } from '../lib/motionVariants';
 
 interface KpiData {
   activePatients: number;
@@ -614,14 +615,18 @@ export function DashboardFisio() {
       />
 
       {/* KPI cards */}
-      <div className="section-bg-teal grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {kpiCards.map((card, i) => (
+      <motion.div
+        variants={staggerContainer}
+        initial="hidden"
+        animate="show"
+        className="section-bg-teal grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+      >
+        {kpiCards.map((card) => (
           <motion.div
             key={card.label}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.1 }}
-            whileHover={{ y: -4, scale: 1.02 }}
+            variants={staggerItem}
+            whileHover={{ y: -4, scale: 1.02, transition: springTactile }}
+            whileTap={{ scale: 0.98 }}
             className="glass-card vibrant-hover p-6 rounded-3xl shadow-ambient-teal group cursor-default relative overflow-hidden accent-teal breathe-teal hover-lift"
           >
             <div className="blob-teal w-24 h-24 -top-6 -right-6 opacity-50" />
@@ -641,18 +646,21 @@ export function DashboardFisio() {
             )}
           </motion.div>
         ))}
-      </div>
+      </motion.div>
 
       {/* Quick actions */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {quickActions.map((action, i) => (
+      <motion.div
+        variants={staggerContainer}
+        initial="hidden"
+        animate="show"
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+      >
+        {quickActions.map((action) => (
           <motion.button
             key={action.title}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 + i * 0.1 }}
-            whileHover={{ scale: 1.03, y: -4 }}
-            whileTap={{ scale: 0.98 }}
+            variants={staggerItem}
+            whileHover={{ scale: 1.025, y: -4, transition: springTactile }}
+            whileTap={{ scale: 0.97 }}
             onClick={() => navigate(action.route)}
             className="relative overflow-hidden group glass-panel p-8 rounded-[40px] text-left transition-all hover-lift"
           >
@@ -670,7 +678,7 @@ export function DashboardFisio() {
         <div className="flex items-center justify-center">
           <ExpandableToggle expandLabel="Acciones Rápidas" />
         </div>
-      </div>
+      </motion.div>
 
       {/* Insights & Priorities */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -954,8 +962,13 @@ export function DashboardFisio() {
             </div>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 relative z-10">
-            {displayedPatients.slice(0, 3).map((p, idx) => {
+          <motion.div
+            variants={staggerContainer}
+            initial="hidden"
+            animate="show"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 relative z-10"
+          >
+            {displayedPatients.slice(0, 3).map((p) => {
               const patientName = p.name || 'Paciente';
               const initials = patientName.split(' ').filter(Boolean).map((n: string) => n[0]).join('').slice(0, 2) || 'PA';
               const isOnline = p.status === 'Activo';
@@ -964,10 +977,9 @@ export function DashboardFisio() {
               return (
                 <motion.div
                   key={p.id}
-                  initial={{ opacity: 0, y: 15 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: idx * 0.1 }}
-                  whileHover={{ y: -4 }}
+                  variants={staggerItem}
+                  whileHover={{ y: -4, scale: 1.015, transition: springTactile }}
+                  whileTap={{ scale: 0.98 }}
                   onClick={() => navigate(`/paciente/${p.id}`)}
                   className="group p-5 rounded-3xl bg-surface/80 dark:bg-surface-container-low/60 border border-outline/15 hover:border-teal-500/40 shadow-sm hover:shadow-lg transition-all cursor-pointer flex flex-col justify-between"
                 >
@@ -1021,7 +1033,7 @@ export function DashboardFisio() {
                 </motion.div>
               );
             })}
-          </div>
+          </motion.div>
         )}
       </section>
 

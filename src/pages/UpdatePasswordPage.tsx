@@ -132,7 +132,7 @@ export function UpdatePasswordPage() {
       });
 
       setTimeout(() => {
-        navigate('/auth');
+        navigate('/login');
       }, 1500);
     } catch (err: any) {
       console.error('Password update error:', err);
@@ -232,7 +232,7 @@ export function UpdatePasswordPage() {
 
         <div className="mt-5 text-center text-xs text-slate-500">
           ¿Recordaste tu clave?{' '}
-          <Link to="/auth" className="text-teal-600 dark:text-teal-400 font-bold hover:underline">
+          <Link to="/login" className="text-teal-600 dark:text-teal-400 font-bold hover:underline">
             Volver a Iniciar Sesión
           </Link>
         </div>

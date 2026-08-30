@@ -79,7 +79,7 @@ export function EmailSystemStatusCard() {
             name: 'Usuario de Prueba',
             token: '123456',
             therapistName: 'FisioMirror Diagnóstico',
-            activationLink: window.location.origin + '/auth?token=123456',
+            activationLink: window.location.origin + '/registro-paciente?token=123456',
           }),
         });
       } else if (channel === 'smtp') {
@@ -91,7 +91,7 @@ export function EmailSystemStatusCard() {
             patientName: 'Usuario de Prueba',
             token: '123456',
             therapistName: 'FisioMirror Diagnóstico',
-            activationLink: window.location.origin + '/auth?token=123456',
+            activationLink: window.location.origin + '/registro-paciente?token=123456',
           }),
         });
       } else {

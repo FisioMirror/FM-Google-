@@ -14,7 +14,15 @@ import { SkeletonDemo } from '../components/rehabilitation/SkeletonDemo';
 import { buildExerciseDefinition, getExerciseDescription } from '../data/exercisePresets';
 import { saveExercises, getExercises } from '../lib/offlineDB';
 import { buildGoogleCalendarUrl, buildIcsFileContent, type CalendarExercise } from '../lib/calendarExport';
-import { Play, BookOpen, Layers, Calendar, Download } from 'lucide-react';
+import {
+  Play,
+  BookOpen,
+  Layers,
+  Calendar,
+  Download,
+  Repeat,
+  Flame,
+} from 'lucide-react';
 import { VersiculoCard } from '../components/spiritual/VersiculoCard';
 
 interface AssignedExercise {
@@ -269,16 +277,25 @@ export function PatientExercisesPage() {
 
                   {/* Prescription Parameters */}
                   <div className="grid grid-cols-3 gap-2 py-3 my-2 border-y border-outline-variant/20 text-center">
-                    <div>
-                      <p className="text-[10px] uppercase font-bold text-on-surface-variant">Series</p>
+                    <div className="flex flex-col items-center">
+                      <p className="text-[10px] uppercase font-bold text-on-surface-variant flex items-center justify-center gap-1">
+                        <Repeat size={11} className="text-teal-600 dark:text-teal-400" />
+                        <span>Series</span>
+                      </p>
                       <span className="font-extrabold text-base text-on-surface">{ex.series ?? 3}</span>
                     </div>
-                    <div>
-                      <p className="text-[10px] uppercase font-bold text-on-surface-variant">Repeticiones</p>
+                    <div className="flex flex-col items-center">
+                      <p className="text-[10px] uppercase font-bold text-on-surface-variant flex items-center justify-center gap-1">
+                        <Flame size={11} className="text-amber-500" />
+                        <span>Reps</span>
+                      </p>
                       <span className="font-extrabold text-base text-on-surface">{ex.repeticiones ?? 12}</span>
                     </div>
-                    <div>
-                      <p className="text-[10px] uppercase font-bold text-on-surface-variant">Frecuencia</p>
+                    <div className="flex flex-col items-center">
+                      <p className="text-[10px] uppercase font-bold text-on-surface-variant flex items-center justify-center gap-1">
+                        <Calendar size={11} className="text-teal-600 dark:text-teal-400" />
+                        <span>Frecuencia</span>
+                      </p>
                       <span className="font-extrabold text-base text-on-surface">{ex.frecuencia_semana ?? 4}x/sem</span>
                     </div>
                   </div>

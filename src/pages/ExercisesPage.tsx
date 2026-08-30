@@ -26,6 +26,10 @@ import {
   Crosshair,
   User,
   Check,
+  Footprints,
+  Shield,
+  HeartPulse,
+  CircleDot,
 } from 'lucide-react';
 import { useAuthStore } from '../stores/authStore';
 import { supabase } from '../lib/supabase';
@@ -137,7 +141,7 @@ const DEFAULT_CLINICAL_EXERCISES: Exercise[] = [
       'Fase 3 (Sostenimiento): Sostén 2 segundos manteniendo la pelvis completamente horizontal.\n' +
       'Fase 4 (Retorno): Desciende lentamente sin tocar el suelo bruscamente.\n\n' +
       '⚠️ Compensaciones a evitar: No inclinar el tronco en dirección opuesta ni rotar la punta del pie hacia afuera.',
-    articulacion: 'piernas',
+    articulacion: 'cadera',
     grupo_muscular: 'Glúteo medio, glúteo menor, tensor de fascia lata',
     series: 3,
     repeticiones: 12,
@@ -147,6 +151,7 @@ const DEFAULT_CLINICAL_EXERCISES: Exercise[] = [
     lado: 'bilateral',
     categoria: 'control motor',
     complejidad: 'alta',
+    featured: true,
   },
   {
     id: 'ex-5',
@@ -158,7 +163,7 @@ const DEFAULT_CLINICAL_EXERCISES: Exercise[] = [
       'Fase 3 (Sostenimiento): Mantén 3 segundos respirando con calma sintiendo la descompresión suboccipital.\n' +
       'Fase 4 (Retorno): Retorna despacio a la posición neutra sin hiperextender el cuello.\n\n' +
       '⚠️ Compensaciones a evitar: No encoger los hombros ni forzar el rango si produce mareos o dolor.',
-    articulacion: 'cuello',
+    articulacion: 'cervical',
     grupo_muscular: 'Largo del cuello, recto anterior, escalenos',
     series: 2,
     repeticiones: 8,
@@ -179,7 +184,7 @@ const DEFAULT_CLINICAL_EXERCISES: Exercise[] = [
       'Fase 3 (Sostenimiento): Pausa 1 segundo en la contracción máxima sin separar los codos del cuerpo.\n' +
       'Fase 4 (Retorno): Extiende los brazos suavemente hasta llegar a 0° de extensión.\n\n' +
       '⚠️ Compensaciones a evitar: Evitar impulsarse con el cuerpo o balancear los hombros hacia adelante.',
-    articulacion: 'brazos',
+    articulacion: 'codo',
     grupo_muscular: 'Bíceps braquial, braquial anterior, tríceps',
     series: 3,
     repeticiones: 15,
@@ -190,15 +195,81 @@ const DEFAULT_CLINICAL_EXERCISES: Exercise[] = [
     categoria: 'fuerza',
     complejidad: 'baja',
   },
+  {
+    id: 'ex-7',
+    nombre: 'Dorsiflexión y Flexión Plantar de Tobillo',
+    descripcion: 'Reeducación articular del complejo tobillo-pie y bomba muscular periférica.',
+    detailed_description:
+      'Fase 1 (Posición Inicial): Sentado con la pierna extendida y el talón libre.\n' +
+      'Fase 2 (Ejecución): Lleva la punta del pie hacia la espinilla (dorsiflexión 20°) y luego apunta hacia adelante (flexión plantar 40°).\n' +
+      'Fase 3 (Sostenimiento): Pausa 2 segundos en cada extremo del recorrido articular.\n' +
+      'Fase 4 (Retorno): Movimiento rítmico, continuo y libre de dolor.\n\n' +
+      '⚠️ Compensaciones a evitar: Mantener la rodilla fija evitando rotar toda la extremidad inferior.',
+    articulacion: 'tobillo',
+    grupo_muscular: 'Tibial anterior, gemelos, sóleo, peroneos',
+    series: 3,
+    repeticiones: 15,
+    duracion_segundos: 60,
+    angulo_objetivo: 20,
+    fase_recuperacion: 'inicial',
+    lado: 'bilateral',
+    categoria: 'movilidad',
+    complejidad: 'baja',
+  },
+  {
+    id: 'ex-8',
+    nombre: 'Puente Glúteo y Estabilidad Lumbar',
+    descripcion: 'Activación del core lumbopélvico y cadena extensora posterior en decúbito.',
+    detailed_description:
+      'Fase 1 (Posición Inicial): Tumbado boca arriba con rodillas flexionadas a 90° y pies apoyados al ancho de caderas.\n' +
+      'Fase 2 (Ejecución): Eleva la pelvis hasta alinear rodillas, caderas y hombros en una línea recta.\n' +
+      'Fase 3 (Sostenimiento): Mantén la contracción glútea 3 segundos sin arquear en exceso la zona lumbar.\n' +
+      'Fase 4 (Retorno): Desciende vértebra a vértebra con control abdominal.\n\n' +
+      '⚠️ Compensaciones a evitar: No empujar con los hombros ni hiperlordotizar la columna lumbar.',
+    articulacion: 'columna',
+    grupo_muscular: 'Glúteo mayor, isquiotibiales, transverso abdominal, multífidos',
+    series: 3,
+    repeticiones: 10,
+    duracion_segundos: 60,
+    angulo_objetivo: 0,
+    fase_recuperacion: 'intermedia',
+    lado: 'bilateral',
+    categoria: 'control motor',
+    complejidad: 'media',
+    featured: true,
+  },
+  {
+    id: 'ex-9',
+    nombre: 'Retracción Escapular Postural',
+    descripcion: 'Reeducación de la cintura escapular y apertura torácica anterior.',
+    detailed_description:
+      'Fase 1 (Posición Inicial): Sentado o de pie con brazos flexionados a 90° y codos junto al tronco.\n' +
+      'Fase 2 (Ejecución): Junta las escápulas hacia el centro de la espalda aproximándolas entre sí.\n' +
+      'Fase 3 (Sostenimiento): Sostén 3 segundos manteniendo el cuello relajado y hombros alejados de orejas.\n' +
+      'Fase 4 (Retorno): Vuelve a la posición neutra con control gradual.\n\n' +
+      '⚠️ Compensaciones a evitar: Evitar proyectar la cabeza hacia adelante al juntar las escápulas.',
+    articulacion: 'escapula',
+    grupo_muscular: 'Romboides mayor/menor, trapecio medio e inferior, serrato anterior',
+    series: 3,
+    repeticiones: 12,
+    duracion_segundos: 45,
+    angulo_objetivo: 45,
+    fase_recuperacion: 'inicial',
+    lado: 'bilateral',
+    categoria: 'reeducacion postural',
+    complejidad: 'baja',
+  },
 ];
 
 const FILTER_CATEGORIES = [
   { id: 'todos', label: 'Todos los Protocolos', icon: Activity },
-  { id: 'hombro', label: 'Hombro & Escápula', icon: RotateCw },
-  { id: 'rodilla', label: 'Rodilla & Cuádriceps', icon: Target },
-  { id: 'piernas', label: 'Cadera & Pelvis', icon: Compass },
-  { id: 'brazos', label: 'Codo & Brazos', icon: Dumbbell },
-  { id: 'cuello', label: 'Columna Cervical', icon: Sparkles },
+  { id: 'hombro', label: 'Hombro', icon: RotateCw },
+  { id: 'rodilla', label: 'Rodilla', icon: Target },
+  { id: 'cadera', label: 'Cadera & Pelvis', icon: Compass },
+  { id: 'tobillo', label: 'Tobillo & Pie', icon: Footprints },
+  { id: 'columna', label: 'Columna & Core', icon: Shield },
+  { id: 'codo', label: 'Codo & Brazos', icon: Dumbbell },
+  { id: 'cervical', label: 'Cervical', icon: CircleDot },
 ];
 
 export function ExercisesPage() {
@@ -549,10 +620,27 @@ export function ExercisesPage() {
     }
   };
 
-  const getJointIcon = (articulacion?: string | null) => {
-    switch (articulacion?.toLowerCase()) {
+  const getJointIcon = (articulacion?: string | null, nombre?: string | null) => {
+    const n = (nombre || '').toLowerCase();
+    const a = (articulacion || '').toLowerCase();
+
+    if (n.includes('tobillo') || n.includes('pie') || n.includes('gemelo') || n.includes('plantar') || a === 'tobillo') {
+      return Footprints;
+    }
+    if (n.includes('tronco') || n.includes('lumbar') || n.includes('postura') || n.includes('core') || a === 'columna' || a === 'tronco') {
+      return Shield;
+    }
+    if (n.includes('cardio') || n.includes('resistencia') || n.includes('aerobico')) {
+      return HeartPulse;
+    }
+    if (n.includes('rotacion') || n.includes('circunduccion') || n.includes('circular')) {
+      return RotateCw;
+    }
+
+    switch (a) {
       case 'hombro':
-        return RotateCw;
+      case 'escapula':
+        return CircleDot;
       case 'rodilla':
         return Target;
       case 'cadera':
@@ -560,6 +648,7 @@ export function ExercisesPage() {
         return Compass;
       case 'codo':
       case 'brazos':
+      case 'muneca':
         return Dumbbell;
       case 'cuello':
       case 'cervical':
@@ -578,9 +667,12 @@ export function ExercisesPage() {
       case 'propiocepcion':
         return Crosshair;
       case 'estiramiento':
+      case 'flexibilidad':
         return Layers;
       case 'funcional':
         return Zap;
+      case 'equilibrio':
+        return Compass;
       default:
         return RotateCw;
     }
@@ -731,7 +823,7 @@ export function ExercisesPage() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filtered.map((ex, i) => {
-            const JointIcon = getJointIcon(ex.articulacion);
+            const JointIcon = getJointIcon(ex.articulacion, ex.nombre);
             const CatIcon = getCategoryIcon(ex.categoria);
 
             return (
@@ -739,18 +831,18 @@ export function ExercisesPage() {
                 key={ex.id}
                 initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.04 }}
-                whileHover={{ y: -4 }}
+                transition={{ delay: i * 0.03 }}
+                whileHover={{ y: -3 }}
                 className={cn(
-                  'group rounded-[2rem] p-5 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border transition-all duration-300 flex flex-col justify-between relative overflow-hidden',
+                  'group rounded-2xl p-5 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border transition-all duration-300 flex flex-col justify-between relative overflow-hidden',
                   ex.featured
-                    ? 'border-teal-500/30 dark:border-teal-500/40 shadow-[0_8px_30px_rgba(0,80,77,0.08)] border-l-4 border-l-teal-600 dark:border-l-teal-400'
-                    : 'border-white/60 dark:border-teal-500/20 shadow-[0_4px_20px_rgba(0,0,0,0.04)] hover:shadow-[0_12px_32px_rgba(0,80,77,0.12)] border-l-4 border-l-teal-500/50'
+                    ? 'border-teal-500/30 dark:border-teal-500/40 shadow-sm hover:shadow-md ring-1 ring-teal-500/15'
+                    : 'border-slate-200/80 dark:border-slate-800/80 shadow-xs hover:shadow-md'
                 )}
               >
-                {/* AI / Protocol Badge */}
+                {/* Protocol Badge */}
                 {ex.featured && (
-                  <div className="absolute top-4 left-4 z-10 px-3 py-1 rounded-full bg-teal-600 text-white text-[10px] font-extrabold uppercase tracking-widest flex items-center gap-1 shadow-sm">
+                  <div className="absolute top-3.5 left-3.5 z-10 px-2.5 py-1 rounded-md bg-teal-600/90 backdrop-blur-sm text-white text-[10px] font-bold uppercase tracking-wider flex items-center gap-1 shadow-xs">
                     <Sparkles className="size-2.5" />
                     <span>Protocolo Clínico</span>
                   </div>

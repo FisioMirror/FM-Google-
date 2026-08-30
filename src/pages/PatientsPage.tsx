@@ -28,6 +28,7 @@ import {
   ArrowRight,
 } from 'lucide-react';
 import { useRealtimePresence } from '../lib/presenceService';
+import { staggerContainer, staggerItem, springTactile } from '../lib/motionVariants';
 
 interface PatientCard {
   id: string;
@@ -391,8 +392,17 @@ export function PatientsPage() {
       </div>
 
       {/* KPI Cards Bar */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="p-4 rounded-3xl bg-surface/70 dark:bg-surface-container-low/50 border border-outline/10 flex items-center gap-3.5">
+      <motion.div
+        variants={staggerContainer}
+        initial="hidden"
+        animate="show"
+        className="grid grid-cols-2 lg:grid-cols-4 gap-4"
+      >
+        <motion.div
+          variants={staggerItem}
+          whileHover={{ y: -3, scale: 1.015, transition: springTactile }}
+          className="p-4 rounded-3xl bg-surface/70 dark:bg-surface-container-low/50 border border-outline/10 flex items-center gap-3.5 cursor-default"
+        >
           <div className="size-11 rounded-2xl bg-teal-500/10 text-teal-600 dark:text-teal-400 flex items-center justify-center font-bold">
             <Users className="size-5" />
           </div>
@@ -408,9 +418,13 @@ export function PatientsPage() {
               )}
             </div>
           </div>
-        </div>
+        </motion.div>
 
-        <div className="p-4 rounded-3xl bg-surface/70 dark:bg-surface-container-low/50 border border-outline/10 flex items-center gap-3.5">
+        <motion.div
+          variants={staggerItem}
+          whileHover={{ y: -3, scale: 1.015, transition: springTactile }}
+          className="p-4 rounded-3xl bg-surface/70 dark:bg-surface-container-low/50 border border-outline/10 flex items-center gap-3.5 cursor-default"
+        >
           <div className="size-11 rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold">
             <CheckCircle2 className="size-5" />
           </div>
@@ -418,9 +432,13 @@ export function PatientsPage() {
             <p className="text-xs text-on-surface-variant font-medium">Tratamiento Activo</p>
             <p className="text-xl font-extrabold text-emerald-600 dark:text-emerald-400">{stats.active}</p>
           </div>
-        </div>
+        </motion.div>
 
-        <div className="p-4 rounded-3xl bg-surface/70 dark:bg-surface-container-low/50 border border-outline/10 flex items-center gap-3.5">
+        <motion.div
+          variants={staggerItem}
+          whileHover={{ y: -3, scale: 1.015, transition: springTactile }}
+          className="p-4 rounded-3xl bg-surface/70 dark:bg-surface-container-low/50 border border-outline/10 flex items-center gap-3.5 cursor-default"
+        >
           <div className="size-11 rounded-2xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center font-bold">
             <AlertTriangle className="size-5" />
           </div>
@@ -428,9 +446,13 @@ export function PatientsPage() {
             <p className="text-xs text-on-surface-variant font-medium">Requieren Atención</p>
             <p className="text-xl font-extrabold text-amber-600 dark:text-amber-400">{stats.needReview}</p>
           </div>
-        </div>
+        </motion.div>
 
-        <div className="p-4 rounded-3xl bg-surface/70 dark:bg-surface-container-low/50 border border-outline/10 flex items-center gap-3.5">
+        <motion.div
+          variants={staggerItem}
+          whileHover={{ y: -3, scale: 1.015, transition: springTactile }}
+          className="p-4 rounded-3xl bg-surface/70 dark:bg-surface-container-low/50 border border-outline/10 flex items-center gap-3.5 cursor-default"
+        >
           <div className="size-11 rounded-2xl bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 flex items-center justify-center font-bold">
             <Key className="size-5" />
           </div>
@@ -438,8 +460,8 @@ export function PatientsPage() {
             <p className="text-xs text-on-surface-variant font-medium">Tokens Pendientes</p>
             <p className="text-xl font-extrabold text-cyan-600 dark:text-cyan-400">{stats.pendingTokCount}</p>
           </div>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
 
       {/* Main Module Tabs Switcher */}
       <div className="flex bg-surface-container-low/80 p-1.5 rounded-2xl border border-outline/15 w-fit max-w-full">
@@ -561,8 +583,13 @@ export function PatientsPage() {
               onAction={() => navigate('/ocr-scanner')}
             />
           ) : viewMode === 'cards' ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-              {filteredPatients.map((p, idx) => {
+            <motion.div
+              variants={staggerContainer}
+              initial="hidden"
+              animate="show"
+              className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"
+            >
+              {filteredPatients.map((p) => {
                 const isAlert = p.statusColor === 'red';
                 const isGood = p.statusColor === 'green';
                 const presence = getUserStatus(p.id);
@@ -578,11 +605,11 @@ export function PatientsPage() {
                   <motion.div
                     key={p.id}
                     layout
-                    initial={{ opacity: 0, y: 12 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: idx * 0.05 }}
+                    variants={staggerItem}
+                    whileHover={{ y: -4, scale: 1.015, transition: springTactile }}
+                    whileTap={{ scale: 0.98 }}
                     onClick={() => navigate(`/paciente/${p.id}`)}
-                    className="glass-card p-6 rounded-3xl group cursor-pointer hover:-translate-y-1.5 transition-all duration-300 relative flex flex-col justify-between"
+                    className="glass-card p-6 rounded-3xl group cursor-pointer transition-shadow duration-300 relative flex flex-col justify-between"
                   >
                     <div>
                       {/* Top Header: Avatar/Badge + Name & ID + Status Tag */}
@@ -706,7 +733,7 @@ export function PatientsPage() {
                   </motion.div>
                 );
               })}
-            </div>
+            </motion.div>
           ) : (
             <div className="rounded-3xl border border-outline/15 bg-surface/80 dark:bg-surface-container-low/70 overflow-hidden shadow-sm">
               <table className="w-full text-left text-xs">

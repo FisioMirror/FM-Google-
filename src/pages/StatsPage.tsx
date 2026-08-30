@@ -34,6 +34,7 @@ import { isValidUUID } from '../lib/utils';
 import { isDemoAccount } from '../lib/demoAuth';
 import { ClinicalAnalyticsHub } from '../components/clinical/ClinicalAnalyticsHub';
 import { PatientRecoveryHub } from '../components/patient/PatientRecoveryHub';
+import { staggerContainer, staggerItem, springTactile } from '../lib/motionVariants';
 
 const dayLabels = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
 
@@ -633,9 +634,20 @@ export function StatsPage() {
       ) : (
         <>
           {/* KPI cards */}
-          <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+          <motion.div
+            variants={staggerContainer}
+            initial="hidden"
+            animate="show"
+            className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4"
+          >
             {kpiCards.map((card, i) => (
-              <motion.div key={card.label} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }} className={`glass-panel vibrant-hover p-6 rounded-2xl relative overflow-hidden group card-glow-hover ${i === 0 ? 'glass-teal' : i === 1 ? 'glass-blue' : i === 2 ? 'glass-warm' : ''}`}>
+              <motion.div
+                key={card.label}
+                variants={staggerItem}
+                whileHover={{ y: -4, scale: 1.02, transition: springTactile }}
+                whileTap={{ scale: 0.98 }}
+                className={`glass-panel vibrant-hover p-6 rounded-2xl relative overflow-hidden group card-glow-hover cursor-default transition-shadow ${i === 0 ? 'glass-teal' : i === 1 ? 'glass-blue' : i === 2 ? 'glass-warm' : ''}`}
+              >
                 <div className={`blob-${i === 0 ? 'teal' : i === 1 ? 'blue' : i === 2 ? 'warm' : 'teal'} absolute -top-8 -right-8 w-24 h-24 opacity-30 pointer-events-none`} />
                 <div className="flex justify-between items-start mb-4">
                   <div className={`w-12 h-12 ${card.bg} rounded-xl flex items-center justify-center animate-breathe-icon`}>
@@ -647,7 +659,7 @@ export function StatsPage() {
                 <h3 className="text-display-lg text-3xl lg:text-display-lg font-display-lg number-flow tabular-nums">{card.value}</h3>
               </motion.div>
             ))}
-          </div>
+          </motion.div>
 
           {isFisio ? (
             <>
