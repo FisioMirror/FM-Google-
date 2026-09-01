@@ -681,7 +681,7 @@ small, .text-muted {
 
 /* ── Gradient text — animated flowing gradient for titles ── */
 .gradient-text-flow {
-  background: linear-gradient(90deg, #00504d, #3a5f94, #156966, #00504d);
+  background: linear-gradient(90deg, #0f766e, #0284c7, #059669, #0d9488, #0f766e);
   background-size: 200% auto;
   -webkit-background-clip: text;
   background-clip: text;
@@ -695,7 +695,7 @@ small, .text-muted {
 }
 
 .gradient-text-teal {
-  background: linear-gradient(135deg, #00504d, #156966, #8ad3cf);
+  background: linear-gradient(135deg, #0f766e, #0d9488, #2dd4bf);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -703,7 +703,7 @@ small, .text-muted {
 }
 
 .gradient-text-blue {
-  background: linear-gradient(135deg, #3a5f94, #6b9adb, #adc6ff);
+  background: linear-gradient(135deg, #0369a1, #0284c7, #38bdf8);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -711,7 +711,7 @@ small, .text-muted {
 }
 
 .gradient-text-lime {
-  background: linear-gradient(135deg, #156966, #2d9d99, #C1FF72);
+  background: linear-gradient(135deg, #0f766e, #059669, #10b981);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -719,16 +719,16 @@ small, .text-muted {
 }
 
 .gradient-text-editorial {
-  background: linear-gradient(135deg, #00504d 0%, #3a5f94 50%, #21B5AF 100%);
+  background: linear-gradient(135deg, #0f766e 0%, #0284c7 50%, #059669 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
   color: transparent;
 }
 
-/* Animated living gradient — flows between teal, blue, teal-green */
+/* Animated living gradient — flows between teal, cyan, emerald and blue */
 .gradient-text-living {
-  background: linear-gradient(90deg, #00504d, #3a5f94, #156966, #21B5AF, #00504d);
+  background: linear-gradient(90deg, #0f766e, #0284c7, #059669, #0d9488, #0f766e);
   background-size: 200% auto;
   -webkit-background-clip: text;
   background-clip: text;
@@ -738,7 +738,7 @@ small, .text-muted {
 }
 
 .dark .gradient-text-living {
-  background: linear-gradient(90deg, #57dad3, #adc6ff, #8ad3cf, #21B5AF, #57dad3);
+  background: linear-gradient(90deg, #2dd4bf, #38bdf8, #34d399, #22d3ee, #2dd4bf);
   background-size: 200% auto;
   -webkit-background-clip: text;
   background-clip: text;
@@ -748,7 +748,23 @@ small, .text-muted {
 }
 
 .dark .gradient-text-editorial {
-  background: linear-gradient(135deg, #57dad3 0%, #adc6ff 50%, #21B5AF 100%);
+  background: linear-gradient(135deg, #2dd4bf 0%, #38bdf8 50%, #34d399 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+.dark .gradient-text-teal {
+  background: linear-gradient(135deg, #2dd4bf 0%, #14b8a6 50%, #5eead4 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+.dark .gradient-text-blue {
+  background: linear-gradient(135deg, #38bdf8 0%, #0284c7 50%, #7dd3fc 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -821,6 +837,47 @@ small, .text-muted {
   0%, 100% { transform: translate(0, 0) scale(1); }
   33% { transform: translate(20px, -15px) scale(1.1); }
   66% { transform: translate(-15px, 20px) scale(0.95); }
+}
+
+/* ── Kinematic Refraction & Glassmorphic Utilities (Design Guide Reference) ── */
+.refraction-border {
+  position: relative;
+}
+.refraction-border::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(203, 213, 225, 0.6) 0%, rgba(203, 213, 225, 0.15) 100%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+.dark .refraction-border::before {
+  background: linear-gradient(135deg, rgba(148, 163, 184, 0.12) 0%, rgba(148, 163, 184, 0.03) 100%);
+}
+
+.ios-glass-heavy {
+  background-color: rgba(255, 255, 255, 0.90);
+  backdrop-filter: blur(32px) saturate(180%);
+  -webkit-backdrop-filter: blur(32px) saturate(180%);
+  border: 1px solid rgba(203, 213, 225, 0.7);
+  box-shadow: 0 4px 20px -2px rgba(15, 118, 110, 0.04);
+}
+.dark .ios-glass-heavy {
+  background-color: rgba(14, 20, 29, 0.85);
+  border: 1px solid rgba(148, 163, 184, 0.08);
+  box-shadow: 0 8px 30px -4px rgba(0, 0, 0, 0.5);
+}
+
+@keyframes shimmerProgressBar {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+.animate-shimmer-bar {
+  animation: shimmerProgressBar 2.5s infinite;
 }
 
 /* ── Pulse ring — notification/activity indicator ── */

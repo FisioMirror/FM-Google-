@@ -396,69 +396,76 @@ export function PatientsPage() {
         variants={staggerContainer}
         initial="hidden"
         animate="show"
-        className="grid grid-cols-2 lg:grid-cols-4 gap-4"
+        className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4"
       >
         <motion.div
           variants={staggerItem}
           whileHover={{ y: -3, scale: 1.015, transition: springTactile }}
-          className="p-4 rounded-3xl bg-surface/70 dark:bg-surface-container-low/50 border border-outline/10 flex items-center gap-3.5 cursor-default"
+          className="ios-glass-heavy refraction-border p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl flex flex-col justify-between group cursor-default transition-all shadow-sm hover:shadow-md"
         >
-          <div className="size-11 rounded-2xl bg-teal-500/10 text-teal-600 dark:text-teal-400 flex items-center justify-center font-bold">
-            <Users className="size-5" />
-          </div>
-          <div className="flex-1">
-            <p className="text-xs text-on-surface-variant font-medium">Total Pacientes</p>
-            <div className="flex items-center justify-between gap-2">
-              <p className="text-xl font-extrabold text-on-surface">{stats.total}</p>
-              {onlineCount > 0 && (
-                <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                  {onlineCount} en vivo
-                </span>
-              )}
+          <div className="flex items-start justify-between mb-2 sm:mb-3">
+            <div className="size-9 sm:size-11 rounded-xl sm:rounded-2xl bg-teal-500/10 text-teal-700 dark:text-teal-300 flex items-center justify-center font-bold">
+              <Users className="size-4 sm:size-5" />
             </div>
+            <span className="text-[11px] sm:text-xs text-on-surface-variant font-semibold">Total Pacientes</span>
+          </div>
+          <div className="flex items-end justify-between gap-2">
+            <p className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-slate-100 tabular-nums tracking-tight">{stats.total}</p>
+            {onlineCount > 0 && (
+              <span className="inline-flex items-center gap-1 sm:gap-1.5 text-[10px] sm:text-[11px] font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-500/10 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full border border-emerald-500/20">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                <span className="hidden xs:inline">{onlineCount} en vivo</span>
+                <span className="xs:hidden">{onlineCount}</span>
+              </span>
+            )}
           </div>
         </motion.div>
 
         <motion.div
           variants={staggerItem}
           whileHover={{ y: -3, scale: 1.015, transition: springTactile }}
-          className="p-4 rounded-3xl bg-surface/70 dark:bg-surface-container-low/50 border border-outline/10 flex items-center gap-3.5 cursor-default"
+          className="ios-glass-heavy refraction-border p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl flex flex-col justify-between group cursor-default transition-all shadow-sm hover:shadow-md"
         >
-          <div className="size-11 rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold">
-            <CheckCircle2 className="size-5" />
+          <div className="flex items-start justify-between mb-2 sm:mb-3">
+            <div className="size-9 sm:size-11 rounded-xl sm:rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold">
+              <CheckCircle2 className="size-4 sm:size-5" />
+            </div>
+            <span className="text-[11px] sm:text-xs text-on-surface-variant font-semibold">Tratamiento Activo</span>
           </div>
-          <div>
-            <p className="text-xs text-on-surface-variant font-medium">Tratamiento Activo</p>
-            <p className="text-xl font-extrabold text-emerald-600 dark:text-emerald-400">{stats.active}</p>
+          <div className="flex items-end gap-2">
+            <p className="text-2xl sm:text-3xl font-black text-emerald-600 dark:text-emerald-400 tabular-nums tracking-tight">{stats.active}</p>
           </div>
         </motion.div>
 
         <motion.div
           variants={staggerItem}
           whileHover={{ y: -3, scale: 1.015, transition: springTactile }}
-          className="p-4 rounded-3xl bg-surface/70 dark:bg-surface-container-low/50 border border-outline/10 flex items-center gap-3.5 cursor-default"
+          className="ios-glass-heavy refraction-border p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl flex flex-col justify-between group cursor-default transition-all shadow-sm hover:shadow-md"
         >
-          <div className="size-11 rounded-2xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center font-bold">
-            <AlertTriangle className="size-5" />
+          <div className="flex items-start justify-between mb-2 sm:mb-3">
+            <div className="size-9 sm:size-11 rounded-xl sm:rounded-2xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center font-bold">
+              <AlertTriangle className="size-4 sm:size-5" />
+            </div>
+            <span className="text-[11px] sm:text-xs text-on-surface-variant font-semibold">Requieren Atención</span>
           </div>
-          <div>
-            <p className="text-xs text-on-surface-variant font-medium">Requieren Atención</p>
-            <p className="text-xl font-extrabold text-amber-600 dark:text-amber-400">{stats.needReview}</p>
+          <div className="flex items-end gap-2">
+            <p className="text-2xl sm:text-3xl font-black text-amber-600 dark:text-amber-400 tabular-nums tracking-tight">{stats.needReview}</p>
           </div>
         </motion.div>
 
         <motion.div
           variants={staggerItem}
           whileHover={{ y: -3, scale: 1.015, transition: springTactile }}
-          className="p-4 rounded-3xl bg-surface/70 dark:bg-surface-container-low/50 border border-outline/10 flex items-center gap-3.5 cursor-default"
+          className="ios-glass-heavy refraction-border p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl flex flex-col justify-between group cursor-default transition-all shadow-sm hover:shadow-md"
         >
-          <div className="size-11 rounded-2xl bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 flex items-center justify-center font-bold">
-            <Key className="size-5" />
+          <div className="flex items-start justify-between mb-2 sm:mb-3">
+            <div className="size-9 sm:size-11 rounded-xl sm:rounded-2xl bg-teal-600/10 text-teal-700 dark:text-teal-300 flex items-center justify-center font-bold">
+              <Key className="size-4 sm:size-5" />
+            </div>
+            <span className="text-[11px] sm:text-xs text-on-surface-variant font-semibold">Tokens Pendientes</span>
           </div>
-          <div>
-            <p className="text-xs text-on-surface-variant font-medium">Tokens Pendientes</p>
-            <p className="text-xl font-extrabold text-cyan-600 dark:text-cyan-400">{stats.pendingTokCount}</p>
+          <div className="flex items-end gap-2">
+            <p className="text-2xl sm:text-3xl font-black text-teal-700 dark:text-teal-300 tabular-nums tracking-tight">{stats.pendingTokCount}</p>
           </div>
         </motion.div>
       </motion.div>
@@ -609,19 +616,28 @@ export function PatientsPage() {
                     whileHover={{ y: -4, scale: 1.015, transition: springTactile }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => navigate(`/paciente/${p.id}`)}
-                    className="glass-card p-6 rounded-3xl group cursor-pointer transition-shadow duration-300 relative flex flex-col justify-between"
+                    className="ios-glass-heavy refraction-border p-6 rounded-3xl group cursor-pointer transition-all duration-300 relative flex flex-col justify-between shadow-sm hover:shadow-xl"
                   >
                     <div>
                       {/* Top Header: Avatar/Badge + Name & ID + Status Tag */}
                       <div className="flex justify-between items-start mb-5">
                         <div className="flex items-center gap-3.5">
-                          <div className={cn(
-                            "w-12 h-12 rounded-2xl flex items-center justify-center font-extrabold text-sm shadow-sm shrink-0",
-                            isAlert 
-                              ? "bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20" 
-                              : "bg-teal-500/10 text-teal-700 dark:text-teal-300 border border-teal-500/20"
-                          )}>
-                            {initials || 'FM'}
+                          <div className="relative">
+                            <div className={cn(
+                              "w-12 h-12 rounded-full flex items-center justify-center font-extrabold text-base border-2 shadow-sm shrink-0",
+                              isAlert 
+                                ? "bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-200 dark:border-rose-800" 
+                                : "bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-100 border-white dark:border-slate-700"
+                            )}>
+                              {initials || 'FM'}
+                            </div>
+                            {isAlert ? (
+                              <div className="absolute -top-1 -right-1 w-5 h-5 bg-rose-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white dark:border-slate-800 shadow-xs">
+                                !
+                              </div>
+                            ) : presence ? (
+                              <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-500 border-2 border-white dark:border-slate-800 rounded-full animate-pulse" />
+                            ) : null}
                           </div>
                           <div>
                             <h3 className="font-bold text-base text-on-surface group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors line-clamp-1">
@@ -629,61 +645,59 @@ export function PatientsPage() {
                             </h3>
                             <div className="flex items-center gap-2 mt-0.5">
                               <p className="text-[11px] font-mono text-outline uppercase tracking-wider font-semibold">
-                                {p.fmId || `#FM-${p.id.slice(0, 4)}`}
+                                {p.fmId || `FM-${p.id.slice(0, 4).toUpperCase()}`}
                               </p>
                               {presence && (
-                                <span className={cn(
-                                  "inline-flex items-center gap-1 text-[10px] font-bold px-1.5 py-0.2 rounded-full border",
-                                  presence.status === 'en_ejercicio'
-                                    ? "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border-emerald-500/30"
-                                    : presence.status === 'videoconsulta'
-                                    ? "bg-indigo-500/15 text-indigo-700 dark:text-indigo-300 border-indigo-500/30"
-                                    : "bg-teal-500/15 text-teal-700 dark:text-teal-300 border-teal-500/30"
-                                )}>
-                                  <span className={cn(
-                                    "w-1.5 h-1.5 rounded-full",
-                                    presence.status === 'en_ejercicio' ? "bg-emerald-500 animate-pulse" :
-                                    presence.status === 'videoconsulta' ? "bg-indigo-500 animate-ping" : "bg-teal-500"
-                                  )} />
-                                  {presence.status === 'en_ejercicio' ? 'En ejercicio' : presence.status === 'videoconsulta' ? 'En videollamada' : 'En línea'}
+                                <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.2 rounded-full bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30">
+                                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                                  {presence.status === 'en_ejercicio' ? 'En ejercicio' : 'En línea'}
                                 </span>
                               )}
                             </div>
                           </div>
                         </div>
 
-                        <div className={cn(
-                          "px-3 py-1 rounded-full flex items-center gap-1.5 text-xs font-bold shrink-0",
+                        <span className={cn(
+                          "px-3 py-1 text-xs font-bold rounded-full border uppercase tracking-wider flex items-center gap-1.5 shrink-0",
                           isAlert
-                            ? "bg-red-500/10 text-red-600 border border-red-500/20"
+                            ? "bg-rose-50 text-rose-700 dark:bg-rose-950/40 dark:text-rose-300 border-rose-200"
                             : isGood
-                            ? "bg-emerald-500/10 text-emerald-600 border border-emerald-500/20"
-                            : "bg-teal-500/10 text-teal-600 border border-teal-500/20"
+                            ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300 border-emerald-200"
+                            : "bg-teal-50 text-teal-700 dark:bg-teal-950/40 dark:text-teal-300 border-teal-200"
                         )}>
-                          <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: isAlert ? '#EF4444' : isGood ? '#10B981' : '#00504d' }} />
+                          <span className={cn(
+                            "w-1.5 h-1.5 rounded-full",
+                            isAlert ? "bg-rose-500" : isGood ? "bg-emerald-500 animate-pulse" : "bg-teal-600"
+                          )} />
                           <span>{p.status}</span>
-                        </div>
+                        </span>
                       </div>
 
-                      {/* Recovery Progress Bar */}
-                      <div className="space-y-1.5 mb-5">
+                      {/* Recovery Progress Bar with Shimmer */}
+                      <div className="space-y-2 mb-5">
                         <div className="flex justify-between items-end text-xs">
                           <span className="text-on-surface-variant font-semibold">Progreso de Recuperación</span>
                           <span className={cn(
-                            "font-extrabold",
-                            isAlert ? "text-red-600 dark:text-red-400" : "text-teal-700 dark:text-teal-300"
+                            "font-extrabold text-sm",
+                            isAlert ? "text-rose-600 dark:text-rose-400" : "text-teal-700 dark:text-teal-300"
                           )}>
                             {p.recoveryProgress}%
                           </span>
                         </div>
-                        <div className="w-full bg-surface-container h-2 rounded-full overflow-hidden p-0.5 border border-outline-variant/10">
+                        <div className="w-full bg-slate-200/80 dark:bg-slate-700/60 h-2.5 rounded-full overflow-hidden relative">
                           <div
                             className={cn(
-                              "h-full rounded-full transition-all duration-700",
-                              isAlert ? "bg-red-500" : p.recoveryProgress >= 75 ? "bg-emerald-500" : "bg-teal-600"
+                              "h-full rounded-full transition-all duration-700 relative overflow-hidden",
+                              isAlert ? "bg-rose-500" : p.recoveryProgress >= 75 ? "bg-emerald-500" : "bg-teal-600"
                             )}
-                            style={{ width: `${Math.max(4, p.recoveryProgress)}%` }}
-                          />
+                            style={{ width: `${Math.max(6, p.recoveryProgress)}%` }}
+                          >
+                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full animate-shimmer-bar" />
+                          </div>
+                        </div>
+                        <div className="flex justify-between text-[11px] text-outline font-medium">
+                          <span>{p.sessionCount || 1} sesiones completadas</span>
+                          <span>Plan prescrito</span>
                         </div>
                       </div>
 
@@ -699,36 +713,16 @@ export function PatientsPage() {
                         <div>
                           <p className="text-[10px] uppercase font-bold text-outline tracking-wider mb-1">Diagnóstico</p>
                           <p className="font-semibold text-on-surface line-clamp-1">
-                            {p.condition || 'Rehabilitación'}
+                            {p.condition || 'En evaluación'}
                           </p>
                         </div>
                       </div>
                     </div>
 
-                    {/* Bottom Action Area */}
-                    <div className="flex items-center justify-between pt-1">
-                      <div className="flex items-center -space-x-1.5">
-                        <div className="w-7 h-7 rounded-full border-2 border-white dark:border-surface-container bg-teal-100 text-teal-800 dark:bg-teal-950 dark:text-teal-200 flex items-center justify-center text-[9px] font-extrabold shadow-xs">
-                          AI
-                        </div>
-                        <div className="w-7 h-7 rounded-full border-2 border-white dark:border-surface-container bg-surface-container-highest text-on-surface-variant flex items-center justify-center text-[9px] font-extrabold shadow-xs">
-                          PT
-                        </div>
-                        <span className="text-[11px] text-outline font-medium pl-3">
-                          {p.sessionCount} ses.
-                        </span>
-                      </div>
-
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          navigate(`/paciente/${p.id}`);
-                        }}
-                        className="text-teal-600 dark:text-teal-400 hover:text-teal-700 font-bold text-xs flex items-center gap-1 group-hover:gap-1.5 transition-all"
-                      >
-                        <span>Ver Expediente</span>
-                        <ArrowRight className="size-3.5" />
-                      </button>
+                    {/* Bottom Action Area (Refraction CTA Style) */}
+                    <div className="flex items-center justify-between w-full py-3 px-4 rounded-xl bg-teal-50/70 dark:bg-teal-950/40 hover:bg-teal-100/90 dark:hover:bg-teal-900/50 text-teal-800 dark:text-teal-200 font-bold transition-all group-hover:border-teal-300 dark:group-hover:border-teal-700 border border-transparent text-xs">
+                      <span>Ver Expediente</span>
+                      <ArrowRight className="size-4 transform group-hover:translate-x-1 transition-transform" />
                     </div>
                   </motion.div>
                 );
@@ -864,19 +858,19 @@ export function PatientsPage() {
               {filteredTokens.map((tok) => (
                 <div
                   key={tok.id}
-                  className="p-5 rounded-3xl bg-surface/80 dark:bg-surface-container-low/70 border border-outline/15 shadow-sm hover:border-teal-500/40 transition-all flex flex-col justify-between gap-4"
+                  className="p-5 rounded-3xl ios-glass-heavy refraction-border shadow-sm hover:shadow-lg transition-all flex flex-col justify-between gap-4"
                 >
                   <div className="flex items-start justify-between gap-2">
                     <div>
                       <span className="text-[10px] text-outline uppercase font-bold tracking-wider">Código de Activación</span>
                       <div className="flex items-center gap-2 mt-1">
-                        <span className="text-2xl font-mono font-extrabold tracking-widest text-teal-600 dark:text-teal-400">
+                        <span className="text-2xl font-mono font-extrabold tracking-widest text-teal-700 dark:text-teal-300">
                           {tok.token}
                         </span>
                         <button
                           onClick={() => handleCopyCode(tok.token)}
                           title="Copiar código"
-                          className="p-1.5 rounded-lg hover:bg-surface-container text-outline hover:text-on-surface transition-colors"
+                          className="p-1.5 rounded-lg hover:bg-teal-500/10 text-teal-700 dark:text-teal-300 transition-colors"
                         >
                           {copiedToken === tok.token ? <Check className="size-4 text-emerald-500" /> : <Copy className="size-4" />}
                         </button>
@@ -887,8 +881,8 @@ export function PatientsPage() {
                       className={cn(
                         'text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider',
                         tok.status === 'activado'
-                          ? 'bg-emerald-500/10 text-emerald-600 border border-emerald-500/20'
-                          : 'bg-amber-500/10 text-amber-600 border border-amber-500/20'
+                          ? 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20'
+                          : 'bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/20'
                       )}
                     >
                       {tok.status}

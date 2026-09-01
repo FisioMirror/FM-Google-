@@ -694,7 +694,7 @@ export function StatsPage() {
                           <YAxis allowDecimals={false} tick={{ fill: '#9CB4B8', fontSize: 11 }} axisLine={false} tickLine={false} width={32} />
                           <Tooltip {...tooltipStyle} />
                           <Bar dataKey="sesiones" name="Sesiones" fill="url(#barGradFisio)" radius={[8, 8, 0, 0]} maxBarSize={56} animationDuration={900} animationEasing="ease-out">
-                            <LabelList dataKey="sesiones" position="top" fill="#E6F4F1" fontSize={12} fontWeight={700} />
+                            <LabelList dataKey="sesiones" position="top" className="fill-teal-700 dark:fill-teal-300 font-bold" fontSize={12} />
                           </Bar>
                         </BarChart>
                       </ResponsiveContainer>
@@ -746,9 +746,9 @@ export function StatsPage() {
                 </GlassPanel>
               </div>
 
-              {/* Top patients bar chart + Diagnosis pie */}
+              {/* Top patients bar chart + Diagnosis distribution */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <GlassPanel className="p-8 rounded-[2rem] flex flex-col card-glow-hover relative overflow-hidden">
+                <GlassPanel className="p-6 sm:p-8 rounded-[2rem] flex flex-col card-glow-hover relative overflow-hidden">
                   <div className="blob-blue absolute -top-12 -right-12 w-32 h-32 opacity-20 pointer-events-none" />
                   <div className="flex justify-between items-center mb-4">
                     <h3 className="font-title-md text-title-md gradient-text-blue">Pacientes Más Activos</h3>
@@ -762,7 +762,7 @@ export function StatsPage() {
                       </div>
                     ) : (
                       <ResponsiveContainer width="100%" height="100%">
-                        <BarChart data={topPatientsChartData} layout="vertical" margin={{ top: 4, right: 24, left: 4, bottom: 4 }}>
+                        <BarChart data={topPatientsChartData} layout="vertical" margin={{ top: 4, right: 30, left: 4, bottom: 4 }}>
                           <defs>
                             <linearGradient id="barGradPatients" x1="0" y1="0" x2="1" y2="0">
                               <stop offset="0%" stopColor={CHART_COLORS.info} stopOpacity={0.9} />
@@ -770,11 +770,11 @@ export function StatsPage() {
                             </linearGradient>
                           </defs>
                           <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" horizontal={false} />
-                          <XAxis type="number" tick={{ fill: '#9CB4B8', fontSize: 11 }} axisLine={false} tickLine={false} allowDecimals={false} />
-                          <YAxis type="category" dataKey="nombre" tick={{ fill: '#E6F4F1', fontSize: 11, fontWeight: 600 }} axisLine={false} tickLine={false} width={90} />
+                          <XAxis type="number" tick={{ fill: '#64748b', fontSize: 11, fontWeight: 600 }} axisLine={false} tickLine={false} allowDecimals={false} />
+                          <YAxis type="category" dataKey="nombre" tick={{ fill: '#0f766e', fontSize: 11, fontWeight: 700 }} axisLine={false} tickLine={false} width={95} />
                           <Tooltip {...tooltipStyle} />
                           <Bar dataKey="sesiones" name="Sesiones" fill="url(#barGradPatients)" radius={[0, 8, 8, 0]} maxBarSize={26} animationDuration={900} animationEasing="ease-out">
-                            <LabelList dataKey="sesiones" position="right" fill="#E6F4F1" fontSize={11} fontWeight={700} />
+                            <LabelList dataKey="sesiones" position="right" className="fill-teal-800 dark:fill-teal-200" fontSize={11} fontWeight={700} />
                           </Bar>
                         </BarChart>
                       </ResponsiveContainer>
@@ -782,44 +782,47 @@ export function StatsPage() {
                   </div>
                 </GlassPanel>
 
-                <GlassPanel className="p-8 rounded-[2rem] flex flex-col card-glow-hover relative overflow-hidden">
+                <GlassPanel className="p-6 sm:p-8 rounded-[2rem] flex flex-col card-glow-hover relative overflow-hidden">
                   <div className="blob-warm absolute -top-12 -right-12 w-32 h-32 opacity-20 pointer-events-none" />
                   <div className="flex justify-between items-center mb-4">
-                    <h3 className="font-title-md text-title-md gradient-text-editorial">Sesiones por Diagnóstico</h3>
+                    <div>
+                      <h3 className="font-title-md text-title-md gradient-text-editorial">Sesiones por Diagnóstico</h3>
+                      <p className="text-xs text-on-surface-variant mt-0.5">Distribución de carga clínica</p>
+                    </div>
                     <Icon name="medical_information" size={24} className="text-secondary" />
                   </div>
-                  <div className="h-64">
+                  <div className="flex-1 min-h-[220px]">
                     {diagnosisDistribution.length === 0 ? (
                       <div className="flex flex-col items-center justify-center h-full text-on-surface-variant empty-state-premium">
                         <Icon name="medical_information" size={40} className="opacity-30 mb-2" />
                         <p className="text-sm">No hay diagnósticos con sesiones registradas.</p>
                       </div>
                     ) : (
-                      <ResponsiveContainer width="100%" height="100%">
-                        <PieChart>
-                          <Pie
-                            data={diagnosisDistribution}
-                            dataKey="value"
-                            nameKey="name"
-                            cx="50%"
-                            cy="50%"
-                            outerRadius={85}
-                            paddingAngle={2}
-                            animationDuration={1000}
-                            animationEasing="ease-out"
-                          >
-                            {diagnosisDistribution.map((entry, i) => (
-                              <Cell key={i} fill={entry.color} stroke="rgba(0,0,0,0.25)" strokeWidth={1} />
-                            ))}
-                          </Pie>
-                          <Tooltip {...tooltipStyle} />
-                          <Legend
-                            wrapperStyle={{ fontSize: 10, color: '#9CB4B8', fontWeight: 600 }}
-                            iconType="circle"
-                            iconSize={8}
-                          />
-                        </PieChart>
-                      </ResponsiveContainer>
+                      <div className="space-y-3 pt-2">
+                        {diagnosisDistribution.map((item, idx) => {
+                          const totalVal = diagnosisDistribution.reduce((acc, curr) => acc + curr.value, 0);
+                          const pct = totalVal > 0 ? Math.round((item.value / totalVal) * 100) : 0;
+                          return (
+                            <div key={idx} className="space-y-1.5 p-2 rounded-xl hover:bg-surface-variant/20 transition-colors">
+                              <div className="flex justify-between items-center text-xs">
+                                <span className="font-bold text-on-surface flex items-center gap-2">
+                                  <span className="size-2.5 rounded-full shrink-0" style={{ backgroundColor: item.color }} />
+                                  <span className="truncate max-w-[200px] sm:max-w-xs">{item.name}</span>
+                                </span>
+                                <span className="font-mono text-on-surface font-bold">
+                                  {item.value} <span className="text-[10px] text-on-surface-variant font-normal">({pct}%)</span>
+                                </span>
+                              </div>
+                              <div className="w-full h-2 bg-surface-variant/40 rounded-full overflow-hidden">
+                                <div
+                                  className="h-full rounded-full transition-all duration-500"
+                                  style={{ width: `${pct}%`, backgroundColor: item.color }}
+                                />
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
                     )}
                   </div>
                 </GlassPanel>

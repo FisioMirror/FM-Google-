@@ -321,47 +321,62 @@ export function PatientDashboard() {
         variants={staggerContainer}
         initial="hidden"
         animate="show"
-        className="grid grid-cols-1 sm:grid-cols-3 gap-4"
+        className="grid grid-cols-3 gap-2.5 sm:gap-4"
       >
         <motion.div
           variants={staggerItem}
           whileHover={{ y: -3, scale: 1.015, transition: springTactile }}
-          className="p-5 rounded-3xl bg-surface/80 dark:bg-surface-container-low/60 border border-outline/10 flex items-center gap-4 cursor-default"
+          className="ios-glass-heavy refraction-border p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl flex flex-col justify-between cursor-default shadow-sm hover:shadow-md transition-all"
         >
-          <div className="size-12 rounded-2xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center">
-            <Flame className="size-6" />
+          <div className="flex items-start justify-between mb-2">
+            <div className="size-9 sm:size-11 rounded-xl sm:rounded-2xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
+              <Flame className="size-4 sm:size-5" />
+            </div>
+            <span className="text-[10px] sm:text-xs font-semibold text-on-surface-variant uppercase tracking-wider hidden xs:inline">Racha</span>
           </div>
           <div>
-            <p className="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Racha Activa</p>
-            <p className="text-2xl font-extrabold text-on-surface">{kpi.streak} <span className="text-xs font-normal text-outline">días</span></p>
+            <p className="text-[10px] sm:text-xs font-semibold text-on-surface-variant uppercase tracking-wider line-clamp-1 xs:hidden">Racha</p>
+            <p className="text-xl sm:text-2xl lg:text-3xl font-black text-slate-900 dark:text-slate-100 tabular-nums tracking-tight">
+              {kpi.streak} <span className="text-[10px] sm:text-xs font-semibold text-outline">días</span>
+            </p>
           </div>
         </motion.div>
 
         <motion.div
           variants={staggerItem}
           whileHover={{ y: -3, scale: 1.015, transition: springTactile }}
-          className="p-5 rounded-3xl bg-surface/80 dark:bg-surface-container-low/60 border border-outline/10 flex items-center gap-4 cursor-default"
+          className="ios-glass-heavy refraction-border p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl flex flex-col justify-between cursor-default shadow-sm hover:shadow-md transition-all"
         >
-          <div className="size-12 rounded-2xl bg-teal-500/10 text-teal-600 dark:text-teal-400 flex items-center justify-center">
-            <CheckCircle2 className="size-6" />
+          <div className="flex items-start justify-between mb-2">
+            <div className="size-9 sm:size-11 rounded-xl sm:rounded-2xl bg-teal-500/10 text-teal-600 dark:text-teal-400 flex items-center justify-center shrink-0">
+              <CheckCircle2 className="size-4 sm:size-5" />
+            </div>
+            <span className="text-[10px] sm:text-xs font-semibold text-on-surface-variant uppercase tracking-wider hidden xs:inline">Sesiones</span>
           </div>
           <div>
-            <p className="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Sesiones Totales</p>
-            <p className="text-2xl font-extrabold text-on-surface">{kpi.totalSessions} <span className="text-xs font-normal text-outline">completadas</span></p>
+            <p className="text-[10px] sm:text-xs font-semibold text-on-surface-variant uppercase tracking-wider line-clamp-1 xs:hidden">Sesiones</p>
+            <p className="text-xl sm:text-2xl lg:text-3xl font-black text-teal-700 dark:text-teal-300 tabular-nums tracking-tight">
+              {kpi.totalSessions} <span className="text-[10px] sm:text-xs font-semibold text-outline">total</span>
+            </p>
           </div>
         </motion.div>
 
         <motion.div
           variants={staggerItem}
           whileHover={{ y: -3, scale: 1.015, transition: springTactile }}
-          className="p-5 rounded-3xl bg-surface/80 dark:bg-surface-container-low/60 border border-outline/10 flex items-center gap-4 cursor-default"
+          className="ios-glass-heavy refraction-border p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl flex flex-col justify-between cursor-default shadow-sm hover:shadow-md transition-all"
         >
-          <div className="size-12 rounded-2xl bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 flex items-center justify-center">
-            <Clock className="size-6" />
+          <div className="flex items-start justify-between mb-2">
+            <div className="size-9 sm:size-11 rounded-xl sm:rounded-2xl bg-teal-600/10 text-teal-700 dark:text-teal-300 flex items-center justify-center shrink-0">
+              <Clock className="size-4 sm:size-5" />
+            </div>
+            <span className="text-[10px] sm:text-xs font-semibold text-on-surface-variant uppercase tracking-wider hidden xs:inline">Minutos</span>
           </div>
           <div>
-            <p className="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Minutos Esta Semana</p>
-            <p className="text-2xl font-extrabold text-on-surface">{kpi.weeklyMinutes} <span className="text-xs font-normal text-outline">min</span></p>
+            <p className="text-[10px] sm:text-xs font-semibold text-on-surface-variant uppercase tracking-wider line-clamp-1 xs:hidden">Minutos</p>
+            <p className="text-xl sm:text-2xl lg:text-3xl font-black text-slate-900 dark:text-slate-100 tabular-nums tracking-tight">
+              {kpi.weeklyMinutes} <span className="text-[10px] sm:text-xs font-semibold text-outline">min</span>
+            </p>
           </div>
         </motion.div>
       </motion.div>
@@ -378,11 +393,12 @@ export function PatientDashboard() {
         {/* Left 2 Cols: Daily Routine & Primary Action */}
         <div className="lg:col-span-2 space-y-6">
           {/* Featured AR Session Card */}
-          <div className="relative overflow-hidden rounded-3xl p-6 lg:p-8 bg-surface/90 dark:bg-surface-container-low/80 border border-outline/15 shadow-sm">
+          <div className="relative overflow-hidden rounded-3xl p-6 lg:p-8 ios-glass-heavy refraction-border shadow-md">
             <BorderBeam size={120} duration={8} colorFrom="#14b8a6" colorTo="#38bdf8" />
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 relative z-10">
               <div className="space-y-2 max-w-md">
-                <span className="text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-full bg-teal-500/10 text-teal-600 border border-teal-500/20">
+                <span className="inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-full bg-teal-500/10 text-teal-700 dark:text-teal-300 border border-teal-500/20">
+                  <span className="w-1.5 h-1.5 rounded-full bg-teal-500 animate-pulse" />
                   Sesión Guiada AR
                 </span>
                 <h3 className="text-xl font-bold text-on-surface">Rutina de Hoy</h3>
@@ -395,7 +411,7 @@ export function PatientDashboard() {
 
               <button
                 onClick={() => navigate('/calibration')}
-                className="px-6 py-4 rounded-2xl bg-primary text-on-primary font-bold text-sm hover:bg-primary/90 transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary/25 shrink-0"
+                className="px-6 py-3.5 rounded-2xl bg-teal-600 hover:bg-teal-700 text-white font-bold text-sm transition-all flex items-center justify-center gap-2 shadow-lg shadow-teal-700/20 active:scale-95 shrink-0"
               >
                 <Play className="size-4 fill-current" />
                 <span>Comenzar Sesión</span>

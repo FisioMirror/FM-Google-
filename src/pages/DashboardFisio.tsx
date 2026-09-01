@@ -6,7 +6,6 @@ import { GlassPanel } from '../components/ui/Glass';
 import { Spinner } from '../components/ui/Loader';
 
 import { MedicalIcon } from '../components/ui/MedicalIcon';
-import { ExpandableToggle } from '../components/ui/ExpandableToggle';
 import { CommandPalette, type CommandItem } from '../components/ui/CommandPalette';
 import { InsightBanner } from '../components/ui/InsightBanner';
 import { HelpGuideButton } from '../components/ui/HelpGuideButton';
@@ -20,7 +19,6 @@ import { AuroraText } from '../components/ui/AuroraText';
 import { BorderBeam } from '../components/ui/BorderBeam';
 import { ConfettiStars } from '../components/ui/ConfettiButton';
 import { UNIFIED_DEMO_PATIENTS } from '../data/unifiedDemoData';
-import { AvatarWithBadge } from '../components/heroui';
 import { ArrowRight, ChevronRight } from 'lucide-react';
 import { isValidUUID } from '../lib/utils';
 import { isDemoAccount } from '../lib/demoAuth';
@@ -619,31 +617,36 @@ export function DashboardFisio() {
         variants={staggerContainer}
         initial="hidden"
         animate="show"
-        className="section-bg-teal grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+        className="grid grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-5"
       >
         {kpiCards.map((card) => (
           <motion.div
             key={card.label}
             variants={staggerItem}
-            whileHover={{ y: -4, scale: 1.02, transition: springTactile }}
+            whileHover={{ y: -4, scale: 1.015, transition: springTactile }}
             whileTap={{ scale: 0.98 }}
-            className="glass-card vibrant-hover p-6 rounded-3xl shadow-ambient-teal group cursor-default relative overflow-hidden accent-teal breathe-teal hover-lift"
+            className="ios-glass-heavy refraction-border p-4 sm:p-6 rounded-2xl sm:rounded-3xl group cursor-default relative overflow-hidden flex flex-col justify-between transition-all duration-300 shadow-sm hover:shadow-xl"
           >
-            <div className="blob-teal w-24 h-24 -top-6 -right-6 opacity-50" />
-            <div className="flex justify-between items-start mb-4 relative">
-              <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center breathe-teal">
-                <Icon name={card.icon} size={24} className="icon-accent-teal animate-breathe-icon" />
+            <div className="flex justify-between items-start mb-3 sm:mb-4 relative z-10">
+              <div className="size-10 sm:size-12 rounded-xl sm:rounded-2xl bg-teal-500/10 text-teal-700 dark:text-teal-300 flex items-center justify-center font-bold">
+                <Icon name={card.icon} size={22} className="animate-breathe-icon" />
               </div>
+              {loadingKpis ? (
+                <span className="text-[9px] sm:text-[10px] font-bold text-outline px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full bg-slate-100 dark:bg-slate-800">Cargando...</span>
+              ) : realIsEmpty ? (
+                <span className="text-[9px] sm:text-[10px] font-bold text-amber-700 dark:text-amber-300 bg-amber-500/10 border border-amber-500/20 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full">Sin datos</span>
+              ) : (
+                <span className="inline-flex items-center gap-1 sm:gap-1.5 text-[9px] sm:text-[10px] font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-500/10 border border-emerald-500/20 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  <span className="hidden xs:inline">En vivo</span>
+                </span>
+              )}
             </div>
-            <p className="text-on-surface-variant text-sm font-semibold uppercase tracking-wider relative">{card.label}</p>
-            <h3 className="text-display-lg text-3xl lg:text-display-lg font-display-lg mt-1 gradient-text-living relative">{card.value}</h3>
-            {loadingKpis ? (
-              <p className="text-[10px] text-outline mt-1 inline-block px-2 py-0.5 rounded-full relative">Cargando...</p>
-            ) : realIsEmpty ? (
-              <p className="text-[10px] text-outline mt-1 badge-warm inline-block px-2 py-0.5 rounded-full relative">Sin datos suficientes</p>
-            ) : (
-              <p className="text-[10px] text-success mt-1 badge-lime inline-block px-2 py-0.5 rounded-full breathe-badge relative">Datos reales</p>
-            )}
+            
+            <div className="relative z-10">
+              <p className="text-[11px] sm:text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-0.5 sm:mb-1 line-clamp-1">{card.label}</p>
+              <h3 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 dark:text-slate-100 tabular-nums tracking-tight">{card.value}</h3>
+            </div>
           </motion.div>
         ))}
       </motion.div>
@@ -653,31 +656,30 @@ export function DashboardFisio() {
         variants={staggerContainer}
         initial="hidden"
         animate="show"
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6"
       >
         {quickActions.map((action) => (
           <motion.button
             key={action.title}
             variants={staggerItem}
-            whileHover={{ scale: 1.025, y: -4, transition: springTactile }}
-            whileTap={{ scale: 0.97 }}
+            whileHover={{ scale: 1.02, y: -3, transition: springTactile }}
+            whileTap={{ scale: 0.98 }}
             onClick={() => navigate(action.route)}
-            className="relative overflow-hidden group glass-panel p-8 rounded-[40px] text-left transition-all hover-lift"
+            className="relative overflow-hidden group glass-panel p-6 sm:p-7 rounded-[2rem] text-left transition-all hover-lift flex flex-col justify-between"
           >
-            <div className={`absolute -right-8 -bottom-8 w-48 h-48 ${action.color} opacity-10 blur-3xl group-hover:scale-150 transition-transform duration-500`} />
-            <div className={`w-14 h-14 ${action.color} rounded-3xl shadow-lg flex items-center justify-center mb-4`}>
-              <Icon name={action.icon} filled size={28} className="text-white" />
+            <div className={`absolute -right-8 -bottom-8 w-40 h-40 ${action.color} opacity-10 blur-3xl group-hover:scale-150 transition-transform duration-500`} />
+            <div>
+              <div className={`w-12 h-12 ${action.color} rounded-2xl shadow-md flex items-center justify-center mb-4 text-white`}>
+                <Icon name={action.icon} filled size={24} />
+              </div>
+              <h3 className="font-title-md text-title-md text-on-surface font-bold mb-1.5">{action.title}</h3>
+              <p className="text-on-surface-variant text-xs sm:text-sm leading-relaxed mb-4">{action.desc}</p>
             </div>
-            <h3 className="font-title-md text-title-md text-on-surface mb-2">{action.title}</h3>
-            <p className="text-on-surface-variant text-sm leading-relaxed mb-4">{action.desc}</p>
-            <span className="text-primary font-bold flex items-center gap-1 text-sm">
-              {action.cta} <Icon name="arrow_forward" size={18} />
+            <span className="text-primary font-bold flex items-center gap-1.5 text-xs sm:text-sm group-hover:translate-x-1 transition-transform">
+              {action.cta} <Icon name="arrow_forward" size={16} />
             </span>
           </motion.button>
         ))}
-        <div className="flex items-center justify-center">
-          <ExpandableToggle expandLabel="Acciones Rápidas" />
-        </div>
       </motion.div>
 
       {/* Insights & Priorities */}
@@ -687,7 +689,8 @@ export function DashboardFisio() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
         >
-          <GlassPanel className="rounded-[32px] overflow-hidden shadow-[0_12px_40px_rgba(13,148,136,0.12)] hover-lift border-l-4 border-l-teal-400/60 dark:border-l-teal-600/40">
+          <GlassPanel className="rounded-[32px] overflow-hidden shadow-[0_12px_40px_rgba(13,148,136,0.12)] hover-lift border-l-4 border-l-teal-400/60 dark:border-l-teal-600/40 relative">
+            <BorderBeam size={110} duration={8} colorFrom="#14b8a6" colorTo="#06b6d4" />
             {/* Header */}
             <div className="flex items-center justify-between px-8 py-6 bg-gradient-to-r from-primary/15 via-primary/5 to-transparent border-b border-primary/15">
               <div className="flex items-center gap-4">
@@ -973,6 +976,7 @@ export function DashboardFisio() {
               const initials = patientName.split(' ').filter(Boolean).map((n: string) => n[0]).join('').slice(0, 2) || 'PA';
               const isOnline = p.status === 'Activo';
               const isWarning = p.status === 'Requiere Revisión' || p.status === 'En pausa';
+              const adherenceVal = p.adherence || p.progress || 0;
 
               return (
                 <motion.div
@@ -981,52 +985,76 @@ export function DashboardFisio() {
                   whileHover={{ y: -4, scale: 1.015, transition: springTactile }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => navigate(`/paciente/${p.id}`)}
-                  className="group p-5 rounded-3xl bg-surface/80 dark:bg-surface-container-low/60 border border-outline/15 hover:border-teal-500/40 shadow-sm hover:shadow-lg transition-all cursor-pointer flex flex-col justify-between"
+                  className="ios-glass-heavy refraction-border p-6 rounded-3xl group cursor-pointer transition-all duration-300 relative flex flex-col justify-between shadow-sm hover:shadow-xl"
                 >
                   <div>
-                    <div className="flex items-start justify-between gap-3 mb-3">
-                      <div className="flex items-center gap-3">
-                        <AvatarWithBadge
-                          fallback={initials}
-                          status={isOnline ? 'online' : isWarning ? 'warning' : 'offline'}
-                        />
+                    {/* Header: Avatar, Name, Status Pill */}
+                    <div className="flex items-start justify-between gap-3 mb-4">
+                      <div className="flex items-center gap-3.5 min-w-0">
+                        <div className="relative shrink-0">
+                          <div className={`w-12 h-12 rounded-full flex items-center justify-center font-extrabold text-base border-2 shadow-sm ${
+                            isWarning
+                              ? "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-200 dark:border-amber-800"
+                              : "bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-100 border-white dark:border-slate-700"
+                          }`}>
+                            {initials}
+                          </div>
+                          {isOnline && (
+                            <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-500 border-2 border-white dark:border-slate-800 rounded-full animate-pulse" />
+                          )}
+                          {isWarning && (
+                            <div className="absolute -top-1 -right-1 w-5 h-5 bg-amber-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white dark:border-slate-800 shadow-xs">
+                              !
+                            </div>
+                          )}
+                        </div>
                         <div className="min-w-0">
-                          <h4 className="text-sm font-bold text-on-surface group-hover:text-primary transition-colors truncate">
+                          <h4 className="text-base font-bold text-on-surface group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors truncate">
                             {patientName}
                           </h4>
-                          <p className="text-xs text-on-surface-variant truncate">{p.diagnosis || p.patologia || 'En tratamiento'}</p>
+                          <p className="text-xs text-on-surface-variant truncate mt-0.5">
+                            {p.diagnosis || p.patologia || 'En tratamiento activo'}
+                          </p>
                         </div>
                       </div>
-                      <span className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-full border ${
+
+                      <span className={`px-2.5 py-1 text-[11px] font-bold rounded-full border uppercase tracking-wider flex items-center gap-1.5 shrink-0 ${
                         p.status === 'Activo'
-                          ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20'
+                          ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300 border-emerald-200'
                           : p.status === 'Requiere Revisión'
-                          ? 'bg-amber-500/10 text-amber-600 border-amber-500/20'
-                          : 'bg-teal-500/10 text-teal-600 border-teal-500/20'
+                          ? 'bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300 border-amber-200'
+                          : 'bg-teal-50 text-teal-700 dark:bg-teal-950/40 dark:text-teal-300 border-teal-200'
                       }`}>
-                        {p.status}
+                        <span className={`w-1.5 h-1.5 rounded-full ${
+                          p.status === 'Activo' ? 'bg-emerald-500 animate-pulse' : p.status === 'Requiere Revisión' ? 'bg-amber-500' : 'bg-teal-600'
+                        }`} />
+                        <span>{p.status}</span>
                       </span>
                     </div>
 
-                    <div className="space-y-2 mt-4 pt-3 border-t border-outline/10 text-xs">
+                    {/* Adherence Progress Bar with Shimmer */}
+                    <div className="space-y-2 mt-4 pt-3 border-t border-outline-variant/15 text-xs">
                       <div className="flex justify-between items-center text-on-surface-variant">
-                        <span>Adherencia</span>
-                        <span className="font-bold text-on-surface">{p.adherence || p.progress || 0}%</span>
+                        <span className="font-semibold text-xs">Adherencia al Tratamiento</span>
+                        <span className="font-extrabold text-sm text-teal-700 dark:text-teal-300">{adherenceVal}%</span>
                       </div>
-                      <div className="h-2 w-full rounded-full bg-surface-container-highest overflow-hidden">
+                      <div className="h-2.5 w-full rounded-full bg-slate-200/80 dark:bg-slate-700/60 overflow-hidden relative">
                         <div
-                          className="h-full rounded-full bg-gradient-to-r from-teal-500 to-emerald-500"
-                          style={{ width: `${p.adherence || p.progress || 0}%` }}
-                        />
+                          className="h-full rounded-full bg-teal-600 relative overflow-hidden transition-all duration-700"
+                          style={{ width: `${Math.max(6, adherenceVal)}%` }}
+                        >
+                          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full animate-shimmer-bar" />
+                        </div>
                       </div>
-                      <div className="flex justify-between items-center text-[11px] text-outline pt-1">
-                        <span>{p.sessionsCompleted || 0}/{p.sessionsTotal || 0} sesiones</span>
-                        <span>{p.routine || 'Rutina activa'}</span>
+                      <div className="flex justify-between items-center text-[11px] text-outline font-medium pt-0.5">
+                        <span>{p.sessionsCompleted || 1}/{p.sessionsTotal || 10} sesiones</span>
+                        <span>{p.routine || 'Plan activo'}</span>
                       </div>
                     </div>
                   </div>
 
-                  <div className="mt-4 pt-3 border-t border-outline/10 flex items-center justify-between text-xs font-semibold text-primary">
+                  {/* Refraction CTA Link */}
+                  <div className="mt-4 pt-3 border-t border-outline-variant/15 flex items-center justify-between text-xs font-bold text-teal-700 dark:text-teal-300 group-hover:text-teal-800 dark:group-hover:text-teal-200 transition-colors">
                     <span>Ver expediente</span>
                     <ArrowRight className="size-4 group-hover:translate-x-1 transition-transform" />
                   </div>

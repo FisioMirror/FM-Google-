@@ -313,7 +313,7 @@ export function ClinicalAnalyticsHub() {
       {activeTab === 'rom' && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Main Chart */}
-          <GlassPanel className="lg:col-span-2 p-6 sm:p-8 rounded-[32px] border-l-4 border-l-teal-500 shadow-sm relative overflow-hidden flex flex-col justify-between">
+          <GlassPanel className="lg:col-span-2 p-6 sm:p-8 rounded-[32px] border border-outline/15 shadow-sm relative overflow-hidden flex flex-col justify-between">
             <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-6">
               <div>
                 <h4 className="font-bold text-sm text-on-surface flex items-center gap-2">
@@ -505,7 +505,7 @@ export function ClinicalAnalyticsHub() {
       {/* Tab 2: Correlación Precisión vs. Dolor (VAS / EVA) */}
       {activeTab === 'vas' && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <GlassPanel className="lg:col-span-2 p-6 sm:p-8 rounded-[32px] border-l-4 border-l-cyan-500 shadow-sm">
+          <GlassPanel className="lg:col-span-2 p-6 sm:p-8 rounded-[32px] border border-outline/15 shadow-sm">
             <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-6">
               <div>
                 <h4 className="font-bold text-sm text-on-surface flex items-center gap-2">
@@ -643,7 +643,7 @@ export function ClinicalAnalyticsHub() {
       {/* Tab 3: Cohortes Clínicos */}
       {activeTab === 'cohorts' && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <GlassPanel className="lg:col-span-2 p-6 sm:p-8 rounded-[32px] border-l-4 border-l-emerald-500 shadow-sm">
+          <GlassPanel className="lg:col-span-2 p-6 sm:p-8 rounded-[32px] border border-outline/15 shadow-sm">
             <div className="flex justify-between items-center mb-6">
               <div>
                 <h4 className="font-bold text-sm text-on-surface flex items-center gap-2">

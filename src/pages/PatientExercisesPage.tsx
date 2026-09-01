@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Icon } from '../components/ui/Icon';
-import { GlassPanel } from '../components/ui/Glass';
 import { GlassModal } from '../components/ui/GlassModal';
 import { SkeletonCard } from '../components/ui/Skeleton';
 import { useAuthStore } from '../stores/authStore';
@@ -262,52 +261,54 @@ export function PatientExercisesPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.08 }}
             >
-              <GlassPanel className="p-5 sm:p-6 rounded-3xl border border-outline-variant/30 flex flex-col justify-between h-full group hover:shadow-lg transition-all">
+              <div className="ios-glass-heavy refraction-border p-5 sm:p-6 rounded-3xl flex flex-col justify-between h-full group hover:shadow-xl transition-all">
                 <div>
-                  <ExerciseImage
-                    src={getExerciseImage(ex.ejercicio_id)}
-                    name={ex.ejercicio_nombre || 'Ejercicio asignado'}
-                  />
+                  <div className="rounded-2xl overflow-hidden mb-3.5 bg-slate-100 dark:bg-slate-800">
+                    <ExerciseImage
+                      src={getExerciseImage(ex.ejercicio_id)}
+                      name={ex.ejercicio_nombre || 'Ejercicio asignado'}
+                    />
+                  </div>
                   {ex.notas && (
-                    <p className="text-xs text-on-surface-variant mt-2 mb-3 bg-surface-container-low p-2.5 rounded-xl border border-outline-variant/20">
-                      <span className="font-bold text-primary mr-1">Indicación:</span>
-                      {ex.notas}
-                    </p>
+                    <div className="text-xs text-on-surface-variant mt-2 mb-3 bg-teal-500/10 dark:bg-teal-950/30 p-3 rounded-2xl border border-teal-500/20">
+                      <span className="font-bold text-teal-700 dark:text-teal-300 mr-1.5">Indicación del Fisioterapeuta:</span>
+                      <span className="text-on-surface">{ex.notas}</span>
+                    </div>
                   )}
 
-                  {/* Prescription Parameters */}
-                  <div className="grid grid-cols-3 gap-2 py-3 my-2 border-y border-outline-variant/20 text-center">
+                  {/* Prescription Parameters Tile (Instrument Style) */}
+                  <div className="grid grid-cols-3 gap-2 py-3.5 px-3 my-3 rounded-2xl bg-slate-100/70 dark:bg-slate-800/60 border border-slate-200/50 dark:border-slate-700/50 text-center divide-x divide-slate-200/60 dark:divide-slate-700/60">
                     <div className="flex flex-col items-center">
-                      <p className="text-[10px] uppercase font-bold text-on-surface-variant flex items-center justify-center gap-1">
+                      <p className="text-[10px] uppercase font-bold text-slate-400 dark:text-slate-500 flex items-center justify-center gap-1">
                         <Repeat size={11} className="text-teal-600 dark:text-teal-400" />
                         <span>Series</span>
                       </p>
-                      <span className="font-extrabold text-base text-on-surface">{ex.series ?? 3}</span>
+                      <span className="font-extrabold text-base text-slate-800 dark:text-slate-100 mt-0.5">{ex.series ?? 3}</span>
                     </div>
-                    <div className="flex flex-col items-center">
-                      <p className="text-[10px] uppercase font-bold text-on-surface-variant flex items-center justify-center gap-1">
+                    <div className="flex flex-col items-center pl-2">
+                      <p className="text-[10px] uppercase font-bold text-slate-400 dark:text-slate-500 flex items-center justify-center gap-1">
                         <Flame size={11} className="text-amber-500" />
                         <span>Reps</span>
                       </p>
-                      <span className="font-extrabold text-base text-on-surface">{ex.repeticiones ?? 12}</span>
+                      <span className="font-extrabold text-base text-slate-800 dark:text-slate-100 mt-0.5">{ex.repeticiones ?? 12}</span>
                     </div>
-                    <div className="flex flex-col items-center">
-                      <p className="text-[10px] uppercase font-bold text-on-surface-variant flex items-center justify-center gap-1">
+                    <div className="flex flex-col items-center pl-2">
+                      <p className="text-[10px] uppercase font-bold text-slate-400 dark:text-slate-500 flex items-center justify-center gap-1">
                         <Calendar size={11} className="text-teal-600 dark:text-teal-400" />
                         <span>Frecuencia</span>
                       </p>
-                      <span className="font-extrabold text-base text-on-surface">{ex.frecuencia_semana ?? 4}x/sem</span>
+                      <span className="font-extrabold text-base text-slate-800 dark:text-slate-100 mt-0.5">{ex.frecuencia_semana ?? 4}x/sem</span>
                     </div>
                   </div>
                 </div>
 
                 {/* Separated Actions: 1. Text Description, 2. 3D Demo, 3. AR Mirror */}
-                <div className="space-y-2 pt-2">
+                <div className="space-y-2.5 pt-2">
                   <div className="grid grid-cols-2 gap-2">
                     {/* Botón 1: Descripción en Texto */}
                     <button
                       onClick={() => setDescriptionExercise(ex)}
-                      className="py-2.5 px-3 rounded-xl bg-surface-container hover:bg-surface-container-high border border-outline-variant/30 text-on-surface font-semibold text-xs transition-all flex items-center justify-center gap-1.5"
+                      className="py-2.5 px-3 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-semibold text-xs transition-all flex items-center justify-center gap-1.5"
                     >
                       <BookOpen size={14} className="text-teal-600 dark:text-teal-400" />
                       <span>Descripción</span>
@@ -328,13 +329,13 @@ export function PatientExercisesPage() {
                     onClick={() =>
                       navigate(`/ar-mirror?ejercicio=${encodeURIComponent(ex.ejercicio_nombre || 'Ejercicio')}`)
                     }
-                    className="w-full py-3 rounded-2xl bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-500 hover:to-teal-600 text-white font-bold text-xs transition-all shadow-md shadow-teal-700/20 flex items-center justify-center gap-2 active:scale-[0.98]"
+                    className="w-full py-3 rounded-2xl bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs transition-all shadow-md shadow-teal-700/20 flex items-center justify-center gap-2 active:scale-[0.98]"
                   >
                     <Play size={16} fill="currentColor" />
                     <span>Iniciar en Espejo AR</span>
                   </button>
                 </div>
-              </GlassPanel>
+              </div>
             </motion.div>
           ))}
         </div>

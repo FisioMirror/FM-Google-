@@ -705,10 +705,6 @@ export function ExercisesPage() {
       <div className="relative rounded-3xl p-6 sm:p-8 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border border-white/60 dark:border-teal-500/20 shadow-[0_8px_32px_rgba(0,80,77,0.06)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.35)] border-l-4 border-l-teal-600 dark:border-l-teal-400 overflow-hidden">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 relative z-10">
           <div className="space-y-2">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-500/10 dark:bg-teal-500/20 border border-teal-500/25 text-teal-700 dark:text-teal-300 text-xs font-bold uppercase tracking-wider">
-              <Activity className="size-3.5" />
-              <span>Biblioteca Biomecánica & Telemetría AR</span>
-            </div>
             <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white">
               Catálogo de Ejercicios & Guía Anatómica
             </h1>
@@ -832,37 +828,40 @@ export function ExercisesPage() {
                 initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.03 }}
-                whileHover={{ y: -3 }}
+                whileHover={{ y: -4, scale: 1.01 }}
                 className={cn(
-                  'group rounded-2xl p-5 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border transition-all duration-300 flex flex-col justify-between relative overflow-hidden',
-                  ex.featured
-                    ? 'border-teal-500/30 dark:border-teal-500/40 shadow-sm hover:shadow-md ring-1 ring-teal-500/15'
-                    : 'border-slate-200/80 dark:border-slate-800/80 shadow-xs hover:shadow-md'
+                  'group rounded-3xl p-5 ios-glass-heavy refraction-border transition-all duration-300 flex flex-col justify-between relative overflow-hidden shadow-sm hover:shadow-xl',
+                  ex.featured && 'ring-1 ring-teal-500/30'
                 )}
               >
                 {/* Protocol Badge */}
                 {ex.featured && (
-                  <div className="absolute top-3.5 left-3.5 z-10 px-2.5 py-1 rounded-md bg-teal-600/90 backdrop-blur-sm text-white text-[10px] font-bold uppercase tracking-wider flex items-center gap-1 shadow-xs">
-                    <Sparkles className="size-2.5" />
+                  <div className="absolute top-4 left-4 z-10 px-3 py-1 rounded-full bg-teal-600/90 backdrop-blur-md text-white text-[10px] font-bold uppercase tracking-wider flex items-center gap-1.5 shadow-md">
+                    <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
                     <span>Protocolo Clínico</span>
                   </div>
                 )}
 
                 <div>
                   {/* Image container */}
-                  <div className="relative rounded-2xl overflow-hidden mb-3">
-                    <ExerciseImage src={getExerciseImage(ex.id)} name={ex.nombre} />
+                  <div className="relative rounded-2xl overflow-hidden mb-3.5 bg-slate-100 dark:bg-slate-800">
+                    <ExerciseImage
+                      src={getExerciseImage(ex.id)}
+                      name={ex.nombre}
+                      articulacion={ex.articulacion}
+                      categoria={ex.categoria}
+                    />
                     <button
                       onClick={() => setDescriptionExercise(ex)}
                       aria-label="Ver Guía Anatómica"
-                      className="absolute bottom-3 right-3 size-9 rounded-full bg-white/80 dark:bg-slate-900/80 backdrop-blur-md flex items-center justify-center text-teal-700 dark:text-teal-300 hover:scale-110 active:scale-95 shadow-md transition-transform"
+                      className="absolute bottom-3 right-3 size-9 rounded-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-md flex items-center justify-center text-teal-700 dark:text-teal-300 hover:scale-110 active:scale-95 shadow-md transition-transform"
                     >
                       <BookOpen className="size-4" />
                     </button>
                   </div>
 
                   {/* Title and Badges */}
-                  <div className="space-y-1 mb-2">
+                  <div className="space-y-1.5 mb-2.5">
                     <div className="flex items-center justify-between gap-2">
                       <h3 className="text-base font-bold text-slate-900 dark:text-white group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors truncate">
                         {ex.nombre}
@@ -870,12 +869,12 @@ export function ExercisesPage() {
                     </div>
 
                     <div className="flex flex-wrap items-center gap-1.5">
-                      <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-700 dark:text-teal-300 border border-teal-500/20">
+                      <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase px-2.5 py-0.5 rounded-full bg-teal-500/10 text-teal-700 dark:text-teal-300 border border-teal-500/20">
                         <JointIcon className="size-3" />
                         <span className="capitalize">{ex.articulacion || 'Articular'}</span>
                       </span>
 
-                      <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
+                      <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
                         <CatIcon className="size-3" />
                         <span className="capitalize">{ex.categoria || 'Movilidad'}</span>
                       </span>
@@ -883,7 +882,7 @@ export function ExercisesPage() {
                       {ex.complejidad && (
                         <span
                           className={cn(
-                            'text-[10px] font-bold uppercase px-2 py-0.5 rounded-full border',
+                            'text-[10px] font-bold uppercase px-2.5 py-0.5 rounded-full border',
                             ex.complejidad === 'alta'
                               ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/25'
                               : ex.complejidad === 'media'
@@ -910,25 +909,25 @@ export function ExercisesPage() {
                     </div>
                   )}
 
-                  {/* Biomechanical Telemetry metrics tile */}
-                  <div className="grid grid-cols-3 gap-2 p-2.5 rounded-2xl bg-slate-100/70 dark:bg-slate-800/70 border border-slate-200/50 dark:border-slate-700/50 text-center mb-4">
-                    <div>
-                      <p className="text-[10px] uppercase font-bold text-slate-400 flex items-center justify-center gap-1">
-                        <Repeat className="size-2.5" /> Series
+                  {/* Biomechanical Telemetry metrics tile (Instrument style) */}
+                  <div className="grid grid-cols-3 gap-2 py-3 px-3 rounded-2xl bg-slate-100/70 dark:bg-slate-800/60 border border-slate-200/50 dark:border-slate-700/50 text-center mb-4 divide-x divide-slate-200/60 dark:divide-slate-700/60">
+                    <div className="flex flex-col items-center">
+                      <p className="text-[10px] uppercase font-bold text-slate-400 dark:text-slate-500 flex items-center justify-center gap-1">
+                        <Repeat className="size-2.5 text-teal-600 dark:text-teal-400" /> SERIES
                       </p>
-                      <p className="text-sm font-extrabold text-slate-800 dark:text-slate-100">{ex.series ?? 3}</p>
+                      <p className="text-base font-extrabold text-slate-800 dark:text-slate-100 mt-0.5">{ex.series ?? 3}</p>
                     </div>
-                    <div>
-                      <p className="text-[10px] uppercase font-bold text-slate-400 flex items-center justify-center gap-1">
-                        <Flame className="size-2.5" /> Reps
+                    <div className="flex flex-col items-center pl-2">
+                      <p className="text-[10px] uppercase font-bold text-slate-400 dark:text-slate-500 flex items-center justify-center gap-1">
+                        <Flame className="size-2.5 text-amber-500" /> REPS
                       </p>
-                      <p className="text-sm font-extrabold text-slate-800 dark:text-slate-100">{ex.repeticiones ?? 10}</p>
+                      <p className="text-base font-extrabold text-slate-800 dark:text-slate-100 mt-0.5">{ex.repeticiones ?? 10}</p>
                     </div>
-                    <div>
-                      <p className="text-[10px] uppercase font-bold text-slate-400 flex items-center justify-center gap-1">
+                    <div className="flex flex-col items-center pl-2">
+                      <p className="text-[10px] uppercase font-bold text-slate-400 dark:text-slate-500 flex items-center justify-center gap-1">
                         <Gauge className="size-2.5 text-teal-500" /> ROM
                       </p>
-                      <p className="text-sm font-extrabold text-teal-600 dark:text-teal-400 font-mono">
+                      <p className="text-base font-extrabold text-teal-600 dark:text-teal-400 font-mono mt-0.5">
                         {ex.angulo_objetivo !== null ? `${ex.angulo_objetivo}°` : '—'}
                       </p>
                     </div>
@@ -948,7 +947,7 @@ export function ExercisesPage() {
                   {isFisio && (
                     <button
                       onClick={() => openAssignModal(ex)}
-                      className="w-full py-2.5 px-3 rounded-xl bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold transition-all flex items-center justify-center gap-1.5 shadow-xs active:scale-98"
+                      className="w-full py-2.5 px-3 rounded-xl bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold transition-all flex items-center justify-center gap-1.5 shadow-sm shadow-teal-700/20 active:scale-98"
                     >
                       <UserPlus className="size-3.5" />
                       <span>Asignar a Paciente</span>
@@ -959,14 +958,14 @@ export function ExercisesPage() {
                     <div className="flex gap-2 pt-1">
                       <button
                         onClick={() => openEdit(ex)}
-                        className="flex-1 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-teal-50 dark:hover:bg-teal-950/40 text-slate-600 dark:text-slate-300 hover:text-teal-600 text-xs font-bold transition-all flex items-center justify-center gap-1"
+                        className="flex-1 py-1.5 rounded-lg bg-slate-100/90 dark:bg-slate-800/90 hover:bg-teal-50 dark:hover:bg-teal-950/40 text-slate-600 dark:text-slate-300 hover:text-teal-600 text-xs font-bold transition-all flex items-center justify-center gap-1"
                       >
                         <Edit3 className="size-3" />
                         <span>Editar</span>
                       </button>
                       <button
                         onClick={() => cloneExercise(ex)}
-                        className="flex-1 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 text-xs font-bold transition-all flex items-center justify-center gap-1"
+                        className="flex-1 py-1.5 rounded-lg bg-slate-100/90 dark:bg-slate-800/90 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 text-xs font-bold transition-all flex items-center justify-center gap-1"
                       >
                         <Copy className="size-3" />
                         <span>Clonar</span>

@@ -15,6 +15,7 @@ import { formatAIReport } from '../lib/formatReport';
 import { useAuthStore } from '../stores/authStore';
 import { getUnifiedPatientById } from '../data/unifiedDemoData';
 import { isValidUUID } from '../lib/utils';
+import { PatientStatisticsView } from '../components/patient/PatientStatisticsView';
 
 interface SessionRow {
   id: string;
@@ -266,7 +267,7 @@ export function PatientDetailPage() {
   };
 
   const totalSessions = sessions.length;
-  const totalMinutes = Math.round(sessions.reduce((sum, s) => sum + (s.duracion_segundos || 0), 0) / 60);
+  const _totalMinutes = Math.round(sessions.reduce((sum, s) => sum + (s.duracion_segundos || 0), 0) / 60);
   const avgQuality = sessions.length > 0 ? Math.round(sessions.reduce((sum, s) => sum + (s.calidad_ejecucion || 0), 0) / sessions.length) : 0;
   const lastSession = sessions[0];
   const daysSinceLast = lastSession ? Math.floor((Date.now() - new Date(lastSession.fecha).getTime()) / 86400000) : null;
@@ -444,18 +445,19 @@ export function PatientDetailPage() {
       </div>
 
       {/* Navigation Tabs */}
-      <div className="flex gap-1.5 p-1 rounded-2xl bg-surface-container/60 border border-outline/10 overflow-x-auto hide-scrollbar">
+      <div className="flex gap-2 p-1.5 rounded-2xl bg-surface-container/60 border border-outline/10 overflow-x-auto hide-scrollbar">
         {tabs.map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all ${
+            className={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all flex items-center gap-1.5 ${
               activeTab === tab.id
-                ? 'bg-surface text-primary shadow-xs'
-                : 'text-on-surface-variant hover:text-on-surface'
+                ? 'bg-teal-600 text-white shadow-sm'
+                : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container'
             }`}
           >
-            {tab.label}
+            <Icon name={tab.icon} size={16} />
+            <span>{tab.label}</span>
           </button>
         ))}
       </div>
@@ -711,21 +713,14 @@ export function PatientDetailPage() {
       )}
 
       {activeTab === 'statistics' && (
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {[
-            { label: 'Sesiones', value: totalSessions, icon: 'check_circle' },
-            { label: 'Minutos', value: totalMinutes, icon: 'timer' },
-            { label: 'Calidad', value: avgQuality > 0 ? `${avgQuality}%` : '—', icon: 'target' },
-            { label: 'Ejercicios', value: exercises.length, icon: 'monitoring' },
-          ].map((stat, i) => (
-            <motion.div key={stat.label} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }} className="glass-panel card-glow-hover p-6 rounded-2xl">
-              <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mb-4">
-                <Icon name={stat.icon} size={24} className="text-primary" />
-              </div>
-              <p className="text-on-surface-variant text-sm font-semibold uppercase tracking-wider">{stat.label}</p>
-              <h3 className="text-display-lg text-3xl lg:text-display-lg font-display-lg tabular-nums">{stat.value}</h3>
-            </motion.div>
-          ))}
+        <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }}>
+          <PatientStatisticsView
+            patientName={patient.full_name}
+            targetRom={patient.rom_objetivo}
+            affectedLimb={patient.extremidad_afectada}
+            sessions={sessions}
+            exercises={exercises}
+          />
         </motion.div>
       )}
 

@@ -408,30 +408,32 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
     return (
     <>
             {showTool('ocr') && (
-            <GlassPanel className="md:col-span-2 lg:col-span-3 p-6 sm:p-8 rounded-3xl relative overflow-hidden card-glow-hover vibrant-hover border-l-4 border-l-teal-400/60 dark:border-l-teal-600/40 shadow-teal-100/50 dark:shadow-none w-full">
-            <div className="blob-teal absolute -top-12 -right-12 w-40 h-40 opacity-30 pointer-events-none" />
+            <div className="md:col-span-2 lg:col-span-3 p-6 sm:p-8 rounded-3xl relative overflow-hidden ios-glass-heavy refraction-border shadow-sm hover:shadow-xl transition-all duration-300 w-full">
             <div className="flex justify-between items-start mb-6 relative">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center"><MedicalIcon name="clipboard" size={24} className="text-primary animate-breathe-icon" /></div>
+                <div className="size-12 rounded-2xl bg-teal-500/10 text-teal-700 dark:text-teal-300 flex items-center justify-center">
+                  <MedicalIcon name="clipboard" size={24} className="animate-breathe-icon" />
+                </div>
                 <div>
-                  <h3 className="font-title-md text-title-md gradient-text-teal">OCR Clínico Rápido</h3>
-                  <p className="text-sm text-on-surface-variant">Convierte recetas e informes en datos estructurados</p>
+                  <h3 className="font-title-md text-xl font-bold text-teal-900 dark:text-teal-100">OCR Clínico Rápido</h3>
+                  <p className="text-xs text-on-surface-variant mt-0.5">Convierte recetas e informes médicos en datos estructurados</p>
                 </div>
               </div>
-              <span className="bg-primary/10 text-primary text-[10px] uppercase font-bold px-3 py-1 rounded-full tracking-wider">IA</span>
             </div>
             <div
               onClick={() => fileInputRef.current?.click()}
-              className="relative border-2 border-dashed border-outline-variant rounded-2xl p-8 sm:p-12 flex flex-col items-center text-center gap-4 bg-white/10 dark:bg-white/5 hover:bg-white/30 dark:hover:bg-white/10 hover:border-primary/50 transition-all cursor-pointer overflow-hidden group"
+              className="relative border-2 border-dashed border-outline-variant/40 rounded-2xl p-8 sm:p-12 flex flex-col items-center text-center gap-4 bg-white/30 dark:bg-white/5 hover:bg-white/50 dark:hover:bg-white/10 hover:border-teal-500/50 transition-all cursor-pointer overflow-hidden group"
             >
               <div className="absolute inset-0 shimmer-wave opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
               <div className="relative z-10 flex flex-col items-center gap-4">
-              <div className="w-16 h-16 bg-primary-container/10 rounded-full flex items-center justify-center">
-                {scanProcessing ? <Spinner size={32} className="text-primary" /> : scanComplete ? <Icon name="check_circle" filled size={32} className="text-primary animate-breathe-icon" /> : <Icon name="upload_file" size={32} className="text-primary" />}
+              <div className="size-16 bg-teal-500/10 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                {scanProcessing ? <Spinner size={32} className="text-teal-600 dark:text-teal-400" /> : scanComplete ? <Icon name="check_circle" filled size={32} className="text-teal-600 animate-breathe-icon" /> : <Icon name="upload_file" size={32} className="text-teal-600 dark:text-teal-400" />}
               </div>
-              <p className="font-title-md text-title-md text-on-surface">{scanProcessing ? <LoadingText context="ocr" /> : scanComplete ? 'Análisis Completado' : 'Arrastra o selecciona un documento clínico'}</p>
-              <p className="text-sm text-on-surface-variant">Soporta PDF, JPG, PNG (Máx 15MB)</p>
-              <button onClick={(e) => { e.stopPropagation(); fileInputRef.current?.click(); }} className="premium-btn bg-primary text-on-primary px-6 py-3 rounded-full font-bold text-sm hover:scale-105 active:scale-95 transition-all">
+              <div>
+                <p className="font-bold text-base text-on-surface">{scanProcessing ? <LoadingText context="ocr" /> : scanComplete ? 'Análisis Completado' : 'Arrastra o selecciona un documento clínico'}</p>
+                <p className="text-xs text-on-surface-variant mt-1">Soporta PDF, JPG, PNG (Máx 15MB)</p>
+              </div>
+              <button onClick={(e) => { e.stopPropagation(); fileInputRef.current?.click(); }} className="bg-teal-600 hover:bg-teal-700 text-white px-6 py-2.5 rounded-full font-bold text-xs shadow-md shadow-teal-700/20 hover:scale-105 active:scale-95 transition-all">
                 Seleccionar Archivo
               </button>
               <input ref={fileInputRef} type="file" accept=".pdf,image/*" className="hidden" onChange={onFileSelected} />
@@ -439,9 +441,9 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
             </div>
 
             {scanResult && (
-              <div className="mt-4 p-4 glass-panel rounded-2xl space-y-3">
+              <div className="mt-4 p-5 ios-glass-heavy refraction-border rounded-2xl space-y-3">
                 <div className="flex items-center justify-between mb-2">
-                  <h4 className="font-bold text-sm text-primary">Resultado del Análisis (22 Campos)</h4>
+                  <h4 className="font-bold text-sm text-teal-800 dark:text-teal-200">Resultado del Análisis (22 Campos)</h4>
                   <div className="flex gap-2">
                     <button
                       onClick={() => {
@@ -457,7 +459,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
                     </button>
                     <button
                       onClick={() => { setShowUpdatePatientModal(true); setUpdatePreview({}); setUpdatePatientId(''); }}
-                      className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-teal-600 text-white font-bold text-xs hover:bg-teal-800 transition-colors min-h-[36px] shadow-md"
+                      className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-teal-700 text-white font-bold text-xs hover:bg-teal-800 transition-colors min-h-[36px] shadow-md"
                     >
                       <Icon name="person_update" size={16} /> Actualizar paciente
                     </button>
@@ -497,9 +499,9 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
                           const val = r[f.key];
                           if (val == null || val === '' || val === false) return null;
                           return (
-                            <div key={f.key} className="flex items-start gap-2 p-2 rounded-lg bg-primary/5">
+                            <div key={f.key} className="flex items-start gap-2 p-2 rounded-xl bg-teal-500/5 border border-teal-500/10">
                               <span className="text-[10px] font-bold text-on-surface-variant uppercase whitespace-nowrap min-w-[80px]">{f.label}</span>
-                              <span className="text-sm font-bold text-on-surface break-words">{String(val)}</span>
+                              <span className="text-xs font-bold text-on-surface break-words">{String(val)}</span>
                             </div>
                           );
                         })}
@@ -512,89 +514,104 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
                 })()}
               </div>
             )}
-          </GlassPanel>
+          </div>
           )}
 
           {/* BMI Calculator */}
           {showTool('bmi') && (
-          <GlassPanel className="md:col-span-2 lg:col-span-1 p-6 sm:p-8 rounded-3xl flex flex-col card-glow-hover relative overflow-hidden vibrant-hover w-full border-l-4 border-l-teal-400/60 dark:border-l-teal-600/40 shadow-teal-100/50 dark:shadow-none">
-            <div className="blob-warm absolute -top-12 -right-12 w-32 h-32 opacity-30 pointer-events-none" />
-            <div className="flex items-center gap-3 mb-6 relative">
-              <div className="w-12 h-12 rounded-xl bg-tertiary/10 flex items-center justify-center"><Icon name="calculate" size={24} className="text-tertiary animate-breathe-icon" /></div>
-              <div>
-                <h3 className="font-title-md text-title-md gradient-text-editorial">Calculadora IMC</h3>
-                <p className="text-sm text-on-surface-variant">Clasificación clínica en tiempo real</p>
+          <div className="md:col-span-2 lg:col-span-1 p-6 sm:p-8 rounded-3xl flex flex-col justify-between ios-glass-heavy refraction-border relative overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 w-full">
+            <div>
+              <div className="flex items-center gap-3 mb-6 relative">
+                <div className="size-12 rounded-2xl bg-teal-500/10 text-teal-700 dark:text-teal-300 flex items-center justify-center">
+                  <Icon name="calculate" size={24} className="animate-breathe-icon" />
+                </div>
+                <div>
+                  <h3 className="font-title-md text-xl font-bold text-teal-900 dark:text-teal-100">Calculadora IMC</h3>
+                  <p className="text-xs text-on-surface-variant mt-0.5">Clasificación clínica en tiempo real</p>
+                </div>
+              </div>
+              <div className="space-y-6">
+                <div>
+                  <div className="flex justify-between items-baseline mb-2">
+                    <label className="text-xs font-bold text-on-surface uppercase tracking-wider">Estatura</label>
+                    <span className="text-lg font-extrabold text-teal-700 dark:text-teal-300 font-mono">{height} <span className="text-xs font-semibold text-outline">cm</span></span>
+                  </div>
+                  <input type="range" min={100} max={250} value={height} onChange={(e) => setHeight(parseInt(e.target.value))} className="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-full appearance-none cursor-pointer accent-teal-600" />
+                </div>
+                <div>
+                  <div className="flex justify-between items-baseline mb-2">
+                    <label className="text-xs font-bold text-on-surface uppercase tracking-wider">Peso</label>
+                    <span className="text-lg font-extrabold text-teal-700 dark:text-teal-300 font-mono">{weight} <span className="text-xs font-semibold text-outline">kg</span></span>
+                  </div>
+                  <input type="range" min={30} max={200} value={weight} onChange={(e) => setWeight(parseInt(e.target.value))} className="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-full appearance-none cursor-pointer accent-teal-600" />
+                </div>
               </div>
             </div>
-            <div className="space-y-6">
-              <div>
-                <div className="flex justify-between mb-2"><label className="text-sm font-bold text-on-surface">Altura</label><span className="text-primary font-bold">{height} cm</span></div>
-                <input type="range" min={100} max={250} value={height} onChange={(e) => setHeight(parseInt(e.target.value))} className="w-full h-2 bg-secondary-container rounded-full appearance-none cursor-pointer accent-primary" />
+
+            <div className="mt-8 p-6 bg-teal-700 text-white rounded-2xl shadow-xl relative overflow-hidden">
+              <div className="relative z-10 flex items-center justify-between">
+                <div>
+                  <p className="text-[10px] uppercase font-bold tracking-widest text-teal-200 mb-0.5">IMC Calculado</p>
+                  <span className="text-4xl font-black font-mono tracking-tight">{bmi}</span>
+                </div>
+                <div className="text-right">
+                  <span className={`px-3 py-1 rounded-full text-xs font-bold shadow-xs ${bmiStatus === 'Peso Saludable' ? 'bg-emerald-500 text-white' : bmiStatus === 'Bajo Peso' ? 'bg-amber-500 text-white' : bmiStatus === 'Sobrepeso' ? 'bg-orange-500 text-white' : 'bg-red-500 text-white'}`}>{bmiStatus}</span>
+                  <p className="text-[10px] text-teal-200 font-medium mt-1">Normal: 18.5 – 24.9</p>
+                </div>
               </div>
-              <div>
-                <div className="flex justify-between mb-2"><label className="text-sm font-bold text-on-surface">Peso</label><span className="text-primary font-bold">{weight} kg</span></div>
-                <input type="range" min={30} max={200} value={weight} onChange={(e) => setWeight(parseInt(e.target.value))} className="w-full h-2 bg-secondary-container rounded-full appearance-none cursor-pointer accent-primary" />
-              </div>
-            </div>
-            <div className="mt-8 p-6 bg-primary-container text-on-primary-container rounded-2xl shadow-xl">
-              <p className="text-sm opacity-80">IMC Calculado</p>
-              <span className="text-4xl font-extrabold">{bmi}</span>
-              <div className="mt-2 flex items-center gap-3 flex-wrap">
-                <span className={`px-3 py-1 rounded-full text-xs font-bold ${bmiStatus === 'Peso Saludable' ? 'bg-emerald-500 text-white' : bmiStatus === 'Bajo Peso' ? 'bg-amber-500 text-white' : bmiStatus === 'Sobrepeso' ? 'bg-orange-500 text-white' : 'bg-red-500 text-white'}`}>{bmiStatus}</span>
-                <p className="text-xs opacity-60">Rango Normal: 18.5 – 24.9</p>
-              </div>
-              <div className="mt-4 flex h-2 rounded-full overflow-hidden">
-                <div className="flex-1 bg-amber-500" style={{ flexGrow: bmi < 18.5 ? 2 : 1 }} />
-                <div className="flex-1 bg-emerald-500" style={{ flexGrow: bmi >= 18.5 && bmi < 25 ? 2 : 1 }} />
-                <div className="flex-1 bg-orange-500" style={{ flexGrow: bmi >= 25 && bmi < 30 ? 2 : 1 }} />
-                <div className="flex-1 bg-red-500" style={{ flexGrow: bmi >= 30 ? 2 : 1 }} />
-              </div>
-              <div className="flex justify-between text-[10px] mt-1 opacity-60">
-                <span>18.5</span><span>25</span><span>30</span><span>+</span>
+              <div className="mt-4 flex h-2 rounded-full overflow-hidden bg-white/20">
+                <div className="bg-amber-400" style={{ width: '25%' }} />
+                <div className="bg-emerald-400" style={{ width: '35%' }} />
+                <div className="bg-orange-400" style={{ width: '25%' }} />
+                <div className="bg-red-400" style={{ width: '15%' }} />
               </div>
             </div>
-          </GlassPanel>
+          </div>
           )}
 
           {/* Session Summary */}
           {showTool('summary') && (
-          <GlassPanel className="md:col-span-2 lg:col-span-3 p-6 sm:p-8 rounded-3xl card-glow-hover relative overflow-hidden border-l-4 border-l-teal-400/60 dark:border-l-teal-600/40 shadow-teal-100/50 dark:shadow-none w-full">
-            <div className="blob-teal absolute -top-12 -left-12 w-40 h-40 opacity-25 pointer-events-none" />
+          <div className="md:col-span-2 lg:col-span-3 p-6 sm:p-8 rounded-3xl relative overflow-hidden ios-glass-heavy refraction-border shadow-sm hover:shadow-xl transition-all duration-300 w-full">
             <div className="flex items-center gap-3 mb-6 relative">
-              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center"><Icon name="auto_awesome" size={24} className="text-primary animate-breathe-icon" /></div>
+              <div className="size-12 rounded-2xl bg-teal-500/10 text-teal-700 dark:text-teal-300 flex items-center justify-center">
+                <Icon name="auto_awesome" size={24} className="animate-breathe-icon" />
+              </div>
               <div>
-                <h3 className="font-title-md text-title-md gradient-text-teal">Resumen de Sesión IA</h3>
-                <p className="text-sm text-on-surface-variant">Genera un resumen narrativo a partir de las últimas sesiones reales</p>
+                <h3 className="font-title-md text-xl font-bold text-teal-900 dark:text-teal-100">Resumen de Sesión IA</h3>
+                <p className="text-xs text-on-surface-variant mt-0.5">Genera un resumen narrativo a partir de las últimas sesiones reales</p>
               </div>
             </div>
             <div className="flex flex-col sm:flex-row gap-4 mb-6">
-              <select value={selectedPatient} onChange={(e) => setSelectedPatient(e.target.value)} className="flex-1 px-4 py-3 rounded-xl bg-surface-variant/20 border border-outline-variant/30 outline-none focus:ring-2 focus:ring-primary/20 text-on-surface">
+              <select value={selectedPatient} onChange={(e) => setSelectedPatient(e.target.value)} className="flex-1 px-4 py-3 rounded-xl bg-white/70 dark:bg-slate-800/70 border border-outline-variant/30 outline-none focus:ring-2 focus:ring-teal-500/20 text-on-surface text-sm font-semibold">
                 <option value="">Seleccionar Paciente</option>
                 {patients.length === 0 && <option value="" disabled>No hay pacientes asignados</option>}
                 {patients.map((p) => (
                   <option key={p.id} value={p.id}>{p.full_name}</option>
                 ))}
               </select>
-              <button onClick={generateSessionSummary} disabled={summaryLoading || !selectedPatient} className="premium-btn bg-primary text-on-primary shadow-glow-primary px-6 py-3 rounded-xl font-bold flex items-center gap-2 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50 whitespace-nowrap">
-                {summaryLoading ? <Spinner size={20} className="text-on-primary" /> : <Icon name="auto_awesome" size={20} />}
+              <button onClick={generateSessionSummary} disabled={summaryLoading || !selectedPatient} className="bg-teal-600 hover:bg-teal-700 text-white shadow-md shadow-teal-700/20 px-6 py-3 rounded-xl font-bold text-xs flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50 whitespace-nowrap">
+                {summaryLoading ? <Spinner size={16} className="text-white" /> : <Icon name="auto_awesome" size={16} />}
                 {summaryLoading ? <LoadingText context="ai" /> : 'Generar Resumen'}
               </button>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="glass-panel p-4 rounded-2xl card-glow-hover">
-                <div className="flex items-center gap-2 mb-3"><Icon name="sensors" size={20} className="text-primary animate-breathe-icon" /><span className="font-bold text-sm text-on-surface">Datos Reales</span></div>
-                <p className="text-sm text-on-surface-variant">El resumen se genera a partir de las últimas 5 sesiones registradas del paciente seleccionado en la base de datos.</p>
+              <div className="ios-glass-heavy refraction-border p-5 rounded-2xl">
+                <div className="flex items-center gap-2 mb-3">
+                  <Icon name="sensors" size={18} className="text-teal-600 dark:text-teal-400 animate-breathe-icon" />
+                  <span className="font-bold text-sm text-on-surface">Telemetría Clínica</span>
+                </div>
+                <p className="text-xs text-on-surface-variant leading-relaxed">El resumen se genera a partir de las últimas 5 sesiones registradas del paciente seleccionado en la base de datos.</p>
               </div>
               <div className="md:col-span-2">
-                <GlassPanel className="rounded-2xl overflow-hidden shadow-[0_12px_40px_rgba(0,0,0,0.08)]">
+                <div className="ios-glass-heavy refraction-border rounded-2xl overflow-hidden shadow-sm">
                   {/* Header */}
-                  <div className="flex items-center justify-between px-5 py-4 bg-gradient-to-r from-primary/15 via-primary/5 to-transparent border-b border-primary/15">
+                  <div className="flex items-center justify-between px-5 py-4 bg-teal-500/10 border-b border-teal-500/15">
                     <div className="flex items-center gap-3">
-                      <div className="w-11 h-11 rounded-xl bg-primary/15 flex items-center justify-center ring-1 ring-primary/20">
-                        <MedicalIcon name="clipboard" size={22} className="text-primary" />
+                      <div className="size-10 rounded-xl bg-teal-600/15 text-teal-700 dark:text-teal-300 flex items-center justify-center">
+                        <MedicalIcon name="clipboard" size={20} />
                       </div>
                       <div>
-                        <h4 className="font-title-md text-title-md text-primary tracking-wide">Informe de Sesión</h4>
+                        <h4 className="font-bold text-sm text-teal-950 dark:text-teal-100">Informe de Sesión</h4>
                         <p className="text-[10px] text-on-surface-variant font-semibold uppercase tracking-wider">Resumen Clínico IA</p>
                       </div>
                     </div>
@@ -632,16 +649,16 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
                           Descargar PDF
                         </button>
                         <span className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">
-                          <Icon name="auto_awesome" size={11} className="text-primary" />
+                          <Icon name="auto_awesome" size={11} className="text-teal-600 dark:text-teal-400" />
                           Generado por IA
                         </span>
                       </div>
                     </div>
                   )}
-                </GlassPanel>
+                </div>
               </div>
             </div>
-          </GlassPanel>
+          </div>
           )}
 
           {/* Patient Summary */}
