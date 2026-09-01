@@ -13,7 +13,6 @@ import {
   UserCheck,
   Stethoscope,
   Sparkles,
-  Server,
   Smartphone,
 } from 'lucide-react';
 import { useToast } from './ToastProvider';
@@ -47,10 +46,6 @@ export function SendTokenModal({
   const user = useAuthStore((s) => s.user);
 
   const [channel, setChannel] = useState<'email' | 'whatsapp' | 'sms'>('email');
-  // Modo de envío de correo: 'smtp' (servidor SMTP directo) o 'native' (mailto: app local)
-  // 'resend' se mantiene en el backend y funciones, pero se oculta de la interfaz hasta configurar dominio
-  const [emailSubMode, setEmailSubMode] = useState<'smtp' | 'native' | 'resend'>('smtp');
-
   const [recipientName, setRecipientName] = useState(
     propRecipientName || propPatientName || 'Paciente'
   );
@@ -60,8 +55,7 @@ export function SendTokenModal({
     (user as any)?.telefono || (user as any)?.phone || ''
   );
   const [copied, setCopied] = useState(false);
-  const [sendingResend, setSendingResend] = useState(false);
-  const [sendingSmtp, setSendingSmtp] = useState(false);
+  const [sendingEmail, setSendingEmail] = useState(false);
 
   // Load therapist's phone and patient's data from Supabase if not prefilled
   const fetchAssociatedData = useCallback(async () => {
@@ -178,7 +172,7 @@ Equipo FisioMirror`;
     setTimeout(() => setCopied(false), 2000);
   };
 
-  // 1. Enviar mediante cliente de correo nativo (mailto:)
+  // 1. Abrir en gestor de correo del dispositivo (mailto:)
   const handleOpenNativeMail = () => {
     if (!email.trim() || !email.includes('@')) {
       toast.error('Por favor ingresa un correo electrónico válido para el paciente');
@@ -193,26 +187,28 @@ Equipo FisioMirror`;
     triggerLink(mailtoUrl);
 
     toast.success(`Abriendo aplicación de correo para ${email}`, {
-      description: 'Se preparó el mensaje en tu cliente nativo con todos los datos autorrellenados.',
+      description: 'Se preparó el mensaje con el token y las instrucciones de acceso.',
     });
     onClose();
   };
 
-  // 2. Enviar directamente vía API de Resend (Edge function / API)
-  const handleSendResend = async () => {
+  // 2. Envío Automático Inteligente (Resend Dominio Verificado -> Respaldo SMTP)
+  const handleSendUnifiedEmail = async () => {
     if (!email.trim() || !email.includes('@')) {
       toast.error('Por favor ingresa un correo electrónico válido para el paciente');
       return;
     }
 
-    setSendingResend(true);
+    setSendingEmail(true);
+    const cleanEmail = email.trim().toLowerCase();
+
     try {
-      // Registrar notificación interna en BD
+      // Registrar notificación interna en Supabase si el paciente ya tiene cuenta
       try {
         const { data: prof } = await supabase
           .from('profiles')
           .select('id')
-          .eq('email', email.trim().toLowerCase())
+          .eq('email', cleanEmail)
           .maybeSingle();
 
         if (prof?.id) {
@@ -229,39 +225,16 @@ Equipo FisioMirror`;
         console.warn('Notification insert notice:', err);
       }
 
-      // Intentar primero con Edge Function de Supabase
-      let success = false;
-      let errorDesc = '';
+      let delivered = false;
+      let errorReason = '';
 
+      // Paso A: Intentar envío directo con Resend (Dominio verificado fisiomirror.me)
       try {
-        const { data, error } = await supabase.functions.invoke('send-patient-token-resend', {
-          body: {
-            email: email.trim().toLowerCase(),
-            name: recipientName || 'Paciente',
-            token,
-            therapistName: senderName,
-            therapistEmail: senderEmail,
-            therapistPhone: effectiveSenderPhone,
-            activationLink,
-          },
-        });
-
-        if (!error && data?.success) {
-          success = true;
-        } else if (error) {
-          errorDesc = error.message;
-        }
-      } catch (invokeErr: any) {
-        errorDesc = invokeErr.message;
-      }
-
-      // Fallback a API local proxy (/api/send-token-resend)
-      if (!success) {
         const res = await fetch('/api/send-token-resend', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            email: email.trim().toLowerCase(),
+            email: cleanEmail,
             name: recipientName || 'Paciente',
             token,
             therapistName: senderName,
@@ -273,97 +246,44 @@ Equipo FisioMirror`;
 
         const data = await res.json();
         if (res.ok && data.success) {
-          success = true;
+          delivered = true;
         } else {
-          errorDesc = data.error || errorDesc || 'Error al procesar con Resend';
+          errorReason = data.error || '';
         }
+      } catch (resendErr: any) {
+        errorReason = resendErr?.message || '';
       }
 
-      if (success) {
-        toast.success(`¡Correo enviado a ${email} vía Resend!`, {
-          description: 'El paciente recibió su token de 6 dígitos con diseño profesional.',
-        });
-        onClose();
-      } else {
-        if (errorDesc.toLowerCase().includes('verified') || errorDesc.includes('testing')) {
-          toast.error('Resend modo prueba (emails verificados)', {
-            description:
-              'En modo prueba de Resend el destinatario debe estar verificado. Utiliza la opción "SMTP Supabase" o "App de Correo Nativa" para enviar de inmediato.',
+      // Paso B: Si falló Resend, intentar automáticamente por el canal SMTP de respaldo
+      if (!delivered) {
+        try {
+          const res = await fetch('/api/send-patient-invite-smtp', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              email: cleanEmail,
+              token,
+              patientName: recipientName || 'Paciente',
+              therapistName: senderName,
+              therapistEmail: senderEmail,
+              therapistPhone: effectiveSenderPhone,
+              activationLink,
+            }),
           });
-          setEmailSubMode('smtp');
-        } else {
-          toast.error(errorDesc || 'No se pudo enviar por Resend');
-        }
-      }
-    } catch {
-      toast.error('Error de conexión con Resend', {
-        description: 'Puedes usar el botón "SMTP Supabase" o "App de Correo Nativa".',
-      });
-    } finally {
-      setSendingResend(false);
-    }
-  };
 
-  // 3. Enviar mediante SMTP configurado en Supabase (Edge function / API)
-  const handleSendSmtp = async () => {
-    if (!email.trim() || !email.includes('@')) {
-      toast.error('Por favor ingresa un correo electrónico válido para el paciente');
-      return;
-    }
-
-    setSendingSmtp(true);
-    try {
-      let success = false;
-      let errorDesc = '';
-
-      // Intentar primero con Edge Function de Supabase
-      try {
-        const { data, error } = await supabase.functions.invoke('send-patient-invite-smtp', {
-          body: {
-            email: email.trim().toLowerCase(),
-            token,
-            patientName: recipientName || 'Paciente',
-            therapistName: senderName,
-            therapistEmail: senderEmail,
-            therapistPhone: effectiveSenderPhone,
-            activationLink,
-          },
-        });
-
-        if (!error && data?.success) {
-          success = true;
-        } else if (error) {
-          errorDesc = error.message;
-        }
-      } catch (edgeErr: any) {
-        errorDesc = edgeErr.message;
-      }
-
-      // Fallback a API local proxy (/api/send-patient-invite-smtp)
-      if (!success) {
-        const res = await fetch('/api/send-patient-invite-smtp', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            email: email.trim().toLowerCase(),
-            token,
-            patientName: recipientName || 'Paciente',
-            therapistName: senderName,
-            therapistEmail: senderEmail,
-            therapistPhone: effectiveSenderPhone,
-            activationLink,
-          }),
-        });
-
-        const data = await res.json();
-        if (res.ok && data.success) {
-          success = true;
-        } else {
-          errorDesc = data.error || errorDesc || 'Error al procesar con SMTP';
+          const data = await res.json();
+          if (res.ok && data.success) {
+            delivered = true;
+          } else {
+            errorReason = data.error || errorReason || 'Fallo de entrega';
+          }
+        } catch (smtpErr: any) {
+          errorReason = smtpErr?.message || errorReason;
         }
       }
 
-      if (success) {
+      // Resultado al usuario
+      if (delivered) {
         if (user?.id) {
           notifyTokenCreated({
             therapistId: user.id,
@@ -371,25 +291,28 @@ Equipo FisioMirror`;
             token,
           }).catch(() => {});
         }
-        toast.success(`¡Enlace y token enviados por SMTP a ${email}!`, {
-          description: 'El paciente recibió las instrucciones a través del servidor de correo seguro.',
+
+        toast.success(`¡Invitación enviada a ${cleanEmail}!`, {
+          description: 'Se enviaron las credenciales. Indica al paciente que revise su bandeja principal o carpeta de spam si no lo ve de inmediato.',
         });
         onClose();
       } else {
-        toast.error(`No se pudo enviar por SMTP: ${errorDesc}`, {
-          description: 'Puedes utilizar la opción "App de Correo Nativa" para enviarlo de inmediato desde tu dispositivo.',
+        toast.error(`No se pudo completar el envío automático`, {
+          description: errorReason
+            ? `${errorReason}. Puedes usar el botón "Abrir en mi app de correo" o WhatsApp para enviarlo de inmediato.`
+            : 'Puedes abrir tu aplicación de correo o compartir el mensaje por WhatsApp.',
         });
       }
     } catch {
-      toast.error('Error al contactar con el servicio SMTP', {
-        description: 'Usa la "App de Correo Nativa" para enviar desde tu cliente de correo predeterminado.',
+      toast.error('Error de conexión', {
+        description: 'Puedes utilizar la opción "Abrir en mi app de correo" o copiar el mensaje.',
       });
     } finally {
-      setSendingSmtp(false);
+      setSendingEmail(false);
     }
   };
 
-  // 4. Enviar por WhatsApp
+  // 3. Enviar por WhatsApp
   const handleSendWhatsApp = () => {
     const cleanPhone = phone.replace(/[^0-9]/g, '');
     const waUrl = cleanPhone
@@ -400,7 +323,7 @@ Equipo FisioMirror`;
     onClose();
   };
 
-  // 5. Enviar por SMS nativo
+  // 4. Enviar por SMS nativo
   const handleSendSMS = () => {
     if (!phone.trim()) {
       toast.error('Por favor ingresa un número de teléfono para el paciente');
@@ -565,51 +488,18 @@ Equipo FisioMirror`;
                   </div>
                 </div>
 
-                {/* Email Delivery Options Selector */}
-                <div className="p-2.5 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200/60 dark:border-slate-700/50 space-y-1.5">
-                  <p className="text-[11px] font-bold text-slate-700 dark:text-slate-300">
-                    Canal de envío por correo:
+                {/* Spam Reminder & Feature Box */}
+                <div className="p-3 rounded-2xl bg-teal-50/70 dark:bg-teal-950/30 border border-teal-200/70 dark:border-teal-800/50 space-y-1.5">
+                  <div className="flex items-center gap-1.5 text-xs font-bold text-teal-900 dark:text-teal-200">
+                    <Sparkles size={14} className="text-teal-600 dark:text-teal-400" />
+                    <span>Envío Oficial FisioMirror</span>
+                  </div>
+                  <p className="text-[11px] text-teal-800/90 dark:text-teal-300/90 leading-relaxed">
+                    El paciente recibirá una plantilla profesional con su token de acceso rápido y botón de activación directa.
                   </p>
-                  <div className="grid grid-cols-2 gap-1 text-[11px]">
-                    <button
-                      type="button"
-                      onClick={() => setEmailSubMode('smtp')}
-                      className={`p-2 rounded-xl text-center font-semibold transition-all flex flex-col items-center justify-center ${
-                        emailSubMode === 'smtp'
-                          ? 'bg-teal-600 text-white shadow-xs'
-                          : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200/60 dark:border-slate-700/60 hover:bg-slate-50'
-                      }`}
-                    >
-                      <Server size={14} className="mb-0.5" />
-                      <span>Envío Directo (SMTP)</span>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setEmailSubMode('native')}
-                      className={`p-2 rounded-xl text-center font-semibold transition-all flex flex-col items-center justify-center ${
-                        emailSubMode === 'native'
-                          ? 'bg-teal-600 text-white shadow-xs'
-                          : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200/60 dark:border-slate-700/60 hover:bg-slate-50'
-                      }`}
-                    >
-                      <ExternalLink size={14} className="mb-0.5" />
-                      <span>App del Dispositivo</span>
-                    </button>
-                  </div>
-
-                  {/* Contextual helper badge without emojis */}
-                  <div className="p-2 rounded-xl bg-slate-100/80 dark:bg-slate-800/80 text-[10px] text-slate-600 dark:text-slate-300 leading-snug">
-                    {emailSubMode === 'smtp' && (
-                      <span>
-                        <strong>Servidor SMTP Directo:</strong> Envío seguro automatizado con diseño HTML institucional directo a la bandeja del paciente.
-                      </span>
-                    )}
-                    {emailSubMode === 'native' && (
-                      <span>
-                        <strong>App del Dispositivo:</strong> Abre tu gestor de correo predeterminado (Gmail, Outlook, Apple Mail) con el mensaje preparado.
-                      </span>
-                    )}
-                  </div>
+                  <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-snug pt-1 border-t border-teal-200/50 dark:border-teal-800/40">
+                    Incluye recordatorio automático para revisar la carpeta de <em>Spam / Correo no deseado</em>.
+                  </p>
                 </div>
 
                 <div>
@@ -628,7 +518,7 @@ Equipo FisioMirror`;
               <div className="space-y-3">
                 <div>
                   <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                    Teléfono de WhatsApp del paciente (con código de país ej: +34, +58, +52, +57)
+                    Teléfono de WhatsApp del paciente
                   </label>
                   <div className="relative">
                     <Phone size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -687,48 +577,28 @@ Equipo FisioMirror`;
             <div className="flex flex-col gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
               {channel === 'email' && (
                 <>
-                  {emailSubMode === 'resend' && (
-                    <button
-                      type="button"
-                      onClick={handleSendResend}
-                      disabled={sendingResend}
-                      className="w-full py-2.5 px-4 rounded-xl bg-teal-600 hover:bg-teal-700 active:scale-98 text-white font-bold text-xs transition-all flex items-center justify-center gap-1.5 shadow-md shadow-teal-600/20 disabled:opacity-60"
-                    >
-                      {sendingResend ? (
-                        <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                      ) : (
-                        <Sparkles size={14} />
-                      )}
-                      <span>Enviar por Resend (Edge Function)</span>
-                    </button>
-                  )}
+                  <button
+                    type="button"
+                    onClick={handleSendUnifiedEmail}
+                    disabled={sendingEmail}
+                    className="w-full py-2.5 px-4 rounded-xl bg-teal-600 hover:bg-teal-700 active:scale-98 text-white font-bold text-xs transition-all flex items-center justify-center gap-1.5 shadow-md shadow-teal-600/20 disabled:opacity-60"
+                  >
+                    {sendingEmail ? (
+                      <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    ) : (
+                      <Send size={14} />
+                    )}
+                    <span>{sendingEmail ? 'Enviando invitación...' : 'Enviar Correo de Invitación'}</span>
+                  </button>
 
-                  {emailSubMode === 'smtp' && (
-                    <button
-                      type="button"
-                      onClick={handleSendSmtp}
-                      disabled={sendingSmtp}
-                      className="w-full py-2.5 px-4 rounded-xl bg-teal-600 hover:bg-teal-700 active:scale-98 text-white font-bold text-xs transition-all flex items-center justify-center gap-1.5 shadow-md shadow-teal-600/20 disabled:opacity-60"
-                    >
-                      {sendingSmtp ? (
-                        <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                      ) : (
-                        <Server size={14} />
-                      )}
-                      <span>Enviar vía Servidor SMTP Directo</span>
-                    </button>
-                  )}
-
-                  {emailSubMode === 'native' && (
-                    <button
-                      type="button"
-                      onClick={handleOpenNativeMail}
-                      className="w-full py-2.5 px-4 rounded-xl bg-teal-600 hover:bg-teal-700 active:scale-98 text-white font-bold text-xs transition-all flex items-center justify-center gap-1.5 shadow-md shadow-teal-600/20"
-                    >
-                      <Mail size={14} />
-                      <span>Abrir App de Correo del Dispositivo</span>
-                    </button>
-                  )}
+                  <button
+                    type="button"
+                    onClick={handleOpenNativeMail}
+                    className="w-full py-2 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200/80 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-semibold text-xs transition-all flex items-center justify-center gap-1.5"
+                  >
+                    <ExternalLink size={13} />
+                    <span>Abrir en mi gestor de correo</span>
+                  </button>
                 </>
               )}
 
@@ -750,7 +620,7 @@ Equipo FisioMirror`;
                   className="w-full py-2.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 active:scale-98 text-white font-bold text-xs transition-all flex items-center justify-center gap-1.5 shadow-md shadow-blue-600/20"
                 >
                   <Send size={14} />
-                  <span>Enviar por App de SMS del Dispositivo</span>
+                  <span>Enviar por SMS</span>
                 </button>
               )}
 

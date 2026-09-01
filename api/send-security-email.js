@@ -75,6 +75,9 @@ export default async function handler(req, res) {
           <strong>Fecha y hora del evento:</strong> ${timestamp}<br>
           <strong>Cuenta afectada:</strong> ${cleanEmail}
         </div>
+        <div style="margin-top: 18px; padding: 12px 14px; background-color: #f0fdfa; border-radius: 10px; border-left: 3px solid #0d9488; font-size: 11px; line-height: 1.5; color: #134e4a;">
+          <strong>Nota:</strong> Si este correo llegó a tu carpeta de <em>Spam</em> o <em>Correo no deseado</em>, márcalo como 'No es spam' para recibir alertas críticas a tiempo.
+        </div>
       </td>
     </tr>
     <tr>
@@ -112,7 +115,36 @@ export default async function handler(req, res) {
       console.warn('Security notification insert notice:', dbErr);
     }
 
-    // 2. Enviar por SMTP si está configurado
+    // 2. Enviar por Resend (Prioridad 1 - Dominio verificado fisiomirror.me)
+    const resendApiKey = (process.env.RESEND_API_KEY || DEFAULT_RESEND_KEY).trim();
+    const fromSender = (process.env.RESEND_FROM || 'FisioMirror Seguridad <notificaciones@fisiomirror.me>').trim();
+
+    if (resendApiKey) {
+      try {
+        const resendRes = await fetch('https://api.resend.com/emails', {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${resendApiKey}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            from: fromSender,
+            to: [cleanEmail],
+            subject,
+            html: htmlContent,
+          }),
+        });
+
+        const resendData = await resendRes.json();
+        if (resendRes.ok && resendData.id) {
+          return res.status(200).json({ success: true, method: 'resend_verified', id: resendData.id });
+        }
+      } catch (resendErr) {
+        console.warn('Security email Resend notice:', resendErr);
+      }
+    }
+
+    // 3. Enviar por SMTP como respaldo si está configurado
     const smtpHost = (process.env.SMTP_HOST || '').trim();
     const smtpUser = (process.env.SMTP_USER || '').trim();
     const rawPass = (process.env.SMTP_PASS || '').trim();
@@ -139,33 +171,6 @@ export default async function handler(req, res) {
       } catch (smtpErr) {
         console.warn('Security email SMTP warning:', smtpErr);
       }
-    }
-
-    // 3. Enviar por Resend si está disponible
-    const resendApiKey = (process.env.RESEND_API_KEY || DEFAULT_RESEND_KEY).trim();
-    const fromSender = (process.env.RESEND_FROM || 'FisioMirror <onboarding@resend.dev>').trim();
-
-    try {
-      const resendRes = await fetch('https://api.resend.com/emails', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${resendApiKey}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          from: fromSender,
-          to: [cleanEmail],
-          subject,
-          html: htmlContent,
-        }),
-      });
-
-      const resendData = await resendRes.json();
-      if (resendRes.ok) {
-        return res.status(200).json({ success: true, method: 'resend', id: resendData.id });
-      }
-    } catch (resendErr) {
-      console.warn('Security email Resend notice:', resendErr);
     }
 
     return res.status(200).json({

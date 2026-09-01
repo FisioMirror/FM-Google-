@@ -1,5 +1,5 @@
 const DEFAULT_RESEND_KEY = process.env.RESEND_API_KEY || '';
-const DEFAULT_RESEND_FROM = "FisioMirror <onboarding@resend.dev>";
+const DEFAULT_RESEND_FROM = "FisioMirror <notificaciones@fisiomirror.me>";
 const RESEND_ACCOUNT_OWNER = "fisiomirror@proton.me";
 
 export default async function handler(req, res) {
@@ -77,7 +77,10 @@ export default async function handler(req, res) {
           2. Completa tu nombre y contraseña para vincular tu expediente médico.<br>
           3. Sigue los ejercicios guiados por la cámara con corrección de postura en tiempo real.
         </p>
-        <div style="margin-top: 28px; padding: 18px 20px; background-color: #f8fafc; border-radius: 14px; border: 1px solid #e2e8f0; font-size: 13px; color: #334155;">
+        <div style="margin-top: 24px; padding: 14px 16px; background-color: #f0fdfa; border-radius: 12px; border-left: 4px solid #0d9488; font-size: 12px; line-height: 1.5; color: #134e4a;">
+          <strong>Nota:</strong> Si no encuentras este correo en tu bandeja principal, por favor revisa tu carpeta de <em>Spam</em> o <em>Correo no deseado</em> y márcalo como seguro.
+        </div>
+        <div style="margin-top: 20px; padding: 18px 20px; background-color: #f8fafc; border-radius: 14px; border: 1px solid #e2e8f0; font-size: 13px; color: #334155;">
           <div style="font-weight: 700; color: #0f172a; margin-bottom: 4px;">Profesional a Cargo:</div>
           <div>• Fisioterapeuta: <strong>${docName}</strong></div>
           ${therapistEmail ? `<div>• Correo: <a href="mailto:${therapistEmail}" style="color: #0d9488; text-decoration: none;">${therapistEmail}</a></div>` : ''}

@@ -81,7 +81,7 @@ export default async function handler(req, res) {
     const smtpUser = (process.env.SMTP_USER || '').trim();
     const rawPass = (process.env.SMTP_PASS || '').trim();
     const smtpPass = rawPass.replace(/\s+/g, '').replace(/[\u200B-\u200D\uFEFF]/g, '').trim();
-    const smtpFrom = (process.env.SMTP_FROM || `FisioMirror <${smtpUser || 'notificaciones@fisiomirror.app'}>`).trim();
+    const smtpFrom = (process.env.SMTP_FROM || `FisioMirror <${smtpUser || 'notificaciones@fisiomirror.me'}>`).trim();
 
     const userName = profile?.full_name || 'Estimado/a usuario';
 
@@ -138,6 +138,11 @@ export default async function handler(req, res) {
           </a>
         </div>
 
+        <!-- Spam Reminder Box -->
+        <div style="margin: 24px 0; padding: 14px 16px; background-color: #f0fdfa; border-radius: 12px; border-left: 4px solid #0d9488; font-size: 12px; line-height: 1.5; color: #134e4a;">
+          <strong>Nota:</strong> Si no visualizas este mensaje en tu bandeja de entrada principal, por favor revisa tu carpeta de <em>Spam</em> o <em>Correo no deseado</em> y márcalo como seguro.
+        </div>
+
         <p style="margin: 20px 0 0 0; font-size: 12px; line-height: 1.5; color: #64748b; text-align: center;">
           O copia y pega el siguiente enlace en tu navegador:<br>
           <a href="${resetLink}" style="color: #0d9488; word-break: break-all; font-size: 11px;">${resetLink}</a>
@@ -160,7 +165,44 @@ export default async function handler(req, res) {
 </html>
     `;
 
-    // 6. Enviar correo vía SMTP
+    // 6. Intentar enviar primero por Resend (Dominio verificado fisiomirror.me)
+    const resendApiKey = (process.env.RESEND_API_KEY || '').trim();
+    const resendFrom = (process.env.RESEND_FROM || 'FisioMirror <notificaciones@fisiomirror.me>').trim();
+
+    if (resendApiKey) {
+      try {
+        const resendRes = await fetch('https://api.resend.com/emails', {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${resendApiKey}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            from: resendFrom,
+            to: [cleanEmail],
+            subject: `FisioMirror — Código para restablecer tu contraseña (${pinCode})`,
+            html: htmlContent,
+          }),
+        });
+
+        const resendData = await resendRes.json();
+        if (resendRes.ok && resendData.id) {
+          return res.status(200).json({
+            success: true,
+            method: 'resend_verified',
+            message: `Código y enlace de recuperación enviados a ${cleanEmail}`,
+            messageId: resendData.id,
+            email: cleanEmail,
+          });
+        } else {
+          console.warn('Resend send warning for reset password:', resendData);
+        }
+      } catch (resendErr) {
+        console.warn('Notice: Resend call failed, trying SMTP:', resendErr);
+      }
+    }
+
+    // 7. Enviar correo vía SMTP como respaldo
     if (smtpHost && smtpUser && smtpPass) {
       try {
         const transporter = nodemailer.createTransport({

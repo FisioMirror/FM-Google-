@@ -18,7 +18,7 @@ export default async function handler(req, res) {
       apiKeyValid: false,
       mode: 'desconocido',
       accountOwner: 'fisiomirror@proton.me',
-      from: process.env.RESEND_FROM || 'FisioMirror <onboarding@resend.dev>',
+      from: process.env.RESEND_FROM || 'FisioMirror <notificaciones@fisiomirror.me>',
       message: '',
     },
     smtp: {
