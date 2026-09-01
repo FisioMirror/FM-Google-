@@ -1,6 +1,7 @@
 import { useEffect, useState, lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
+import { Analytics } from '@vercel/analytics/react';
 import { Login } from './pages/Login';
 import { ResetPassword } from './pages/ResetPassword';
 import { RegistroPacientePage } from './pages/RegistroPacientePage';
@@ -247,6 +248,7 @@ export default function App() {
             <GlassToastProvider>
               <NotificationProvider>
                 <Router />
+                <Analytics />
               </NotificationProvider>
             </GlassToastProvider>
           </ToastProvider>
