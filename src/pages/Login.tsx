@@ -25,9 +25,10 @@ interface EspecialidadRow {
 
 const GLOW_COLORS = {
   teal: '0, 80, 77',
+  green: '16, 185, 129',
+  blue: '14, 165, 233',
   cyan: '6, 182, 212',
-  coral: '234, 88, 12',
-  red: '186, 26, 26',
+  red: '225, 29, 72',
 };
 
 const DEFAULT_ESPECIALIDADES = [
@@ -45,63 +46,207 @@ const DEFAULT_ESPECIALIDADES = [
 
 const LOGIN_BG_URL = '/login.png';
 
-function CharacterGlow({
-  side,
-  colorRgb,
+function CharacterSpotlight({
+  activeRole,
   phase,
   reduceMotion,
+  onSelectRole,
 }: {
-  side: 'left' | 'right';
-  colorRgb: string;
+  activeRole: LoginRole;
   phase: GlowPhase;
   reduceMotion: boolean | null;
+  onSelectRole: (role: LoginRole) => void;
 }) {
-  const variants = {
-    pulse: {
-      opacity: [0.25, 0.75, 0.25, 0.75, 0.35],
-      scale: [1, 1.04, 1, 1.04, 1],
-      transition: { duration: 1.2, times: [0, 0.25, 0.5, 0.75, 1], ease: 'easeInOut' as const },
-    },
-    settled: {
-      opacity: 0.35,
-      scale: 1,
-      transition: { duration: 0.5, ease: 'easeInOut' as const },
-    },
-    error: {
-      opacity: [0.35, 0.9, 0.35, 0.9, 0.35],
-      transition: { duration: 1, ease: 'easeInOut' as const },
-    },
-  };
+  const isPaciente = activeRole === 'paciente';
+  const isFisio = activeRole === 'fisioterapeuta';
 
   return (
-    <motion.div
-      className={cn(
-        'pointer-events-none absolute top-0 h-full w-3/5',
-        side === 'left' ? 'left-0' : 'right-0'
-      )}
-      initial={{ opacity: 0 }}
-      animate={reduceMotion ? { opacity: 0.35 } : variants[phase]}
-      exit={{ opacity: 0, transition: { duration: 0.4, ease: 'easeInOut' } }}
-    >
+    <div className="absolute inset-0 pointer-events-none z-10 overflow-hidden select-none">
+      {/* ── LUMINOUS CHARACTER AURA (mix-blend-mode: screen preserves 100% natural colors, adding only pure light) ── */}
+      {/* Fisioterapeuta Spotlight (Left Side) */}
+      <motion.div
+        className="absolute top-0 left-0 w-1/2 h-full pointer-events-none"
+        animate={{
+          opacity: isFisio ? (phase === 'pulse' ? 1 : 0.88) : 0.05,
+          scale: isFisio ? 1 : 0.96,
+        }}
+        transition={{ duration: 0.6, ease: 'easeOut' }}
+        style={{ mixBlendMode: 'screen' }}
+      >
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              'radial-gradient(ellipse 60% 70% at 38% 46%, rgba(16, 185, 129, 0.42) 0%, rgba(13, 148, 136, 0.20) 35%, rgba(16, 185, 129, 0.06) 55%, transparent 75%)',
+            filter: 'blur(30px)',
+          }}
+        />
+        <div
+          className="absolute"
+          style={{
+            left: '24%',
+            top: '30%',
+            width: '42%',
+            height: '42%',
+            borderRadius: '9999px',
+            background: 'radial-gradient(circle, rgba(52, 211, 153, 0.30) 0%, transparent 70%)',
+            filter: 'blur(20px)',
+          }}
+        />
+      </motion.div>
+
+      {/* Paciente Spotlight (Right Side) */}
+      <motion.div
+        className="absolute top-0 right-0 w-1/2 h-full pointer-events-none"
+        animate={{
+          opacity: isPaciente ? (phase === 'pulse' ? 1 : 0.88) : 0.05,
+          scale: isPaciente ? 1 : 0.96,
+        }}
+        transition={{ duration: 0.6, ease: 'easeOut' }}
+        style={{ mixBlendMode: 'screen' }}
+      >
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              'radial-gradient(ellipse 60% 70% at 62% 48%, rgba(14, 165, 233, 0.42) 0%, rgba(2, 132, 199, 0.20) 35%, rgba(14, 165, 233, 0.06) 55%, transparent 75%)',
+            filter: 'blur(30px)',
+          }}
+        />
+        <div
+          className="absolute"
+          style={{
+            right: '24%',
+            top: '32%',
+            width: '42%',
+            height: '42%',
+            borderRadius: '9999px',
+            background: 'radial-gradient(circle, rgba(56, 189, 248, 0.30) 0%, transparent 70%)',
+            filter: 'blur(20px)',
+          }}
+        />
+      </motion.div>
+
+      {/* ── INTERACTIVE CHARACTER HOTSPOTS & HUD BEACONS ── */}
+      {/* Left Character: Fisioterapeuta */}
       <div
-        className="absolute inset-0"
+        onClick={() => onSelectRole('fisioterapeuta')}
+        role="button"
+        tabIndex={0}
+        aria-label="Seleccionar rol Fisioterapeuta"
+        className={cn(
+          'absolute top-0 bottom-0 left-0 w-1/2 pointer-events-auto cursor-pointer group flex flex-col justify-center items-center transition-all',
+          isFisio ? 'z-20' : 'z-10 hover:bg-emerald-500/[0.02]'
+        )}
+      >
+        {/* Holographic AR Beacon when active */}
+        <AnimatePresence>
+          {isFisio && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8, y: 8 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.8, y: -8 }}
+              transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+              className="absolute top-[26%] left-[22%] flex flex-col items-center gap-1.5 pointer-events-none"
+            >
+              {/* Pulse target ring */}
+              <div className="relative flex items-center justify-center">
+                {!reduceMotion && (
+                  <span className="absolute w-8 h-8 rounded-full bg-emerald-500/25 border border-emerald-400/60 animate-ping" />
+                )}
+                <span className="w-3.5 h-3.5 rounded-full bg-emerald-500 shadow-[0_0_12px_#10b981] border-2 border-white dark:border-slate-900" />
+              </div>
+              {/* Glass status badge */}
+              <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/95 dark:bg-slate-900/90 backdrop-blur-md shadow-lg border border-emerald-500/35 text-emerald-800 dark:text-emerald-300 text-xs font-extrabold tracking-tight">
+                <Icon name="medical_services" size={13} className="text-emerald-600 dark:text-emerald-400" />
+                <span>Fisioterapeuta</span>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Discreet hover indicator when inactive */}
+        {!isFisio && (
+          <div className="absolute top-[28%] left-[24%] opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none transform -translate-y-1 group-hover:translate-y-0">
+            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-md shadow-md border border-slate-200/90 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-[11px] font-bold">
+              <Icon name="touch_app" size={12} />
+              <span>Ver Fisioterapeuta</span>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Right Character: Paciente */}
+      <div
+        onClick={() => onSelectRole('paciente')}
+        role="button"
+        tabIndex={0}
+        aria-label="Seleccionar rol Paciente"
+        className={cn(
+          'absolute top-0 bottom-0 right-0 w-1/2 pointer-events-auto cursor-pointer group flex flex-col justify-center items-center transition-all',
+          isPaciente ? 'z-20' : 'z-10 hover:bg-sky-500/[0.02]'
+        )}
+      >
+        {/* Biomechanical Recovery Beacon when active */}
+        <AnimatePresence>
+          {isPaciente && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8, y: 8 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.8, y: -8 }}
+              transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+              className="absolute top-[30%] right-[22%] flex flex-col items-center gap-1.5 pointer-events-none"
+            >
+              {/* Pulse target ring */}
+              <div className="relative flex items-center justify-center">
+                {!reduceMotion && (
+                  <span className="absolute w-8 h-8 rounded-full bg-sky-500/25 border border-sky-400/60 animate-ping" />
+                )}
+                <span className="w-3.5 h-3.5 rounded-full bg-sky-500 shadow-[0_0_12px_#0ea5e9] border-2 border-white dark:border-slate-900" />
+              </div>
+              {/* Glass status badge */}
+              <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/95 dark:bg-slate-900/90 backdrop-blur-md shadow-lg border border-sky-500/35 text-sky-800 dark:text-sky-300 text-xs font-extrabold tracking-tight">
+                <Icon name="person" size={13} className="text-sky-600 dark:text-sky-400" />
+                <span>Paciente</span>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Discreet hover indicator when inactive */}
+        {!isPaciente && (
+          <div className="absolute top-[32%] right-[24%] opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none transform -translate-y-1 group-hover:translate-y-0">
+            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-md shadow-md border border-slate-200/90 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-[11px] font-bold">
+              <Icon name="touch_app" size={12} />
+              <span>Ver Paciente</span>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* ── LUMINOUS BORDER FADES (Desvanecidos Claros y Luminosos) ── */}
+      {/* Left border fade: seamlessly bridges illustration with the light login form */}
+      <div className="absolute top-0 bottom-0 left-0 w-24 bg-gradient-to-r from-[#f9f9fc] dark:from-slate-950 via-[#f9f9fc]/75 dark:via-slate-950/75 to-transparent pointer-events-none z-10" />
+
+      {/* Top border fade */}
+      <div className="absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-[#f9f9fc] dark:from-slate-950 via-[#f9f9fc]/60 dark:via-slate-950/60 to-transparent pointer-events-none z-10" />
+
+      {/* Bottom border fade */}
+      <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-[#f9f9fc] dark:from-slate-950 via-[#f9f9fc]/80 dark:via-slate-950/80 to-transparent pointer-events-none z-10" />
+
+      {/* Right border fade */}
+      <div className="absolute top-0 bottom-0 right-0 w-12 bg-gradient-to-l from-[#f9f9fc]/90 dark:from-slate-950/90 via-[#f9f9fc]/40 dark:via-slate-950/40 to-transparent pointer-events-none z-10" />
+
+      {/* Ambient framing perimeter halo */}
+      <motion.div
+        className="absolute inset-0 pointer-events-none z-10 transition-colors duration-700"
         style={{
-          background: `radial-gradient(circle at ${side === 'left' ? '60%' : '40%'} 50%, rgba(${colorRgb}, 0.5) 0%, rgba(${colorRgb}, 0.2) 35%, rgba(${colorRgb}, 0) 70%)`,
-          filter: 'blur(40px)',
+          boxShadow: isPaciente
+            ? 'inset 0 0 60px 8px rgba(14, 165, 233, 0.07)'
+            : 'inset 0 0 60px 8px rgba(16, 185, 129, 0.07)',
         }}
       />
-      <div
-        className="absolute"
-        style={{
-          [side]: '12%',
-          top: '25%',
-          width: '55%',
-          height: '55%',
-          borderRadius: '9999px',
-          boxShadow: `0 0 120px 60px rgba(${colorRgb}, 0.35)`,
-        } as React.CSSProperties}
-      />
-    </motion.div>
+    </div>
   );
 }
 
@@ -579,12 +724,6 @@ export function Login() {
 
   const breathingScale = imageState === 'typing' ? [1, 1.01, 1] : [1, 1.025, 1];
   const breathingDuration = imageState === 'typing' ? 3 : 5;
-  const glowColorRgb =
-    glowPhase === 'error'
-      ? GLOW_COLORS.red
-      : isPaciente
-      ? GLOW_COLORS.coral
-      : GLOW_COLORS.teal;
 
   const statusMessage =
     loading
@@ -629,7 +768,7 @@ export function Login() {
         className="pointer-events-none absolute inset-0 z-0"
         style={{
           backgroundImage:
-            'radial-gradient(at 0% 0%, rgba(0, 80, 77, 0.12) 0px, transparent 50%), radial-gradient(at 100% 0%, rgba(234, 88, 12, 0.08) 0px, transparent 50%), radial-gradient(at 100% 100%, rgba(13, 148, 136, 0.15) 0px, transparent 50%), radial-gradient(at 0% 100%, rgba(6, 182, 212, 0.10) 0px, transparent 50%)',
+            'radial-gradient(at 0% 0%, rgba(0, 80, 77, 0.12) 0px, transparent 50%), radial-gradient(at 100% 0%, rgba(14, 165, 233, 0.09) 0px, transparent 50%), radial-gradient(at 100% 100%, rgba(13, 148, 136, 0.15) 0px, transparent 50%), radial-gradient(at 0% 100%, rgba(6, 182, 212, 0.10) 0px, transparent 50%)',
         }}
       />
       {/* Ambient glowing orbs */}
@@ -700,7 +839,12 @@ export function Login() {
           {(!isFisio || !isRegister) && (
             <div className="relative bg-slate-200/50 dark:bg-slate-800/60 p-1 rounded-2xl flex items-center w-full shadow-inner">
               <motion.div
-                className="absolute h-[calc(100%-8px)] w-[calc(50%-4px)] bg-white dark:bg-slate-900 rounded-xl shadow-sm"
+                className={cn(
+                  'absolute h-[calc(100%-8px)] w-[calc(50%-4px)] bg-white dark:bg-slate-900 rounded-xl shadow-sm border transition-colors',
+                  isPaciente
+                    ? 'border-blue-500/30 shadow-blue-500/10'
+                    : 'border-teal-600/30 shadow-teal-600/10'
+                )}
                 animate={{ left: isPaciente ? '4px' : 'calc(50% + 0px)' }}
                 transition={{ type: 'spring', stiffness: 350, damping: 32 }}
               />
@@ -710,7 +854,7 @@ export function Login() {
                 className={cn(
                   'relative flex-1 py-3 text-sm font-bold z-10 transition-colors flex items-center justify-center gap-2 rounded-xl',
                   isPaciente
-                    ? 'text-[#00504d] dark:text-[#8ad3cf]'
+                    ? 'text-blue-600 dark:text-blue-400 font-extrabold'
                     : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
                 )}
               >
@@ -723,7 +867,7 @@ export function Login() {
                 className={cn(
                   'relative flex-1 py-3 text-sm font-bold z-10 transition-colors flex items-center justify-center gap-2 rounded-xl',
                   isFisio
-                    ? 'text-[#00504d] dark:text-[#8ad3cf]'
+                    ? 'text-[#00504d] dark:text-[#8ad3cf] font-extrabold'
                     : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
                 )}
               >
@@ -1535,16 +1679,16 @@ export function Login() {
           <div className="flex gap-2.5">
             <button
               onClick={fillFisioDemo}
-              className="px-4 py-2 rounded-full border border-slate-200/80 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 backdrop-blur-md hover:bg-white dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-bold shadow-sm transition-all flex items-center gap-1.5 active:scale-95"
+              className="px-4 py-2 rounded-full border border-slate-200/80 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 backdrop-blur-md hover:bg-white dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-[#00504d] dark:hover:text-[#8ad3cf] text-xs font-bold shadow-sm transition-all flex items-center gap-1.5 active:scale-95"
             >
               <Icon name="medical_services" size={15} className="text-[#00504d] dark:text-teal-400" />
               Demo Fisio
             </button>
             <button
               onClick={fillPacienteDemo}
-              className="px-4 py-2 rounded-full border border-slate-200/80 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 backdrop-blur-md hover:bg-white dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-bold shadow-sm transition-all flex items-center gap-1.5 active:scale-95"
+              className="px-4 py-2 rounded-full border border-slate-200/80 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 backdrop-blur-md hover:bg-white dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 text-xs font-bold shadow-sm transition-all flex items-center gap-1.5 active:scale-95"
             >
-              <Icon name="personal_injury" size={15} className="text-orange-500" />
+              <Icon name="person" size={15} className="text-blue-600 dark:text-blue-400" />
               Demo Paciente
             </button>
           </div>
@@ -1553,39 +1697,45 @@ export function Login() {
 
       {/* ═══════════════════════════════════════════════════
           RIGHT PANEL — INTERACTIVE IMAGE & AMBIENT EFFECTS
-          (No Mascot, pure clean visual experience)
+          (Pristine image illumination & character spotlight)
           ═══════════════════════════════════════════════════ */}
-      <div className="relative hidden md:block md:w-[55%] lg:w-[58%] overflow-hidden bg-slate-900">
+      <div className="relative hidden md:block md:w-[55%] lg:w-[58%] overflow-hidden bg-[#f9f9fc] dark:bg-slate-950">
         <motion.div className="relative h-full w-full" animate={imageControls}>
-          {/* Breathing background image */}
+          {/* Subtle breathing & optical focus framing on active role */}
           <motion.div
             className="h-full w-full"
-            animate={reduceMotion ? undefined : { scale: breathingScale }}
-            transition={{ duration: breathingDuration, repeat: Infinity, ease: 'easeInOut' }}
+            animate={
+              reduceMotion
+                ? undefined
+                : {
+                    scale: breathingScale,
+                    x: isPaciente ? -6 : 6,
+                  }
+            }
+            transition={{
+              scale: { duration: breathingDuration, repeat: Infinity, ease: 'easeInOut' },
+              x: { duration: 0.8, ease: [0.16, 1, 0.3, 1] },
+            }}
           >
             <img
               src={LOGIN_BG_URL}
               alt="Sesión de rehabilitación interactiva"
-              className="h-full w-full object-cover object-center brightness-95 dark:brightness-90"
+              className="h-full w-full object-cover object-center"
               onError={(e) => {
                 (e.currentTarget as HTMLImageElement).style.display = 'none';
               }}
             />
-            {/* Color Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-tr from-[#00504d]/30 via-transparent to-black/40 pointer-events-none" />
-
-            {/* Edge fades */}
-            <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-[#f9f9fc]/80 dark:from-slate-950/80 to-transparent backdrop-blur-sm pointer-events-none" />
-            <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-[#f9f9fc]/80 dark:from-slate-950/80 to-transparent backdrop-blur-sm pointer-events-none" />
           </motion.div>
 
-          {/* Sparkles & Glow Effects without mascot */}
-          <SparkleEffect active={true} color={isPaciente ? 'coral' : 'teal'} />
-          <CharacterGlow
-            side={isPaciente ? 'right' : 'left'}
-            colorRgb={glowColorRgb}
+          {/* Sparkles with role color (Blue for Paciente, Teal/Green for Fisio) */}
+          <SparkleEffect active={true} color={isPaciente ? 'blue' : 'teal'} />
+
+          {/* Interactive Character Spotlight & Illuminations */}
+          <CharacterSpotlight
+            activeRole={loginRole}
             phase={glowPhase}
             reduceMotion={reduceMotion}
+            onSelectRole={switchRole}
           />
 
           {/* Floating Status Pill */}
@@ -1595,10 +1745,30 @@ export function Login() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
-                className="absolute bottom-12 left-1/2 -translate-x-1/2 pointer-events-none"
+                className="absolute bottom-9 left-1/2 -translate-x-1/2 pointer-events-none z-20"
               >
-                <div className="rounded-full bg-white/75 dark:bg-slate-900/80 backdrop-blur-xl border border-white/40 dark:border-slate-700 px-6 py-2.5 shadow-xl">
-                  <p className="text-xs font-bold text-[#00504d] dark:text-[#8ad3cf] tracking-wide">
+                <div
+                  className={cn(
+                    'rounded-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border px-6 py-2.5 shadow-xl transition-all duration-300 flex items-center gap-2.5',
+                    isPaciente
+                      ? 'border-blue-200/90 dark:border-blue-800/60 shadow-blue-500/10'
+                      : 'border-teal-200/90 dark:border-teal-800/60 shadow-teal-500/10'
+                  )}
+                >
+                  <span
+                    className={cn(
+                      'w-2 h-2 rounded-full animate-pulse',
+                      isPaciente ? 'bg-blue-500' : 'bg-teal-500'
+                    )}
+                  />
+                  <p
+                    className={cn(
+                      'text-xs font-bold tracking-wide',
+                      isPaciente
+                        ? 'text-blue-700 dark:text-blue-300'
+                        : 'text-[#00504d] dark:text-[#8ad3cf]'
+                    )}
+                  >
                     {statusMessage}
                   </p>
                 </div>

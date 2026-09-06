@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 interface SparkleProps {
   active: boolean;
-  color: 'teal' | 'coral';
+  color: 'teal' | 'blue';
 }
 
 const sparks = [
@@ -17,8 +17,9 @@ const sparks = [
 ];
 
 export const SparkleEffect: React.FC<SparkleProps> = ({ active, color }) => {
-  const glowColor = color === 'teal' ? 'rgba(20, 184, 166, 0.6)' : 'rgba(244, 63, 94, 0.6)';
-  const sparkColor = color === 'teal' ? '#2DD4BF' : '#FB7185';
+  const glowColor =
+    color === 'teal' ? 'rgba(16, 185, 129, 0.55)' : 'rgba(14, 165, 233, 0.55)';
+  const sparkColor = color === 'teal' ? '#34D399' : '#38BDF8';
 
   return (
     <AnimatePresence>
