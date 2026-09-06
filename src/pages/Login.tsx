@@ -23,7 +23,7 @@ interface EspecialidadRow {
   nombre: string;
 }
 
-const GLOW_COLORS = {
+const _GLOW_COLORS = {
   teal: '0, 80, 77',
   green: '16, 185, 129',
   blue: '14, 165, 233',
