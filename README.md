@@ -1,865 +1,486 @@
 # FisioMirror v2.0 — Plataforma de Tele-Rehabilitación con IA
 
-> **PWA** de tele-rehabilitación que conecta fisioterapeutas con pacientes mediante análisis biomecánico en tiempo real (cámara + MediaPipe), asistencia de IA para carga de pacientes, chat conversacional, generación de reportes clínicos en PDF, gamificación y modo offline.
+> **PWA médica de tele-rehabilitación** que conecta fisioterapeutas y pacientes mediante visión artificial y análisis biomecánico en tiempo real (cámara web + MediaPipe Pose), asistente clínico con IA multimodal (OCR de prescripciones, generación de resúmenes, síntesis por voz), generación de reportes clínicos en PDF, gamificación por logros y operación resiliente con soporte offline (IndexedDB + Service Worker).
 
 ---
 
 ## Tabla de Contenidos
 
-1. [Visión General](#visión-general)
-2. [Stack Tecnológico](#stack-tecnológico)
-3. [Arquitectura del Proyecto](#arquitectura-del-proyecto)
-4. [Plano Maestro de la Aplicación](#plano-maestro-de-la-aplicación)
-5. [Sistema de Autenticación](#sistema-de-autenticación)
-6. [Roles y Flujos de Usuario](#roles-y-flujos-de-usuario)
-7. [Modo Espejo AR](#modo-espejo-ar)
-8. [Sistema de IA](#sistema-de-ia)
-9. [Base de Datos (Supabase)](#base-de-datos-supabase)
-10. [Edge Functions](#edge-functions)
-11. [Sistema de Diseño](#sistema-de-diseño)
-12. [Componentes UI](#componentes-ui)
-13. [PWA y Offline](#pwa-y-offline)
-14. [Gamificación](#gamificación)
-15. [Notificaciones](#notificaciones)
-16. [Estado Actual](#estado-actual)
-17. [Problemas Conocidos](#problemas-conocidos)
-18. [Guía para Continuar el Proyecto](#guía-para-continuar-el-proyecto)
+1. [Visión General del Proyecto](#1-visión-general-del-proyecto)
+2. [Arquitectura del Sistema y Flujo de Datos](#2-arquitectura-del-sistema-y-flujo-de-datos)
+3. [Stack Tecnológico con Mapeo en el Código Fuente](#3-stack-tecnológico-con-mapeo-en-el-código-fuente)
+4. [Módulo de Autenticación, Login y Registro en Detalle](#4-módulo-de-autenticación-login-y-registro-en-detalle)
+5. [Base de Datos Supabase (Esquemas, Tablas y Relaciones)](#5-base-de-datos-supabase-esquemas-tablas-y-relaciones)
+6. [Seguridad en Supabase: RLS, RPC Functions y Storage](#6-seguridad-en-supabase-rls-rpc-functions-y-storage)
+7. [Edge Functions y Backend Serverless](#7-edge-functions-y-backend-serverless)
+8. [Modo Espejo AR (Visión Artificial y Biomecánica)](#8-modo-espejo-ar-visión-artificial-y-biomecánica)
+9. [Sistema de Inteligencia Artificial (Pipeline de Jobs y OCR)](#9-sistema-de-inteligencia-artificial-pipeline-de-jobs-y-ocr)
+10. [PWA, Service Worker y Soporte Offline](#10-pwa-service-worker-y-soporte-offline)
+11. [Gamificación, Rachas y Notificaciones en Tiempo Real](#11-gamificación-rachas-y-notificaciones-en-tiempo-real)
+12. [Sistema de Diseño (Material Design 3 + Glassmorphism)](#12-sistema-de-diseño-material-design-3--glassmorphism)
+13. [Catálogo de Componentes UI y Microinteracciones](#13-catálogo-de-componentes-ui-y-microinteracciones)
+14. [Plano de Rutas y Navegación](#14-plano-de-rutas-y-navegación)
+15. [Guía de Estudio y Buenas Prácticas del Código](#15-guía-de-estudio-y-buenas-prácticas-del-código)
 
 ---
 
-## Visión General
+## 1. Visión General del Proyecto
 
-FisioMirror es una plataforma web instalable (PWA) diseñada para fisioterapeutas y sus pacientes. El fisioterapeuta gestiona su directorio de pacientes, crea rutinas de ejercicios, genera tokens de acceso y utiliza IA para extraer datos clínicos de documentos (OCR). El paciente accede con un token, visualiza su rutina, ejecuta ejercicios guiados por cámara (modo espejo AR con detección de pose), chatea con un asistente IA y celebra logros.
+**FisioMirror** resuelve la falta de adherencia y supervisión en la rehabilitación física remota. Tradicionalmente, un paciente recibe una hoja impresa con ejercicios y realiza los movimientos en casa sin corrección postural, lo que deriva en compensaciones lesivas o abandono del tratamiento.
 
-### Pantallas principales
+La plataforma proporciona un ecosistema simbiótico entre dos perfiles:
 
-| Rol | Pantalla | Ruta | Descripción |
-|-----|----------|------|-------------|
-| Común | Login | `/login` | Acceso dual: fisioterapeuta (email/password) o paciente (token de 6 dígitos) |
-| Común | Reset Password | `/reset-password` | Recuperación de contraseña vía Supabase Auth |
-| Fisio | Dashboard | `/dashboard-fisio` | KPIs, insights IA, prioridades del día, acciones rápidas |
-| Fisio | Directorio de Pacientes | `/patients` | Lista filtrable de pacientes con búsqueda y estadísticas |
-| Fisio | Expediente de Paciente | `/paciente/:id` | Detalle completo: sesiones, rutina, métricas, notas |
-| Fisio | Carga con IA (OCR) | `/ocr-scanner` | Flujo de 4 pasos: archivos → validar → rutina → finalizar |
-| Fisio | Gestión de Tokens | `/tokens` | Generar, asignar, regenerar y eliminar tokens |
-| Fisio | Biblioteca de Ejercicios | `/fisio-exercises` | CRUD completo de ejercicios con filtros |
-| Fisio | Estadísticas | `/fisio-stats` | Gráficos de adherencia, dolor, ROM, distribución |
-| Fisio | Herramientas IA | `/tools` | OCR rápido, IMC, resúmenes, exportación PDF |
-| Fisio | Perfil | `/fisio-profile` | Datos profesionales, especialidades, credenciales |
-| Fisio | Configuración | `/fisio-settings` | Tema, accesibilidad, notificaciones |
-| Paciente | Dashboard | `/dashboard-paciente` | Racha, sesiones, rutina, calendario, logros |
-| Paciente | Ejercicios | `/exercises` | Rutina asignada con instrucciones y demostraciones |
-| Paciente | Modo Espejo AR | `/ar-mirror` | Sesión en vivo con cámara, rep counting, voz |
-| Paciente | Calibración | `/calibration` | Calibración biomecánica pre-sesión |
-| Paciente | Estadísticas | `/stats` | Progreso personal, gráficos |
-| Paciente | Asistente IA | `/ai-assistant` | Chat con Physi (texto, voz, imágenes) |
-| Paciente | Perfil | `/profile` | Datos personales, contacto del terapeuta |
-| Paciente | Configuración | `/settings` | Tema, accesibilidad, instalación PWA |
+1. **Fisioterapeuta (Profesional Clínico):**
+   - Panel de control clínico con métricas en tiempo real (pacientes activos, adherencia semanal, sesiones completadas hoy).
+   - Digitalización automática de expedientes y fórmulas médicas mediante **OCR con IA** (extracción estructurada de patología, articulación diana, ROM objetivo, medicamentos y precauciones).
+   - Diseñador y reasignador de rutinas con biblioteca de ejercicios parametrizables (series, repeticiones, descansos, ángulos diana y lado afectado).
+   - Generación instantánea de **tokens de activación de 6 dígitos** para dar de alta y vincular pacientes sin fricción.
+   - Historial clínico con evolución de ROM (Rango de Movimiento), escala visual analógica del dolor (EVA) y exportación de informes en PDF formal.
+
+2. **Paciente (Usuario en Rehabilitación):**
+   - Acceso simplificado mediante **token numérico de 6 dígitos** (o credenciales email/contraseña).
+   - **Modo Espejo AR:** Ejecución de ejercicios frente a la cámara web donde la IA detecta 33 puntos anatómicos (landmarks), cuenta repeticiones automáticamente en base a la cinemática articular, previene compensaciones posturales y ofrece indicaciones por voz en español.
+   - **Asistente Physi:** Mascota y asistente conversacional entrenado con contexto clínico personalizado para resolver dudas sobre ejercicios, dolor post-sesión y pautas ergonómicas.
+   - **Gamificación médica:** Sistema de medallas, rachas de constancia diaria y celebraciones interactivas diseñadas para aumentar la adherencia terapéutica.
+   - **Modo Offline:** Posibilidad de visualizar y completar la rutina del día sin conexión a internet mediante sincronización local en IndexedDB.
 
 ---
 
-## Stack Tecnológico
+## 2. Arquitectura del Sistema y Flujo de Datos
 
-| Tecnología | Versión | Propósito |
-|---|---|---|
-| **React** | ^18.3.1 | Framework UI |
-| **TypeScript** | ^5.5.3 | Tipado estático |
-| **Vite** | ^5.4.2 | Bundler + dev server |
-| **Tailwind CSS** | ^3.4.1 | Estilos utility-first con tokens Material Design 3 |
-| **Framer Motion** | ^12.42.0 | Animaciones, transiciones, micro-interacciones |
-| **lucide-react** | ^0.344.0 | Iconografía |
-| **Supabase** (`@supabase/supabase-js`) | ^2.57.4 | Backend: PostgreSQL, Storage, Edge Functions, Realtime |
-| **Recharts** | ^3.10.1 | Gráficos en dashboards y estadísticas |
-| **jsPDF** | ^4.2.1 | Generación de PDFs clínicos |
-| **html2canvas** | ^1.4.1 | Render HTML→imagen para PDFs con IA |
-| **react-hot-toast** | ^2.6.0 | Notificaciones toast |
-| **vite-plugin-pwa** | ^1.3.0 | PWA: manifest, service worker, runtime caching |
-| **zustand** | ^5.0.14 | Estado global (auth) con persistencia en localStorage |
-| **react-router-dom** | ^6.30.4 | Routing con lazy loading |
-| **canvas-confetti** | ^1.9.4 | Celebración de logros y sesiones |
-| **three** | ^0.185.1 | Modelos 3D para demostraciones de ejercicios |
-| **@number-flow/react** | ^0.6.1 | Animación de números en KPIs |
-| **i18next + react-i18next** | ^26.4.0 / ^17.0.12 | Infraestructura multilingüe (preparada, español activo) |
-| **clsx + tailwind-merge** | ^2.1.1 / ^3.6.0 | Utilidad `cn()` para clases condicionales |
+El proyecto sigue una arquitectura **Client-First PWA** desacoplada, respaldada por **Supabase (PostgreSQL 15)** como Backend-as-a-Service (BaaS) y un conjunto de **Edge Functions serverless (Deno)** para operaciones criptográficas y orquestación de IA.
 
-### Scripts
-
-```bash
-npm run dev          # Servidor de desarrollo (Vite)
-npm run build        # Build de producción (verifica env + compila)
-npm run lint         # ESLint
-npm run typecheck    # tsc --noEmit
-npm run preview      # Preview del build
 ```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                          APLICACIÓN CLIENTE (PWA)                            │
+│  React 18 + TypeScript + Vite + Tailwind CSS + Framer Motion + Zustand      │
+└──────────────┬───────────────────────────────┬──────────────────────────────┘
+               │                               │
+       (Consultas Directas                     │ (Operaciones Seguras,
+        PostgreSQL via RLS)                    │  Auth & Inferencia IA)
+               │                               │
+               ▼                               ▼
+┌──────────────────────────────┐     ┌────────────────────────────────────────┐
+│     SUPABASE POSTGRESQL      │     │         SUPABASE EDGE FUNCTIONS        │
+│  - Tablas Relacionales       │     │  - auth-login (Argon2 / SHA-256)       │
+│  - Row Level Security (RLS)  │     │  - auth-register (Alta profesional)    │
+│  - Realtime WebSocket Ch.    │     │  - process-job (Orquestador IA)        │
+│  - RPC Stored Procedures     │     │  - transcribe-audio (Whisper STT)      │
+└──────────────┬───────────────┘     └───────────────────┬────────────────────┘
+               │                                         │
+               ▼                                         ▼
+┌──────────────────────────────┐     ┌────────────────────────────────────────┐
+│       SUPABASE STORAGE       │     │         PROVEEDORES EXTERNOS           │
+│  - /avatars                  │     │  - Cloudflare Workers AI / LLaVA       │
+│  - /credenciales-profesional │     │  - Google Gemini 2.5 Flash             │
+│  - /documentos               │     │  - MediaPipe Pose CDN (Google)         │
+│  - /pwa-icons                │     │  - Cloudflare Turnstile (Anti-bot)     │
+└──────────────────────────────┘     └────────────────────────────────────────┘
+```
+
+### Ciclo de Vida de una Sesión de Rehabilitación:
+1. El **Fisioterapeuta** sube una foto de una prescripción médica en `/ocr-scanner`.
+2. El sistema envía la imagen a la cola de trabajos `ai_jobs`, procesada por la Edge Function `process-job` (LLaVA/Gemini) para extraer datos clínicos estructurados.
+3. El fisioterapeuta ajusta la rutina y se genera un token en la tabla `activation_tokens`.
+4. El **Paciente** ingresa a `/login`, escribe el token de 6 dígitos; el cliente valida contra `activation_tokens` y recupera su perfil y rutina activa de `patient_exercises`.
+5. En `/ar-mirror`, el hook `usePoseDetection` carga MediaPipe Pose, procesa los fotogramas del video en un canvas HTML5 a 30 FPS, calcula ángulos euclidianos y registra repeticiones.
+6. Al finalizar, se almacena la sesión en `sesiones_completadas` y la evaluación analógica de dolor en `post_session_reports`.
 
 ---
 
-## Arquitectura del Proyecto
+## 3. Stack Tecnológico con Mapeo en el Código Fuente
 
-```
-fisiomirror/
-├── src/
-│   ├── components/
-│   │   ├── ui/                      # 53+ componentes UI reutilizables
-│   │   │   ├── AILoader.tsx         # Loader animado "Generando" para procesos IA
-│   │   │   ├── AnimatedCircularProgressBar.tsx
-│   │   │   ├── AnimatedCountdown.tsx
-│   │   │   ├── AnimatedList.tsx     # Lista con reveal secuencial spring
-│   │   │   ├── AnimatedTabs.tsx    # Tabs con indicador deslizante
-│   │   │   ├── AuroraText.tsx       # Texto con gradiente aurora animado
-│   │   │   ├── BorderBeam.tsx      # Haz de luz que recorre el borde
-│   │   │   ├── ChatMessages.tsx     # Chat animado con auto-play y typing
-│   │   │   ├── CollapsibleSection.tsx
-│   │   │   ├── CommandPalette.tsx   # ⌘K palette de comandos
-│   │   │   ├── ConfettiButton.tsx   # Botón que dispara confeti
-│   │   │   ├── EmptyState.tsx
-│   │   │   ├── ErrorBoundary.tsx
-│   │   │   ├── FloatingMenu.tsx     # FAB con acciones expandibles
-│   │   │   ├── Glass.tsx            # GlassPanel, GlassCard (glassmorphism)
-│   │   │   ├── GlassModal.tsx       # Modal con backdrop blur
-│   │   │   ├── GlassToast.tsx       # Sistema de toasts con swipe
-│   │   │   ├── HelpGuideButton.tsx  # Botón de FAQ contextual por ruta
-│   │   │   ├── HyperText.tsx        # Texto con efecto scramble on hover
-│   │   │   ├── LightRays.tsx         # Rayos de luz animados de fondo
-│   │   │   ├── Loader.tsx           # Spinner, DotLoader, BarLoader, etc.
-│   │   │   ├── MascotAnimation.tsx  # Mascota Physi (.webp animada)
-│   │   │   ├── Particles.tsx        # Campo de partículas + spotlight
-│   │   │   ├── PDFExportModal.tsx
-│   │   │   ├── PhysiGuide.tsx       # Burbuja flotante de chat (FAQ offline)
-│   │   │   ├── PinInput.tsx         # Input de PIN de 6 dígitos
-│   │   │   ├── PremiumSkeleton.tsx
-│   │   │   ├── ShineBorder.tsx      # Borde brillante animado
-│   │   │   ├── SimpleCalendar.tsx
-│   │   │   ├── TextAnimate.tsx      # Reveal de texto por palabra/carácter
-│   │   │   ├── ThemeToggle.tsx
-│   │   │   ├── TypewriterText.tsx
-│   │   │   ├── TypingAnimation.tsx
-│   │   │   └── ... (53 componentes total)
-│   │   ├── micro/                   # Microinteracciones (DeleteAnimation, OtpFold, etc.)
-│   │   ├── characters3d/            # Modelos 3D (KidModel3D, PhysioModel3D)
-│   │   ├── rehabilitation/          # SkeletonDemo (demo biomecánica)
-│   │   ├── auth/                    # SparkleEffect
-│   │   ├── FisioLayout.tsx          # Layout fisio: sidebar, header, notificaciones
-│   │   ├── PatientLayout.tsx        # Layout paciente: nav inferior, header, FAB contacto
-│   │   ├── ProtectedRoute.tsx       # Guard de rutas por rol
-│   │   ├── SplashScreen.tsx         # Splash con logo + dots de carga
-│   │   ├── OnboardingTour.tsx        # Tour guiado para nuevos usuarios
-│   │   ├── ReassignRoutineModal.tsx # Modal de reasignación de rutinas
-│   │   ├── AchievementShowcase.tsx  # Showcase de logros desbloqueados
-│   │   └── OfflineIndicator.tsx
-│   ├── pages/                       # 17 páginas (lazy-loaded)
-│   ├── context/
-│   │   ├── ThemeContext.tsx         # Modo claro/oscuro con persistencia
-│   │   └── NotificationContext.tsx  # Notificaciones Realtime + sonido
-│   ├── hooks/
-│   │   ├── usePoseDetection.ts      # MediaPipe Pose: cámara, landmarks, ángulos
-│   │   ├── useGamification.ts       # Logros, rachas, sesiones (localStorage)
-│   │   ├── useOfflineExercises.ts   # Carga offline desde IndexedDB
-│   │   ├── useAccessibility.ts      # Preferencias de accesibilidad
-│   │   └── useLoadingMessages.ts    # Mensajes rotatorios de carga
-│   ├── lib/
-│   │   ├── supabase.ts              # Cliente Supabase (anon key, sin sesión persistente)
-│   │   ├── auth.ts                  # Hash SHA-256 + salt, generador de tokens
-│   │   ├── ai.ts                    # Sistema de jobs IA (create→poll→get)
-│   │   ├── pdfExport.ts             # PDF simple + PDF con IA
-│   │   ├── formatReport.tsx         # Formateo de respuestas IA
-│   │   ├── confetti.ts              # Celebraciones (logros, sesiones)
-│   │   ├── offlineDB.ts             # IndexedDB para rutinas offline
-│   │   ├── installContext.tsx       # PWA beforeinstallprompt
-│   │   └── utils.ts                 # cn() y utilidades
-│   ├── stores/
-│   │   └── authStore.ts             # Zustand: login, registro, token, sesión (7 días)
-│   ├── data/
-│   │   ├── exercisePresets.ts       # Biblioteca de ejercicios predefinidos
-│   │   ├── exerciseImages.ts        # URLs de imágenes de ejercicios
-│   │   └── physiFAQs.ts             # Base de conocimiento del asistente Physi
-│   ├── types/
-│   │   ├── index.ts                 # Profile, Ejercicio, Rutina, SesionCompletada, etc.
-│   │   └── character.types.ts       # Tipos de personajes 3D
-│   ├── config/
-│   │   └── supabase-fallback.ts     # Credenciales de respaldo
-│   ├── i18n/
-│   │   └── index.ts                 # Configuración i18next (es activo)
-│   ├── styles/
-│   │   └── globals.css              # Tokens de color, animaciones CSS, glassmorphism
-│   ├── App.tsx                      # Router principal con lazy loading + ProtectedRoute
-│   └── main.tsx                     # Entry point
-├── public/
-│   ├── icons/                       # Iconos PWA (64, 192, 512)
-│   ├── animations/mascot/           # 10 animaciones .webp de mascota Physi
-│   └── logo.svg, logo.png
-├── supabase/
-│   ├── migrations/                  # ~40 migraciones SQL (esquema, RLS, RPC, storage, seed)
-│   └── functions/                   # 16 Edge Functions (Deno)
-├── api/                             # API routes de Vercel (proxy a Edge Functions)
-│   ├── create-job.js
-│   ├── get-job.js
-│   ├── process-job.js
-│   ├── ocr-prescripcion.js
-│   └── transcribe-audio.js
-├── .design-ref/                     # ~30 mockups HTML de diseño (desktop + móvil)
-├── IA_DOCS.md                       # Documentación de arquitectura de IA
-├── vite.config.ts                  # Vite + PWA (manifest completo, runtime caching)
-├── tailwind.config.ts               # Sistema de tokens Material Design 3
-├── vercel.json                      # Config de deploy
-└── package.json
-```
+A continuación se detalla cada biblioteca del stack, su función técnica y los archivos exactos donde se encuentra implementada en producción para su estudio:
+
+| Tecnología | Versión | Propósito en FisioMirror | Archivos de Implementación Clave |
+|---|---|---|---|
+| **React** | `^18.3.1` | Renderizado declarativo, ciclo de vida de componentes, hooks personalizados (`useMemo`, `useCallback`, `useRef`). | `src/main.tsx`, `src/App.tsx`, `src/pages/*.tsx` |
+| **TypeScript** | `^5.5.3` | Tipado estático estricto para modelos clínicos, DTOs de base de datos y eventos de interfaz. | `src/types/index.ts`, `src/types/character.types.ts` |
+| **Vite** | `^5.4.2` | Bundler ESM de alta velocidad, proxy de desarrollo y compilación de producción. | `vite.config.ts`, `package.json` |
+| **Supabase Client** | `^2.57.4` | Conexión a base de datos PostgreSQL, suscripciones Realtime WebSocket y gestión de Storage. | `src/lib/supabase.ts`, `src/stores/authStore.ts`, `src/context/NotificationContext.tsx` |
+| **Tailwind CSS** | `^3.4.1` | Sistema de estilos utility-first con variables CSS personalizadas para Material Design 3. | `tailwind.config.ts`, `src/styles/globals.css` |
+| **Framer Motion** | `^12.42.0` | Animaciones fluidas basadas en físicas de resortes (*springs*), transiciones de ruta y spotlight interactivo. | `src/pages/Login.tsx` (CharacterSpotlight), `src/components/ui/AnimatedList.tsx`, `src/components/ui/BorderBeam.tsx` |
+| **@number-flow/react** | `^0.6.1` | Transiciones tipográficas fluidas al incrementar o decrementar contadores numéricos y cuentas regresivas. | `src/components/ui/AnimatedCountdown.tsx` |
+| **Lucide React** | `^0.344.0` | Iconografía SVG médica, de navegación y estado con props homogéneas de grosor y tamaño. | `src/components/ui/Icon.tsx`, `src/pages/ResetPassword.tsx`, `src/components/FisioLayout.tsx` |
+| **Recharts** | `^3.10.1` | Gráficos SVG responsivos para monitorizar adherencia, niveles de dolor (EVA) y rango de movimiento (ROM). | `src/pages/StatsPage.tsx`, `src/components/clinical/ClinicalAnalyticsHub.tsx`, `src/components/patient/PatientStatisticsView.tsx` |
+| **Three.js** | `^0.185.1` | Renderizado WebGL 3D para la visualización de avatares biomecánicos y guías de postura en ejercicios. | `src/components/characters3d/PhysioModel3D.tsx`, `src/components/characters3d/KidModel3D.tsx`, `src/components/rehabilitation/SkeletonDemo.tsx` |
+| **jsPDF & html2canvas** | `^4.2.1` / `^1.4.1` | Compilación vectorial y rasterizada de informes clínicos para descarga o envío por correo. | `src/lib/pdfExport.ts`, `src/components/ui/PDFExportModal.tsx`, `src/pages/ToolsPage.tsx` |
+| **Zustand** | `^5.0.14` | Gestión de estado global ligera con middleware `persist` en `localStorage` (7 días de retención). | `src/stores/authStore.ts` |
+| **Canvas Confetti** | `^1.9.4` | Animación de partículas festivas de alto rendimiento en Canvas para refuerzo positivo. | `src/lib/confetti.ts`, `src/components/ui/ConfettiButton.tsx`, `src/pages/ARMirrorPage.tsx` |
+| **React Hot Toast** | `^2.6.0` | Sistema de notificaciones emergentes accesibles y reactivas ante eventos del sistema. | `src/components/ui/ToastProvider.tsx`, `src/components/ui/GlassToast.tsx` |
+| **Vite Plugin PWA** | `^1.3.0` | Generación del Service Worker (Workbox), manifiesto PWA y caché offline de activos estáticos. | `vite.config.ts`, `src/lib/offlineDB.ts` |
+| **i18next** | `^26.4.0` | Infraestructura de internacionalización preparada para localización de términos clínicos. | `src/i18n/index.ts` |
 
 ---
 
-## Plano Maestro de la Aplicación
+## 4. Módulo de Autenticación, Login y Registro en Detalle
 
-### Diagrama de Flujo Conceptual
+El acceso a la aplicación se centraliza en `src/pages/Login.tsx`, complementado por `src/pages/ResetPassword.tsx` y `src/pages/RegistroPacientePage.tsx`.
 
-```
-┌─────────────────────────────────────────────────────────────────────┐
-│                         FISIOMIRROR v2.0                            │
-│                     PWA de Tele-Rehabilitación                       │
-├─────────────────────────────────────────────────────────────────────┤
-│                                                                     │
-│  ┌──────────────┐     LOGIN      ┌──────────────────────────────┐   │
-│  │  SplashScreen │──────────────▶│         Login.tsx            │   │
-│  │  (2.2s)      │               │  Fisio: email + password      │   │
-│  └──────────────┘               │  Paciente: token 6 dígitos    │   │
-│                                 └──────────┬───────────────────┘   │
-│                                            │                        │
-│                         ┌──────────────────┼──────────────────┐    │
-│                         │                   │                  │    │
-│                  FISIOTERAPEUTA          PACIENTE              │    │
-│                         │                   │                  │    │
-│  ┌──────────────────────┴──┐    ┌───────────┴──────────────┐   │    │
-│  │   FisioLayout           │    │   PatientLayout          │   │    │
-│  │   (sidebar + header)    │    │   (nav inferior + FAB)   │   │    │
-│  └──────────┬──────────────┘    └──────────┬────────────────┘   │    │
-│             │                              │                     │    │
-│  ┌──────────┴──────────────────┐  ┌────────┴────────────────┐  │    │
-│  │ DashboardFisio             │  │ PatientDashboard        │  │    │
-│  │  - KPIs en tiempo real     │  │  - Racha de días        │  │    │
-│  │  - Insights IA             │  │  - Sesiones totales     │  │    │
-│  │  - Prioridades del día     │  │  - Rutina asignada      │  │    │
-│  │  - Acciones rápidas        │  │  - Calendario           │  │    │
-│  ├────────────────────────────┤  │  - Logros (gamificación)│  │    │
-│  │ PatientsPage               │  ├─────────────────────────┤  │    │
-│  │  - Directorio filtrable    │  │ PatientExercisesPage   │  │    │
-│  ├────────────────────────────┤  │  - Ejercicios asignados │  │    │
-│  │ PatientDetailPage          │  ├─────────────────────────┤  │    │
-│  │  - Expediente completo     │  │ ARMirrorPage            │  │    │
-│  ├────────────────────────────┤  │  - MediaPipe Pose       │  │    │
-│  │ OCRScannerPage (4 pasos)   │  │  - Rep counting         │  │    │
-│  │  - Cargar archivos         │  │  - Voz en español       │  │    │
-│  │  - Validar con IA          │  │  - Reporte post-sesión  │  │    │
-│  │  - Configurar rutina       │  ├─────────────────────────┤  │    │
-│  │  - Generar token           │  │ AIAssistantPage         │  │    │
-│  ├────────────────────────────┤  │  - Chat con Physi       │  │    │
-│  │ TokenGeneratorPage        │  │  - Voz + imágenes       │  │    │
-│  │ ExercisesPage (CRUD)       │  ├─────────────────────────┤  │    │
-│  │ StatsPage (gráficos)       │  │ StatsPage (progreso)    │  │    │
-│  │ ToolsPage (IA tools)       │  │ ProfilePage             │  │    │
-│  │ ProfilePage                │  │ SettingsPage             │  │    │
-│  │ SettingsPage               │  └─────────────────────────┘  │    │
-│  └────────────────────────────┘                                 │    │
-│                                                                  │    │
-│  ┌──────────────────────────────────────────────────────────┐   │    │
-│  │              COMPONENTES TRANSVERSALES                   │   │    │
-│  │  PhysiGuide (FAQ flotante)  │  HelpGuideButton (FAQ)     │   │    │
-│  │  FloatingMenu (FAB)         │  OnboardingTour            │   │    │
-│  │  OfflineIndicator          │  InstallModal (PWA)        │   │    │
-│  │  CommandPalette (⌘K)        │  ErrorBoundary             │   │    │
-│  │  NotificationContext (RT)  │  ThemeContext (dark/light) │   │    │
-│  └──────────────────────────────────────────────────────────┘   │    │
-└─────────────────────────────────────────────────────────────────┘    │
-                                                                       │
-                    ┌──────────────────────────────────┐              │
-                    │         SUPABASE BACKEND          │              │
-                    ├──────────────────────────────────┤              │
-                    │  PostgreSQL (RLS habilitada)     │              │
-                    │  Storage (buckets: avatars,       │              │
-                    │    credenciales, mascot, pwa)     │              │
-                    │  Edge Functions (16, Deno)        │              │
-                    │  Realtime (notifications channel) │              │
-                    └──────────────────────────────────┘              │
-```
+### 4.1. Filosofía Visual del Login Interactivo
+La pantalla de inicio de sesión presenta un diseño dividido en dos áreas en pantallas grandes y colapsable en móviles:
 
-### Flujo de Autenticación
+1. **Panel Izquierdo (Visual e Ilustración Biomecánica):**
+   - Aloja la ilustración original del proyecto (`/login.png`), protegida sin filtros opacos oscuros para conservar su contraste y colorido nativo al 100%.
+   - **Sistema de Focos Radiales (`CharacterSpotlight`):**
+     - Al seleccionar el rol **Fisioterapeuta**, se proyecta un aura luminosa verde/esmeralda (`rgba(16, 185, 129, 0.42)`) sobre la figura del profesional (lado izquierdo), acompañada por un HUD de baliza holográfica con aro de pulso y la insignia *"Fisioterapeuta Clínico"*.
+     - Al seleccionar el rol **Paciente**, se proyecta un aura azul terapéutico (`rgba(14, 165, 233, 0.42)`) sobre el paciente en rehabilitación (lado derecho), mostrando la insignia *"Paciente en Terapia"*.
+     - Las auras utilizan `mix-blend-mode: screen`, técnica de iluminación aditiva que añade fotones de luz pura sin oscurecer ni teñir los pigmentos originales del dibujo.
+     - **Zonas interactivas (Hotspots):** Cada personaje actúa como un botón interactivo con cursor táctil; al hacer clic sobre el fisioterapeuta o sobre el paciente en la propia imagen, el rol cambia de inmediato.
+   - **Efecto de Destellos Multidimensional (`SparkleEffect`):**
+     - Matriz de estrellas de 4 puntas y micropartículas esféricas distribuidas armónicamente por toda la extensión de la ilustración (planos superior, medio, central e inferior).
+     - Cada partícula posee duraciones y desfases independientes, respondiendo en color verde esmeralda o azul cielo según el rol activo.
 
-```
-Usuario abre la app
-    │
-    ▼
-SplashScreen (2.2s) ──▶ initialize() authStore
-    │                         │
-    │                    ¿Hay sesión en localStorage?
-    │                         │
-    │              ┌──── Sí ──┴── No ────┐
-    │              │                     │
-    │              ▼                     ▼
-    │     ¿Expiró (7 días)?        Login.tsx
-    │         │                    │
-    │    ┌─── ┴ ─── ┐              │
-    │    Sí        No              │
-    │    │         │              │
-    │    ▼         ▼              │
-    │  Login   RoleRedirect        │
-    │           │                  │
-    │     fisioterapeuta?──▶ /dashboard-fisio
-    │     paciente?──────▶ /dashboard-paciente
-    │
-    └─▶ Login.tsx
-         │
-         ├─ Fisioterapeuta: email + password
-         │    └─▶ POST /functions/v1/auth-login
-         │         └─▶ Valida hash en servidor
-         │              └─▶ Devuelve user_id
-         │                   └─▶ fetchProfileById()
-         │                        └─▶ Set user en Zustand
-         │
-         ├─ Paciente: token 6 dígitos
-         │    └─▶ Query activation_tokens en Supabase
-         │         └─▶ Vincula paciente_id → profile
-         │              └─▶ Set user en Zustand
-         │
-         └─ Registro fisio (2 pasos):
-              Paso 1: datos + credenciales
-              Paso 2: universidad, colegiado, especialidades
-              └─▶ POST /functions/v1/auth-register
-                   └─▶ Crea profile + hash password
-```
+2. **Panel Derecho (Formulario Reactivo):**
+   - Selector segmentado de rol en píldora (*segmented button*): Fisioterapeuta (Verde) vs. Paciente (Azul).
+   - Selector de modo: **Iniciar Sesión** vs. **Crear Cuenta**.
+   - Integración con **Cloudflare Turnstile** (`TurnstileWidget`) para protección anti-bots sin captchas intrusivos.
+   - Botones de **Acceso Rápido Demo**: Carga perfiles clínicos precargados de prueba (`fisio@demo.com` y token `123456`) para evaluar la experiencia completa sin necesidad de configurar base de datos local.
 
-### Flujo de IA (Jobs)
+### 4.2. Flujo de Inicio de Sesión de Fisioterapeuta
+1. El fisioterapeuta introduce su **correo electrónico** y **contraseña**.
+2. `useAuthStore.signIn()` ejecuta una llamada `POST` a la Edge Function `${supabaseUrl}/functions/v1/auth-login`.
+3. La Edge Function compara el hash con la sal segura del servidor (`fisiomirror-salt-2024`).
+4. Si la Edge Function no está disponible, el almacén ejecuta un *fallback* directo en el cliente con Web Crypto API (`crypto.subtle.digest('SHA-256')`) consultando la tabla `profiles` mediante la clave anónima.
+5. Tras el éxito, se almacena el perfil en el estado de Zustand y se serializa en `localStorage` con una vigencia máxima de 7 días (`SESSION_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000`).
+6. El enrutador redirige a `/dashboard-fisio`.
 
-```
-Frontend (ai.ts)
-    │
-    ├─▶ createAIJob(type, input)
-    │    └─▶ POST /api/create-job
-    │         └─▶ Inserta en ai_jobs (status: pending)
-    │              └─▶ Devuelve job_id
-    │
-    ├─▶ pollAIJob(jobId, timeout=120s)
-    │    └─▶ GET /api/get-job?job_id=X (cada 2.5s)
-    │         └─▶ ¿status === completed? → return result
-    │         └─▶ ¿status === failed? → return error
-    │
-    └─▶ process-job (Edge Function, invocada por trigger o cron)
-         └─▶ Lee job pending de ai_jobs
-              ├─▶ Cloudflare Workers AI (LLaVA / Llama 3.1)
-              ├─▶ Fallback: Gemini 2.5 Flash
-              └─▶ Fallback: Hugging Face (Qwen / Llama)
-              └─▶ Update ai_jobs con resultado
-```
+### 4.3. Flujo de Registro de Fisioterapeuta (2 Pasos)
+1. **Paso 1 (Credenciales Básicas):** Nombre completo, correo profesional y contraseña segura (mínimo 6 caracteres).
+2. **Paso 2 (Validación Colegiada):**
+   - Número de colegiado / Cédula profesional.
+   - Universidad de egreso y año de titulación.
+   - Selección múltiple de especialidades clínicas (Traumatología, Deportiva, Neurológica, Pediátrica, etc.).
+   - Carga opcional de documento probatorio (PDF o imagen), el cual se almacena de forma segura en el bucket `credenciales-profesionales`.
+3. Invocación a `signUpFisio()` que registra la fila en `usuarios` / `profiles` y vincula las especialidades en la tabla relacional `profile_especialidades`.
 
-### Flujo del Modo Espejo AR
-
-```
-CalibrationPage
-    │
-    ├─▶ Solicita cámara (getUserMedia)
-    ├─▶ MediaPipe Pose (modelComplexity: 2)
-    ├─▶ Detecta landmarks → calcula ángulos basales
-    └─▶ Guarda calibración
-
-ARMirrorPage
-    │
-    ├─▶ Inicia cámara + MediaPipe Pose
-    ├─▶ Loop de detección (33 landmarks, 30fps):
-    │    ├─▶ Filtro promedio móvil (5 frames)
-    │    ├─▶ Suavizado exponencial
-    │    ├─▶ Cálculo de ángulos en tiempo real
-    │    ├─▶ Color coding: verde (±5°), amarillo (±15°), rojo (>15°)
-    │    ├─▶ Rep counting por detección de fase
-    │    ├─▶ Detección de compensaciones
-    │    └─▶ Feedback de voz (Web Speech API, español)
-    │
-    ├─▶ Estructura: 3 series × 15 reps, descanso 15s
-    ├─▶ Confeti al completar todas las series
-    └─▶ Reporte post-sesión:
-         ├─▶ Dolor antes/después (escala 1-10)
-         ├─▶ Nivel de fatiga
-         ├─▶ Comentario libre
-         └─▶ Persiste en sesiones_completadas + post_session_reports
-```
+### 4.4. Flujo de Acceso del Paciente (Token de 6 Dígitos)
+1. El paciente selecciona el rol **Paciente**.
+2. El formulario muestra el componente `PinInput` (6 casillas individuales con autofoco y salto automático entre dígitos).
+3. `useAuthStore.signInWithToken(token)` consulta la tabla `activation_tokens`.
+4. Comprueba que el token coincida, que no esté revocado y que `paciente_id` apunte a un registro válido en `profiles`.
+5. Si el token es correcto, actualiza `profiles.is_active = true`, garantiza la vinculación con el terapeuta en `pacientes_terapeutas` y autentica la sesión.
+6. El enrutador redirige automáticamente a `/dashboard-paciente`.
 
 ---
 
-## Sistema de Autenticación
+## 5. Base de Datos Supabase (Esquemas, Tablas y Relaciones)
 
-### Fisioterapeuta
-- **Login:** email + password → POST a Edge Function `auth-login` (validación server-side con hash SHA-256 + salt).
-- **Registro:** 2 pasos. Paso 1: datos personales + credenciales. Paso 2: universidad, colegiado, especialidades, año de egreso, upload de credencial a Storage. → POST a `auth-register`.
-- **Sesión persistente:** localStorage con expiración de 7 días (zustand persist).
-- **Rate limiting:** 5 intentos fallidos → cooldown de 15 minutos (manejado en Edge Function).
+> **Nota de Seguridad para Estudio con IA:** Toda la arquitectura de datos aquí descrita refleja esquemas estructurales DDL (Data Definition Language). No contiene contraseñas, secretos `service_role` ni tokens privados.
 
-### Paciente
-- **Login:** token de 6 dígitos → query directa a `activation_tokens` en Supabase.
-- El token se vincula a un `paciente_id` → carga el `profile` del paciente.
-- Token reutilizable (no se marca como usado en el flujo actual).
-
-### Guard de Rutas
-- `ProtectedRoute` verifica `user.role` y redirige:
-  - `fisioterapeuta` → rutas bajo `FisioLayout`
-  - `paciente` → rutas bajo `PatientLayout`
-  - Sin sesión → `/login`
-
-### Notas de Seguridad
-- El hash de contraseña se valida en Edge Functions (server-side), no en el cliente.
-- El salt está en el servidor (Edge Function), no hardcoded en el cliente.
-- El cliente Supabase usa `anon key` con `persistSession: false` y `autoRefreshToken: false`.
-- RLS está habilitada en todas las tablas.
-
----
-
-## Roles y Flujos de Usuario
-
-### Fisioterapeuta
-
-1. **Dashboard:** KPIs en tiempo real (pacientes activos, sesiones de hoy, adherencia semanal, tokens pendientes). Banner de insights generados por IA. Lista de prioridades con código de urgencia. Paleta de comandos (⌘K).
-2. **Directorio de Pacientes:** Lista filtrable con búsqueda, tarjetas con avatar, estado, adherencia, última sesión.
-3. **Expediente de Paciente:** Sesiones completadas, rutinas activas/archivadas, métricas de progreso, notas, documentos clínicos.
-4. **Carga con IA (OCR Scanner):** Flujo de 4 pasos:
-   - Paso 1: Cargar hasta 10 archivos (imágenes, PDFs, audio, video) con drag & drop.
-   - Paso 2: IA extrae datos (nombre, email, diagnóstico, ROM, medicamentos, etc.) → validar/editar.
-   - Paso 3: Configurar rutina seleccionando ejercicios de la biblioteca.
-   - Paso 4: Finalizar → crea perfil + vincula terapeuta + genera token.
-5. **Gestión de Tokens:** Generar, asignar, regenerar, eliminar. Filtros por estado. Copiar al portapapeles. Envío por email.
-6. **Biblioteca de Ejercicios:** CRUD completo. Campos: nombre, descripción, articulación, grupo muscular, series, repeticiones, duración, ángulo objetivo, fase de recuperación, lado, categoría.
-7. **Estadísticas:** Gráficos Recharts de adherencia, dolor, ROM, distribución de ejercicios, sesiones por diagnóstico.
-8. **Herramientas IA:** OCR rápido, calculadora IMC, resúmenes de sesión/paciente, exportación PDF.
-9. **Perfil:** Datos profesionales, especialidades, credenciales, clínica.
-10. **Reasignación de Rutinas:** Modal con flujo de selección de ejercicios, configuración de series/repeticiones, archiva rutina anterior.
-
-### Paciente
-
-1. **Dashboard:** Racha de días, sesiones totales, minutos semanales, gráfico de barras de actividad, calendario con sesiones marcadas, rutina asignada, datos del terapeuta, logros.
-2. **Ejercicios:** Rutina asignada con instrucciones, demostraciones (modelo 3D o imagen), series/repeticiones.
-3. **Modo Espejo AR:** Sesión en vivo con cámara, detección de pose, rep counting, guía de voz, reporte post-sesión.
-4. **Calibración:** Ajuste de ángulos basales antes de sesión AR.
-5. **Asistente IA:** Chat con Physi (texto, voz, imágenes). Contexto personalizado: perfil, últimas 5 sesiones, ejercicios, racha.
-6. **Estadísticas:** Progreso personal con gráficos.
-7. **Perfil:** Datos personales, contacto del terapeuta (tel, WhatsApp, SMS, videollamada).
-8. **Configuración:** Tema claro/oscuro, tamaño de fuente, instrucciones de instalación PWA (iOS).
-
----
-
-## Modo Espejo AR
-
-El componente central de rehabilitación. Usa **MediaPipe Pose** (`modelComplexity: 2`) para detección de 33 landmarks en tiempo real.
-
-### Características técnicas
-- **Filtrado:** promedio móvil de 5 frames + suavizado exponencial.
-- **Ángulos calculados:** hombros, codos, caderas, rodillas, tobillos.
-- **Color coding del esqueleto:** verde (±5° del objetivo), amarillo (±15°), rojo (>15°).
-- **Rep counting:** automático por detección de fase (arriba/abajo del brazo).
-- **Compensaciones detectadas:** cadera desalineada, hombros desalineados, torso inclinado.
-- **Guía de voz:** Web Speech API en español con feedback en tiempo real.
-- **Estructura de sesión:** 3 series × 15 reps, descansos de 15s entre series.
-- **Reporte post-sesión:** dolor antes/después, fatiga, comentario → persiste en `sesiones_completadas` + `post_session_reports`.
-- **Confeti** al completar todas las series.
-
-### Dependencia crítica
-MediaPipe se carga desde CDN (`cdn.jsdelivr.net`). Si el CDN falla, la sesión AR no inicia. No hay fallback offline.
-
----
-
-## Sistema de IA
-
-### Arquitectura de Jobs
-El sistema de IA usa un patrón de cola asíncrona: el frontend crea un job, hace polling hasta que se completa, y obtiene el resultado.
+La base de datos PostgreSQL de FisioMirror en Supabase está organizada alrededor del esquema `public`:
 
 ```
-runAIJob(type, input) → createAIJob → POST /api/create-job
-                                         │
-                                    ai_jobs (pending)
-                                         │
-                                    process-job (Edge Function)
-                                    ├─▶ Cloudflare Workers AI
-                                    ├─▶ Gemini 2.5 Flash (fallback)
-                                    └─▶ Hugging Face (fallback)
-                                         │
-                                    ai_jobs (completed/failed)
-                                         │
-pollAIJob(jobId) → GET /api/get-job ←─────┘
-                    (cada 2.5s, timeout 120s)
+                           ┌─────────────────┐
+                           │    usuarios     │
+                           │  (auth shadow)  │
+                           └────────┬────────┘
+                                    │ 1:1
+                                    ▼
+       ┌──────────────────── profiles ────────────────────┐
+       │ - id (UUID PK)                                   │
+       │ - email, nombre, role, avatar_url                │
+       │ - telefono, fecha_nacimiento, tipo_sangre        │
+       │ - estatura_cm, peso_kg, extremidad_afectada      │
+       │ - rom_objetivo, patologia, tutor_*               │
+       └───────┬───────────────────────────────┬──────────┘
+               │ 1:N                           │ 1:N
+               ▼                               ▼
+     ┌───────────────────┐           ┌───────────────────┐
+     │ activation_tokens │           │     rutinas       │
+     │ - token (6 dígitos)│          │ - status (activa) │
+     │ - paciente_id     │           │ - fisio_id        │
+     │ - terapeuta_id    │           └─────────┬─────────┘
+     └───────────────────┘                     │ 1:N
+                                               ▼
+     ┌───────────────────┐           ┌───────────────────┐
+     │     exercises     │◀──────────┤ patient_exercises │
+     │ - angulo_objetivo │    N:M    │ - paciente_id     │
+     │ - landmarks       │           │ - series, reps    │
+     │ - grupo_muscular  │           └───────────────────┘
+     └───────────────────┘
+               │
+               ▼
+     ┌───────────────────────┐       ┌───────────────────────┐
+     │  sesiones_completadas │◀──────┤  post_session_reports │
+     │ - calidad_promedio    │  1:1  │ - dolor_antes / desp. │
+     │ - compensaciones      │       │ - nivel_fatiga        │
+     └───────────────────────┘       └───────────────────────┘
 ```
 
-### Modelos de IA disponibles
-| Proveedor | Modelo | Uso |
-|-----------|--------|-----|
-| Cloudflare | LLaVA 1.5 7B | Análisis de imágenes |
-| Cloudflare | Llama 3.1 8B | Generación de texto |
-| Cloudflare | Whisper Large v3 Turbo | Transcripción de audio |
-| Gemini | 2.5 Flash / Flash-lite | Fallback imágenes + texto |
-| Groq | Llama 3.2 90B Vision | Fallback OCR |
-| Hugging Face | Qwen2-VL 7B / Llama 3.2 11B Vision | Fallback final |
+### 5.1. Diccionario de Tablas Principales
 
-### Funciones del hook de IA
-- `analyzeImage(file, customPrompt?)` — Analiza documentos médicos → JSON estructurado.
-- `generateText(userPrompt, systemPrompt?)` — Asistente, resúmenes.
-- `transcribeAudio(audioBase64)` — Speech-to-text.
-- `ocrUpdatePatient(image, patientId)` — OCR + update de paciente.
+#### 1. `profiles`
+Tabla central de identidades. Almacena tanto a fisioterapeutas como a pacientes con sus atributos médicos:
+- `id` (`uuid`, Primary Key): Identificador único del usuario.
+- `email` (`text`, Unique): Correo electrónico del usuario.
+- `role` (`text`, Check: `'fisioterapeuta' | 'paciente'`): Rol del usuario en el sistema.
+- `nombre` (`text`): Nombre y apellidos completos.
+- `avatar_url` (`text`): Enlace a la imagen en el bucket `avatars`.
+- `telefono` (`text`): Teléfono de contacto directo.
+- `fecha_nacimiento` (`date`): Fecha de nacimiento para cálculo de edad.
+- `colegiado_id` (`text`): Identificador del colegio oficial de fisioterapeutas (solo terapeutas).
+- `universidad` (`text`): Alma máter universitaria.
+- `anio_egreso` (`integer`): Año de graduación.
+- `clinic_name` (`text`): Nombre del centro o clínica de rehabilitación.
+- `es_menor_edad` (`boolean`): Si es verdadero, habilita los campos de tutoría legal.
+- `tutor_nombre`, `tutor_telefono`, `tutor_email` (`text`): Información del representante legal.
+- `patologia`, `diagnostico` (`text`): Diagnóstico médico principal.
+- `diagnostico_secundario` (`text`): Comorbilidades asociadas.
+- `extremidad_afectada` (`text`): Miembro en tratamiento (ej. "Hombro derecho", "Rodilla izquierda").
+- `rom_objetivo` (`text`): Grados angulares de flexión/extensión esperados al alta médica.
+- `medicamentos_actuales`, `alergias`, `enfermedades_cronicas` (`text`): Historial farmacológico y clínico.
+- `estatura_cm` (`integer`), `peso_kg` (`numeric(5,2)`): Biometría del paciente para cálculos de carga.
+- `onboarding_completed` (`boolean`): Indica si el usuario ya vio el tutorial interactivo inicial.
 
-### Rate Limiting
-10 peticiones/minuto por IP. Si se excede, devuelve HTTP 429.
+#### 2. `activation_tokens`
+Gestión de credenciales de acceso rápido para pacientes:
+- `id` (`uuid`, PK): Identificador único.
+- `token` (`text`, Unique): Código numérico o alfanumérico (ej. `849201`).
+- `paciente_id` (`uuid`, FK → `profiles.id`): Paciente asignado a este token.
+- `terapeuta_id` (`uuid`, FK → `profiles.id`): Fisioterapeuta emisor del token.
+- `expires_at` (`timestamptz`): Fecha de vencimiento (por defecto 30 días posteriores).
+- `is_used` (`boolean`): Bandera de uso (reutilizable en la configuración actual para facilitar el acceso regular).
 
-### Secrets configurados en Supabase
-`GEMINI_API_KEY`, `GEMINI_API_KEY2`, `GROQ_API_KEY2`, `CF_API_TOKEN`, `CF_ACCOUNT_ID`, `CF_API_TOKEN2`, `CF_ACCOUNT_ID2`, `HF_API_TOKEN`, `HF_API_TOKEN2`, `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`.
+#### 3. `exercises`
+Catálogo maestro de ejercicios biomecánicos:
+- `id` (`uuid`, PK): Identificador del ejercicio.
+- `fisio_id` (`uuid`, FK → `profiles.id`): Terapeuta autor o dueño del ejercicio en su catálogo.
+- `nombre` (`text`): Nombre descriptivo (ej. *"Abducción de hombro con rotación neutra"*).
+- `descripcion`, `detailed_description` (`text`): Pautas técnicas de ejecución y precauciones.
+- `categoria` (`text`): Tipo (ej. `movilidad`, `fortalecimiento`, `estiramiento`).
+- `fase_recuperacion` (`text`): Fase clínica recomendada (`agudo`, `subagudo`, `mantenimiento`).
+- `articulacion` (`text`): Articulación implicada (`hombro`, `codo`, `cadera`, `rodilla`, `tobillo`).
+- `grupo_muscular` (`text`): Grupos motores principales (ej. `deltoides`, `cuádriceps`).
+- `angulo_objetivo` (`integer`): Umbral angular en grados sexagesimales (ej. `90`, `120`).
+- `landmarks` (`jsonb`): Vector de índices de MediaPipe a trackear (ej. `[11, 13, 15]` para hombro-codo-muñeca).
+- `series_default`, `repeticiones_default`, `duracion_segundos` (`integer`): Dosificación recomendada.
 
-> **Importante:** No usar `tesseract.js` ni `@xenova/transformers`. Ver `IA_DOCS.md`.
+#### 4. `patient_exercises` y `rutinas`
+Prescripciones activas vinculadas a cada paciente:
+- `rutinas`: Define el contenedor global de la rutina con su estado (`activa` o `archivada`).
+- `patient_exercises`: Relación directa entre paciente, ejercicio dosificado (`series`, `repeticiones`, `frecuencia_semana`) y notas personalizadas del terapeuta.
+
+#### 5. `sesiones_completadas` y `post_session_reports`
+Registro cuantitativo y cualitativo de la sesión en el modo espejo AR:
+- `sesiones_completadas`:
+  - `paciente_id` (`uuid`): Paciente que completó el entrenamiento.
+  - `ejercicios` (`jsonb`): Detalle de ejercicios realizados con número de repeticiones efectivas.
+  - `adherencia` (`integer`): Porcentaje de la rutina prescrita completado (0 - 100%).
+  - `calidad_promedio` (`real`): Puntuación de precisión cinemática en base a la desviación angular.
+  - `compensaciones_detectadas` (`jsonb`): Errores posturales registrados (ej. elevación de trapecios, inclinación de tronco).
+- `post_session_reports`:
+  - `dolor_antes` (`integer`, escala 0-10): Intensidad de dolor previa al ejercicio.
+  - `dolor_despues` (`integer`, escala 0-10): Intensidad de dolor al culminar.
+  - `fatiga_nivel` (`integer`, escala 1-5): Nivel de esfuerzo percibido (RPE).
+  - `comentario` (`text`): Sensaciones transmitidas por el paciente.
+
+#### 6. `ai_jobs` y `ai_conversations`
+Infraestructura de inteligencia artificial asíncrona:
+- `ai_jobs`: Cola con columnas `id`, `type` (`image_analysis`, `text_generation`, `insights`, `summaries`, `pdf_report`), `status` (`pending`, `processing`, `completed`, `failed`), `input_data` (`jsonb`) y `result_data` (`jsonb`).
+- `ai_conversations`: Historial de mensajes entre el paciente y el agente Physi en `AIAssistantPage.tsx`.
+
+#### 7. `notifications`
+Canal de mensajería reactiva:
+- Columnas: `id`, `user_id`, `type` (`videollamada`, `rutina`, `sistema`, `recordatorio`), `title`, `message`, `read` (`boolean`), `metadata` (`jsonb`).
 
 ---
 
-## Base de Datos (Supabase)
+## 6. Seguridad en Supabase: RLS, RPC Functions y Storage
 
-### Tablas principales
+### 6.1. Políticas de Seguridad de Nivel de Fila (Row Level Security - RLS)
+En Supabase, RLS garantiza que ninguna petición realizada desde el cliente pueda leer o alterar datos no autorizados. En FisioMirror:
+- Cada tabla cuenta con `ALTER TABLE ... ENABLE ROW LEVEL SECURITY;`.
+- Se implementan políticas atómicas por verbo SQL (`SELECT`, `INSERT`, `UPDATE`, `DELETE`) en lugar de directivas genéricas `FOR ALL`.
+- Para el acceso anónimo mediante Token de paciente, se utilizan políticas validadas por `paciente_id` o funciones de comprobación segura.
 
-| Tabla | Propósito |
-|-------|-----------|
-| `profiles` | Usuarios (fisioterapeutas y pacientes). Campos clínicos, contacto, tutor (menores). |
-| `pacientes` | Datos específicos de pacientes vinculados a un terapeuta. |
-| `activation_tokens` | Tokens de 6 dígitos para acceso de pacientes. Vinculados a `paciente_id` y `terapeuta_id`. |
-| `rutinas` | Rutinas de ejercicios asignadas a pacientes. Campo `activa` para distinguir vigentes de archivadas. |
-| `exercises` | Biblioteca de ejercicios del fisioterapeuta. |
-| `patient_exercises` | Relación paciente-ejercicio (ejercicios asignados). |
-| `sesiones_completadas` | Registro de cada sesión completada por un paciente. |
-| `post_session_reports` | Reportes post-sesión (dolor, fatiga, notas). |
-| `ai_jobs` | Cola de trabajos de IA (status: pending/completed/failed). |
-| `ai_conversations` | Historial de chat con el asistente IA. |
-| `notifications` | Notificaciones del sistema (videollamada, rutina, sistema). |
-| `documentos_clinicos` | Documentos escaneados con OCR. |
-| `logros` | Definiciones de logros de gamificación. |
-| `especialidades` | Especialidades de fisioterapia (catálogo). |
-| `profile_especialidades` | Relación perfil-especialidad. |
+### 6.2. Procedimientos Almacenados (RPC Functions)
+Ubicadas en `supabase/migrations/20260805162739_20260805_migration_part2_rls_functions_storage.sql.sql`:
 
-### RLS (Row Level Security)
-RLS está habilitada en todas las tablas. Las políticas siguen el patrón:
-- `SELECT`: el usuario ve sus propios datos (por `auth.uid()` o `terapeuta_id`).
-- `INSERT`: el usuario puede insertar datos propios.
-- `UPDATE`: el dueño o `service_role`.
-- `DELETE`: el dueño o `service_role`.
+1. `hash_password(password text)`:
+   - Aplica `digest(password || 'fisiomirror-salt-2024', 'sha256')` utilizando la extensión criptográfica `pgcrypto`.
+   - Se revoca su ejecución directa por roles públicos (`REVOKE EXECUTE ON FUNCTION hash_password FROM anon, authenticated`) para aislar la sal.
+2. `login_usuario(p_email text, p_password text)`:
+   - Procedimiento con `SECURITY DEFINER` que valida las credenciales y devuelve un objeto JSON estructurado con el estado de autenticación.
+3. `registrar_fisioterapeuta(...)`:
+   - Transacción atómica que crea simultáneamente el usuario en `usuarios`, el perfil base en `perfiles_simples` y los datos de colegiado en `fisioterapeutas_simple`.
+4. `registrar_paciente(...)`:
+   - Valida el token de activación, confirma que no haya expirado (`expires_at > now()`), crea la cuenta del paciente y asocia al fisioterapeuta emisor.
+5. `validar_token(p_token text)`:
+   - Comprueba la vigencia y disponibilidad de un token de 6 caracteres.
 
-### Storage Buckets
-| Bucket | Propósito | Acceso |
-|--------|-----------|--------|
-| `avatars` | Avatares de usuario | Público lectura, autenticado escritura |
-| `credenciales` | Credenciales de fisioterapeutas | Privado |
-| `mascot` | Animaciones de mascota (.webp) | Público lectura |
-| `pwa-icons` | Iconos PWA personalizados | Público |
-
-### Migraciones
-~40 migraciones en `supabase/migrations/`. Cubren: creación de esquema, RLS, funciones RPC, storage buckets, seed de datos demo, correcciones de seguridad.
+### 6.3. Almacenamiento Seguro (Storage Buckets)
+Cinco buckets estructuran los archivos binarios de la plataforma:
+- `avatars` (Público en lectura): Fotografías de perfil de usuarios.
+- `credenciales-profesionales` (Lectura controlada): Títulos universitarios y carnets de colegiados para verificación deontológica.
+- `documentos` (Público con token): Radiografías, órdenes de rehabilitación y recetas médicas escaneadas.
+- `mascot-animations`: Secuencias animadas en formato `.webp` de la mascota Physi.
+- `pwa-icons`: Activos para el manifiesto de instalación en dispositivos móviles y de escritorio.
 
 ---
 
-## Edge Functions
+## 7. Edge Functions y Backend Serverless
 
-16 Edge Functions en `supabase/functions/` (Deno runtime):
+FisioMirror contiene 16 funciones en `supabase/functions/` (ejecutadas en el runtime Deno):
 
-| Función | Propósito |
-|---------|-----------|
-| `auth-login` | Autenticación de fisioterapeutas (hash server-side) |
-| `auth-register` | Registro de fisioterapeutas |
-| `auth-activate` | Activación de cuentas |
-| `auth-validate` | Validación de tokens de paciente |
-| `auth-user` | Obtener usuario actual |
-| `auth-update-password` | Actualización de contraseña |
-| `auth-delete-account` | Eliminación de cuenta |
-| `create-job` | Crear job de IA en cola |
-| `process-job` | Procesar job (Cloudflare → Gemini → HuggingFace) |
-| `get-job` | Consultar estado de job |
-| `get-job-status` | Consultar estado alternativo |
-| `gemini-ocr` | OCR directo con Gemini |
-| `ocr-prescripcion` | OCR de prescripciones médicas |
-| `FisioMirror_Asistent_AI` | Asistente IA conversacional |
-| `transcribe-audio` | Speech-to-text (Whisper) |
-| `send-notification` | Envío de notificaciones push |
+```
+supabase/functions/
+├── auth-login/               # Autenticación con limitación de tasa (rate limit)
+├── auth-register/            # Alta transaccional de fisioterapeutas
+├── auth-validate/            # Validación de integridad de tokens
+├── create-job/               # Encolado de solicitudes pesadas de IA
+├── process-job/              # Procesamiento de OCR con fallback multi-modelo
+├── FisioMirror_Asistent_AI/  # Motor conversacional del asistente Physi
+├── transcribe-audio/         # Transcripción Whisper de audios del paciente
+└── send-notification/        # Disparador de notificaciones push
+```
 
-### API Routes (Vercel)
-Los archivos en `api/` son proxies de Vercel que reenvían a las Edge Functions de Supabase:
-- `create-job.js` → `create-job`
-- `get-job.js` → `get-job`
-- `process-job.js` → `process-job`
-- `ocr-prescripcion.js` → `ocr-prescripcion`
-- `transcribe-audio.js` → `transcribe-audio`
+### Orquestador de IA Multi-Proveedor (`process-job`):
+Para garantizar alta disponibilidad sin depender de una única API, el backend implementa una cascada de tolerancia a fallos (*fallback cascade*):
+1. **Intento Primario:** Cloudflare Workers AI (LLaVA 1.5 7B para imágenes / Llama 3.1 8B para texto).
+2. **Fallback Secundario:** Google Gemini 2.5 Flash / Flash-Lite.
+3. **Fallback Terciario:** Groq (Llama 3.2 90B Vision) o Hugging Face Inference API (Qwen2-VL).
 
-### CORS
-Todas las Edge Functions incluyen headers CORS:
+---
+
+## 8. Modo Espejo AR (Visión Artificial y Biomecánica)
+
+El núcleo de tele-rehabilitación reside en `src/pages/ARMirrorPage.tsx`, gestionado por el hook `src/hooks/usePoseDetection.ts`.
+
+### 8.1. Cinemática y Landmarks de MediaPipe
+El modelo `MediaPipe Pose` identifica 33 puntos corporales en coordenadas normalizadas $(x, y, z)$. El sistema calcula los ángulos articulares utilizando el producto escalar y arcotangente bidimensional:
+
+$$\theta = \arccos\left(\frac{\vec{u} \cdot \vec{v}}{\|\vec{u}\| \|\vec{v}\|}\right)$$
+
+Donde $\vec{u}$ y $\vec{v}$ son los vectores formados por la articulación evaluada (por ejemplo, hombro $\rightarrow$ codo y codo $\rightarrow$ muñeca).
+
+### 8.2. Filtrado y Suavizado de Señal
+- **Media Móvil Ponderada:** Se calcula el promedio de los últimos 5 fotogramas para eliminar el ruido de jittering provocado por variaciones de iluminación.
+- **Detección de Fases de Repetición:** Una máquina de estados finitos evalúa la fase del movimiento (`subida`, `sostenimiento`, `bajada`). La repetición solo se computa si el paciente entra en la zona verde de tolerancia ($\pm 5^\circ$ del objetivo) y regresa a la posición de reposo.
+- **Prevención de Compensaciones:** Si durante una flexión de hombro la cadera contraria se inclina más de $12^\circ$ o el hombro contralateral se desalinea, el sistema emite una alerta visual en rojo y un mensaje de audio mediante la **Web Speech API**: *"Mantén la espalda recta y no eleves el trapecio"*.
+
+---
+
+## 9. Sistema de Inteligencia Artificial (Pipeline de Jobs y OCR)
+
+El consumo de IA en el cliente se realiza exclusivamente a través de `src/lib/ai.ts`.
+
+### Patrón Asíncrono de Consulta (Create $\rightarrow$ Poll $\rightarrow$ Result)
+Para evitar cierres de conexión HTTP por timeout durante análisis pesados de documentos clínicos de varias páginas:
+1. `createAIJob('image_analysis', { imageBase64, prompt })`: Realiza un `POST` al endpoint y recibe un identificador único `job_id`.
+2. `pollAIJob(jobId, timeout = 120000)`: Efectúa lecturas espaciadas cada 2.5 segundos consultando el estado del trabajo en `ai_jobs`.
+3. Al detectarse `status === 'completed'`, retorna el JSON estructurado con el desglose clínico.
+
+---
+
+## 10. PWA, Service Worker y Soporte Offline
+
+FisioMirror está configurado como una **Progressive Web App (PWA)** de primer nivel en `vite.config.ts` mediante `vite-plugin-pwa`:
+
+### 10.1. Estrategia de Caché de Red (Workbox)
+- **Activos Estáticos (JS, CSS, WOFF2):** `StaleWhileRevalidate` con límite de 50 entradas durante 24 horas.
+- **Fotografías y Diagramas:** `CacheFirst` (100 entradas, hasta 7 días).
+- **Peticiones a la API de Supabase:** `NetworkFirst` (con fallback de 24 horas en caché local para mantener la visualización de la última rutina consultada).
+
+### 10.2. Base de Datos Local IndexedDB
+Implementada en `src/lib/offlineDB.ts` y consumida por el hook `src/hooks/useOfflineExercises.ts`.
+- Si el paciente pierde la conexión a internet, un banner superior (`src/components/OfflineIndicator.tsx`) notifica la desconexión.
+- La aplicación recupera la rutina activa directamente desde IndexedDB, permitiendo que el paciente continúe sus ejercicios sin interrupción.
+
+---
+
+## 11. Gamificación, Rachas y Notificaciones en Tiempo Real
+
+### 11.1. Logros Médicos (`src/hooks/useGamification.ts`)
+Para estimular la adherencia del paciente, el sistema audita las sesiones completadas y otorga insignias almacenadas en `localStorage` (`fisiomirror-achievements`):
+- **Primer Paso:** Completar la primera sesión de terapia.
+- **Constancia de Bronce / Plata / Oro:** Completar 3, 5 o 10 sesiones consecutivas.
+- **Racha de Fuego:** Mantener 7 días ininterrumpidos de rehabilitación.
+- **Forma Impecable:** Realizar una serie con más del 95% de precisión biomecánica.
+- Al desbloquearse un logro o culminar una serie, `src/lib/confetti.ts` lanza una cascada de confeti con `canvas-confetti`.
+
+### 11.2. Notificaciones en Tiempo Real (`src/context/NotificationContext.tsx`)
+El cliente abre un canal WebSocket continuo con Supabase Realtime:
 ```typescript
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Client-Info, Apikey",
-};
+supabase
+  .channel('public:notifications')
+  .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'notifications' }, handleNewNotification)
+  .subscribe();
 ```
+Incluye avisos acústicos diferenciados mediante la Web Audio API (tonos clínicos armónicos, evitando zumbidos molestos) para videollamadas de telemedicina con **Jitsi Meet** o reasignación de ejercicios.
 
 ---
 
-## Sistema de Diseño
+## 12. Sistema de Diseño (Material Design 3 + Glassmorphism)
 
-### Filosofía
-- **Material Design 3** con tokens semánticos (CSS variables que cambian automáticamente en modo oscuro).
-- **Glassmorphism** en toda la interfaz (`glass-panel`, `backdrop-blur`, `bg-opacity`).
-- **Paleta:** Teal/cyan como primario, azul como secundario, verde lima como acento cinético. **No se usan colores púrpura/violeta/rosa.**
-- **Tipografía:** Montserrat (sans), Playfair Display (serif/display), JetBrains Mono (mono).
-- **Espaciado:** Sistema de 8px (xs=8, sm=16, md=24, lg=40, xl=64).
-- **Animaciones:** Framer Motion para transiciones, hover states, micro-interacciones. CSS animations para loops ambientales (breathe, shimmer, pulse-glow, float).
+La identidad visual está gobernada por `src/styles/globals.css` y `tailwind.config.ts`:
 
-### Tokens de color (CSS variables)
-Definidos en `src/styles/globals.css` y mapeados en `tailwind.config.ts`:
-- `--c-primary` / `--c-on-primary` / `--c-primary-container` (teal)
-- `--c-secondary` (azul)
-- `--c-tertiary` (verde lima)
-- `--c-surface` / `--c-surface-container-*` (fondos)
-- `--c-on-surface` / `--c-on-surface-variant` (texto)
-- `--c-error` / `--c-warning` / `--c-success` (estados)
-- `--c-outline` / `--c-outline-variant` (bordes)
-
-### Gradientes definidos
-`gradient-brand`, `gradient-primary`, `gradient-accent`, `gradient-kinetic`, `gradient-blue-azure`, `gradient-terracotta`, `gradient-teal-lime`, `gradient-editorial`, `gradient-mesh` (sutil y oscuro).
-
-### Gradientes de texto
-`gradient-text-editorial`, `gradient-text-teal`, `gradient-text-living`, `gradient-text-flow`, `gradient-text-blue`, `gradient-text-lime`. Todos usan paleta teal/azul/lima — ninguno usa púrpura.
+- **Filosofía Cromática:** Se fundamenta en una paleta clínica de alta confianza con **Teal/Esmeralda** (`#10b981`, `#00504d`) para el ámbito clínico del fisioterapeuta y **Azul Celeste / Océano** (`#0ea5e9`, `#0284c7`) para el paciente.
+  - *Regla de Estilo:* Se prohíbe el uso de tonos magenta, violeta o púrpura saturados fuera del manual de marca.
+- **Glassmorphism Funcional:** Fondos con `backdrop-blur-md` o `backdrop-blur-xl` combinados con bordes translúcidos suaves (`border-white/10` o `border-emerald-500/20`), permitiendo profundidad visual sin sobrecargar el procesador gráfico.
+- **Tipografía:**
+  - *Montserrat:* Claridad legible para controles de interfaz, tablas clínicas e inputs.
+  - *Playfair Display:* Títulos editoriales y cabeceras de módulos para un aspecto clínico sofisticado.
+  - *JetBrains Mono:* Presentación de ángulos, coordenadas, series y contadores biomecánicos.
 
 ---
 
-## Componentes UI
+## 13. Catálogo de Componentes UI y Microinteracciones
 
-### Catálogo (53+ componentes en `src/components/ui/`)
+El directorio `src/components/ui/` contiene más de 50 componentes diseñados para enriquecer la experiencia de usuario:
 
-#### Componentes de animación (Magic UI / 21st Dev)
-| Componente | Descripción |
-|-----------|-------------|
-| `AuroraText` | Texto con gradiente aurora animado |
-| `BorderBeam` | Haz de luz que recorre el borde de un elemento |
-| `ShineBorder` | Brillo que barre el borde continuamente |
-| `LightRays` | Rayos de luz animados como fondo ambiental |
-| `Particles` | Campo de partículas + spotlight + separador gradiente |
-| `TextAnimate` | Reveal de texto por palabra o carácter (fade, blur, slide, scale) |
-| `TypingAnimation` | Efecto máquina de escribir con loop y cursor |
-| `TypewriterText` | Typewriter con velocidad configurable |
-| `ShimmerText` | Texto con barrido shimmer |
-| `AnimatedList` | Lista con reveal secuencial spring |
-| `AnimatedCircularProgressBar` | Anillo de progreso SVG animado |
-| `AnimatedCountdown` | Cuenta regresiva con NumberFlow |
-| `AnimatedTabs` | Tabs con indicador deslizante |
-| `AnimatedLink` | Link con underline + flecha animada en hover |
-| `HyperText` | Texto con efecto scramble al pasar el mouse |
-| `AILoader` | Loader "Generando" con letras rebotando + barra de progreso |
-| `ChatMessages` | Chat animado con auto-play, typing indicator, replay |
-| `ConfettiButton` | Botón que dispara confeti al hacer clic |
-| `ProgressiveBlur` | Desenfoque progresivo en bordes |
-
-#### Componentes estructurales
-| Componente | Descripción |
-|-----------|-------------|
-| `Glass` | GlassPanel, GlassCard (glassmorphism) |
-| `GlassModal` | Modal con backdrop blur, tamaños sm/md/lg/full |
-| `GlassToast` | Sistema de toasts con swipe-to-dismiss |
-| `CollapsibleSection` | Sección colapsable con chevron rotativo |
-| `CollapsibleProfile` | Tarjeta de perfil colapsable |
-| `FloatingMenu` | FAB con acciones expandibles escalonadas |
-| `CommandPalette` | ⌘K palette de comandos con búsqueda filtrada |
-| `ErrorBoundary` | Boundary con mascota + botón de recarga |
-| `EmptyState` | Estado vacío con icono/título/mensaje específicos |
-| `PremiumSkeleton` | Skeletons premium para KPIs y listas |
-
-#### Componentes funcionales
-| Componente | Descripción |
-|-----------|-------------|
-| `PhysiGuide` | Burbuja flotante de chat con FAQ offline (keyword matching) |
-| `HelpGuideButton` | Botón de FAQ contextual según la ruta actual |
-| `MascotAnimation` | Mascota Physi renderizada desde .webp |
-| `PinInput` / `TokenInput` | Inputs de PIN/token con auto-advance |
-| `PDFExportModal` | Modal de exportación a PDF |
-| `InstallPrompt` | Modal de instalación PWA |
-| `LegalModal` | Modal de documentos legales |
-| `MultiSelect` | Multi-select con chips |
-| `SimpleCalendar` | Calendario con fechas marcadas |
-| `WaveformVisualizer` | Visualizador de forma de onda de audio |
-| `Tooltip` | Tooltip posicional |
-| `Toggle` | Switch con label/descripción |
-| `ThemeToggle` | Toggle de modo claro/oscuro |
-
-#### Microinteracciones (`src/components/micro/`)
-`DeleteAnimation`, `DragDropRetry`, `EyesLookAway`, `LiquidTab`, `OrbitAndScrew`, `OtpFold`, `RingToBar`, `TabLight`.
-
-#### Modelos 3D (`src/components/characters3d/`)
-`KidModel3D`, `PhysioModel3D` — modelos 3D con Three.js para demostraciones de ejercicios. Usados en `SkeletonDemo.tsx`.
-
-### Mascota Physi
-10 animaciones `.webp` en `public/animations/mascot/`:
-`saludo`, `idle`, `cargando`, `consejo`, `despedida`, `error`, `escaneando`, `exito`, `notificacion`, `racha`.
+- **Efectos y Microinteracciones:**
+  - `BorderBeam`: Haz de luz que recorre el perímetro de tarjetas destacadas.
+  - `AuroraText` y `ShimmerText`: Textos con brillos dinámicos en títulos clave.
+  - `AnimatedCountdown`: Contador regresivo con `NumberFlow` previo al inicio del escaneo AR.
+  - `Particles`: Campo de micropartículas con spotlight de fondo.
+  - `MascotAnimation`: Componente contenedor que reproduce las animaciones WebP de la mascota Physi (`saludo`, `ejercicio`, `éxito`, `alerta`).
+- **Navegación y Estructura:**
+  - `CommandPalette` (`⌘K`): Buscador global rápido para acceder a pacientes, ejercicios o métricas.
+  - `FloatingMenu` (FAB): Botón flotante para acciones instantáneas en móvil.
+  - `PinInput`: Entrada fragmentada de 6 casillas numéricas con validación rápida para el token de paciente.
 
 ---
 
-## PWA y Offline
+## 14. Plano de Rutas y Navegación
 
-### Manifest (`vite.config.ts`)
-- **Nombre:** FisioMirror
-- **Display:** standalone (con override: minimal-ui, window-controls-overlay, tabbed)
-- **Categorías:** health, fitness, medical, utilities
-- **Atajos:** "Iniciar ejercicio" → `/ejercicios`, "Asistente IA" → `/asistente`
-- **File handlers:** PDF, imágenes, audio, video
-- **Share target:** Recibe imágenes, audio, video, PDF
-- **Protocol handler:** `web+fisiomirror`
-- **Widgets:** Racha de ejercicios
-- **Edge side panel** + **Note taking**
+Todas las rutas se encuentran protegidas y encapsuladas bajo `ProtectedRoute` en `src/App.tsx`:
 
-### Service Worker (Workbox)
-| Patrón | Estrategia | Cache |
-|--------|-----------|-------|
-| Supabase API | NetworkFirst | supabase-cache (50 entries, 24h) |
-| Imágenes | CacheFirst | image-cache (100 entries, 7 días) |
-| JS/CSS/Woff2 | StaleWhileRevalidate | static-resources (50 entries, 24h) |
-| API genérica | NetworkFirst | api-cache (20 entries, 5 min) |
-| HTML | NetworkFirst | html-cache (10 entries, 1h) |
-
-### Offline (IndexedDB)
-- `src/lib/offlineDB.ts` — guarda rutina activa y ejercicios en IndexedDB.
-- `useOfflineExercises` hook — carga ejercicios desde IndexedDB cuando no hay conexión.
-- `OfflineIndicator` — banner visual cuando no hay conexión.
-- Al recuperar conexión, sincroniza con Supabase.
+| Ruta | Acceso | Layout | Función Principal |
+|---|---|---|---|
+| `/login` | Público | Standalone | Acceso dual por credenciales o token con spotlight interactivo. |
+| `/reset-password` | Público | Standalone | Recuperación y restablecimiento de contraseña. |
+| `/registro-paciente`| Público | Standalone | Auto-registro de paciente con token clínico asignado. |
+| `/dashboard-fisio` | Fisioterapeuta | `FisioLayout` | Panel de control, estadísticas agregadas e insights de IA. |
+| `/patients` | Fisioterapeuta | `FisioLayout` | Directorio maestro de pacientes con filtros y búsqueda. |
+| `/paciente/:id` | Fisioterapeuta | `FisioLayout` | Expediente clínico individualizado, evolución y notas. |
+| `/ocr-scanner` | Fisioterapeuta | `FisioLayout` | Asistente de 4 pasos para digitalización de recetas con IA. |
+| `/tokens` | Fisioterapeuta | `FisioLayout` | Consola de emisión, asignación y revocación de tokens. |
+| `/fisio-exercises` | Fisioterapeuta | `FisioLayout` | Biblioteca y diseñador CRUD de ejercicios articulares. |
+| `/fisio-stats` | Fisioterapeuta | `FisioLayout` | Analítica de adherencia general, distribución y patologías. |
+| `/tools` | Fisioterapeuta | `FisioLayout` | Calculadora de IMC, conversor de ROM y exportador PDF. |
+| `/dashboard-paciente`| Paciente | `PatientLayout`| Resumen del día, racha actual y tarjeta de inicio de rutina. |
+| `/exercises` | Paciente | `PatientLayout`| Lista de ejercicios pautados con guías visuales en 3D. |
+| `/ar-mirror` | Paciente | Standalone / AR | Sesión guiada con cámara, conteo automático y voz. |
+| `/calibration` | Paciente | `PatientLayout`| Calibración de rango articular base previa a la sesión. |
+| `/ai-assistant` | Paciente | `PatientLayout`| Chat con Physi (preguntas clínicas, voz y análisis de fotos). |
+| `/stats` | Paciente | `PatientLayout`| Gráficos individuales de progreso y dolor acumulado. |
+| `/settings` | Común | Ambos Layouts | Configuración de accesibilidad, tamaño de fuente y tema. |
 
 ---
 
-## Gamificación
+## 15. Guía de Estudio y Buenas Prácticas del Código
 
-### Sistema de Logros (`useGamification.ts`)
-Los logros se persisten en `localStorage` (clave: `fisiomirror-achievements`).
+Para desarrolladores o inteligencias artificiales (como Google Gemini) que analicen este repositorio:
 
-| Logro | Tier | Condición |
-|-------|------|-----------|
-| Primer Paso | Bronce | Completar 1 sesión |
-| Constancia | Plata | Completar 3 sesiones |
-| Dedicación | Oro | Completar 5 sesiones |
-| Guerrero de la Recuperación | Diamante | Completar 10 sesiones |
-| Racha de 3 Días | Bronce | Practicar 3 días seguidos |
-| Racha de 7 Días | Oro | Practicar 7 días seguidos |
-| Forma Perfecta | Plata | Alcanzar rango óptimo en un ejercicio |
-| Lechuza Nocturna | Bronce | Sesión después de 8 PM |
-| Madrugador | Bronce | Sesión antes de 7 AM |
-| Explorador | Oro | Practicar todos los ejercicios asignados |
-
-### Funciones del hook
-- `recordSession()` — incrementa contadores de sesiones.
-- `recordStreak(days)` — actualiza rachas.
-- `unlockSpecial(id)` — desbloquea logro especial.
-- `unlockedCount` — total de logros desbloqueados.
-- `totalProgress` — progreso global (0-1).
-
-### Onboarding
-- `OnboardingTour` — tour guiado para nuevos usuarios.
-- `hasCompletedOnboarding()` / `markOnboardingComplete()` — persistencia en localStorage.
-
-### Celebración
-- `confetti.ts` dispara `canvas-confetti` al desbloquear logros o completar sesiones.
-
----
-
-## Notificaciones
-
-### Sistema (`NotificationContext.tsx`)
-- Campana con contador de no leídas en el header.
-- Suscripción en tiempo real vía **Supabase Realtime** (channel `postgres_changes` en tabla `notifications`).
-- Tipos: `videollamada`, `rutina`, `sistema`, `recordatorio`.
-- Marcar como leídas individualmente o todas a la vez.
-- **Sonido:** Web Audio API con tonos diferenciados por tipo.
-- **Vibración** en móvil.
-
-### Videollamada
-Integración con **Jitsi Meet** — links abiertos en nueva pestaña desde notificaciones.
-
----
-
-## Estado Actual
-
-### Funciona correctamente
-- Autenticación dual (fisioterapeuta con email/password vía Edge Function, paciente con token).
-- Registro de fisioterapeutas en 2 pasos con upload de credencial.
-- Dashboards de ambos roles con KPIs reales desde Supabase.
-- Biblioteca de ejercicios con CRUD completo.
-- Generación y gestión de tokens.
-- Sistema de notificaciones con tiempo real.
-- Modo oscuro/claro con persistencia.
-- PWA instalable con manifest y service worker.
-- Exportación de PDF simple y con IA.
-- Chat con asistente IA (texto, voz, imágenes).
-- Carga de pacientes con IA (OCR, 4 pasos).
-- Celebraciones con confetti.
-- Gamificación con logros en localStorage.
-- Modo offline con IndexedDB.
-- Modelos 3D para demostraciones de ejercicios.
-- Mascota Physi animada (.webp).
-- FAQ contextual por ruta (PhysiGuide + HelpGuideButton).
-- Paleta de comandos (⌘K).
-- Reasignación de rutinas con archivado.
-- Indicador offline.
-- Instrucciones de instalación PWA para iOS.
-
-### En progreso / Pendiente
-- **MediaPipe Holistic:** Selector de modelo AR (Automático/Pose/Holistic) en Configuración.
-- **i18n completo:** Infraestructura instalada, solo español activo. Falta traducir textos.
-- **Exportación a Google Calendar:** Componente pendiente de integrar.
-- **SEO:** Meta tags, sitemap.xml y página 404 personalizada pendientes.
-- **Informe semanal automático (cron):** Tabla y Edge Function pendientes.
-- **Recordatorios configurables:** Tabla y Edge Function pendientes.
-- **Análisis clínico avanzado (mesetas/abandono):** Edge Function pendiente.
-- **Token de un solo uso + email/password para paciente:** Flujo pendiente de migración.
-
----
-
-## Problemas Conocidos
-
-1. **MediaPipe desde CDN:** Si `cdn.jsdelivr.net` falla, la sesión AR no inicia. No hay timeout ni fallback offline.
-2. **Grabación de audio en OCR:** El audio se graba con `MediaRecorder` pero la transcripción requiere backend (solo se usa Web Speech API en el chat).
-3. **Videollamada Jitsi:** Solo abre un link externo; no hay videollamada embebida.
-4. **Sin tests:** No hay suite de tests configurada.
-5. **Dependencias potencialmente no usadas:** Verificar y limpiar `package.json` periódicamente.
-
----
-
-## Guía para Continuar el Proyecto
-
-### Reglas de oro
-1. **Lee este README completo primero.** Es el documento de contexto más actualizado.
-2. **Revisa `package.json`** antes de asumir que una librería está instalada.
-3. **No dupliques componentes.** Antes de crear uno nuevo, busca en `src/components/ui/` (53+ componentes).
-4. **Usa el sistema de tokens de Tailwind** (`text-on-surface`, `bg-surface-container`, `text-primary`). No hardcodees colores hex.
-5. **Para IA, usa `runAIJob()` desde `src/lib/ai.ts`.** No uses Tesseract ni modelos locales. Lee `IA_DOCS.md`.
-6. **Para Supabase, usa el cliente en `src/lib/supabase.ts`.** Para DDL, usa `apply_migration` (MCP). Para DML, usa `execute_sql` (MCP).
-7. **Después de cada cambio, ejecuta `npm run build`** para verificar que compila.
-8. **Para verificar UI,** usa el dev server (corre automáticamente) y prueba en el navegador.
-9. **Mantén `.design-ref/`** como referencia visual — contiene mockups HTML de casi todas las pantallas.
-10. **No uses colores púrpura/violeta/rosa.** La paleta es teal/azul/lima.
-11. **Todo el texto debe estar en español** (excepto términos médicos universalmente aceptados).
-12. **Usa Framer Motion** para animaciones, no CSS animations cuando Framer puede hacerlo mejor.
-13. **Usa HeroUI** (`@heroui/react`) como base para UI components cuando sea posible.
-14. **Usa Lucide React y Tabler Icons** para toda la iconografía.
-15. **RLS siempre habilitada** en cada tabla nueva. 4 políticas (una por verbo CRUD), nunca `FOR ALL`.
-
-### Estructura de carpetas
-- `src/components/ui/` — componentes UI reutilizables
-- `src/components/` — componentes de layout y feature
-- `src/pages/` — páginas (lazy-loaded)
-- `src/lib/` — lógica de negocio (supabase, auth, ai, pdf, etc.)
-- `src/stores/` — estado global (zustand)
-- `src/hooks/` — hooks custom
-- `src/context/` — contextos de React (theme, notifications)
-- `src/types/` — tipos TypeScript
-- `src/data/` — datos estáticos (presets, FAQs, imágenes)
-- `supabase/migrations/` — migraciones SQL
-- `supabase/functions/` — Edge Functions (Deno)
-- `api/` — proxies de Vercel a Edge Functions
-
-### Convenciones de código
-- Importar todo lo que se referencia (componentes, iconos, hooks, tipos).
-- Tipar explícitamente todos los parámetros de funciones.
-- No usar `any` implícito.
-- Comentarios: solo el "por qué" cuando no es obvio. No explicar el "qué".
-- No dejar código muerto, exports huérfanos, ni comentarios de código eliminado.
-
-### Paleta de colores de referencia
-Los archivos `Paleta Modo Claro.md` y `Paleta Modo Oscuro.md` (mencionados por el usuario) no existen físicamente en el proyecto. Las paletas están aplicadas directamente en:
-- `src/styles/globals.css` — CSS variables para modo claro y oscuro
-- `tailwind.config.ts` — mapeo de tokens a clases de Tailwind
-
-### Credenciales
-Las credenciales de Supabase están en `.env` y `src/config/supabase-fallback.ts`. No se deben hardcodear ni exponer en el frontend. El cliente usa `anon key` (no `service_role`).
+1. **Gestión de Estado de Autenticación:** Inspeccionar siempre `src/stores/authStore.ts`. Observar cómo conviven el token de 6 dígitos del paciente con el inicio de sesión convencional del profesional.
+2. **Consultas a Base de Datos:** Las lecturas y escrituras en el frontend usan la instancia de `supabase` exportada en `src/lib/supabase.ts`. Toda llamada cumple con las restricciones de RLS definidas en `supabase/migrations/`.
+3. **Flujo de Pose e Inteligencia Artificial:**
+   - La lógica matemática de detección postural se ubica íntegramente en `src/hooks/usePoseDetection.ts`.
+   - La lógica de inferencia remota con fallback reside en `src/lib/ai.ts` y en la función Deno `supabase/functions/process-job/index.ts`.
+4. **Validación de Compilación:** Todo nuevo desarrollo o ajuste debe ser verificado ejecutando:
+   ```bash
+   npm run lint        # Verificación estricta de código y hooks de React
+   npm run typecheck   # Validación estricta de tipos de TypeScript
+   npm run build       # Verificación de bundling final con Vite
+   ```
