@@ -202,14 +202,14 @@ export const fisioStyles = {
     label: 'font-label font-medium',
   },
   
-  // Border radius
+  // Border radius - USING STRING KEYS TO AVOID TS ISSUES
   radius: {
     sm: '0.25rem',
     md: '0.5rem',
     lg: '0.75rem',
     xl: '1rem',
-    2xl: '1.5rem',
-    3xl: '2rem',
+    '2xl': '1.5rem',
+    '3xl': '2rem',
     full: '9999px',
   },
 };
