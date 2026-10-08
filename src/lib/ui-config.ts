@@ -1,10 +1,10 @@
 /**
- * Configuración Central de UI para FisioMirror
+ * Configuracion Central de UI para FisioMirror
  * 
- * Este archivo centraliza la configuración de colores, animaciones y estilos
- * para mantener la coherencia visual en toda la aplicación.
+ * Este archivo centraliza la configuracion de colores, animaciones y estilos
+ * para mantener la coherencia visual en toda la aplicacion.
  * 
- * Basado en el sistema de diseño actual:
+ * Basado en el sistema de diseno actual:
  * - Primary: Teal (00504D - Medical Teal)
  * - Secondary: Azure Blue (3A5F94 - Clinical Blue)
  * - Kinetic: Lime (C1FF72 - Energy)
@@ -12,12 +12,12 @@
  */
 
 // ============================================================================
-// CONFIGURACIÓN DE COLORES ARMONIZADOS
+// CONFIGURACION DE COLORES ARMONIZADOS
 // ============================================================================
 
 /**
  * Paleta de colores principal de FisioMirror
- * Basada en el sistema Material Design 3 con adaptaciones médicas
+ * Basada en el sistema Material Design 3 con adaptaciones medicas
  */
 export const fisioColors = {
   // Primary: Teal (Medical/Clinical)
@@ -29,7 +29,7 @@ export const fisioColors = {
     400: '#21B5AF',
     500: '#158F8A',
     600: '#156966',
-    700: '#00504D',  // Principal
+    700: '#00504D',
     800: '#003735',
     900: '#00231F',
   },
@@ -40,7 +40,7 @@ export const fisioColors = {
     100: '#D6E3F5',
     200: '#ADC6FF',
     300: '#7DD3FC',
-    400: '#3A5F94',  // Principal
+    400: '#3A5F94',
     500: '#2A4F84',
     600: '#1A3F74',
     700: '#102F64',
@@ -101,7 +101,7 @@ export const fisioColors = {
 };
 
 // ============================================================================
-// CONFIGURACIÓN DE ANIMACIONES
+// CONFIGURACION DE ANIMACIONES
 // ============================================================================
 
 export const fisioAnimations = {
@@ -123,56 +123,10 @@ export const fisioAnimations = {
     elastic: [0.34, 1.56, 0.64, 1],
     bounce: [0.68, -0.55, 0.265, 1.55],
   },
-  
-  // Presets
-  presets: {
-    fadeIn: {
-      initial: { opacity: 0 },
-      animate: { opacity: 1 },
-      exit: { opacity: 0 },
-    },
-    slideUp: {
-      initial: { opacity: 0, y: 20 },
-      animate: { opacity: 1, y: 0 },
-      exit: { opacity: 0, y: -20 },
-    },
-    slideDown: {
-      initial: { opacity: 0, y: -20 },
-      animate: { opacity: 1, y: 0 },
-      exit: { opacity: 0, y: 20 },
-    },
-    scaleIn: {
-      initial: { opacity: 0, scale: 0.95 },
-      animate: { opacity: 1, scale: 1 },
-      exit: { opacity: 0, scale: 0.95 },
-    },
-    breathe: {
-      animate: {
-        scale: [1, 1.02, 1],
-        transition: { duration: 4, ease: 'easeInOut', repeat: Infinity },
-      },
-    },
-    shimmer: {
-      animate: {
-        backgroundPosition: ['-200% 0', '200% 0'],
-        transition: { duration: 1.5, repeat: Infinity },
-      },
-    },
-    glow: {
-      animate: {
-        boxShadow: [
-          '0 0 20px rgba(0, 80, 77, 0.15)',
-          '0 0 30px rgba(0, 80, 77, 0.3)',
-          '0 0 20px rgba(0, 80, 77, 0.15)',
-        ],
-        transition: { duration: 2, repeat: Infinity },
-      },
-    },
-  },
 };
 
 // ============================================================================
-// CONFIGURACIÓN DE ESTILOS GLOBALES
+// CONFIGURACION DE ESTILOS GLOBALES
 // ============================================================================
 
 export const fisioStyles = {
@@ -202,7 +156,7 @@ export const fisioStyles = {
     label: 'font-label font-medium',
   },
   
-  // Border radius (using string keys to avoid TS issues with numeric prefixes)
+  // Border radius - USING STRING KEYS TO AVOID TS ISSUES
   radius: {
     sm: '0.25rem',
     md: '0.5rem',
@@ -215,48 +169,6 @@ export const fisioStyles = {
 };
 
 // ============================================================================
-// CONFIGURACIÓN DE COMPONENTES EXTERNOS
-// ============================================================================
-
-/**
- * Configuración para librerías externas
- * Asegura que los componentes de Magic UI, Aceternity, etc.
- * usen la paleta de FisioMirror
- */
-export const externalLibConfig = {
-  // Magic UI
-  magicUI: {
-    colors: {
-      primary: fisioColors.primary[700],
-      secondary: fisioColors.secondary[400],
-      accent: fisioColors.kinetic.DEFAULT,
-    },
-  },
-  
-  // Aceternity UI
-  aceternity: {
-    colors: {
-      primary: fisioColors.primary[700],
-      secondary: fisioColors.secondary[400],
-      accent: fisioColors.kinetic.DEFAULT,
-    },
-  },
-  
-  // HeroUI
-  heroUI: {
-    theme: {
-      colors: {
-        primary: fisioColors.primary[700],
-        secondary: fisioColors.secondary[400],
-        success: fisioColors.success,
-        warning: fisioColors.warning,
-        danger: fisioColors.error,
-      },
-    },
-  },
-};
-
-// ============================================================================
 // EXPORT DEFAULT
 // ============================================================================
 
@@ -264,5 +176,4 @@ export default {
   colors: fisioColors,
   animations: fisioAnimations,
   styles: fisioStyles,
-  externalLib: externalLibConfig,
 };
