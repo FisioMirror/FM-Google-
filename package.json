@@ -24,6 +24,7 @@
     "i18next": "^26.4.0",
     "jspdf": "^4.2.1",
     "lucide-react": "^0.344.0",
+    "magicui-cli": "^0.1.6",
     "nodemailer": "^9.0.6",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
