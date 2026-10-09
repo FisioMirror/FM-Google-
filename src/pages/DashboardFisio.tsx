@@ -19,10 +19,16 @@ import { AuroraText } from '../components/ui/AuroraText';
 import { BorderBeam } from '../components/ui/BorderBeam';
 import { ConfettiStars } from '../components/ui/ConfettiButton';
 import { UNIFIED_DEMO_PATIENTS } from '../data/unifiedDemoData';
-import { ArrowRight, ChevronRight } from 'lucide-react';
+import { ArrowRight, ChevronRight, Sparkles, LayoutGrid } from 'lucide-react';
 import { isValidUUID } from '../lib/utils';
 import { isDemoAccount } from '../lib/demoAuth';
 import { staggerContainer, staggerItem, springTactile } from '../lib/motionVariants';
+import { Button } from '../components/ui/Button';
+import { Tooltip } from '../components/ui/Tooltip';
+import { DateRangePicker, RangeCalendar, type DateRange } from '../components/ui/DateRangePicker';
+import { ScrollShadow } from '../components/ui/ScrollShadow';
+import { toast } from '../components/ui/Toast';
+import { Skeleton } from '../components/ui/Skeleton';
 
 interface KpiData {
   activePatients: number;
@@ -191,6 +197,12 @@ export function DashboardFisio() {
   const [displayedPatients, setDisplayedPatients] = useState<any[]>([]);
   const [allPatientsForSearch, setAllPatientsForSearch] = useState<Array<{ id: string; name: string; condition?: string; email?: string }>>([]);
   const [allExercisesForSearch, setAllExercisesForSearch] = useState<Array<{ id: string; name: string; group?: string }>>([]);
+  const [dateRange, setDateRange] = useState<DateRange>(() => {
+    const end = new Date();
+    const start = new Date();
+    start.setDate(end.getDate() - 7);
+    return { start, end };
+  });
 
   useEffect(() => {
     loadKpis();
@@ -561,6 +573,15 @@ export function DashboardFisio() {
       onSelect: () => navigate('/ocr-scanner'),
     });
 
+    list.push({
+      id: 'quick-ui-showcase',
+      label: 'Galería de Componentes UI Core',
+      subtitle: 'Ver Button, Dialog, Card, Input, OtpInput y Tooltip en vivo',
+      category: 'Acciones',
+      icon: <Sparkles size={18} className="text-teal-500" />,
+      onSelect: () => navigate('/ui-showcase'),
+    });
+
     return list;
   }, [allPatientsForSearch, allExercisesForSearch, navigate]);
 
@@ -591,7 +612,33 @@ export function DashboardFisio() {
               {new Date().toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
             </p>
           </div>
-          <div className="ml-auto">
+          <div className="ml-auto flex items-center gap-2">
+            <div className="hidden md:block">
+              <DateRangePicker value={dateRange} onChange={setDateRange}>
+                <DateRangePicker.Trigger placeholder="Filtrar rango de sesiones..." />
+                <DateRangePicker.Popover>
+                  <RangeCalendar>
+                    <RangeCalendar.Header />
+                    <RangeCalendar.Grid>
+                      <RangeCalendar.GridHeader />
+                      <RangeCalendar.GridBody />
+                    </RangeCalendar.Grid>
+                  </RangeCalendar>
+                </DateRangePicker.Popover>
+              </DateRangePicker>
+            </div>
+            <Tooltip content="Ver la galería en vivo de los nuevos componentes de UI" side="bottom">
+              <Button
+                variant="glow"
+                glowEffect
+                size="sm"
+                onClick={() => navigate('/ui-showcase')}
+                icon={<Sparkles size={15} />}
+                className="hidden sm:inline-flex text-xs"
+              >
+                Componentes UI
+              </Button>
+            </Tooltip>
             <HelpGuideButton />
           </div>
         </div>
@@ -645,7 +692,11 @@ export function DashboardFisio() {
             
             <div className="relative z-10">
               <p className="text-[11px] sm:text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-0.5 sm:mb-1 line-clamp-1">{card.label}</p>
-              <h3 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 dark:text-slate-100 tabular-nums tracking-tight">{card.value}</h3>
+              {loadingKpis ? (
+                <Skeleton variant="text" width="60%" height={36} className="mt-1" />
+              ) : (
+                <h3 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 dark:text-slate-100 tabular-nums tracking-tight">{card.value}</h3>
+              )}
             </div>
           </motion.div>
         ))}
@@ -803,72 +854,80 @@ export function DashboardFisio() {
             </div>
           )}
 
-          <div className="space-y-3 relative">
-            {priorities.length === 0 ? (
-              <p className="text-sm text-on-surface-variant text-center py-8">No hay prioridades pendientes. Asigna pacientes para ver recomendaciones.</p>
-            ) : (
-              priorities.map((p, i) => {
-                const checked = checkedPriorities[i];
-                const priorityColor =
-                  p.priority === 'ALTA' ? 'text-cyan-600 bg-cyan-500/10 ring-cyan-500/20' :
-                  p.priority === 'MEDIA' ? 'text-teal-600 bg-teal-500/10 ring-teal-500/20' :
-                  'text-on-surface-variant bg-surface-variant/10 ring-outline-variant/20';
-                return (
-                  <motion.label
-                    key={i}
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: i * 0.06 }}
-                    whileHover={{ scale: 1.01 }}
-                    whileTap={{ scale: 0.99 }}
-                    className={`flex items-center gap-4 cursor-pointer p-4 rounded-2xl border transition-colors duration-300 ${
-                      checked
-                        ? 'bg-gradient-to-r from-cyan-500/10 to-teal-500/5 border-cyan-500/30'
-                        : 'bg-surface-container-low/40 border-outline-variant/20 hover:border-cyan-500/20'
-                    }`}
-                  >
-                    {/* Animated checkbox */}
-                    <div className="relative flex-shrink-0">
-                      <input
-                        type="checkbox"
-                        checked={checked}
-                        onChange={() => {
-                          const next = [...checkedPriorities];
-                          next[i] = !next[i];
-                          setCheckedPriorities(next);
-                        }}
-                        className="sr-only peer"
-                      />
-                      <div className={`w-7 h-7 rounded-xl border-2 flex items-center justify-center transition-all duration-300 ${
+          <ScrollShadow className="max-h-[340px] pr-1.5" size={32}>
+            <div className="space-y-3 relative py-1">
+              {priorities.length === 0 ? (
+                <p className="text-sm text-on-surface-variant text-center py-8">No hay prioridades pendientes. Asigna pacientes para ver recomendaciones.</p>
+              ) : (
+                priorities.map((p, i) => {
+                  const checked = checkedPriorities[i];
+                  const priorityColor =
+                    p.priority === 'ALTA' ? 'text-cyan-600 bg-cyan-500/10 ring-cyan-500/20' :
+                    p.priority === 'MEDIA' ? 'text-teal-600 bg-teal-500/10 ring-teal-500/20' :
+                    'text-on-surface-variant bg-surface-variant/10 ring-outline-variant/20';
+                  return (
+                    <motion.label
+                      key={i}
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: i * 0.06 }}
+                      whileHover={{ scale: 1.01 }}
+                      whileTap={{ scale: 0.99 }}
+                      className={`flex items-center gap-4 cursor-pointer p-4 rounded-2xl border transition-colors duration-300 ${
                         checked
-                          ? 'bg-gradient-to-br from-cyan-400 to-teal-500 border-transparent shadow-lg shadow-cyan-500/30'
-                          : 'border-outline-variant/40 bg-surface-container-low/60'
-                      }`}>
-                        <motion.div
-                          initial={false}
-                          animate={{ scale: checked ? 1 : 0, opacity: checked ? 1 : 0 }}
-                          transition={{ type: 'spring', stiffness: 500, damping: 25 }}
-                        >
-                          <Icon name="check" size={18} className="text-white" />
-                        </motion.div>
+                          ? 'bg-gradient-to-r from-cyan-500/10 to-teal-500/5 border-cyan-500/30'
+                          : 'bg-surface-container-low/40 border-outline-variant/20 hover:border-cyan-500/20'
+                      }`}
+                    >
+                      {/* Animated checkbox */}
+                      <div className="relative flex-shrink-0">
+                        <input
+                          type="checkbox"
+                          checked={checked}
+                          onChange={() => {
+                            const next = [...checkedPriorities];
+                            const willCheck = !next[i];
+                            next[i] = willCheck;
+                            setCheckedPriorities(next);
+                            if (willCheck) {
+                              toast.success(`Prioridad completada: "${p.text}"`, {
+                                description: 'Actualizando registro clínico del día.',
+                              });
+                            }
+                          }}
+                          className="sr-only peer"
+                        />
+                        <div className={`w-7 h-7 rounded-xl border-2 flex items-center justify-center transition-all duration-300 ${
+                          checked
+                            ? 'bg-gradient-to-br from-cyan-400 to-teal-500 border-transparent shadow-lg shadow-cyan-500/30'
+                            : 'border-outline-variant/40 bg-surface-container-low/60'
+                        }`}>
+                          <motion.div
+                            initial={false}
+                            animate={{ scale: checked ? 1 : 0, opacity: checked ? 1 : 0 }}
+                            transition={{ type: 'spring', stiffness: 500, damping: 25 }}
+                          >
+                            <Icon name="check" size={18} className="text-white" />
+                          </motion.div>
+                        </div>
                       </div>
-                    </div>
 
-                    <div className="flex-1 min-w-0">
-                      <p className={`text-sm font-medium transition-all duration-300 ${checked ? 'line-through text-on-surface-variant' : 'text-on-surface'}`}>
-                        {p.text}
-                      </p>
-                      <p className="text-xs text-outline mt-0.5">{p.subtitle}</p>
-                    </div>
+                      <div className="flex-1 min-w-0">
+                        <p className={`text-sm font-medium transition-all duration-300 ${checked ? 'line-through text-on-surface-variant' : 'text-on-surface'}`}>
+                          {p.text}
+                        </p>
+                        <p className="text-xs text-outline mt-0.5">{p.subtitle}</p>
+                      </div>
 
-                    <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full ring-1 ${priorityColor}`}>
-                      {p.priority}
-                    </span>
-                  </motion.label>
-                );
-              })
-            )}
-          </div>
+                      <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full ring-1 ${priorityColor}`}>
+                        {p.priority}
+                      </span>
+                    </motion.label>
+                  );
+                })
+              )}
+            </div>
+          </ScrollShadow>
         </GlassPanel>
       </div>
 

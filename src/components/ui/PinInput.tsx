@@ -133,7 +133,7 @@ export function PinInput({
           onPaste={handlePaste}
           onFocus={(e) => e.target.select()}
           className={cn(
-            'glass-input h-16 w-12 rounded-xl border border-white/40 bg-white/20 text-center font-sans text-3xl font-bold text-primary outline-none transition-all placeholder:text-on-surface/30 focus:border-primary/60 focus:bg-white/50 focus:shadow-[0_0_0_4px_rgba(0,80,77,0.12)] disabled:opacity-50',
+            'h-16 w-11 sm:w-14 rounded-2xl border border-outline/20 bg-surface/80 text-center font-mono text-2xl sm:text-3xl font-black text-teal-600 dark:text-teal-400 outline-none transition-all placeholder:text-outline/30 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/20 disabled:opacity-50 shadow-sm',
             boxClassName,
           )}
           placeholder="•"

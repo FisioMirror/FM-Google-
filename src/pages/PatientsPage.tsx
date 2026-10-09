@@ -9,6 +9,7 @@ import { cn } from '../lib/utils';
 import { UNIFIED_DEMO_PATIENTS } from '../data/unifiedDemoData';
 import { useToast } from '../components/ui/ToastProvider';
 import { EmailFeatureModal } from '../components/ui/EmailFeatureModal';
+import { SpotlightCard } from '../components/ui/SpotlightCard';
 import { isDemoAccount } from '../lib/demoAuth';
 import {
   Users,
@@ -27,6 +28,7 @@ import {
   Calendar,
   ArrowRight,
 } from 'lucide-react';
+import { DrawerClinicalDemo } from '../components/ui/Drawer';
 import { useRealtimePresence } from '../lib/presenceService';
 import { staggerContainer, staggerItem, springTactile } from '../lib/motionVariants';
 
@@ -374,6 +376,7 @@ export function PatientsPage() {
 
         {/* Primary Action Buttons */}
         <div className="flex flex-wrap items-center gap-3">
+          <DrawerClinicalDemo />
           <button
             onClick={createQuickToken}
             className="px-4 py-2.5 rounded-2xl bg-surface/80 dark:bg-surface-container-low/70 border border-outline/15 text-on-surface hover:border-teal-500/40 text-xs font-bold transition-all flex items-center gap-2 shadow-sm"
@@ -616,8 +619,9 @@ export function PatientsPage() {
                     whileHover={{ y: -4, scale: 1.015, transition: springTactile }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => navigate(`/paciente/${p.id}`)}
-                    className="ios-glass-heavy refraction-border p-6 rounded-3xl group cursor-pointer transition-all duration-300 relative flex flex-col justify-between shadow-sm hover:shadow-xl"
+                    className="h-full"
                   >
+                    <SpotlightCard className="p-6 rounded-3xl group cursor-pointer transition-all duration-300 relative flex flex-col justify-between h-full shadow-sm hover:shadow-xl">
                     <div>
                       {/* Top Header: Avatar/Badge + Name & ID + Status Tag */}
                       <div className="flex justify-between items-start mb-5">
@@ -724,6 +728,7 @@ export function PatientsPage() {
                       <span>Ver Expediente</span>
                       <ArrowRight className="size-4 transform group-hover:translate-x-1 transition-transform" />
                     </div>
+                    </SpotlightCard>
                   </motion.div>
                 );
               })}

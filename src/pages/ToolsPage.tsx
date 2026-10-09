@@ -12,6 +12,8 @@ import { LoadingText } from '../components/ui/LoadingText';
 import { SkeletonCard, SkeletonList } from '../components/ui/Skeleton';
 import { AnimatedTabs } from '../components/ui/AnimatedTabs';
 import { MedicalIcon } from '../components/ui/MedicalIcon';
+import { SpotlightCard } from '../components/ui/SpotlightCard';
+import { ClinicalSlider } from '../components/ui/ClinicalSlider';
 
 interface ChatMessage {
   role: 'user' | 'assistant';
@@ -517,9 +519,9 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
           </div>
           )}
 
-          {/* BMI Calculator */}
+          {/* BMI Calculator with SpotlightCard & ClinicalSliders */}
           {showTool('bmi') && (
-          <div className="md:col-span-2 lg:col-span-1 p-6 sm:p-8 rounded-3xl flex flex-col justify-between ios-glass-heavy refraction-border relative overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 w-full">
+          <SpotlightCard className="md:col-span-2 lg:col-span-1 p-6 sm:p-8 rounded-3xl flex flex-col justify-between relative overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 w-full">
             <div>
               <div className="flex items-center gap-3 mb-6 relative">
                 <div className="size-12 rounded-2xl bg-teal-500/10 text-teal-700 dark:text-teal-300 flex items-center justify-center">
@@ -531,20 +533,26 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
                 </div>
               </div>
               <div className="space-y-6">
-                <div>
-                  <div className="flex justify-between items-baseline mb-2">
-                    <label className="text-xs font-bold text-on-surface uppercase tracking-wider">Estatura</label>
-                    <span className="text-lg font-extrabold text-teal-700 dark:text-teal-300 font-mono">{height} <span className="text-xs font-semibold text-outline">cm</span></span>
-                  </div>
-                  <input type="range" min={100} max={250} value={height} onChange={(e) => setHeight(parseInt(e.target.value))} className="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-full appearance-none cursor-pointer accent-teal-600" />
-                </div>
-                <div>
-                  <div className="flex justify-between items-baseline mb-2">
-                    <label className="text-xs font-bold text-on-surface uppercase tracking-wider">Peso</label>
-                    <span className="text-lg font-extrabold text-teal-700 dark:text-teal-300 font-mono">{weight} <span className="text-xs font-semibold text-outline">kg</span></span>
-                  </div>
-                  <input type="range" min={30} max={200} value={weight} onChange={(e) => setWeight(parseInt(e.target.value))} className="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-full appearance-none cursor-pointer accent-teal-600" />
-                </div>
+                <ClinicalSlider
+                  value={height}
+                  onChange={setHeight}
+                  min={100}
+                  max={250}
+                  step={1}
+                  label="Estatura"
+                  unit=" cm"
+                  ticks={[120, 150, 175, 200, 220]}
+                />
+                <ClinicalSlider
+                  value={weight}
+                  onChange={setWeight}
+                  min={30}
+                  max={200}
+                  step={1}
+                  label="Peso"
+                  unit=" kg"
+                  ticks={[40, 70, 100, 130, 160]}
+                />
               </div>
             </div>
 
@@ -566,7 +574,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
                 <div className="bg-red-400" style={{ width: '15%' }} />
               </div>
             </div>
-          </div>
+          </SpotlightCard>
           )}
 
           {/* Session Summary */}

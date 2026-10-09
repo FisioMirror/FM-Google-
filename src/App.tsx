@@ -71,6 +71,7 @@ const AIAssistantPage = lazyPage(() => import('./pages/AIAssistantPage'), 'AIAss
 const PatientExercisesPage = lazyPage(() => import('./pages/PatientExercisesPage'), 'PatientExercisesPage');
 const SettingsPage = lazyPage(() => import('./pages/SettingsPage'), 'SettingsPage');
 const CatalogPage = lazyPage(() => import('./pages/CatalogPage'), 'CatalogPage');
+const UIShowcasePage = lazyPage(() => import('./pages/UIShowcasePage'), 'UIShowcasePage');
 const NotFound = lazyPage(() => import('./pages/NotFound'), 'NotFound');
 
 function PageLoader() {
@@ -154,6 +155,7 @@ function AppRoutes() {
       <Route path="/registro-paciente" element={<RegistroPacientePage />} />
       <Route path="/update-password" element={<UpdatePasswordPage />} />
       <Route path="/reset-password" element={<ResetPassword />} />
+      <Route path="/ui-showcase" element={<Suspense fallback={<PageLoader />}><UIShowcasePage /></Suspense>} />
 
       {/* Fisioterapeuta routes */}
       <Route path="/dashboard-fisio" element={<ProtectedRoute role="fisioterapeuta"><FisioLayout><Suspense fallback={<PageLoader />}><DashboardFisio /></Suspense></FisioLayout></ProtectedRoute>} />

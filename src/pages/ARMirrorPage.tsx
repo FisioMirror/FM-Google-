@@ -13,6 +13,8 @@ import { notifySessionCompleted, createNotification } from '../lib/notificationS
 import { updatePresenceStatus } from '../lib/presenceService';
 import { isSpiritualModeEnabled, getVersiculoContextual, type Versiculo } from '../lib/versiculosService';
 import { BookOpen } from 'lucide-react';
+import { Popover } from '../components/ui/Popover';
+import { Modal } from '../components/ui/Modal';
 
 // Rep completion particle burst
 function repParticleBurst() {
@@ -662,11 +664,47 @@ export function ARMirrorPage() {
                   transition={{ duration: 0.3 }}
                 />
               </svg>
-              <div className="relative z-10 text-center">
-                <p className="text-white/60 text-xs uppercase tracking-wider">Ángulo</p>
-                <span className="text-white text-3xl md:text-5xl font-black">{currentAngle}°</span>
-                <div className="w-12 h-px bg-white/20 my-2 mx-auto" />
-                <p className="text-white/60 text-xs">Postura: {qualityScore}%</p>
+              <div className="relative z-10 text-center pointer-events-auto">
+                <Popover>
+                  <Popover.Trigger>
+                    <div className="group cursor-pointer select-none">
+                      <p className="text-white/60 text-xs uppercase tracking-wider flex items-center justify-center gap-1 group-hover:text-teal-300 transition-colors">
+                        <span>Ángulo</span>
+                        <span className="text-[10px] text-teal-300 opacity-70 group-hover:opacity-100">ⓘ</span>
+                      </p>
+                      <span className="text-white text-3xl md:text-5xl font-black group-hover:scale-105 transition-transform inline-block">
+                        {currentAngle}°
+                      </span>
+                      <div className="w-12 h-px bg-white/20 my-2 mx-auto" />
+                      <p className="text-white/60 text-xs">Postura: {qualityScore}%</p>
+                    </div>
+                  </Popover.Trigger>
+                  <Popover.Content className="w-68">
+                    <Popover.Dialog className="bg-slate-900/95 border-teal-500/40 text-white shadow-2xl">
+                      <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/15">
+                        <Popover.Heading className="text-white text-xs">Detalle Biomecánico</Popover.Heading>
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full border text-emerald-300 bg-emerald-500/20 border-emerald-500/30">
+                          {qualityScore >= 70 ? 'Óptimo' : 'Corregir'}
+                        </span>
+                      </div>
+                      <div className="space-y-1.5 text-xs">
+                        <div className="flex justify-between items-center text-slate-300">
+                          <span>Ángulo en vivo:</span>
+                          <span className="font-bold text-white">{currentAngle}°</span>
+                        </div>
+                        <div className="flex justify-between items-center text-slate-300">
+                          <span>Rango fisiológico:</span>
+                          <span className="font-semibold text-teal-300">85° - 90°</span>
+                        </div>
+                        <p className="text-[11px] text-slate-300 bg-white/5 p-2 rounded-lg border border-white/10 leading-relaxed mt-2">
+                          {compensation
+                            ? `Compensación detectada: ${compensation}. Realiza el movimiento en el plano frontal sin rotación excesiva.`
+                            : 'Postura correcta según el semáforo biomecánico de MediaPipe. Alineación articular simétrica.'}
+                        </p>
+                      </div>
+                    </Popover.Dialog>
+                  </Popover.Content>
+                </Popover>
               </div>
               <Icon name="verified" filled size={20} className="text-[#8ad3cf] absolute top-4 right-4 animate-breathe-icon" style={{ filter: 'drop-shadow(0 0 15px rgba(138,211,207,0.8))' }} />
             </div>
@@ -729,50 +767,66 @@ export function ARMirrorPage() {
         </div>
       </div>
 
-      {/* Settings modal */}
-      <AnimatePresence>
-        {showSettings && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setShowSettings(false)}
-            className="absolute inset-0 z-[60] flex items-center justify-center bg-black/60 backdrop-blur-md"
-          >
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              onClick={(e) => e.stopPropagation()}
-              className="glass-modal glass-panel rounded-3xl p-6 max-w-xs w-full mx-4"
-              style={{ background: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(32px)', border: '1px solid rgba(255,255,255,0.2)' }}
-            >
-              <h3 className="text-white text-xl font-bold mb-4">Configuración</h3>
-              <div className="space-y-3">
-                <button onClick={() => { setVolumeLevel(volumeLevel === 'muted' ? 'high' : 'muted'); }} className="w-full flex items-center justify-between p-3 rounded-xl bg-white/10 text-white">
-                  <span>Audio</span>
-                  <Icon name={volumeLevel !== 'muted' ? 'toggle_on' : 'toggle_off'} size={28} className={volumeLevel !== 'muted' ? 'text-green-400' : 'text-white/40'} />
+      {/* Settings modal accesible con HeroUI Modal */}
+      <Modal open={showSettings} onOpenChange={setShowSettings}>
+        <Modal.Backdrop>
+          <Modal.Container>
+            <Modal.Dialog className="sm:max-w-[360px] bg-slate-900/95 border border-white/20 text-white shadow-2xl backdrop-blur-2xl">
+              <Modal.CloseTrigger />
+              <Modal.Header>
+                <Modal.Icon className="bg-teal-500/20 text-teal-300">
+                  <Icon name="settings" size={20} />
+                </Modal.Icon>
+                <Modal.Heading className="text-white">Configuración del Espejo</Modal.Heading>
+              </Modal.Header>
+              <Modal.Body className="space-y-3">
+                <button
+                  type="button"
+                  onClick={() => { setVolumeLevel(volumeLevel === 'muted' ? 'high' : 'muted'); }}
+                  className="w-full flex items-center justify-between p-3 rounded-xl bg-white/10 hover:bg-white/15 text-white transition-colors"
+                >
+                  <span className="text-sm font-semibold">Audio de Guía</span>
+                  <Icon name={volumeLevel !== 'muted' ? 'toggle_on' : 'toggle_off'} size={28} className={volumeLevel !== 'muted' ? 'text-teal-300' : 'text-white/40'} />
                 </button>
-                <button onClick={toggleFacingMode} className="w-full flex items-center justify-between p-3 rounded-xl bg-white/10 text-white hover:bg-white/20 transition-colors">
-                  <span>Cámara ({facingMode === 'user' ? 'Frontal' : 'Trasera'})</span>
+                <button
+                  type="button"
+                  onClick={toggleFacingMode}
+                  className="w-full flex items-center justify-between p-3 rounded-xl bg-white/10 hover:bg-white/15 text-white transition-colors"
+                >
+                  <span className="text-sm font-semibold">Cámara ({facingMode === 'user' ? 'Frontal' : 'Trasera'})</span>
                   <Icon name="flip_camera_ios" size={20} className="text-[#8ad3cf]" />
                 </button>
-                <button onClick={() => setIsMirrored((prev) => !prev)} className="w-full flex items-center justify-between p-3 rounded-xl bg-white/10 text-white hover:bg-white/20 transition-colors">
-                  <span>Modo Espejo</span>
-                  <Icon name={isMirrored ? 'toggle_on' : 'toggle_off'} size={28} className={isMirrored ? 'text-green-400' : 'text-white/40'} />
+                <button
+                  type="button"
+                  onClick={() => setIsMirrored((prev) => !prev)}
+                  className="w-full flex items-center justify-between p-3 rounded-xl bg-white/10 hover:bg-white/15 text-white transition-colors"
+                >
+                  <span className="text-sm font-semibold">Modo Espejo Invertido</span>
+                  <Icon name={isMirrored ? 'toggle_on' : 'toggle_off'} size={28} className={isMirrored ? 'text-teal-300' : 'text-white/40'} />
                 </button>
-                <button onClick={() => { handleRestart(); setShowSettings(false); }} className="w-full flex items-center justify-between p-3 rounded-xl bg-white/10 text-white hover:bg-white/20 transition-colors">
-                  <span>Reiniciar sesión</span>
-                  <Icon name="refresh" size={20} />
+                <button
+                  type="button"
+                  onClick={() => { handleRestart(); setShowSettings(false); }}
+                  className="w-full flex items-center justify-between p-3 rounded-xl bg-white/10 hover:bg-white/15 text-white transition-colors"
+                >
+                  <span className="text-sm font-semibold">Reiniciar sesión actual</span>
+                  <Icon name="refresh" size={20} className="text-teal-300" />
                 </button>
-              </div>
-              <button onClick={() => setShowSettings(false)} className="w-full mt-4 py-3 bg-white/10 text-white rounded-xl font-bold hover:bg-white/20 transition-colors">
-                Cerrar
-              </button>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+              </Modal.Body>
+              <Modal.Footer>
+                <button
+                  type="button"
+                  slot="close"
+                  onClick={() => setShowSettings(false)}
+                  className="w-full py-2.5 px-4 rounded-xl bg-teal-500/25 hover:bg-teal-500/35 text-teal-200 font-bold border border-teal-500/40 transition-colors"
+                >
+                  Listo
+                </button>
+              </Modal.Footer>
+            </Modal.Dialog>
+          </Modal.Container>
+        </Modal.Backdrop>
+      </Modal>
 
       {/* Pain report modal */}
       <AnimatePresence>

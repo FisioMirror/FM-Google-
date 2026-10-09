@@ -39,6 +39,7 @@ import { Spinner } from '../components/ui/Loader';
 import { SkeletonCard } from '../components/ui/Skeleton';
 import { celebrateAchievement } from '../lib/confetti';
 import { GlassModal } from '../components/ui/GlassModal';
+import { SpotlightCard } from '../components/ui/SpotlightCard';
 import { ExerciseImage } from '../components/ui/ExerciseImage';
 import { getExerciseImage } from '../data/exerciseImages';
 import { SkeletonDemo } from '../components/rehabilitation/SkeletonDemo';
@@ -829,11 +830,14 @@ export function ExercisesPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.03 }}
                 whileHover={{ y: -4, scale: 1.01 }}
-                className={cn(
-                  'group rounded-3xl p-5 ios-glass-heavy refraction-border transition-all duration-300 flex flex-col justify-between relative overflow-hidden shadow-sm hover:shadow-xl',
-                  ex.featured && 'ring-1 ring-teal-500/30'
-                )}
+                className="h-full"
               >
+                <SpotlightCard
+                  className={cn(
+                    'group rounded-3xl p-5 transition-all duration-300 flex flex-col justify-between relative overflow-hidden shadow-sm hover:shadow-xl h-full',
+                    ex.featured && 'ring-1 ring-teal-500/30'
+                  )}
+                >
                 {/* Protocol Badge */}
                 {ex.featured && (
                   <div className="absolute top-4 left-4 z-10 px-3 py-1 rounded-full bg-teal-600/90 backdrop-blur-md text-white text-[10px] font-bold uppercase tracking-wider flex items-center gap-1.5 shadow-md">
@@ -980,6 +984,7 @@ export function ExercisesPage() {
                     </div>
                   )}
                 </div>
+                </SpotlightCard>
               </motion.div>
             );
           })}

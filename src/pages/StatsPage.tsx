@@ -27,6 +27,8 @@ import { useToast } from '../components/ui/ToastProvider';
 import { AnimatedTabs } from '../components/ui/AnimatedTabs';
 import { KpiCardSkeleton } from '../components/ui/PremiumSkeleton';
 import { EmptyState } from '../components/ui/EmptyState';
+import { SpotlightCard } from '../components/ui/SpotlightCard';
+import { NumberTicker } from '../components/ui/NumberTicker';
 import { runAIJob } from '../lib/ai';
 import { formatAIReport } from '../lib/formatReport';
 import { UNIFIED_DEMO_PATIENTS, PRIMARY_DEMO_PATIENT } from '../data/unifiedDemoData';
@@ -633,32 +635,48 @@ export function StatsPage() {
         </>
       ) : (
         <>
-          {/* KPI cards */}
+          {/* KPI cards with SpotlightCard & NumberTicker */}
           <motion.div
             variants={staggerContainer}
             initial="hidden"
             animate="show"
             className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4"
           >
-            {kpiCards.map((card, i) => (
-              <motion.div
-                key={card.label}
-                variants={staggerItem}
-                whileHover={{ y: -4, scale: 1.02, transition: springTactile }}
-                whileTap={{ scale: 0.98 }}
-                className={`glass-panel vibrant-hover p-6 rounded-2xl relative overflow-hidden group card-glow-hover cursor-default transition-shadow ${i === 0 ? 'glass-teal' : i === 1 ? 'glass-blue' : i === 2 ? 'glass-warm' : ''}`}
-              >
-                <div className={`blob-${i === 0 ? 'teal' : i === 1 ? 'blue' : i === 2 ? 'warm' : 'teal'} absolute -top-8 -right-8 w-24 h-24 opacity-30 pointer-events-none`} />
-                <div className="flex justify-between items-start mb-4">
-                  <div className={`w-12 h-12 ${card.bg} rounded-xl flex items-center justify-center animate-breathe-icon`}>
-                    <Icon name={card.icon} size={24} className={card.color} />
-                  </div>
-                  <span className="text-xs font-bold text-primary">{card.trend}</span>
-                </div>
-                <p className="text-on-surface-variant text-sm font-semibold uppercase tracking-wider">{card.label}</p>
-                <h3 className="text-display-lg text-3xl lg:text-display-lg font-display-lg number-flow tabular-nums">{card.value}</h3>
-              </motion.div>
-            ))}
+            {kpiCards.map((card) => {
+              const numValue = typeof card.value === 'number' ? card.value : parseInt(String(card.value).replace(/[^0-9]/g, ''), 10);
+              const hasNumeric = !isNaN(numValue) && card.value !== '—';
+
+              return (
+                <motion.div
+                  key={card.label}
+                  variants={staggerItem}
+                  whileHover={{ y: -4, scale: 1.02, transition: springTactile }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  <SpotlightCard className="p-5 sm:p-6 rounded-2xl sm:rounded-3xl flex flex-col justify-between h-full group cursor-default">
+                    <div className="flex justify-between items-start mb-4">
+                      <div className={`size-11 sm:size-12 ${card.bg} rounded-2xl flex items-center justify-center font-bold`}>
+                        <Icon name={card.icon} size={22} className={card.color} />
+                      </div>
+                      <span className="text-[11px] sm:text-xs font-bold text-teal-600 dark:text-teal-400 bg-teal-500/10 px-2 py-0.5 rounded-full">{card.trend}</span>
+                    </div>
+                    <div>
+                      <p className="text-on-surface-variant text-xs font-semibold uppercase tracking-wider mb-1 line-clamp-1">{card.label}</p>
+                      <h3 className="text-2xl sm:text-3xl lg:text-4xl font-black text-on-surface tabular-nums tracking-tight">
+                        {hasNumeric ? (
+                          <NumberTicker
+                            value={numValue}
+                            suffix={String(card.value).includes('%') ? '%' : ''}
+                          />
+                        ) : (
+                          card.value
+                        )}
+                      </h3>
+                    </div>
+                  </SpotlightCard>
+                </motion.div>
+              );
+            })}
           </motion.div>
 
           {isFisio ? (

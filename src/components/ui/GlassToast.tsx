@@ -40,70 +40,56 @@ export function GlassToastProvider({ children }: { children: ReactNode }) {
     info: 'info',
   };
 
-  // Borde izquierdo de color por tipo (verde/rojo/ámbar/azul)
-  // + acento teal en modo oscuro como borde base.
-  const accentMap: Record<GlassToastType, string> = {
-    success: 'border-l-emerald-500 dark:border-l-emerald-400',
-    error: 'border-l-red-500 dark:border-l-red-400',
-    warning: 'border-l-amber-500 dark:border-l-amber-400',
-    info: 'border-l-blue-500 dark:border-l-blue-400',
-  };
-
-  const iconColorMap: Record<GlassToastType, string> = {
-    success: 'text-emerald-600 dark:text-emerald-400',
-    error: 'text-red-600 dark:text-red-400',
-    warning: 'text-amber-600 dark:text-amber-400',
-    info: 'text-blue-600 dark:text-blue-400',
-  };
-
   return (
     <GlassToastContext.Provider value={{ show }}>
       {children}
-      <div className="fixed top-4 left-1/2 -translate-x-1/2 z-[200] flex flex-col gap-2 items-center pointer-events-none w-[92%] max-w-md">
-        <AnimatePresence>
+      <div className="fixed bottom-5 right-5 sm:bottom-6 sm:right-6 z-[250] flex flex-col-reverse gap-2.5 items-end pointer-events-none w-full max-w-sm px-4 sm:px-0">
+        <AnimatePresence mode="popLayout">
           {toasts.map((toast) => (
             <motion.div
               key={toast.id}
-              initial={{ opacity: 0, y: -30, scale: 0.9 }}
+              layout
+              initial={{ opacity: 0, y: 20, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, x: 100, scale: 0.9 }}
-              transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+              exit={{ opacity: 0, y: 15, scale: 0.95 }}
+              transition={{ type: 'spring', stiffness: 350, damping: 25 }}
               drag="x"
               dragConstraints={{ left: 0, right: 0 }}
-              dragElastic={0.7}
+              dragElastic={0.6}
               onDragEnd={(_, info) => {
-                if (Math.abs(info.offset.x) > 100) dismiss(toast.id);
+                if (Math.abs(info.offset.x) > 80) dismiss(toast.id);
               }}
               className={cn(
-                'flex items-center gap-3 px-5 py-4 rounded-2xl backdrop-blur-2xl',
-                'shadow-xl min-w-[280px] max-w-[420px] pointer-events-auto',
-                // Modo claro: superficie crema/blanca con texto oscuro
-                'bg-white/95 border border-black/5',
-                // Modo oscuro: superficie slate-800, texto blanco, acento teal
-                'dark:bg-slate-800/95 dark:border-teal-500/25',
-                // Borde izquierdo de color según el tipo
-                'border-l-4',
-                accentMap[toast.type],
+                'flex items-center gap-3 p-3.5 sm:p-4 rounded-2xl backdrop-blur-2xl',
+                'shadow-2xl shadow-black/40 min-w-[280px] max-w-[380px] w-full pointer-events-auto',
+                'bg-slate-900/95 dark:bg-slate-950/95 text-white border border-white/10',
               )}
             >
-              <span
+              <div
                 className={cn(
-                  'material-symbols-outlined text-2xl shrink-0',
-                  iconColorMap[toast.type],
+                  'p-2 rounded-xl shrink-0 border flex items-center justify-center',
+                  toast.type === 'success' && 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30',
+                  toast.type === 'error' && 'bg-red-500/15 text-red-400 border-red-500/30',
+                  toast.type === 'warning' && 'bg-amber-500/15 text-amber-400 border-amber-500/30',
+                  toast.type === 'info' && 'bg-cyan-500/15 text-cyan-400 border-cyan-500/30',
                 )}
-                style={{ fontVariationSettings: "'FILL' 1" }}
               >
-                {iconMap[toast.type]}
-              </span>
-              <span className="text-sm font-semibold flex-1 leading-snug text-primary-800 dark:text-white">
+                <span
+                  className="material-symbols-outlined text-lg leading-none"
+                  style={{ fontVariationSettings: "'FILL' 1" }}
+                >
+                  {iconMap[toast.type]}
+                </span>
+              </div>
+              <span className="text-xs sm:text-sm font-semibold flex-1 leading-snug text-white">
                 {toast.message}
               </span>
               <button
                 onClick={() => dismiss(toast.id)}
-                className="shrink-0 text-primary-600/60 dark:text-white/60 hover:text-primary-800 dark:hover:text-white transition-colors"
-                aria-label="Cerrar"
+                className="size-6 rounded-lg shrink-0 flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 transition-colors"
+                aria-label="Cerrar notificación"
               >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <line x1="18" y1="6" x2="6" y2="18" />
                   <line x1="6" y1="6" x2="18" y2="18" />
                 </svg>

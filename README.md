@@ -484,3 +484,44 @@ Para desarrolladores o inteligencias artificiales (como Google Gemini) que anali
    npm run typecheck   # Validación estricta de tipos de TypeScript
    npm run build       # Verificación de bundling final con Vite
    ```
+
+---
+
+## 16. Sistema de Componentes UI Core y Servicios de Registro
+
+En esta actualización se integraron las bases modulares de UI del ecosistema Shadcn y librerías de vanguardia:
+
+1. **Componentes UI Core (`src/components/ui/`):**
+   - `Button.tsx`: Botón polimórfico con `cva`, microinteracciones Framer Motion, soporte para variantes (`glow`, `glass`, `gradient`, `kinetic`) y subcomponentes `IconButton` y `BackButton`.
+   - `Dialog.tsx`: Modal accesible con efecto de desenfoque de cristal (`glass-modal`), animaciones spring y componente listo para uso `ConfirmDialog`.
+   - `Card.tsx`: Contenedor versátil con variantes (`glass`, `gradient`, `kinetic`, `aurora`), subcomponentes `CardWithImage` y `StatCard`.
+   - `Input.tsx`: Campo de entrada de texto clínico con micro-zoom en foco y compatibilidad `glassEffect`.
+   - `OtpInput.tsx`: Entrada numérica segmentada con auto-enfoque, soporte para pegado de tokens de 6 dígitos y navegación por teclado.
+   - `Tooltip.tsx`: Indicador flotante contextual con flecha integrada, retardo configurable y renderizado condicional con `AnimatePresence`.
+   - `Spinner.tsx`: Indicador de carga animado de alta resolución para estados asíncronos.
+
+2. **Registros y CLI Integrados:**
+   - `components.json`: Configurado con esquemas de Shadcn UI y registros para `@aceternity` y `@magicui`.
+   - `mcp.json`: Servidor MCP para 21st integrado con credenciales de autenticación.
+   - Paquetes instalados: `class-variance-authority`, `@heroui/react`, `daisyui` (dev) y CLI de `@21st-dev/cli`.
+   - Tokens de diseño: Sincronizados en `tailwind.config.ts` (sombras kinetic, tokens semánticos Shadcn) e `index.css` (clase `.glass-modal`).
+
+3. **Implementación en Vistas y Puntos de Visualización:**
+   - **Galería Interactiva Central (`/ui-showcase`):** Vista dedicada que expone todas las variantes de los 5 componentes (`Button`, `Dialog`, `Card`, `Input`, `OtpInput`, `Tooltip`), probando estados en vivo, tamaños, temas y animaciones Framer Motion.
+   - **Acceso Directo desde Login (`/login`):** Botón `Galería UI` incorporado en el panel de accesos rápidos de prueba.
+   - **Registro de Pacientes (`/registro-paciente`):** `OtpInput` para entrada táctil de 6 casillas con auto-validación y `Button` con variante `glow` y animación de pulso.
+   - **Gestión de Tokens (`/tokens`):** `Button` con variante `glow` para generación rápida, `Tooltip` contextual en cada acción y `ConfirmDialog` con efecto cristal para eliminación segura.
+   - **Panel del Fisioterapeuta (`/dashboard-fisio`):** Acceso directo en el encabezado con `Button variant="glow"` e indexación en la Command Palette (`⌘K`).
+
+4. **Inventario & Mapeo Evolved en la Galería UI (`/ui-showcase`):**
+   - **Matriz Comparativa:** Tabla interactiva que contrasta los componentes originales de FisioMirror contra sus equivalentes modernos de Magic UI, Aceternity UI, 21st.dev y HeroUI.
+   - **Componentes Evolved Destacados:**
+     * `CardSpotlight` (Aceternity UI): Haz de luz radial matemático que sigue las coordenadas exactas del mouse mediante `useMotionTemplate` sin forzar re-renders.
+     * `BorderBeam` (Magic UI): Haz lumínico orbital en bucle cerrado a lo largo del perímetro de la tarjeta.
+     * `ShimmerButton` (Magic UI): Botón interactivo con borde brillante de 360° y animación de resorte.
+     * `NumberTicker` (Magic UI): Cifras y porcentajes animados con dinámicas de muelle en viewport.
+     * `ClinicalSlider` (HeroUI / Origin UI): Control háptico con medidor de grados de flexión articular (ROM) y marcas predefinidas.
+     * `AuroraText` & `ShimmerText` (Magic UI): Textos con fluidos de gradiente continuo acelerados por GPU.
+
+
+

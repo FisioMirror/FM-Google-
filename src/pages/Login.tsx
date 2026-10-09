@@ -1674,9 +1674,9 @@ export function Login() {
         {/* Demo Fast Access Buttons */}
         <div className="w-full max-w-[480px] flex flex-col items-center gap-y-2 mt-5">
           <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">
-            Acceso Rápido de Prueba
+            Acceso Rápido de Prueba & Galería
           </span>
-          <div className="flex gap-2.5">
+          <div className="flex flex-wrap justify-center gap-2.5">
             <button
               onClick={fillFisioDemo}
               className="px-4 py-2 rounded-full border border-slate-200/80 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 backdrop-blur-md hover:bg-white dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-[#00504d] dark:hover:text-[#8ad3cf] text-xs font-bold shadow-sm transition-all flex items-center gap-1.5 active:scale-95"
@@ -1690,6 +1690,13 @@ export function Login() {
             >
               <Icon name="person" size={15} className="text-blue-600 dark:text-blue-400" />
               Demo Paciente
+            </button>
+            <button
+              onClick={() => navigate('/ui-showcase')}
+              className="px-4 py-2 rounded-full border border-teal-500/30 bg-teal-500/10 hover:bg-teal-500/20 text-teal-700 dark:text-teal-300 text-xs font-bold shadow-sm transition-all flex items-center gap-1.5 active:scale-95"
+            >
+              <Icon name="palette" size={15} className="text-teal-600 dark:text-teal-400" />
+              Galería UI
             </button>
           </div>
         </div>

@@ -194,7 +194,7 @@ export function CommandPalette({
           {isSearchingDb && (
             <div className="w-3.5 h-3.5 border-2 border-teal-500 border-t-transparent rounded-full animate-spin" />
           )}
-          {query && (
+          {query ? (
             <button
               type="button"
               onClick={() => {
@@ -205,6 +205,10 @@ export function CommandPalette({
             >
               ✕
             </button>
+          ) : (
+            <kbd className="hidden sm:inline-flex items-center gap-0.5 px-2 py-0.5 text-[10px] font-semibold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-md shadow-xs">
+              ⌘K
+            </kbd>
           )}
         </div>
       </div>

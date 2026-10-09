@@ -57,9 +57,9 @@ export function TokenInput({ length = 6, onComplete, onChange, className }: Toke
           onKeyDown={(e) => handleKeyDown(i, e)}
           onPaste={i === 0 ? handlePaste : undefined}
           className={cn(
-            'glass-input w-11 h-14 sm:w-12 sm:h-16 rounded-xl text-center font-display-lg text-display-lg text-primary',
-            'focus:outline-none bg-white/20 border border-white/40',
-            'focus:bg-white/50 focus:border-primary/50 focus:shadow-[0_0_0_4px_rgba(0,80,77,0.1)]',
+            'w-11 h-14 sm:w-13 sm:h-16 rounded-2xl text-center font-mono text-2xl sm:text-3xl font-black text-teal-600 dark:text-teal-400',
+            'focus:outline-none bg-surface/80 border border-outline/20',
+            'focus:bg-surface focus:border-teal-500 focus:ring-4 focus:ring-teal-500/20 shadow-sm',
             'transition-all uppercase',
           )}
         />

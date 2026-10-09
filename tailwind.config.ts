@@ -169,6 +169,32 @@ export default {
           500: 'var(--c-primary-500)',
           600: 'var(--c-primary-600)',
         },
+        'primary-foreground': 'var(--c-on-primary)',
+        'secondary-foreground': 'var(--c-on-secondary)',
+        destructive: {
+          DEFAULT: 'var(--c-error)',
+          foreground: 'var(--c-on-error)',
+        },
+        'destructive-foreground': 'var(--c-on-error)',
+        muted: {
+          DEFAULT: 'var(--c-surface-container-high)',
+          foreground: 'var(--c-on-surface-variant)',
+        },
+        'muted-foreground': 'var(--c-on-surface-variant)',
+        'accent-foreground': 'var(--c-on-surface)',
+        popover: {
+          DEFAULT: 'var(--c-surface)',
+          foreground: 'var(--c-on-surface)',
+        },
+        'popover-foreground': 'var(--c-on-surface)',
+        card: {
+          DEFAULT: 'var(--c-surface)',
+          foreground: 'var(--c-on-surface)',
+        },
+        'card-foreground': 'var(--c-on-surface)',
+        border: 'var(--c-outline-variant)',
+        input: 'var(--c-outline-variant)',
+        ring: 'var(--c-primary)',
       },
 
       fontFamily: {
@@ -236,6 +262,7 @@ export default {
         'glow-brand': '0 0 20px rgba(0, 80, 77, 0.15)',
         'glow-primary': '0 0 12px rgba(21, 105, 102, 0.3)',
         'glow-lime': '0 0 20px rgba(193, 255, 114, 0.3)',
+        'kinetic': '0 0 20px rgba(193, 255, 114, 0.45)',
         'glow-blue': '0 0 20px rgba(58, 95, 148, 0.25)',
         'glow-terracotta': '0 0 20px rgba(226, 114, 91, 0.25)',
         'command-glow': '0 0 0 4px rgba(0, 80, 77, 0.05), 0 20px 40px rgba(0, 0, 0, 0.1)',

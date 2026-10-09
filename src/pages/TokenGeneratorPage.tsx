@@ -9,6 +9,9 @@ import { useToast } from '../components/ui/ToastProvider';
 import { cn } from '../lib/utils';
 import { EmailFeatureModal } from '../components/ui/EmailFeatureModal';
 import { isDemoAccount } from '../lib/demoAuth';
+import { Button } from '../components/ui/Button';
+import { ConfirmDialog } from '../components/ui/Dialog';
+import { Tooltip } from '../components/ui/Tooltip';
 
 interface TokenRow {
   id: string;
@@ -35,6 +38,8 @@ export function TokenGeneratorPage() {
   const [loading, setLoading] = useState(true);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [emailModalToken, setEmailModalToken] = useState<TokenRow | null>(null);
+  const [deleteConfirmToken, setDeleteConfirmToken] = useState<TokenRow | null>(null);
+  const [generating, setGenerating] = useState(false);
 
   useEffect(() => {
     loadTokens();
@@ -99,6 +104,7 @@ export function TokenGeneratorPage() {
   };
 
   const createQuickToken = async () => {
+    setGenerating(true);
     const randomSixDigits = String(Math.floor(100000 + Math.random() * 900000));
     try {
       if (user?.id) {
@@ -114,6 +120,8 @@ export function TokenGeneratorPage() {
       }
     } catch {
       // fallback
+    } finally {
+      setGenerating(false);
     }
     const newDemoToken: TokenRow = {
       id: `tok-${Date.now()}`,
@@ -124,6 +132,7 @@ export function TokenGeneratorPage() {
     };
     setTokens(prev => [newDemoToken, ...prev]);
     toast.success(`Token ${randomSixDigits} generado con éxito`);
+    setGenerating(false);
   };
 
   const [waveKey] = useState(0);
@@ -184,13 +193,16 @@ export function TokenGeneratorPage() {
           <p className="text-on-surface-variant text-xs sm:text-sm font-medium mt-1">Genera y administra códigos seguros de vinculación para tus pacientes.</p>
         </div>
         <div className="relative z-10 shrink-0">
-          <button
+          <Button
             onClick={createQuickToken}
-            className="premium-btn bg-teal-600 hover:bg-teal-500 text-white font-bold px-5 py-3 rounded-2xl flex items-center gap-2 shadow-lg shadow-teal-600/20 active:scale-95 transition-all text-xs sm:text-sm"
+            variant="glow"
+            glowEffect
+            loading={generating}
+            size="default"
+            icon={<Icon name="add" size={18} />}
           >
-            <Icon name="add" size={18} />
-            <span>Generar Nuevo Token</span>
-          </button>
+            Generar Nuevo Token
+          </Button>
         </div>
       </div>
 
@@ -283,26 +295,32 @@ export function TokenGeneratorPage() {
                 </div>
 
                 <div className="flex gap-2 mt-4 pt-4 border-t border-outline/10">
-                  <button
-                    onClick={() => regenerateToken(t.id)}
-                    className="flex-1 py-2.5 rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface font-bold text-xs transition-all flex items-center justify-center gap-1.5"
-                  >
-                    <Icon name="refresh" size={14} /> Regenerar
-                  </button>
-                  <button
-                    onClick={() => setEmailModalToken(t)}
-                    className="flex-1 py-2.5 rounded-xl bg-teal-500/10 hover:bg-teal-500/20 text-teal-700 dark:text-teal-300 font-bold text-xs transition-all flex items-center justify-center gap-1.5"
-                  >
-                    <Icon name="mail" size={14} /> Enviar
-                  </button>
-                  <button
-                    onClick={() => deleteToken(t.id)}
-                    aria-label="Eliminar token"
-                    className="py-2.5 px-3 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 transition-all flex items-center justify-center"
-                    title="Eliminar token"
-                  >
-                    <Icon name="delete" size={14} />
-                  </button>
+                  <Tooltip content="Generar un nuevo código aleatorio" side="top">
+                    <button
+                      onClick={() => regenerateToken(t.id)}
+                      className="flex-1 py-2.5 px-3 rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface font-bold text-xs transition-all flex items-center justify-center gap-1.5"
+                    >
+                      <Icon name="refresh" size={14} /> Regenerar
+                    </button>
+                  </Tooltip>
+                  <Tooltip content="Enviar token por correo electrónico" side="top">
+                    <button
+                      onClick={() => setEmailModalToken(t)}
+                      className="flex-1 py-2.5 px-3 rounded-xl bg-teal-500/10 hover:bg-teal-500/20 text-teal-700 dark:text-teal-300 font-bold text-xs transition-all flex items-center justify-center gap-1.5"
+                    >
+                      <Icon name="mail" size={14} /> Enviar
+                    </button>
+                  </Tooltip>
+                  <Tooltip content="Eliminar token permanentemente" side="top">
+                    <button
+                      onClick={() => setDeleteConfirmToken(t)}
+                      aria-label="Eliminar token"
+                      className="py-2.5 px-3 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 transition-all flex items-center justify-center"
+                      title="Eliminar token"
+                    >
+                      <Icon name="delete" size={14} />
+                    </button>
+                  </Tooltip>
                 </div>
               </GlassPanel>
             </motion.div>
@@ -315,6 +333,23 @@ export function TokenGeneratorPage() {
         onClose={() => setEmailModalToken(null)}
         recipientName={emailModalToken?.patientName}
         token={emailModalToken?.token}
+      />
+
+      {/* Glass Confirm Dialog */}
+      <ConfirmDialog
+        open={deleteConfirmToken !== null}
+        onOpenChange={(open) => !open && setDeleteConfirmToken(null)}
+        title="¿Eliminar código de activación?"
+        description={`¿Estás seguro de que deseas eliminar el token ${deleteConfirmToken?.token}? Esta acción es irreversible.`}
+        confirmText="Sí, eliminar"
+        cancelText="Conservar"
+        confirmVariant="destructive"
+        onConfirm={() => {
+          if (deleteConfirmToken) {
+            deleteToken(deleteConfirmToken.id);
+            setDeleteConfirmToken(null);
+          }
+        }}
       />
     </div>
   );

@@ -15,6 +15,8 @@ import { CollapsibleSection } from '../components/ui/CollapsibleSection';
 import { PRIMARY_DEMO_PATIENT } from '../data/unifiedDemoData';
 import { isValidUUID } from '../lib/utils';
 import { BorderBeam } from '../components/ui/BorderBeam';
+import { CardSpotlight } from '../components/ui/CardSpotlight';
+import { ShimmerButton } from '../components/ui/ShimmerButton';
 import { MascotAnimation } from '../components/ui/MascotAnimation';
 import { AuroraText } from '../components/ui/AuroraText';
 import { HelpGuideButton } from '../components/ui/HelpGuideButton';
@@ -326,58 +328,73 @@ export function PatientDashboard() {
         <motion.div
           variants={staggerItem}
           whileHover={{ y: -3, scale: 1.015, transition: springTactile }}
-          className="ios-glass-heavy refraction-border p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl flex flex-col justify-between cursor-default shadow-sm hover:shadow-md transition-all"
+          className="h-full"
         >
-          <div className="flex items-start justify-between mb-2">
-            <div className="size-9 sm:size-11 rounded-xl sm:rounded-2xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
-              <Flame className="size-4 sm:size-5" />
+          <CardSpotlight
+            color="rgba(245, 158, 11, 0.16)"
+            className="ios-glass-heavy refraction-border p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl flex flex-col justify-between cursor-default shadow-sm hover:shadow-md transition-all h-full"
+          >
+            <div className="flex items-start justify-between mb-2">
+              <div className="size-9 sm:size-11 rounded-xl sm:rounded-2xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
+                <Flame className="size-4 sm:size-5" />
+              </div>
+              <span className="text-[10px] sm:text-xs font-semibold text-on-surface-variant uppercase tracking-wider hidden xs:inline">Racha</span>
             </div>
-            <span className="text-[10px] sm:text-xs font-semibold text-on-surface-variant uppercase tracking-wider hidden xs:inline">Racha</span>
-          </div>
-          <div>
-            <p className="text-[10px] sm:text-xs font-semibold text-on-surface-variant uppercase tracking-wider line-clamp-1 xs:hidden">Racha</p>
-            <p className="text-xl sm:text-2xl lg:text-3xl font-black text-slate-900 dark:text-slate-100 tabular-nums tracking-tight">
-              {kpi.streak} <span className="text-[10px] sm:text-xs font-semibold text-outline">días</span>
-            </p>
-          </div>
+            <div>
+              <p className="text-[10px] sm:text-xs font-semibold text-on-surface-variant uppercase tracking-wider line-clamp-1 xs:hidden">Racha</p>
+              <p className="text-xl sm:text-2xl lg:text-3xl font-black text-slate-900 dark:text-slate-100 tabular-nums tracking-tight">
+                {kpi.streak} <span className="text-[10px] sm:text-xs font-semibold text-outline">días</span>
+              </p>
+            </div>
+          </CardSpotlight>
         </motion.div>
 
         <motion.div
           variants={staggerItem}
           whileHover={{ y: -3, scale: 1.015, transition: springTactile }}
-          className="ios-glass-heavy refraction-border p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl flex flex-col justify-between cursor-default shadow-sm hover:shadow-md transition-all"
+          className="h-full"
         >
-          <div className="flex items-start justify-between mb-2">
-            <div className="size-9 sm:size-11 rounded-xl sm:rounded-2xl bg-teal-500/10 text-teal-600 dark:text-teal-400 flex items-center justify-center shrink-0">
-              <CheckCircle2 className="size-4 sm:size-5" />
+          <CardSpotlight
+            color="rgba(20, 184, 166, 0.16)"
+            className="ios-glass-heavy refraction-border p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl flex flex-col justify-between cursor-default shadow-sm hover:shadow-md transition-all h-full"
+          >
+            <div className="flex items-start justify-between mb-2">
+              <div className="size-9 sm:size-11 rounded-xl sm:rounded-2xl bg-teal-500/10 text-teal-600 dark:text-teal-400 flex items-center justify-center shrink-0">
+                <CheckCircle2 className="size-4 sm:size-5" />
+              </div>
+              <span className="text-[10px] sm:text-xs font-semibold text-on-surface-variant uppercase tracking-wider hidden xs:inline">Sesiones</span>
             </div>
-            <span className="text-[10px] sm:text-xs font-semibold text-on-surface-variant uppercase tracking-wider hidden xs:inline">Sesiones</span>
-          </div>
-          <div>
-            <p className="text-[10px] sm:text-xs font-semibold text-on-surface-variant uppercase tracking-wider line-clamp-1 xs:hidden">Sesiones</p>
-            <p className="text-xl sm:text-2xl lg:text-3xl font-black text-teal-700 dark:text-teal-300 tabular-nums tracking-tight">
-              {kpi.totalSessions} <span className="text-[10px] sm:text-xs font-semibold text-outline">total</span>
-            </p>
-          </div>
+            <div>
+              <p className="text-[10px] sm:text-xs font-semibold text-on-surface-variant uppercase tracking-wider line-clamp-1 xs:hidden">Sesiones</p>
+              <p className="text-xl sm:text-2xl lg:text-3xl font-black text-teal-700 dark:text-teal-300 tabular-nums tracking-tight">
+                {kpi.totalSessions} <span className="text-[10px] sm:text-xs font-semibold text-outline">total</span>
+              </p>
+            </div>
+          </CardSpotlight>
         </motion.div>
 
         <motion.div
           variants={staggerItem}
           whileHover={{ y: -3, scale: 1.015, transition: springTactile }}
-          className="ios-glass-heavy refraction-border p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl flex flex-col justify-between cursor-default shadow-sm hover:shadow-md transition-all"
+          className="h-full"
         >
-          <div className="flex items-start justify-between mb-2">
-            <div className="size-9 sm:size-11 rounded-xl sm:rounded-2xl bg-teal-600/10 text-teal-700 dark:text-teal-300 flex items-center justify-center shrink-0">
-              <Clock className="size-4 sm:size-5" />
+          <CardSpotlight
+            color="rgba(14, 165, 233, 0.16)"
+            className="ios-glass-heavy refraction-border p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl flex flex-col justify-between cursor-default shadow-sm hover:shadow-md transition-all h-full"
+          >
+            <div className="flex items-start justify-between mb-2">
+              <div className="size-9 sm:size-11 rounded-xl sm:rounded-2xl bg-teal-600/10 text-teal-700 dark:text-teal-300 flex items-center justify-center shrink-0">
+                <Clock className="size-4 sm:size-5" />
+              </div>
+              <span className="text-[10px] sm:text-xs font-semibold text-on-surface-variant uppercase tracking-wider hidden xs:inline">Minutos</span>
             </div>
-            <span className="text-[10px] sm:text-xs font-semibold text-on-surface-variant uppercase tracking-wider hidden xs:inline">Minutos</span>
-          </div>
-          <div>
-            <p className="text-[10px] sm:text-xs font-semibold text-on-surface-variant uppercase tracking-wider line-clamp-1 xs:hidden">Minutos</p>
-            <p className="text-xl sm:text-2xl lg:text-3xl font-black text-slate-900 dark:text-slate-100 tabular-nums tracking-tight">
-              {kpi.weeklyMinutes} <span className="text-[10px] sm:text-xs font-semibold text-outline">min</span>
-            </p>
-          </div>
+            <div>
+              <p className="text-[10px] sm:text-xs font-semibold text-on-surface-variant uppercase tracking-wider line-clamp-1 xs:hidden">Minutos</p>
+              <p className="text-xl sm:text-2xl lg:text-3xl font-black text-slate-900 dark:text-slate-100 tabular-nums tracking-tight">
+                {kpi.weeklyMinutes} <span className="text-[10px] sm:text-xs font-semibold text-outline">min</span>
+              </p>
+            </div>
+          </CardSpotlight>
         </motion.div>
       </motion.div>
 
@@ -409,13 +426,15 @@ export function PatientDashboard() {
                 </p>
               </div>
 
-              <button
+              <ShimmerButton
                 onClick={() => navigate('/calibration')}
-                className="px-6 py-3.5 rounded-2xl bg-teal-600 hover:bg-teal-700 text-white font-bold text-sm transition-all flex items-center justify-center gap-2 shadow-lg shadow-teal-700/20 active:scale-95 shrink-0"
+                shimmerColor="#38bdf8"
+                background="rgba(13, 148, 136, 0.95)"
+                className="px-6 py-3.5 rounded-2xl text-white font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-teal-700/25 shrink-0"
               >
                 <Play className="size-4 fill-current" />
                 <span>Comenzar Sesión</span>
-              </button>
+              </ShimmerButton>
             </div>
           </div>
 
