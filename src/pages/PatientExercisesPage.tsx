@@ -23,6 +23,12 @@ import {
   Flame,
 } from 'lucide-react';
 import { VersiculoCard } from '../components/spiritual/VersiculoCard';
+import { AssignmentProgressCard } from '../components/ui/AssignmentProgressCard';
+import {
+  UnlockableExerciseLocker,
+  MobilityQuestCard,
+  CheerReactionButton,
+} from '../components/ui/GamificationSuite';
 
 interface AssignedExercise {
   id: string;
@@ -246,6 +252,36 @@ export function PatientExercisesPage() {
       {/* Tarjeta de inspiración y fortaleza para la sesión */}
       <VersiculoCard categoriaInicial="fortaleza" className="mb-2" />
 
+      {/* Resumen del Plan Terapéutico y Desafío Diario */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+        <div className="lg:col-span-2">
+          <AssignmentProgressCard
+            data={{
+              id: 1,
+              date: new Date().toLocaleDateString('es-ES', { month: 'short', day: 'numeric', year: 'numeric' }),
+              title: 'Plan Terapéutico de Cadena Cinética y Movilidad',
+              description: 'Rehabilitación activa con foco en control escapular, estabilidad y cadencia controlada.',
+              progressValue: `${Math.min(100, Math.max(30, exercises.length * 25))}%`,
+              countdownText: 'Revisión con tu fisioterapeuta en 3 días',
+              badge: 'Fase 2: Movilidad Activa',
+            }}
+            onAction={() => navigate('/stats')}
+          />
+        </div>
+        <div className="space-y-4">
+          <MobilityQuestCard
+            questTitle="Misión Diaria: 3 Series Cumplidas"
+            targetExercises={3}
+            completedExercises={exercises.length > 0 ? 1 : 0}
+            xpReward={150}
+          />
+          <div className="flex items-center justify-between p-4 rounded-3xl bg-surface/80 dark:bg-slate-900/60 border border-outline/10">
+            <span className="text-xs font-bold text-slate-700 dark:text-slate-200">¿Sesión completada?</span>
+            <CheerReactionButton />
+          </div>
+        </div>
+      </div>
+
       {loading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {Array.from({ length: 4 }).map((_, i) => (
@@ -340,6 +376,23 @@ export function PatientExercisesPage() {
           ))}
         </div>
       )}
+
+      {/* Próximos Ejercicios por Desbloquear según Progresión */}
+      <div className="mt-8 space-y-3">
+        <h3 className="font-bold text-sm text-slate-700 dark:text-slate-200 uppercase tracking-wider">
+          Nivel de Progresión Clínica Futura
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <UnlockableExerciseLocker
+            exerciseTitle="Rotación Externa con Carga Excéntrica (3kg)"
+            requirement="Requiere 80% adherencia + ROM ≥ 120°"
+          />
+          <UnlockableExerciseLocker
+            exerciseTitle="Elevación Escapular en Suspensión Dinámica"
+            requirement="Requiere dolor ≤ 1 EVA en 4 sesiones continuas"
+          />
+        </div>
+      </div>
 
       {/* Modal 1: Solo Descripción Clínica en Texto */}
       <GlassModal isOpen={!!descriptionExercise} onClose={() => setDescriptionExercise(null)} size="md">

@@ -16,6 +16,14 @@ import { useAuthStore } from '../stores/authStore';
 import { getUnifiedPatientById } from '../data/unifiedDemoData';
 import { isValidUUID } from '../lib/utils';
 import { PatientStatisticsView } from '../components/patient/PatientStatisticsView';
+import { JointDetailPopover } from '../components/ui/JointDetailPopover';
+import {
+  StrengthProgressionCard,
+  RehabPhaseStepCard,
+  PatientAdherenceHeatmapCard,
+  PostureStabilityCard,
+} from '../components/ui/ActivityCardsSuite';
+import { HoldDurationTimerRing } from '../components/ui/RealTimeMetricsSuite';
 
 interface SessionRow {
   id: string;
@@ -545,21 +553,32 @@ export function PatientDetailPage() {
                       <div className="absolute -top-8 left-1/2 -translate-x-1/2 text-[10px] font-bold bg-primary text-on-primary px-2 py-1 rounded-full shadow-lg whitespace-nowrap">ACT: {recoveryProgress}%</div>
                     )}
                   </div>
-                  <span className="text-[10px] text-on-surface-variant font-bold">{weekLabels[i]}</span>
+                  <span className="text-[10px] text-outline font-medium">S{i + 1}</span>
                 </div>
               ))}
+            </div>
+
+            <div className="flex items-center justify-between pt-4 border-t border-outline/10 mt-4">
+              <JointDetailPopover
+                triggerLabel="Inspección Detallada de Articulación"
+                metrics={{
+                  jointName: patient.extremidad_afectada || 'Articulación en Tratamiento',
+                  currentRom: Math.round(80 + recoveryProgress * 0.5),
+                  maxHistoricalRom: 140,
+                  angularVelocity: 42,
+                  asymmetryPercentage: Math.max(4, Math.round(20 - recoveryProgress * 0.15)),
+                  status: recoveryProgress > 70 ? 'normal' : 'warning',
+                }}
+              />
+              <span className="text-xs font-semibold text-outline">
+                Objetivo Prescrito: {patient.rom_objetivo || '135°'}
+              </span>
             </div>
           </GlassPanel>
 
           <div className="space-y-4">
-            <GlassPanel className="card-glow-hover p-6 rounded-3xl">
-              <div className="flex items-center gap-2 mb-2">
-                <MedicalIcon name="heart" size={20} className="text-primary" />
-                <span className="text-sm text-on-surface-variant font-semibold">Umbral de Dolor</span>
-              </div>
-              <p className="text-2xl font-bold text-on-surface">{lastSession ? 'N/A' : '—'}</p>
-              <p className="text-xs text-outline">Auto-reportado por el paciente</p>
-            </GlassPanel>
+            <RehabPhaseStepCard initialStep={recoveryProgress > 70 ? 2 : recoveryProgress > 30 ? 1 : 0} />
+            <StrengthProgressionCard currentMaxKg={18} baselineKg={8} targetKg={25} />
             <GlassPanel className="card-glow-hover p-6 rounded-3xl">
               <div className="flex items-center gap-2 mb-2">
                 <Icon name="check_circle" size={20} className="text-primary" />
@@ -570,6 +589,11 @@ export function PatientDetailPage() {
                 <p className="text-xs text-outline">{daysSinceLast !== null ? `Última: hace ${daysSinceLast} día(s)` : ''}</p>
               )}
             </GlassPanel>
+          </div>
+
+          <div className="lg:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <PatientAdherenceHeatmapCard />
+            <PostureStabilityCard balanceScore={Math.min(99, Math.max(70, Math.round(75 + recoveryProgress * 0.25)))} />
           </div>
 
           <GlassPanel className="card-glow-hover lg:col-span-3 p-8 rounded-[2rem] bg-primary-container border-primary/20">

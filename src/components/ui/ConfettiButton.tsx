@@ -150,3 +150,87 @@ export const ConfettiStars = forwardRef<HTMLButtonElement, ConfettiButtonProps>(
 
 ConfettiStars.displayName = 'ConfettiStars';
 
+/**
+ * Dispara confeti continuo desde ambos laterales (cañones laterales) durante una duración dada.
+ * Calibrado con la paleta de FisioMirror (teal, kinetic lime, cian y esmeralda).
+ */
+export function fireSideCannons(options?: {
+  durationMs?: number;
+  colors?: string[];
+}) {
+  const duration = options?.durationMs ?? 3000;
+  const colors = options?.colors ?? ['#006965', '#00504d', '#4cdad2', '#c1ff72', '#14b8a6', '#38bdf8'];
+  const end = Date.now() + duration;
+
+  const frame = () => {
+    if (Date.now() > end) return;
+
+    confetti({
+      particleCount: 3,
+      angle: 60,
+      spread: 55,
+      startVelocity: 60,
+      origin: { x: 0, y: 0.5 },
+      colors: colors,
+      zIndex: 9999,
+    });
+
+    confetti({
+      particleCount: 3,
+      angle: 120,
+      spread: 55,
+      startVelocity: 60,
+      origin: { x: 1, y: 0.5 },
+      colors: colors,
+      zIndex: 9999,
+    });
+
+    requestAnimationFrame(frame);
+  };
+
+  frame();
+}
+
+export interface ConfettiSideCannonsProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  durationMs?: number;
+  colors?: string[];
+  children?: ReactNode;
+}
+
+/**
+ * ConfettiSideCannons: Botón interactivo que lanza ráfagas de cañones laterales continuas.
+ * Ideal para celebrar metas de rehabilitación, altas de pacientes o completar retos semanales.
+ */
+export const ConfettiSideCannons = forwardRef<HTMLButtonElement, ConfettiSideCannonsProps>(
+  ({ children, className, durationMs = 2500, colors, onClick, ...buttonProps }, ref) => {
+    const handleClick = useCallback(
+      (event: React.MouseEvent<HTMLButtonElement>) => {
+        fireSideCannons({ durationMs, colors });
+        onClick?.(event);
+      },
+      [durationMs, colors, onClick],
+    );
+
+    return (
+      <button
+        ref={ref}
+        type="button"
+        className={cn(
+          'inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5',
+          'text-sm font-semibold transition-all duration-300 active:scale-95',
+          'bg-gradient-to-r from-teal-600 via-primary to-emerald-600 text-white',
+          'shadow-md hover:shadow-lg hover:brightness-105 focus-visible:outline-none',
+          'focus-visible:ring-2 focus-visible:ring-primary/40',
+          className,
+        )}
+        onClick={handleClick}
+        {...buttonProps}
+      >
+        {children ?? 'Disparar Celebración'}
+      </button>
+    );
+  },
+);
+
+ConfettiSideCannons.displayName = 'ConfettiSideCannons';
+

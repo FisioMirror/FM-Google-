@@ -15,6 +15,18 @@ import { isSpiritualModeEnabled, getVersiculoContextual, type Versiculo } from '
 import { BookOpen } from 'lucide-react';
 import { Popover } from '../components/ui/Popover';
 import { Modal } from '../components/ui/Modal';
+import { PulsatingButton } from '../components/ui/PulsatingButton';
+import { BiomechanicalAngleGauge } from '../components/ui/BiomechanicalAngleGauge';
+import { RepetitionCounterSpring } from '../components/ui/RepetitionCounterSpring';
+import { RehabEnergyBar } from '../components/ui/RehabEnergyBar';
+import { CompensationAlertBanner } from '../components/ui/CompensationAlertBanner';
+import {
+  PoseConfidenceLiveIndicator,
+  VoiceFeedbackWaveHUD,
+  RepCadenceMetronome,
+  SessionQualityScoreTile,
+} from '../components/ui/RealTimeMetricsSuite';
+import { AudioMuteFloatingPill } from '../components/ui/FloatingControlsSuite';
 
 // Rep completion particle burst
 function repParticleBurst() {
@@ -555,28 +567,34 @@ export function ARMirrorPage() {
       {/* HUD — controlled by hudVisible/hudMode */}
       <div className={`relative z-20 flex flex-col h-full p-4 md:p-8 pointer-events-none transition-opacity duration-300 ${hudMode === 'camera' ? 'opacity-0' : 'opacity-100'}`}>
         {/* Top HUD — hidden in minimal mode */}
-        <div className={`flex justify-between items-start mt-12 transition-all duration-300 ${hudMode === 'minimal' ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="glass-panel rounded-xl p-2 md:rounded-2xl md:p-4 pointer-events-auto max-w-[90%]"
-            style={{ background: 'rgba(255,255,255,0.08)', backdropFilter: 'blur(24px)', border: '1px solid rgba(255,255,255,0.15)' }}
-          >
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-primary-container rounded-lg flex items-center justify-center">
-                <Icon name="accessibility" filled size={20} className="text-on-primary-container" />
+        <div className={`flex justify-between items-start mt-12 transition-all duration-300 gap-4 ${hudMode === 'minimal' ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
+          <div className="flex flex-col gap-2 pointer-events-auto max-w-[90%]">
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="glass-panel rounded-xl p-2 md:rounded-2xl md:p-4"
+              style={{ background: 'rgba(255,255,255,0.08)', backdropFilter: 'blur(24px)', border: '1px solid rgba(255,255,255,0.15)' }}
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-primary-container rounded-lg flex items-center justify-center">
+                  <Icon name="accessibility" filled size={20} className="text-on-primary-container" />
+                </div>
+                <div>
+                  <p className="text-white font-bold text-sm md:text-base">{exerciseName}</p>
+                  <p className="text-white/60 text-xs">Sesión AR con MediaPipe</p>
+                </div>
               </div>
-              <div>
-                <p className="text-white font-bold text-sm md:text-base">{exerciseName}</p>
-                <p className="text-white/60 text-xs">Sesión AR con MediaPipe</p>
-              </div>
-            </div>
-          </motion.div>
+            </motion.div>
+            <PoseConfidenceLiveIndicator
+              confidence={isReady && poseData?.isTracking ? 96 : 45}
+              className="w-fit bg-slate-900/80 border-white/15 text-white text-[11px]"
+            />
+          </div>
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="glass-panel rounded-2xl p-3 md:p-4 flex items-center gap-3 md:gap-4"
+            className="glass-panel rounded-2xl p-3 md:p-4 flex items-center gap-3 md:gap-4 pointer-events-auto"
             style={{ background: 'rgba(255,255,255,0.08)', backdropFilter: 'blur(24px)', border: '1px solid rgba(255,255,255,0.15)' }}
           >
             <div className="text-center">
@@ -604,12 +622,12 @@ export function ARMirrorPage() {
 
         {/* Middle HUD — in minimal mode only show rep count */}
         <div className={`flex-1 flex items-center justify-between transition-all duration-300 ${hudMode === 'minimal' ? 'justify-center' : ''}`}>
-          {/* Left: Series + Reps — hidden in minimal mode */}
+          {/* Left: RepetitionCounterSpring + Series + Metronome */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.2 }}
-            className={`space-y-3 md:space-y-4 ${hudMode === 'minimal' ? 'hidden' : ''}`}
+            className={`space-y-3 md:space-y-4 pointer-events-auto ${hudMode === 'minimal' ? 'hidden' : ''}`}
           >
             <div className="glass-panel rounded-2xl p-3 md:p-4 w-44 md:w-56" style={{ background: 'rgba(255,255,255,0.08)', backdropFilter: 'blur(24px)', border: '1px solid rgba(255,255,255,0.15)' }}>
               <p className="text-white/60 text-xs uppercase tracking-wider mb-1">Series</p>
@@ -618,23 +636,21 @@ export function ARMirrorPage() {
                 <span className="text-white/40 text-lg md:text-xl">/ {TOTAL_SETS}</span>
               </div>
             </div>
-            <div className="glass-panel rounded-2xl p-3 md:p-4 w-44 md:w-56" style={{ background: 'rgba(255,255,255,0.08)', backdropFilter: 'blur(24px)', border: '1px solid rgba(255,255,255,0.15)' }}>
-              <p className="text-white/60 text-xs uppercase tracking-wider mb-1">Repeticiones</p>
-              <div className="flex items-baseline gap-2">
-                <motion.span
-                  key={repCount}
-                  initial={{ scale: 1.3 }}
-                  animate={{ scale: 1 }}
-                  className="text-white text-5xl md:text-7xl font-black"
-                >
-                  {repCount}
-                </motion.span>
-                <span className="text-white/40 text-lg md:text-xl">/ {TARGET_REPS}</span>
-              </div>
-            </div>
+
+            <RepetitionCounterSpring
+              currentReps={repCount}
+              targetReps={TARGET_REPS}
+              cadenceSeconds={3.5}
+              className="w-44 md:w-56 bg-slate-900/75 border-white/15 text-white"
+            />
+
+            <RepCadenceMetronome
+              targetCadenceBpm={42}
+              className="w-44 md:w-56 bg-slate-900/75 border-white/15 text-white"
+            />
           </motion.div>
 
-          {/* Right: Angle meter — hidden in minimal mode, but show compact rep counter */}
+          {/* Right: BiomechanicalAngleGauge — hidden in minimal mode, but show compact rep counter */}
           {hudMode === 'minimal' ? (
             <div className="glass-panel rounded-2xl px-6 py-4 flex items-center gap-4" style={{ background: 'rgba(255,255,255,0.08)', backdropFilter: 'blur(24px)', border: '1px solid rgba(255,255,255,0.15)' }}>
               <Icon name="visibility" filled size={24} className="text-white/80" />
@@ -648,83 +664,67 @@ export function ARMirrorPage() {
               </button>
             </div>
           ) : (
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.3 }}
-            className="relative"
-          >
-            <div className="glass-panel rounded-full w-48 h-48 md:w-64 md:h-64 flex flex-col items-center justify-center" style={{ background: 'rgba(255,255,255,0.08)', backdropFilter: 'blur(24px)', border: '1px solid rgba(255,255,255,0.15)' }}>
-              <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 200 200">
-                <circle cx="100" cy="100" r="80" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="8" />
-                <motion.circle
-                  cx="100" cy="100" r="80" fill="none" stroke="#8ad3cf" strokeWidth="8" strokeLinecap="round"
-                  strokeDasharray={2 * Math.PI * 80}
-                  strokeDashoffset={angleProgress}
-                  transition={{ duration: 0.3 }}
-                />
-              </svg>
-              <div className="relative z-10 text-center pointer-events-auto">
-                <Popover>
-                  <Popover.Trigger>
-                    <div className="group cursor-pointer select-none">
-                      <p className="text-white/60 text-xs uppercase tracking-wider flex items-center justify-center gap-1 group-hover:text-teal-300 transition-colors">
-                        <span>Ángulo</span>
-                        <span className="text-[10px] text-teal-300 opacity-70 group-hover:opacity-100">ⓘ</span>
-                      </p>
-                      <span className="text-white text-3xl md:text-5xl font-black group-hover:scale-105 transition-transform inline-block">
-                        {currentAngle}°
-                      </span>
-                      <div className="w-12 h-px bg-white/20 my-2 mx-auto" />
-                      <p className="text-white/60 text-xs">Postura: {qualityScore}%</p>
-                    </div>
-                  </Popover.Trigger>
-                  <Popover.Content className="w-68">
-                    <Popover.Dialog className="bg-slate-900/95 border-teal-500/40 text-white shadow-2xl">
-                      <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/15">
-                        <Popover.Heading className="text-white text-xs">Detalle Biomecánico</Popover.Heading>
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full border text-emerald-300 bg-emerald-500/20 border-emerald-500/30">
-                          {qualityScore >= 70 ? 'Óptimo' : 'Corregir'}
-                        </span>
-                      </div>
-                      <div className="space-y-1.5 text-xs">
-                        <div className="flex justify-between items-center text-slate-300">
-                          <span>Ángulo en vivo:</span>
-                          <span className="font-bold text-white">{currentAngle}°</span>
-                        </div>
-                        <div className="flex justify-between items-center text-slate-300">
-                          <span>Rango fisiológico:</span>
-                          <span className="font-semibold text-teal-300">85° - 90°</span>
-                        </div>
-                        <p className="text-[11px] text-slate-300 bg-white/5 p-2 rounded-lg border border-white/10 leading-relaxed mt-2">
-                          {compensation
-                            ? `Compensación detectada: ${compensation}. Realiza el movimiento en el plano frontal sin rotación excesiva.`
-                            : 'Postura correcta según el semáforo biomecánico de MediaPipe. Alineación articular simétrica.'}
-                        </p>
-                      </div>
-                    </Popover.Dialog>
-                  </Popover.Content>
-                </Popover>
-              </div>
-              <Icon name="verified" filled size={20} className="text-[#8ad3cf] absolute top-4 right-4 animate-breathe-icon" style={{ filter: 'drop-shadow(0 0 15px rgba(138,211,207,0.8))' }} />
-            </div>
-          </motion.div>
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.3 }}
+              className="relative pointer-events-auto"
+            >
+              <BiomechanicalAngleGauge
+                currentAngle={currentAngle}
+                targetAngle={90}
+                jointName={exerciseName}
+                safeTolerance={10}
+                size={230}
+                className="bg-slate-900/75 border-white/15 text-white shadow-2xl"
+              />
+            </motion.div>
           )}
         </div>
 
-        {/* Bottom HUD: AI feedback + controls — AI feedback hidden in minimal mode */}
+        {/* Bottom HUD: AI feedback, compensation banner, energy bar + controls */}
         <div className="space-y-3 md:space-y-4">
+          {compensation && (
+            <motion.div
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="pointer-events-auto max-w-xl mx-auto w-full"
+            >
+              <CompensationAlertBanner
+                deviationJoint={exerciseName}
+                detectedIssue={compensation}
+                severity="moderate"
+                onDismiss={() => {}}
+              />
+            </motion.div>
+          )}
+
+          {/* RehabEnergyBar for muscular stamina */}
           {hudMode === 'full' && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className={`glass-panel rounded-2xl p-3 md:p-4 border-l-4 flex items-center gap-3 ${compensation ? 'border-l-orange-400' : 'border-l-[#8ad3cf]'}`}
-            style={{ background: 'rgba(255,255,255,0.08)', backdropFilter: 'blur(24px)', border: '1px solid rgba(255,255,255,0.15)' }}
-          >
-            <Icon name={compensation ? 'warning' : 'smart_toy'} filled size={24} className={compensation ? 'text-orange-400 shrink-0' : 'text-[#8ad3cf] shrink-0'} />
-            <p className={`text-sm ${compensation ? 'text-orange-300' : 'text-white'}`}>{aiFeedbackRef.current}</p>
-          </motion.div>
+            <div className="max-w-md mx-auto w-full pointer-events-auto">
+              <RehabEnergyBar
+                currentEnergy={Math.max(20, 100 - (repCount * 5))}
+                fatigueScore={Number((repCount * 0.35).toFixed(1))}
+                repsCompleted={repCount}
+                totalTargetReps={TARGET_REPS}
+                className="bg-slate-900/80 backdrop-blur-xl border-white/15 text-white shadow-lg"
+              />
+            </div>
+          )}
+
+          {hudMode === 'full' && !compensation && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              className="max-w-xl mx-auto w-full pointer-events-auto"
+            >
+              <VoiceFeedbackWaveHUD
+                isSpeaking={Boolean(aiFeedbackRef.current)}
+                instructionText={aiFeedbackRef.current || 'Postura adecuada. Mantén la velocidad controlada y la respiración fluida.'}
+                className="bg-slate-900/80 backdrop-blur-xl border-white/15 text-white"
+              />
+            </motion.div>
           )}
           <div className="flex items-center justify-center gap-2 md:gap-4 pointer-events-auto flex-wrap">
             {state === 'active' && (
@@ -752,9 +752,14 @@ export function ARMirrorPage() {
             )}
             {state === 'paused' && (
               <>
-                <button onClick={() => setState('active')} className="premium-btn glass-panel rounded-2xl px-4 md:px-6 py-3 md:py-4 text-white flex items-center gap-2 hover:scale-105 active:scale-95 transition-all" style={{ background: 'rgba(255,255,255,0.08)', backdropFilter: 'blur(24px)' }}>
+                <PulsatingButton
+                  variant="pulse"
+                  pulseColor="rgba(45, 212, 191, 0.6)"
+                  onClick={() => setState('active')}
+                  className="bg-teal-600 hover:bg-teal-500 rounded-2xl px-4 md:px-6 py-3 md:py-4 text-white flex items-center gap-2"
+                >
                   <Icon name="play_arrow" size={24} /> Reanudar
-                </button>
+                </PulsatingButton>
                 <button onClick={handleRestart} className="glass-panel rounded-2xl px-4 md:px-6 py-3 md:py-4 text-white flex items-center gap-2 hover:scale-105 active:scale-95 transition-all" style={{ background: 'rgba(255,255,255,0.08)', backdropFilter: 'blur(24px)' }}>
                   <Icon name="refresh" size={24} /> Reiniciar
                 </button>
@@ -845,7 +850,12 @@ export function ARMirrorPage() {
               style={{ background: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(32px)', border: '1px solid rgba(255,255,255,0.2)' }}
             >
               <h2 className="text-white text-2xl font-bold mb-2">Reporte Post-Sesión</h2>
-              <p className="text-white/60 text-sm mb-6">Tu fisioterapeuta necesita esta información para ajustar tu rutina.</p>
+              <p className="text-white/60 text-sm mb-4">Tu fisioterapeuta necesita esta información para ajustar tu rutina.</p>
+
+              <SessionQualityScoreTile
+                score={Math.min(99, Math.max(76, Math.round(85 + (repCount >= TARGET_REPS ? 10 : 0) - (compensation ? 8 : 0))))}
+                className="bg-slate-900/80 border-white/15 text-white mb-5"
+              />
 
               <div className="space-y-5">
                 <div>

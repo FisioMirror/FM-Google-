@@ -33,6 +33,18 @@ import { StatCard } from '../components/ui/StatCard';
 import { ActionButton } from '../components/ui/ActionButton';
 import { Toggle } from '../components/ui/Toggle';
 import { Tooltip } from '../components/ui/Tooltip';
+import * as MegaSuite from '../components/ui/megaSuite';
+import { BiomechanicalAngleGauge } from '../components/ui/BiomechanicalAngleGauge';
+import { ARFloatingDock } from '../components/ui/ARFloatingDock';
+import { RehabEnergyBar } from '../components/ui/RehabEnergyBar';
+import { GamifiedBadgeCard } from '../components/ui/GamifiedBadgeCard';
+import { CompensationAlertBanner } from '../components/ui/CompensationAlertBanner';
+import { RepetitionCounterSpring } from '../components/ui/RepetitionCounterSpring';
+import { JointDetailPopover } from '../components/ui/JointDetailPopover';
+import { TherapistQuickToolbar } from '../components/ui/TherapistQuickToolbar';
+import { MobileBottomSheet } from '../components/ui/MobileBottomSheet';
+import { CompactJointSelector, CompactRomStepper, CompactToleranceDropdown } from '../components/ui/CompactQuickSelector';
+import { HarmonizedSurface } from '../components/ui/HarmonizedSurface';
 import {
   CustomAccordion,
   BasicAlert,
@@ -63,9 +75,14 @@ import {
 import { cn } from '../lib/utils';
 
 export function CatalogPage() {
-  const [activeTab, setActiveTab] = useState<'all' | '21st' | 'magic' | 'heroui' | 'aceternity' | 'shadcn'>('all');
+  const [activeTab, setActiveTab] = useState<'all' | 'megasuite' | 'estelar' | 'magic' | 'aceternity' | 'heroui' | 'shadcn' | '21st'>('all');
   const [sliderAngle, setSliderAngle] = useState(120);
   const [toggleState, setToggleState] = useState(true);
+  const [gaugeAngle, setGaugeAngle] = useState(95);
+  const [springReps, setSpringReps] = useState(8);
+  const [energyLevel, setEnergyLevel] = useState(85);
+  const [selectedJoint, setSelectedJoint] = useState('rodilla');
+  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
 
   return (
     <div className="max-w-7xl mx-auto px-4 lg:px-8 py-8 space-y-12">
@@ -83,10 +100,11 @@ export function CatalogPage() {
             </h1>
             <p className="text-xs sm:text-sm text-on-surface-variant leading-relaxed">
               Catálogo maestro y de alto rendimiento que integra los componentes más votados y utilizados de{' '}
-              <strong className="text-on-surface font-semibold">Magic UI</strong>,{' '}
-              <strong className="text-on-surface font-semibold">Aceternity UI</strong>,{' '}
+              <strong className="text-on-surface font-semibold">Macro Suite (50)</strong>,{' '}
+              <strong className="text-on-surface font-semibold">Suite Estelar Biomecánica</strong>,{' '}
               <strong className="text-on-surface font-semibold">HeroUI</strong>,{' '}
-              <strong className="text-on-surface font-semibold">21st.dev</strong> y{' '}
+              <strong className="text-on-surface font-semibold">Magic UI</strong>,{' '}
+              <strong className="text-on-surface font-semibold">Aceternity UI</strong> y{' '}
               <strong className="text-on-surface font-semibold">Shadcn UI</strong> adaptados exclusivamente a la tele-rehabilitación.
             </p>
           </div>
@@ -108,9 +126,11 @@ export function CatalogPage() {
         <div className="mt-8 pt-6 border-t border-outline/10 flex flex-wrap gap-2">
           {[
             { id: 'all', label: 'Todos los Componentes' },
+            { id: 'megasuite', label: 'Macro Suite (50 Componentes)' },
+            { id: 'estelar', label: 'Suite Estelar Biomecánica' },
+            { id: 'heroui', label: 'HeroUI (28 Suite)' },
             { id: 'magic', label: 'Magic UI' },
             { id: 'aceternity', label: 'Aceternity UI' },
-            { id: 'heroui', label: 'HeroUI (28 Suite)' },
             { id: 'shadcn', label: 'Shadcn UI' },
             { id: '21st', label: '21st.dev' },
           ].map((tab) => (
@@ -602,6 +622,339 @@ export function CatalogPage() {
           </div>
         </section>
       )}
+
+      {/* BLOQUE MACRO SUITE (50 COMPONENTES DE ÉLITE) */}
+      {(activeTab === 'all' || activeTab === 'megasuite') && (
+        <section className="space-y-8 p-6 sm:p-8 rounded-3xl bg-gradient-to-b from-cyan-500/10 via-surface/60 to-surface border border-cyan-500/25 shadow-xl">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-cyan-500/20">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2">
+                <span className="p-1.5 rounded-lg bg-cyan-500/20 text-cyan-600 dark:text-cyan-400">
+                  <Sparkles className="w-5 h-5" />
+                </span>
+                <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+                  Macro Suite FisioMirror (50 Componentes Modulares)
+                </h2>
+              </div>
+              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 max-w-2xl">
+                Catálogo masivo de 50 componentes modulares creados con HeroUI, Magic UI y DaisyUI para telemetría MediaPipe, diagnóstico clínico, microinteracciones, gamificación y docks AR.
+              </p>
+            </div>
+            <span className="px-3 py-1 rounded-full bg-cyan-500/15 text-cyan-700 dark:text-cyan-300 border border-cyan-500/30 text-xs font-bold shrink-0">
+              50 / 50 Activos
+            </span>
+          </div>
+
+          {/* Categoría 1: Diagnóstico (10) */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-2 pb-2 border-b border-cyan-500/15">
+              <span className="size-2 rounded-full bg-cyan-500" />
+              <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                Categoría 1: Tarjetas de Actividad y Diagnóstico Clínico (1 - 10)
+              </h3>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <MegaSuite.MuscleTargetRadarCard />
+              <MegaSuite.PainScaleInteractiveCard />
+              <MegaSuite.GaitSymmetryCard />
+              <MegaSuite.TremorFrequencyCard />
+              <MegaSuite.PostureStabilityCard />
+              <MegaSuite.CardioEffortPillCard />
+              <MegaSuite.RehabPhaseStepCard />
+              <MegaSuite.EdemaAssessmentCard />
+              <MegaSuite.StrengthProgressionCard />
+              <MegaSuite.PatientAdherenceHeatmapCard />
+            </div>
+          </div>
+
+          {/* Categoría 2: Paneles en Tiempo Real (11 - 20) */}
+          <div className="space-y-4 pt-6 border-t border-cyan-500/15">
+            <div className="flex items-center gap-2 pb-2 border-b border-cyan-500/15">
+              <span className="size-2 rounded-full bg-teal-500" />
+              <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                Categoría 2: Paneles y Métricas en Tiempo Real (MediaPipe / IA) (11 - 20)
+              </h3>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <MegaSuite.PoseConfidenceLiveIndicator />
+              <MegaSuite.AngularVelocityStreamGauge />
+              <MegaSuite.ROMDeviationLiveChart />
+              <MegaSuite.VoiceFeedbackWaveHUD />
+              <MegaSuite.CameraFramingGuideHUD />
+              <MegaSuite.RepCadenceMetronome />
+              <MegaSuite.AIBiomechanicalSummaryBadge />
+              <MegaSuite.SkeletonJointSelectorHUD />
+              <MegaSuite.HoldDurationTimerRing />
+              <MegaSuite.SessionQualityScoreTile />
+            </div>
+          </div>
+
+          {/* Categoría 3: Microinteracciones Flotantes (21 - 30) */}
+          <div className="space-y-4 pt-6 border-t border-cyan-500/15">
+            <div className="flex items-center gap-2 pb-2 border-b border-cyan-500/15">
+              <span className="size-2 rounded-full bg-indigo-500" />
+              <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                Categoría 3: Microinteracciones y Controles Flotantes Contextuales (21 - 30)
+              </h3>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 rounded-2xl bg-surface-container-low/40">
+              <MegaSuite.JointAnatomyTooltip />
+              <MegaSuite.ARCameraFilterDropdown />
+              <MegaSuite.RapidToleranceAdjuster />
+              <MegaSuite.AudioMuteFloatingPill />
+              <MegaSuite.ExerciseSwitchFloatingMenu />
+              <MegaSuite.PhysioNoteAnnotationBubble />
+              <MegaSuite.QuickPrescriptionModalButton />
+              <MegaSuite.BiomechanicalTagSelector />
+              <MegaSuite.CalibrationCompass />
+              <MegaSuite.FloatingMiniStopwatch />
+            </div>
+          </div>
+
+          {/* Categoría 4: Gamificación (31 - 40) */}
+          <div className="space-y-4 pt-6 border-t border-cyan-500/15">
+            <div className="flex items-center gap-2 pb-2 border-b border-cyan-500/15">
+              <span className="size-2 rounded-full bg-amber-500" />
+              <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                Categoría 4: Gamificación, Rachas y Motivación de Pacientes (31 - 40)
+              </h3>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <MegaSuite.StreakFlameCounter />
+              <MegaSuite.LevelProgressRibbon />
+              <MegaSuite.MilestoneCelebrationModal />
+              <MegaSuite.MobilityQuestCard />
+              <MegaSuite.VirtualTrophyCabinet />
+              <MegaSuite.DailyHealthPointsWidget />
+              <MegaSuite.RehabHeroAvatarCard />
+              <div className="flex items-center justify-center p-4 rounded-3xl bg-surface-container-low">
+                <MegaSuite.CheerReactionButton />
+              </div>
+              <div className="flex items-center justify-center p-4 rounded-3xl bg-surface-container-low">
+                <MegaSuite.RecoveryRankBadge />
+              </div>
+              <MegaSuite.UnlockableExerciseLocker />
+            </div>
+          </div>
+
+          {/* Categoría 5: Docks y Navegación Ergonómica (41 - 50) */}
+          <div className="space-y-4 pt-6 border-t border-cyan-500/15">
+            <div className="flex items-center gap-2 pb-2 border-b border-cyan-500/15">
+              <span className="size-2 rounded-full bg-emerald-500" />
+              <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                Categoría 5: Docks, Barras de Herramientas y Navegación Ergonómica (41 - 50)
+              </h3>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 rounded-2xl bg-surface-container-low/40">
+              <MegaSuite.CurvedMobileDock />
+              <div className="flex items-center justify-center">
+                <MegaSuite.TherapistSidebarMini />
+              </div>
+              <MegaSuite.QuickPatientSwitcherBar />
+              <div className="flex items-center justify-center">
+                <MegaSuite.SessionStateBreadcrumb />
+              </div>
+              <div className="flex items-center justify-center">
+                <MegaSuite.SplitViewPerspectiveToggle />
+              </div>
+              <div className="flex items-center justify-center">
+                <MegaSuite.FloatingHelpBeacon />
+              </div>
+              <div className="flex items-center justify-center">
+                <MegaSuite.ErgonomicHandModeSwitcher />
+              </div>
+              <MegaSuite.CompactTelehealthBar />
+              <MegaSuite.ExerciseTimelineScrubber />
+              <div className="flex items-center justify-center">
+                <MegaSuite.ContextualActionIsland />
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* BLOQUE SUITE ESTELAR BIOMECÁNICA & HERRAMIENTAS CLÍNICAS */}
+      {(activeTab === 'all' || activeTab === 'estelar') && (
+        <section className="space-y-8 p-6 sm:p-8 rounded-3xl bg-gradient-to-b from-teal-500/10 via-surface/60 to-surface border border-teal-500/30 shadow-xl">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-teal-500/20">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2">
+                <span className="p-1.5 rounded-lg bg-teal-500/20 text-teal-600 dark:text-teal-400">
+                  <Activity className="w-5 h-5" />
+                </span>
+                <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+                  Suite Estelar de Innovación Biomecánica FisioMirror
+                </h2>
+              </div>
+              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 max-w-2xl">
+                8 componentes estelares para tele-rehabilitación con IA: goniómetro digital, contador con física de resortes, barra de fatiga, dock AR flotante y badges gamificados.
+              </p>
+            </div>
+            <button
+              onClick={() => setIsBottomSheetOpen(true)}
+              className="px-4 py-2 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-bold text-xs flex items-center gap-2 shadow-md transition-all self-start sm:self-auto"
+            >
+              <Sliders className="size-4" />
+              <span>Abrir Bottom Sheet Demo</span>
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* 1. BiomechanicalAngleGauge */}
+            <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col items-center justify-center space-y-4">
+              <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                1. Goniómetro Dinámico Circular (BiomechanicalAngleGauge)
+              </h3>
+              <BiomechanicalAngleGauge
+                currentAngle={gaugeAngle}
+                targetAngle={90}
+                jointName="Rodilla Derecha"
+                safeTolerance={10}
+                size={220}
+              />
+              <div className="flex items-center gap-2 w-full max-w-xs pt-2">
+                <span className="text-xs text-slate-400 font-mono">0°</span>
+                <input
+                  type="range"
+                  min={0}
+                  max={180}
+                  value={gaugeAngle}
+                  onChange={(e) => setGaugeAngle(Number(e.target.value))}
+                  className="w-full accent-teal-500 cursor-pointer"
+                />
+                <span className="text-xs text-slate-400 font-mono">180°</span>
+              </div>
+            </div>
+
+            {/* 2. RepetitionCounterSpring */}
+            <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col items-center justify-center space-y-4">
+              <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                2. Contador con Resortes Elásticos (RepetitionCounterSpring)
+              </h3>
+              <RepetitionCounterSpring
+                currentReps={springReps}
+                targetReps={15}
+                cadenceSeconds={3.0}
+                onIncrement={() => setSpringReps((r) => r + 1)}
+                onReset={() => setSpringReps(0)}
+              />
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setSpringReps((r) => r + 1)}
+                  className="px-3 py-1.5 rounded-xl bg-teal-500/10 text-teal-700 dark:text-teal-300 text-xs font-bold border border-teal-500/20 hover:bg-teal-500/20"
+                >
+                  +1 Repetición
+                </button>
+                <button
+                  onClick={() => setSpringReps(0)}
+                  className="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 text-xs font-bold hover:bg-slate-200"
+                >
+                  Reiniciar
+                </button>
+              </div>
+            </div>
+
+            {/* 3. RehabEnergyBar */}
+            <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
+              <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                3. Barra de Energía y Fatiga Muscular (RehabEnergyBar)
+              </h3>
+              <RehabEnergyBar
+                currentEnergy={energyLevel}
+                fatigueScore={Number(((100 - energyLevel) / 10).toFixed(1))}
+                repsCompleted={springReps}
+                totalTargetReps={15}
+              />
+              <div className="flex items-center gap-3 pt-2">
+                <span className="text-xs text-slate-400">Simular Energía:</span>
+                <input
+                  type="range"
+                  min={10}
+                  max={100}
+                  value={energyLevel}
+                  onChange={(e) => setEnergyLevel(Number(e.target.value))}
+                  className="flex-1 accent-teal-500 cursor-pointer"
+                />
+                <span className="text-xs font-mono font-bold text-teal-600">{energyLevel}%</span>
+              </div>
+            </div>
+
+            {/* 4. GamifiedBadgeCard */}
+            <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
+              <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                4. Medalla 3D Gamificada (GamifiedBadgeCard)
+              </h3>
+              <div className="grid grid-cols-2 gap-3">
+                <GamifiedBadgeCard
+                  title="Constancia de Hierro"
+                  description="5 días seguidos completando rutina"
+                  tier="gold"
+                  xpPoints={250}
+                  progressPct={100}
+                />
+                <GamifiedBadgeCard
+                  title="Precisión Articular"
+                  description="ROM > 95% sin compensaciones"
+                  tier="diamond"
+                  xpPoints={500}
+                  progressPct={78}
+                />
+              </div>
+            </div>
+
+            {/* 5. CompensationAlertBanner */}
+            <div className="lg:col-span-2 p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
+              <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                5. Banner de Compensación Postural (CompensationAlertBanner)
+              </h3>
+              <CompensationAlertBanner
+                deviationJoint="Hombro Izquierdo"
+                detectedIssue="Elevación escapular asimétrica de +14°"
+                severity="moderate"
+                onDismiss={() => {}}
+              />
+            </div>
+
+            {/* 6 & 7. ARFloatingDock & TherapistQuickToolbar */}
+            <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4 flex flex-col items-center justify-center">
+              <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                6. Dock Flotante AR (ARFloatingDock)
+              </h3>
+              <ARFloatingDock
+                currentJoint={selectedJoint}
+                onSelectJoint={(j) => setSelectedJoint(j)}
+              />
+            </div>
+
+            <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4 flex flex-col items-center justify-center">
+              <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                7. Barra Rápida de Terapeuta (TherapistQuickToolbar)
+              </h3>
+              <TherapistQuickToolbar />
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Modal BottomSheet interactivo de demostración */}
+      <MobileBottomSheet
+        isOpen={isBottomSheetOpen}
+        onClose={() => setIsBottomSheetOpen(false)}
+        title="Inspección Biomecánica Móvil"
+        subtitle="Cajón con niveles de altura y física de resortes"
+        icon={<Sliders className="size-5 text-teal-600" />}
+        variant="pastel-mint"
+      >
+        <div className="space-y-4 text-xs sm:text-sm">
+          <p className="text-slate-600 dark:text-slate-300">
+            Este bottom sheet deslizable erradica el scroll infinito en pantallas móviles, ofreciendo snap points interactivos y selectores de 1 toque.
+          </p>
+          <div className="p-3.5 rounded-2xl bg-teal-50/70 dark:bg-slate-800/80 border border-teal-100 dark:border-slate-700 space-y-3">
+            <CompactJointSelector selectedJoint={selectedJoint} onSelectJoint={setSelectedJoint} />
+            <CompactRomStepper value={gaugeAngle} onChange={setGaugeAngle} min={30} max={170} label="Meta ROM" />
+          </div>
+        </div>
+      </MobileBottomSheet>
     </div>
   );
 }

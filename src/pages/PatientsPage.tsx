@@ -27,10 +27,15 @@ import {
   UserCheck,
   Calendar,
   ArrowRight,
+  Eye,
+  Activity,
+  Crosshair,
 } from 'lucide-react';
 import { DrawerClinicalDemo } from '../components/ui/Drawer';
 import { useRealtimePresence } from '../lib/presenceService';
 import { staggerContainer, staggerItem, springTactile } from '../lib/motionVariants';
+import { MobileBottomSheet } from '../components/ui/MobileBottomSheet';
+import { JointDetailPopover } from '../components/ui/JointDetailPopover';
 
 interface PatientCard {
   id: string;
@@ -90,6 +95,7 @@ export function PatientsPage() {
   const [viewMode, setViewMode] = useState<'cards' | 'list'>('cards');
   const [copiedToken, setCopiedToken] = useState<string | null>(null);
   const [emailModalToken, setEmailModalToken] = useState<TokenRow | null>(null);
+  const [previewPatient, setPreviewPatient] = useState<PatientCard | null>(null);
 
   const { getUserStatus, onlineCount } = useRealtimePresence();
 
@@ -404,18 +410,18 @@ export function PatientsPage() {
         <motion.div
           variants={staggerItem}
           whileHover={{ y: -3, scale: 1.015, transition: springTactile }}
-          className="ios-glass-heavy refraction-border p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl flex flex-col justify-between group cursor-default transition-all shadow-sm hover:shadow-md"
+          className="p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl flex flex-col justify-between group cursor-default transition-all shadow-sm hover:shadow-md bg-gradient-to-br from-teal-50/80 via-surface/90 to-emerald-50/40 dark:from-teal-950/25 dark:via-surface-container/80 dark:to-slate-900/90 border border-teal-200/60 dark:border-teal-500/30"
         >
           <div className="flex items-start justify-between mb-2 sm:mb-3">
-            <div className="size-9 sm:size-11 rounded-xl sm:rounded-2xl bg-teal-500/10 text-teal-700 dark:text-teal-300 flex items-center justify-center font-bold">
+            <div className="size-9 sm:size-11 rounded-xl sm:rounded-2xl bg-teal-500/15 text-teal-700 dark:text-teal-300 flex items-center justify-center font-bold border border-teal-500/25">
               <Users className="size-4 sm:size-5" />
             </div>
-            <span className="text-[11px] sm:text-xs text-on-surface-variant font-semibold">Total Pacientes</span>
+            <span className="text-[11px] sm:text-xs text-teal-800 dark:text-teal-200 font-bold">Total Pacientes</span>
           </div>
           <div className="flex items-end justify-between gap-2">
             <p className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-slate-100 tabular-nums tracking-tight">{stats.total}</p>
             {onlineCount > 0 && (
-              <span className="inline-flex items-center gap-1 sm:gap-1.5 text-[10px] sm:text-[11px] font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-500/10 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full border border-emerald-500/20">
+              <span className="inline-flex items-center gap-1 sm:gap-1.5 text-[10px] sm:text-[11px] font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-500/15 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full border border-emerald-500/30">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                 <span className="hidden xs:inline">{onlineCount} en vivo</span>
                 <span className="xs:hidden">{onlineCount}</span>
@@ -427,29 +433,29 @@ export function PatientsPage() {
         <motion.div
           variants={staggerItem}
           whileHover={{ y: -3, scale: 1.015, transition: springTactile }}
-          className="ios-glass-heavy refraction-border p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl flex flex-col justify-between group cursor-default transition-all shadow-sm hover:shadow-md"
+          className="p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl flex flex-col justify-between group cursor-default transition-all shadow-sm hover:shadow-md bg-gradient-to-br from-sky-50/75 via-surface/90 to-sky-50/40 dark:from-sky-950/25 dark:via-surface-container/80 dark:to-slate-900/90 border border-sky-200/60 dark:border-sky-500/30"
         >
           <div className="flex items-start justify-between mb-2 sm:mb-3">
-            <div className="size-9 sm:size-11 rounded-xl sm:rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold">
+            <div className="size-9 sm:size-11 rounded-xl sm:rounded-2xl bg-sky-500/15 text-sky-700 dark:text-sky-300 flex items-center justify-center font-bold border border-sky-500/25">
               <CheckCircle2 className="size-4 sm:size-5" />
             </div>
-            <span className="text-[11px] sm:text-xs text-on-surface-variant font-semibold">Tratamiento Activo</span>
+            <span className="text-[11px] sm:text-xs text-sky-800 dark:text-sky-200 font-bold">Tratamiento Activo</span>
           </div>
           <div className="flex items-end gap-2">
-            <p className="text-2xl sm:text-3xl font-black text-emerald-600 dark:text-emerald-400 tabular-nums tracking-tight">{stats.active}</p>
+            <p className="text-2xl sm:text-3xl font-black text-sky-700 dark:text-sky-300 tabular-nums tracking-tight">{stats.active}</p>
           </div>
         </motion.div>
 
         <motion.div
           variants={staggerItem}
           whileHover={{ y: -3, scale: 1.015, transition: springTactile }}
-          className="ios-glass-heavy refraction-border p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl flex flex-col justify-between group cursor-default transition-all shadow-sm hover:shadow-md"
+          className="p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl flex flex-col justify-between group cursor-default transition-all shadow-sm hover:shadow-md bg-gradient-to-br from-amber-50/75 via-surface/90 to-amber-50/30 dark:from-amber-950/25 dark:via-surface-container/80 dark:to-slate-900/90 border border-amber-200/50 dark:border-amber-500/25"
         >
           <div className="flex items-start justify-between mb-2 sm:mb-3">
-            <div className="size-9 sm:size-11 rounded-xl sm:rounded-2xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center font-bold">
+            <div className="size-9 sm:size-11 rounded-xl sm:rounded-2xl bg-amber-500/15 text-amber-700 dark:text-amber-300 flex items-center justify-center font-bold border border-amber-500/25">
               <AlertTriangle className="size-4 sm:size-5" />
             </div>
-            <span className="text-[11px] sm:text-xs text-on-surface-variant font-semibold">Requieren Atención</span>
+            <span className="text-[11px] sm:text-xs text-amber-800 dark:text-amber-200 font-bold">Requieren Atención</span>
           </div>
           <div className="flex items-end gap-2">
             <p className="text-2xl sm:text-3xl font-black text-amber-600 dark:text-amber-400 tabular-nums tracking-tight">{stats.needReview}</p>
@@ -459,16 +465,16 @@ export function PatientsPage() {
         <motion.div
           variants={staggerItem}
           whileHover={{ y: -3, scale: 1.015, transition: springTactile }}
-          className="ios-glass-heavy refraction-border p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl flex flex-col justify-between group cursor-default transition-all shadow-sm hover:shadow-md"
+          className="p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl flex flex-col justify-between group cursor-default transition-all shadow-sm hover:shadow-md bg-gradient-to-br from-indigo-50/70 via-surface/90 to-purple-50/40 dark:from-indigo-950/25 dark:via-surface-container/80 dark:to-slate-900/90 border border-indigo-200/50 dark:border-indigo-500/25"
         >
           <div className="flex items-start justify-between mb-2 sm:mb-3">
-            <div className="size-9 sm:size-11 rounded-xl sm:rounded-2xl bg-teal-600/10 text-teal-700 dark:text-teal-300 flex items-center justify-center font-bold">
+            <div className="size-9 sm:size-11 rounded-xl sm:rounded-2xl bg-indigo-500/15 text-indigo-700 dark:text-indigo-300 flex items-center justify-center font-bold border border-indigo-500/25">
               <Key className="size-4 sm:size-5" />
             </div>
-            <span className="text-[11px] sm:text-xs text-on-surface-variant font-semibold">Tokens Pendientes</span>
+            <span className="text-[11px] sm:text-xs text-indigo-800 dark:text-indigo-200 font-bold">Tokens Pendientes</span>
           </div>
           <div className="flex items-end gap-2">
-            <p className="text-2xl sm:text-3xl font-black text-teal-700 dark:text-teal-300 tabular-nums tracking-tight">{stats.pendingTokCount}</p>
+            <p className="text-2xl sm:text-3xl font-black text-indigo-700 dark:text-indigo-300 tabular-nums tracking-tight">{stats.pendingTokCount}</p>
           </div>
         </motion.div>
       </motion.div>
@@ -621,7 +627,7 @@ export function PatientsPage() {
                     onClick={() => navigate(`/paciente/${p.id}`)}
                     className="h-full"
                   >
-                    <SpotlightCard className="p-6 rounded-3xl group cursor-pointer transition-all duration-300 relative flex flex-col justify-between h-full shadow-sm hover:shadow-xl">
+                    <SpotlightCard className="p-6 rounded-3xl group cursor-pointer transition-all duration-300 relative flex flex-col justify-between h-full shadow-sm hover:shadow-xl bg-gradient-to-br from-surface/95 via-surface to-sky-50/30 dark:from-surface-container/85 dark:via-surface-container/70 dark:to-teal-950/20 border border-outline-variant/25 dark:border-white/10 hover:border-teal-500/35">
                     <div>
                       {/* Top Header: Avatar/Badge + Name & ID + Status Tag */}
                       <div className="flex justify-between items-start mb-5">
@@ -630,8 +636,10 @@ export function PatientsPage() {
                             <div className={cn(
                               "w-12 h-12 rounded-full flex items-center justify-center font-extrabold text-base border-2 shadow-sm shrink-0",
                               isAlert 
-                                ? "bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-200 dark:border-rose-800" 
-                                : "bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-100 border-white dark:border-slate-700"
+                                ? "bg-rose-500/15 text-rose-600 dark:text-rose-400 border-rose-300 dark:border-rose-800" 
+                                : isGood
+                                ? "bg-teal-500/15 text-teal-700 dark:text-teal-300 border-teal-200/70 dark:border-teal-500/30 ring-2 ring-teal-400/20"
+                                : "bg-sky-500/15 text-sky-700 dark:text-sky-300 border-sky-200/70 dark:border-sky-500/30 ring-2 ring-sky-400/20"
                             )}>
                               {initials || 'FM'}
                             </div>
@@ -723,10 +731,28 @@ export function PatientsPage() {
                       </div>
                     </div>
 
-                    {/* Bottom Action Area (Refraction CTA Style) */}
-                    <div className="flex items-center justify-between w-full py-3 px-4 rounded-xl bg-teal-50/70 dark:bg-teal-950/40 hover:bg-teal-100/90 dark:hover:bg-teal-900/50 text-teal-800 dark:text-teal-200 font-bold transition-all group-hover:border-teal-300 dark:group-hover:border-teal-700 border border-transparent text-xs">
-                      <span>Ver Expediente</span>
-                      <ArrowRight className="size-4 transform group-hover:translate-x-1 transition-transform" />
+                    {/* Bottom Action Area with Quick Preview & Full Dossier */}
+                    <div className="flex items-center gap-2 pt-1">
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setPreviewPatient(p);
+                        }}
+                        className="flex-1 py-2.5 px-3 rounded-xl bg-slate-100 dark:bg-slate-800/80 hover:bg-teal-50 dark:hover:bg-slate-700/80 text-slate-700 dark:text-slate-300 hover:text-teal-700 dark:hover:text-teal-300 font-semibold transition-all text-xs flex items-center justify-center gap-1.5 border border-slate-200/60 dark:border-slate-700/60"
+                        title="Abrir vista previa rápida en modal o bottom sheet"
+                      >
+                        <Eye className="size-3.5 text-teal-600 dark:text-teal-400" />
+                        <span>Ficha Rápida</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => navigate(`/paciente/${p.id}`)}
+                        className="flex-1 py-2.5 px-3 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-bold transition-all text-xs flex items-center justify-center gap-1.5 shadow-xs"
+                      >
+                        <span>Expediente</span>
+                        <ArrowRight className="size-3.5" />
+                      </button>
                     </div>
                     </SpotlightCard>
                   </motion.div>
@@ -944,6 +970,81 @@ export function PatientsPage() {
           onClose={() => setEmailModalToken(null)}
         />
       )}
+
+      {/* MobileBottomSheet: Ficha Rápida del Paciente */}
+      <MobileBottomSheet
+        isOpen={previewPatient !== null}
+        onClose={() => setPreviewPatient(null)}
+        title={previewPatient?.name || 'Ficha del Paciente'}
+        subtitle={previewPatient ? `${previewPatient.fmId || 'FM-PAC'} • ${previewPatient.condition}` : ''}
+        icon={<Users className="size-5 text-teal-600 dark:text-teal-400" />}
+        variant="pastel-mint"
+        footerActions={
+          previewPatient && (
+            <div className="flex gap-2 w-full">
+              <button
+                type="button"
+                onClick={() => {
+                  const id = previewPatient.id;
+                  setPreviewPatient(null);
+                  navigate(`/paciente/${id}`);
+                }}
+                className="flex-1 py-3 px-4 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-bold text-sm shadow-md transition-all flex items-center justify-center gap-2"
+              >
+                <span>Abrir Expediente Completo</span>
+                <ArrowRight className="size-4" />
+              </button>
+            </div>
+          )
+        }
+      >
+        {previewPatient && (
+          <div className="space-y-4 text-xs sm:text-sm">
+            <div className="grid grid-cols-2 gap-3 p-3.5 rounded-2xl bg-teal-50/70 dark:bg-slate-800/80 border border-teal-100/60 dark:border-slate-700">
+              <div>
+                <span className="text-[10px] uppercase font-bold text-outline">Estado Clínico</span>
+                <p className="font-bold text-teal-700 dark:text-teal-300 mt-0.5">{previewPatient.status}</p>
+              </div>
+              <div>
+                <span className="text-[10px] uppercase font-bold text-outline">Progreso Global</span>
+                <p className="font-bold text-slate-800 dark:text-white mt-0.5">{previewPatient.recoveryProgress}%</p>
+              </div>
+              <div>
+                <span className="text-[10px] uppercase font-bold text-outline">Sesiones Realizadas</span>
+                <p className="font-semibold text-slate-700 dark:text-slate-200 mt-0.5">{previewPatient.sessionCount} sesiones</p>
+              </div>
+              <div>
+                <span className="text-[10px] uppercase font-bold text-outline">Última Actividad</span>
+                <p className="font-semibold text-slate-700 dark:text-slate-200 mt-0.5">{previewPatient.lastSession}</p>
+              </div>
+            </div>
+
+            <div className="p-3.5 rounded-2xl bg-surface dark:bg-slate-800/50 border border-outline-variant/30 space-y-2">
+              <span className="text-[10px] uppercase font-bold text-outline block">Diagnóstico y Patología</span>
+              <p className="font-semibold text-on-surface">{previewPatient.condition}</p>
+              {previewPatient.patologia && (
+                <p className="text-xs text-on-surface-variant font-medium">Patología: {previewPatient.patologia}</p>
+              )}
+            </div>
+
+            {/* Inspección biomecánica rápida */}
+            <div className="p-3.5 rounded-2xl bg-sky-50/50 dark:bg-sky-950/20 border border-sky-100 dark:border-sky-900/30">
+              <span className="text-[10px] uppercase font-bold text-sky-700 dark:text-sky-300 block mb-2">Inspección Biomecánica Rápida</span>
+              <JointDetailPopover
+                metrics={{
+                  jointName: previewPatient.condition.includes('Rodilla') ? 'Rodilla Afectada (Extensión)' : 'Articulación en Tratamiento',
+                  currentRom: Math.round(90 + previewPatient.recoveryProgress * 0.45),
+                  maxHistoricalRom: 135,
+                  angularVelocity: 38,
+                  asymmetryPercentage: Math.max(3, Math.round(25 - previewPatient.recoveryProgress * 0.2)),
+                  status: previewPatient.recoveryProgress > 70 ? 'normal' : 'warning',
+                }}
+                triggerLabel="Examinar Rango de Movimiento (ROM)"
+              />
+            </div>
+          </div>
+        )}
+      </MobileBottomSheet>
     </div>
   );
 }

@@ -1,69 +1,82 @@
-import { useEffect, useRef } from 'react';
-import { useInView, useMotionValue, useSpring } from 'framer-motion';
-import { cn } from '../../lib/utils';
+import { useEffect, useRef, forwardRef, type ComponentPropsWithoutRef } from "react"
+import { useInView, useMotionValue, useSpring } from "framer-motion"
+import { cn } from "@/lib/utils"
 
-interface NumberTickerProps {
-  value: number;
-  direction?: 'up' | 'down';
-  delay?: number;
-  decimalPlaces?: number;
-  className?: string;
-  prefix?: string;
-  suffix?: string;
+export interface NumberTickerProps extends ComponentPropsWithoutRef<"span"> {
+  value: number
+  startValue?: number
+  direction?: "up" | "down"
+  delay?: number
+  decimalPlaces?: number
+  prefix?: string
+  suffix?: string
 }
 
-/**
- * NumberTicker (Inspired by Magic UI)
- * Smoothly animates numbers upwards or downwards using spring mechanics.
- * Perfect for biomechanical ROM angles, adherence percentages, reps, and patient statistics.
- */
-export function NumberTicker({
-  value,
-  direction = 'up',
-  delay = 0,
-  decimalPlaces = 0,
-  className,
-  prefix = '',
-  suffix = '',
-}: NumberTickerProps) {
-  const ref = useRef<HTMLSpanElement>(null);
-  const motionValue = useMotionValue(direction === 'down' ? value : 0);
-  const springValue = useSpring(motionValue, {
-    damping: 30,
-    stiffness: 120,
-  });
-  const isInView = useInView(ref, { once: true, margin: '0px' });
+export const NumberTicker = forwardRef<HTMLSpanElement, NumberTickerProps>(
+  (
+    {
+      value,
+      startValue = 0,
+      direction = "up",
+      delay = 0,
+      className,
+      decimalPlaces = 0,
+      prefix = "",
+      suffix = "",
+      ...props
+    },
+    forwardedRef
+  ) => {
+    const internalRef = useRef<HTMLSpanElement>(null)
+    const ref = (forwardedRef as React.RefObject<HTMLSpanElement>) || internalRef
+    const motionValue = useMotionValue(direction === "down" ? value : startValue)
+    const springValue = useSpring(motionValue, {
+      damping: 60,
+      stiffness: 100,
+    })
+    const isInView = useInView(ref, { once: true, margin: "0px" })
 
-  useEffect(() => {
-    if (isInView) {
-      const timer = setTimeout(() => {
-        motionValue.set(direction === 'down' ? 0 : value);
-      }, delay * 1000);
-      return () => clearTimeout(timer);
-    }
-  }, [motionValue, isInView, delay, value, direction]);
-
-  useEffect(() => {
-    const unsubscribe = springValue.on('change', (latest) => {
-      if (ref.current) {
-        ref.current.textContent = `${prefix}${Intl.NumberFormat('es-ES', {
-          minimumFractionDigits: decimalPlaces,
-          maximumFractionDigits: decimalPlaces,
-        }).format(Number(latest.toFixed(decimalPlaces)))}${suffix}`;
+    useEffect(() => {
+      let timer: ReturnType<typeof setTimeout> | null = null
+      if (isInView) {
+        timer = setTimeout(() => {
+          motionValue.set(direction === "down" ? startValue : value)
+        }, delay * 1000)
       }
-    });
-    return () => unsubscribe();
-  }, [springValue, decimalPlaces, prefix, suffix]);
+      return () => {
+        if (timer !== null) {
+          clearTimeout(timer)
+        }
+      }
+    }, [motionValue, isInView, delay, value, direction, startValue])
 
-  return (
-    <span
-      ref={ref}
-      className={cn('inline-block tabular-nums font-mono tracking-tight text-on-surface', className)}
-    >
-      {prefix}{Intl.NumberFormat('es-ES', {
-        minimumFractionDigits: decimalPlaces,
-        maximumFractionDigits: decimalPlaces,
-      }).format(direction === 'down' ? value : 0)}{suffix}
-    </span>
-  );
-}
+    useEffect(
+      () =>
+        springValue.on("change", (latest) => {
+          if (ref.current) {
+            const formatted = Intl.NumberFormat("es-ES", {
+              minimumFractionDigits: decimalPlaces,
+              maximumFractionDigits: decimalPlaces,
+            }).format(Number(latest.toFixed(decimalPlaces)))
+            ref.current.textContent = `${prefix}${formatted}${suffix}`
+          }
+        }),
+      [springValue, decimalPlaces, prefix, suffix, ref]
+    )
+
+    return (
+      <span
+        ref={ref}
+        className={cn(
+          "inline-block tracking-wider text-on-surface tabular-nums font-semibold",
+          className
+        )}
+        {...props}
+      >
+        {`${prefix}${startValue}${suffix}`}
+      </span>
+    )
+  }
+)
+
+NumberTicker.displayName = "NumberTicker"

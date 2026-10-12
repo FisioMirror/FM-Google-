@@ -17,9 +17,20 @@ import { formatAIReport } from '../lib/formatReport';
 import MascotAnimation from '../components/ui/MascotAnimation';
 import { AuroraText } from '../components/ui/AuroraText';
 import { BorderBeam } from '../components/ui/BorderBeam';
-import { ConfettiStars } from '../components/ui/ConfettiButton';
+import { ConfettiSideCannons } from '../components/ui/ConfettiButton';
+import { ClinicalActivityFeed } from '../components/ui/ClinicalActivityFeed';
+import { KineticText } from '../components/ui/KineticText';
+import { ClinicalHighlighter } from '../components/ui/Highlighter';
+import { PulsatingButton } from '../components/ui/PulsatingButton';
+import { ShimmerButton } from '../components/ui/ShimmerButton';
+import { ShineBorder } from '../components/ui/ShineBorder';
+import { MagicCard } from '../components/ui/MagicCard';
+import { NumberTicker } from '../components/ui/NumberTicker';
+import { InteractiveHoverButton } from '../components/ui/InteractiveHoverButton';
+import { CompactJointSelector } from '../components/ui/CompactQuickSelector';
+import { TextAnimate } from '../components/ui/TextAnimate';
 import { UNIFIED_DEMO_PATIENTS } from '../data/unifiedDemoData';
-import { ArrowRight, ChevronRight, Sparkles, LayoutGrid } from 'lucide-react';
+import { ArrowRight, ChevronRight, Sparkles } from 'lucide-react';
 import { isValidUUID } from '../lib/utils';
 import { isDemoAccount } from '../lib/demoAuth';
 import { staggerContainer, staggerItem, springTactile } from '../lib/motionVariants';
@@ -178,10 +189,42 @@ const demoEvolution = [
 ];
 
 const quickActions = [
-  { title: 'Nueva Sesión AR', desc: 'Inicia un seguimiento remoto con biofeedback en tiempo real.', icon: 'videocam', color: 'bg-primary', cta: 'Comenzar ahora', route: '/patients' },
-  { title: 'Cargar Paciente', desc: 'Sube historias clínicas o importa perfiles con OCR inteligente.', icon: 'person_add', color: 'bg-secondary', cta: 'Importar', route: '/ocr-scanner' },
-  { title: 'Directorio Clínico', desc: 'Gestión integral de pacientes, expedientes y tokens de vinculación.', icon: 'group', color: 'bg-tertiary', cta: 'Ver pacientes', route: '/patients' },
-  { title: 'Biblioteca Clínica', desc: 'Explora ejercicios validados y ajusta rangos articulares.', icon: 'fitness_center', color: 'bg-emerald-600', cta: 'Ver ejercicios', route: '/fisio-exercises' },
+  {
+    title: 'Nueva Sesión AR',
+    desc: 'Inicia un seguimiento remoto con biofeedback en tiempo real.',
+    icon: 'videocam',
+    color: 'bg-teal-600',
+    pastelBg: 'bg-gradient-to-br from-teal-50/70 via-surface/90 to-teal-50/30 dark:from-teal-950/25 dark:via-surface-container/80 dark:to-slate-900/90 border-teal-200/50 dark:border-teal-500/25',
+    cta: 'Comenzar ahora',
+    route: '/patients'
+  },
+  {
+    title: 'Cargar Paciente',
+    desc: 'Sube historias clínicas o importa perfiles con OCR inteligente.',
+    icon: 'person_add',
+    color: 'bg-sky-600',
+    pastelBg: 'bg-gradient-to-br from-sky-50/70 via-surface/90 to-sky-50/30 dark:from-sky-950/25 dark:via-surface-container/80 dark:to-slate-900/90 border-sky-200/50 dark:border-sky-500/25',
+    cta: 'Importar',
+    route: '/ocr-scanner'
+  },
+  {
+    title: 'Directorio Clínico',
+    desc: 'Gestión integral de pacientes, expedientes y tokens de vinculación.',
+    icon: 'group',
+    color: 'bg-indigo-600',
+    pastelBg: 'bg-gradient-to-br from-indigo-50/65 via-surface/90 to-indigo-50/30 dark:from-indigo-950/20 dark:via-surface-container/80 dark:to-slate-900/90 border-indigo-200/50 dark:border-indigo-500/25',
+    cta: 'Ver pacientes',
+    route: '/patients'
+  },
+  {
+    title: 'Biblioteca Clínica',
+    desc: 'Explora ejercicios validados y ajusta rangos articulares.',
+    icon: 'fitness_center',
+    color: 'bg-emerald-600',
+    pastelBg: 'bg-gradient-to-br from-emerald-50/70 via-surface/90 to-emerald-50/30 dark:from-emerald-950/25 dark:via-surface-container/80 dark:to-slate-900/90 border-emerald-200/50 dark:border-emerald-500/25',
+    cta: 'Ver ejercicios',
+    route: '/fisio-exercises'
+  },
 ];
 
 export function DashboardFisio() {
@@ -203,6 +246,15 @@ export function DashboardFisio() {
     start.setDate(end.getDate() - 7);
     return { start, end };
   });
+  const [selectedJointFilter, setSelectedJointFilter] = useState<string>('todos');
+
+  const filteredPatients = useMemo(() => {
+    if (!selectedJointFilter || selectedJointFilter === 'todos') return displayedPatients;
+    return displayedPatients.filter((p) => {
+      const text = `${p.diagnosis || ''} ${p.routine || ''} ${p.name || ''}`.toLowerCase();
+      return text.includes(selectedJointFilter.toLowerCase());
+    });
+  }, [displayedPatients, selectedJointFilter]);
 
   useEffect(() => {
     loadKpis();
@@ -590,10 +642,47 @@ export function DashboardFisio() {
   const displayKpi = loadingKpis ? emptyDisplayKpi : kpi;
 
   const kpiCards = [
-    { label: 'Pacientes Activos', value: displayKpi.activePatients, icon: 'group' },
-    { label: 'Sesiones Hoy', value: displayKpi.sessionsToday, icon: 'calendar_today' },
-    { label: 'Adherencia Semanal', value: displayKpi.weeklyAdherence > 0 ? `${displayKpi.weeklyAdherence}%` : '—', icon: 'verified' },
-    { label: 'Tokens Pendientes', value: String(displayKpi.pendingTokens).padStart(2, '0'), icon: 'key' },
+    {
+      label: 'Pacientes Activos',
+      value: displayKpi.activePatients,
+      numericValue: displayKpi.activePatients,
+      colorHex: '#00504d',
+      icon: 'group',
+      bgClass: 'bg-gradient-to-br from-teal-50/80 via-surface/90 to-cyan-50/50 dark:from-teal-950/30 dark:via-surface-container/80 dark:to-slate-900/90 border-teal-200/60 dark:border-teal-500/30',
+      iconClass: 'bg-teal-500/15 text-teal-700 dark:text-teal-300',
+      badgeClass: 'bg-teal-500/15 text-teal-700 dark:text-teal-300 border-teal-500/30',
+    },
+    {
+      label: 'Sesiones Hoy',
+      value: displayKpi.sessionsToday,
+      numericValue: displayKpi.sessionsToday,
+      colorHex: '#158f8a',
+      icon: 'calendar_today',
+      bgClass: 'bg-gradient-to-br from-cyan-50/75 via-surface/90 to-teal-50/40 dark:from-cyan-950/25 dark:via-surface-container/80 dark:to-slate-900/90 border-cyan-200/60 dark:border-cyan-500/30',
+      iconClass: 'bg-cyan-500/15 text-cyan-700 dark:text-cyan-300',
+      badgeClass: 'bg-cyan-500/15 text-cyan-700 dark:text-cyan-300 border-cyan-500/30',
+    },
+    {
+      label: 'Adherencia Semanal',
+      value: displayKpi.weeklyAdherence > 0 ? `${displayKpi.weeklyAdherence}%` : '—',
+      numericValue: displayKpi.weeklyAdherence,
+      isPercent: true,
+      colorHex: '#156966',
+      icon: 'verified',
+      bgClass: 'bg-gradient-to-br from-teal-50/75 via-surface/90 to-emerald-50/40 dark:from-teal-950/25 dark:via-surface-container/80 dark:to-slate-900/90 border-teal-200/60 dark:border-teal-500/30',
+      iconClass: 'bg-teal-500/15 text-teal-700 dark:text-teal-300',
+      badgeClass: 'bg-teal-500/15 text-teal-700 dark:text-teal-300 border-teal-500/30',
+    },
+    {
+      label: 'Tokens Pendientes',
+      value: String(displayKpi.pendingTokens).padStart(2, '0'),
+      numericValue: displayKpi.pendingTokens,
+      colorHex: '#E2725B',
+      icon: 'key',
+      bgClass: 'bg-gradient-to-br from-orange-50/70 via-surface/90 to-amber-50/40 dark:from-amber-950/25 dark:via-surface-container/80 dark:to-slate-900/90 border-orange-200/50 dark:border-orange-500/25',
+      iconClass: 'bg-tertiary-500/15 text-tertiary-700 dark:text-tertiary-300',
+      badgeClass: 'bg-tertiary-500/15 text-tertiary-700 dark:text-tertiary-300 border-tertiary-500/30',
+    },
   ];
 
   return (
@@ -605,14 +694,31 @@ export function DashboardFisio() {
         <div className="flex items-center gap-4 relative">
           <MascotAnimation type="greeting" size="md" />
           <div>
+            <div className="flex items-center gap-2 mb-1">
+              <KineticText text="FisioMirror" as="span" className="text-xs font-bold uppercase tracking-widest text-primary/80" />
+              <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-600 dark:text-teal-400 border border-teal-500/20">Clínico</span>
+            </div>
             <h2 className="font-display font-headline-lg text-headline-lg-mobile lg:text-headline-lg gradient-text-living">
               {greeting}, <AuroraText>{user?.full_name?.split(' ')[0] || 'Doctor'}</AuroraText>
             </h2>
-            <p className="text-outline font-title-md text-title-md">
+            <TextAnimate
+              animation="fadeIn"
+              by="word"
+              className="text-outline font-title-md text-title-md"
+            >
               {new Date().toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
-            </p>
+            </TextAnimate>
           </div>
-          <div className="ml-auto flex items-center gap-2">
+          <div className="ml-auto flex items-center gap-2.5">
+            <PulsatingButton
+              variant="pulse"
+              pulseColor="rgba(13, 148, 136, 0.6)"
+              onClick={() => navigate('/ar-mirror')}
+              className="hidden lg:flex text-xs px-4 py-2 rounded-2xl shadow-sm"
+            >
+              <Sparkles className="size-3.5" />
+              <span>Iniciar Espejo AR</span>
+            </PulsatingButton>
             <div className="hidden md:block">
               <DateRangePicker value={dateRange} onChange={setDateRange}>
                 <DateRangePicker.Trigger placeholder="Filtrar rango de sesiones..." />
@@ -659,7 +765,7 @@ export function DashboardFisio() {
         description={loadingKpis ? 'Cargando resumen...' : realIsEmpty ? 'Aún no hay datos suficientes para mostrar un resumen.' : `Tienes ${kpi.activePatients} paciente(s) activo(s) y ${kpi.sessionsToday} sesión(es) registradas hoy.`}
       />
 
-      {/* KPI cards */}
+      {/* KPI cards en MagicCard con NumberTicker y tonos pastel clínicos */}
       <motion.div
         variants={staggerContainer}
         initial="hidden"
@@ -672,32 +778,51 @@ export function DashboardFisio() {
             variants={staggerItem}
             whileHover={{ y: -4, scale: 1.015, transition: springTactile }}
             whileTap={{ scale: 0.98 }}
-            className="ios-glass-heavy refraction-border p-4 sm:p-6 rounded-2xl sm:rounded-3xl group cursor-default relative overflow-hidden flex flex-col justify-between transition-all duration-300 shadow-sm hover:shadow-xl"
+            className="rounded-2xl sm:rounded-3xl overflow-hidden shadow-xs hover:shadow-xl transition-all h-full"
           >
-            <div className="flex justify-between items-start mb-3 sm:mb-4 relative z-10">
-              <div className="size-10 sm:size-12 rounded-xl sm:rounded-2xl bg-teal-500/10 text-teal-700 dark:text-teal-300 flex items-center justify-center font-bold">
-                <Icon name={card.icon} size={22} className="animate-breathe-icon" />
+            <MagicCard
+              mode="gradient"
+              gradientColor={card.colorHex}
+              gradientOpacity={0.15}
+              className={`p-4 sm:p-6 rounded-2xl sm:rounded-3xl group cursor-default relative flex flex-col justify-between h-full transition-all duration-300 border ${card.bgClass}`}
+            >
+              <div className="flex justify-between items-start mb-3 sm:mb-4 relative z-10">
+                <div className={`size-10 sm:size-12 rounded-xl sm:rounded-2xl ${card.iconClass} flex items-center justify-center font-bold shadow-xs`}>
+                  <Icon name={card.icon} size={22} className="animate-breathe-icon" />
+                </div>
+                {loadingKpis ? (
+                  <span className="text-[9px] sm:text-[10px] font-bold text-outline px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full bg-slate-100 dark:bg-slate-800">Cargando...</span>
+                ) : realIsEmpty ? (
+                  <span className="text-[9px] sm:text-[10px] font-bold text-amber-700 dark:text-amber-300 bg-amber-500/10 border border-amber-500/20 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full">Sin datos</span>
+                ) : (
+                  <span className={`inline-flex items-center gap-1 sm:gap-1.5 text-[9px] sm:text-[10px] font-bold ${card.badgeClass} border px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full`}>
+                    <span className="w-1.5 h-1.5 rounded-full bg-current animate-pulse" />
+                    <span className="hidden xs:inline">En vivo</span>
+                  </span>
+                )}
               </div>
-              {loadingKpis ? (
-                <span className="text-[9px] sm:text-[10px] font-bold text-outline px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full bg-slate-100 dark:bg-slate-800">Cargando...</span>
-              ) : realIsEmpty ? (
-                <span className="text-[9px] sm:text-[10px] font-bold text-amber-700 dark:text-amber-300 bg-amber-500/10 border border-amber-500/20 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full">Sin datos</span>
-              ) : (
-                <span className="inline-flex items-center gap-1 sm:gap-1.5 text-[9px] sm:text-[10px] font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-500/10 border border-emerald-500/20 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                  <span className="hidden xs:inline">En vivo</span>
-                </span>
-              )}
-            </div>
-            
-            <div className="relative z-10">
-              <p className="text-[11px] sm:text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-0.5 sm:mb-1 line-clamp-1">{card.label}</p>
-              {loadingKpis ? (
-                <Skeleton variant="text" width="60%" height={36} className="mt-1" />
-              ) : (
-                <h3 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 dark:text-slate-100 tabular-nums tracking-tight">{card.value}</h3>
-              )}
-            </div>
+              
+              <div className="relative z-10">
+                <p className="text-[11px] sm:text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-0.5 sm:mb-1 line-clamp-1">{card.label}</p>
+                {loadingKpis ? (
+                  <Skeleton variant="text" width="60%" height={36} className="mt-1" />
+                ) : (
+                  <h3 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 dark:text-slate-100 tabular-nums tracking-tight">
+                    {card.isPercent ? (
+                      card.numericValue > 0 ? (
+                        <>
+                          <NumberTicker value={card.numericValue} />%
+                        </>
+                      ) : (
+                        '—'
+                      )
+                    ) : (
+                      <NumberTicker value={card.numericValue} />
+                    )}
+                  </h3>
+                )}
+              </div>
+            </MagicCard>
           </motion.div>
         ))}
       </motion.div>
@@ -716,7 +841,7 @@ export function DashboardFisio() {
             whileHover={{ scale: 1.02, y: -3, transition: springTactile }}
             whileTap={{ scale: 0.98 }}
             onClick={() => navigate(action.route)}
-            className="relative overflow-hidden group glass-panel p-6 sm:p-7 rounded-[2rem] text-left transition-all hover-lift flex flex-col justify-between"
+            className={`relative overflow-hidden group border ${action.pastelBg} p-6 sm:p-7 rounded-[2rem] text-left transition-all hover-lift flex flex-col justify-between shadow-sm hover:shadow-md`}
           >
             <div className={`absolute -right-8 -bottom-8 w-40 h-40 ${action.color} opacity-10 blur-3xl group-hover:scale-150 transition-transform duration-500`} />
             <div>
@@ -741,7 +866,7 @@ export function DashboardFisio() {
           transition={{ duration: 0.4 }}
         >
           <GlassPanel className="rounded-[32px] overflow-hidden shadow-[0_12px_40px_rgba(13,148,136,0.12)] hover-lift border-l-4 border-l-teal-400/60 dark:border-l-teal-600/40 relative">
-            <BorderBeam size={110} duration={8} colorFrom="#14b8a6" colorTo="#06b6d4" />
+            <ShineBorder borderWidth={1.5} duration={12} shineColor={["#00504d", "#14b8a6", "#c1ff72"]} />
             {/* Header */}
             <div className="flex items-center justify-between px-8 py-6 bg-gradient-to-r from-primary/15 via-primary/5 to-transparent border-b border-primary/15">
               <div className="flex items-center gap-4">
@@ -814,14 +939,16 @@ export function DashboardFisio() {
 
             {/* Action */}
             <div className="px-8 pb-6">
-              <button
+              <ShimmerButton
                 onClick={loadInsight}
                 disabled={insightLoading}
-                className="bg-primary text-white py-3 px-6 rounded-xl font-bold hover:scale-[0.98] transition-all disabled:opacity-50 flex items-center gap-2 premium-btn"
+                shimmerColor="#c1ff72"
+                background="rgba(0, 80, 77, 0.95)"
+                className="py-3 px-6 rounded-2xl font-bold flex items-center gap-2 disabled:opacity-50 text-white"
               >
                 {insightLoading ? <Spinner size={18} className="text-current" /> : <Icon name="refresh" size={18} />}
                 Actualizar Informe
-              </button>
+              </ShimmerButton>
             </div>
           </GlassPanel>
         </motion.div>
@@ -862,9 +989,9 @@ export function DashboardFisio() {
                 priorities.map((p, i) => {
                   const checked = checkedPriorities[i];
                   const priorityColor =
-                    p.priority === 'ALTA' ? 'text-cyan-600 bg-cyan-500/10 ring-cyan-500/20' :
-                    p.priority === 'MEDIA' ? 'text-teal-600 bg-teal-500/10 ring-teal-500/20' :
-                    'text-on-surface-variant bg-surface-variant/10 ring-outline-variant/20';
+                    p.priority === 'ALTA' ? 'text-sky-700 dark:text-sky-300 bg-sky-500/15 border border-sky-500/30' :
+                    p.priority === 'MEDIA' ? 'text-teal-700 dark:text-teal-300 bg-teal-500/15 border border-teal-500/30' :
+                    'text-indigo-700 dark:text-indigo-300 bg-indigo-500/15 border border-indigo-500/30';
                   return (
                     <motion.label
                       key={i}
@@ -873,10 +1000,10 @@ export function DashboardFisio() {
                       transition={{ delay: i * 0.06 }}
                       whileHover={{ scale: 1.01 }}
                       whileTap={{ scale: 0.99 }}
-                      className={`flex items-center gap-4 cursor-pointer p-4 rounded-2xl border transition-colors duration-300 ${
+                      className={`flex items-center gap-4 cursor-pointer p-4 rounded-2xl border transition-all duration-300 ${
                         checked
-                          ? 'bg-gradient-to-r from-cyan-500/10 to-teal-500/5 border-cyan-500/30'
-                          : 'bg-surface-container-low/40 border-outline-variant/20 hover:border-cyan-500/20'
+                          ? 'bg-gradient-to-r from-teal-50/80 via-surface/90 to-sky-50/60 dark:from-teal-950/30 dark:via-surface-container/80 dark:to-sky-950/20 border-teal-300/60 dark:border-teal-500/30 shadow-xs'
+                          : 'bg-gradient-to-r from-sky-50/40 via-surface/90 to-surface dark:from-slate-900/60 dark:via-surface-container/70 dark:to-slate-900/60 border-sky-100/60 dark:border-white/5 hover:border-teal-400/40'
                       }`}
                     >
                       {/* Animated checkbox */}
@@ -914,7 +1041,13 @@ export function DashboardFisio() {
 
                       <div className="flex-1 min-w-0">
                         <p className={`text-sm font-medium transition-all duration-300 ${checked ? 'line-through text-on-surface-variant' : 'text-on-surface'}`}>
-                          {p.text}
+                          {i === 0 && !checked ? (
+                            <ClinicalHighlighter variant={p.priority === 'ALTA' ? 'warning' : 'accent'} action="highlight">
+                              {p.text}
+                            </ClinicalHighlighter>
+                          ) : (
+                            p.text
+                          )}
                         </p>
                         <p className="text-xs text-outline mt-0.5">{p.subtitle}</p>
                       </div>
@@ -931,53 +1064,67 @@ export function DashboardFisio() {
         </GlassPanel>
       </div>
 
-      {/* Remote monitoring hub */}
-      <GlassPanel className="p-8 rounded-[40px] relative overflow-hidden hover-lift border-l-4 border-l-teal-400/60 dark:border-l-teal-600/40 shadow-[0_8px_30px_rgba(13,148,136,0.10)]">
-        <BorderBeam size={130} duration={7} colorFrom="#14b8a6" colorTo="#06b6d4" />
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent" />
-        <div className="relative z-10">
-          <div className="flex justify-between items-start mb-4">
-            <div>
-              <h3 className="font-headline-lg text-headline-lg-mobile lg:text-headline-lg text-on-surface mb-2">Monitoreo Remoto</h3>
-              <p className="text-on-surface-variant text-sm">Sesiones y actividad reciente de tus pacientes</p>
+      {/* Remote monitoring & live activity hub */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <GlassPanel className="lg:col-span-5 p-8 rounded-3xl relative overflow-hidden hover-lift border-l-4 border-l-teal-400/60 dark:border-l-teal-600/40 shadow-[0_8px_30px_rgba(13,148,136,0.10)] flex flex-col justify-between h-full min-h-[380px]">
+          <BorderBeam size={130} duration={7} colorFrom="#14b8a6" colorTo="#06b6d4" />
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent pointer-events-none" />
+          <div className="relative z-10 space-y-4">
+            <div className="flex justify-between items-start">
+              <div>
+                <h3 className="font-headline-lg text-headline-lg-mobile lg:text-headline-lg text-on-surface mb-2">Monitoreo Remoto</h3>
+                <p className="text-on-surface-variant text-sm">Sesiones activas y sincronización clínica</p>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-ping" />
+                <span className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 tracking-wider">EN VIVO</span>
+              </div>
             </div>
-            <div className="flex items-center gap-2">
-              <span className="w-3 h-3 bg-green-500 rounded-full animate-ping" />
-              <span className="text-xs font-bold text-success tracking-wider">SINCRONIZADO</span>
+
+            <div className="flex items-center gap-2 py-2">
+              <div className="flex -space-x-3">
+                {displayedPatients.slice(0, 4).map((p, i) => (
+                  <div key={p.id || i} className="w-11 h-11 rounded-full border-2 border-white dark:border-slate-800 bg-primary-container flex items-center justify-center text-on-primary-container font-bold text-xs shadow-xs" title={p.name}>
+                    {p.name.charAt(0)}
+                  </div>
+                ))}
+                {displayedPatients.length === 0 && (
+                  <div className="w-11 h-11 rounded-full border-2 border-white dark:border-slate-800 bg-surface-container-highest flex items-center justify-center text-outline font-bold text-sm">
+                    0
+                  </div>
+                )}
+                {displayedPatients.length > 4 && (
+                  <div className="w-11 h-11 rounded-full border-2 border-white dark:border-slate-800 bg-surface-container-highest flex items-center justify-center text-outline font-bold text-xs">
+                    +{displayedPatients.length - 4}
+                  </div>
+                )}
+              </div>
+              <p className="text-xs text-on-surface-variant font-medium ml-2">
+                {displayedPatients.length} pacientes monitorizados
+              </p>
             </div>
           </div>
-          <div className="flex items-center gap-2 mb-6">
-            <div className="flex -space-x-4">
-              {displayedPatients.slice(0, 3).map((p, i) => (
-                <div key={p.id || i} className="w-12 h-12 rounded-full border-4 border-white bg-primary-container flex items-center justify-center text-on-primary-container font-bold text-xs" title={p.name}>
-                  {p.name.charAt(0)}
-                </div>
-              ))}
-              {displayedPatients.length === 0 && (
-                <div className="w-12 h-12 rounded-full border-4 border-white bg-surface-container-highest flex items-center justify-center text-outline font-bold text-sm">
-                  0
-                </div>
-              )}
-              {displayedPatients.length > 3 && (
-                <div className="w-12 h-12 rounded-full border-4 border-white bg-surface-container-highest flex items-center justify-center text-outline font-bold text-sm">
-                  +{displayedPatients.length - 3}
-                </div>
-              )}
-            </div>
-          </div>
-          <div className="flex items-center gap-3">
+
+          <div className="relative z-10 pt-6 border-t border-outline-variant/20 flex flex-wrap items-center gap-3">
             <button
               onClick={() => navigate('/patients')}
-              className="bg-primary text-on-primary font-bold px-6 py-3 rounded-2xl shadow-glow-primary hover:scale-[0.98] transition-all"
+              className="bg-primary text-on-primary font-bold px-5 py-2.5 rounded-xl shadow-glow-primary hover:scale-[0.98] transition-all text-sm"
             >
-              Ver Pacientes
+              Ver Expedientes
             </button>
-            <ConfettiStars className="px-5 py-3 rounded-2xl bg-amber-500 hover:bg-amber-600 font-bold">
-              Celebrar Logros
-            </ConfettiStars>
+            <ConfettiSideCannons
+              className="px-4 py-2.5 rounded-xl text-xs font-bold"
+              onClick={() => toast.success('¡Celebración disparada!', { description: 'Ráfaga festiva de objetivos clínicos cumplidos.' })}
+            >
+              🎉 Disparar Celebración
+            </ConfettiSideCannons>
           </div>
+        </GlassPanel>
+
+        <div className="lg:col-span-7">
+          <ClinicalActivityFeed delay={2600} />
         </div>
-      </GlassPanel>
+      </div>
 
       {/* Exercises & active treatments section */}
       <section className="section-bg-cyan relative">
@@ -999,27 +1146,31 @@ export function DashboardFisio() {
           </button>
         </div>
 
-        {displayedPatients.length === 0 ? (
+        {/* Selector rápido 1-Tap por articulación clínica */}
+        <div className="mb-6 relative z-10 max-w-2xl bg-white/70 dark:bg-slate-900/70 p-3.5 rounded-2xl border border-sky-100/60 dark:border-slate-800 shadow-xs backdrop-blur-md">
+          <CompactJointSelector
+            selectedJoint={selectedJointFilter}
+            onSelectJoint={(id) => {
+              setSelectedJointFilter(selectedJointFilter === id ? 'todos' : id);
+            }}
+          />
+        </div>
+
+        {filteredPatients.length === 0 ? (
           <div className="p-8 rounded-3xl bg-surface/80 dark:bg-surface-container-low/60 border border-outline/15 text-center flex flex-col items-center justify-center gap-3">
             <div className="w-12 h-12 rounded-2xl bg-teal-500/10 text-teal-600 dark:text-teal-400 flex items-center justify-center">
               <Icon name="groups" size={26} />
             </div>
-            <h4 className="font-bold text-on-surface text-base">Sin pacientes activos registrados</h4>
+            <h4 className="font-bold text-on-surface text-base">Sin pacientes en esta articulación</h4>
             <p className="text-xs text-on-surface-variant max-w-md">
-              Genera un token de activación o registra a tu primer paciente para ver su seguimiento y adherencia aquí.
+              No hay pacientes registrados con diagnóstico de {selectedJointFilter}. Cambia el filtro para ver otros pacientes.
             </p>
             <div className="flex gap-2.5 mt-2">
               <button
-                onClick={() => navigate('/tokens')}
+                onClick={() => setSelectedJointFilter('todos')}
                 className="px-4 py-2 rounded-xl bg-primary text-white text-xs font-bold shadow-xs hover:bg-primary/90 transition-all"
               >
-                Generar Token
-              </button>
-              <button
-                onClick={() => navigate('/nuevo-paciente')}
-                className="px-4 py-2 rounded-xl bg-surface-container text-on-surface text-xs font-bold hover:bg-surface-container-high transition-all"
-              >
-                Nuevo Paciente
+                Restablecer Filtro
               </button>
             </div>
           </div>
@@ -1030,7 +1181,7 @@ export function DashboardFisio() {
             animate="show"
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 relative z-10"
           >
-            {displayedPatients.slice(0, 3).map((p) => {
+            {filteredPatients.slice(0, 3).map((p) => {
               const patientName = p.name || 'Paciente';
               const initials = patientName.split(' ').filter(Boolean).map((n: string) => n[0]).join('').slice(0, 2) || 'PA';
               const isOnline = p.status === 'Activo';

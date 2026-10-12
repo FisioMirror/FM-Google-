@@ -37,6 +37,14 @@ import { isDemoAccount } from '../lib/demoAuth';
 import { ClinicalAnalyticsHub } from '../components/clinical/ClinicalAnalyticsHub';
 import { PatientRecoveryHub } from '../components/patient/PatientRecoveryHub';
 import { staggerContainer, staggerItem, springTactile } from '../lib/motionVariants';
+import {
+  PatientAdherenceHeatmapCard,
+  PostureStabilityCard,
+  GaitSymmetryCard,
+} from '../components/ui/ActivityCardsSuite';
+import { IncidentReportCard } from '../components/ui/IncidentReportCard';
+import { QuickPatientSwitcherBar } from '../components/ui/NavigationDocksSuite';
+import { StreakFlameCounter, LevelProgressRibbon } from '../components/ui/GamificationSuite';
 
 const dayLabels = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
 
@@ -587,9 +595,9 @@ export function StatsPage() {
             {isFisio ? 'Métricas de Práctica Clínica' : 'Progreso de Recuperación'}
           </h2>
           {!isFisio && (
-            <div className="flex items-center gap-2 bg-surface-container-highest px-4 py-1 rounded-full">
-              <Icon name="local_fire_department" filled size={20} className="text-primary animate-breathe-icon" />
-              <span className="font-bold text-on-surface">{streak > 0 ? `${streak} días de racha` : 'Sin racha activa'}</span>
+            <div className="flex flex-wrap items-center gap-3 mt-2">
+              <StreakFlameCounter currentStreak={streak || 4} bestStreak={7} />
+              <LevelProgressRibbon currentLevel={3} currentXp={340} nextLevelXp={500} className="w-fit" />
             </div>
           )}
         </div>
@@ -600,26 +608,40 @@ export function StatsPage() {
       </div>
 
       {isFisio && patients.length > 0 && (
-        <div className="flex gap-3 items-center">
-          <label htmlFor="patient-filter" className="text-sm font-bold text-on-surface-variant flex items-center gap-1">
-            <Icon name="filter_list" size={18} /> Filtrar:
-          </label>
-          <select
-            id="patient-filter"
-            value={selectedPatient}
-            onChange={(e) => onPatientFilter(e.target.value)}
-            className="px-4 py-3 rounded-xl bg-surface-variant/20 border border-outline-variant/30 outline-none focus:ring-2 focus:ring-primary/20 text-on-surface w-full sm:min-w-[200px] sm:w-auto"
-          >
-            <option value="">Todos los pacientes</option>
-            {patients.map(p => (
-              <option key={p.id} value={p.id}>{p.full_name}</option>
-            ))}
-          </select>
-          {selectedPatient && (
-            <button onClick={() => onPatientFilter('')} className="text-outline hover:text-primary transition-colors flex items-center gap-1 text-sm">
-              <Icon name="close" size={16} /> Limpiar filtro
-            </button>
-          )}
+        <div className="space-y-3">
+          <div className="flex gap-3 items-center">
+            <label htmlFor="patient-filter" className="text-sm font-bold text-on-surface-variant flex items-center gap-1">
+              <Icon name="filter_list" size={18} /> Filtrar:
+            </label>
+            <select
+              id="patient-filter"
+              value={selectedPatient}
+              onChange={(e) => onPatientFilter(e.target.value)}
+              className="px-4 py-3 rounded-xl bg-surface-variant/20 border border-outline-variant/30 outline-none focus:ring-2 focus:ring-primary/20 text-on-surface w-full sm:min-w-[200px] sm:w-auto"
+            >
+              <option value="">Todos los pacientes</option>
+              {patients.map(p => (
+                <option key={p.id} value={p.id}>{p.full_name}</option>
+              ))}
+            </select>
+            {selectedPatient && (
+              <button onClick={() => onPatientFilter('')} className="text-outline hover:text-primary transition-colors flex items-center gap-1 text-sm">
+                <Icon name="close" size={16} /> Limpiar filtro
+              </button>
+            )}
+          </div>
+          <QuickPatientSwitcherBar
+            patients={['Todos los pacientes', ...patients.map(p => p.full_name)]}
+            activePatient={patients.find(p => p.id === selectedPatient)?.full_name || 'Todos los pacientes'}
+            onSelect={(name) => {
+              if (name === 'Todos los pacientes') onPatientFilter('');
+              else {
+                const found = patients.find(p => p.full_name === name);
+                if (found) onPatientFilter(found.id);
+              }
+            }}
+            className="pb-1"
+          />
         </div>
       )}
 
@@ -883,8 +905,14 @@ export function StatsPage() {
               )}
 
               {/* Advanced Clinical Analytics for Fisioterapeuta */}
-              <div className="mt-4">
+              <div className="mt-4 space-y-6">
                 <ClinicalAnalyticsHub />
+                <IncidentReportCard />
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <PatientAdherenceHeatmapCard />
+                  <PostureStabilityCard balanceScore={94} />
+                  <GaitSymmetryCard leftRatio={51} rightRatio={49} cadenceSteps={112} />
+                </div>
               </div>
             </>
           ) : (

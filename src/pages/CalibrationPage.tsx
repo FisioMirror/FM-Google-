@@ -4,6 +4,14 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Icon } from '../components/ui/Icon';
 import { useToast } from '../components/ui/ToastProvider';
 import { usePoseDetection } from '../hooks/usePoseDetection';
+import { PulsatingButton } from '../components/ui/PulsatingButton';
+import { SparklesText } from '../components/ui/SparklesText';
+import { CalibrationCompass } from '../components/ui/FloatingControlsSuite';
+import {
+  CameraFramingGuideHUD,
+  PoseConfidenceLiveIndicator,
+  HoldDurationTimerRing,
+} from '../components/ui/RealTimeMetricsSuite';
 
 type CalibState = 'idle' | 'detecting' | 'calibrating' | 'success' | 'error';
 
@@ -183,15 +191,26 @@ export function CalibrationPage() {
         >
           <Icon name="arrow_back" size={20} className="text-white" />
         </button>
-        <h1 className="font-bold text-lg">Calibracion de Camara</h1>
-        <span className="text-xs font-bold bg-teal-500/20 text-teal-300 px-3 py-1.5 rounded-full">SESION AR</span>
+        <h1 className="font-bold text-lg">Calibración de Cámara</h1>
+        <div className="flex items-center gap-3">
+          <PoseConfidenceLiveIndicator
+            confidence={isReady && poseData?.isTracking ? 95 : 30}
+            className="bg-slate-900/60 border-white/20 text-white text-[11px]"
+          />
+          <span className="text-xs font-bold bg-teal-500/20 text-teal-300 px-3 py-1.5 rounded-full">SESIÓN AR</span>
+        </div>
       </header>
+
+      {/* Brújula y Sensor de Nivel Espacial */}
+      <div className="absolute top-20 right-6 z-30 pointer-events-auto hidden sm:block">
+        <CalibrationCompass pitch={3} roll={-1} className="bg-slate-900/80 backdrop-blur-md border-white/20 text-white" />
+      </div>
 
       <button
         onClick={() => setShowSkipConfirm(true)}
         className="absolute bottom-6 left-6 z-30 px-5 py-3 rounded-2xl bg-white/10 text-white font-bold flex items-center gap-2 hover:bg-white/20 transition-colors"
         style={{ backdropFilter: 'blur(12px)', border: '1px solid rgba(255,255,255,0.15)', minHeight: '44px' }}
-        aria-label="Omitir calibracion"
+        aria-label="Omitir calibración"
       >
         <Icon name="skip_next" size={22} /> Omitir
       </button>
@@ -199,7 +218,7 @@ export function CalibrationPage() {
       {state === 'idle' && (
         <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-slate-900 gap-4">
           <div className="w-16 h-16 rounded-full border-4 border-teal-500 border-t-transparent animate-spin" />
-          <p className="text-white/70 text-sm">Inicializando camara...</p>
+          <p className="text-white/70 text-sm">Inicializando cámara...</p>
         </div>
       )}
 
@@ -214,12 +233,18 @@ export function CalibrationPage() {
       )}
 
       {state === 'detecting' && !error && (
-        <div className="absolute inset-0 z-20 flex flex-col items-center justify-center pointer-events-none gap-6">
-          <motion.div animate={{ scale: [1, 1.25, 1], opacity: [0.6, 1, 0.6] }} transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }} className="w-32 h-32 rounded-full border-4 border-teal-400" />
-          <motion.div animate={{ scale: [1, 1.4, 1], opacity: [0.3, 0, 0.3] }} transition={{ duration: 1.6, repeat: Infinity, ease: 'easeOut' }} className="absolute w-32 h-32 rounded-full border-2 border-cyan-400" />
-          <p className="text-white text-xl font-bold text-center drop-shadow-lg">Colocate frente a la camara</p>
-          <p className="text-white/70 text-sm">Asegurate de que tu cuerpo sea visible</p>
-          <div className="mt-2 px-4 py-2 rounded-full" style={{ background: 'rgba(15,23,42,0.6)', backdropFilter: 'blur(12px)' }}>
+        <div className="absolute inset-0 z-20 flex flex-col items-center justify-center pointer-events-none gap-4 p-4">
+          <CameraFramingGuideHUD
+            userFramed={Boolean(poseData?.isTracking)}
+            instruction="Asegúrate de que tu torso y brazos sean completamente visibles"
+            className="w-full max-w-sm bg-slate-900/80 border-white/20 text-white"
+          />
+          <div className="relative flex items-center justify-center my-2">
+            <motion.div animate={{ scale: [1, 1.25, 1], opacity: [0.6, 1, 0.6] }} transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }} className="w-28 h-28 rounded-full border-4 border-teal-400" />
+            <motion.div animate={{ scale: [1, 1.4, 1], opacity: [0.3, 0, 0.3] }} transition={{ duration: 1.6, repeat: Infinity, ease: 'easeOut' }} className="absolute w-28 h-28 rounded-full border-2 border-cyan-400" />
+          </div>
+          <p className="text-white text-lg font-bold text-center drop-shadow-lg">Colócate frente a la cámara</p>
+          <div className="px-4 py-1.5 rounded-full" style={{ background: 'rgba(15,23,42,0.6)', backdropFilter: 'blur(12px)' }}>
             <span className="text-white/60 text-xs">Tiempo: {detectElapsed}s / {DETECT_TIMEOUT}s</span>
           </div>
         </div>
@@ -227,13 +252,19 @@ export function CalibrationPage() {
 
       {state === 'calibrating' && (
         <div className="absolute inset-0 z-20 flex flex-col items-center justify-center pointer-events-none gap-4">
-          <AnimatePresence mode="wait">
-            {countdown > 0 ? (
-              <motion.div key={countdown} initial={{ scale: 1.6, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.6, opacity: 0 }} className="text-9xl font-black text-teal-400 drop-shadow-2xl">
-                {countdown}
-              </motion.div>
-            ) : null}
-          </AnimatePresence>
+          <div className="flex items-center gap-6">
+            <AnimatePresence mode="wait">
+              {countdown > 0 ? (
+                <motion.div key={countdown} initial={{ scale: 1.6, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.6, opacity: 0 }} className="text-9xl font-black text-teal-400 drop-shadow-2xl">
+                  {countdown}
+                </motion.div>
+              ) : null}
+            </AnimatePresence>
+            <HoldDurationTimerRing
+              targetSeconds={COUNTDOWN_FROM}
+              className="bg-slate-900/80 border-white/20 text-white"
+            />
+          </div>
           <div className="rounded-2xl px-5 py-3" style={{ background: 'rgba(15,23,42,0.7)', backdropFilter: 'blur(12px)', border: handRaisedDetected ? '1px solid rgba(45,212,191,0.5)' : '1px solid rgba(255,255,255,0.1)' }}>
             <p className={`font-bold text-center ${handRaisedDetected ? 'text-teal-300' : 'text-white'}`}>
               {handRaisedDetected ? '¡Mano detectada! Mantén la posición...' : '¡Levanta tu mano por encima del hombro!'}
@@ -252,12 +283,23 @@ export function CalibrationPage() {
               <Icon name="check" size={64} className="text-white" />
             </motion.div>
             <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.2 }}>
-              <h2 className="text-3xl font-bold text-white mb-2">Calibracion exitosa!</h2>
-              <p className="text-white/70">Tu camara esta lista para el modo AR</p>
+              <SparklesText
+                sparklesCount={6}
+                colors={{ first: '#2dd4bf', second: '#c1ff72' }}
+                className="text-3xl font-bold text-white mb-2"
+              >
+                ¡Calibración exitosa!
+              </SparklesText>
+              <p className="text-white/70">Tu cámara está lista para el modo AR con bio-feedback</p>
             </motion.div>
-            <motion.button initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.4 }} onClick={goAR} className="mt-4 px-8 py-4 bg-teal-500 text-white rounded-2xl font-bold flex items-center gap-2 hover:scale-105 active:scale-95 transition-transform shadow-lg shadow-teal-500/30">
+            <PulsatingButton
+              variant="ripple"
+              pulseColor="rgba(45, 212, 191, 0.6)"
+              onClick={goAR}
+              className="mt-4 px-8 py-4 bg-teal-500 text-white rounded-2xl font-bold flex items-center gap-2 shadow-lg shadow-teal-500/30 text-base"
+            >
               <Icon name="play_arrow" size={22} /> Continuar al Modo AR
-            </motion.button>
+            </PulsatingButton>
           </motion.div>
         )}
       </AnimatePresence>

@@ -33,7 +33,12 @@ import {
   UserCheck,
   Megaphone,
   CheckSquare,
-  Tag
+  Tag,
+  Radio,
+  Home,
+  Users,
+  Camera,
+  Dumbbell
 } from 'lucide-react';
 import { Button, IconButton, BackButton } from '../components/ui/Button';
 import { Dialog, DialogHeader, DialogTitle, DialogDescription, DialogContent, DialogFooter, ConfirmDialog } from '../components/ui/Dialog';
@@ -71,21 +76,65 @@ import {
   DefaultValueRangeCalendar 
 } from '../components/ui/DateRangePicker';
 
-// Nuevos componentes estandarizados: ScrollShadow, Skeleton, Toast
+// Nuevos componentes estandarizados: ScrollShadow, Skeleton, Toast, AnimatedList, Confetti
 import { ScrollShadow } from '../components/ui/ScrollShadow';
 import { Skeleton } from '../components/ui/Skeleton';
 import { toast } from '../components/ui/Toast';
+import { ClinicalActivityFeed } from '../components/ui/ClinicalActivityFeed';
+import { ConfettiStars, ConfettiSideCannons } from '../components/ui/ConfettiButton';
+
+// Nuevos 7 Componentes Avanzados
+import { Highlighter, ClinicalHighlighter, type AnnotationAction } from '../components/ui/Highlighter';
+import { InteractiveHoverButton } from '../components/ui/InteractiveHoverButton';
+import { KineticText } from '../components/ui/KineticText';
+import { LightRays } from '../components/ui/LightRays';
+import { MagicCard } from '../components/ui/MagicCard';
+import { PixelImage } from '../components/ui/PixelImage';
+
+// 6 Componentes de Nueva Suite (PulsatingButton, ScrollProgress, ShineBorder, SparklesText, TextAnimate)
+import { PulsatingButton } from '../components/ui/PulsatingButton';
+import { ScrollProgress } from '../components/ui/ScrollProgress';
+import { ShineBorder } from '../components/ui/ShineBorder';
+import { SparklesText } from '../components/ui/SparklesText';
+import { TextAnimate, type AnimationType, type AnimationVariant } from '../components/ui/TextAnimate';
+
+// 8 Nuevos Componentes Estelares Biomecánicos & Gamificación FisioMirror
+import { BiomechanicalAngleGauge } from '../components/ui/BiomechanicalAngleGauge';
+import { ARFloatingDock } from '../components/ui/ARFloatingDock';
+import { RehabEnergyBar } from '../components/ui/RehabEnergyBar';
+import { GamifiedBadgeCard } from '../components/ui/GamifiedBadgeCard';
+import { CompensationAlertBanner } from '../components/ui/CompensationAlertBanner';
+import { RepetitionCounterSpring } from '../components/ui/RepetitionCounterSpring';
+import { JointDetailPopover } from '../components/ui/JointDetailPopover';
+import { TherapistQuickToolbar } from '../components/ui/TherapistQuickToolbar';
+
+// 50 Componentes Nuevos de la Macro Suite FisioMirror (5 Categorías)
+import * as MegaSuite from '../components/ui/megaSuite';
+
+// Armonización y Tokens Pastel Clínicos
+import { HarmonizedSurface } from '../components/ui/HarmonizedSurface';
+import { CLINICAL_PASTELS } from '../lib/designTokens';
+
+// PWA Móvil & Físicas de Resorte
+import { MobileBottomSheet, type BottomSheetSnapPoint } from '../components/ui/MobileBottomSheet';
+import { 
+  CompactJointSelector, 
+  CompactRomStepper, 
+  CompactToleranceDropdown 
+} from '../components/ui/CompactQuickSelector';
+import { MotionBlurFade, TactileFeedback, InViewStaggerContainer } from '../components/ui/MotionWrappers';
 
 import { useNavigate } from 'react-router-dom';
+import { cn } from '../lib/utils';
 
-type FilterTab = 'todos' | 'solicitados' | 'comparativa' | 'botones' | 'tarjetas' | 'modales' | 'entradas' | 'clinicos' | 'luces';
+type FilterTab = 'todos' | 'megasuite' | 'mobile' | 'armonizacion' | 'estelar' | 'solicitados' | 'comparativa' | 'botones' | 'tarjetas' | 'modales' | 'entradas' | 'clinicos' | 'luces';
 
 interface InventoryComparison {
   category: string;
   originalComponent: string;
   originalFile: string;
   evolvedComponent: string;
-  librarySource: 'Magic UI' | 'Aceternity UI' | '21st.dev' | 'HeroUI' | 'Origin UI' | 'Shadcn UI' | 'Reaviz';
+  librarySource: string;
   keyImprovements: string[];
   status: 'Activo en Galería' | 'Listo para Producción';
 }
@@ -300,6 +349,216 @@ const INVENTORY_COMPARISONS: InventoryComparison[] = [
       'Contraste de alto impacto en modo oscuro con bordes luminosos por severidad'
     ],
     status: 'Activo en Galería'
+  },
+  {
+    category: '16. Feed de Notificaciones en Vivo',
+    originalComponent: 'Listados estáticos de notificaciones o alertas en texto',
+    originalFile: 'src/pages/DashboardFisio.tsx',
+    evolvedComponent: 'Magic UI AnimatedList (Feed Clínico en Vivo)',
+    librarySource: 'Magic UI',
+    keyImprovements: [
+      'Animación de entrada con resortes elásticos (spring physics) y efecto ticker automático',
+      'Desplazamiento fluido y apilamiento progresivo con soporte para pausa/reanudación',
+      'Tarjetas translúcidas calibradas con tokens de FisioMirror y modo oscuro',
+      'Integración con eventos reales de MediaPipe, tokens y análisis Physi IA'
+    ],
+    status: 'Activo en Galería'
+  },
+  {
+    category: '17. Celebración Festiva de Objetivos',
+    originalComponent: 'Botones simples sin feedback visual de logro o avance',
+    originalFile: 'src/components/ui/ConfettiButton.tsx',
+    evolvedComponent: 'Magic UI / Canvas Confetti (ConfettiSideCannons)',
+    librarySource: 'Magic UI',
+    keyImprovements: [
+      'Disparo simultáneo continuo desde ambos bordes de la pantalla (ángulos 60° y 120°)',
+      'Paleta corporativa FisioMirror (teal primario, esmeralda, kinetic lime y cian)',
+      'Física fluida mediante requestAnimationFrame sin saturar el render loop',
+      'Ideal para altas médicas, superación de rangos articulares y rachas semanales'
+    ],
+    status: 'Activo en Galería'
+  },
+  {
+    category: '18. Resaltador Dinámico de Texto',
+    originalComponent: 'Clases estáticas bg-yellow-200 o subrayados planos HTML',
+    originalFile: 'src/components/ui/Highlighter.tsx',
+    evolvedComponent: 'Magic UI / Rough Notation (Highlighter)',
+    librarySource: 'Magic UI',
+    keyImprovements: [
+      'Trazos orgánicos vectoriales simulando marcador manual cuando entra en viewport',
+      'Siete modos visuales: highlight, underline, box, circle, bracket, strike-through, crossed-off',
+      'Variantes clínicas semánticas (warning, success, accent, info) para diagnósticos',
+      'Integración con ResizeObserver para mantener el trazo fiel en cualquier resolución'
+    ],
+    status: 'Activo en Galería'
+  },
+  {
+    category: '19. Botón de Desplazamiento Interactivo',
+    originalComponent: 'Botones tradicionales sin transiciones de cursor dinámicas',
+    originalFile: 'src/components/ui/InteractiveHoverButton.tsx',
+    evolvedComponent: 'Magic UI (InteractiveHoverButton)',
+    librarySource: 'Magic UI',
+    keyImprovements: [
+      'Microinteracción de expansión radial con círculo de acento en hover',
+      'Transición deslizante del texto con icono de flecha hacia adelante',
+      'Compatibilidad total de foco y accesibilidad para teclado',
+      'Ideal para CTAs principales de navegación (Iniciar Espejo AR, Guardar Rutina)'
+    ],
+    status: 'Activo en Galería'
+  },
+  {
+    category: '20. Tipografía Cinética por Proximidad',
+    originalComponent: 'Títulos h1/h2 estáticos sin interactividad tipográfica',
+    originalFile: 'src/components/ui/KineticText.tsx',
+    evolvedComponent: 'Magic UI (KineticText)',
+    librarySource: 'Magic UI',
+    keyImprovements: [
+      'Deformación letra por letra del font-weight (de 300 a 900) por proximidad del cursor',
+      'Padding y trazos webkit dinámicos en cascada vecina (has:selector)',
+      'Soporte polimórfico (h1, h2, h3, p, span) y accesibilidad para lectores de pantalla',
+      'Aporta sensación vanguardista y tecnológica a cabeceras de bienvenida'
+    ],
+    status: 'Activo en Galería'
+  },
+  {
+    category: '21. Rayos de Luz Atmosféricos',
+    originalComponent: 'Fondos planos o degradados estáticos sin vida',
+    originalFile: 'src/components/ui/LightRays.tsx',
+    evolvedComponent: 'Magic UI (LightRays)',
+    librarySource: 'Magic UI',
+    keyImprovements: [
+      'Haces de luz oscilantes con balanceo angular y desvanecimiento progresivo',
+      'Luces radiales ambientales superiores combinadas con color-mix srgb',
+      'Control de desenfoque, velocidad de ciclo, cantidad de haces y longitud',
+      'Crea una atmósfera clínica premium en login y modo espejo'
+    ],
+    status: 'Activo en Galería'
+  },
+  {
+    category: '22. Contador Numérico con Resortes',
+    originalComponent: 'Números estáticos que saltan de golpe sin interpolación',
+    originalFile: 'src/components/ui/NumberTicker.tsx',
+    evolvedComponent: 'Magic UI (NumberTicker)',
+    librarySource: 'Magic UI',
+    keyImprovements: [
+      'Física de resortes (damping & stiffness) para transición numérica fluida',
+      'Soporte startValue, prefijos, sufijos, decimales y cuenta regresiva o ascendente',
+      'Activación automática al entrar en viewport con useInView',
+      'Ideal para ángulos de ROM (articulaciones), adherencia (%) y pacientes activos'
+    ],
+    status: 'Activo en Galería'
+  },
+  {
+    category: '23. Tarjeta Iluminada MagicCard',
+    originalComponent: 'Tarjetas con bordes planos y sin respuesta al cursor',
+    originalFile: 'src/components/ui/MagicCard.tsx',
+    evolvedComponent: 'Magic UI (MagicCard)',
+    librarySource: 'Magic UI',
+    keyImprovements: [
+      'Modo Dual: Brillo dinámico de gradiente radial o efecto Orb luminoso difuminado',
+      'Física de seguimiento del cursor suave mediante useSpring sin saltos bruscos',
+      'Integración con modo oscuro/claro y borde degradado perimetral',
+      'Eleva la jerarquía visual de accesos rápidos y resúmenes clínicos'
+    ],
+    status: 'Activo en Galería'
+  },
+  {
+    category: '24. Imagen Pixelada con Revelación Gradual',
+    originalComponent: 'Imágenes estáticas con carga abrupta sin feedback visual',
+    originalFile: 'src/components/ui/PixelImage.tsx',
+    evolvedComponent: 'Magic UI (PixelImage)',
+    librarySource: 'Magic UI',
+    keyImprovements: [
+      'División de la imagen en cuadrícula poligonal clip-path (6x4, 8x8, 8x3, etc.)',
+      'Aparición escalonada aleatoria de cada fragmento con transición suave',
+      'Transición opcional de escala de grises a color vibrante',
+      'Ideal para avatares de pacientes, terapeutas o modelos de rehabilitación'
+    ],
+    status: 'Activo en Galería'
+  },
+  {
+    category: '25. Botón Pulsante Dinámico',
+    originalComponent: 'Botones planos sin jerarquía visual en pantallas densas',
+    originalFile: 'src/components/ui/Button.tsx',
+    evolvedComponent: 'Magic UI (PulsatingButton)',
+    librarySource: 'Magic UI',
+    keyImprovements: [
+      'Ondas de pulso concéntricas o efecto ripple expansivo infinito',
+      'Cálculo adaptativo de color de fondo mediante MutationObserver reactivo',
+      'Atrae inmediatamente la atención hacia la acción principal (Iniciar AR / Calibración)',
+      'Diseño táctil calibrado con tokens de FisioMirror y accesibilidad'
+    ],
+    status: 'Activo en Galería'
+  },
+  {
+    category: '26. Barra de Progreso de Desplazamiento',
+    originalComponent: 'Barras estándar del navegador o ausencia total de indicador',
+    originalFile: 'src/components/ui/ScrollProgress.tsx',
+    evolvedComponent: 'Magic UI / Motion (ScrollProgress)',
+    librarySource: 'Magic UI',
+    keyImprovements: [
+      'Rastreo continuo de scrollYProgress mediante aceleración GPU con scaleX',
+      'Gradiente canónico FisioMirror (teal-600 a cian y kinetic lime #c1ff72)',
+      'Soporte fijo superior global o anclado a un contenedor con scroll local',
+      'Ideal para guías clínicas, protocolos de ejercicios y expedientes extensos'
+    ],
+    status: 'Activo en Galería'
+  },
+  {
+    category: '27. Botón con Brillo Deslizante',
+    originalComponent: 'Botones sólidos oscuros sin dinamismo prémium',
+    originalFile: 'src/components/ui/ShimmerButton.tsx',
+    evolvedComponent: 'Magic UI (ShimmerButton)',
+    librarySource: 'Magic UI',
+    keyImprovements: [
+      'Efecto de brillo cónico en rotación continua con conic-gradient a 360°',
+      'Profundidad con sombras interiores biseladas y aceleración por GPU',
+      'Ideal para acciones de alta prioridad: Generar Informes IA y Exportar PDF',
+      'Totalmente responsive y estilizado con la identidad médica de FisioMirror'
+    ],
+    status: 'Activo en Galería'
+  },
+  {
+    category: '28. Borde Brillante Animado',
+    originalComponent: 'Bordes planos estáticos sin realce dinámico',
+    originalFile: 'src/components/ui/ShineBorder.tsx',
+    evolvedComponent: 'Magic UI (ShineBorder)',
+    librarySource: 'Magic UI',
+    keyImprovements: [
+      'Gradiente radial animado que recorre continuamente el perímetro del contenedor',
+      'Máscara CSS doble (content-box vs border-box) con exclusión XOR nativa',
+      'Soporte para múltiples colores en array (teal, cian, kinetic lime)',
+      'Acentúa tarjetas de login, informes de IA y alertas biomecánicas críticas'
+    ],
+    status: 'Activo en Galería'
+  },
+  {
+    category: '29. Texto con Destellos Mágicos',
+    originalComponent: 'Títulos estáticos sin elementos festivos o gamificados',
+    originalFile: 'src/components/ui/SparklesText.tsx',
+    evolvedComponent: 'Magic UI (SparklesText)',
+    librarySource: 'Magic UI',
+    keyImprovements: [
+      'Destellos y estrellas vectoriales que nacen, giran y escalan aleatoriamente',
+      'Colores adaptados a la paleta médica (teal #0d9488 y kinetic lime #c1ff72)',
+      'Ciclo de vida dinámico optimizado con temporizador no bloqueante',
+      'Refuerzo positivo para celebraciones de logros, rachas y objetivos cumplidos'
+    ],
+    status: 'Activo en Galería'
+  },
+  {
+    category: '30. Texto Animado por Segmentos',
+    originalComponent: 'Textos que aparecen de golpe sin transición tipográfica',
+    originalFile: 'src/components/ui/TextAnimate.tsx',
+    evolvedComponent: 'Magic UI (TextAnimate)',
+    librarySource: 'Magic UI',
+    keyImprovements: [
+      'Segmentación por palabra, carácter, línea o texto completo con retardo escalonado',
+      '10 variantes cinematográficas: blurIn, blurInUp, slideUp, scaleUp, fadeIn, etc.',
+      'Soporte estricto de accesibilidad con texto oculto sr-only y aria-hidden',
+      'Perfecto para saludos de bienvenida, títulos diagnósticos y mensajes de IA'
+    ],
+    status: 'Activo en Galería'
   }
 ];
 
@@ -369,9 +628,55 @@ export function UIShowcasePage() {
   const [clinicalRom, setClinicalRom] = useState(115);
   const [tickerTrigger, setTickerTrigger] = useState(1);
 
+  // Estados interactivos para los 7 Nuevos Componentes
+  const [highlighterAction, setHighlighterAction] = useState<AnnotationAction>('highlight');
+  const [highlighterKey, setHighlighterKey] = useState(0);
+  const [magicCardMode, setMagicCardMode] = useState<'gradient' | 'orb'>('gradient');
+  const [pixelGridKey, setPixelGridKey] = useState<'6x4' | '8x8' | '8x3'>('6x4');
+  const [pixelReplayKey, setPixelReplayKey] = useState(0);
+  const [tickerRomValue, setTickerRomValue] = useState(132);
+  const [kineticInputText, setKineticInputText] = useState('FisioMirror');
+
+  // Estados interactivos para la nueva suite de 6 componentes
+  const [pulsatingVariant, setPulsatingVariant] = useState<'pulse' | 'ripple'>('pulse');
+  const [pulsatingColor, setPulsatingColor] = useState<string>('rgba(13, 148, 136, 0.6)');
+  const [textAnimateType, setTextAnimateType] = useState<AnimationType>('word');
+  const [textAnimateVariant, setTextAnimateVariant] = useState<AnimationVariant>('blurInUp');
+  const [textAnimateKey, setTextAnimateKey] = useState(0);
+  const [sparklesWord, setSparklesWord] = useState('¡Rehabilitación Completada!');
+
+  // Estados interactivos para la Suite Estelar Biomecánica & Gamificación (8 Componentes)
+  const [gaugeAngle, setGaugeAngle] = useState(128);
+  const [gaugeTarget, setGaugeTarget] = useState(135);
+  const [gaugeJoint, setGaugeJoint] = useState('Rodilla Derecha');
+  const [dockSelectedJoint, setDockSelectedJoint] = useState('Rodilla');
+  const [springReps, setSpringReps] = useState(12);
+  const [energyLevel, setEnergyLevel] = useState(78);
+  const [fatigueLevel, setFatigueLevel] = useState(3.2);
+  const [alertSeverity, setAlertSeverity] = useState<'mild' | 'moderate' | 'high'>('moderate');
+
+  // Estado para la Macro Suite de 50 Componentes
+  const [megaSuiteCategory, setMegaSuiteCategory] = useState<'all' | 'actividad' | 'realtime' | 'flotantes' | 'gamificacion' | 'navegacion'>('all');
+
+  // Estado para Armonización Pastel Clínica
+  const [activePastelDemo, setActivePastelDemo] = useState<'sky' | 'mint' | 'lavender' | 'gradient'>('mint');
+  const [pastelFinish, setPastelFinish] = useState<'glass' | 'solid'>('glass');
+
+  // Estado para PWA Móvil & Físicas de Resorte
+  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
+  const [bottomSheetSnap, setBottomSheetSnap] = useState<BottomSheetSnapPoint>('medium');
+  const [bottomSheetVariant, setBottomSheetVariant] = useState<'default' | 'pastel-mint' | 'pastel-sky' | 'pastel-lavender'>('pastel-mint');
+  const [compactJoint, setCompactJoint] = useState('rodilla');
+  const [compactRom, setCompactRom] = useState(125);
+  const [compactTolerance, setCompactTolerance] = useState<'strict' | 'standard' | 'relaxed'>('standard');
+
   const tabs: { id: FilterTab; label: string; icon: React.ReactNode; count?: number }[] = [
     { id: 'todos', label: 'Todos los Componentes', icon: <Layers className="w-4 h-4" /> },
-    { id: 'solicitados', label: '✨ 12 Componentes Solicitados', icon: <Sparkles className="w-4 h-4" />, count: 12 },
+    { id: 'megasuite', label: '🚀 Macro Suite (50 Nuevos)', icon: <Sparkles className="w-4 h-4 text-cyan-400" />, count: 50 },
+    { id: 'mobile', label: '📱 PWA Móvil & Motion', icon: <Smartphone className="w-4 h-4 text-emerald-400" />, count: 6 },
+    { id: 'armonizacion', label: '🎨 Armonización Pastel', icon: <Sparkles className="w-4 h-4 text-sky-400" />, count: 12 },
+    { id: 'estelar', label: '🌟 Suite Estelar FM', icon: <Activity className="w-4 h-4 text-emerald-400" />, count: 8 },
+    { id: 'solicitados', label: '✨ Suite Previa FM', icon: <Sparkles className="w-4 h-4" />, count: 30 },
     { id: 'comparativa', label: 'Inventario & Mapeo', icon: <Search className="w-4 h-4" />, count: INVENTORY_COMPARISONS.length },
     { id: 'botones', label: 'Botones Evolved', icon: <Zap className="w-4 h-4" /> },
     { id: 'tarjetas', label: 'Tarjetas & Bento', icon: <MousePointer className="w-4 h-4" /> },
@@ -383,6 +688,9 @@ export function UIShowcasePage() {
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-[#090d12] text-slate-900 dark:text-slate-100 p-4 sm:p-6 lg:p-10 transition-colors">
+      {/* 26. Barra de Progreso de Desplazamiento Global */}
+      <ScrollProgress />
+
       <div className="max-w-6xl mx-auto space-y-8">
         
         {/* Navigation & Header */}
@@ -483,7 +791,1115 @@ export function UIShowcasePage() {
         </div>
 
         {/* ─────────────────────────────────────────────────────────────
-            SECCIÓN ESPECIAL: LOS 8 COMPONENTES SOLICITADOS
+            MACRO SUITE: 50 NUEVOS COMPONENTES EN 5 CATEGORÍAS MODULARES
+            ───────────────────────────────────────────────────────────── */}
+        {(activeTab === 'todos' || activeTab === 'megasuite') && (
+          <section className="space-y-8 p-6 sm:p-8 rounded-3xl bg-gradient-to-b from-cyan-500/10 via-surface/70 to-surface border border-cyan-500/30 shadow-xl">
+            {/* Header de la Macro Suite */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-cyan-500/20">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <span className="p-1.5 rounded-lg bg-cyan-500/20 text-cyan-600 dark:text-cyan-400">
+                    <Sparkles className="w-5 h-5" />
+                  </span>
+                  <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+                    Macro Suite FisioMirror (50 Componentes de Élite)
+                  </h2>
+                </div>
+                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 max-w-2xl">
+                  Catálogo masivo de 50 componentes modulares creados con HeroUI, Magic UI y DaisyUI para dashboards clínicos, telemetría MediaPipe, microinteracciones táctiles, gamificación y docks AR.
+                </p>
+              </div>
+
+              {/* Sub-selector de las 5 Macro Categorías */}
+              <div className="flex items-center gap-1.5 flex-wrap">
+                {[
+                  { id: 'all', label: 'Todos (50)' },
+                  { id: 'actividad', label: '1. Diagnóstico (10)' },
+                  { id: 'realtime', label: '2. En Tiempo Real (10)' },
+                  { id: 'flotantes', label: '3. Flotantes & Popovers (10)' },
+                  { id: 'gamificacion', label: '4. Gamificación (10)' },
+                  { id: 'navegacion', label: '5. Docks & Menús (10)' },
+                ].map((cat) => (
+                  <button
+                    key={cat.id}
+                    type="button"
+                    onClick={() => setMegaSuiteCategory(cat.id as any)}
+                    className={cn(
+                      "px-3 py-1.5 rounded-xl text-xs font-bold transition-all",
+                      megaSuiteCategory === cat.id
+                        ? "bg-cyan-600 text-white shadow-sm"
+                        : "bg-surface-container-low text-slate-500 hover:text-slate-900 dark:hover:text-white"
+                    )}
+                  >
+                    {cat.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* CATEGORÍA 1: TARJETAS DE ACTIVIDAD Y DIAGNÓSTICO (1 - 10) */}
+            {(megaSuiteCategory === 'all' || megaSuiteCategory === 'actividad') && (
+              <div className="space-y-4">
+                <div className="flex items-center gap-2 pb-2 border-b border-cyan-500/15">
+                  <span className="size-2 rounded-full bg-cyan-500" />
+                  <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                    Categoría 1: Tarjetas de Actividad y Diagnóstico Clínico (10 Componentes)
+                  </h3>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <MegaSuite.MuscleTargetRadarCard />
+                  <MegaSuite.PainScaleInteractiveCard />
+                  <MegaSuite.GaitSymmetryCard />
+                  <MegaSuite.TremorFrequencyCard />
+                  <MegaSuite.PostureStabilityCard />
+                  <MegaSuite.CardioEffortPillCard />
+                  <MegaSuite.RehabPhaseStepCard />
+                  <MegaSuite.EdemaAssessmentCard />
+                  <MegaSuite.StrengthProgressionCard />
+                  <MegaSuite.PatientAdherenceHeatmapCard />
+                </div>
+              </div>
+            )}
+
+            {/* CATEGORÍA 2: PANELES Y MÉTRICAS EN TIEMPO REAL (11 - 20) */}
+            {(megaSuiteCategory === 'all' || megaSuiteCategory === 'realtime') && (
+              <div className="space-y-4 pt-4 border-t border-cyan-500/15">
+                <div className="flex items-center gap-2 pb-2 border-b border-cyan-500/15">
+                  <span className="size-2 rounded-full bg-teal-500" />
+                  <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                    Categoría 2: Paneles y Métricas en Tiempo Real (MediaPipe / IA) (10 Componentes)
+                  </h3>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <MegaSuite.PoseConfidenceLiveIndicator />
+                  <MegaSuite.AngularVelocityStreamGauge />
+                  <MegaSuite.ROMDeviationLiveChart />
+                  <MegaSuite.VoiceFeedbackWaveHUD />
+                  <MegaSuite.CameraFramingGuideHUD />
+                  <MegaSuite.RepCadenceMetronome />
+                  <MegaSuite.AIBiomechanicalSummaryBadge />
+                  <MegaSuite.SkeletonJointSelectorHUD />
+                  <MegaSuite.HoldDurationTimerRing />
+                  <MegaSuite.SessionQualityScoreTile />
+                </div>
+              </div>
+            )}
+
+            {/* CATEGORÍA 3: MICROINTERACCIONES Y CONTROLES FLOTANTES (21 - 30) */}
+            {(megaSuiteCategory === 'all' || megaSuiteCategory === 'flotantes') && (
+              <div className="space-y-4 pt-4 border-t border-cyan-500/15">
+                <div className="flex items-center gap-2 pb-2 border-b border-cyan-500/15">
+                  <span className="size-2 rounded-full bg-indigo-500" />
+                  <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                    Categoría 3: Microinteracciones y Controles Flotantes Contextuales (10 Componentes)
+                  </h3>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 rounded-2xl bg-surface-container-low/40">
+                  <MegaSuite.JointAnatomyTooltip />
+                  <MegaSuite.ARCameraFilterDropdown />
+                  <MegaSuite.RapidToleranceAdjuster />
+                  <MegaSuite.AudioMuteFloatingPill />
+                  <MegaSuite.ExerciseSwitchFloatingMenu />
+                  <MegaSuite.PhysioNoteAnnotationBubble />
+                  <MegaSuite.QuickPrescriptionModalButton />
+                  <MegaSuite.BiomechanicalTagSelector />
+                  <MegaSuite.CalibrationCompass />
+                  <MegaSuite.FloatingMiniStopwatch />
+                </div>
+              </div>
+            )}
+
+            {/* CATEGORÍA 4: GAMIFICACIÓN Y MOTIVACIÓN (31 - 40) */}
+            {(megaSuiteCategory === 'all' || megaSuiteCategory === 'gamificacion') && (
+              <div className="space-y-4 pt-4 border-t border-cyan-500/15">
+                <div className="flex items-center gap-2 pb-2 border-b border-cyan-500/15">
+                  <span className="size-2 rounded-full bg-amber-500" />
+                  <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                    Categoría 4: Gamificación, Rachas y Motivación para Pacientes (10 Componentes)
+                  </h3>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <MegaSuite.StreakFlameCounter />
+                  <MegaSuite.LevelProgressRibbon />
+                  <MegaSuite.MilestoneCelebrationModal />
+                  <MegaSuite.MobilityQuestCard />
+                  <MegaSuite.VirtualTrophyCabinet />
+                  <MegaSuite.DailyHealthPointsWidget />
+                  <MegaSuite.RehabHeroAvatarCard />
+                  <div className="flex items-center justify-center p-4 rounded-3xl bg-surface-container-low">
+                    <MegaSuite.CheerReactionButton />
+                  </div>
+                  <div className="flex items-center justify-center p-4 rounded-3xl bg-surface-container-low">
+                    <MegaSuite.RecoveryRankBadge />
+                  </div>
+                  <MegaSuite.UnlockableExerciseLocker />
+                </div>
+              </div>
+            )}
+
+            {/* CATEGORÍA 5: DOCKS Y NAVEGACIÓN ERGONÓMICA (41 - 50) */}
+            {(megaSuiteCategory === 'all' || megaSuiteCategory === 'navegacion') && (
+              <div className="space-y-4 pt-4 border-t border-cyan-500/15">
+                <div className="flex items-center gap-2 pb-2 border-b border-cyan-500/15">
+                  <span className="size-2 rounded-full bg-emerald-500" />
+                  <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                    Categoría 5: Docks, Barras de Herramientas y Navegación Ergonómica (10 Componentes)
+                  </h3>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 rounded-2xl bg-surface-container-low/40">
+                  <MegaSuite.CurvedMobileDock />
+                  <div className="flex items-center justify-center">
+                    <MegaSuite.TherapistSidebarMini />
+                  </div>
+                  <MegaSuite.QuickPatientSwitcherBar />
+                  <div className="flex items-center justify-center">
+                    <MegaSuite.SessionStateBreadcrumb />
+                  </div>
+                  <div className="flex items-center justify-center">
+                    <MegaSuite.SplitViewPerspectiveToggle />
+                  </div>
+                  <div className="flex items-center justify-center">
+                    <MegaSuite.FloatingHelpBeacon />
+                  </div>
+                  <div className="flex items-center justify-center">
+                    <MegaSuite.ErgonomicHandModeSwitcher />
+                  </div>
+                  <MegaSuite.CompactTelehealthBar />
+                  <MegaSuite.ExerciseTimelineScrubber />
+                  <div className="flex items-center justify-center">
+                    <MegaSuite.ContextualActionIsland />
+                  </div>
+                </div>
+              </div>
+            )}
+          </section>
+        )}
+
+        {/* ─────────────────────────────────────────────────────────────
+            NUEVA SECCIÓN ESTELAR: 8 COMPONENTES BIOMECÁNICOS, AR & GAMIFICACIÓN
+            ───────────────────────────────────────────────────────────── */}
+        {(activeTab === 'todos' || activeTab === 'estelar') && (
+          <section className="space-y-8 p-6 sm:p-8 rounded-3xl bg-gradient-to-b from-teal-500/10 via-surface/60 to-surface border border-teal-500/30 shadow-lg">
+            {/* Header de la Suite Estelar */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-teal-500/20">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <span className="p-1.5 rounded-lg bg-teal-500/20 text-teal-600 dark:text-teal-400">
+                    <Activity className="w-5 h-5" />
+                  </span>
+                  <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+                    Suite Estelar de Innovación FisioMirror
+                  </h2>
+                </div>
+                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 max-w-2xl">
+                  8 componentes de vanguardia para rehabilitación física con IA: arcos biomecánicos continuos, dock flotante AR no intrusivo, barras de fatiga muscular, gamificación 3D y herramientas clínicas para fisioterapeutas.
+                </p>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <span className="px-3 py-1 rounded-full text-xs font-black bg-teal-500/15 text-teal-700 dark:text-teal-300 border border-teal-500/30">
+                  8 / 8 Nuevos y Operativos
+                </span>
+              </div>
+            </div>
+
+            {/* Fila 1: BiomechanicalAngleGauge & RepetitionCounterSpring */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* 1. BiomechanicalAngleGauge */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-2">
+                    <span className="size-2 rounded-full bg-teal-500" />
+                    1. Medidor Biomecánico Continuo (BiomechanicalAngleGauge)
+                  </h3>
+                </div>
+
+                <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
+                  <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                    Arco SVG graduado con semáforo biomecánico continuo (verde para rango seguro, amarillo para compensación moderada, rojo para alerta de dolor).
+                  </p>
+
+                  <div className="flex flex-col sm:flex-row items-center justify-center gap-6 py-2">
+                    <BiomechanicalAngleGauge
+                      currentAngle={gaugeAngle}
+                      targetAngle={gaugeTarget}
+                      minAngle={0}
+                      maxAngle={180}
+                      safeTolerance={8}
+                      jointName={gaugeJoint}
+                    />
+
+                    {/* Interactive Simulator Controls */}
+                    <div className="flex-1 w-full space-y-3 p-4 rounded-2xl bg-surface-container-low/60 dark:bg-slate-900/60 border border-outline-variant/20">
+                      <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">
+                        Simulador de Ángulo en Vivo:
+                      </span>
+                      
+                      <div className="space-y-1">
+                        <div className="flex justify-between text-xs font-mono">
+                          <span className="text-slate-500">Ángulo Actual:</span>
+                          <span className="font-bold text-teal-600 dark:text-teal-400">{gaugeAngle}°</span>
+                        </div>
+                        <input
+                          type="range"
+                          min={20}
+                          max={170}
+                          value={gaugeAngle}
+                          onChange={(e) => setGaugeAngle(Number(e.target.value))}
+                          className="w-full accent-teal-600 cursor-pointer"
+                        />
+                      </div>
+
+                      <div className="space-y-1">
+                        <div className="flex justify-between text-xs font-mono">
+                          <span className="text-slate-500">Meta Prescrita:</span>
+                          <span className="font-bold text-primary">{gaugeTarget}°</span>
+                        </div>
+                        <input
+                          type="range"
+                          min={60}
+                          max={160}
+                          value={gaugeTarget}
+                          onChange={(e) => setGaugeTarget(Number(e.target.value))}
+                          className="w-full accent-primary cursor-pointer"
+                        />
+                      </div>
+
+                      <div className="pt-2 flex gap-1.5">
+                        {['Rodilla Derecha', 'Codo Izquierdo', 'Hombro'].map((j) => (
+                          <button
+                            key={j}
+                            type="button"
+                            onClick={() => setGaugeJoint(j)}
+                            className={cn(
+                              "px-2 py-1 rounded-lg text-[10px] font-semibold border transition-all",
+                              gaugeJoint === j
+                                ? "bg-primary text-white border-primary"
+                                : "bg-white/60 dark:bg-slate-800 text-slate-500 border-slate-200 dark:border-slate-700"
+                            )}
+                          >
+                            {j}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* 2. RepetitionCounterSpring */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-2">
+                    <span className="size-2 rounded-full bg-teal-500" />
+                    2. Contador con Físicas de Resorte (RepetitionCounterSpring)
+                  </h3>
+                </div>
+
+                <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
+                  <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                    Contador cinético de alta visibilidad para modo espejo AR con física de rebote elástica en cada repetición válida detectada por IA y control de cadencia.
+                  </p>
+
+                  <RepetitionCounterSpring
+                    currentReps={springReps}
+                    targetReps={15}
+                    cadenceSeconds={3.0}
+                    onIncrement={() => setSpringReps((r) => r + 1)}
+                    onReset={() => setSpringReps(0)}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Fila 2: ARFloatingDock & TherapistQuickToolbar */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-4 border-t border-teal-500/20">
+              {/* 3. ARFloatingDock */}
+              <div className="space-y-3">
+                <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-2">
+                  <span className="size-2 rounded-full bg-teal-500" />
+                  3. Dock Flotante Contextual AR (ARFloatingDock)
+                </h3>
+                <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4 flex flex-col items-center justify-center min-h-[190px]">
+                  <p className="text-xs text-slate-500 dark:text-slate-400 text-center max-w-md">
+                    Diseñado para la parte inferior del modo espejo AR. Magnifica íconos en hover y permite alternar articulación y audio sin obstruir la vista clínica.
+                  </p>
+                  
+                  <ARFloatingDock
+                    currentJoint={dockSelectedJoint}
+                    onSelectJoint={(j) => setDockSelectedJoint(j)}
+                  />
+                </div>
+              </div>
+
+              {/* 4. TherapistQuickToolbar */}
+              <div className="space-y-3">
+                <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-2">
+                  <span className="size-2 rounded-full bg-teal-500" />
+                  4. Barra Rápida de Terapeuta (TherapistQuickToolbar)
+                </h3>
+                <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4 flex flex-col items-center justify-center min-h-[190px]">
+                  <p className="text-xs text-slate-500 dark:text-slate-400 text-center max-w-md">
+                    Panel colapsable con microinteracción elástica para pausar la sesión, tomar capturas de postura, dictar notas de voz y calibrar metas ROM.
+                  </p>
+
+                  <TherapistQuickToolbar />
+                </div>
+              </div>
+            </div>
+
+            {/* Fila 3: RehabEnergyBar & CompensationAlertBanner */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-4 border-t border-teal-500/20">
+              {/* 5. RehabEnergyBar */}
+              <div className="space-y-3">
+                <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-2">
+                  <span className="size-2 rounded-full bg-teal-500" />
+                  5. Barra de Fatiga y Energía Muscular (RehabEnergyBar)
+                </h3>
+                <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
+                  <RehabEnergyBar
+                    currentEnergy={energyLevel}
+                    fatigueScore={fatigueLevel}
+                    repsCompleted={springReps}
+                    totalTargetReps={20}
+                  />
+
+                  {/* Energy simulator sliders */}
+                  <div className="grid grid-cols-2 gap-3 pt-2">
+                    <div>
+                      <span className="text-[10px] uppercase font-bold text-slate-400 block mb-1">
+                        Energía: {energyLevel}%
+                      </span>
+                      <input
+                        type="range"
+                        min={10}
+                        max={100}
+                        value={energyLevel}
+                        onChange={(e) => setEnergyLevel(Number(e.target.value))}
+                        className="w-full accent-teal-500 cursor-pointer"
+                      />
+                    </div>
+                    <div>
+                      <span className="text-[10px] uppercase font-bold text-slate-400 block mb-1">
+                        Fatiga: {fatigueLevel.toFixed(1)}/10
+                      </span>
+                      <input
+                        type="range"
+                        min={0}
+                        max={10}
+                        step={0.5}
+                        value={fatigueLevel}
+                        onChange={(e) => setFatigueLevel(Number(e.target.value))}
+                        className="w-full accent-amber-500 cursor-pointer"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* 6. CompensationAlertBanner */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-2">
+                    <span className="size-2 rounded-full bg-teal-500" />
+                    6. Monitor de Compensaciones Posturales (CompensationAlertBanner)
+                  </h3>
+                  <div className="flex gap-1">
+                    {(['mild', 'moderate', 'high'] as const).map((s) => (
+                      <button
+                        key={s}
+                        type="button"
+                        onClick={() => setAlertSeverity(s)}
+                        className={cn(
+                          "px-2 py-0.5 rounded text-[10px] font-bold capitalize transition-all",
+                          alertSeverity === s ? "bg-primary text-white" : "bg-slate-200 dark:bg-slate-800 text-slate-500"
+                        )}
+                      >
+                        {s}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                
+                <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                    Alerta semántica de biofeedback en tiempo real cuando MediaPipe detecta compensaciones o trampas motoras durante el ejercicio.
+                  </p>
+
+                  <CompensationAlertBanner
+                    deviationJoint="Escápula & Hombro Izquierdo"
+                    detectedIssue="Elevación excesiva de trapecio durante la rotación externa."
+                    recommendedCorrection="Desciende el hombro, activa dorsal y mantén el codo adherido al torso antes de iniciar la fase concéntrica."
+                    severity={alertSeverity}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Fila 4: GamifiedBadgeCard & JointDetailPopover */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-4 border-t border-teal-500/20">
+              {/* 7. GamifiedBadgeCard */}
+              <div className="space-y-3">
+                <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-2">
+                  <span className="size-2 rounded-full bg-teal-500" />
+                  7. Tarjeta Holográfica 3D de Logros (GamifiedBadgeCard)
+                </h3>
+                <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                    Efecto interactivo de inclinación tridimensional (3D tilt) según la posición del cursor, con emblema holográfico y reclamo de XP para incentivar la adherencia del paciente.
+                  </p>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <GamifiedBadgeCard
+                      title="Maestro de Movilidad"
+                      category="Rango Articular"
+                      description="Completaste 5 sesiones consecutivas superando los 120° de flexión segura."
+                      level={4}
+                      xpPoints={300}
+                      unlocked={true}
+                      iconName="trophy"
+                    />
+
+                    <GamifiedBadgeCard
+                      title="Postura Impecable"
+                      category="Biomecánica"
+                      description="0 compensaciones detectadas por MediaPipe en una serie completa de 15 reps."
+                      level={2}
+                      xpPoints={150}
+                      unlocked={true}
+                      iconName="sparkles"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* 8. JointDetailPopover */}
+              <div className="space-y-3">
+                <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-2">
+                  <span className="size-2 rounded-full bg-teal-500" />
+                  8. Popover Flotante de Desglose Articular (JointDetailPopover)
+                </h3>
+                <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4 flex flex-col items-center justify-center min-h-[260px]">
+                  <p className="text-xs text-slate-500 dark:text-slate-400 text-center max-w-sm mb-2">
+                    Permite anclar sobre cualquier articulación un panel flotante que expone ROM actual, velocidad angular y asimetría respecto al lado contralateral sin bloquear la cámara.
+                  </p>
+
+                  <div className="flex flex-wrap items-center justify-center gap-3">
+                    <JointDetailPopover
+                      triggerLabel="Inspeccionar Rodilla Derecha"
+                      metrics={{
+                        jointName: 'Rodilla Derecha (Flexión)',
+                        currentRom: gaugeAngle,
+                        maxHistoricalRom: 135,
+                        angularVelocity: 48,
+                        asymmetryPercentage: 6,
+                        status: 'normal',
+                      }}
+                    />
+
+                    <JointDetailPopover
+                      triggerLabel="Inspeccionar Hombro Izquierdo"
+                      metrics={{
+                        jointName: 'Hombro Izquierdo (Abducción)',
+                        currentRom: 112,
+                        maxHistoricalRom: 120,
+                        angularVelocity: 36,
+                        asymmetryPercentage: 14,
+                        status: 'warning',
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* ─────────────────────────────────────────────────────────────
+            PWA MÓVIL DE ALTA DENSIDAD & MOTOR DE MOTION PRÉMIUM
+            ───────────────────────────────────────────────────────────── */}
+        {(activeTab === 'todos' || activeTab === 'mobile') && (
+          <section className="space-y-8 p-6 sm:p-8 rounded-3xl bg-gradient-to-b from-emerald-500/10 via-teal-500/5 to-surface border border-emerald-500/25 shadow-xl">
+            {/* Header de la Suite Móvil */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-emerald-500/20">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <span className="p-1.5 rounded-lg bg-emerald-500/20 text-emerald-600 dark:text-emerald-400">
+                    <Smartphone className="w-5 h-5" />
+                  </span>
+                  <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+                    PWA Móvil de Alta Densidad & Físicas de Resorte (Spring Motion)
+                  </h2>
+                </div>
+                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 max-w-2xl">
+                  Erradicación del scroll infinito mediante cajones inferiores deslizables (bottom sheets con snap points), barra inferior fija ergonómica para el pulgar, selectores compactos de 1-toque y animaciones orgánicas estilo Magic UI / 21st.dev.
+                </p>
+              </div>
+
+              {/* Botón de Activación del Bottom Sheet en Vivo */}
+              <div className="flex items-center gap-2 flex-wrap">
+                <TactileFeedback>
+                  <button
+                    type="button"
+                    onClick={() => setIsBottomSheetOpen(true)}
+                    className="px-4 py-2.5 rounded-2xl bg-teal-600 hover:bg-teal-500 text-white font-bold text-xs flex items-center gap-2 shadow-lg shadow-teal-600/25 border border-teal-400/40"
+                  >
+                    <Sliders className="size-4" />
+                    <span>Abrir Bottom Sheet Móvil</span>
+                  </button>
+                </TactileFeedback>
+              </div>
+            </div>
+
+            {/* Demostración 1: Selectores Compactos de Alta Densidad */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-sm font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200 flex items-center gap-2">
+                    <span className="size-2 rounded-full bg-emerald-500" />
+                    1. Selectores Compactos de 1-Toque (Reemplazo de Formularios Largos)
+                  </h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                    Diseñados para sustituir inputs pequeños y desplegables torpes en smartphones.
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {/* Selector Segmentado de Articulación */}
+                <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+                  <CompactJointSelector
+                    selectedJoint={compactJoint}
+                    onSelectJoint={(j) => setCompactJoint(j)}
+                  />
+                  <div className="mt-3 pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[11px]">
+                    <span className="text-slate-500">Seleccionada:</span>
+                    <span className="font-bold text-teal-600 dark:text-teal-400 uppercase">{compactJoint}</span>
+                  </div>
+                </div>
+
+                {/* Stepper Táctil de ROM con Físicas */}
+                <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+                  <CompactRomStepper
+                    value={compactRom}
+                    onChange={(val) => setCompactRom(val)}
+                    min={30}
+                    max={170}
+                    step={5}
+                    label="Meta ROM Articular"
+                  />
+                  <div className="mt-3 pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[11px]">
+                    <span className="text-slate-500">Estado Clínico:</span>
+                    <span className="font-bold text-emerald-600 dark:text-emerald-400">Rango Seguro (+12%)</span>
+                  </div>
+                </div>
+
+                {/* Dropdown Popover de Tolerancia IA */}
+                <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+                  <div className="space-y-1.5">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 block px-1">
+                      Calibración MediaPipe
+                    </span>
+                    <CompactToleranceDropdown
+                      tolerance={compactTolerance}
+                      onChange={(t) => setCompactTolerance(t)}
+                    />
+                  </div>
+                  <div className="mt-3 pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[11px]">
+                    <span className="text-slate-500">Sensibilidad:</span>
+                    <span className="font-mono text-sky-600 dark:text-sky-400 font-bold">
+                      {compactTolerance === 'strict' ? '±3° Exacta' : compactTolerance === 'standard' ? '±7° Estándar' : '±12° Asistida'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Demostración 2: Wrappers de Motion & Microinteracciones Táctiles */}
+            <div className="space-y-4 pt-2">
+              <h3 className="text-sm font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200 flex items-center gap-2">
+                <span className="size-2 rounded-full bg-emerald-500" />
+                2. Wrappers de Motion: Blur-Fade & Tactile Spring Feedback
+              </h3>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                {/* Blur-Fade InView Demo */}
+                <MotionBlurFade delay={0.1} className="p-5 rounded-2xl bg-gradient-to-br from-teal-50/70 via-surface/90 to-sky-50/40 dark:from-teal-950/25 dark:via-surface-container/80 dark:to-slate-900/90 border border-teal-200/50 dark:border-teal-500/25 shadow-sm space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-teal-500/15 text-teal-700 dark:text-teal-300 border border-teal-500/30">
+                      MotionBlurFade Wrapper
+                    </span>
+                    <span className="text-xs font-mono text-slate-400">ease: [0.16, 1, 0.3, 1]</span>
+                  </div>
+                  <h4 className="text-sm font-bold text-slate-900 dark:text-white">
+                    Revelación Progresiva con Desenfoque Dinámico
+                  </h4>
+                  <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                    Las estadísticas y reportes médicos aparecen fluidamente desde un desenfoque sutil (6px blur) con física amortiguada, reduciendo la carga cognitiva en móviles.
+                  </p>
+                  <div className="flex items-center gap-2 pt-2">
+                    <div className="h-1.5 flex-1 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden">
+                      <div className="h-full w-4/5 bg-gradient-to-r from-teal-500 to-sky-400 rounded-full" />
+                    </div>
+                    <span className="text-[11px] font-mono font-bold text-teal-600 dark:text-teal-400">80%</span>
+                  </div>
+                </MotionBlurFade>
+
+                {/* TactileFeedback Interactive Demo */}
+                <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30">
+                      TactileFeedback Wrapper
+                    </span>
+                    <span className="text-xs font-mono text-slate-400">stiffness: 420 · damping: 18</span>
+                  </div>
+                  <h4 className="text-sm font-bold text-slate-900 dark:text-white">
+                    Respuesta Táctil Visual Inmediata
+                  </h4>
+                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                    Toca o haz clic sobre los botones de prueba para sentir la física de resorte optimizada sin retardo de interacción:
+                  </p>
+                  <div className="flex items-center gap-3 pt-2 flex-wrap">
+                    <TactileFeedback>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setCompactRom((r) => Math.min(180, r + 5));
+                        }}
+                        className="px-3.5 py-2 rounded-xl bg-teal-600 text-white font-bold text-xs shadow-xs"
+                      >
+                        +5° ROM Rápido
+                      </button>
+                    </TactileFeedback>
+
+                    <TactileFeedback>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setCompactRom((r) => Math.max(30, r - 5));
+                        }}
+                        className="px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-bold text-xs border border-slate-200 dark:border-slate-700"
+                      >
+                        -5° ROM Rápido
+                      </button>
+                    </TactileFeedback>
+
+                    <TactileFeedback>
+                      <button
+                        type="button"
+                        onClick={() => setIsBottomSheetOpen(true)}
+                        className="px-3.5 py-2 rounded-xl bg-sky-50 dark:bg-sky-950/40 text-sky-700 dark:text-sky-300 font-bold text-xs border border-sky-200 dark:border-sky-500/30"
+                      >
+                        Probar Bottom Sheet
+                      </button>
+                    </TactileFeedback>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Demostración 3: Previsualización de la Barra Fija Inferior (MobileFixedDock) */}
+            <div className="space-y-3 pt-2">
+              <h3 className="text-sm font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200 flex items-center gap-2">
+                <span className="size-2 rounded-full bg-emerald-500" />
+                3. Barra Fija Inferior Ergonómica (MobileFixedDock)
+              </h3>
+              <div className="p-5 rounded-2xl bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 space-y-3">
+                <p className="text-xs text-slate-600 dark:text-slate-400">
+                  Ubicada rígidamente en la base de la pantalla móvil (debajo de esta vista). Permite cambiar de módulo instantáneamente con el pulgar e iniciar la sesión de Espejo AR con un toque central prominente.
+                </p>
+                <div className="max-w-md mx-auto p-2 rounded-2xl bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700 flex items-center justify-around text-center text-[10px] font-bold text-slate-500">
+                  <div className="py-1 px-3 rounded-xl bg-teal-500/20 text-teal-700 dark:text-teal-300">
+                    <Home className="size-4 mx-auto mb-0.5" />
+                    <span>Inicio</span>
+                  </div>
+                  <div className="py-1 px-3">
+                    <Users className="size-4 mx-auto mb-0.5" />
+                    <span>Pacientes</span>
+                  </div>
+                  <div className="size-10 rounded-xl bg-gradient-to-tr from-teal-600 to-sky-400 text-white flex flex-col items-center justify-center -mt-3 shadow-md">
+                    <Camera className="size-4" />
+                    <span className="text-[7px]">AR</span>
+                  </div>
+                  <div className="py-1 px-3">
+                    <Dumbbell className="size-4 mx-auto mb-0.5" />
+                    <span>Ejercicios</span>
+                  </div>
+                  <div className="py-1 px-3">
+                    <Sparkles className="size-4 mx-auto mb-0.5" />
+                    <span>Physi IA</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* Componente Modal Bottom Sheet Renderizado en Vivo para la Demostración */}
+        <MobileBottomSheet
+          isOpen={isBottomSheetOpen}
+          onClose={() => setIsBottomSheetOpen(false)}
+          title="Ficha Rápida & Calibración Móvil"
+          subtitle="Ajuste ergonómico sin scroll infinito"
+          icon={<Sliders className="size-5" />}
+          snapPoint={bottomSheetSnap}
+          onSnapPointChange={(snap) => setBottomSheetSnap(snap)}
+          variant={bottomSheetVariant}
+          footerActions={
+            <>
+              <button
+                type="button"
+                onClick={() => setIsBottomSheetOpen(false)}
+                className="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
+              >
+                Cerrar
+              </button>
+              <TactileFeedback>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsBottomSheetOpen(false);
+                    navigate('/ar-mirror');
+                  }}
+                  className="px-5 py-2 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-bold text-xs shadow-md shadow-teal-600/30"
+                >
+                  Iniciar AR Mirror
+                </button>
+              </TactileFeedback>
+            </>
+          }
+        >
+          <div className="space-y-4">
+            {/* Controles de snap point dentro del sheet */}
+            <div className="flex items-center justify-between p-2.5 rounded-xl bg-white/70 dark:bg-slate-800/70 border border-slate-200/60 dark:border-slate-700/60">
+              <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                Nivel de Altura (Snap Point):
+              </span>
+              <div className="flex items-center gap-1">
+                {(['peek', 'medium', 'full'] as const).map((s) => (
+                  <button
+                    key={s}
+                    type="button"
+                    onClick={() => setBottomSheetSnap(s)}
+                    className={cn(
+                      'px-2.5 py-1 rounded-lg text-xs font-bold capitalize transition-all',
+                      bottomSheetSnap === s
+                        ? 'bg-teal-600 text-white shadow-xs'
+                        : 'text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-700'
+                    )}
+                  >
+                    {s === 'peek' ? 'Compacto (35%)' : s === 'medium' ? 'Medio (65%)' : 'Completo (92%)'}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Selectores Compactos embebidos */}
+            <CompactJointSelector
+              selectedJoint={compactJoint}
+              onSelectJoint={(j) => setCompactJoint(j)}
+            />
+
+            <CompactRomStepper
+              value={compactRom}
+              onChange={(val) => setCompactRom(val)}
+              label="Objetivo ROM en Sesión Móvil"
+            />
+
+            <CompactToleranceDropdown
+              tolerance={compactTolerance}
+              onChange={(t) => setCompactTolerance(t)}
+            />
+
+            {/* Resumen clínico en sheet */}
+            <div className="p-3.5 rounded-2xl bg-teal-50/70 dark:bg-teal-950/30 border border-teal-200/50 dark:border-teal-500/25 space-y-1.5">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-teal-700 dark:text-teal-300">
+                  Informe Biomecánico
+                </span>
+                <span className="text-[10px] font-mono font-bold text-teal-600 dark:text-teal-400">
+                  IA Activa
+                </span>
+              </div>
+              <p className="text-xs text-teal-950 dark:text-teal-100 font-medium">
+                Listo para iniciar sesión de {compactJoint} a {compactRom}° con tolerancia {compactTolerance}. Arrastra la barra superior hacia abajo para cerrar o cambiar el nivel de altura.
+              </p>
+            </div>
+          </div>
+        </MobileBottomSheet>
+
+        {/* ─────────────────────────────────────────────────────────────
+            ARMONIZACIÓN CROMÁTICA PASTEL CLÍNICA: SOFT SKY, MINT & LAVENDER
+            ───────────────────────────────────────────────────────────── */}
+        {(activeTab === 'todos' || activeTab === 'armonizacion') && (
+          <section className="space-y-8 p-6 sm:p-8 rounded-3xl bg-gradient-to-b from-sky-500/10 via-teal-500/5 to-surface border border-sky-500/25 shadow-xl">
+            {/* Header de la Armonización */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-sky-500/20">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <span className="p-1.5 rounded-lg bg-sky-500/20 text-sky-600 dark:text-sky-400">
+                    <Sparkles className="w-5 h-5" />
+                  </span>
+                  <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+                    Armonización Cromática Pastel Clínica (FisioMirror Design System)
+                  </h2>
+                </div>
+                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 max-w-2xl">
+                  Reemplazo de los fondos blancos y grises fríos por una paleta médica cálida y tecnológica: celeste suave (soft sky), menta/turquesa (mint/teal) y azul lavanda sutil. Alternancia entre vidrio translúcido con gradiente y capas sólidas para tarjetas secundarias y badges.
+                </p>
+              </div>
+
+              {/* Selector interactivo de tono y acabado */}
+              <div className="flex items-center gap-2 flex-wrap">
+                <div className="flex items-center p-1 rounded-xl bg-slate-200/60 dark:bg-slate-800/60 border border-slate-300/40 dark:border-slate-700/40">
+                  {(['sky', 'mint', 'lavender', 'gradient'] as const).map((tone) => (
+                    <button
+                      key={tone}
+                      type="button"
+                      onClick={() => setActivePastelDemo(tone)}
+                      className={cn(
+                        "px-2.5 py-1 text-xs font-bold rounded-lg capitalize transition-all",
+                        activePastelDemo === tone
+                          ? "bg-white dark:bg-slate-900 text-sky-700 dark:text-sky-300 shadow-xs"
+                          : "text-slate-500 hover:text-slate-800 dark:hover:text-slate-200"
+                      )}
+                    >
+                      {tone === 'sky' ? 'Celeste' : tone === 'mint' ? 'Menta' : tone === 'lavender' ? 'Lavanda' : 'Gradiente'}
+                    </button>
+                  ))}
+                </div>
+
+                <div className="flex items-center p-1 rounded-xl bg-slate-200/60 dark:bg-slate-800/60 border border-slate-300/40 dark:border-slate-700/40">
+                  <button
+                    type="button"
+                    onClick={() => setPastelFinish('glass')}
+                    className={cn(
+                      "px-2.5 py-1 text-xs font-bold rounded-lg transition-all",
+                      pastelFinish === 'glass'
+                        ? "bg-white dark:bg-slate-900 text-teal-700 dark:text-teal-300 shadow-xs"
+                        : "text-slate-500 hover:text-slate-800 dark:hover:text-slate-200"
+                    )}
+                  >
+                    Translúcido Glass
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setPastelFinish('solid')}
+                    className={cn(
+                      "px-2.5 py-1 text-xs font-bold rounded-lg transition-all",
+                      pastelFinish === 'solid'
+                        ? "bg-white dark:bg-slate-900 text-teal-700 dark:text-teal-300 shadow-xs"
+                        : "text-slate-500 hover:text-slate-800 dark:hover:text-slate-200"
+                    )}
+                  >
+                    Capa Sólida
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Fila 1: Las 3 Familias Cromáticas Pastel en Vivo (HarmonizedSurface) */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+              {/* Celeste Pastel (Soft Sky) */}
+              <HarmonizedSurface
+                variant={pastelFinish === 'glass' ? 'pastel-sky' : 'card'}
+                className={cn(
+                  "p-5 rounded-2xl relative overflow-hidden transition-all duration-300",
+                  pastelFinish === 'solid' && CLINICAL_PASTELS.sky.solid,
+                  activePastelDemo === 'sky' && "ring-2 ring-sky-400/60 shadow-lg"
+                )}
+                interactive
+              >
+                <div className="flex items-start justify-between mb-4">
+                  <div className="size-11 rounded-xl bg-sky-500/20 text-sky-700 dark:text-sky-300 flex items-center justify-center font-bold ring-2 ring-sky-400/30">
+                    <Activity className="size-5" />
+                  </div>
+                  <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-sky-500/15 border border-sky-500/30 text-sky-700 dark:text-sky-300">
+                    Soft Sky
+                  </span>
+                </div>
+                <h3 className="text-sm font-bold text-sky-950 dark:text-sky-100 mb-1">
+                  Celeste Pastel Clínico
+                </h3>
+                <p className="text-xs text-sky-700/80 dark:text-sky-300/80 mb-4 leading-relaxed">
+                  Ideal para telemetría, monitoreo articular en tiempo real y métricas respiratorias/oximetría.
+                </p>
+                <div className="flex items-center justify-between pt-3 border-t border-sky-200/50 dark:border-sky-500/20 text-xs font-semibold">
+                  <span className="text-sky-800 dark:text-sky-200">Ángulo ROM</span>
+                  <span className="font-mono font-black text-sky-600 dark:text-sky-300">128.4° (+4.2%)</span>
+                </div>
+              </HarmonizedSurface>
+
+              {/* Menta / Turquesa Suave (Mint/Teal) */}
+              <HarmonizedSurface
+                variant={pastelFinish === 'glass' ? 'pastel-mint' : 'card'}
+                className={cn(
+                  "p-5 rounded-2xl relative overflow-hidden transition-all duration-300",
+                  pastelFinish === 'solid' && CLINICAL_PASTELS.mint.solid,
+                  activePastelDemo === 'mint' && "ring-2 ring-teal-400/60 shadow-lg"
+                )}
+                interactive
+              >
+                <div className="flex items-start justify-between mb-4">
+                  <div className="size-11 rounded-xl bg-teal-500/20 text-teal-700 dark:text-teal-300 flex items-center justify-center font-bold ring-2 ring-teal-400/30">
+                    <Heart className="size-5" />
+                  </div>
+                  <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-teal-500/15 border border-teal-500/30 text-teal-700 dark:text-teal-300">
+                    Mint / Teal
+                  </span>
+                </div>
+                <h3 className="text-sm font-bold text-teal-950 dark:text-teal-100 mb-1">
+                  Menta / Turquesa Pastel
+                </h3>
+                <p className="text-xs text-teal-700/80 dark:text-teal-300/80 mb-4 leading-relaxed">
+                  Eje cromático primario de FisioMirror. Comunica recuperación óptima, adherencia y salud articular activa.
+                </p>
+                <div className="flex items-center justify-between pt-3 border-t border-teal-200/50 dark:border-teal-500/20 text-xs font-semibold">
+                  <span className="text-teal-800 dark:text-teal-200">Adherencia Semanal</span>
+                  <span className="font-mono font-black text-teal-600 dark:text-teal-300">94.8% (Óptima)</span>
+                </div>
+              </HarmonizedSurface>
+
+              {/* Azul Lavanda Sutil (Lavender Blue) */}
+              <HarmonizedSurface
+                variant={pastelFinish === 'glass' ? 'pastel-lavender' : 'card'}
+                className={cn(
+                  "p-5 rounded-2xl relative overflow-hidden transition-all duration-300",
+                  pastelFinish === 'solid' && CLINICAL_PASTELS.lavender.solid,
+                  activePastelDemo === 'lavender' && "ring-2 ring-indigo-400/60 shadow-lg"
+                )}
+                interactive
+              >
+                <div className="flex items-start justify-between mb-4">
+                  <div className="size-11 rounded-xl bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 flex items-center justify-center font-bold ring-2 ring-indigo-400/30">
+                    <Sparkles className="size-5" />
+                  </div>
+                  <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-indigo-500/15 border border-indigo-500/30 text-indigo-700 dark:text-indigo-300">
+                    Lavender Blue
+                  </span>
+                </div>
+                <h3 className="text-sm font-bold text-indigo-950 dark:text-indigo-100 mb-1">
+                  Azul Lavanda Sutil
+                </h3>
+                <p className="text-xs text-indigo-700/80 dark:text-indigo-300/80 mb-4 leading-relaxed">
+                  Diseñado para tele-rehabilitación, reportes generados con IA y recordatorios de calma postural.
+                </p>
+                <div className="flex items-center justify-between pt-3 border-t border-indigo-200/50 dark:border-indigo-500/20 text-xs font-semibold">
+                  <span className="text-indigo-800 dark:text-indigo-200">Sesiones Guiadas</span>
+                  <span className="font-mono font-black text-indigo-600 dark:text-indigo-300">18 Completadas</span>
+                </div>
+              </HarmonizedSurface>
+            </div>
+
+            {/* Fila 2: Comparativa Visual Directa "Antes vs Ahora" */}
+            <div className="space-y-3 pt-2">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                Comparativa Visual: Gris/Blanco Plano vs. Harmonized Pastel Clínico
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                {/* Antes: Blanco plano / gris aburrido */}
+                <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 relative">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-300 dark:border-slate-700">
+                      Estilo Previo (Blanco / Gris Plano)
+                    </span>
+                    <span className="text-xs text-slate-400">Sin matiz</span>
+                  </div>
+                  <p className="text-sm font-bold text-slate-800 dark:text-slate-200 mb-1">
+                    Evaluación Postural de Hombro
+                  </p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mb-4">
+                    Contenedor frío y genérico que produce fatiga visual y no transmite calidez médica.
+                  </p>
+                  <div className="flex items-center gap-3 text-xs text-slate-600 dark:text-slate-400">
+                    <span className="size-2 rounded-full bg-slate-400" />
+                    <span>8 repeticiones registradas sin resaltado sensorial</span>
+                  </div>
+                </div>
+
+                {/* Ahora: Harmonized Pastel con microgradiente y glow */}
+                <HarmonizedSurface
+                  variant="pastel-gradient"
+                  interactive
+                  className="p-5 rounded-2xl relative shadow-md"
+                >
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-teal-500/20 text-teal-800 dark:text-teal-200 border border-teal-500/30 flex items-center gap-1">
+                      <span className="size-1.5 rounded-full bg-teal-500 animate-pulse" />
+                      Evolved (Pastel Trilateral + Glass)
+                    </span>
+                    <span className="text-xs font-bold text-teal-700 dark:text-teal-300">Contraste AAA</span>
+                  </div>
+                  <p className="text-sm font-bold text-slate-900 dark:text-white mb-1">
+                    Evaluación Postural de Hombro
+                  </p>
+                  <p className="text-xs text-slate-700 dark:text-slate-300 mb-4 leading-relaxed">
+                    Elegancia clínica, micro-resplandor bio-adaptativo y contraste nítido garantizado para adultos mayores.
+                  </p>
+                  <div className="flex items-center justify-between text-xs font-semibold">
+                    <span className="text-teal-800 dark:text-teal-200 flex items-center gap-1.5">
+                      <span className="size-2 rounded-full bg-teal-500" />
+                      8 reps perfectas (0 compensaciones)
+                    </span>
+                    <span className="font-mono text-teal-700 dark:text-teal-300 font-black">98.5% SCORE</span>
+                  </div>
+                </HarmonizedSurface>
+              </div>
+            </div>
+
+            {/* Fila 3: Semáforos Biomecánicos & Badges Pastel */}
+            <div className="space-y-3 pt-2">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                Semáforos Biomecánicos & Badges con Acentos Pastel
+              </h3>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <div className="p-3.5 rounded-xl bg-teal-50/90 dark:bg-teal-950/35 border border-teal-200/80 dark:border-teal-500/30 flex items-center gap-2.5">
+                  <div className="size-8 rounded-lg bg-teal-500/20 text-teal-700 dark:text-teal-300 flex items-center justify-center shrink-0">
+                    <CheckCircle2 className="size-4" />
+                  </div>
+                  <div>
+                    <span className="text-[10px] font-bold text-teal-600 dark:text-teal-400 uppercase tracking-wider block">Biomecánica</span>
+                    <p className="text-xs font-bold text-teal-950 dark:text-teal-100">Rango Seguro</p>
+                  </div>
+                </div>
+
+                <div className="p-3.5 rounded-xl bg-sky-50/90 dark:bg-sky-950/35 border border-sky-200/80 dark:border-sky-500/30 flex items-center gap-2.5">
+                  <div className="size-8 rounded-lg bg-sky-500/20 text-sky-700 dark:text-sky-300 flex items-center justify-center shrink-0">
+                    <Activity className="size-4" />
+                  </div>
+                  <div>
+                    <span className="text-[10px] font-bold text-sky-600 dark:text-sky-400 uppercase tracking-wider block">Telemetría</span>
+                    <p className="text-xs font-bold text-sky-950 dark:text-sky-100">Tracking 60 FPS</p>
+                  </div>
+                </div>
+
+                <div className="p-3.5 rounded-xl bg-amber-50/90 dark:bg-amber-950/35 border border-amber-200/80 dark:border-amber-500/30 flex items-center gap-2.5">
+                  <div className="size-8 rounded-lg bg-amber-500/20 text-amber-700 dark:text-amber-300 flex items-center justify-center shrink-0">
+                    <AlertTriangle className="size-4" />
+                  </div>
+                  <div>
+                    <span className="text-[10px] font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider block">Compensación</span>
+                    <p className="text-xs font-bold text-amber-950 dark:text-amber-100">Elevación Hombro</p>
+                  </div>
+                </div>
+
+                <div className="p-3.5 rounded-xl bg-indigo-50/90 dark:bg-indigo-950/35 border border-indigo-200/80 dark:border-indigo-500/30 flex items-center gap-2.5">
+                  <div className="size-8 rounded-lg bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 flex items-center justify-center shrink-0">
+                    <Sparkles className="size-4" />
+                  </div>
+                  <div>
+                    <span className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider block">Inteligencia IA</span>
+                    <p className="text-xs font-bold text-indigo-950 dark:text-indigo-100">Physi Predictivo</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* ─────────────────────────────────────────────────────────────
+            SECCIÓN ESPECIAL: LOS 30 COMPONENTES PREVIOS
             ───────────────────────────────────────────────────────────── */}
         {(activeTab === 'todos' || activeTab === 'solicitados') && (
           <section className="space-y-8 p-6 sm:p-8 rounded-3xl bg-teal-500/5 border border-teal-500/20">
@@ -907,6 +2323,806 @@ export function UIShowcasePage() {
                           Error con Acción
                         </button>
                       </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* 16 & 17. Feed Animado en Vivo (AnimatedList) y Cañones Laterales (ConfettiSideCannons) */}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 pt-6 border-t border-teal-500/15">
+                {/* 16. AnimatedList */}
+                <div className="lg:col-span-7 space-y-3">
+                  <div className="flex items-center gap-2">
+                    <Radio className="w-4 h-4 text-emerald-500 animate-pulse" />
+                    <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                      16. Feed de Actividad Clínica en Vivo (AnimatedList)
+                    </h3>
+                  </div>
+                  <ClinicalActivityFeed delay={2800} />
+                </div>
+
+                {/* 17. ConfettiSideCannons */}
+                <div className="lg:col-span-5 space-y-3">
+                  <div className="flex items-center gap-2">
+                    <Sparkles className="w-4 h-4 text-teal-600" />
+                    <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                      17. Ráfaga de Cañones Laterales (ConfettiSideCannons)
+                    </h3>
+                  </div>
+                  <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4 flex flex-col justify-between h-[calc(100%-2rem)]">
+                    <div>
+                      <h4 className="text-sm font-bold text-slate-900 dark:text-white mb-1">
+                        Efecto Festivo Bidireccional Continuo
+                      </h4>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mb-4">
+                        Dispara ráfagas de confeti a 60° y 120° desde los dos extremos de la pantalla durante 2.5 segundos con la paleta turquesa/kinetic de FisioMirror.
+                      </p>
+                    </div>
+                    <div className="flex flex-col sm:flex-row gap-3">
+                      <ConfettiSideCannons
+                        className="w-full sm:w-auto"
+                        onClick={() => toast.success("¡Objetivo Semanal Superado!", { description: "Celebrando progreso biomecánico del paciente." })}
+                      >
+                        🎉 Disparar Celebración (Cañones)
+                      </ConfettiSideCannons>
+                      <ConfettiStars
+                        className="w-full sm:w-auto text-xs"
+                        onClick={() => toast.info("¡Estrellas de Logro!", { description: "Recompensa gamificada asignada." })}
+                      >
+                        ⭐ Estrellas de Logro
+                      </ConfettiStars>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* ─────────────────────────────────────────────────────────
+                  18 & 19. HIGHLIGHTER & INTERACTIVE HOVER BUTTON
+                  ───────────────────────────────────────────────────────── */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-6 border-t border-teal-500/15">
+                {/* 18. Highlighter */}
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2">
+                    <Sparkles className="w-4 h-4 text-teal-600" />
+                    <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                      18. Resaltador Dinámico de Texto (Highlighter)
+                    </h3>
+                  </div>
+                  <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <p className="text-xs text-slate-500 dark:text-slate-400">
+                        Trazos orgánicos tipo rough-notation animados:
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => setHighlighterKey((k) => k + 1)}
+                        className="text-[11px] font-semibold text-primary hover:underline flex items-center gap-1"
+                      >
+                        <RefreshCw className="size-3" /> Reanimar trazo
+                      </button>
+                    </div>
+
+                    {/* Mode Selector */}
+                    <div className="flex flex-wrap gap-1.5">
+                      {(['highlight', 'underline', 'box', 'circle', 'bracket', 'strike-through'] as AnnotationAction[]).map((act) => (
+                        <button
+                          key={act}
+                          type="button"
+                          onClick={() => {
+                            setHighlighterAction(act);
+                            setHighlighterKey((k) => k + 1);
+                          }}
+                          className={cn(
+                            "px-2.5 py-1 rounded-lg text-[11px] font-medium transition-all capitalize",
+                            highlighterAction === act
+                              ? "bg-primary text-white shadow-xs"
+                              : "bg-surface-container-high/60 text-on-surface-variant hover:bg-surface-container-highest"
+                          )}
+                        >
+                          {act}
+                        </button>
+                      ))}
+                    </div>
+
+                    {/* Preview Paragraph */}
+                    <div className="p-4 rounded-2xl bg-surface-container-low/50 dark:bg-slate-900/50 border border-outline-variant/20 text-sm text-on-surface leading-relaxed">
+                      El paciente Carlos presenta{" "}
+                      <Highlighter
+                        key={`hl-${highlighterKey}-${highlighterAction}`}
+                        action={highlighterAction}
+                        color="rgba(76, 218, 210, 0.45)"
+                        strokeWidth={2}
+                      >
+                        compensación pélvica a 14°
+                      </Highlighter>{" "}
+                      durante la fase de flexión, requiriendo{" "}
+                      <ClinicalHighlighter variant="warning" action="underline">
+                        estabilización activa de core
+                      </ClinicalHighlighter>{" "}
+                      para evitar recidiva lumbosacra.
+                    </div>
+                  </div>
+                </div>
+
+                {/* 19. InteractiveHoverButton */}
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2">
+                    <MousePointer className="w-4 h-4 text-teal-600" />
+                    <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                      19. Botón Interactivo con Desplazamiento (InteractiveHoverButton)
+                    </h3>
+                  </div>
+                  <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4 flex flex-col justify-between h-[calc(100%-2rem)]">
+                    <div>
+                      <h4 className="text-sm font-bold text-slate-900 dark:text-white mb-1">
+                        Microinteracción Radial & Slide
+                      </h4>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mb-4">
+                        Al pasar el cursor sobre el botón, el punto central indicador se expande y desliza suavemente el texto junto con la flecha directriz.
+                      </p>
+                    </div>
+
+                    <div className="flex flex-col sm:flex-row items-center gap-4 py-2">
+                      <InteractiveHoverButton
+                        onClick={() => {
+                          toast.success("¡Acción Ejecutada!", { description: "Navegando a la sesión de rehabilitación activa." });
+                        }}
+                      >
+                        Iniciar Modo Espejo AR
+                      </InteractiveHoverButton>
+
+                      <InteractiveHoverButton
+                        onClick={() => {
+                          toast.info("Rutina guardada", { description: "Los parámetros clínicos han sido sincronizados." });
+                        }}
+                        className="border-emerald-500/40"
+                      >
+                        Guardar Prescripción
+                      </InteractiveHoverButton>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* ─────────────────────────────────────────────────────────
+                  20 & 21. KINETIC TEXT & LIGHT RAYS
+                  ───────────────────────────────────────────────────────── */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-6 border-t border-teal-500/15">
+                {/* 20. KineticText */}
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2">
+                    <Sparkles className="w-4 h-4 text-teal-600" />
+                    <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                      20. Tipografía Cinética (KineticText)
+                    </h3>
+                  </div>
+                  <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
+                    <div>
+                      <h4 className="text-sm font-bold text-slate-900 dark:text-white mb-1">
+                        Deformación de Peso Tipográfico por Proximidad
+                      </h4>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mb-3">
+                        Pasa el cursor letra por letra para ver cómo el font-weight se altera orgánicamente de 300 a 900.
+                      </p>
+                    </div>
+
+                    <div className="p-5 rounded-2xl bg-surface-container-low/50 dark:bg-slate-900/50 border border-outline-variant/20 flex flex-col justify-center min-h-[90px]">
+                      <KineticText
+                        text={kineticInputText}
+                        as="h2"
+                        className="text-2xl sm:text-3xl font-light text-primary dark:text-teal-300"
+                      />
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="text"
+                        value={kineticInputText}
+                        onChange={(e) => setKineticInputText(e.target.value)}
+                        placeholder="Escribe un texto..."
+                        className="flex-1 px-3 py-1.5 text-xs rounded-xl border border-outline-variant/30 bg-surface dark:bg-slate-900 text-on-surface focus:outline-none focus:ring-1 focus:ring-primary"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setKineticInputText('FisioMirror Biomecánica')}
+                        className="text-[11px] font-semibold text-primary hover:underline px-2"
+                      >
+                        Reset
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 21. LightRays */}
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2">
+                    <Sparkles className="w-4 h-4 text-teal-600" />
+                    <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                      21. Rayos de Luz Atmosféricos (LightRays)
+                    </h3>
+                  </div>
+                  <div className="relative h-64 rounded-3xl overflow-hidden bg-gradient-to-b from-slate-950 via-slate-900 to-[#002724] border border-slate-800 shadow-lg p-6 flex flex-col justify-between">
+                    <LightRays
+                      count={8}
+                      color="rgba(76, 218, 210, 0.35)"
+                      blur={32}
+                      speed={10}
+                      length="80%"
+                    />
+                    <div className="relative z-10">
+                      <span className="text-[10px] font-bold uppercase tracking-widest text-teal-400 bg-teal-500/15 px-2 py-0.5 rounded-md border border-teal-500/30">
+                        Ambiente Dinámico
+                      </span>
+                      <h4 className="text-base font-bold text-white mt-2">
+                        Fondo de Iluminación Holográfica
+                      </h4>
+                      <p className="text-xs text-slate-300 max-w-sm mt-1">
+                        Haces de luz oscilantes con balanceo angular continuo, diseñados para pantallas de inicio o vistas de calibración AR.
+                      </p>
+                    </div>
+                    <div className="relative z-10 flex items-center justify-between text-[11px] text-teal-200/80">
+                      <span>Ciclo: 10s • Desenfoque: 32px</span>
+                      <span className="flex items-center gap-1">
+                        <span className="size-2 rounded-full bg-teal-400 animate-ping" />
+                        Activo
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* ─────────────────────────────────────────────────────────
+                  22 & 23. NUMBER TICKER & MAGIC CARD
+                  ───────────────────────────────────────────────────────── */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-6 border-t border-teal-500/15">
+                {/* 22. NumberTicker */}
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2">
+                    <Activity className="w-4 h-4 text-teal-600" />
+                    <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                      22. Contador Numérico Animado con Resortes (NumberTicker)
+                    </h3>
+                  </div>
+                  <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
+                    <div>
+                      <h4 className="text-sm font-bold text-slate-900 dark:text-white mb-1">
+                        Física de Resortes sin Saltos Bruscos
+                      </h4>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mb-4">
+                        Modifica los valores numéricos y observa la transición elástica mediante useSpring:
+                      </p>
+                    </div>
+
+                    <div className="grid grid-cols-3 gap-3 text-center">
+                      <div className="p-3.5 rounded-2xl bg-surface-container-low/60 border border-outline-variant/20">
+                        <p className="text-[10px] uppercase font-semibold text-on-surface-variant">Ángulo ROM</p>
+                        <p className="text-2xl font-bold text-primary mt-1">
+                          <NumberTicker value={tickerRomValue} suffix="°" />
+                        </p>
+                      </div>
+                      <div className="p-3.5 rounded-2xl bg-surface-container-low/60 border border-outline-variant/20">
+                        <p className="text-[10px] uppercase font-semibold text-on-surface-variant">Adherencia</p>
+                        <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400 mt-1">
+                          <NumberTicker value={Math.min(100, Math.round(tickerRomValue * 0.72))} suffix="%" />
+                        </p>
+                      </div>
+                      <div className="p-3.5 rounded-2xl bg-surface-container-low/60 border border-outline-variant/20">
+                        <p className="text-[10px] uppercase font-semibold text-on-surface-variant">Pacientes</p>
+                        <p className="text-2xl font-bold text-teal-600 dark:text-teal-400 mt-1">
+                          <NumberTicker value={Math.round(tickerRomValue / 5)} />
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-center gap-2 pt-1">
+                      <button
+                        type="button"
+                        onClick={() => setTickerRomValue((v) => Math.max(45, v - 15))}
+                        className="px-3 py-1.5 text-xs font-bold rounded-xl border border-outline-variant/30 text-on-surface hover:bg-surface-container-high transition-colors"
+                      >
+                        -15° ROM
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setTickerRomValue(140)}
+                        className="px-3 py-1.5 text-xs font-bold rounded-xl bg-primary text-white hover:bg-primary/90 transition-all"
+                      >
+                        Reset (140°)
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setTickerRomValue((v) => Math.min(180, v + 15))}
+                        className="px-3 py-1.5 text-xs font-bold rounded-xl border border-outline-variant/30 text-on-surface hover:bg-surface-container-high transition-colors"
+                      >
+                        +15° ROM
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 23. MagicCard */}
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2">
+                    <Sparkles className="w-4 h-4 text-teal-600" />
+                    <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                      23. Tarjeta Mágica Interactiva (MagicCard)
+                    </h3>
+                  </div>
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <p className="text-xs text-slate-500 dark:text-slate-400">
+                        Mueve el cursor dentro de la tarjeta:
+                      </p>
+                      <div className="flex items-center gap-1 bg-surface-container-high/60 p-1 rounded-xl">
+                        <button
+                          type="button"
+                          onClick={() => setMagicCardMode('gradient')}
+                          className={cn(
+                            "px-2.5 py-1 text-[11px] font-semibold rounded-lg transition-all",
+                            magicCardMode === 'gradient' ? "bg-primary text-white shadow-xs" : "text-on-surface-variant hover:text-on-surface"
+                          )}
+                        >
+                          Modo Gradient
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setMagicCardMode('orb')}
+                          className={cn(
+                            "px-2.5 py-1 text-[11px] font-semibold rounded-lg transition-all",
+                            magicCardMode === 'orb' ? "bg-primary text-white shadow-xs" : "text-on-surface-variant hover:text-on-surface"
+                          )}
+                        >
+                          Modo Orb
+                        </button>
+                      </div>
+                    </div>
+
+                    <MagicCard
+                      mode={magicCardMode}
+                      gradientFrom="#006965"
+                      gradientTo="#4cdad2"
+                      glowFrom="#006965"
+                      glowTo="#c1ff72"
+                      className="cursor-pointer"
+                    >
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between">
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-teal-600 dark:text-teal-400 bg-teal-500/10 px-2 py-0.5 rounded-md">
+                            Sensor Biomecánico
+                          </span>
+                          <span className="text-xs font-bold text-emerald-500">Conectado</span>
+                        </div>
+                        <h4 className="text-base font-bold text-on-surface">
+                          Evaluación Lumbar en Tiempo Real
+                        </h4>
+                        <p className="text-xs text-on-surface-variant leading-relaxed">
+                          Seguimiento cinético mediante sensor de profundidad y visión artificial. El degradado responde con suavidad al movimiento del cursor.
+                        </p>
+                        <div className="pt-2 flex items-center justify-between text-xs font-semibold text-primary">
+                          <span>Modo actual: {magicCardMode.toUpperCase()}</span>
+                          <ArrowRight className="size-4" />
+                        </div>
+                      </div>
+                    </MagicCard>
+                  </div>
+                </div>
+              </div>
+
+              {/* ─────────────────────────────────────────────────────────
+                  24. PIXEL IMAGE
+                  ───────────────────────────────────────────────────────── */}
+              <div className="pt-6 border-t border-teal-500/15 space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Eye className="w-4 h-4 text-teal-600" />
+                    <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                      24. Imagen Pixelada con Revelación Gradual (PixelImage)
+                    </h3>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {(['6x4', '8x8', '8x3'] as const).map((g) => (
+                      <button
+                        key={g}
+                        type="button"
+                        onClick={() => {
+                          setPixelGridKey(g);
+                          setPixelReplayKey((k) => k + 1);
+                        }}
+                        className={cn(
+                          "px-2.5 py-1 text-[11px] font-semibold rounded-lg transition-all",
+                          pixelGridKey === g
+                            ? "bg-primary text-white shadow-xs"
+                            : "bg-surface-container-high/60 text-on-surface-variant hover:bg-surface-container-highest"
+                        )}
+                      >
+                        {g}
+                      </button>
+                    ))}
+                    <button
+                      type="button"
+                      onClick={() => setPixelReplayKey((k) => k + 1)}
+                      className="flex items-center gap-1 px-3 py-1 text-xs font-semibold rounded-xl bg-teal-500/15 text-teal-600 dark:text-teal-400 hover:bg-teal-500/25 transition-colors"
+                    >
+                      <RefreshCw className="size-3" /> Replay
+                    </button>
+                  </div>
+                </div>
+
+                <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col md:flex-row items-center gap-8 justify-center">
+                  <PixelImage
+                    key={`pixel-${pixelReplayKey}-${pixelGridKey}`}
+                    src="/physi.png"
+                    alt="Physi IA Mascot"
+                    grid={pixelGridKey}
+                    grayscaleAnimation={true}
+                    pixelFadeInDuration={800}
+                    maxAnimationDelay={1000}
+                    colorRevealDelay={1100}
+                    className="h-60 w-60 md:h-72 md:w-72 bg-gradient-to-br from-teal-500/10 to-cyan-500/10 flex items-center justify-center p-4"
+                  />
+                  <div className="max-w-md space-y-3">
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-teal-600 dark:text-teal-400 bg-teal-500/10 px-2 py-0.5 rounded-md">
+                      Efecto de Entrada Digital
+                    </span>
+                    <h4 className="text-lg font-bold text-on-surface">
+                      Aparición Escalonada por Polígonos clip-path
+                    </h4>
+                    <p className="text-xs text-on-surface-variant leading-relaxed">
+                      Divide la imagen en una cuadrícula poligonal matemática ({pixelGridKey}) con retardo pseudoaleatorio por pieza y transición fluida de escala de grises a color completo.
+                    </p>
+                    <div className="pt-2 flex flex-wrap gap-2 text-[11px] text-on-surface-variant">
+                      <span className="px-2.5 py-1 rounded-lg bg-surface-container-low border border-outline-variant/20">
+                        Cuadrícula: {pixelGridKey}
+                      </span>
+                      <span className="px-2.5 py-1 rounded-lg bg-surface-container-low border border-outline-variant/20">
+                        Transición: 800ms
+                      </span>
+                      <span className="px-2.5 py-1 rounded-lg bg-surface-container-low border border-outline-variant/20">
+                        Filtro: Grayscale → Color
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* ─────────────────────────────────────────────────────────
+                  25 & 26. PULSATING BUTTON & SCROLL PROGRESS
+                  ───────────────────────────────────────────────────────── */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-6 border-t border-teal-500/15">
+                {/* 25. PulsatingButton */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Zap className="w-4 h-4 text-teal-600" />
+                      <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                        25. Botón Pulsante Dinámico (PulsatingButton)
+                      </h3>
+                    </div>
+                    <div className="flex items-center gap-1 bg-surface-container-high/60 p-1 rounded-xl">
+                      <button
+                        type="button"
+                        onClick={() => setPulsatingVariant('pulse')}
+                        className={cn(
+                          "px-2.5 py-1 text-[11px] font-semibold rounded-lg transition-all",
+                          pulsatingVariant === 'pulse' ? "bg-primary text-white shadow-xs" : "text-on-surface-variant hover:text-on-surface"
+                        )}
+                      >
+                        Pulse
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setPulsatingVariant('ripple')}
+                        className={cn(
+                          "px-2.5 py-1 text-[11px] font-semibold rounded-lg transition-all",
+                          pulsatingVariant === 'ripple' ? "bg-primary text-white shadow-xs" : "text-on-surface-variant hover:text-on-surface"
+                        )}
+                      >
+                        Ripple
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
+                    <div>
+                      <h4 className="text-sm font-bold text-slate-900 dark:text-white mb-1">
+                        Llamada a la Acción Crítica con Ondas de Frecuencia
+                      </h4>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mb-4">
+                        Emite anillos de pulso o expansiones de onda continua. Identifica de inmediato el próximo paso crítico del paciente o fisioterapeuta.
+                      </p>
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-4 pt-2">
+                      <PulsatingButton
+                        variant={pulsatingVariant}
+                        pulseColor={pulsatingColor}
+                        onClick={() => toast.success("Calibración Iniciada", { description: "Activando modelo MediaPipe para detección ósea." })}
+                        className="text-xs"
+                      >
+                        <Activity className="size-4" />
+                        <span>Calibrar Cámara MediaPipe</span>
+                      </PulsatingButton>
+
+                      <PulsatingButton
+                        variant={pulsatingVariant}
+                        pulseColor="#06b6d4"
+                        onClick={() => navigate('/ar-mirror')}
+                        className="bg-cyan-600 hover:bg-cyan-500 text-xs"
+                      >
+                        <Zap className="size-4" />
+                        <span>Iniciar Espejo AR</span>
+                      </PulsatingButton>
+                    </div>
+
+                    <div className="flex items-center gap-2 pt-2 text-[11px] text-slate-400">
+                      <span>Color de Pulso:</span>
+                      <button
+                        type="button"
+                        onClick={() => setPulsatingColor('rgba(13, 148, 136, 0.6)')}
+                        className="px-2 py-0.5 rounded-md bg-teal-500/10 text-teal-600 dark:text-teal-400 border border-teal-500/20"
+                      >
+                        Teal Médico
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setPulsatingColor('rgba(193, 255, 114, 0.7)')}
+                        className="px-2 py-0.5 rounded-md bg-lime-500/10 text-lime-700 dark:text-lime-400 border border-lime-500/20"
+                      >
+                        Kinetic Lime
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setPulsatingColor('rgba(59, 130, 246, 0.6)')}
+                        className="px-2 py-0.5 rounded-md bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20"
+                      >
+                        Azure Blue
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 26. ScrollProgress */}
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2">
+                    <Sliders className="w-4 h-4 text-teal-600" />
+                    <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                      26. Barra de Progreso de Desplazamiento (ScrollProgress)
+                    </h3>
+                  </div>
+                  <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
+                    <div>
+                      <h4 className="text-sm font-bold text-slate-900 dark:text-white mb-1">
+                        Lectura Dinámica del Scroll con Escala GPU
+                      </h4>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mb-3">
+                        Mira la línea continua en la parte superior fija de esta página: se actualiza en tiempo real con scaleX y el gradiente oficial de FisioMirror.
+                      </p>
+                    </div>
+
+                    <div className="p-4 rounded-2xl bg-slate-100/70 dark:bg-slate-900/60 border border-slate-200/60 dark:border-slate-800/80 space-y-3">
+                      <div className="flex items-center justify-between text-xs font-semibold text-slate-600 dark:text-slate-300">
+                        <span>Gradiente:</span>
+                        <code className="text-[11px] text-teal-600 dark:text-teal-400 font-mono">
+                          from-teal-600 via-cyan-400 to-[#c1ff72]
+                        </code>
+                      </div>
+                      <div className="h-2 w-full rounded-full bg-gradient-to-r from-teal-600 via-cyan-400 to-[#c1ff72] shadow-sm shadow-teal-500/20" />
+                      <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-normal">
+                        Activa en todas las pantallas clínicas para que el paciente o terapeuta conozca su progreso en la lectura de expedientes y guías biomecánicas.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* ─────────────────────────────────────────────────────────
+                  27 & 28. SHIMMER BUTTON & SHINE BORDER
+                  ───────────────────────────────────────────────────────── */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-6 border-t border-teal-500/15">
+                {/* 27. ShimmerButton */}
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2">
+                    <Sparkles className="w-4 h-4 text-teal-600" />
+                    <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                      27. Botón con Brillo Deslizante (ShimmerButton)
+                    </h3>
+                  </div>
+                  <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
+                    <div>
+                      <h4 className="text-sm font-bold text-slate-900 dark:text-white mb-1">
+                        Rotación Cónica Continua (Conic Gradient)
+                      </h4>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mb-4">
+                        Brillo periférico que rota continuamente a 360°, ideal para acciones de alta jerarquía médica como generación de informes IA o exportación clínica.
+                      </p>
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-4">
+                      <ShimmerButton
+                        shimmerColor="#c1ff72"
+                        background="rgba(0, 50, 48, 0.95)"
+                        onClick={() => toast.success("Informe de Fisioterapia Generado", { description: "Análisis IA procesado con éxito." })}
+                        className="text-xs"
+                      >
+                        <Sparkles className="size-4 text-kinetic" />
+                        <span>Generar Informe IA Physi</span>
+                      </ShimmerButton>
+
+                      <ShimmerButton
+                        shimmerColor="#38bdf8"
+                        background="rgba(15, 23, 42, 0.95)"
+                        onClick={() => toast.info("Exportando Historial...", { description: "Preparando documento PDF cifrado." })}
+                        className="text-xs border-slate-700"
+                      >
+                        <Copy className="size-4" />
+                        <span>Exportar Historia PDF</span>
+                      </ShimmerButton>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 28. ShineBorder */}
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2">
+                    <ShieldCheck className="w-4 h-4 text-teal-600" />
+                    <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                      28. Borde Brillante Animado (ShineBorder)
+                    </h3>
+                  </div>
+                  <div className="relative p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4 overflow-hidden">
+                    <ShineBorder
+                      borderWidth={2}
+                      duration={10}
+                      shineColor={["#00504d", "#14b8a6", "#c1ff72"]}
+                    />
+                    <div>
+                      <div className="flex items-center justify-between mb-1">
+                        <h4 className="text-sm font-bold text-slate-900 dark:text-white">
+                          Tarjeta Clínica con Borde Órbita Multicromático
+                        </h4>
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                          Prioridad Alta
+                        </span>
+                      </div>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mb-3">
+                        El gradiente radial animado recorre las 4 esquinas sin alterar el contenido interno gracias a una máscara XOR de doble capa.
+                      </p>
+                    </div>
+
+                    <div className="p-3.5 rounded-2xl bg-teal-500/5 dark:bg-teal-950/20 border border-teal-500/20 flex items-center justify-between">
+                      <div>
+                        <p className="text-xs font-bold text-slate-800 dark:text-slate-200">Paciente: Roberto Santana</p>
+                        <p className="text-[11px] text-teal-600 dark:text-teal-400 font-semibold">Tendinopatía Rotuliana • Sesión 6 de 12</p>
+                      </div>
+                      <span className="text-xs font-black text-slate-900 dark:text-white">125° Flexión</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* ─────────────────────────────────────────────────────────
+                  29 & 30. SPARKLES TEXT & TEXT ANIMATE
+                  ───────────────────────────────────────────────────────── */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-6 border-t border-teal-500/15">
+                {/* 29. SparklesText */}
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2">
+                    <Sparkles className="w-4 h-4 text-teal-600" />
+                    <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                      29. Texto con Destellos Mágicos (SparklesText)
+                    </h3>
+                  </div>
+                  <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
+                    <div>
+                      <h4 className="text-sm font-bold text-slate-900 dark:text-white mb-1">
+                        Estrellas y Destellos Festivos Vectoriales
+                      </h4>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mb-4">
+                        Ideal para celebraciones de objetivos clínicos cumplidos, rachas de rehabilitación y ascensos de nivel en la recuperación.
+                      </p>
+                    </div>
+
+                    <div className="py-2">
+                      <SparklesText
+                        sparklesCount={8}
+                        colors={{ first: '#0d9488', second: '#c1ff72' }}
+                        className="text-2xl sm:text-3xl text-slate-900 dark:text-white"
+                      >
+                        {sparklesWord}
+                      </SparklesText>
+                    </div>
+
+                    <div className="flex items-center gap-2 pt-2">
+                      <input
+                        type="text"
+                        value={sparklesWord}
+                        onChange={(e) => setSparklesWord(e.target.value)}
+                        placeholder="Escribe un mensaje de logro..."
+                        className="flex-1 px-3 py-2 rounded-xl text-xs bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 focus:outline-hidden focus:border-teal-500"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setSparklesWord('¡100% Rango Articular Superado!')}
+                        className="px-3 py-2 rounded-xl text-xs font-semibold bg-teal-500/15 text-teal-600 dark:text-teal-400 hover:bg-teal-500/25 transition-colors whitespace-nowrap"
+                      >
+                        Ejemplo Clínico
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 30. TextAnimate */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Activity className="w-4 h-4 text-teal-600" />
+                      <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                        30. Texto Animado por Segmentos (TextAnimate)
+                      </h3>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setTextAnimateKey((k) => k + 1)}
+                      className="text-[11px] font-semibold text-primary hover:underline flex items-center gap-1"
+                    >
+                      <RefreshCw className="size-3" /> Reanimar
+                    </button>
+                  </div>
+
+                  <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="text-[11px] text-slate-400">Variante:</span>
+                      {(['blurInUp', 'fadeIn', 'slideUp', 'scaleUp', 'blurIn'] as AnimationVariant[]).map((anim) => (
+                        <button
+                          key={anim}
+                          type="button"
+                          onClick={() => {
+                            setTextAnimateVariant(anim);
+                            setTextAnimateKey((k) => k + 1);
+                          }}
+                          className={cn(
+                            "px-2 py-0.5 text-[10px] font-bold rounded-md transition-all",
+                            textAnimateVariant === anim
+                              ? "bg-primary text-white shadow-xs"
+                              : "bg-surface-container-high/60 text-on-surface-variant hover:bg-surface-container-highest"
+                          )}
+                        >
+                          {anim}
+                        </button>
+                      ))}
+                    </div>
+
+                    <div className="flex items-center gap-2 text-[11px] text-slate-400">
+                      <span>Segmentación:</span>
+                      {(['word', 'character', 'line'] as AnimationType[]).map((type) => (
+                        <button
+                          key={type}
+                          type="button"
+                          onClick={() => {
+                            setTextAnimateType(type);
+                            setTextAnimateKey((k) => k + 1);
+                          }}
+                          className={cn(
+                            "px-2 py-0.5 text-[10px] font-bold rounded-md transition-all",
+                            textAnimateType === type
+                              ? "bg-teal-600 text-white"
+                              : "bg-surface-container-low text-on-surface-variant"
+                          )}
+                        >
+                          {type}
+                        </button>
+                      ))}
+                    </div>
+
+                    <div className="p-4 rounded-2xl bg-teal-500/5 dark:bg-slate-900/60 border border-teal-500/20 min-h-[90px] flex items-center">
+                      <TextAnimate
+                        key={`text-anim-${textAnimateKey}-${textAnimateVariant}-${textAnimateType}`}
+                        animation={textAnimateVariant}
+                        by={textAnimateType}
+                        className="text-sm sm:text-base font-bold text-slate-900 dark:text-slate-100 leading-relaxed"
+                      >
+                        Evaluación biomecánica asistida por Physi IA: simetría escapular y ángulo articular en rango óptimo.
+                      </TextAnimate>
                     </div>
                   </div>
                 </div>

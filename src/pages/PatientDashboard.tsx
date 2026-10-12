@@ -16,12 +16,21 @@ import { PRIMARY_DEMO_PATIENT } from '../data/unifiedDemoData';
 import { isValidUUID } from '../lib/utils';
 import { BorderBeam } from '../components/ui/BorderBeam';
 import { CardSpotlight } from '../components/ui/CardSpotlight';
-import { ShimmerButton } from '../components/ui/ShimmerButton';
+import { PulsatingButton } from '../components/ui/PulsatingButton';
+import { SparklesText } from '../components/ui/SparklesText';
 import { MascotAnimation } from '../components/ui/MascotAnimation';
-import { AuroraText } from '../components/ui/AuroraText';
 import { HelpGuideButton } from '../components/ui/HelpGuideButton';
 import { PatientRecoveryHub } from '../components/patient/PatientRecoveryHub';
 import { VersiculoCard } from '../components/spiritual/VersiculoCard';
+import {
+  StreakFlameCounter,
+  MobilityQuestCard,
+  DailyHealthPointsWidget,
+  LevelProgressRibbon,
+  VirtualTrophyCabinet,
+  CheerReactionButton,
+} from '../components/ui/GamificationSuite';
+import { PainScaleInteractiveCard } from '../components/ui/ActivityCardsSuite';
 import {
   Flame,
   CheckCircle2,
@@ -305,20 +314,25 @@ export function PatientDashboard() {
         <div className="flex items-center gap-4 relative">
           <MascotAnimation type="greeting" size="md" />
           <div>
-            <h2 className="font-display font-headline-lg text-headline-lg-mobile lg:text-headline-lg gradient-text-living">
-              {greeting}, <AuroraText>{user?.full_name?.split(' ')[0] || 'Paciente'}</AuroraText>
-            </h2>
+            <SparklesText
+              sparklesCount={4}
+              colors={{ first: '#0d9488', second: '#c1ff72' }}
+              className="font-display font-headline-lg text-headline-lg-mobile lg:text-headline-lg gradient-text-living"
+            >
+              {greeting}, {user?.full_name?.split(' ')[0] || 'Paciente'}
+            </SparklesText>
             <p className="text-outline font-title-md text-title-md">
               {new Date().toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
             </p>
           </div>
-          <div className="ml-auto">
+          <div className="ml-auto flex items-center gap-3">
+            <CheerReactionButton />
             <HelpGuideButton />
           </div>
         </div>
       </div>
 
-      {/* Main KPI Row */}
+      {/* Main KPI Row con acentos pastel clínicos */}
       <motion.div
         variants={staggerContainer}
         initial="hidden"
@@ -332,18 +346,18 @@ export function PatientDashboard() {
         >
           <CardSpotlight
             color="rgba(245, 158, 11, 0.16)"
-            className="ios-glass-heavy refraction-border p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl flex flex-col justify-between cursor-default shadow-sm hover:shadow-md transition-all h-full"
+            className="p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl flex flex-col justify-between cursor-default shadow-sm hover:shadow-md transition-all h-full bg-gradient-to-br from-amber-50/75 via-surface/90 to-amber-50/30 dark:from-amber-950/25 dark:via-surface-container/80 dark:to-slate-900/90 border border-amber-200/50 dark:border-amber-500/25"
           >
             <div className="flex items-start justify-between mb-2">
-              <div className="size-9 sm:size-11 rounded-xl sm:rounded-2xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
+              <div className="size-9 sm:size-11 rounded-xl sm:rounded-2xl bg-amber-500/15 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0 border border-amber-500/20">
                 <Flame className="size-4 sm:size-5" />
               </div>
-              <span className="text-[10px] sm:text-xs font-semibold text-on-surface-variant uppercase tracking-wider hidden xs:inline">Racha</span>
+              <span className="text-[10px] sm:text-xs font-bold text-amber-700 dark:text-amber-300 uppercase tracking-wider hidden xs:inline">Racha</span>
             </div>
             <div>
-              <p className="text-[10px] sm:text-xs font-semibold text-on-surface-variant uppercase tracking-wider line-clamp-1 xs:hidden">Racha</p>
+              <p className="text-[10px] sm:text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider line-clamp-1 xs:hidden">Racha</p>
               <p className="text-xl sm:text-2xl lg:text-3xl font-black text-slate-900 dark:text-slate-100 tabular-nums tracking-tight">
-                {kpi.streak} <span className="text-[10px] sm:text-xs font-semibold text-outline">días</span>
+                {kpi.streak} <span className="text-[10px] sm:text-xs font-semibold text-slate-400">días</span>
               </p>
             </div>
           </CardSpotlight>
@@ -356,18 +370,18 @@ export function PatientDashboard() {
         >
           <CardSpotlight
             color="rgba(20, 184, 166, 0.16)"
-            className="ios-glass-heavy refraction-border p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl flex flex-col justify-between cursor-default shadow-sm hover:shadow-md transition-all h-full"
+            className="p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl flex flex-col justify-between cursor-default shadow-sm hover:shadow-md transition-all h-full bg-gradient-to-br from-teal-50/80 via-surface/90 to-emerald-50/40 dark:from-teal-950/30 dark:via-surface-container/80 dark:to-slate-900/90 border border-teal-200/60 dark:border-teal-500/30"
           >
             <div className="flex items-start justify-between mb-2">
-              <div className="size-9 sm:size-11 rounded-xl sm:rounded-2xl bg-teal-500/10 text-teal-600 dark:text-teal-400 flex items-center justify-center shrink-0">
+              <div className="size-9 sm:size-11 rounded-xl sm:rounded-2xl bg-teal-500/15 text-teal-600 dark:text-teal-400 flex items-center justify-center shrink-0 border border-teal-500/25">
                 <CheckCircle2 className="size-4 sm:size-5" />
               </div>
-              <span className="text-[10px] sm:text-xs font-semibold text-on-surface-variant uppercase tracking-wider hidden xs:inline">Sesiones</span>
+              <span className="text-[10px] sm:text-xs font-bold text-teal-700 dark:text-teal-300 uppercase tracking-wider hidden xs:inline">Sesiones</span>
             </div>
             <div>
-              <p className="text-[10px] sm:text-xs font-semibold text-on-surface-variant uppercase tracking-wider line-clamp-1 xs:hidden">Sesiones</p>
+              <p className="text-[10px] sm:text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider line-clamp-1 xs:hidden">Sesiones</p>
               <p className="text-xl sm:text-2xl lg:text-3xl font-black text-teal-700 dark:text-teal-300 tabular-nums tracking-tight">
-                {kpi.totalSessions} <span className="text-[10px] sm:text-xs font-semibold text-outline">total</span>
+                {kpi.totalSessions} <span className="text-[10px] sm:text-xs font-semibold text-slate-400">total</span>
               </p>
             </div>
           </CardSpotlight>
@@ -380,18 +394,18 @@ export function PatientDashboard() {
         >
           <CardSpotlight
             color="rgba(14, 165, 233, 0.16)"
-            className="ios-glass-heavy refraction-border p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl flex flex-col justify-between cursor-default shadow-sm hover:shadow-md transition-all h-full"
+            className="p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl flex flex-col justify-between cursor-default shadow-sm hover:shadow-md transition-all h-full bg-gradient-to-br from-sky-50/75 via-surface/90 to-sky-50/40 dark:from-sky-950/25 dark:via-surface-container/80 dark:to-slate-900/90 border border-sky-200/60 dark:border-sky-500/30"
           >
             <div className="flex items-start justify-between mb-2">
-              <div className="size-9 sm:size-11 rounded-xl sm:rounded-2xl bg-teal-600/10 text-teal-700 dark:text-teal-300 flex items-center justify-center shrink-0">
+              <div className="size-9 sm:size-11 rounded-xl sm:rounded-2xl bg-sky-500/15 text-sky-700 dark:text-sky-300 flex items-center justify-center shrink-0 border border-sky-500/25">
                 <Clock className="size-4 sm:size-5" />
               </div>
-              <span className="text-[10px] sm:text-xs font-semibold text-on-surface-variant uppercase tracking-wider hidden xs:inline">Minutos</span>
+              <span className="text-[10px] sm:text-xs font-bold text-sky-700 dark:text-sky-300 uppercase tracking-wider hidden xs:inline">Minutos</span>
             </div>
             <div>
-              <p className="text-[10px] sm:text-xs font-semibold text-on-surface-variant uppercase tracking-wider line-clamp-1 xs:hidden">Minutos</p>
+              <p className="text-[10px] sm:text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider line-clamp-1 xs:hidden">Minutos</p>
               <p className="text-xl sm:text-2xl lg:text-3xl font-black text-slate-900 dark:text-slate-100 tabular-nums tracking-tight">
-                {kpi.weeklyMinutes} <span className="text-[10px] sm:text-xs font-semibold text-outline">min</span>
+                {kpi.weeklyMinutes} <span className="text-[10px] sm:text-xs font-semibold text-slate-400">min</span>
               </p>
             </div>
           </CardSpotlight>
@@ -406,35 +420,66 @@ export function PatientDashboard() {
       {/* Patient Recovery & Wellness Hub */}
       <PatientRecoveryHub />
 
+      {/* Gamificación Interactiva & Registro del Umbral de Dolor */}
+      <div className="space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-3xl bg-surface/80 dark:bg-surface-container/60 border border-outline/10 shadow-sm">
+          <LevelProgressRibbon currentLevel={3} currentXp={380} nextLevelXp={500} className="w-full sm:w-auto" />
+          <span className="text-xs font-bold text-teal-600 dark:text-teal-400">
+            Fase de Recuperación Articular • Nivel 3
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div>
+            <StreakFlameCounter currentStreak={kpi.streak || 4} bestStreak={7} />
+          </div>
+          <div>
+            <MobilityQuestCard
+              questTitle="Alineación Postural y Estabilidad"
+              targetExercises={2}
+              completedExercises={1}
+              xpReward={120}
+            />
+          </div>
+          <div>
+            <DailyHealthPointsWidget
+              points={380}
+              dailyGoal={500}
+              burnStreakMultiplier={1.5}
+            />
+          </div>
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left 2 Cols: Daily Routine & Primary Action */}
         <div className="lg:col-span-2 space-y-6">
-          {/* Featured AR Session Card */}
-          <div className="relative overflow-hidden rounded-3xl p-6 lg:p-8 ios-glass-heavy refraction-border shadow-md">
+          {/* Featured AR Session Card con fondo pastel menta/celeste clínico */}
+          <div className="relative overflow-hidden rounded-3xl p-6 lg:p-8 bg-gradient-to-br from-teal-50/80 via-surface/95 to-sky-50/60 dark:from-teal-950/30 dark:via-surface-container/85 dark:to-sky-950/20 border border-teal-200/60 dark:border-teal-500/30 shadow-lg">
             <BorderBeam size={120} duration={8} colorFrom="#14b8a6" colorTo="#38bdf8" />
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 relative z-10">
               <div className="space-y-2 max-w-md">
-                <span className="inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-full bg-teal-500/10 text-teal-700 dark:text-teal-300 border border-teal-500/20">
+                <span className="inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-full bg-teal-500/15 text-teal-700 dark:text-teal-300 border border-teal-500/30">
                   <span className="w-1.5 h-1.5 rounded-full bg-teal-500 animate-pulse" />
                   Sesión Guiada AR
                 </span>
-                <h3 className="text-xl font-bold text-on-surface">Rutina de Hoy</h3>
-                <p className="text-xs text-on-surface-variant leading-relaxed">
+                <h3 className="text-xl font-black text-slate-900 dark:text-white">Rutina de Hoy</h3>
+                <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-medium">
                   {exercises.length > 0
                     ? `${exercises[0].name} con corrección de postura en tiempo real por visión computacional.`
                     : 'Inicia el seguimiento guiado con tu cámara para registrar ángulos articulares.'}
                 </p>
               </div>
 
-              <ShimmerButton
+              <PulsatingButton
                 onClick={() => navigate('/calibration')}
-                shimmerColor="#38bdf8"
-                background="rgba(13, 148, 136, 0.95)"
-                className="px-6 py-3.5 rounded-2xl text-white font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-teal-700/25 shrink-0"
+                variant="pulse"
+                pulseColor="rgba(13, 148, 136, 0.6)"
+                className="px-6 py-3.5 rounded-2xl text-white font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-teal-700/25 shrink-0 bg-teal-600 hover:bg-teal-500"
               >
                 <Play className="size-4 fill-current" />
                 <span>Comenzar Sesión</span>
-              </ShimmerButton>
+              </PulsatingButton>
             </div>
           </div>
 
@@ -565,6 +610,9 @@ export function PatientDashboard() {
             )}
           </CollapsibleSection>
 
+          {/* Registro del Umbral de Dolor */}
+          <PainScaleInteractiveCard initialPain={2} />
+
           {/* AI Physi Recommendation Card */}
           <div className="p-6 rounded-3xl bg-surface/80 dark:bg-surface-container-low/60 border border-outline/10 space-y-4">
             <div className="flex items-center gap-2.5">
@@ -624,12 +672,15 @@ export function PatientDashboard() {
 
       {/* Gamification Achievements Section */}
       <CollapsibleSection title="Logros y Metas de Recuperación" icon="emoji_events">
-        <div className="p-6 rounded-3xl bg-surface/80 dark:bg-surface-container-low/60 border border-outline/10">
-          <div className="flex justify-between items-center text-xs mb-4">
-            <span className="text-on-surface-variant">{gamification.unlockedCount} de {gamification.achievements.length} medallas</span>
-            <span className="font-bold text-teal-600 dark:text-teal-400">{Math.round(gamification.totalProgress * 100)}% desbloqueado</span>
+        <div className="space-y-6">
+          <div className="p-6 rounded-3xl bg-surface/80 dark:bg-surface-container-low/60 border border-outline/10">
+            <div className="flex justify-between items-center text-xs mb-4">
+              <span className="text-on-surface-variant">{gamification.unlockedCount} de {gamification.achievements.length} medallas</span>
+              <span className="font-bold text-teal-600 dark:text-teal-400">{Math.round(gamification.totalProgress * 100)}% desbloqueado</span>
+            </div>
+            <AchievementShowcase achievements={gamification.achievements} compact={false} />
           </div>
-          <AchievementShowcase achievements={gamification.achievements} compact={false} />
+          <VirtualTrophyCabinet />
         </div>
       </CollapsibleSection>
     </div>

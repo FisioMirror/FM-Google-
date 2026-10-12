@@ -14,6 +14,12 @@ import { AnimatedTabs } from '../components/ui/AnimatedTabs';
 import { MedicalIcon } from '../components/ui/MedicalIcon';
 import { SpotlightCard } from '../components/ui/SpotlightCard';
 import { ClinicalSlider } from '../components/ui/ClinicalSlider';
+import {
+  BiomechanicalTagSelector,
+  PhysioNoteAnnotationBubble,
+  FloatingMiniStopwatch,
+  QuickPrescriptionModalButton,
+} from '../components/ui/FloatingControlsSuite';
 
 interface ChatMessage {
   role: 'user' | 'assistant';
@@ -589,7 +595,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
                 <p className="text-xs text-on-surface-variant mt-0.5">Genera un resumen narrativo a partir de las últimas sesiones reales</p>
               </div>
             </div>
-            <div className="flex flex-col sm:flex-row gap-4 mb-6">
+            <div className="flex flex-col sm:flex-row gap-4 mb-4">
               <select value={selectedPatient} onChange={(e) => setSelectedPatient(e.target.value)} className="flex-1 px-4 py-3 rounded-xl bg-white/70 dark:bg-slate-800/70 border border-outline-variant/30 outline-none focus:ring-2 focus:ring-teal-500/20 text-on-surface text-sm font-semibold">
                 <option value="">Seleccionar Paciente</option>
                 {patients.length === 0 && <option value="" disabled>No hay pacientes asignados</option>}
@@ -602,13 +608,33 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
                 {summaryLoading ? <LoadingText context="ai" /> : 'Generar Resumen'}
               </button>
             </div>
+
+            {/* Quick Clinical Controls Bar */}
+            <div className="flex flex-wrap items-center justify-between gap-3 mb-6 p-3 rounded-2xl bg-teal-500/5 border border-teal-500/15">
+              <div className="space-y-1.5">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-outline block">Criterios Clínicos:</span>
+                <BiomechanicalTagSelector tags={['Movilidad', 'Fuerza', 'Propiocepción', 'Sin Dolor', 'Post-Op']} />
+              </div>
+              <div className="flex flex-wrap items-center gap-2">
+                <QuickPrescriptionModalButton />
+                <FloatingMiniStopwatch />
+              </div>
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="ios-glass-heavy refraction-border p-5 rounded-2xl">
-                <div className="flex items-center gap-2 mb-3">
-                  <Icon name="sensors" size={18} className="text-teal-600 dark:text-teal-400 animate-breathe-icon" />
-                  <span className="font-bold text-sm text-on-surface">Telemetría Clínica</span>
+              <div className="ios-glass-heavy refraction-border p-5 rounded-2xl space-y-4">
+                <div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <Icon name="sensors" size={18} className="text-teal-600 dark:text-teal-400 animate-breathe-icon" />
+                    <span className="font-bold text-sm text-on-surface">Telemetría Clínica</span>
+                  </div>
+                  <p className="text-xs text-on-surface-variant leading-relaxed">El resumen se genera a partir de las últimas 5 sesiones registradas del paciente seleccionado en la base de datos.</p>
                 </div>
-                <p className="text-xs text-on-surface-variant leading-relaxed">El resumen se genera a partir de las últimas 5 sesiones registradas del paciente seleccionado en la base de datos.</p>
+                <PhysioNoteAnnotationBubble
+                  author="Fisio Supervisor"
+                  noteText="Revisar progresión de ROM antes de aumentar repeticiones."
+                  className="w-full"
+                />
               </div>
               <div className="md:col-span-2">
                 <div className="ios-glass-heavy refraction-border rounded-2xl overflow-hidden shadow-sm">

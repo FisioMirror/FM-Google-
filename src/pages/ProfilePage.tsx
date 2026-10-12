@@ -12,6 +12,12 @@ import { AnimatedLink } from '../components/ui/AnimatedLink';
 import { GlassModal } from '../components/ui/GlassModal';
 import { LegalModal, type LegalDocType } from '../components/ui/LegalModal';
 import { compressImage } from '../lib/utils';
+import {
+  RehabHeroAvatarCard,
+  RecoveryRankBadge,
+  VirtualTrophyCabinet,
+} from '../components/ui/GamificationSuite';
+import { ErgonomicHandModeSwitcher } from '../components/ui/NavigationDocksSuite';
 
 export function ProfilePage() {
   const user = useAuthStore((s) => s.user);
@@ -349,6 +355,15 @@ export function ProfilePage() {
               </div>
             )}
           </div>
+          <div className="w-full mt-4 space-y-3">
+            <RecoveryRankBadge rank={isFisio ? 'Rango: Clínico Experto' : 'Rango: Constante de Élite'} className="w-full justify-center" />
+            <RehabHeroAvatarCard
+              name={user?.full_name?.split(' ')[0] || 'Usuario'}
+              roleTitle={isFisio ? 'Especialista en Kinesiología' : 'Paciente en Rehabilitación'}
+              level={isFisio ? 12 : 4}
+              powerScore={88}
+            />
+          </div>
         </motion.div>
 
         {/* Settings bento */}
@@ -443,6 +458,13 @@ export function ProfilePage() {
                       >
                         <div className={`w-6 h-6 bg-white rounded-full transition-transform ${pushNotifications ? 'translate-x-7' : 'translate-x-1'}`} />
                       </button>
+                    </div>
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 hover:bg-surface-variant/20 rounded-2xl gap-3">
+                      <div className="flex items-center gap-3">
+                        <Icon name="pan_tool" size={24} className="text-outline animate-breathe-icon" />
+                        <div><p className="font-medium">Modo Ergonómico de Agarre</p><p className="text-xs text-outline">Optimiza la posición de controles para diestros o zurdos</p></div>
+                      </div>
+                      <ErgonomicHandModeSwitcher />
                     </div>
                   </div>
                 </GlassPanel>
@@ -588,6 +610,11 @@ export function ProfilePage() {
                   </button>
                 </div>
                 </>
+              ) },
+              { id: 'trophies', label: 'Logros y Trofeos', content: (
+                <div className="space-y-4">
+                  <VirtualTrophyCabinet />
+                </div>
               ) },
             ]}
           />

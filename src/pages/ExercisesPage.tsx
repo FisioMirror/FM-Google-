@@ -37,6 +37,8 @@ import { useToast } from '../components/ui/ToastProvider';
 import { cn } from '../lib/utils';
 import { Spinner } from '../components/ui/Loader';
 import { SkeletonCard } from '../components/ui/Skeleton';
+import { MuscleTargetRadarCard } from '../components/ui/ActivityCardsSuite';
+import { RapidToleranceAdjuster } from '../components/ui/FloatingControlsSuite';
 import { celebrateAchievement } from '../lib/confetti';
 import { GlassModal } from '../components/ui/GlassModal';
 import { SpotlightCard } from '../components/ui/SpotlightCard';
@@ -723,6 +725,33 @@ export function ExercisesPage() {
               <span>Nuevo Ejercicio</span>
             </button>
           )}
+        </div>
+
+        {/* Radar de Activación Muscular & Calibración de Tolerancia */}
+        <div className="mt-6 pt-6 border-t border-slate-200/60 dark:border-slate-800 grid grid-cols-1 lg:grid-cols-3 gap-6 items-center">
+          <div className="lg:col-span-2">
+            <MuscleTargetRadarCard
+              className="bg-transparent border-0 p-0 shadow-none"
+              targets={[
+                { muscle: 'Cuádriceps / Femoral', activation: 88, color: '#00504d' },
+                { muscle: 'Deltoides / Manguito', activation: 76, color: '#14b8a6' },
+                { muscle: 'Core Lumbo-pélvico', activation: 82, color: '#0ea5e9' },
+                { muscle: 'Isquiosurales', activation: 64, color: '#6366f1' },
+                { muscle: 'Extensores Cervicales', activation: 70, color: '#10b981' },
+              ]}
+            />
+          </div>
+          <div className="p-4 rounded-2xl bg-teal-50/60 dark:bg-slate-800/60 border border-teal-100/60 dark:border-slate-700 flex flex-col justify-between h-full space-y-3">
+            <div>
+              <span className="text-[10px] uppercase font-bold text-teal-700 dark:text-teal-300 block mb-1">
+                Tolerancia Global de Calibración
+              </span>
+              <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                Ajusta el margen de aceptación angular para los ejercicios con detección MediaPipe activa.
+              </p>
+            </div>
+            <RapidToleranceAdjuster />
+          </div>
         </div>
       </div>
 

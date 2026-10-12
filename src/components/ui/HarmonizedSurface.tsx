@@ -1,16 +1,32 @@
-import { forwardRef, type HTMLAttributes, type ComponentType } from "react"
+import { forwardRef, type ComponentType } from "react"
 import { motion, type HTMLMotionProps } from "framer-motion"
 import { cn } from "@/lib/utils"
+import { CLINICAL_PASTELS } from "@/lib/designTokens"
 
-export type HarmonizedSurfaceVariant = "panel" | "card" | "subcontainer"
-export type HarmonizedGlassTone = "subtle" | "prominent" | "flat"
+export type HarmonizedSurfaceVariant =
+  | "panel"
+  | "card"
+  | "subcontainer"
+  | "pastel-sky"
+  | "pastel-mint"
+  | "pastel-lavender"
+  | "pastel-gradient"
+
+export type HarmonizedGlassTone =
+  | "subtle"
+  | "prominent"
+  | "flat"
+  | "pastel-sky"
+  | "pastel-mint"
+  | "pastel-lavender"
+  | "pastel-gradient"
 
 export interface HarmonizedSurfaceProps extends Omit<HTMLMotionProps<"div">, "children"> {
   children?: React.ReactNode
   variant?: HarmonizedSurfaceVariant
   glass?: HarmonizedGlassTone
   interactive?: boolean
-  glow?: "none" | "teal" | "kinetic" | "azure"
+  glow?: "none" | "teal" | "kinetic" | "azure" | "sky" | "mint" | "lavender"
   padding?: "none" | "sm" | "md" | "lg"
   className?: string
 }
@@ -22,12 +38,27 @@ const variantStyles: Record<HarmonizedSurfaceVariant, string> = {
   card: "rounded-2xl border border-outline-variant/25 dark:border-white/10 shadow-sm",
   // Elemento interno anidado: rounded-xl
   subcontainer: "rounded-xl border border-outline-variant/15 dark:border-white/5",
+  // Variantes Pastel Clínicas (Soft Sky, Mint/Teal, Lavender Blue)
+  "pastel-sky": `rounded-2xl ${CLINICAL_PASTELS.sky.card}`,
+  "pastel-mint": `rounded-2xl ${CLINICAL_PASTELS.mint.card}`,
+  "pastel-lavender": `rounded-2xl ${CLINICAL_PASTELS.lavender.card}`,
+  "pastel-gradient":
+    "rounded-2xl bg-gradient-to-br from-teal-50/70 via-sky-50/50 to-indigo-50/40 dark:from-teal-950/25 dark:via-sky-950/20 dark:to-indigo-950/20 border border-teal-200/50 dark:border-teal-500/25 shadow-sm",
 }
 
 const glassStyles: Record<HarmonizedGlassTone, string> = {
   subtle: "bg-surface/85 dark:bg-surface-container/65 backdrop-blur-xl text-on-surface",
-  prominent: "bg-white/70 dark:bg-slate-900/60 backdrop-blur-2xl border-white/40 dark:border-white/15 text-on-surface shadow-md",
+  prominent:
+    "bg-white/70 dark:bg-slate-900/60 backdrop-blur-2xl border-white/40 dark:border-white/15 text-on-surface shadow-md",
   flat: "bg-surface dark:bg-surface-container text-on-surface",
+  "pastel-sky":
+    "bg-sky-50/75 dark:bg-sky-950/25 backdrop-blur-xl border border-sky-200/60 dark:border-sky-500/30 text-sky-950 dark:text-sky-100",
+  "pastel-mint":
+    "bg-teal-50/80 dark:bg-teal-950/30 backdrop-blur-xl border border-teal-200/60 dark:border-teal-500/30 text-teal-950 dark:text-teal-100",
+  "pastel-lavender":
+    "bg-indigo-50/70 dark:bg-indigo-950/25 backdrop-blur-xl border border-indigo-200/50 dark:border-indigo-500/25 text-indigo-950 dark:text-indigo-100",
+  "pastel-gradient":
+    "bg-gradient-to-br from-teal-50/70 via-sky-50/60 to-indigo-50/50 dark:from-teal-950/25 dark:via-sky-950/20 dark:to-indigo-950/20 backdrop-blur-2xl border border-teal-200/50 dark:border-teal-500/25 text-slate-900 dark:text-slate-100",
 }
 
 const glowStyles: Record<NonNullable<HarmonizedSurfaceProps["glow"]>, string> = {
@@ -35,6 +66,9 @@ const glowStyles: Record<NonNullable<HarmonizedSurfaceProps["glow"]>, string> = 
   teal: "hover:shadow-[0_8px_30px_rgba(0,80,77,0.12)] hover:border-primary/40 dark:hover:border-primary/50",
   kinetic: "hover:shadow-[0_8px_30px_rgba(193,255,114,0.18)] hover:border-kinetic/50",
   azure: "hover:shadow-[0_8px_30px_rgba(58,95,148,0.15)] hover:border-secondary/40",
+  sky: "hover:shadow-[0_8px_30px_rgba(14,165,233,0.18)] hover:border-sky-400/50",
+  mint: "hover:shadow-[0_8px_30px_rgba(20,184,166,0.18)] hover:border-teal-400/50",
+  lavender: "hover:shadow-[0_8px_30px_rgba(99,102,241,0.18)] hover:border-indigo-400/50",
 }
 
 const paddingStyles = {
@@ -47,10 +81,7 @@ const paddingStyles = {
 /**
  * HarmonizedSurface:
  * Contenedor Maestro de FisioMirror para normalizar componentes heterogéneos
- * (Bolt, Google Stitch, Deepcheck) bajo un único contrato visual:
- * - Radios matemáticos estrictos: Panel (rounded-3xl), Card (rounded-2xl), Inner (rounded-xl)
- * - Glassmorphism clínico calibrado con alto contraste accesible en Dark Mode
- * - Transiciones fluidas estandarizadas a duration-300
+ * bajo un único contrato visual y enriquecerlos con tonos pastel clínicos suaves.
  */
 export const HarmonizedSurface = forwardRef<HTMLDivElement, HarmonizedSurfaceProps>(
   (
@@ -66,6 +97,10 @@ export const HarmonizedSurface = forwardRef<HTMLDivElement, HarmonizedSurfacePro
     },
     ref
   ) => {
+    // Si la variante es pastel, priorizamos el estilo de la variante sobre el glass básico
+    const isPastelVariant = variant.startsWith("pastel-")
+    const resolvedGlassStyle = isPastelVariant ? "" : glassStyles[glass]
+
     return (
       <motion.div
         ref={ref}
@@ -73,9 +108,9 @@ export const HarmonizedSurface = forwardRef<HTMLDivElement, HarmonizedSurfacePro
         whileTap={interactive ? { scale: 0.995 } : undefined}
         transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
         className={cn(
-          "transition-colors duration-300",
+          "transition-all duration-300",
           variantStyles[variant],
-          glassStyles[glass],
+          resolvedGlassStyle,
           glowStyles[glow],
           paddingStyles[padding],
           interactive && "cursor-pointer select-none",

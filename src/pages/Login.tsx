@@ -11,6 +11,10 @@ import { supabase } from '../lib/supabase';
 import { cn } from '../lib/utils';
 import { SparkleEffect } from '../components/auth/SparkleEffect';
 import { TurnstileWidget, type TurnstileWidgetRef } from '../components/auth/TurnstileWidget';
+import { BorderBeam } from '../components/ui/BorderBeam';
+import { AuroraText } from '../components/ui/AuroraText';
+import { LightRays } from '../components/ui/LightRays';
+import { ShimmerButton } from '../components/ui/ShimmerButton';
 
 type AuthMode = 'login' | 'register';
 type LoginRole = 'paciente' | 'fisioterapeuta';
@@ -771,6 +775,7 @@ export function Login() {
             'radial-gradient(at 0% 0%, rgba(0, 80, 77, 0.12) 0px, transparent 50%), radial-gradient(at 100% 0%, rgba(14, 165, 233, 0.09) 0px, transparent 50%), radial-gradient(at 100% 100%, rgba(13, 148, 136, 0.15) 0px, transparent 50%), radial-gradient(at 0% 100%, rgba(6, 182, 212, 0.10) 0px, transparent 50%)',
         }}
       />
+      <LightRays className="opacity-25 pointer-events-none" />
       {/* Ambient glowing orbs */}
       <div className="pointer-events-none absolute -left-12 top-16 h-72 w-72 rounded-full bg-[#00504d]/10 dark:bg-teal-500/10 blur-[90px]" />
       <div className="pointer-events-none absolute bottom-10 right-0 h-64 w-64 rounded-full bg-cyan-500/10 blur-[90px]" />
@@ -806,6 +811,8 @@ export function Login() {
             isFisio && isRegister ? 'max-w-2xl gap-y-5' : 'max-w-[480px] gap-y-5'
           )}
         >
+          <BorderBeam size={220} duration={12} colorFrom="#0284c7" colorTo="#10b981" />
+
           {/* Internal ambient color spots */}
           <div className="pointer-events-none absolute -top-12 -right-12 h-40 w-40 rounded-full bg-teal-500/15 blur-2xl" />
           <div className="pointer-events-none absolute -bottom-10 -left-10 h-36 w-36 rounded-full bg-cyan-500/10 blur-2xl" />
@@ -883,8 +890,8 @@ export function Login() {
               <span className="text-[11px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">
                 {greeting}
               </span>
-              <h2 className="font-extrabold text-2xl sm:text-[26px] tracking-tight text-[#00504d] dark:text-[#8ad3cf] leading-tight">
-                {getHeaderTitle()}
+              <h2 className="font-extrabold text-2xl sm:text-[26px] tracking-tight leading-tight">
+                <AuroraText>{getHeaderTitle()}</AuroraText>
               </h2>
               <p className="text-sm text-slate-600 dark:text-slate-400 leading-snug px-1">
                 {getHeaderSubtitle()}

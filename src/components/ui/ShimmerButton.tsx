@@ -1,70 +1,87 @@
-import React, { type ReactNode } from 'react';
-import { motion, type HTMLMotionProps } from 'framer-motion';
-import { cn } from '../../lib/utils';
+import React, { type ComponentPropsWithoutRef, type CSSProperties } from "react"
+import { cn } from "@/lib/utils"
 
-interface ShimmerButtonProps extends HTMLMotionProps<'button'> {
-  shimmerColor?: string;
-  shimmerSize?: string;
-  borderRadius?: string;
-  shimmerDuration?: string;
-  background?: string;
-  className?: string;
-  children?: ReactNode;
+export interface ShimmerButtonProps extends ComponentPropsWithoutRef<"button"> {
+  shimmerColor?: string
+  shimmerSize?: string
+  borderRadius?: string
+  shimmerDuration?: string
+  background?: string
+  className?: string
+  children?: React.ReactNode
 }
 
-export function ShimmerButton({
-  shimmerColor = '#2dd4bf',
-  shimmerSize = '0.1em',
-  shimmerDuration = '3s',
-  borderRadius = '1rem',
-  background = 'rgba(0, 80, 77, 1)',
-  className,
-  children,
-  ...props
-}: ShimmerButtonProps) {
-  return (
-    <motion.button
-      whileHover={{ scale: 1.02 }}
-      whileTap={{ scale: 0.98 }}
-      style={
-        {
-          '--spread': '90deg',
-          '--shimmer-color': shimmerColor,
-          '--radius': borderRadius,
-          '--speed': shimmerDuration,
-          '--cut': shimmerSize,
-          '--bg': background,
-        } as React.CSSProperties
-      }
-      className={cn(
-        'group relative z-0 flex cursor-pointer items-center justify-center overflow-hidden whitespace-nowrap border border-teal-500/30 px-6 py-3 font-semibold text-white [border-radius:var(--radius)]',
-        'transform-gpu transition-transform duration-200 ease-in-out active:translate-y-px shadow-lg shadow-teal-900/20',
-        className
-      )}
-      {...props}
-    >
-      {/* Spark container */}
-      <div
+export const ShimmerButton = React.forwardRef<HTMLButtonElement, ShimmerButtonProps>(
+  (
+    {
+      shimmerColor = "#4cdad2",
+      shimmerSize = "0.08em",
+      shimmerDuration = "3s",
+      borderRadius = "1rem",
+      background = "rgba(0, 55, 53, 0.95)",
+      className,
+      children,
+      ...props
+    },
+    ref
+  ) => {
+    return (
+      <button
+        style={
+          {
+            "--spread": "90deg",
+            "--shimmer-color": shimmerColor,
+            "--radius": borderRadius,
+            "--speed": shimmerDuration,
+            "--cut": shimmerSize,
+            "--bg": background,
+          } as CSSProperties
+        }
         className={cn(
-          '-z-30 blur-[2px]',
-          'absolute inset-0 overflow-visible [container-type:size]'
+          "group relative z-0 flex cursor-pointer items-center justify-center overflow-hidden [border-radius:var(--radius)] border border-teal-400/20 px-6 py-3 whitespace-nowrap text-white [background:var(--bg)]",
+          "transform-gpu transition-all duration-300 ease-in-out active:translate-y-px hover:shadow-lg hover:shadow-teal-900/30",
+          className
         )}
+        ref={ref}
+        {...props}
       >
-        {/* Spark */}
-        <div className="absolute inset-0 h-[100cqh] animate-shimmer-slide [aspect-ratio:1] [border-radius:0] [mask:none]">
-          {/* Spark before */}
-          <div className="animate-spin-around absolute -inset-full w-auto rotate-0 [background:conic-gradient(from_calc(270deg-(var(--spread)*0.5)),transparent_0,var(--shimmer-color)_var(--spread),transparent_var(--spread))] [translate:0_0]" />
+        {/* Shimmer animation canvas */}
+        <div
+          className={cn(
+            "-z-30 blur-[2px]",
+            "absolute inset-0 overflow-visible [container-type:size]"
+          )}
+        >
+          <div className="animate-shimmer-slide absolute inset-0 aspect-square h-[100cqh] rounded-none [mask:none]">
+            <div className="animate-spin-around absolute -inset-full w-auto rotate-0 [background:conic-gradient(from_calc(270deg-(var(--spread)*0.5)),transparent_0,var(--shimmer-color)_var(--spread),transparent_var(--spread))] [translate:0_0]" />
+          </div>
         </div>
-      </div>
-      {children}
 
-      {/* Backdrop */}
-      <div
-        className={cn(
-          'absolute [border-radius:var(--radius)] [inset:var(--cut)]',
-          '-z-20 [background:var(--bg)] group-hover:brightness-110 transition-all'
-        )}
-      />
-    </motion.button>
-  );
-}
+        {/* Content */}
+        <span className="relative z-10 flex items-center justify-center gap-2 font-semibold text-sm tracking-wide">
+          {children}
+        </span>
+
+        {/* Highlights */}
+        <div
+          className={cn(
+            "absolute inset-0 size-full",
+            "rounded-[inherit] px-4 py-1.5 text-sm font-medium shadow-[inset_0_-8px_10px_#ffffff1f]",
+            "transform-gpu transition-all duration-300 ease-in-out",
+            "group-hover:shadow-[inset_0_-6px_10px_#ffffff3f]",
+            "group-active:shadow-[inset_0_-10px_10px_#ffffff3f]"
+          )}
+        />
+
+        {/* Inner cut background layer */}
+        <div
+          className={cn(
+            "absolute [border-radius:var(--radius)] [inset:var(--cut)] -z-20 [background:var(--bg)]"
+          )}
+        />
+      </button>
+    )
+  }
+)
+
+ShimmerButton.displayName = "ShimmerButton"

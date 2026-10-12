@@ -108,7 +108,7 @@ export function StatCard({
   className,
 }: {
   icon: ReactNode
-  value: string | number
+  value: ReactNode
   label: string
   trend?: ReactNode
   className?: string

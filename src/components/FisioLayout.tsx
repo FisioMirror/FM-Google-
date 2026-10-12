@@ -1,7 +1,30 @@
 import { useState, useEffect, useRef, type ReactNode } from 'react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { UserPlus, Dumbbell, Video, Sparkles, ScanLine, Phone, Bot } from 'lucide-react';
+import {
+  UserPlus,
+  Dumbbell,
+  Video,
+  Sparkles,
+  ScanLine,
+  Phone,
+  Bot,
+  LayoutDashboard,
+  Users,
+  Activity,
+  Wrench,
+  UserCheck,
+  Settings,
+  X,
+  Menu,
+  ChevronRight,
+  ChevronLeft,
+  Download,
+  LogOut,
+  Sun,
+  Moon,
+  Bell,
+} from 'lucide-react';
 import { Icon } from './ui/Icon';
 import { BackButton } from './ui/BackButton';
 import { FloatingMenu, type FloatingMenuItem } from './ui/FloatingMenu';
@@ -22,14 +45,14 @@ import { initGlobalPresence, updatePresenceStatus } from '../lib/presenceService
 import { notifyVideoCall } from '../lib/notificationService';
 
 const navItems = [
-  { to: '/dashboard-fisio', label: 'Inicio', icon: 'dashboard' },
-  { to: '/patients', label: 'Pacientes', icon: 'group' },
-  { to: '/ocr-scanner', label: 'Cargar Paciente', icon: 'person_add' },
-  { to: '/fisio-exercises', label: 'Ejercicios', icon: 'fitness_center' },
-  { to: '/fisio-stats', label: 'Estadísticas', icon: 'insights' },
-  { to: '/tools', label: 'Herramientas', icon: 'construction' },
-  { to: '/fisio-profile', label: 'Perfil', icon: 'account_circle' },
-  { to: '/fisio-settings', label: 'Configuración', icon: 'settings' },
+  { to: '/dashboard-fisio', label: 'Inicio', icon: LayoutDashboard, color: 'teal' },
+  { to: '/patients', label: 'Pacientes', icon: Users, color: 'teal', badge: 'Activos' },
+  { to: '/ocr-scanner', label: 'Cargar Paciente', icon: UserPlus, color: 'teal' },
+  { to: '/fisio-exercises', label: 'Ejercicios', icon: Dumbbell, color: 'cyan' },
+  { to: '/fisio-stats', label: 'Estadísticas', icon: Activity, color: 'teal' },
+  { to: '/tools', label: 'Herramientas', icon: Wrench, color: 'amber' },
+  { to: '/fisio-profile', label: 'Perfil', icon: UserCheck, color: 'teal' },
+  { to: '/fisio-settings', label: 'Configuración', icon: Settings, color: 'slate' },
 ];
 
 const breadcrumbMap: Record<string, string> = {
@@ -283,29 +306,61 @@ export function FisioLayout({ children }: FisioLayoutProps) {
     { label: 'Escanear receta', icon: <ScanLine size={20} className="text-primary" />, onClick: () => navigate('/ocr-scanner') },
   ];
 
-  const renderNavItem = (item: { to: string; label: string; icon: string }, collapsed: boolean, onNavigate?: () => void) => (
-    <NavLink
-      key={item.to}
-      to={item.to}
-      onClick={onNavigate}
-      className={({ isActive }) =>
-        cn(
-          'flex items-center rounded-xl transition-all',
-          collapsed ? 'justify-center px-2 py-3' : 'gap-4 px-4 py-3',
-          isActive
-            ? 'bg-teal-50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300 font-bold'
-            : 'text-gray-700 dark:text-gray-200 font-medium hover:bg-teal-50/60 dark:hover:bg-slate-700/60',
-        )
-      }
-      title={collapsed ? item.label : undefined}
-    >
-      <Icon name={item.icon} size={22} className="shrink-0" />
-      {!collapsed && <span className="text-sm">{item.label}</span>}
-    </NavLink>
-  );
+  const renderNavItem = (
+    item: { to: string; label: string; icon: React.ElementType; color: string; badge?: string },
+    collapsed: boolean,
+    onNavigate?: () => void
+  ) => {
+    const IconComp = item.icon;
+    return (
+      <NavLink
+        key={item.to}
+        to={item.to}
+        onClick={onNavigate}
+        className={({ isActive }) =>
+          cn(
+            'group relative flex items-center rounded-xl transition-all duration-200 select-none',
+            collapsed ? 'justify-center p-2.5 my-1' : 'gap-3 px-3.5 py-2.5 my-0.5',
+            isActive
+              ? 'text-teal-700 dark:text-teal-300 font-bold'
+              : 'text-slate-600 dark:text-slate-300 font-medium hover:text-slate-900 dark:hover:text-white'
+          )
+        }
+        title={collapsed ? item.label : undefined}
+      >
+        {({ isActive }) => (
+          <>
+            {isActive && (
+              <motion.div
+                layoutId="active-fisio-nav-indicator"
+                className="absolute inset-0 rounded-xl bg-gradient-to-r from-teal-500/15 via-cyan-500/10 to-transparent border border-teal-400/30 dark:border-teal-500/30 -z-10 shadow-xs"
+                transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+              />
+            )}
+            <div
+              className={cn(
+                'w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-transform duration-200 group-hover:scale-105',
+                isActive
+                  ? 'bg-teal-600 text-white shadow-sm shadow-teal-600/25'
+                  : 'bg-slate-100 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 group-hover:bg-teal-50 dark:group-hover:bg-slate-700/80 group-hover:text-teal-600 dark:group-hover:text-teal-400'
+              )}
+            >
+              <IconComp size={18} />
+            </div>
+            {!collapsed && <span className="text-sm truncate flex-1">{item.label}</span>}
+            {!collapsed && item.badge && (
+              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-teal-500/15 text-teal-700 dark:text-teal-300 border border-teal-500/30">
+                {item.badge}
+              </span>
+            )}
+          </>
+        )}
+      </NavLink>
+    );
+  };
 
   const renderBottomActions = (collapsed: boolean, onNavAway?: () => void) => (
-    <div className={cn('shrink-0 border-t border-teal-100 dark:border-slate-700 p-3', collapsed ? 'flex flex-col items-center gap-2' : 'space-y-3')}>
+    <div className={cn('shrink-0 border-t border-sky-100/60 dark:border-slate-800 p-3', collapsed ? 'flex flex-col items-center gap-2' : 'space-y-3')}>
       {!isInstalled && (
         <button
           onClick={async () => {
@@ -317,54 +372,60 @@ export function FisioLayout({ children }: FisioLayoutProps) {
             }
           }}
           className={cn(
-            'rounded-xl text-gray-700 dark:text-gray-200 hover:bg-teal-50 dark:hover:bg-slate-700 hover:text-teal-700 dark:hover:text-teal-300 transition-colors',
+            'rounded-xl text-slate-700 dark:text-slate-200 hover:bg-sky-50 dark:hover:bg-slate-800 hover:text-sky-700 dark:hover:text-sky-300 transition-colors',
             collapsed ? 'p-2' : 'flex items-center gap-3 px-3 py-2 w-full',
           )}
           title={collapsed ? 'Instalar App' : undefined}
         >
-          <Icon name="download_for_offline" size={22} className="shrink-0" />
+          <Download size={18} className="shrink-0 text-sky-600 dark:text-sky-400" />
           {!collapsed && <span className="text-sm font-medium">Instalar App</span>}
         </button>
       )}
       {!collapsed && (
-        <div className="rounded-2xl bg-teal-50 dark:bg-slate-700 p-3 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container font-bold text-sm overflow-hidden shrink-0">
+        <div className="rounded-2xl bg-sky-50/80 dark:bg-slate-800/80 p-3 flex items-center gap-3 border border-sky-100/50 dark:border-slate-700/50">
+          <div className="w-10 h-10 rounded-full bg-sky-500 flex items-center justify-center text-white font-bold text-sm overflow-hidden shrink-0 shadow-xs relative">
             {user?.avatar_url ? (
               <img src={user.avatar_url} alt="" className="w-full h-full object-cover" />
             ) : (
               user?.full_name?.charAt(0) || 'F'
             )}
+            <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-white dark:border-slate-900" />
           </div>
           <div className="min-w-0">
-            <p className="font-bold text-sm text-gray-900 dark:text-gray-100 truncate">{user?.full_name || 'Fisioterapeuta'}</p>
-            <p className="text-[10px] text-teal-600 dark:text-teal-400 uppercase tracking-wider">Fisioterapeuta</p>
+            <p className="font-bold text-sm text-slate-900 dark:text-slate-100 truncate">{user?.full_name || 'Fisioterapeuta'}</p>
+            <div className="flex items-center gap-1.5 mt-0.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              <p className="text-[10px] text-sky-600 dark:text-sky-400 uppercase tracking-wider font-semibold">En consulta</p>
+            </div>
           </div>
         </div>
       )}
-      <div className={cn(collapsed ? 'flex flex-col items-center gap-2' : 'flex items-center justify-between px-2')}>
+      <div className={cn(collapsed ? 'flex flex-col items-center gap-2' : 'flex items-center justify-between px-1')}>
         <button
           onClick={toggleTheme}
           aria-label="Cambiar tema"
-          className="p-2 rounded-xl text-gray-700 dark:text-gray-200 hover:bg-teal-50 dark:hover:bg-slate-700 hover:text-teal-700 dark:hover:text-teal-300 transition-colors"
+          className="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-sky-50 dark:hover:bg-slate-800 hover:text-sky-600 dark:hover:text-sky-400 transition-colors"
         >
-          <Icon name={theme === 'dark' ? 'light_mode' : 'dark_mode'} size={22} />
+          {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
         </button>
         <button
           onClick={() => { onNavAway?.(); setShowNotifications(true); }}
           aria-label="Notificaciones"
-          className="relative p-2 rounded-xl text-gray-700 dark:text-gray-200 hover:bg-teal-50 dark:hover:bg-slate-700 hover:text-teal-700 dark:hover:text-teal-300 transition-colors"
+          className="relative p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-sky-50 dark:hover:bg-slate-800 hover:text-sky-600 dark:hover:text-sky-400 transition-colors"
         >
-          <Icon name="notifications" size={22} />
+          <Bell size={18} />
           {unreadCount > 0 && (
-            <span className="absolute top-1 right-1 min-w-[16px] h-[16px] bg-red-500 rounded-full text-white text-[9px] font-bold flex items-center justify-center px-1">{unreadCount > 9 ? '9+' : unreadCount}</span>
+            <span className="absolute top-1 right-1 min-w-[16px] h-[16px] bg-red-500 rounded-full text-white text-[9px] font-bold flex items-center justify-center px-1">
+              {unreadCount > 9 ? '9+' : unreadCount}
+            </span>
           )}
         </button>
         <button
           onClick={() => { onNavAway?.(); setShowLogout(true); }}
           aria-label="Cerrar sesión"
-          className="p-2 rounded-xl text-gray-700 dark:text-gray-200 hover:bg-red-50 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 transition-colors"
+          className="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-red-50 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 transition-colors"
         >
-          <Icon name="logout" size={22} />
+          <LogOut size={18} />
         </button>
       </div>
     </div>
@@ -372,13 +433,13 @@ export function FisioLayout({ children }: FisioLayoutProps) {
 
   const sidebarContent = (collapsed: boolean, opts?: { onNavigate?: () => void; showToggle?: boolean }) => (
     <>
-      <div className="px-4 py-3 shrink-0 relative flex items-center border-b border-teal-100/60 dark:border-slate-800/80" style={{ minHeight: 64 }}>
+      <div className="px-4 py-3 shrink-0 relative flex items-center border-b border-sky-100/60 dark:border-slate-800/80" style={{ minHeight: 64 }}>
         {!collapsed ? (
           <div className="flex items-center gap-3 min-w-0 pr-6">
             <img src="/logo.png" alt="FisioMirror" className="h-9 w-9 min-w-[36px] min-h-[36px] object-contain shrink-0 aspect-square" />
             <div className="flex flex-col min-w-0">
               <h1 className="text-base font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight whitespace-nowrap">FisioMirror</h1>
-              <p className="text-[10px] uppercase tracking-wider text-teal-600 dark:text-teal-400 font-bold whitespace-nowrap">Edición Clínica</p>
+              <p className="text-[10px] uppercase tracking-wider text-sky-600 dark:text-sky-400 font-bold whitespace-nowrap">Edición Clínica</p>
             </div>
           </div>
         ) : (
@@ -390,14 +451,14 @@ export function FisioLayout({ children }: FisioLayoutProps) {
           <button
             onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
             aria-label={sidebarCollapsed ? 'Expandir menú' : 'Colapsar menú'}
-            className="hidden lg:flex absolute top-1/2 -translate-y-1/2 right-2 w-6 h-6 rounded-full bg-primary text-on-primary items-center justify-center text-xs shadow-md hover:scale-110 transition-transform z-10"
+            className="hidden lg:flex absolute top-1/2 -translate-y-1/2 right-2 w-6 h-6 rounded-full bg-sky-500 text-white items-center justify-center text-xs shadow-md hover:scale-110 transition-transform z-10"
           >
-            <Icon name={sidebarCollapsed ? 'chevron_right' : 'chevron_left'} size={14} />
+            {sidebarCollapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
           </button>
         )}
       </div>
 
-      <nav className="flex-1 px-2 space-y-1 overflow-y-auto overflow-x-hidden">
+      <nav className="flex-1 px-2.5 py-2 space-y-1 overflow-y-auto overflow-x-hidden">
         {navItems.map((item) => renderNavItem(item, collapsed, opts?.onNavigate))}
       </nav>
 
@@ -407,7 +468,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
 
   const desktopSidebar = (
     <aside
-      className="fixed left-0 top-0 h-screen flex flex-col z-30 bg-teal-50/40 dark:bg-slate-900 border-r border-teal-200/40 dark:border-teal-800/30 text-gray-900 dark:text-gray-200 transition-all duration-300 overflow-hidden"
+      className="fixed left-0 top-0 h-screen flex flex-col z-30 bg-gradient-to-b from-white/90 via-sky-50/30 to-surface/90 dark:from-slate-900 dark:via-slate-900/95 dark:to-slate-950 border-r border-sky-200/50 dark:border-slate-800 text-slate-900 dark:text-slate-200 transition-all duration-300 overflow-hidden backdrop-blur-xl"
       style={{ width: `${sidebarWidth}px` }}
     >
       {sidebarContent(sidebarCollapsed, { showToggle: true })}
@@ -416,10 +477,17 @@ export function FisioLayout({ children }: FisioLayoutProps) {
 
   return (
     <div className="flex h-screen w-full overflow-hidden relative" style={{ ['--fisio-sidebar-w' as string]: `${sidebarWidth}px` }}>
-      {/* Desktop sidebar */}
-      <div className="hidden lg:block">{desktopSidebar}</div>
+      {/* Ambient Clinical Pastel Mesh Glow (Celeste, Menta y Lavanda suave) */}
+      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        <div className="absolute -top-32 left-1/4 w-96 h-96 rounded-full bg-teal-400/10 dark:bg-teal-500/10 blur-[110px]" />
+        <div className="absolute top-1/3 -right-20 w-80 h-80 rounded-full bg-sky-400/10 dark:bg-sky-500/10 blur-[100px]" />
+        <div className="absolute -bottom-24 left-1/3 w-96 h-96 rounded-full bg-indigo-400/8 dark:bg-indigo-500/8 blur-[120px]" />
+      </div>
 
-      {/* Mobile sidebar */}
+      {/* Desktop sidebar */}
+      <div className="hidden lg:block relative z-30">{desktopSidebar}</div>
+
+      {/* Mobile drawer with slide-over */}
       <AnimatePresence>
         {sidebarOpen && (
           <motion.div
@@ -427,17 +495,36 @@ export function FisioLayout({ children }: FisioLayoutProps) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setSidebarOpen(false)}
-            className="fixed inset-0 bg-black/40 z-40 lg:hidden"
+            className="fixed inset-0 bg-slate-950/50 backdrop-blur-sm z-50 lg:hidden flex"
           >
             <motion.div
-              initial={{ x: -256 }}
+              initial={{ x: '-100%' }}
               animate={{ x: 0 }}
-              exit={{ x: -256 }}
-              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+              exit={{ x: '-100%' }}
+              transition={{ type: 'spring', damping: 28, stiffness: 320 }}
               onClick={(e) => e.stopPropagation()}
-              className="h-screen w-64 flex flex-col bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-r border-teal-100 dark:border-slate-700 text-gray-900 dark:text-gray-100 lg:hidden"
+              className="h-full w-72 max-w-[85vw] flex flex-col bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl border-r border-sky-200/50 dark:border-slate-800 text-slate-900 dark:text-slate-100 rounded-r-3xl shadow-2xl overflow-hidden"
             >
-              {sidebarContent(false, { onNavigate: () => setSidebarOpen(false) })}
+              <div className="p-4 flex items-center justify-between border-b border-sky-100/60 dark:border-slate-800">
+                <div className="flex items-center gap-3">
+                  <img src="/logo.png" alt="FisioMirror" className="h-9 w-9 object-contain shrink-0" />
+                  <div>
+                    <h2 className="text-base font-extrabold text-slate-900 dark:text-white leading-tight">FisioMirror</h2>
+                    <p className="text-[10px] uppercase tracking-wider text-sky-600 dark:text-sky-400 font-bold">Edición Clínica</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setSidebarOpen(false)}
+                  className="p-2 rounded-xl text-slate-500 hover:text-slate-800 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                  aria-label="Cerrar menú"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+              <nav className="flex-1 px-3 py-3 space-y-1 overflow-y-auto">
+                {navItems.map((item) => renderNavItem(item, false, () => setSidebarOpen(false)))}
+              </nav>
+              {renderBottomActions(false, () => setSidebarOpen(false))}
             </motion.div>
           </motion.div>
         )}
@@ -555,7 +642,8 @@ export function FisioLayout({ children }: FisioLayoutProps) {
           </div>
         </header>
 
-        <div className="p-4 sm:p-6 lg:p-8 flex-1 bg-teal-50/20 dark:bg-slate-950/20">{children}</div>
+        {/* Main scrollable content with clean spacing */}
+        <div className="p-4 sm:p-6 lg:p-8 pb-8 flex-1 bg-teal-50/20 dark:bg-slate-950/20">{children}</div>
 
         <footer className="pt-6 pb-6 px-4 sm:px-8 flex flex-col md:flex-row justify-between text-outline text-xs gap-4 border-t border-white/10">
           <span>&copy; 2025 FisioMirror S.A. | Edición Clínica Premium v2.0.42</span>
@@ -571,7 +659,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
       <FloatingMenu
         items={quickActionItems}
         ariaLabel="Acciones del fisioterapeuta"
-        className="fixed bottom-20 right-6 z-50 lg:bottom-6"
+        className="fixed bottom-6 right-6 z-40"
       />
 
       {/* Modal: selector de paciente para iniciar videollamada */}

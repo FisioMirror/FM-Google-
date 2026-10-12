@@ -17,6 +17,10 @@ import { EmailSystemStatusCard } from '../components/ui/EmailSystemStatusCard';
 import { cn } from '../lib/utils';
 import { supabaseUrl } from '../lib/supabase';
 import { setSpiritualModeEnabled, SPIRITUAL_SETTING_KEY } from '../lib/versiculosService';
+import {
+  ErgonomicHandModeSwitcher,
+  SplitViewPerspectiveToggle,
+} from '../components/ui/NavigationDocksSuite';
 
 /* ── localStorage helpers ─────────────────────────────────────── */
 function usePersistentBool(key: string, defaultValue: boolean) {

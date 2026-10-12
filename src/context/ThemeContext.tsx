@@ -16,7 +16,7 @@ interface ThemeContextType {
   resetDefaults: () => void
 }
 
-const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
+export const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setThemeState] = useState<Theme>(() => {
@@ -94,4 +94,8 @@ export function useTheme() {
   const context = useContext(ThemeContext)
   if (!context) throw new Error('useTheme must be used within ThemeProvider')
   return context
+}
+
+export function useThemeSafe() {
+  return useContext(ThemeContext)
 }

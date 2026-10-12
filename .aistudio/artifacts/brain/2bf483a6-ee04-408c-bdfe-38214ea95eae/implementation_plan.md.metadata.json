@@ -1,0 +1,6 @@
+{
+  "summary":  "Plan de Implementación Revisado:\n1. Eliminación total de MobileFixedDock en ambos roles (Fisioterapeuta y Paciente).\n2. Rediseño atractivo y elegante del Menú Lateral y Drawer Móvil (iconos Lucide estilizados, acentos sutiles en Azul Clínico y Verde Esmeralda, microinteracción deslizante y cero saturación).\n3. Despliegue Masivo Integral de los componentes de la Galería UI dividido estratégicamente en dos partes:\n   - PARTE 1: Núcleo Operativo (Layouts/Drawers, Dashboard Fisio, Espejo AR, Login, Gestión de Pacientes).\n   - PARTE 2: Módulos Especializados (Catálogo de Ejercicios, Estadísticas/Reportes, Dashboard Paciente, Herramientas/OCR/Calibración, Perfil/Ajustes y Galería UI).",
+  "updatedAt":  "2026-10-11T23:39:23.866345156Z",
+  "requestFeedback":  true,
+  "userFacing":  true
+}
