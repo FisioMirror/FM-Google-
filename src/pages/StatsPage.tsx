@@ -195,7 +195,7 @@ export function StatsPage() {
           .from('pacientes_terapeutas')
           .select('paciente_id')
           .eq('terapeuta_id', user.id);
-        const patientIds = (links || []).map(l => l.paciente_id);
+        const patientIds = Array.from(new Set((links || []).map(l => l.paciente_id).filter(Boolean)));
 
         if (patientIds.length > 0) {
           const { data: allSessions } = await supabase
@@ -210,17 +210,21 @@ export function StatsPage() {
             .select('id, full_name, diagnostico')
             .in('id', patientIds);
           const pMap = new Map((profiles || []).map(p => [p.id, p]));
-          const pw: PatientWithSessions[] = patientIds.map(pid => {
+          const pwMap = new Map<string, PatientWithSessions>();
+          
+          patientIds.forEach(pid => {
+            if (pwMap.has(pid)) return;
             const ps = s.filter(x => x.paciente_id === pid);
-            return {
+            pwMap.set(pid, {
               id: pid,
               full_name: pMap.get(pid)?.full_name || 'Paciente',
               diagnostico: pMap.get(pid)?.diagnostico || null,
               sessionCount: ps.length,
               avgQuality: ps.length > 0 ? Math.round(ps.reduce((sum, r) => sum + (r.calidad_ejecucion || 0), 0) / ps.length) : 0,
               lastSessionDate: ps.length > 0 ? ps[0].fecha : null,
-            };
+            });
           });
+          const pw = Array.from(pwMap.values());
 
           if (isDemo) {
             // Merge real patients with demo patients only for demo accounts
@@ -631,12 +635,15 @@ export function StatsPage() {
             )}
           </div>
           <QuickPatientSwitcherBar
-            patients={['Todos los pacientes', ...patients.map(p => p.full_name)]}
-            activePatient={patients.find(p => p.id === selectedPatient)?.full_name || 'Todos los pacientes'}
+            patients={[
+              { id: 'all', name: 'Todos los pacientes' },
+              ...patients.map(p => ({ id: p.id, name: p.full_name }))
+            ]}
+            activePatient={selectedPatient ? (patients.find(p => p.id === selectedPatient)?.full_name || 'Todos los pacientes') : 'Todos los pacientes'}
             onSelect={(name) => {
-              if (name === 'Todos los pacientes') onPatientFilter('');
+              if (name === 'Todos los pacientes' || name === 'all') onPatientFilter('');
               else {
-                const found = patients.find(p => p.full_name === name);
+                const found = patients.find(p => p.full_name === name || p.id === name);
                 if (found) onPatientFilter(found.id);
               }
             }}

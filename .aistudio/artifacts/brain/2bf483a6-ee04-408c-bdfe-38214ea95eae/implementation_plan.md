@@ -1,97 +1,88 @@
-# Plan de Implementación Revisado: Unificación de Navegación & Despliegue Masivo en Dos Partes para FisioMirror
+# Plan de Verificación, Corrección y Armonización (Versión Revisada)
 
-Este plan atiende con máxima fidelidad las instrucciones del usuario:
-1. **Eliminación total del menú inferior (`MobileFixedDock`)** tanto en el rol de **fisioterapeuta** como en el de **paciente**.
-2. **Atracción visual y elegancia en el menú lateral existente (Sidebar / Drawer móvil)** mediante iconografía prémium de Lucide, acentos sutiles de color en **Azul Clínico y Verde Esmeralda**, bordes con glassmorphism sutil y un indicador de selección deslizante sin saturar la vista.
-3. **Despliegue masivo y exhaustivo** de la totalidad de componentes de la Galería UI estructurado en **dos partes claras**, garantizando que cada componente cumpla una función interactiva real en las pantallas operativas sin repetición de tareas.
-
----
-
-## 1. Rediseño de Navegación & Eliminación de Menús Redundantes
-
-### A. Erradicación del Menú Inferior
-* **`src/components/FisioLayout.tsx`:** Eliminar por completo `<MobileFixedDock role="fisioterapeuta" />` y retirar el relleno inferior artificial (`pb-24`), restaurándolo a un espaciado equilibrado (`pb-8`).
-* **`src/components/PatientLayout.tsx`:** Eliminar por completo `<MobileFixedDock role="paciente" />` y ajustar el padding inferior para una experiencia despejada en dispositivos móviles y de escritorio.
-
-### B. Mejora del Menú Lateral y Drawer Deslizable (Fisioterapeuta y Paciente)
-* **Iconografía Renovada:** Sustituir los iconos genéricos por iconos vectoriales estilizados de `lucide-react` (ej. `LayoutDashboard`, `Users`, `Dumbbell`, `Activity`, `Wrench`, `UserCheck`, `Settings`, `ShieldCheck`), acompañados de micro-contenedores translúcidos con fondos tonales sutiles (azul clínico suave `bg-sky-500/10 text-sky-600 dark:text-sky-400` y verde menta `bg-emerald-500/10 text-emerald-600 dark:text-emerald-400`).
-* **Indicador de Pestaña Activa Fluido:** Implementar un resaltador de fondo animado con `motion.div` y `layoutId="active-sidebar-indicator"` que se desplaza orgánicamente entre las opciones del menú.
-* **Superficie y Acabado Glassmorphism:** Fondo de panel lateral con gradiente clínico suave (`bg-white/85 dark:bg-slate-900/85 backdrop-blur-xl border-r border-sky-100/60 dark:border-slate-800/80`), eliminando la sensación de bloque plano o gris monótono.
-* **Drawer Móvil Ergonómico:** Al abrir el menú de hamburguesa en móvil, el drawer se desliza desde el lateral con esquinas redondeadas (`rounded-r-3xl`), encabezado de marca con avatar del profesional/paciente, indicador de presencia en tiempo real (*online pulse*) y botón de cierre táctil claro.
-* **Armonización del FAB (Acciones Rápidas):** Posicionar la barra de herramientas flotante de forma limpia en el extremo inferior derecho sin interferir con la lectura del contenido.
+Este plan incorpora con precisión las directrices del equipo:
+1. **Respaldos, Restauración y Bitácora de Auditoría (Supabase)**: Se gestionan **exclusivamente en Supabase**, sin interfaces, paneles de administración ni visores expuestos dentro de la aplicación cliente. La app únicamente se encarga de enviar de forma transparente y silenciosa los eventos de auditoría a Supabase (`audit_logs`).
+2. **Gama Ampliada de Reportes en PDF**: En lugar de solo el PDF rápido y de IA, se incorpora la selección de 4 tipos clínicos de reporte:
+   - **Informe de Evolución y Sesiones** (seguimiento general y métricas biomecánicas).
+   - **Reporte de Casos de Dolor y Compensaciones** (incidentes EVA, comentarios de dolor en sesión AR y banderas rojas).
+   - **Informe Médico para Especialista Tratante** (resumen clínico formal para interconsulta médica).
+   - **Récipe / Prescripción de Rutina Domiciliaria** (ejercicios asignados, series, repeticiones y rangos angulares ROM).
+3. **Visualización del Modelo 3D en Modo AR**: Verificación y conexión del demostrador 3D PiP (`ARModel3DOverlayPiP`) en `ARMirrorPage.tsx`, asegurando rotación, sincronización angular y alternancia fluida desde los controles del HUD.
+4. **Galería UI y Acabados de Interfaz**: Implementación armónica y funcional de los componentes de las suites de UI (`FloatingControlsSuite`, `NavigationDocksSuite`, `ActivityCardsSuite`, `RealTimeMetricsSuite`, `HeroUI`, `Magic UI`) respetando el sistema de diseño FisioMirror.
+5. **Internacionalización (i18n)**: Verificación del selector trilingüe (Español `ES`, Inglés `EN`, Portugués `PT`) en cabeceras principales y persistencia de traducciones en layouts y vistas.
 
 ---
 
-## 2. Paleta Cromática Unificada: Azul Clínico & Verde Esmeralda
+## 1. Módulos y Diagnóstico de Ajustes
 
-* **Azul Clínico (Royal/Sapphire `#0284c7`, `#0369a1`):** Base cromática para navegación activa, encabezados jerárquicos, botones de acción primaria y badges de estado clínico.
-* **Verde Esmeralda Biomecánico (`#10b981`, `#059669`):** Acento para arcos cinemáticos, métricas de éxito, barras de energía de rehabilitación y valores de cumplimiento.
-* **Fondos Suaves de Alto Contraste:** Resplandores ambientales tenues que eliminan la frialdad del blanco puro sin comprometer la legibilidad ni la accesibilidad para pacientes adultos mayores.
-
----
-
-## 3. Despliegue Masivo en Dos Partes
-
-Para garantizar una ejecución impecable sin errores de compilación ni retrabajos, el despliegue de los componentes de la Galería UI se divide en dos fases estratégicas:
-
-### PARTE 1: Núcleo Operativo, Navegación y Vistas de Alta Frecuencia
-
-1. **`FisioLayout.tsx` & `PatientLayout.tsx`:**
-   * Eliminación de `MobileFixedDock` en ambas plantillas.
-   * Rediseño completo de la Sidebar y del Drawer móvil deslizable con iconos Lucide, micro-chips tonales e indicador `layoutId`.
-2. **Dashboard del Fisioterapeuta (`src/pages/DashboardFisio.tsx`):**
-   * Reemplazo de tarjetas de KPI por `MagicCard` con efecto resplandor sutil.
-   * Contadores con físicas elásticas `NumberTicker` para pacientes activos, sesiones del día y porcentaje de adherencia.
-   * Reorganización del panel con la cuadrícula adaptativa `BentoGrid`.
-   * Integración de `ClinicalActivityFeed` animado con `AnimatedList` para eventos en directo.
-   * Filtros rápidos mediante `CompactQuickSelector` (articulación y severidad).
-   * Botones de acción clínica de alto impacto con `ShimmerButton` e `InteractiveHoverButton`.
-3. **Modo Espejo AR del Paciente (`src/pages/ARMirrorPage.tsx`):**
-   * Medición angular en tiempo real con `BiomechanicalAngleGauge`.
-   * Contador elástico de repeticiones con `RepetitionCounterSpring`.
-   * Visualización del rendimiento muscular mediante `RehabEnergyBar`.
-   * Detección y aviso de vicios posturales con `CompensationAlertBanner`.
-   * Controles flotantes AR con microinteracciones mediante `ARFloatingDock`.
-4. **Pantalla de Acceso / Login (`src/pages/Login.tsx`):**
-   * Atmósfera visual prémium con rayos de luz `LightRays` / `background-beams`.
-   * Título y logotipo destacados con `AuroraText` o `SparklesText`.
-   * Tarjeta de autenticación reforzada con `MagicCard` y borde animado `BorderBeam`.
-   * Botón de ingreso interactivo con `ShimmerButton`.
-5. **Gestión de Pacientes (`src/pages/PatientsPage.tsx` & `PatientDetailPage.tsx`):**
-   * Visualización de fichas clínicas mediante `SpotlightCard`.
-   * Apertura de resúmenes de paciente y fichas rápidas mediante `MobileBottomSheet` deslizable con niveles de altura interactivos (*snap points*).
-   * Consulta rápida de movilidad con `JointDetailPopover`.
+| Módulo | Decisión de Arquitectura | Ajuste Concreto |
+|---|---|---|
+| **1. Reportes en PDF** | Ampliación de gama de reportes clínicos en `pdfExport.ts` y `PDFExportModal.tsx`. | Crear las 4 modalidades (Evolución, Dolor y Compensaciones, Informe Médico, Récipe/Prescripción) tanto en formato simple como asistido por IA; conectar botón de descarga en `PatientDashboard` y `PatientDetailPage`. |
+| **2. Respaldos y Restauración** | **100% Supabase / Backend**. Sin UI en la app. | Mantener los protocolos exclusivamente en Supabase Cloud / PostgreSQL conforme a `docs/BACKUP_AND_RESTORE.md`. No exponer pantallas ni modales de administración en la aplicación. |
+| **3. Bitácora de Auditoría (Logs)** | **100% Supabase / Backend**. Sin visor en la app. | Asegurar que la app emita silenciosamente los eventos forenses a la tabla `audit_logs` de Supabase (`logAuthEvent` en login, `logExerciseAssignment` en rutinas, `logPatientRecordAccess` en expedientes, `logReportExport` en generación de PDFs) sin mostrar registros a los usuarios. |
+| **4. Modelo 3D en Modo AR** | Verificación y conexión en `ARMirrorPage.tsx`. | Validar que el botón flotante y el conmutador de la barra inferior activen correctamente `ARModel3DOverlayPiP`, con renderizado del personaje 3D, fases del ejercicio y control de perspectiva sin interferir con MediaPipe. |
+| **5. Internacionalización (i18n)** | Verificación y conexión de `es`, `en`, `pt`. | Colocar el selector de idioma en el encabezado global (`FisioLayout.tsx` y `PatientLayout.tsx`), asegurando sincronización inmediata de textos y persistencia en `localStorage`. |
+| **6. Galería UI y Dashboards** | Implementación coherente y funcional. | Validar que los componentes de las suites de navegación, controles flotantes y KPIs en `DashboardFisio.tsx` y `PatientDashboard.tsx` tengan lógica real, contraste adecuado en modo oscuro y sin errores de consola. |
 
 ---
 
-### PARTE 2: Módulos Especializados, Herramientas, Paciente & Reportes Clínicos
+## 2. Plan Detallado de Implementación por Archivo
 
-1. **Catálogo de Ejercicios (`src/pages/ExercisesPage.tsx` / `CatalogPage.tsx`):**
-   * Tarjetas interactivas con `SpotlightCard`, previsualización con `PixelImage` y etiquetas `HeroChip`.
-   * Búsqueda y filtrado anatómico con `CompactQuickSelector` y `CommandPalette`.
-2. **Estadísticas & Reportes Clínicos (`src/pages/StatsPage.tsx`):**
-   * Selector de fechas táctil con presets rápidos mediante `DateRangePicker`.
-   * Listas con desplazamiento degradado mediante `ScrollShadow`.
-   * Detección de incidencias biomecánicas con `IncidentReportCard`.
-   * Anillos de progreso cinemático con `AnimatedCircularProgressBar`.
-   * Resaltado de conclusiones diagnósticas con `Highlighter` y guía de lectura con `TracingBeam`.
-3. **Dashboard del Paciente (`src/pages/PatientDashboard.tsx` & `PatientExercisesPage.tsx`):**
-   * Tarjeta de progreso de rutina con `AssignmentProgressCard`.
-   * Gamificación con `GamifiedBadgeCard` y celebración con `ConfettiButton`.
-   * Visualizador de esfuerzo o ritmo con `WaveformVisualizer`.
-   * Cinta continua de consejos terapéuticos con `Marquee`.
-4. **Herramientas Clínicas, Calibración & OCR (`src/pages/ToolsPage.tsx`, `CalibrationPage.tsx`, `OCRScannerPage.tsx`):**
-   * Controles clínicos precisos con `ClinicalSlider` y `ExpandableToggle`.
-   * Estado del sistema y lectura de documentos con `EmailSystemStatusCard`, `AILoader` y `PremiumSkeleton`.
-5. **Perfil & Configuración (`src/pages/ProfilePage.tsx`, `SettingsPage.tsx`):**
-   * Estructura modular con `CollapsibleProfile`, selector de secciones con `AnimatedTabs` y conmutador táctil `AnimatedThemeToggler`.
-6. **Consolidación de la Galería UI (`src/pages/UIShowcasePage.tsx`):**
-   * Verificación exhaustiva de que todos los componentes del sistema se encuentren debidamente catalogados, operando en vivo y sin advertencias.
+### A. Gama Ampliada de Reportes en PDF
+- **`src/lib/pdfExport.ts`**:
+  - Implementar funciones generadoras para las 4 tipologías:
+    1. `exportEvolutionReportPDF`: Informe de progreso, adherencia y sesiones históricas.
+    2. `exportPainAndCompensationReportPDF`: Resumen de incidentes de dolor referidos (comentarios de dolor post-ejercicio, escala EVA y registros de compensaciones biomecánicas).
+    3. `exportMedicalReferralReportPDF`: Informe formal para el médico tratante / interconsulta con diagnóstico, antecedentes clínicos y evolución.
+    4. `exportPrescriptionRecipePDF`: Récipe formal de fisioterapia con la rutina domiciliaria prescrita (ejercicio, series, repeticiones, objetivo ROM y notas del terapeuta).
+  - Mantener soporte dual: exportación directa con `jsPDF` y estilizada/maquetada mediante `html2canvas`.
+  - Registrar automáticamente cada exportación en `audit_logs` mediante `logReportExport`.
+- **`src/components/ui/PDFExportModal.tsx`**:
+  - Incorporar selector de tipo de reporte (`evolucion` | `dolor` | `medico` | `recipe`) con iconos clínicos descriptivos antes de seleccionar el modo (rápido o estilizado).
+- **`src/pages/PatientDashboard.tsx`**:
+  - Añadir botón de acción rápida *"Descargar Informe Clínico en PDF"* para que el paciente pueda exportar su progreso o su récipe prescrito.
+
+### B. Bitácora de Auditoría Silenciosa en Supabase
+- **`src/pages/Login.tsx`**:
+  - Conectar llamada silenciosa a `logAuthEvent('AUTH_LOGIN_SUCCESS', ...)` tras validar credenciales con éxito.
+  - Conectar llamada a `logAuthEvent('AUTH_LOGIN_FAILED', ...)` ante fallos de credenciales o tokens inválidos.
+- **`src/components/ReassignRoutineModal.tsx`**:
+  - Conectar llamada silenciosa a `logExerciseAssignment(...)` tras guardar o reasignar rutinas en Supabase.
+- **`src/lib/auditService.ts`**:
+  - Garantizar manejo *fail-soft*: si no hay conexión o falla la RPC en Supabase, registrar aviso local en consola sin interrumpir la operación del usuario.
+
+### C. Visualización del Modelo 3D en Modo AR
+- **`src/pages/ARMirrorPage.tsx`**:
+  - Verificar que `ARModel3DOverlayPiP` reciba el `exerciseName` y ángulo objetivo correctos del ejercicio en curso.
+  - Comprobar que el botón *"Guía 3D"* del dock inferior y el toggle del panel de ajustes alternen el estado `showModel3D` de forma fluida.
+  - Verificar que la ventana PiP permita cambiar perspectiva (frontal, diagonal, lateral), rol de avatar y velocidad sin congelar la detección de MediaPipe.
+
+### D. Internacionalización (i18n: ES, EN, PT)
+- **`src/components/FisioLayout.tsx`**:
+  - Conectar selector de idioma (`ES` · `EN` · `PT`) en la barra de herramientas superior para alternar de forma inmediata entre español, inglés y portugués.
+  - Conectar `useTranslation()` en los ítems de navegación lateral.
+- **`src/components/PatientLayout.tsx`**:
+  - Conectar selector de idioma en la cabecera y adaptar los ítems del menú con `useTranslation()`.
+
+### E. Galería UI y Optimización de Dashboards
+- **`src/pages/DashboardFisio.tsx`**:
+  - Verificar que las tarjetas de KPIs, gráficos y el feed de actividad usen `tabular-nums`, transiciones suaves de 300ms y contrastes WCAG AA en tema claro y oscuro.
+- **`src/pages/PatientDashboard.tsx`**:
+  - Asegurar la respuesta táctil y coherencia visual en las tarjetas de energía y estado de recuperación.
 
 ---
 
-## 4. Criterios de Calidad y Verificación
+## 3. Plan de Verificación
 
-1. **Cero Duplicidades:** Cada componente desplegado reemplazará directamente elementos obsoletos o estáticos.
-2. **Lógica Completa:** Ningún componente se insertará como cascarón vacío; cada uno estará conectado a datos reales (Supabase, demo data o estados reactivos).
-3. **Compilación y Linters:** Ejecución de `lint_applet` y `compile_applet` al finalizar para garantizar 0 errores de TypeScript y 100% consistencia.
+1. **Reportes PDF**:
+   - Generar y descargar los 4 tipos de reportes (Evolución, Dolor, Médico y Récipe) comprobando su formato visual, datos y firmas.
+   - Probar la exportación tanto desde el perfil de terapeuta (`PatientDetailPage`) como desde el portal de paciente (`PatientDashboard`).
+2. **Bitácora en Supabase**:
+   - Iniciar sesión (éxito y fallo) y asignar una rutina; verificar que se generen los registros en la tabla `audit_logs` de Supabase sin alterar el flujo visual ni mostrar datos técnicos al usuario.
+3. **Modelo 3D en AR**:
+   - Iniciar sesión en el Espejo AR, encender la "Guía 3D", alternar perspectivas y minimizar a píldora flotante verificando 60 FPS estables.
+4. **Internacionalización**:
+   - Cambiar entre Español, Inglés y Portugués en la barra superior y comprobar que la interfaz cambie al instante sin recargar la página.
+5. **Compilación y Linteo**:
+   - Ejecutar `compile_applet` para certificar 0 errores de compilación TypeScript.
+   - Ejecutar `lint_applet` para confirmar la estabilidad del código.

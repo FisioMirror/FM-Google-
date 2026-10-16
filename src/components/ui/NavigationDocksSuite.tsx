@@ -154,8 +154,13 @@ export const TherapistSidebarMini: React.FC<TherapistSidebarMiniProps> = ({
 };
 
 /* 43. QuickPatientSwitcherBar */
+export interface PatientSwitcherItem {
+  id: string;
+  name: string;
+}
+
 export interface QuickPatientSwitcherBarProps {
-  patients?: string[];
+  patients?: (string | PatientSwitcherItem)[];
   activePatient?: string;
   onSelect?: (p: string) => void;
   className?: string;
@@ -169,18 +174,25 @@ export const QuickPatientSwitcherBar: React.FC<QuickPatientSwitcherBarProps> = (
 }) => {
   const [active, setActive] = useState(activePatient);
 
+  useEffect(() => {
+    setActive(activePatient);
+  }, [activePatient]);
+
   return (
     <div className={cn("flex items-center gap-2 overflow-x-auto p-1", className)}>
-      {patients.map((p) => {
-        const isCurrent = active === p;
+      {patients.map((item, idx) => {
+        const name = typeof item === 'string' ? item : item.name;
+        const value = typeof item === 'string' ? item : item.id;
+        const isCurrent = active === name || active === value;
+        const itemKey = typeof item === 'object' && item.id ? item.id : `${name}-${idx}`;
         return (
           <motion.button
-            key={p}
+            key={itemKey}
             type="button"
             whileTap={{ scale: 0.96 }}
             onClick={() => {
-              setActive(p);
-              onSelect?.(p);
+              setActive(name);
+              onSelect?.(name);
             }}
             className={cn(
               "px-3.5 py-1.5 rounded-2xl text-xs font-bold whitespace-nowrap transition-all border flex items-center gap-1.5",
@@ -190,7 +202,7 @@ export const QuickPatientSwitcherBar: React.FC<QuickPatientSwitcherBarProps> = (
             )}
           >
             {isCurrent && <span className="size-1.5 rounded-full bg-lime-300 animate-ping" />}
-            <span>{p}</span>
+            <span>{name}</span>
           </motion.button>
         );
       })}

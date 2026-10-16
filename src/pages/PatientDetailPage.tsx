@@ -15,7 +15,7 @@ import { formatAIReport } from '../lib/formatReport';
 import { useAuthStore } from '../stores/authStore';
 import { logPatientRecordAccess } from '../lib/auditService';
 import { getUnifiedPatientById } from '../data/unifiedDemoData';
-import { isValidUUID } from '../lib/utils';
+import { cn, isValidUUID } from '../lib/utils';
 import { PatientStatisticsView } from '../components/patient/PatientStatisticsView';
 import { JointDetailPopover } from '../components/ui/JointDetailPopover';
 import { TherapistQuickToolbar } from '../components/ui/TherapistQuickToolbar';
