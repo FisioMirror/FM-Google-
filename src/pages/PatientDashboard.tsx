@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { SkeletonCard } from '../components/ui/Skeleton';
 import { SimpleCalendar } from '../components/ui/SimpleCalendar';
 import { MedicalIcon } from '../components/ui/MedicalIcon';
+import { useTranslation } from 'react-i18next';
 import { useAuthStore } from '../stores/authStore';
 import { supabase } from '../lib/supabase';
 import { runAIJob } from '../lib/ai';
@@ -72,6 +73,7 @@ interface EvolutionWeek {
 const weekDays = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
 
 export function PatientDashboard() {
+  const { t, i18n } = useTranslation();
   const user = useAuthStore((s) => s.user);
   const navigate = useNavigate();
   const [kpi, setKpi] = useState<PatientKpi>(emptyKpi);
@@ -295,7 +297,11 @@ export function PatientDashboard() {
 
   const maxMinutes = Math.max(...weekActivity.map((d) => d.minutes), 1);
   const hour = new Date().getHours();
-  const greeting = hour < 12 ? 'Buenos días' : hour < 19 ? 'Buenas tardes' : 'Buenas noches';
+  const greeting = hour < 12
+    ? (t('dashboard.greetingMorning') || 'Buenos días')
+    : hour < 19
+    ? (t('dashboard.greetingAfternoon') || 'Buenas tardes')
+    : (t('dashboard.greetingEvening') || 'Buenas noches');
 
   return (
     <div className="space-y-8 max-w-7xl mx-auto w-full pb-12">
@@ -319,10 +325,10 @@ export function PatientDashboard() {
               colors={{ first: '#0d9488', second: '#c1ff72' }}
               className="font-display font-headline-lg text-headline-lg-mobile lg:text-headline-lg gradient-text-living"
             >
-              {greeting}, {user?.full_name?.split(' ')[0] || 'Paciente'}
+              {greeting}, {user?.full_name?.split(' ')[0] || (t('auth.patient') || 'Paciente')}
             </SparklesText>
             <p className="text-outline font-title-md text-title-md">
-              {new Date().toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
+              {new Date().toLocaleDateString(i18n.language === 'en' ? 'en-US' : i18n.language === 'pt' ? 'pt-BR' : 'es-ES', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
             </p>
           </div>
           <div className="ml-auto flex items-center gap-3">
@@ -352,12 +358,12 @@ export function PatientDashboard() {
               <div className="size-9 sm:size-11 rounded-xl sm:rounded-2xl bg-amber-500/15 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0 border border-amber-500/20">
                 <Flame className="size-4 sm:size-5" />
               </div>
-              <span className="text-[10px] sm:text-xs font-bold text-amber-700 dark:text-amber-300 uppercase tracking-wider hidden xs:inline">Racha</span>
+              <span className="text-[10px] sm:text-xs font-bold text-amber-700 dark:text-amber-300 uppercase tracking-wider hidden xs:inline">{t('dashboard.streak') || 'Racha'}</span>
             </div>
             <div>
-              <p className="text-[10px] sm:text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider line-clamp-1 xs:hidden">Racha</p>
+              <p className="text-[10px] sm:text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider line-clamp-1 xs:hidden">{t('dashboard.streak') || 'Racha'}</p>
               <p className="text-xl sm:text-2xl lg:text-3xl font-black text-slate-900 dark:text-slate-100 tabular-nums tracking-tight">
-                {kpi.streak} <span className="text-[10px] sm:text-xs font-semibold text-slate-400">días</span>
+                {kpi.streak} <span className="text-[10px] sm:text-xs font-semibold text-slate-400">{t('common.days') || 'días'}</span>
               </p>
             </div>
           </CardSpotlight>
@@ -376,10 +382,10 @@ export function PatientDashboard() {
               <div className="size-9 sm:size-11 rounded-xl sm:rounded-2xl bg-teal-500/15 text-teal-600 dark:text-teal-400 flex items-center justify-center shrink-0 border border-teal-500/25">
                 <CheckCircle2 className="size-4 sm:size-5" />
               </div>
-              <span className="text-[10px] sm:text-xs font-bold text-teal-700 dark:text-teal-300 uppercase tracking-wider hidden xs:inline">Sesiones</span>
+              <span className="text-[10px] sm:text-xs font-bold text-teal-700 dark:text-teal-300 uppercase tracking-wider hidden xs:inline">{t('dashboard.totalSessions') || 'Sesiones'}</span>
             </div>
             <div>
-              <p className="text-[10px] sm:text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider line-clamp-1 xs:hidden">Sesiones</p>
+              <p className="text-[10px] sm:text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider line-clamp-1 xs:hidden">{t('dashboard.totalSessions') || 'Sesiones'}</p>
               <p className="text-xl sm:text-2xl lg:text-3xl font-black text-teal-700 dark:text-teal-300 tabular-nums tracking-tight">
                 {kpi.totalSessions} <span className="text-[10px] sm:text-xs font-semibold text-slate-400">total</span>
               </p>
@@ -400,10 +406,10 @@ export function PatientDashboard() {
               <div className="size-9 sm:size-11 rounded-xl sm:rounded-2xl bg-sky-500/15 text-sky-700 dark:text-sky-300 flex items-center justify-center shrink-0 border border-sky-500/25">
                 <Clock className="size-4 sm:size-5" />
               </div>
-              <span className="text-[10px] sm:text-xs font-bold text-sky-700 dark:text-sky-300 uppercase tracking-wider hidden xs:inline">Minutos</span>
+              <span className="text-[10px] sm:text-xs font-bold text-sky-700 dark:text-sky-300 uppercase tracking-wider hidden xs:inline">{t('common.minutes') || 'Minutos'}</span>
             </div>
             <div>
-              <p className="text-[10px] sm:text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider line-clamp-1 xs:hidden">Minutos</p>
+              <p className="text-[10px] sm:text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider line-clamp-1 xs:hidden">{t('common.minutes') || 'Minutos'}</p>
               <p className="text-xl sm:text-2xl lg:text-3xl font-black text-slate-900 dark:text-slate-100 tabular-nums tracking-tight">
                 {kpi.weeklyMinutes} <span className="text-[10px] sm:text-xs font-semibold text-slate-400">min</span>
               </p>
@@ -461,13 +467,13 @@ export function PatientDashboard() {
               <div className="space-y-2 max-w-md">
                 <span className="inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-full bg-teal-500/15 text-teal-700 dark:text-teal-300 border border-teal-500/30">
                   <span className="w-1.5 h-1.5 rounded-full bg-teal-500 animate-pulse" />
-                  Sesión Guiada AR
+                  {t('dashboard.startArMirror') || 'Sesión Guiada AR'}
                 </span>
-                <h3 className="text-xl font-black text-slate-900 dark:text-white">Rutina de Hoy</h3>
+                <h3 className="text-xl font-black text-slate-900 dark:text-white">{t('patientDashboard.todayRoutine') || 'Rutina de Hoy'}</h3>
                 <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-medium">
                   {exercises.length > 0
-                    ? `${exercises[0].name} con corrección de postura en tiempo real por visión computacional.`
-                    : 'Inicia el seguimiento guiado con tu cámara para registrar ángulos articulares.'}
+                    ? `${exercises[0].name} • ${t('patientDashboard.exercisesCompleted')}`
+                    : t('dashboard.noActiveRoutine')}
                 </p>
               </div>
 
@@ -478,20 +484,20 @@ export function PatientDashboard() {
                 className="px-6 py-3.5 rounded-2xl text-white font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-teal-700/25 shrink-0 bg-teal-600 hover:bg-teal-500"
               >
                 <Play className="size-4 fill-current" />
-                <span>Comenzar Sesión</span>
+                <span>{t('patientDashboard.startExercise') || 'Comenzar Sesión'}</span>
               </PulsatingButton>
             </div>
           </div>
 
           {/* Assigned Exercises List */}
-          <CollapsibleSection title="Mis Ejercicios Asignados" icon="assignment" defaultOpen>
+          <CollapsibleSection title={t('patientDashboard.todayRoutine') || 'Mis Ejercicios Asignados'} icon="assignment" defaultOpen>
             <div className="flex justify-between items-center mb-3">
-              <p className="text-xs text-on-surface-variant">Rutina prescrita por tu fisioterapeuta</p>
+              <p className="text-xs text-on-surface-variant">{t('patientDashboard.therapistNotes') || 'Rutina prescrita por tu fisioterapeuta'}</p>
               <button
                 onClick={() => navigate('/exercises')}
                 className="text-xs font-bold text-teal-600 dark:text-teal-400 hover:underline"
               >
-                Ver todos
+                {t('common.viewAll') || 'Ver todos'}
               </button>
             </div>
 

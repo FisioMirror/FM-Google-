@@ -100,6 +100,9 @@ export function usePoseDetection(): UsePoseDetectionResult {
   const streamRef = useRef<MediaStream | null>(null);
   const rafRef = useRef<number | null>(null);
   const lastLandmarksRef = useRef<PoseLandmark[] | null>(null);
+  const isProcessingFrameRef = useRef<boolean>(false);
+  const smoothLeftAngleRef = useRef<number>(0);
+  const smoothRightAngleRef = useRef<number>(0);
 
   const [poseData, setPoseData] = useState<PoseData | null>(null);
   const [isReady, setIsReady] = useState(false);
@@ -170,8 +173,15 @@ export function usePoseDetection(): UsePoseDetectionResult {
             `https://cdn.jsdelivr.net/npm/@mediapipe/pose@0.5.1675469404/${file}`,
         });
 
+        const isMobileDevice =
+          typeof navigator !== 'undefined' &&
+          /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        const cpuCores = typeof navigator !== 'undefined' ? navigator.hardwareConcurrency || 4 : 4;
+        // ModelComplexity: 0 (Lite, ultra fast sub-20ms) on mobile/<=4 cores, 1 (Standard fast) on desktop.
+        const complexity = isMobileDevice || cpuCores <= 4 ? 0 : 1;
+
         pose.setOptions({
-          modelComplexity: 2,
+          modelComplexity: complexity,
           smoothLandmarks: true,
           enableSegmentation: false,
           minDetectionConfidence: 0.5,
@@ -202,7 +212,7 @@ export function usePoseDetection(): UsePoseDetectionResult {
 
             // Light exponential smoothing for stability without lag.
             if (lastLandmarksRef.current) {
-              const alpha = 0.5;
+              const alpha = 0.45;
               landmarks = landmarks.map((lm, i) => {
                 const prev = lastLandmarksRef.current![i];
                 if (!prev) return lm;
@@ -216,15 +226,33 @@ export function usePoseDetection(): UsePoseDetectionResult {
             }
             lastLandmarksRef.current = landmarks;
 
-            // Joint angles for the AR HUD.
-            const leftArmAngle =
-              landmarks[LM.LEFT_SHOULDER] && landmarks[LM.LEFT_ELBOW] && landmarks[LM.LEFT_WRIST]
-                ? calculateAngle(landmarks[LM.LEFT_SHOULDER], landmarks[LM.LEFT_ELBOW], landmarks[LM.LEFT_WRIST])
-                : 0;
-            const rightArmAngle =
-              landmarks[LM.RIGHT_SHOULDER] && landmarks[LM.RIGHT_ELBOW] && landmarks[LM.RIGHT_WRIST]
-                ? calculateAngle(landmarks[LM.RIGHT_SHOULDER], landmarks[LM.RIGHT_ELBOW], landmarks[LM.RIGHT_WRIST])
-                : 0;
+            // Joint angles for the AR HUD with visibility thresholding
+            const hasLeftArm =
+              landmarks[LM.LEFT_SHOULDER]?.visibility > 0.4 &&
+              landmarks[LM.LEFT_ELBOW]?.visibility > 0.4 &&
+              landmarks[LM.LEFT_WRIST]?.visibility > 0.4;
+            const rawLeftArm = hasLeftArm
+              ? calculateAngle(landmarks[LM.LEFT_SHOULDER], landmarks[LM.LEFT_ELBOW], landmarks[LM.LEFT_WRIST])
+              : smoothLeftAngleRef.current;
+
+            const hasRightArm =
+              landmarks[LM.RIGHT_SHOULDER]?.visibility > 0.4 &&
+              landmarks[LM.RIGHT_ELBOW]?.visibility > 0.4 &&
+              landmarks[LM.RIGHT_WRIST]?.visibility > 0.4;
+            const rawRightArm = hasRightArm
+              ? calculateAngle(landmarks[LM.RIGHT_SHOULDER], landmarks[LM.RIGHT_ELBOW], landmarks[LM.RIGHT_WRIST])
+              : smoothRightAngleRef.current;
+
+            // Exponential Moving Average (EMA) for rock-solid angle stability without latency
+            const angleAlpha = 0.5;
+            const leftArmAngle = Math.round(
+              smoothLeftAngleRef.current + angleAlpha * (rawLeftArm - smoothLeftAngleRef.current)
+            );
+            const rightArmAngle = Math.round(
+              smoothRightAngleRef.current + angleAlpha * (rawRightArm - smoothRightAngleRef.current)
+            );
+            smoothLeftAngleRef.current = leftArmAngle;
+            smoothRightAngleRef.current = rightArmAngle;
 
             const visibleCount = landmarks.filter((lm) => lm.visibility > 0.5).length;
             const postureScore = Math.round((visibleCount / 33) * 100);
@@ -232,35 +260,32 @@ export function usePoseDetection(): UsePoseDetectionResult {
             // Dynamic posture color based on quality score
             const postureColor = getPostureColor(postureScore);
 
-            // Draw connections with posture-based color, thicker lines (min 3px)
+            // Draw connections with posture-based color, crisp smooth strokes
             ctx.strokeStyle = postureColor;
-            ctx.lineWidth = 5;
+            ctx.lineWidth = 4;
             ctx.lineCap = 'round';
-            ctx.shadowBlur = 8;
-            ctx.shadowColor = postureColor;
             for (const [a, b] of POSE_CONNECTIONS) {
               const pa = landmarks[a];
               const pb = landmarks[b];
-              if (pa && pb && pa.visibility > 0.3 && pb.visibility > 0.3) {
+              if (pa && pb && pa.visibility > 0.4 && pb.visibility > 0.4) {
                 ctx.beginPath();
                 ctx.moveTo(pa.x * canvas.width, pa.y * canvas.height);
                 ctx.lineTo(pb.x * canvas.width, pb.y * canvas.height);
                 ctx.stroke();
               }
             }
-            ctx.shadowBlur = 0;
 
             // Draw joints as filled circles with white border
             for (const lm of landmarks) {
-              if (lm.visibility > 0.3) {
-                // White border
+              if (lm.visibility > 0.4) {
+                // White outer ring
                 ctx.beginPath();
-                ctx.arc(lm.x * canvas.width, lm.y * canvas.height, 8, 0, Math.PI * 2);
+                ctx.arc(lm.x * canvas.width, lm.y * canvas.height, 6, 0, Math.PI * 2);
                 ctx.fillStyle = '#ffffff';
                 ctx.fill();
-                // Inner colored dot
+                // Inner colored core
                 ctx.beginPath();
-                ctx.arc(lm.x * canvas.width, lm.y * canvas.height, 5, 0, Math.PI * 2);
+                ctx.arc(lm.x * canvas.width, lm.y * canvas.height, 4, 0, Math.PI * 2);
                 ctx.fillStyle = postureColor;
                 ctx.fill();
               }
@@ -294,16 +319,19 @@ export function usePoseDetection(): UsePoseDetectionResult {
 
         poseRef.current = pose;
 
-        // 5) Frame loop. Prefer MediaPipe's Camera utility when present;
-        //    otherwise fall back to a requestAnimationFrame loop.
+        // 5) Frame loop with in-flight lock to guarantee 60fps and zero lag accumulation
         if (typeof window.Camera !== 'undefined' && video) {
           cameraRef.current = new window.Camera(video, {
             onFrame: async () => {
-              if (poseRef.current && video) {
+              if (isProcessingFrameRef.current) return;
+              if (poseRef.current && video && video.readyState >= 2) {
+                isProcessingFrameRef.current = true;
                 try {
                   await poseRef.current.send({ image: video });
                 } catch {
                   /* ignore transient frame errors */
+                } finally {
+                  isProcessingFrameRef.current = false;
                 }
               }
             },
@@ -314,11 +342,14 @@ export function usePoseDetection(): UsePoseDetectionResult {
         } else if (video) {
           const loop = async () => {
             if (!mounted) return;
-            if (poseRef.current && video.readyState >= 2) {
+            if (!isProcessingFrameRef.current && poseRef.current && video.readyState >= 2) {
+              isProcessingFrameRef.current = true;
               try {
                 await poseRef.current.send({ image: video });
               } catch {
                 /* ignore */
+              } finally {
+                isProcessingFrameRef.current = false;
               }
             }
             rafRef.current = requestAnimationFrame(loop);

@@ -12,6 +12,10 @@ function checkAndFixEnv() {
     envContent = '';
   }
 
+  if (!fs.existsSync(BACKUP_PATH)) {
+    console.log('ℹ️  No supabase-credentials.json found, skipping credentials restoration.');
+    return;
+  }
   const backup = JSON.parse(fs.readFileSync(BACKUP_PATH, 'utf8'));
 
   const expectedLines = [

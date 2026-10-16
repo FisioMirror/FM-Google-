@@ -1,4 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { BookOpen } from 'lucide-react';
 import { Icon } from './ui/Icon';
 import MascotAnimation from './ui/MascotAnimation';
@@ -13,6 +14,7 @@ interface AchievementUnlockModalProps {
 }
 
 export function AchievementUnlockModal({ achievement, role, onClose }: AchievementUnlockModalProps) {
+  const { t } = useTranslation();
   return (
     <AnimatePresence>
       {achievement && (
@@ -37,7 +39,7 @@ export function AchievementUnlockModal({ achievement, role, onClose }: Achieveme
 
             <div className="relative z-10">
               <p className="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest mb-2">
-                ¡Logro Desbloqueado!
+                {t('achievements.unlockedTitle') || '¡Logro Desbloqueado!'}
               </p>
 
               <div className="w-40 h-52 mx-auto my-4 relative flex items-center justify-center">
@@ -69,7 +71,7 @@ export function AchievementUnlockModal({ achievement, role, onClose }: Achieveme
                 <div className="mb-6 p-4 rounded-2xl bg-teal-500/10 border border-teal-500/20 text-left">
                   <div className="flex items-center gap-1.5 mb-1.5 text-[11px] font-bold uppercase tracking-wider text-teal-700 dark:text-teal-300">
                     <BookOpen size={14} />
-                    <span>Palabra de Victoria & Fortaleza</span>
+                    <span>{t('achievements.victoryWord') || 'Palabra de Victoria & Fortaleza'}</span>
                   </div>
                   <p className="text-xs text-on-surface italic font-medium leading-relaxed">
                     «{getVersiculoForLogro(achievement.id).texto}»
@@ -84,7 +86,7 @@ export function AchievementUnlockModal({ achievement, role, onClose }: Achieveme
                 onClick={onClose}
                 className="premium-btn w-full py-3 rounded-xl bg-primary text-on-primary font-bold hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2"
               >
-                <Icon name="celebration" size={20} /> ¡Continuar!
+                <Icon name="celebration" size={20} /> {t('achievements.continue') || '¡Continuar!'}
               </button>
             </div>
           </motion.div>
@@ -100,6 +102,7 @@ interface AchievementShowcaseProps {
 }
 
 export function AchievementShowcase({ achievements, compact = false }: AchievementShowcaseProps) {
+  const { t } = useTranslation();
   const unlocked = achievements.filter((a) => a.unlocked);
   const locked = achievements.filter((a) => !a.unlocked);
 
@@ -133,7 +136,7 @@ export function AchievementShowcase({ achievements, compact = false }: Achieveme
       {unlocked.length > 0 && (
         <div>
           <p className="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest mb-3">
-            Desbloqueados ({unlocked.length})
+            {t('achievements.unlocked') || 'Desbloqueados'} ({unlocked.length})
           </p>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
             {unlocked.map((ach, i) => {
@@ -171,7 +174,7 @@ export function AchievementShowcase({ achievements, compact = false }: Achieveme
       {locked.length > 0 && (
         <div>
           <p className="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest mb-3">
-            Por Desbloquear ({locked.length})
+            {t('achievements.locked') || 'Por Desbloquear'} ({locked.length})
           </p>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
             {locked.map((ach) => {

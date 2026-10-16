@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { Icon } from '../components/ui/Icon';
 import { GlassPanel } from '../components/ui/Glass';
 import { useAuthStore } from '../stores/authStore';
@@ -20,6 +21,7 @@ import {
 import { ErgonomicHandModeSwitcher } from '../components/ui/NavigationDocksSuite';
 
 export function ProfilePage() {
+  const { t, i18n } = useTranslation();
   const user = useAuthStore((s) => s.user);
   const { theme, toggleTheme } = useTheme();
   const toast = useToast();
@@ -316,7 +318,7 @@ export function ProfilePage() {
                       disabled={avatarUploading}
                       className="px-3 py-1.5 rounded-lg bg-surface-variant/40 text-on-surface-variant text-xs font-bold hover:bg-surface-variant/60 transition-colors disabled:opacity-50"
                     >
-                      Cancelar
+                      {t('profile.cancel') || 'Cancelar'}
                     </button>
                     <button
                       type="button"
@@ -329,17 +331,17 @@ export function ProfilePage() {
                       ) : (
                         <Icon name="check" size={14} />
                       )}
-                      Guardar
+                      {t('profile.savePhoto') || 'Guardar'}
                     </button>
                   </div>
                 </motion.div>
               )}
             </AnimatePresence>
           </div>
-          <h2 className="font-display font-headline-lg text-headline-lg-mobile lg:text-headline-lg gradient-text-living mt-4 relative">{user?.full_name || 'Usuario'}</h2>
+          <h2 className="font-display font-headline-lg text-headline-lg-mobile lg:text-headline-lg gradient-text-living mt-4 relative">{user?.full_name || (t('auth.user') || 'Usuario')}</h2>
           <div className="font-title-md text-primary bg-primary-container/10 px-4 py-1 rounded-full mt-2 flex items-center gap-2 breathe-badge glow-teal relative">
             <MedicalIcon name="clipboard" size={16} className="text-primary animate-breathe-icon" />
-            {isFisio ? 'Fisioterapeuta' : 'Paciente'}
+            {isFisio ? (t('auth.physio') || 'Fisioterapeuta') : (t('common.patient') || 'Paciente')}
           </div>
           <div className="w-full space-y-2 mt-6">
             {user?.email && (
@@ -356,10 +358,10 @@ export function ProfilePage() {
             )}
           </div>
           <div className="w-full mt-4 space-y-3">
-            <RecoveryRankBadge rank={isFisio ? 'Rango: Clínico Experto' : 'Rango: Constante de Élite'} className="w-full justify-center" />
+            <RecoveryRankBadge rank={isFisio ? (t('profile.expertRank') || 'Rango: Clínico Experto') : (t('profile.patientRank') || 'Rango: Constante de Élite')} className="w-full justify-center" />
             <RehabHeroAvatarCard
-              name={user?.full_name?.split(' ')[0] || 'Usuario'}
-              roleTitle={isFisio ? 'Especialista en Kinesiología' : 'Paciente en Rehabilitación'}
+              name={user?.full_name?.split(' ')[0] || (t('auth.user') || 'Usuario')}
+              roleTitle={isFisio ? (t('dashboard.specialtyTitle') || 'Especialista en Kinesiología') : (t('dashboard.patientTitle') || 'Paciente en Rehabilitación')}
               level={isFisio ? 12 : 4}
               powerScore={88}
             />
@@ -370,22 +372,22 @@ export function ProfilePage() {
         <div className="lg:col-span-8 space-y-6 w-full min-w-0">
           <AnimatedTabs
             tabs={[
-              { id: 'personal', label: 'Datos Personales', content: (
+              { id: 'personal', label: t('profile.personalData') || 'Datos Personales', content: (
                 <GlassPanel className="p-6 rounded-[32px] card-glow-hover shimmer-border hover-lift accent-teal">
                   <div className="flex justify-between items-center mb-6">
-                    <h3 className="font-headline-lg-mobile gradient-text-living font-bold">Información Personal</h3>
+                    <h3 className="font-headline-lg-mobile gradient-text-living font-bold">{t('profile.personalInfo') || 'Información Personal'}</h3>
                     <button onClick={() => setEditing(!editing)} className="flex items-center gap-2 text-primary font-bold text-sm hover-lift badge-teal px-3 py-1 rounded-full breathe-badge">
-                      <Icon name="edit" size={16} /> {editing ? 'Cancelar' : 'Editar'}
+                      <Icon name="edit" size={16} /> {editing ? (t('profile.cancel') || 'Cancelar') : (t('profile.edit') || 'Editar')}
                     </button>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {[
-                      { label: 'Nombre Completo', key: 'full_name', type: 'text' },
-                      { label: isFisio ? 'Especialidad' : 'Condición / Diagnóstico', key: 'especialidad', type: 'text' },
-                      ...(isFisio ? [{ label: 'Universidad', key: 'universidad', type: 'text' }] : []),
-                      { label: 'Cédula', key: 'cedula', type: 'text' },
-                      { label: 'Colegiado ID', key: 'colegiado_id', type: 'text' },
-                      { label: 'Año de Egreso', key: 'anio_egreso', type: 'number' },
+                      { label: t('profile.fullName') || 'Nombre Completo', key: 'full_name', type: 'text' },
+                      { label: isFisio ? (t('profile.specialty') || 'Especialidad') : (t('profile.diagnosisOrCondition') || 'Condición / Diagnóstico'), key: 'especialidad', type: 'text' },
+                      ...(isFisio ? [{ label: t('profile.university') || 'Universidad', key: 'universidad', type: 'text' }] : []),
+                      { label: t('profile.licenseId') || 'Cédula', key: 'cedula', type: 'text' },
+                      { label: t('profile.collegiateId') || 'Colegiado ID', key: 'colegiado_id', type: 'text' },
+                      { label: t('profile.graduationYear') || 'Año de Egreso', key: 'anio_egreso', type: 'number' },
                     ].map((field) => (
                       <div key={field.key} className="p-4 rounded-2xl bg-surface-container-low/60 border divider-teal">
                         <label className="text-[10px] uppercase text-outline font-bold block mb-1">{field.label}</label>
@@ -404,26 +406,26 @@ export function ProfilePage() {
                   </div>
                   {editing && (
                     <button onClick={saveProfile} className="premium-btn mt-4 px-6 py-3 bg-primary text-on-primary rounded-xl font-bold hover:scale-[1.02] active:scale-95 transition-all glow-teal breathe-teal">
-                      Guardar Cambios
+                      {t('profile.saveChanges') || 'Guardar Cambios'}
                     </button>
                   )}
                 </GlassPanel>
               ) },
-              { id: 'preferences', label: 'Preferencias', content: (
+              { id: 'preferences', label: t('profile.preferences') || 'Preferencias', content: (
                 <>
                 <GlassPanel className="p-6 rounded-[32px] card-glow-hover hover-lift">
-                  <h3 className="font-headline-lg-mobile gradient-text-living font-bold mb-6">Preferencias del Sistema</h3>
+                  <h3 className="font-headline-lg-mobile gradient-text-living font-bold mb-6">{t('profile.systemPreferences') || 'Preferencias del Sistema'}</h3>
                   <div className="space-y-2">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 hover:bg-surface-variant/20 rounded-2xl gap-3">
                       <div className="flex items-center gap-3">
                         <Icon name="format_size" size={24} className="text-outline animate-breathe-icon" />
-                        <div><p className="font-medium">Tamaño de fuente</p><p className="text-xs text-outline">Ajusta el tamaño del texto en toda la app</p></div>
+                        <div><p className="font-medium">{t('profile.fontSize') || 'Tamaño de fuente'}</p><p className="text-xs text-outline">{t('profile.fontSizeDesc') || 'Ajusta el tamaño del texto en toda la app'}</p></div>
                       </div>
                       <div className="flex gap-2">
                         {([
-                          { key: 'normal', label: 'Normal' },
-                          { key: 'large', label: 'Grande' },
-                          { key: 'xlarge', label: 'Muy grande' },
+                          { key: 'normal', label: t('profile.fontNormal') || 'Normal' },
+                          { key: 'large', label: t('profile.fontLarge') || 'Grande' },
+                          { key: 'xlarge', label: t('profile.fontXLarge') || 'Muy grande' },
                         ] as const).map((opt) => (
                           <button
                             key={opt.key}
@@ -438,7 +440,7 @@ export function ProfilePage() {
                     <div className="flex items-center justify-between p-4 hover:bg-surface-variant/20 rounded-2xl">
                       <div className="flex items-center gap-3">
                         <Icon name="dark_mode" size={24} className="text-outline animate-breathe-icon" />
-                        <div><p className="font-medium">Modo Oscuro</p><p className="text-xs text-outline">Cambio automático soportado</p></div>
+                        <div><p className="font-medium">{t('profile.darkMode') || 'Modo Oscuro'}</p><p className="text-xs text-outline">{t('profile.darkModeDesc') || 'Cambio automático soportado'}</p></div>
                       </div>
                       <button
                         onClick={toggleTheme}

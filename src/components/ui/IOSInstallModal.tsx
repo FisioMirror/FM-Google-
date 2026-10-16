@@ -1,4 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { X, Share, PlusSquare, Smartphone, CheckCircle2 } from 'lucide-react';
 
 interface IOSInstallModalProps {
@@ -7,6 +8,8 @@ interface IOSInstallModalProps {
 }
 
 export function IOSInstallModal({ isOpen, onClose }: IOSInstallModalProps) {
+  const { t } = useTranslation();
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -31,13 +34,18 @@ export function IOSInstallModal({ isOpen, onClose }: IOSInstallModalProps) {
                   <Smartphone className="size-5" />
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-on-surface">Instalar en iPhone / iPad</h3>
-                  <p className="text-xs text-on-surface-variant">Acceso directo como app nativa</p>
+                  <h3 className="text-base font-bold text-on-surface">
+                    {t('iosInstall.title') || 'Instalar en iPhone / iPad'}
+                  </h3>
+                  <p className="text-xs text-on-surface-variant">
+                    {t('iosInstall.subtitle') || 'Acceso directo como app nativa'}
+                  </p>
                 </div>
               </div>
               <button
                 onClick={onClose}
                 className="p-2 rounded-xl text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors"
+                aria-label={t('common.close') || 'Cerrar'}
               >
                 <X className="size-5" />
               </button>
@@ -50,10 +58,7 @@ export function IOSInstallModal({ isOpen, onClose }: IOSInstallModalProps) {
                 </div>
                 <div>
                   <p className="text-sm font-semibold text-on-surface flex items-center gap-1.5">
-                    Abre en Safari y toca <Share className="size-4 text-primary" />
-                  </p>
-                  <p className="text-xs text-on-surface-variant mt-0.5">
-                    En la barra inferior de Safari, pulsa el botón Compartir.
+                    {t('iosInstall.step1') || 'Abre en Safari y toca Compartir'} <Share className="size-4 text-primary shrink-0" />
                   </p>
                 </div>
               </div>
@@ -64,10 +69,7 @@ export function IOSInstallModal({ isOpen, onClose }: IOSInstallModalProps) {
                 </div>
                 <div>
                   <p className="text-sm font-semibold text-on-surface flex items-center gap-1.5">
-                    Elige <PlusSquare className="size-4 text-primary" /> "Agregar a pantalla de inicio"
-                  </p>
-                  <p className="text-xs text-on-surface-variant mt-0.5">
-                    Desplázate hacia abajo en el menú y selecciona la opción.
+                    {t('iosInstall.step2') || 'Elige "Agregar a pantalla de inicio"'} <PlusSquare className="size-4 text-primary shrink-0" />
                   </p>
                 </div>
               </div>
@@ -78,10 +80,7 @@ export function IOSInstallModal({ isOpen, onClose }: IOSInstallModalProps) {
                 </div>
                 <div>
                   <p className="text-sm font-semibold text-on-surface flex items-center gap-1.5">
-                    Toca "Agregar" <CheckCircle2 className="size-4 text-emerald-500" />
-                  </p>
-                  <p className="text-xs text-on-surface-variant mt-0.5">
-                    ¡Listo! Podrás abrir FisioMirror a pantalla completa y sin barras de navegador.
+                    {t('iosInstall.step3') || 'Toca "Agregar"'} <CheckCircle2 className="size-4 text-emerald-500 shrink-0" />
                   </p>
                 </div>
               </div>
@@ -91,7 +90,7 @@ export function IOSInstallModal({ isOpen, onClose }: IOSInstallModalProps) {
               onClick={onClose}
               className="w-full py-3 rounded-2xl bg-primary text-white font-semibold hover:bg-primary-dark transition-all active:scale-[0.98] shadow-md shadow-primary/20"
             >
-              Entendido
+              {t('common.understood') || 'Entendido'}
             </button>
           </motion.div>
         </div>

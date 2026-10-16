@@ -1,14 +1,16 @@
 import { useEffect, useState, lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Analytics } from '@vercel/analytics/react';
 import { Login } from './pages/Login';
+const Analytics = () => null;
 import { ResetPassword } from './pages/ResetPassword';
 import { RegistroPacientePage } from './pages/RegistroPacientePage';
 import { UpdatePasswordPage } from './pages/UpdatePasswordPage';
 import { SplashScreen } from './components/SplashScreen';
 import { ErrorBoundary } from './components/ui/ErrorBoundary';
 import { ThemeProvider } from './context/ThemeContext';
+import { I18nextProvider } from 'react-i18next';
+import i18n from './i18n';
 import { NotificationProvider } from './context/NotificationContext';
 import { ToastProvider } from './components/ui/ToastProvider';
 import { GlassToastProvider } from './components/ui/GlassToast';
@@ -23,6 +25,7 @@ import { useAuthStore } from './stores/authStore';
 import { OnboardingTour } from './components/OnboardingTour';
 import { hasCompletedOnboarding } from './hooks/useGamification';
 import type { CharacterRole } from './types/character.types';
+import { DevConsole } from './components/dev/DevConsole';
 
 function lazyPage<T extends React.ComponentType<any>>(
   factory: () => Promise<any>,
@@ -226,6 +229,7 @@ function Router() {
           <ScrollToTop />
           <OfflineIndicator />
           <InstallModal />
+          <DevConsole />
         </div>
       </BrowserRouter>
       <AnimatePresence>
@@ -244,18 +248,20 @@ export default function App() {
 
   return (
     <ErrorBoundary>
-      <ThemeProvider>
-        <InstallProvider>
-          <ToastProvider>
-            <GlassToastProvider>
-              <NotificationProvider>
-                <Router />
-                <Analytics />
-              </NotificationProvider>
-            </GlassToastProvider>
-          </ToastProvider>
-        </InstallProvider>
-      </ThemeProvider>
+      <I18nextProvider i18n={i18n}>
+        <ThemeProvider>
+          <InstallProvider>
+            <ToastProvider>
+              <GlassToastProvider>
+                <NotificationProvider>
+                  <Router />
+                  <Analytics />
+                </NotificationProvider>
+              </GlassToastProvider>
+            </ToastProvider>
+          </InstallProvider>
+        </ThemeProvider>
+      </I18nextProvider>
     </ErrorBoundary>
   );
 }

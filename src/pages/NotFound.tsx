@@ -1,10 +1,12 @@
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { Icon } from '../components/ui/Icon';
 import { useAuthStore } from '../stores/authStore';
 
 export function NotFound() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const user = useAuthStore((s) => s.user);
 
   const goHome = () => {
@@ -40,7 +42,7 @@ export function NotFound() {
         transition={{ delay: 0.25 }}
         className="text-on-surface-variant font-body-lg mb-1"
       >
-        La página que buscas no existe o fue movida.
+        {t('notFound.message') || 'La página que buscas no existe o fue movida.'}
       </motion.p>
       <motion.p
         initial={{ opacity: 0 }}
@@ -48,7 +50,7 @@ export function NotFound() {
         transition={{ delay: 0.35 }}
         className="text-outline font-label-sm text-label-sm mb-8"
       >
-        Verifica el enlace o vuelve a tu panel principal.
+        {t('notFound.hint') || 'Verifica el enlace o vuelve a tu panel principal.'}
       </motion.p>
 
       <motion.button
@@ -61,7 +63,7 @@ export function NotFound() {
         className="premium-btn bg-primary text-on-primary px-8 py-4 rounded-2xl font-title-md text-title-md shadow-glow-primary flex items-center gap-2"
       >
         <Icon name="home" size={20} />
-        Volver al inicio
+        {t('notFound.backHome') || 'Volver al inicio'}
       </motion.button>
     </div>
   );

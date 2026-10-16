@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import {
   KeyRound,
   Mail,
@@ -19,6 +20,7 @@ import { supabase } from '../lib/supabase';
 import { useToast } from '../components/ui/ToastProvider';
 
 export function ResetPassword() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const toast = useToast();
@@ -234,17 +236,17 @@ export function ResetPassword() {
           </div>
           <h1 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
             {isCompleted
-              ? 'Contraseña Actualizada'
+              ? (t('auth.updatePassword') || 'Contraseña Actualizada')
               : mode === 'reset'
-              ? 'Restablecer Contraseña'
-              : 'Recuperar Cuenta'}
+              ? (t('auth.resetPasswordTitle') || 'Restablecer Contraseña')
+              : (t('auth.forgotPassword') || 'Recuperar Cuenta')}
           </h1>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
             {isCompleted
-              ? 'Tu cuenta ha sido protegida con la nueva clave'
+              ? (t('auth.codeValidated') || 'Tu cuenta ha sido protegida con la nueva clave')
               : mode === 'reset'
-              ? 'Ingresa tu código de verificación y define tu nueva contraseña'
-              : 'Ingresa tu correo para recibir un enlace de acceso y código PIN seguro'}
+              ? (t('auth.resetPasswordSubtitle') || 'Ingresa tu código de verificación y define tu nueva contraseña')
+              : (t('auth.resetInstructions') || 'Ingresa tu correo para recibir un enlace de acceso y código PIN seguro')}
           </p>
         </div>
 
@@ -283,7 +285,7 @@ export function ResetPassword() {
                 to="/login"
                 className="w-full py-3.5 px-4 rounded-2xl bg-teal-600 hover:bg-teal-700 active:scale-98 text-white font-bold text-xs transition-all flex items-center justify-center gap-2 shadow-md shadow-teal-600/20"
               >
-                <span>Iniciar Sesión Ahora</span>
+                <span>{t('auth.signIn') || 'Iniciar Sesión'}</span>
                 <ArrowRight size={14} />
               </Link>
             </motion.div>
@@ -361,7 +363,7 @@ export function ResetPassword() {
                       <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                     ) : (
                       <>
-                        <span>Enviar Enlace y Código de Recuperación</span>
+                        <span>{t('auth.sendResetLink') || 'Enviar Enlace y Código de Recuperación'}</span>
                         <ArrowRight size={14} />
                       </>
                     )}
@@ -506,7 +508,7 @@ export function ResetPassword() {
                     <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                   ) : (
                     <>
-                      <span>Guardar Nueva Contraseña</span>
+                      <span>{t('auth.updatePassword') || 'Guardar Nueva Contraseña'}</span>
                       <ArrowRight size={14} />
                     </>
                   )}
@@ -518,7 +520,7 @@ export function ResetPassword() {
                     onClick={() => setMode('request')}
                     className="text-xs text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 font-semibold"
                   >
-                    Volver a solicitar enlace por correo
+                    {t('auth.sendResetLink') || 'Volver a solicitar enlace por correo'}
                   </button>
                 </div>
               </form>
@@ -533,7 +535,7 @@ export function ResetPassword() {
             className="inline-flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 hover:text-teal-600 dark:hover:text-teal-400 font-bold transition-colors"
           >
             <ArrowLeft size={14} />
-            <span>Volver a Iniciar Sesión</span>
+            <span>{t('auth.backToLogin') || 'Volver a Iniciar Sesión'}</span>
           </Link>
         </div>
       </motion.div>

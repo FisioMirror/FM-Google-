@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Sparkles,
   LayoutGrid,
@@ -75,6 +76,7 @@ import {
 import { cn } from '../lib/utils';
 
 export function CatalogPage() {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<'all' | 'megasuite' | 'estelar' | 'magic' | 'aceternity' | 'heroui' | 'shadcn' | '21st'>('all');
   const [sliderAngle, setSliderAngle] = useState(120);
   const [toggleState, setToggleState] = useState(true);
@@ -93,28 +95,22 @@ export function CatalogPage() {
           <div className="space-y-2 max-w-2xl">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-500/10 border border-teal-500/25 text-teal-600 dark:text-teal-400 text-xs font-bold">
               <Sparkles className="size-3.5" />
-              <span>Suite de Componentes Next-Gen FisioMirror</span>
+              <span>{t('catalog.suiteBadge') || 'Suite de Componentes Next-Gen FisioMirror'}</span>
             </div>
             <h1 className="text-3xl lg:text-4xl font-extrabold tracking-tight text-on-surface">
               Design System &amp; <AuroraText>FisioMirror UI</AuroraText>
             </h1>
             <p className="text-xs sm:text-sm text-on-surface-variant leading-relaxed">
-              Catálogo maestro y de alto rendimiento que integra los componentes más votados y utilizados de{' '}
-              <strong className="text-on-surface font-semibold">Macro Suite (50)</strong>,{' '}
-              <strong className="text-on-surface font-semibold">Suite Estelar Biomecánica</strong>,{' '}
-              <strong className="text-on-surface font-semibold">HeroUI</strong>,{' '}
-              <strong className="text-on-surface font-semibold">Magic UI</strong>,{' '}
-              <strong className="text-on-surface font-semibold">Aceternity UI</strong> y{' '}
-              <strong className="text-on-surface font-semibold">Shadcn UI</strong> adaptados exclusivamente a la tele-rehabilitación.
+              {t('catalog.subtitle') || 'Catálogo maestro y de alto rendimiento que integra los componentes más votados y utilizados de Macro Suite, Suite Estelar Biomecánica, HeroUI, Magic UI, Aceternity UI y Shadcn UI adaptados exclusivamente a la tele-rehabilitación.'}
             </p>
           </div>
 
           <div className="flex flex-wrap items-center gap-2.5 shrink-0">
             <ShimmerButton className="text-xs px-4 py-2.5">
-              Botón Shimmer Pro
+              {t('catalog.shimmerBtn') || 'Botón Shimmer Pro'}
             </ShimmerButton>
             <ConfettiButton className="rounded-2xl px-4 py-2.5 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white font-bold shadow-md shadow-teal-500/20 text-xs">
-              Probar Confeti
+              {t('catalog.confettiBtn') || 'Probar Confeti'}
             </ConfettiButton>
             <div className="p-1 rounded-2xl bg-surface-container-high border border-outline/15 flex items-center">
               <AnimatedThemeToggler variant="circle" />
@@ -125,7 +121,7 @@ export function CatalogPage() {
         {/* Filter Tabs */}
         <div className="mt-8 pt-6 border-t border-outline/10 flex flex-wrap gap-2">
           {[
-            { id: 'all', label: 'Todos los Componentes' },
+            { id: 'all', label: t('common.all') || 'Todos los Componentes' },
             { id: 'megasuite', label: 'Macro Suite (50 Componentes)' },
             { id: 'estelar', label: 'Suite Estelar Biomecánica' },
             { id: 'heroui', label: 'HeroUI (28 Suite)' },

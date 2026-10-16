@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Icon } from '../components/ui/Icon';
 import { useToast } from '../components/ui/ToastProvider';
@@ -12,7 +13,8 @@ import { speakHumanVoice } from '../lib/humanVoice';
 import { notifySessionCompleted, createNotification } from '../lib/notificationService';
 import { updatePresenceStatus } from '../lib/presenceService';
 import { isSpiritualModeEnabled, getVersiculoContextual, type Versiculo } from '../lib/versiculosService';
-import { BookOpen } from 'lucide-react';
+import { BookOpen, Download } from 'lucide-react';
+import { exportSessionSummaryPDF } from '../lib/pdfExport';
 import { Popover } from '../components/ui/Popover';
 import { Modal } from '../components/ui/Modal';
 import { PulsatingButton } from '../components/ui/PulsatingButton';
@@ -86,6 +88,7 @@ const TOTAL_SETS = 3;
 const REST_DURATION = 15;
 
 export function ARMirrorPage() {
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const toast = useToast();
@@ -394,6 +397,27 @@ export function ARMirrorPage() {
     }
   };
 
+  const handleDownloadSessionPDF = () => {
+    try {
+      exportSessionSummaryPDF({
+        patientName: user?.full_name || 'Paciente',
+        exerciseName: exerciseName || 'Ejercicio Terapéutico',
+        targetRom: 90,
+        achievedRom: Math.max(90, Math.round(currentAngle || 90)),
+        repetitions: repCount,
+        targetRepetitions: TARGET_REPS * TOTAL_SETS,
+        postureQualityScore: qualityScore,
+        durationSeconds: timer,
+        compensationsDetected: compensation ? [`Compensación motriz: ${compensation}`] : undefined,
+        feedbackNotes: aiFeedbackRef.current || 'Sesión finalizada con seguimiento biomecánico satisfactorio en el Espejo AR.',
+        date: new Date().toLocaleDateString('es-ES', { dateStyle: 'long' }),
+      });
+      toast.success('Informe de sesión en PDF descargado');
+    } catch {
+      toast.error('No se pudo generar el informe en PDF');
+    }
+  };
+
   const formatTime = (s: number) => `${Math.floor(s / 60).toString().padStart(2, '0')}:${(s % 60).toString().padStart(2, '0')}`;
 
   const currentAngle = poseData ? Math.max(poseData.leftElbowAngle, poseData.rightElbowAngle) : 0;
@@ -509,7 +533,7 @@ export function ARMirrorPage() {
           {!calibrated && (
             <div className="mt-2 max-w-md rounded-2xl bg-amber-500/15 border border-amber-400/40 px-4 py-3 text-amber-200 text-sm flex items-center gap-2">
               <Icon name="warning" filled size={18} />
-              <span>Modo sin calibrar: la precisión del seguimiento puede ser menor.</span>
+              <span>{t('arMirror.uncalibratedWarning') || 'Modo sin calibrar: la precisión del seguimiento puede ser menor.'}</span>
             </div>
           )}
         </div>
@@ -521,7 +545,7 @@ export function ARMirrorPage() {
           <div className="glass-panel rounded-full px-4 py-2 flex items-center gap-2" style={{ background: 'rgba(255,255,255,0.08)', backdropFilter: 'blur(24px)' }}>
             <span className={`w-2.5 h-2.5 rounded-full ${poseData?.isTracking ? 'bg-green-400 animate-pulse' : 'bg-orange-400'}`} />
             <span className="text-white/80 text-xs font-bold uppercase tracking-wider">
-              {poseData?.isTracking ? 'Seguimiento Activo' : 'Buscando Postura...'}
+              {poseData?.isTracking ? (t('common.active') || 'Seguimiento Activo') : (t('arMirror.adjustAngle') || 'Buscando Postura...')}
             </span>
           </div>
           {/* REC indicator */}
@@ -546,7 +570,7 @@ export function ARMirrorPage() {
               animate={{ scale: 1 }}
               className="text-white text-4xl font-bold mb-4"
             >
-              Descanso
+              {t('exercises.rest') || 'Descanso'}
             </motion.h2>
             <motion.span
               key={restCountdown}
@@ -556,9 +580,9 @@ export function ARMirrorPage() {
             >
               {restCountdown}
             </motion.span>
-            <p className="text-white/60 mt-4">Serie {currentSet} completada</p>
+            <p className="text-white/60 mt-4">{t('common.series') || 'Serie'} {currentSet} {t('common.completed') || 'completada'}</p>
             <button onClick={() => setRestCountdown(0)} className="mt-8 px-6 py-3 rounded-full bg-white/20 text-white font-bold hover:bg-white/30 active:scale-95 transition-all">
-              Saltar descanso
+              {t('common.skip') || 'Saltar descanso'}
             </button>
           </motion.div>
         )}
@@ -782,7 +806,7 @@ export function ARMirrorPage() {
                 <Modal.Icon className="bg-teal-500/20 text-teal-300">
                   <Icon name="settings" size={20} />
                 </Modal.Icon>
-                <Modal.Heading className="text-white">Configuración del Espejo</Modal.Heading>
+                <Modal.Heading className="text-white">{t('arMirror.mirrorSettings') || 'Configuración del Espejo'}</Modal.Heading>
               </Modal.Header>
               <Modal.Body className="space-y-3">
                 <button
@@ -790,7 +814,7 @@ export function ARMirrorPage() {
                   onClick={() => { setVolumeLevel(volumeLevel === 'muted' ? 'high' : 'muted'); }}
                   className="w-full flex items-center justify-between p-3 rounded-xl bg-white/10 hover:bg-white/15 text-white transition-colors"
                 >
-                  <span className="text-sm font-semibold">Audio de Guía</span>
+                  <span className="text-sm font-semibold">{t('arMirror.audioGuide') || 'Audio de Guía'}</span>
                   <Icon name={volumeLevel !== 'muted' ? 'toggle_on' : 'toggle_off'} size={28} className={volumeLevel !== 'muted' ? 'text-teal-300' : 'text-white/40'} />
                 </button>
                 <button
@@ -798,7 +822,7 @@ export function ARMirrorPage() {
                   onClick={toggleFacingMode}
                   className="w-full flex items-center justify-between p-3 rounded-xl bg-white/10 hover:bg-white/15 text-white transition-colors"
                 >
-                  <span className="text-sm font-semibold">Cámara ({facingMode === 'user' ? 'Frontal' : 'Trasera'})</span>
+                  <span className="text-sm font-semibold">{t('arMirror.camera') || 'Cámara'} ({facingMode === 'user' ? (t('arMirror.frontCamera') || 'Frontal') : (t('arMirror.backCamera') || 'Trasera')})</span>
                   <Icon name="flip_camera_ios" size={20} className="text-[#8ad3cf]" />
                 </button>
                 <button
@@ -806,7 +830,7 @@ export function ARMirrorPage() {
                   onClick={() => setIsMirrored((prev) => !prev)}
                   className="w-full flex items-center justify-between p-3 rounded-xl bg-white/10 hover:bg-white/15 text-white transition-colors"
                 >
-                  <span className="text-sm font-semibold">Modo Espejo Invertido</span>
+                  <span className="text-sm font-semibold">{t('arMirror.invertedMirror') || 'Modo Espejo Invertido'}</span>
                   <Icon name={isMirrored ? 'toggle_on' : 'toggle_off'} size={28} className={isMirrored ? 'text-teal-300' : 'text-white/40'} />
                 </button>
                 <button
@@ -814,7 +838,7 @@ export function ARMirrorPage() {
                   onClick={() => { handleRestart(); setShowSettings(false); }}
                   className="w-full flex items-center justify-between p-3 rounded-xl bg-white/10 hover:bg-white/15 text-white transition-colors"
                 >
-                  <span className="text-sm font-semibold">Reiniciar sesión actual</span>
+                  <span className="text-sm font-semibold">{t('arMirror.restartSession') || 'Reiniciar sesión actual'}</span>
                   <Icon name="refresh" size={20} className="text-teal-300" />
                 </button>
               </Modal.Body>
@@ -825,7 +849,7 @@ export function ARMirrorPage() {
                   onClick={() => setShowSettings(false)}
                   className="w-full py-2.5 px-4 rounded-xl bg-teal-500/25 hover:bg-teal-500/35 text-teal-200 font-bold border border-teal-500/40 transition-colors"
                 >
-                  Listo
+                  {t('arMirror.ready') || 'Listo'}
                 </button>
               </Modal.Footer>
             </Modal.Dialog>
@@ -921,19 +945,19 @@ export function ARMirrorPage() {
               >
                 <MascotAnimation type="success" size="md" className="w-full h-full" />
               </motion.div>
-              <h2 className="text-white text-3xl font-bold mb-2">¡Sesión Completada!</h2>
-              <p className="text-white/60 mb-6">Has completado {currentSet} series con {repCount} repeticiones.</p>
+              <h2 className="text-white text-3xl font-bold mb-2">{t('arMirror.sessionFinished') || '¡Sesión Completada!'}</h2>
+              <p className="text-white/60 mb-6">{t('arMirror.sessionSummary', { sets: currentSet, reps: repCount }) || `Has completado ${currentSet} series con ${repCount} repeticiones.`}</p>
               <div className="grid grid-cols-3 gap-4 mb-6">
-                <div><p className="text-white/40 text-xs">Tiempo</p><p className="text-white text-xl font-bold">{formatTime(timer)}</p></div>
-                <div><p className="text-white/40 text-xs">Repeticiones</p><p className="text-white text-xl font-bold">{repCount}</p></div>
-                <div><p className="text-white/40 text-xs">Calidad</p><p className="text-white text-xl font-bold">{qualityScore}%</p></div>
+                <div><p className="text-white/40 text-xs">{t('arMirror.time') || 'Tiempo'}</p><p className="text-white text-xl font-bold">{formatTime(timer)}</p></div>
+                <div><p className="text-white/40 text-xs">{t('arMirror.repetitions') || 'Repeticiones'}</p><p className="text-white text-xl font-bold">{repCount}</p></div>
+                <div><p className="text-white/40 text-xs">{t('arMirror.quality') || 'Calidad'}</p><p className="text-white text-xl font-bold">{qualityScore}%</p></div>
               </div>
 
               {isSpiritualModeEnabled() && finishVerse && (
                 <div className="mb-6 p-4 rounded-2xl bg-white/10 border border-white/15 text-left">
                   <div className="flex items-center gap-1.5 mb-1.5 text-[11px] font-bold uppercase tracking-wider text-teal-300">
                     <BookOpen className="size-3.5" />
-                    <span>Palabra de Sanidad & Fortaleza</span>
+                    <span>{t('arMirror.spiritualWord') || 'Palabra de Sanidad & Fortaleza'}</span>
                   </div>
                   <p className="text-xs text-white/95 italic font-medium leading-relaxed">
                     «{finishVerse.texto}»
@@ -944,13 +968,23 @@ export function ARMirrorPage() {
                 </div>
               )}
 
-              <div className="flex gap-3">
-                <button onClick={() => navigate('/stats')} className="premium-btn flex-1 py-4 bg-primary text-white rounded-2xl font-bold hover:scale-[1.02] active:scale-95 transition-all">
-                  Ver Progreso
+              <div className="flex flex-col gap-2.5">
+                <button
+                  type="button"
+                  onClick={handleDownloadSessionPDF}
+                  className="w-full py-3.5 px-4 bg-teal-500/20 hover:bg-teal-500/30 text-teal-200 border border-teal-500/40 rounded-2xl font-bold transition-all flex items-center justify-center gap-2 shadow-sm"
+                >
+                  <Download size={18} />
+                  <span>{t('arMirror.downloadClinicalPdf') || 'Descargar Informe Clínico en PDF'}</span>
                 </button>
-                <button onClick={() => navigate('/dashboard-paciente')} className="flex-1 py-4 bg-white/10 text-white rounded-2xl font-bold hover:bg-white/20 transition-all">
-                  Inicio
-                </button>
+                <div className="flex gap-3">
+                  <button onClick={() => navigate('/stats')} className="premium-btn flex-1 py-3.5 bg-primary text-white rounded-2xl font-bold hover:scale-[1.02] active:scale-95 transition-all">
+                    {t('arMirror.viewProgress') || 'Ver Progreso'}
+                  </button>
+                  <button onClick={() => navigate('/dashboard-paciente')} className="flex-1 py-3.5 bg-white/10 text-white rounded-2xl font-bold hover:bg-white/20 transition-all">
+                    {t('arMirror.home') || 'Inicio'}
+                  </button>
+                </div>
               </div>
             </motion.div>
         </motion.div>

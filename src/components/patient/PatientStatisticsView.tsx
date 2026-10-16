@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import {
   ResponsiveContainer,
   AreaChart,
@@ -50,6 +51,7 @@ export function PatientStatisticsView({
   sessions,
   exercises,
 }: PatientStatisticsViewProps) {
+  const { t } = useTranslation();
   // Aggregate calculations
   const totalSessions = sessions.length;
   const totalMinutes = Math.round(sessions.reduce((sum, s) => sum + (s.duracion_segundos || 0), 0) / 60);
@@ -178,12 +180,12 @@ export function PatientStatisticsView({
           </div>
           <div>
             <p className="text-on-surface-variant text-[11px] sm:text-xs font-semibold uppercase tracking-wider mb-1 line-clamp-1">
-              Sesiones Totales
+              {t('patientStatsView.totalSessions') || 'Sesiones Totales'}
             </p>
             <h3 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 dark:text-slate-100 tabular-nums tracking-tight">
               {totalSessions}
             </h3>
-            <p className="text-[11px] text-on-surface-variant mt-1">Registradas con IA AR Mirror</p>
+            <p className="text-[11px] text-on-surface-variant mt-1">{t('patientStatsView.recordedWithAi') || 'Registradas con IA AR Mirror'}</p>
           </div>
         </div>
 
@@ -199,12 +201,12 @@ export function PatientStatisticsView({
           </div>
           <div>
             <p className="text-on-surface-variant text-[11px] sm:text-xs font-semibold uppercase tracking-wider mb-1 line-clamp-1">
-              Minutos Acumulados
+              {t('patientStatsView.therapeuticTime') || 'Minutos Acumulados'}
             </p>
             <h3 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 dark:text-slate-100 tabular-nums tracking-tight">
               {totalMinutes} <span className="text-sm font-bold text-on-surface-variant">min</span>
             </h3>
-            <p className="text-[11px] text-on-surface-variant mt-1">Tiempo de rehabilitación activo</p>
+            <p className="text-[11px] text-on-surface-variant mt-1">{t('patientStatsView.activeRehabTime') || 'Tiempo de rehabilitación activo'}</p>
           </div>
         </div>
 
@@ -217,17 +219,17 @@ export function PatientStatisticsView({
             <span className={`text-[10px] sm:text-xs font-bold px-2 py-0.5 rounded-full ${
               avgQuality >= 85 ? 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-300' : 'bg-amber-500/10 text-amber-700 dark:text-amber-300'
             }`}>
-              {avgQuality >= 85 ? 'Excelente' : 'Aceptable'}
+              {avgQuality >= 85 ? (t('patientStatsView.excellent') || 'Excelente') : (t('patientStatsView.acceptable') || 'Aceptable')}
             </span>
           </div>
           <div>
             <p className="text-on-surface-variant text-[11px] sm:text-xs font-semibold uppercase tracking-wider mb-1 line-clamp-1">
-              Calidad Biomecánica
+              {t('patientStatsView.biomechanicalQuality') || 'Calidad Biomecánica'}
             </p>
             <h3 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 dark:text-slate-100 tabular-nums tracking-tight">
               {avgQuality > 0 ? `${avgQuality}%` : '—'}
             </h3>
-            <p className="text-[11px] text-on-surface-variant mt-1">Precisión de trayectoria angular</p>
+            <p className="text-[11px] text-on-surface-variant mt-1">{t('patientStatsView.angularAccuracy') || 'Precisión de trayectoria angular'}</p>
           </div>
         </div>
 
@@ -243,12 +245,12 @@ export function PatientStatisticsView({
           </div>
           <div>
             <p className="text-on-surface-variant text-[11px] sm:text-xs font-semibold uppercase tracking-wider mb-1 line-clamp-1">
-              ROM Máximo Alcanzado
+              {t('patientStatsView.peakRom') || 'ROM Máximo Alcanzado'}
             </p>
             <h3 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 dark:text-slate-100 tabular-nums tracking-tight">
               {peakRom > 0 ? `${peakRom}°` : '—'}
             </h3>
-            <p className="text-[11px] text-on-surface-variant mt-1">{affectedLimb || 'Articulación principal'}</p>
+            <p className="text-[11px] text-on-surface-variant mt-1">{affectedLimb || (t('patientStatsView.mainJoint') || 'Articulación principal')}</p>
           </div>
         </div>
       </div>
@@ -265,10 +267,10 @@ export function PatientStatisticsView({
             <div>
               <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
                 <Icon name="show_chart" size={20} className="text-teal-600 dark:text-teal-400" />
-                Evolución de Calidad Biomecánica y ROM
+                {t('patientStatsView.evolutionTitle') || 'Evolución de Calidad Biomecánica y ROM'}
               </h3>
               <p className="text-xs text-on-surface-variant mt-0.5">
-                Progreso angular y precisión motora en cada sesión realizada por {patientName}
+                {t('patientStatsView.evolutionDesc') || 'Progreso angular y precisión motora en cada sesión realizada por'} {patientName}
               </p>
             </div>
           </div>
@@ -297,15 +299,15 @@ export function PatientStatisticsView({
                         <div className="bg-slate-900/95 text-white p-3 rounded-xl shadow-xl text-xs space-y-1.5 border border-slate-700">
                           <p className="font-bold text-teal-300">{data.ejercicio} ({data.date})</p>
                           <p className="flex justify-between gap-4">
-                            <span className="text-slate-300">Calidad motora:</span>
+                            <span className="text-slate-300">{t('stats.quality') || 'Calidad motora'}:</span>
                             <span className="font-bold text-teal-400">{data.calidad}%</span>
                           </p>
                           <p className="flex justify-between gap-4">
-                            <span className="text-slate-300">Rango articular:</span>
+                            <span className="text-slate-300">{t('stats.rom') || 'Rango articular'}:</span>
                             <span className="font-bold text-sky-400">{data.rom}°</span>
                           </p>
                           <p className="flex justify-between gap-4">
-                            <span className="text-slate-300">Duración:</span>
+                            <span className="text-slate-300">{t('stats.duration') || 'Duración'}:</span>
                             <span className="font-bold text-slate-200">{data.duracionMin} min</span>
                           </p>
                         </div>
@@ -316,7 +318,7 @@ export function PatientStatisticsView({
                 />
                 <Legend
                   wrapperStyle={{ fontSize: 12, paddingTop: 10 }}
-                  formatter={(value) => (value === 'calidad' ? 'Calidad de Ejecución (%)' : 'Rango Articular ROM (°)')}
+                  formatter={(value) => (value === 'calidad' ? (t('stats.quality') || 'Calidad de Ejecución (%)') : (t('stats.rom') || 'Rango Articular ROM (°)'))}
                 />
                 <Area
                   type="monotone"
@@ -353,10 +355,10 @@ export function PatientStatisticsView({
             <div>
               <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
                 <Icon name="bar_chart" size={20} className="text-blue-600 dark:text-blue-400" />
-                Volumen y Minutos por Ejercicio
+                {t('patientStatsView.distributionTitle') || 'Volumen y Minutos por Ejercicio'}
               </h3>
               <p className="text-xs text-on-surface-variant mt-0.5">
-                Distribución de carga terapéutica acumulada entre las rutinas prescritas
+                {t('stats.adherenceRate') || 'Distribución de carga terapéutica acumulada entre las rutinas prescritas'}
               </p>
             </div>
           </div>
@@ -383,15 +385,15 @@ export function PatientStatisticsView({
                         <div className="bg-slate-900/95 text-white p-3 rounded-xl shadow-xl text-xs space-y-1.5 border border-slate-700">
                           <p className="font-bold text-teal-300">{d.fullName}</p>
                           <p className="flex justify-between gap-4">
-                            <span className="text-slate-300">Minutos invertidos:</span>
+                            <span className="text-slate-300">{t('stats.totalTime') || 'Minutos invertidos'}:</span>
                             <span className="font-bold text-teal-400">{d.minutos} min</span>
                           </p>
                           <p className="flex justify-between gap-4">
-                            <span className="text-slate-300">Repeticiones totales:</span>
+                            <span className="text-slate-300">{t('exercises.reps') || 'Repeticiones totales'}:</span>
                             <span className="font-bold text-sky-400">{d.repeticiones} reps</span>
                           </p>
                           <p className="flex justify-between gap-4">
-                            <span className="text-slate-300">Calidad promedio:</span>
+                            <span className="text-slate-300">{t('stats.quality') || 'Calidad promedio'}:</span>
                             <span className="font-bold text-emerald-400">{d.calidad}%</span>
                           </p>
                         </div>
@@ -402,7 +404,7 @@ export function PatientStatisticsView({
                 />
                 <Legend
                   wrapperStyle={{ fontSize: 12, paddingTop: 10 }}
-                  formatter={(val) => (val === 'minutos' ? 'Minutos Totales' : 'Repeticiones Acumuladas')}
+                  formatter={(val) => (val === 'minutos' ? (t('stats.totalTime') || 'Minutos Totales') : (t('exercises.reps') || 'Repeticiones Acumuladas'))}
                 />
                 <Bar dataKey="minutos" name="minutos" fill="#0d9488" radius={[6, 6, 0, 0]} />
                 <Bar dataKey="repeticiones" name="repeticiones" fill="#3b82f6" radius={[6, 6, 0, 0]} />
@@ -418,7 +420,7 @@ export function PatientStatisticsView({
           <div className="flex items-center justify-between">
             <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
               <Icon name="tune" size={20} className="text-teal-600 dark:text-teal-400" />
-              Patrones de Compensación Postural Detectados
+              {t('patientStatsView.compensationsTitle') || 'Patrones de Compensación Postural Detectados'}
             </h3>
             <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
               Sensor AR Mirror
@@ -448,7 +450,7 @@ export function PatientStatisticsView({
                       ? 'bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/20'
                       : 'bg-blue-500/10 text-blue-700 dark:text-blue-300 border border-blue-500/20'
                   }`}>
-                    {comp.severity === 'controlada' ? 'Bien Controlado' : comp.severity === 'moderada' ? 'Revisión Sugerida' : 'Baja Incidencia'}
+                    {comp.severity === 'controlada' ? (t('stats.goodPosture') || 'Bien Controlado') : comp.severity === 'moderada' ? (t('stats.compensationDetected') || 'Revisión Sugerida') : (t('common.lowPriority') || 'Baja Incidencia')}
                   </span>
                 </div>
               </div>
@@ -461,10 +463,10 @@ export function PatientStatisticsView({
           <div>
             <div className="flex items-center gap-2 text-teal-700 dark:text-teal-300 mb-2">
               <Icon name="assessment" size={20} />
-              <h3 className="font-bold text-sm uppercase tracking-wider">Evaluación Clínica</h3>
+              <h3 className="font-bold text-sm uppercase tracking-wider">{t('stats.clinicalSummary') || 'Evaluación Clínica'}</h3>
             </div>
             <h4 className="text-lg font-bold text-slate-900 dark:text-slate-100 mb-2">
-              {avgQuality >= 85 ? 'Excelente Progresión Motora' : 'Evolución Favorable y Estable'}
+              {avgQuality >= 85 ? (t('stats.excellentProgress') || 'Excelente Progresión Motora') : (t('stats.stableEvolution') || 'Evolución Favorable y Estable')}
             </h4>
             <p className="text-xs text-on-surface-variant leading-relaxed">
               El paciente {patientName} mantiene una adherencia terapéutica de {avgAdherence}%, con una calidad motriz promedio de {avgQuality}% y un arco articular pico de {peakRom}°. Se recomienda continuar con la dosificación prescrita.
@@ -473,7 +475,7 @@ export function PatientStatisticsView({
 
           <div className="p-3.5 rounded-2xl bg-teal-500/5 border border-teal-500/15">
             <div className="flex items-center justify-between text-xs mb-1.5 font-bold">
-              <span className="text-slate-700 dark:text-slate-300">Fase de Rehabilitación</span>
+              <span className="text-slate-700 dark:text-slate-300">{t('exercises.phase') || 'Fase de Rehabilitación'}</span>
               <span className="text-teal-700 dark:text-teal-300">Fase 3 / 4</span>
             </div>
             <div className="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
@@ -489,33 +491,33 @@ export function PatientStatisticsView({
           <div>
             <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
               <Icon name="history" size={20} className="text-teal-600 dark:text-teal-400" />
-              Historial Detallado de Sesiones & Telemetría
+              {t('stats.historyTitle') || 'Historial Detallado de Sesiones & Telemetría'}
             </h3>
             <p className="text-xs text-on-surface-variant mt-0.5">
-              Registro completo de ángulos alcanzados, calidad y observaciones clínicas por sesión
+              {t('stats.historySubtitle') || 'Registro completo de ángulos alcanzados, calidad y observaciones clínicas por sesión'}
             </p>
           </div>
           <span className="text-xs font-bold text-on-surface-variant">
-            {sessions.length} registro(s)
+            {sessions.length} {t('stats.records') || 'registro(s)'}
           </span>
         </div>
 
         {sessions.length === 0 ? (
           <div className="p-8 text-center text-on-surface-variant text-sm">
-            No hay sesiones registradas para este paciente todavía.
+            {t('stats.noSessions') || 'No hay sesiones registradas para este paciente todavía.'}
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs border-collapse">
               <thead>
                 <tr className="border-b border-outline/10 text-on-surface-variant font-semibold">
-                  <th className="py-3 px-3">Fecha & Hora</th>
-                  <th className="py-3 px-3">Ejercicio Prescrito</th>
-                  <th className="py-3 px-3">Duración</th>
-                  <th className="py-3 px-3">Reps</th>
-                  <th className="py-3 px-3">Calidad Biomecánica</th>
+                  <th className="py-3 px-3">{t('stats.dateTime') || 'Fecha & Hora'}</th>
+                  <th className="py-3 px-3">{t('exercises.name') || 'Ejercicio Prescrito'}</th>
+                  <th className="py-3 px-3">{t('stats.duration') || 'Duración'}</th>
+                  <th className="py-3 px-3">{t('exercises.reps') || 'Reps'}</th>
+                  <th className="py-3 px-3">{t('stats.quality') || 'Calidad Biomecánica'}</th>
                   <th className="py-3 px-3">ROM Máx</th>
-                  <th className="py-3 px-3">Observaciones / Notas</th>
+                  <th className="py-3 px-3">{t('patientDetail.notes') || 'Observaciones / Notas'}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-outline/5 text-slate-800 dark:text-slate-200">

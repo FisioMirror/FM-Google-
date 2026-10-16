@@ -9,10 +9,14 @@
     <link rel="apple-touch-icon" sizes="512x512" href="/512x512.png" />
     <meta name="theme-color" content="#14b8a6" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <!-- Anti-flicker: aplica tamaño de fuente y zoom antes del primer render -->
+    <!-- Anti-flicker: aplica tamaño de fuente, zoom e idioma antes del primer render -->
     <script>
       (function () {
         try {
+          var lang = localStorage.getItem('fisio_language');
+          if (lang && (lang === 'es' || lang === 'en' || lang === 'pt')) {
+            document.documentElement.lang = lang;
+          }
           var fs = localStorage.getItem('fisio-font-size');
           if (fs) {
             var fsVal = parseInt(fs, 10);

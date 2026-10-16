@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --host 0.0.0.0 --port 3000",
+    "dev": "vite",
     "build": "node scripts/check-env.cjs && vite build",
     "check-env": "node scripts/check-env.cjs",
     "lint": "eslint .",
@@ -20,7 +20,6 @@
     "@supabase/supabase-js": "^2.57.4",
     "@types/canvas-confetti": "^1.9.0",
     "@types/three": "^0.185.4",
-    "@vercel/analytics": "^2.0.1",
     "canvas-confetti": "^1.9.4",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

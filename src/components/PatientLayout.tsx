@@ -1,6 +1,7 @@
-import { type ReactNode, useState, useEffect } from 'react';
+import { type ReactNode, useState, useEffect, useMemo } from 'react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import {
   Video,
   Phone,
@@ -28,10 +29,11 @@ import { BackButton } from './ui/BackButton';
 import { FloatingMenu, type FloatingMenuItem } from './ui/FloatingMenu';
 import { PhysiChatbot } from './ui/PhysiChatbot';
 import { LegalModal, type LegalDocType } from './ui/LegalModal';
+import { LanguageSelector } from './ui/LanguageSelector';
 import { useAuthStore } from '../stores/authStore';
 import { useTheme } from '../context/ThemeContext';
 import { useToast } from './ui/ToastProvider';
-import { supabase } from '../lib/supabase';
+import { supabase, supabaseUrl, supabaseAnonKey } from '../lib/supabase';
 import { cn } from '../lib/utils';
 import MascotAnimation from './ui/MascotAnimation';
 import { NotificationDrawer } from './notifications/NotificationDrawer';
@@ -39,40 +41,53 @@ import { useRealtimeNotifications } from '../hooks/useRealtimeNotifications';
 import { initGlobalPresence, updatePresenceStatus } from '../lib/presenceService';
 import { notifyVideoCall } from '../lib/notificationService';
 
-const primaryNavItems = [
-  { to: '/dashboard-paciente', label: 'Inicio', icon: Home, accent: 'teal' },
-  { to: '/exercises', label: 'Ejercicios', icon: Dumbbell, accent: 'cyan' },
-  { to: '/stats', label: 'Progreso', icon: Activity, accent: 'emerald' },
-  { to: '/ai-assistant', label: 'Physi IA', icon: Bot, accent: 'blue' },
-];
-
-const secondaryNavItems = [
-  { to: '/profile', label: 'Perfil', icon: User, accent: 'teal' },
-  { to: '/settings', label: 'Configuración', icon: Settings, accent: 'teal' },
-];
-
-const navItems = [...primaryNavItems, ...secondaryNavItems];
-
-const breadcrumbMap: Record<string, string> = {
-  '/dashboard-paciente': 'Inicio',
-  '/exercises': 'Ejercicios',
-  '/stats': 'Progreso',
-  '/ai-assistant': 'Physi',
-  '/profile': 'Perfil',
-  '/settings': 'Configuración',
-};
-
 interface PatientLayoutProps {
   children: ReactNode;
 }
 
 export function PatientLayout({ children }: PatientLayoutProps) {
+  const { t, i18n } = useTranslation();
   const user = useAuthStore((s) => s.user);
   const signOut = useAuthStore((s) => s.signOut);
   const { theme, toggleTheme } = useTheme();
   const toast = useToast();
   const navigate = useNavigate();
   const location = useLocation();
+
+  const primaryNavItems = useMemo(
+    () => [
+      { to: '/dashboard-paciente', label: t('navigation.dashboard') || 'Inicio', icon: Home, accent: 'teal' },
+      { to: '/exercises', label: t('navigation.exercises') || 'Ejercicios', icon: Dumbbell, accent: 'cyan' },
+      { to: '/stats', label: t('navigation.progress') || 'Progreso', icon: Activity, accent: 'emerald' },
+      { to: '/ai-assistant', label: t('navigation.aiAssistant') || 'Physi IA', icon: Bot, accent: 'blue' },
+    ],
+    [t, i18n.language]
+  );
+
+  const secondaryNavItems = useMemo(
+    () => [
+      { to: '/profile', label: t('navigation.myProfile') || 'Perfil', icon: User, accent: 'teal' },
+      { to: '/settings', label: t('navigation.settings') || 'Configuración', icon: Settings, accent: 'teal' },
+    ],
+    [t, i18n.language]
+  );
+
+  const navItems = useMemo(
+    () => [...primaryNavItems, ...secondaryNavItems],
+    [primaryNavItems, secondaryNavItems]
+  );
+
+  const breadcrumbMap: Record<string, string> = useMemo(
+    () => ({
+      '/dashboard-paciente': t('navigation.dashboard') || 'Inicio',
+      '/exercises': t('navigation.exercises') || 'Ejercicios',
+      '/stats': t('navigation.progress') || 'Progreso',
+      '/ai-assistant': 'Physi',
+      '/profile': t('navigation.profile') || 'Perfil',
+      '/settings': t('navigation.settings') || 'Configuración',
+    }),
+    [t, i18n.language]
+  );
   const [showLogout, setShowLogout] = useState(false);
   const [legalModal, setLegalModal] = useState<LegalDocType | null>(null);
   const [therapistPhone, setTherapistPhone] = useState<string | null>(null);
@@ -144,96 +159,97 @@ export function PatientLayout({ children }: PatientLayoutProps) {
     navigate('/login');
   };
 
-  const quickActionItems: FloatingMenuItem[] = [
-    {
-      label: 'Videollamada',
-      icon: <Video size={20} className="text-primary" />,
-      onClick: async () => {
-        if (!user?.id) { toast.info('No hay sesión activa'); return; }
-        try {
-          const { data: vinculacion } = await supabase
-            .from('pacientes_terapeutas')
-            .select('terapeuta_id')
-            .eq('paciente_id', user.id)
-            .maybeSingle();
-          if (!vinculacion?.terapeuta_id) {
-            toast.error('No tienes un fisioterapeuta asignado');
-            return;
-          }
-          const fisioId = vinculacion.terapeuta_id;
-          const jitsiUrl = `https://meet.jit.si/FisioMirror-${user.id}-${fisioId}`;
-          window.open(jitsiUrl, '_blank');
-          updatePresenceStatus('videoconsulta', window.location.pathname);
-
-          // Notificar directamente al fisioterapeuta vía Supabase
-          await notifyVideoCall({
-            targetUserId: fisioId,
-            callerName: user.full_name || 'Tu paciente',
-            meetLink: jitsiUrl,
-          });
-
-          // Intento complementario de Edge Function si existe
+  const quickActionItems: FloatingMenuItem[] = useMemo(
+    () => [
+      {
+        label: t('common.videoCall') || 'Videollamada',
+        icon: <Video size={20} className="text-primary" />,
+        onClick: async () => {
+          if (!user?.id) { toast.info(t('auth.noSession') || 'No hay sesión activa'); return; }
           try {
-            const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string;
-            const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string;
-            await fetch(`${supabaseUrl}/functions/v1/send-notification`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${supabaseAnonKey}`,
-              },
-              body: JSON.stringify({
-                fisio_id: fisioId,
-                type: 'videollamada',
-                title: 'Videollamada entrante',
-                message: `${user.full_name || 'Tu paciente'} quiere iniciar una videollamada`,
-                link: jitsiUrl,
-              }),
+            const { data: vinculacion } = await supabase
+              .from('pacientes_terapeutas')
+              .select('terapeuta_id')
+              .eq('paciente_id', user.id)
+              .maybeSingle();
+            if (!vinculacion?.terapeuta_id) {
+              toast.error(t('dashboard.noPhysioAssigned') || 'No tienes un fisioterapeuta asignado');
+              return;
+            }
+            const fisioId = vinculacion.terapeuta_id;
+            const jitsiUrl = `https://meet.jit.si/FisioMirror-${user.id}-${fisioId}`;
+            window.open(jitsiUrl, '_blank');
+            updatePresenceStatus('videoconsulta', window.location.pathname);
+
+            // Notificar directamente al fisioterapeuta vía Supabase
+            await notifyVideoCall({
+              targetUserId: fisioId,
+              callerName: user.full_name || 'Tu paciente',
+              meetLink: jitsiUrl,
             });
+
+            // Intento complementario de Edge Function si existe
+            try {
+              await fetch(`${supabaseUrl}/functions/v1/send-notification`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${supabaseAnonKey}`,
+                },
+                body: JSON.stringify({
+                  fisio_id: fisioId,
+                  type: 'videollamada',
+                  title: 'Videollamada entrante',
+                  message: `${user.full_name || 'Tu paciente'} quiere iniciar una videollamada`,
+                  link: jitsiUrl,
+                }),
+              });
+            } catch {
+              // opcional
+            }
+            toast.success(t('common.videoCallStarted') || 'Videollamada iniciada. Notificación enviada en tiempo real.');
           } catch {
-            // opcional
+            toast.error(t('common.cannotStartVideo') || 'No se pudo iniciar la videollamada');
           }
-          toast.success('Videollamada iniciada. Notificación enviada en tiempo real.');
-        } catch {
-          toast.error('No se pudo iniciar la videollamada');
-        }
+        },
       },
-    },
-    {
-      label: 'Llamada',
-      icon: <Phone size={20} className="text-primary" />,
-      onClick: () => {
-        if (therapistPhone) {
-          window.location.href = `tel:${therapistPhone}`;
-        } else {
-          toast.info('No hay número de teléfono registrado');
-        }
+      {
+        label: t('common.call') || 'Llamada',
+        icon: <Phone size={20} className="text-primary" />,
+        onClick: () => {
+          if (therapistPhone) {
+            window.location.href = `tel:${therapistPhone}`;
+          } else {
+            toast.info(t('common.noPhoneRegistered') || 'No hay número de teléfono registrado');
+          }
+        },
       },
-    },
-    {
-      label: 'WhatsApp',
-      icon: <MessageCircle size={20} className="text-primary" />,
-      onClick: () => {
-        if (therapistPhone) {
-          const clean = therapistPhone.replace(/\D/g, '');
-          window.open(`https://wa.me/${clean}`, '_blank');
-        } else {
-          toast.info('No hay número de WhatsApp registrado');
-        }
+      {
+        label: 'WhatsApp',
+        icon: <MessageCircle size={20} className="text-primary" />,
+        onClick: () => {
+          if (therapistPhone) {
+            const clean = therapistPhone.replace(/\D/g, '');
+            window.open(`https://wa.me/${clean}`, '_blank');
+          } else {
+            toast.info(t('common.noPhoneRegistered') || 'No hay número de WhatsApp registrado');
+          }
+        },
       },
-    },
-    {
-      label: 'Mensaje',
-      icon: <Mail size={20} className="text-primary" />,
-      onClick: () => {
-        if (therapistPhone) {
-          window.location.href = `sms:${therapistPhone}`;
-        } else {
-          toast.info('No hay número de teléfono registrado');
-        }
+      {
+        label: t('common.message') || 'Mensaje',
+        icon: <Mail size={20} className="text-primary" />,
+        onClick: () => {
+          if (therapistPhone) {
+            window.location.href = `sms:${therapistPhone}`;
+          } else {
+            toast.info(t('common.noPhoneRegistered') || 'No hay número de teléfono registrado');
+          }
+        },
       },
-    },
-  ];
+    ],
+    [t, i18n.language, therapistPhone, user?.id, user?.full_name]
+  );
 
   const renderBottomActions = (collapsed: boolean, onNavAway?: () => void) => (
     <div className={cn('shrink-0 border-t border-teal-100 dark:border-slate-800 p-3', collapsed ? 'flex flex-col items-center gap-2' : 'space-y-3')}>
@@ -248,10 +264,10 @@ export function PatientLayout({ children }: PatientLayoutProps) {
             <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-white dark:border-slate-900" />
           </div>
           <div className="min-w-0">
-            <p className="font-bold text-sm text-slate-900 dark:text-slate-100 truncate">{user?.full_name || 'Paciente'}</p>
+            <p className="font-bold text-sm text-slate-900 dark:text-slate-100 truncate">{user?.full_name || (t('common.patient') || 'Paciente')}</p>
             <div className="flex items-center gap-1.5 mt-0.5">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              <p className="text-[10px] text-teal-600 dark:text-teal-400 uppercase tracking-wider font-semibold">Paciente Activo</p>
+              <p className="text-[10px] text-teal-600 dark:text-teal-400 uppercase tracking-wider font-semibold">{t('common.activePatient') || 'Paciente Activo'}</p>
             </div>
           </div>
         </div>
@@ -260,14 +276,14 @@ export function PatientLayout({ children }: PatientLayoutProps) {
         <button
           onClick={toggleTheme}
           className="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-teal-50 dark:hover:bg-slate-800 hover:text-teal-600 dark:hover:text-teal-400 transition-colors"
-          aria-label="Cambiar tema"
+          aria-label={t('common.theme') || 'Cambiar tema'}
         >
           {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
         </button>
         <button
           onClick={() => { onNavAway?.(); setShowNotifications((v) => !v); }}
           className="relative p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-teal-50 dark:hover:bg-slate-800 hover:text-teal-600 dark:hover:text-teal-400 transition-colors"
-          aria-label={`Notificaciones, ${unreadCount} sin leer`}
+          aria-label={`${t('notifications.title') || 'Notificaciones'}, ${unreadCount} ${t('notifications.unread') || 'sin leer'}`}
         >
           <Bell size={18} />
           {unreadCount > 0 && (
@@ -279,7 +295,7 @@ export function PatientLayout({ children }: PatientLayoutProps) {
         <button
           onClick={() => { onNavAway?.(); setShowLogout(true); }}
           className="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-red-50 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 transition-colors"
-          aria-label="Cerrar sesión"
+          aria-label={t('common.logout') || 'Cerrar sesión'}
         >
           <LogOut size={18} />
         </button>
@@ -295,7 +311,7 @@ export function PatientLayout({ children }: PatientLayoutProps) {
             <img src="/logo.png" alt="FisioMirror" className="h-9 w-9 min-w-[36px] min-h-[36px] object-contain shrink-0 aspect-square" />
             <div className="flex flex-col min-w-0">
               <h1 className="text-base font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight whitespace-nowrap">FisioMirror</h1>
-              <p className="text-[10px] uppercase tracking-wider text-teal-600 dark:text-teal-400 font-bold whitespace-nowrap">Portal Paciente</p>
+              <p className="text-[10px] uppercase tracking-wider text-teal-600 dark:text-teal-400 font-bold whitespace-nowrap">{t('dashboard.patientPortal') || 'Portal Paciente'}</p>
             </div>
           </div>
         ) : (
@@ -306,7 +322,7 @@ export function PatientLayout({ children }: PatientLayoutProps) {
         {opts?.showToggle && (
           <button
             onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-            aria-label={sidebarCollapsed ? 'Expandir menú' : 'Colapsar menú'}
+            aria-label={sidebarCollapsed ? (t('navigation.openMenu') || 'Expandir menú') : (t('navigation.closeMenu') || 'Colapsar menú')}
             className="hidden lg:flex absolute top-1/2 -translate-y-1/2 right-2 w-6 h-6 rounded-full bg-primary text-on-primary items-center justify-center text-xs shadow-md hover:scale-110 transition-transform z-10"
           >
             <Icon name={sidebarCollapsed ? 'chevron_right' : 'chevron_left'} size={14} />
@@ -406,13 +422,13 @@ export function PatientLayout({ children }: PatientLayoutProps) {
                   <img src="/logo.png" alt="FisioMirror" className="h-9 w-9 object-contain shrink-0" />
                   <div>
                     <h2 className="text-base font-extrabold text-slate-900 dark:text-white leading-tight">FisioMirror</h2>
-                    <p className="text-[10px] uppercase tracking-wider text-teal-600 dark:text-teal-400 font-bold">Portal Paciente</p>
+                    <p className="text-[10px] uppercase tracking-wider text-teal-600 dark:text-teal-400 font-bold">{t('dashboard.patientPortal') || 'Portal Paciente'}</p>
                   </div>
                 </div>
                 <button
                   onClick={() => setSidebarOpen(false)}
                   className="p-2 rounded-xl text-slate-500 hover:text-slate-800 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-                  aria-label="Cerrar menú"
+                  aria-label={t('navigation.closeMenu') || 'Cerrar menú'}
                 >
                   <X size={20} />
                 </button>
@@ -456,7 +472,7 @@ export function PatientLayout({ children }: PatientLayoutProps) {
           <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
             <button
               onClick={() => setSidebarOpen(true)}
-              aria-label="Abrir menú"
+              aria-label={t('navigation.openMenu') || 'Abrir menú'}
               className="lg:hidden text-primary shrink-0 p-1.5 rounded-lg hover:bg-primary/10 transition-colors"
             >
               <Icon name="menu" size={22} />
@@ -469,7 +485,7 @@ export function PatientLayout({ children }: PatientLayoutProps) {
             </div>
             {/* Desktop breadcrumb */}
             <div className="hidden lg:flex items-center text-outline text-label-sm gap-2 min-w-0 truncate">
-              <span onClick={() => navigate('/dashboard-paciente')} className="hover:text-primary cursor-pointer shrink-0">Inicio</span>
+              <span onClick={() => navigate('/dashboard-paciente')} className="hover:text-primary cursor-pointer shrink-0">{t('navigation.dashboard') || 'Inicio'}</span>
               <Icon name="chevron_right" size={14} className="shrink-0" />
               <span className="text-on-surface font-bold truncate">{currentCrumb}</span>
             </div>
@@ -478,40 +494,43 @@ export function PatientLayout({ children }: PatientLayoutProps) {
           <div className="flex items-center gap-1 sm:gap-2 shrink-0">
             <div className={`online-indicator is-${isOnline ? 'online' : 'offline'} hidden md:inline-flex`}>
               <span className="dot" />
-              <span>{isOnline ? 'Online' : 'Offline'}</span>
+              <span>{isOnline ? t('navigation.online') || 'Online' : t('navigation.offline') || 'Offline'}</span>
             </div>
             <button
               onClick={() => setShowNotifications((v) => !v)}
               className="relative text-on-surface-variant hover:text-primary transition-colors active-scale p-2 rounded-full"
-              aria-label={`Notificaciones, ${unreadCount} sin leer`}
+              aria-label={`${t('notifications.title') || 'Notificaciones'}, ${unreadCount} ${t('notifications.unread') || 'sin leer'}`}
             >
               <Icon name="notifications" size={20} />
               {unreadCount > 0 && (
                 <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-[16px] bg-error rounded-full text-white text-[9px] font-bold flex items-center justify-center px-1">{unreadCount > 9 ? '9+' : unreadCount}</span>
               )}
             </button>
+            <LanguageSelector variant="compact" />
             <button
               onClick={toggleTheme}
               className="text-on-surface-variant hover:text-primary transition-colors active-scale p-2 rounded-full"
-              aria-label="Cambiar tema"
+              aria-label={t('common.theme') || 'Cambiar tema'}
+              title={t('common.theme') || 'Cambiar tema'}
             >
               <Icon name={theme === 'dark' ? 'light_mode' : 'dark_mode'} size={20} />
             </button>
             <button
               onClick={() => setPhysiChatOpen(true)}
               className="p-2 rounded-xl text-on-surface-variant hover:text-primary hover:bg-primary/5 transition-colors active-scale flex items-center gap-1.5"
-              aria-label="Abrir Chatbot IA Physi"
-              title="Chatbot IA Physi"
+              aria-label={t('navigation.chatbotTooltip') || 'Abrir Chatbot IA Physi'}
+              title={t('navigation.chatbotTooltip') || 'Chatbot IA Physi'}
             >
               <Bot size={20} className="text-primary" />
               <span className="hidden xl:inline text-xs font-semibold text-primary">
-                Chatbot Physi
+                {t('navigation.aiAssistant') || 'Chatbot Physi'}
               </span>
             </button>
             <button
               onClick={() => setShowLogout(true)}
               className="text-on-surface-variant hover:text-error transition-colors active-scale p-2 rounded-full"
-              aria-label="Cerrar sesión"
+              aria-label={t('common.logout') || 'Cerrar sesión'}
+              title={t('common.logout') || 'Cerrar sesión'}
             >
               <Icon name="logout" size={20} />
             </button>
@@ -524,9 +543,9 @@ export function PatientLayout({ children }: PatientLayoutProps) {
         <footer className="hidden lg:flex pt-6 pb-6 px-8 justify-between text-outline text-xs border-t divider-teal shrink-0">
           <span>&copy; 2025 FisioMirror</span>
           <div className="flex gap-4">
-            <button onClick={() => setLegalModal('consent')} className="transition-colors hover:text-primary">Consentimiento Informado</button>
-            <button onClick={() => setLegalModal('terms')} className="transition-colors hover:text-primary">Términos de Servicio</button>
-            <button onClick={() => setLegalModal('privacy')} className="transition-colors hover:text-primary">Privacidad de Datos</button>
+            <button onClick={() => setLegalModal('consent')} className="transition-colors hover:text-primary">{t('common.informedConsent') || 'Consentimiento Informado'}</button>
+            <button onClick={() => setLegalModal('terms')} className="transition-colors hover:text-primary">{t('common.termsOfService') || 'Términos de Servicio'}</button>
+            <button onClick={() => setLegalModal('privacy')} className="transition-colors hover:text-primary">{t('common.privacyPolicy') || 'Privacidad de Datos'}</button>
           </div>
         </footer>
       </main>
@@ -535,7 +554,7 @@ export function PatientLayout({ children }: PatientLayoutProps) {
       {location.pathname !== '/ai-assistant' && (
         <FloatingMenu
           items={quickActionItems}
-          ariaLabel="Acciones del paciente"
+          ariaLabel={t('dashboard.patientActions') || 'Acciones del paciente'}
           className="fixed bottom-6 right-6 z-40"
         />
       )}
@@ -565,20 +584,24 @@ export function PatientLayout({ children }: PatientLayoutProps) {
               className="glass-panel rounded-3xl p-8 max-w-sm w-full mx-4 text-center"
             >
               <MascotAnimation type="goodbye" size="md" className="mx-auto mb-4" />
-              <h3 className="font-headline-lg text-headline-lg gradient-text-editorial mb-2">¿Cerrar sesión?</h3>
-              <p className="text-on-surface-variant text-sm mb-6">Tendrás que volver a ingresar tu token para acceder.</p>
+              <h3 className="font-headline-lg text-headline-lg gradient-text-editorial mb-2">
+                {t('auth.signOutConfirmTitle') || '¿Cerrar sesión?'}
+              </h3>
+              <p className="text-on-surface-variant text-sm mb-6">
+                {t('auth.signOutConfirmDesc') || 'Tendrás que volver a ingresar tus credenciales para acceder.'}
+              </p>
               <div className="flex gap-3">
                 <button
                   onClick={() => setShowLogout(false)}
                   className="flex-1 py-3 rounded-xl bg-surface-variant/40 text-on-surface-variant font-bold hover:bg-surface-variant/60 transition-all"
                 >
-                  Cancelar
+                  {t('common.cancel') || 'Cancelar'}
                 </button>
                 <button
                   onClick={handleSignOut}
                   className="flex-1 py-3 rounded-xl bg-error text-on-error font-bold hover:scale-[0.98] transition-all"
                 >
-                  Cerrar sesión
+                  {t('common.logout') || 'Cerrar sesión'}
                 </button>
               </div>
             </motion.div>

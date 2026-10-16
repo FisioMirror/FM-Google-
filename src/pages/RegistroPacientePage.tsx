@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
   KeyRound,
   UserCheck,
@@ -22,6 +23,7 @@ import { Card, CardContent } from '../components/ui/Card';
 import { Tooltip } from '../components/ui/Tooltip';
 
 export function RegistroPacientePage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const toast = useToast();
@@ -202,10 +204,10 @@ export function RegistroPacientePage() {
             <UserCheck size={28} />
           </div>
           <h1 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
-            Activar Cuenta de Paciente
+            {t('auth.patientRegistration') || 'Activar Cuenta de Paciente'}
           </h1>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            Ingresa el código proporcionado por tu fisioterapeuta para vincular tu expediente
+            {t('auth.patientRegistrationSubtitle') || 'Ingresa el código proporcionado por tu fisioterapeuta para vincular tu expediente'}
           </p>
         </div>
 
@@ -213,11 +215,11 @@ export function RegistroPacientePage() {
         <div className="mb-6 p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80">
           <div className="flex items-center justify-between mb-2">
             <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
-              Código de Acceso (Token de 6 dígitos)
+              {t('auth.activationCode') || 'Código de Acceso (Token de 6 dígitos)'}
             </label>
             {tokenValidated && (
               <span className="text-[11px] font-bold text-teal-600 dark:text-teal-400 bg-teal-500/10 px-2 py-0.5 rounded-full border border-teal-500/20 flex items-center gap-1">
-                <CheckCircle2 size={12} /> Validado
+                <CheckCircle2 size={12} /> {t('common.active') || 'Validado'}
               </span>
             )}
           </div>
@@ -251,7 +253,7 @@ export function RegistroPacientePage() {
                   size="sm"
                   className="w-full sm:w-auto"
                 >
-                  Verificar
+                  {t('auth.validateCode') || 'Verificar'}
                 </Button>
               ) : (
                 <Button
@@ -395,14 +397,13 @@ export function RegistroPacientePage() {
             icon={<ArrowRight size={17} />}
             iconPosition="right"
           >
-            Completar Registro y Empezar Terapia
+            {t('auth.signUp') || 'Completar Registro y Empezar Terapia'}
           </Button>
         </form>
 
         <div className="mt-5 text-center text-xs text-slate-500">
-          ¿Ya tienes cuenta activa?{' '}
           <Link to="/login" className="text-teal-600 dark:text-teal-400 font-bold hover:underline">
-            Iniciar Sesión
+            {t('auth.signIn') || 'Iniciar Sesión'}
           </Link>
         </div>
       </div>

@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { Icon } from '../components/ui/Icon';
 import { GlassPanel } from '../components/ui/Glass';
 import { SkeletonCard as SkeletonCardUI } from '../components/ui/Skeleton';
@@ -21,8 +22,6 @@ interface TokenRow {
   createdAt: string;
 }
 
-const filters = ['Todos', 'Pendiente', 'Activado', 'Expirado'];
-
 const defaultDemoTokens: TokenRow[] = [
   { id: 'demo-token-1', token: '482910', patientName: 'Carlos Mendoza', status: 'activado', createdAt: '2026-03-20T10:00:00Z' },
   { id: 'demo-token-2', token: '839201', patientName: 'María Delgado', status: 'activado', createdAt: '2026-03-22T14:30:00Z' },
@@ -31,10 +30,21 @@ const defaultDemoTokens: TokenRow[] = [
 ];
 
 export function TokenGeneratorPage() {
+  const { t, i18n } = useTranslation();
   const user = useAuthStore((s) => s.user);
   const toast = useToast();
   const [tokens, setTokens] = useState<TokenRow[]>([]);
   const [activeFilter, setActiveFilter] = useState(0);
+
+  const filterOptions = useMemo(
+    () => [
+      { id: 'todos', label: t('tokens.filterAll') || 'Todos' },
+      { id: 'pendiente', label: t('tokens.filterPending') || 'Pendiente' },
+      { id: 'activado', label: t('tokens.filterActivated') || 'Activado' },
+      { id: 'expirado', label: t('tokens.filterExpired') || 'Expirado' },
+    ],
+    [t, i18n.language]
+  );
   const [loading, setLoading] = useState(true);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [emailModalToken, setEmailModalToken] = useState<TokenRow | null>(null);
@@ -175,7 +185,8 @@ export function TokenGeneratorPage() {
 
   const filteredTokens = tokens.filter((t) => {
     if (activeFilter === 0) return true;
-    return t.status === filters[activeFilter].toLowerCase();
+    const filterId = filterOptions[activeFilter]?.id;
+    return t.status === filterId;
   });
 
   return (
@@ -189,8 +200,8 @@ export function TokenGeneratorPage() {
           />
         )}
         <div className="relative z-10">
-          <h1 className="font-display text-2xl sm:text-3xl lg:text-4xl font-extrabold gradient-text-living tracking-tight">Tokens de Acceso</h1>
-          <p className="text-on-surface-variant text-xs sm:text-sm font-medium mt-1">Genera y administra códigos seguros de vinculación para tus pacientes.</p>
+          <h1 className="font-display text-2xl sm:text-3xl lg:text-4xl font-extrabold gradient-text-living tracking-tight">{t('tokens.title') || 'Tokens de Acceso'}</h1>
+          <p className="text-on-surface-variant text-xs sm:text-sm font-medium mt-1">{t('tokens.subtitle') || 'Genera y administra códigos seguros de vinculación para tus pacientes.'}</p>
         </div>
         <div className="relative z-10 shrink-0">
           <Button
@@ -201,16 +212,16 @@ export function TokenGeneratorPage() {
             size="default"
             icon={<Icon name="add" size={18} />}
           >
-            Generar Nuevo Token
+            {t('tokens.generateNew') || 'Generar Nuevo Token'}
           </Button>
         </div>
       </div>
 
       {/* Filters */}
       <div className="flex items-center gap-2 overflow-x-auto pb-1 hide-scrollbar">
-        {filters.map((f, i) => (
+        {filterOptions.map((opt, i) => (
           <button
-            key={f}
+            key={opt.id}
             onClick={() => setActiveFilter(i)}
             className={cn(
               'px-4 py-2 rounded-2xl text-xs font-bold whitespace-nowrap transition-all',
@@ -219,7 +230,7 @@ export function TokenGeneratorPage() {
                 : 'bg-surface-container/70 hover:bg-surface-container text-on-surface-variant border border-outline/10',
             )}
           >
-            {f}
+            {opt.label}
           </button>
         ))}
       </div>
@@ -235,9 +246,9 @@ export function TokenGeneratorPage() {
           <div className="w-14 h-14 rounded-2xl bg-teal-500/10 text-teal-700 dark:text-teal-300 flex items-center justify-center mx-auto mb-4">
             <Icon name="key" size={28} />
           </div>
-          <h3 className="font-display text-lg font-bold text-on-surface mb-1.5">No hay tokens registrados</h3>
+          <h3 className="font-display text-lg font-bold text-on-surface mb-1.5">{t('tokens.noTokens') || 'No hay tokens registrados'}</h3>
           <p className="text-on-surface-variant text-xs sm:text-sm max-w-md mx-auto">
-            Aún no has creado tokens bajo este filtro. Los tokens permiten a los pacientes sincronizar sus datos clínicos con la app.
+            {t('tokens.subtitle') || 'Aún no has creado tokens bajo este filtro. Los tokens permiten a los pacientes sincronizar sus datos clínicos con la app.'}
           </p>
         </div>
       ) : (

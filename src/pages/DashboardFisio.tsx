@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { Icon } from '../components/ui/Icon';
 import { GlassPanel } from '../components/ui/Glass';
 import { Spinner } from '../components/ui/Loader';
+import { useTranslation } from 'react-i18next';
 
 import { MedicalIcon } from '../components/ui/MedicalIcon';
 import { CommandPalette, type CommandItem } from '../components/ui/CommandPalette';
@@ -188,48 +189,50 @@ const demoEvolution = [
   { week: 'Semana 4', value: 79 },
 ];
 
-const quickActions = [
-  {
-    title: 'Nueva Sesión AR',
-    desc: 'Inicia un seguimiento remoto con biofeedback en tiempo real.',
-    icon: 'videocam',
-    color: 'bg-teal-600',
-    pastelBg: 'bg-gradient-to-br from-teal-50/70 via-surface/90 to-teal-50/30 dark:from-teal-950/25 dark:via-surface-container/80 dark:to-slate-900/90 border-teal-200/50 dark:border-teal-500/25',
-    cta: 'Comenzar ahora',
-    route: '/patients'
-  },
-  {
-    title: 'Cargar Paciente',
-    desc: 'Sube historias clínicas o importa perfiles con OCR inteligente.',
-    icon: 'person_add',
-    color: 'bg-sky-600',
-    pastelBg: 'bg-gradient-to-br from-sky-50/70 via-surface/90 to-sky-50/30 dark:from-sky-950/25 dark:via-surface-container/80 dark:to-slate-900/90 border-sky-200/50 dark:border-sky-500/25',
-    cta: 'Importar',
-    route: '/ocr-scanner'
-  },
-  {
-    title: 'Directorio Clínico',
-    desc: 'Gestión integral de pacientes, expedientes y tokens de vinculación.',
-    icon: 'group',
-    color: 'bg-indigo-600',
-    pastelBg: 'bg-gradient-to-br from-indigo-50/65 via-surface/90 to-indigo-50/30 dark:from-indigo-950/20 dark:via-surface-container/80 dark:to-slate-900/90 border-indigo-200/50 dark:border-indigo-500/25',
-    cta: 'Ver pacientes',
-    route: '/patients'
-  },
-  {
-    title: 'Biblioteca Clínica',
-    desc: 'Explora ejercicios validados y ajusta rangos articulares.',
-    icon: 'fitness_center',
-    color: 'bg-emerald-600',
-    pastelBg: 'bg-gradient-to-br from-emerald-50/70 via-surface/90 to-emerald-50/30 dark:from-emerald-950/25 dark:via-surface-container/80 dark:to-slate-900/90 border-emerald-200/50 dark:border-emerald-500/25',
-    cta: 'Ver ejercicios',
-    route: '/fisio-exercises'
-  },
-];
-
 export function DashboardFisio() {
+  const { t, i18n } = useTranslation();
   const user = useAuthStore((s) => s.user);
   const navigate = useNavigate();
+
+  const quickActions = useMemo(() => [
+    {
+      title: t('dashboard.actionArTitle') || 'Nueva Sesión AR',
+      desc: t('dashboard.actionArDesc') || 'Inicia un seguimiento remoto con biofeedback biomecánico en tiempo real.',
+      icon: 'videocam',
+      color: 'bg-teal-600',
+      pastelBg: 'bg-gradient-to-br from-teal-50/70 via-surface/90 to-teal-50/30 dark:from-teal-950/25 dark:via-surface-container/80 dark:to-slate-900/90 border-teal-200/50 dark:border-teal-500/25',
+      cta: t('dashboard.actionArCta') || 'Comenzar ahora',
+      route: '/patients'
+    },
+    {
+      title: t('dashboard.actionLoadTitle') || 'Cargar Paciente',
+      desc: t('dashboard.actionLoadDesc') || 'Sube historias clínicas o importa perfiles con OCR inteligente.',
+      icon: 'person_add',
+      color: 'bg-sky-600',
+      pastelBg: 'bg-gradient-to-br from-sky-50/70 via-surface/90 to-sky-50/30 dark:from-sky-950/25 dark:via-surface-container/80 dark:to-slate-900/90 border-sky-200/50 dark:border-sky-500/25',
+      cta: t('dashboard.actionLoadCta') || 'Importar',
+      route: '/ocr-scanner'
+    },
+    {
+      title: t('dashboard.actionPatientsTitle') || 'Directorio Clínico',
+      desc: t('dashboard.actionPatientsDesc') || 'Gestión integral de pacientes, expedientes y tokens de vinculación.',
+      icon: 'group',
+      color: 'bg-indigo-600',
+      pastelBg: 'bg-gradient-to-br from-indigo-50/65 via-surface/90 to-indigo-50/30 dark:from-indigo-950/20 dark:via-surface-container/80 dark:to-slate-900/90 border-indigo-200/50 dark:border-indigo-500/25',
+      cta: t('dashboard.actionPatientsCta') || 'Ver pacientes',
+      route: '/patients'
+    },
+    {
+      title: t('dashboard.actionExercisesTitle') || 'Biblioteca Clínica',
+      desc: t('dashboard.actionExercisesDesc') || 'Explora ejercicios validados y ajusta rangos articulares.',
+      icon: 'fitness_center',
+      color: 'bg-emerald-600',
+      pastelBg: 'bg-gradient-to-br from-emerald-50/70 via-surface/90 to-emerald-50/30 dark:from-emerald-950/25 dark:via-surface-container/80 dark:to-slate-900/90 border-emerald-200/50 dark:border-emerald-500/25',
+      cta: t('dashboard.actionExercisesCta') || 'Ver ejercicios',
+      route: '/fisio-exercises'
+    },
+  ], [t]);
+
   const [kpi, setKpi] = useState<KpiData>(emptyKpi);
   const [insight, setInsight] = useState<string | null>(null);
   const [insightLoading, setInsightLoading] = useState(false);
@@ -560,9 +563,9 @@ export function DashboardFisio() {
 
   const greeting = (() => {
     const hour = new Date().getHours();
-    if (hour < 12) return 'Buenos días';
-    if (hour < 20) return 'Buenas tardes';
-    return 'Buenas noches';
+    if (hour < 12) return t('dashboard.greetingMorning') || 'Buenos días';
+    if (hour < 20) return t('dashboard.greetingAfternoon') || 'Buenas tardes';
+    return t('dashboard.greetingEvening') || 'Buenas noches';
   })();
 
   const commandItems: CommandItem[] = useMemo(() => {
@@ -643,7 +646,7 @@ export function DashboardFisio() {
 
   const kpiCards = [
     {
-      label: 'Pacientes Activos',
+      label: t('dashboard.activePatients') || 'Pacientes Activos',
       value: displayKpi.activePatients,
       numericValue: displayKpi.activePatients,
       colorHex: '#00504d',
@@ -653,7 +656,7 @@ export function DashboardFisio() {
       badgeClass: 'bg-teal-500/15 text-teal-700 dark:text-teal-300 border-teal-500/30',
     },
     {
-      label: 'Sesiones Hoy',
+      label: t('dashboard.sessionsToday') || 'Sesiones Hoy',
       value: displayKpi.sessionsToday,
       numericValue: displayKpi.sessionsToday,
       colorHex: '#158f8a',
@@ -663,7 +666,7 @@ export function DashboardFisio() {
       badgeClass: 'bg-cyan-500/15 text-cyan-700 dark:text-cyan-300 border-cyan-500/30',
     },
     {
-      label: 'Adherencia Semanal',
+      label: t('dashboard.weeklyAdherence') || 'Adherencia Semanal',
       value: displayKpi.weeklyAdherence > 0 ? `${displayKpi.weeklyAdherence}%` : '—',
       numericValue: displayKpi.weeklyAdherence,
       isPercent: true,
@@ -674,7 +677,7 @@ export function DashboardFisio() {
       badgeClass: 'bg-teal-500/15 text-teal-700 dark:text-teal-300 border-teal-500/30',
     },
     {
-      label: 'Tokens Pendientes',
+      label: t('dashboard.pendingTokens') || 'Tokens Pendientes',
       value: String(displayKpi.pendingTokens).padStart(2, '0'),
       numericValue: displayKpi.pendingTokens,
       colorHex: '#E2725B',
@@ -696,7 +699,7 @@ export function DashboardFisio() {
           <div>
             <div className="flex items-center gap-2 mb-1">
               <KineticText text="FisioMirror" as="span" className="text-xs font-bold uppercase tracking-widest text-primary/80" />
-              <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-600 dark:text-teal-400 border border-teal-500/20">Clínico</span>
+              <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-600 dark:text-teal-400 border border-teal-500/20">{t('dashboard.clinicalBadge') || 'Clínico'}</span>
             </div>
             <h2 className="font-display font-headline-lg text-headline-lg-mobile lg:text-headline-lg gradient-text-living">
               {greeting}, <AuroraText>{user?.full_name?.split(' ')[0] || 'Doctor'}</AuroraText>
@@ -706,7 +709,7 @@ export function DashboardFisio() {
               by="word"
               className="text-outline font-title-md text-title-md"
             >
-              {new Date().toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
+              {new Date().toLocaleDateString(i18n.language === 'en' ? 'en-US' : i18n.language === 'pt' ? 'pt-BR' : 'es-ES', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
             </TextAnimate>
           </div>
           <div className="ml-auto flex items-center gap-2.5">
@@ -717,11 +720,11 @@ export function DashboardFisio() {
               className="hidden lg:flex text-xs px-4 py-2 rounded-2xl shadow-sm"
             >
               <Sparkles className="size-3.5" />
-              <span>Iniciar Espejo AR</span>
+              <span>{t('dashboard.startArMirror') || 'Iniciar Espejo AR'}</span>
             </PulsatingButton>
             <div className="hidden md:block">
               <DateRangePicker value={dateRange} onChange={setDateRange}>
-                <DateRangePicker.Trigger placeholder="Filtrar rango de sesiones..." />
+                <DateRangePicker.Trigger placeholder={t('dashboard.filterDateRange') || 'Filtrar rango de sesiones...'} />
                 <DateRangePicker.Popover>
                   <RangeCalendar>
                     <RangeCalendar.Header />
@@ -733,7 +736,7 @@ export function DashboardFisio() {
                 </DateRangePicker.Popover>
               </DateRangePicker>
             </div>
-            <Tooltip content="Ver la galería en vivo de los nuevos componentes de UI" side="bottom">
+            <Tooltip content={t('dashboard.uiComponentsTooltip') || 'Ver la galería en vivo de los nuevos componentes de UI'} side="bottom">
               <Button
                 variant="glow"
                 glowEffect
@@ -742,7 +745,7 @@ export function DashboardFisio() {
                 icon={<Sparkles size={15} />}
                 className="hidden sm:inline-flex text-xs"
               >
-                Componentes UI
+                {t('dashboard.uiComponents') || 'Componentes UI'}
               </Button>
             </Tooltip>
             <HelpGuideButton />
@@ -754,7 +757,7 @@ export function DashboardFisio() {
       <div className="w-full">
         <CommandPalette
           items={commandItems}
-          placeholder="Buscar pacientes por nombre, condición o ejercicios... (⌘K)"
+          placeholder={t('dashboard.searchPalettePlaceholder') || 'Buscar pacientes por nombre, condición o ejercicios... (⌘K)'}
           onEnterFallback={(q) => navigate(`/patients?q=${encodeURIComponent(q)}`)}
         />
       </div>
@@ -874,12 +877,12 @@ export function DashboardFisio() {
                   <MedicalIcon name="activity" size={28} className="text-primary animate-breathe-icon" />
                 </div>
                 <div>
-                  <h3 className="font-headline-md text-headline-sm lg:text-headline-md text-primary tracking-wide">Informe Clínico</h3>
-                  <p className="text-xs text-on-surface-variant font-semibold uppercase tracking-wider mt-0.5">Physi Clínico</p>
+                  <h3 className="font-headline-md text-headline-sm lg:text-headline-md text-primary tracking-wide">{t('dashboard.clinicalInsights') || 'Informe Clínico'}</h3>
+                  <p className="text-xs text-on-surface-variant font-semibold uppercase tracking-wider mt-0.5">{t('dashboard.physiClinical') || 'Physi Clínico'}</p>
                 </div>
               </div>
               <span className="hidden sm:inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-primary bg-primary/10 px-3 py-1.5 rounded-full ring-1 ring-primary/20">
-                <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" /> IA Activa
+                <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" /> {t('dashboard.aiActive') || 'IA Activa'}
               </span>
             </div>
 
@@ -888,7 +891,7 @@ export function DashboardFisio() {
               {insightLoading ? (
                 <div className="flex items-center gap-3 text-sm text-on-surface-variant py-8">
                   <Spinner size={20} className="text-primary" />
-                  <span>Analizando datos clínicos...</span>
+                  <span>{t('dashboard.analyzingData') || 'Analizando datos clínicos...'}</span>
                 </div>
               ) : insight ? (
                 <div className="space-y-4">
@@ -901,7 +904,7 @@ export function DashboardFisio() {
                     else if (lower.includes('leve') || lower.includes('baja') || lower.includes('estable')) severity = 'baja';
                     if (!severity) return null;
                     const colors = { alta: 'bg-red-500/15 text-red-600 ring-red-500/20', media: 'bg-amber-500/15 text-amber-600 ring-amber-500/20', baja: 'bg-emerald-500/15 text-emerald-600 ring-emerald-500/20' };
-                    const labels = { alta: 'Prioridad Alta', media: 'Prioridad Media', baja: 'Prioridad Baja' };
+                    const labels = { alta: t('common.highPriority') || 'Prioridad Alta', media: t('common.mediumPriority') || 'Prioridad Media', baja: t('common.lowPriority') || 'Prioridad Baja' };
                     return (
                       <div className="flex items-center gap-2">
                         <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold ring-1 ${colors[severity]}`}>
@@ -919,7 +922,7 @@ export function DashboardFisio() {
                 <div className="min-h-[120px] p-4 bg-primary-container/20 rounded-2xl border border-primary/10 flex flex-col items-center justify-center text-center gap-3">
                   <Icon name="insights" size={32} className="text-primary/40" />
                   <p className="text-sm text-on-surface-variant leading-relaxed max-w-md">
-                    Datos insuficientes para generar insights. Completa más sesiones para obtener recomendaciones personalizadas.
+                    {t('insights.fallbackFriendly')}
                   </p>
                 </div>
               )}
@@ -929,11 +932,11 @@ export function DashboardFisio() {
             <div className="flex items-center justify-between px-8 py-4 bg-surface-variant/10 border-t border-outline-variant/20">
               <div className="flex items-center gap-2 text-xs text-on-surface-variant">
                 <Icon name="schedule" size={14} className="opacity-60" />
-                <span>{new Date().toLocaleString('es-ES', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}</span>
+                <span>{new Date().toLocaleString(i18n.language === 'en' ? 'en-US' : i18n.language === 'pt' ? 'pt-BR' : 'es-ES', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}</span>
               </div>
               <span className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">
                 <Icon name="auto_awesome" size={12} className="text-primary" />
-                Generado por IA
+                {t('common.aiGenerated') || 'Generado por IA'}
               </span>
             </div>
 
@@ -947,7 +950,7 @@ export function DashboardFisio() {
                 className="py-3 px-6 rounded-2xl font-bold flex items-center gap-2 disabled:opacity-50 text-white"
               >
                 {insightLoading ? <Spinner size={18} className="text-current" /> : <Icon name="refresh" size={18} />}
-                Actualizar Informe
+                {t('dashboard.generateInsight') || 'Actualizar Informe'}
               </ShimmerButton>
             </div>
           </GlassPanel>
@@ -961,9 +964,9 @@ export function DashboardFisio() {
                 <Icon name="flag" size={24} className="icon-accent-cyan animate-breathe-icon" />
               </div>
               <div>
-                <h3 className="font-headline-md text-headline-sm lg:text-headline-md text-on-surface">Prioridades del Día</h3>
+                <h3 className="font-headline-md text-headline-sm lg:text-headline-md text-on-surface">{t('dashboard.clinicalPriorities') || 'Prioridades del Día'}</h3>
                 <p className="text-[10px] text-on-surface-variant font-semibold uppercase tracking-wider mt-0.5">
-                  {checkedPriorities.filter(Boolean).length} de {priorities.length} completadas
+                  {t('dashboard.completedPriorities', { completed: checkedPriorities.filter(Boolean).length, total: priorities.length }) || `${checkedPriorities.filter(Boolean).length} de ${priorities.length} completadas`}
                 </p>
               </div>
             </div>
@@ -1072,12 +1075,12 @@ export function DashboardFisio() {
           <div className="relative z-10 space-y-4">
             <div className="flex justify-between items-start">
               <div>
-                <h3 className="font-headline-lg text-headline-lg-mobile lg:text-headline-lg text-on-surface mb-2">Monitoreo Remoto</h3>
-                <p className="text-on-surface-variant text-sm">Sesiones activas y sincronización clínica</p>
+                <h3 className="font-headline-lg text-headline-lg-mobile lg:text-headline-lg text-on-surface mb-2">{t('dashboard.remoteMonitoring') || 'Monitoreo Remoto'}</h3>
+                <p className="text-on-surface-variant text-sm">{t('dashboard.remoteMonitoringSub') || 'Sesiones activas y sincronización clínica'}</p>
               </div>
               <div className="flex items-center gap-2">
                 <span className="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-ping" />
-                <span className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 tracking-wider">EN VIVO</span>
+                <span className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 tracking-wider">{t('common.live') || 'EN VIVO'}</span>
               </div>
             </div>
 
@@ -1100,7 +1103,7 @@ export function DashboardFisio() {
                 )}
               </div>
               <p className="text-xs text-on-surface-variant font-medium ml-2">
-                {displayedPatients.length} pacientes monitorizados
+                {displayedPatients.length} {t('navigation.patients')?.toLowerCase() || 'pacientes'}
               </p>
             </div>
           </div>
@@ -1110,7 +1113,7 @@ export function DashboardFisio() {
               onClick={() => navigate('/patients')}
               className="bg-primary text-on-primary font-bold px-5 py-2.5 rounded-xl shadow-glow-primary hover:scale-[0.98] transition-all text-sm"
             >
-              Ver Expedientes
+              {t('patients.title') || 'Ver Expedientes'}
             </button>
             <ConfettiSideCannons
               className="px-4 py-2.5 rounded-xl text-xs font-bold"

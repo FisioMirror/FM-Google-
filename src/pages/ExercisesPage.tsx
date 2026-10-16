@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Activity,
@@ -276,8 +277,20 @@ const FILTER_CATEGORIES = [
 ];
 
 export function ExercisesPage() {
+  const { t } = useTranslation();
   const user = useAuthStore((s) => s.user);
   const toast = useToast();
+
+  const filterCategories = useMemo(() => [
+    { id: 'todos', label: t('exercises.allGroups') || 'Todos los Protocolos', icon: Activity },
+    { id: 'hombro', label: t('exercises.shoulder') || 'Hombro', icon: RotateCw },
+    { id: 'rodilla', label: t('exercises.knee') || 'Rodilla', icon: Target },
+    { id: 'cadera', label: t('exercises.hip') || 'Cadera & Pelvis', icon: Compass },
+    { id: 'tobillo', label: t('exercises.ankle') || 'Tobillo & Pie', icon: Footprints },
+    { id: 'columna', label: t('exercises.spine') || 'Columna & Core', icon: Shield },
+    { id: 'codo', label: 'Codo & Brazos', icon: Dumbbell },
+    { id: 'cervical', label: t('exercises.cervical') || 'Cervical', icon: CircleDot },
+  ], [t]);
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [activeFilter, setActiveFilter] = useState('todos');
   const [categoryFilter, setCategoryFilter] = useState<string>('todos');
@@ -709,10 +722,10 @@ export function ExercisesPage() {
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 relative z-10">
           <div className="space-y-2">
             <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white">
-              Catálogo de Ejercicios & Guía Anatómica
+              {t('exercises.title') || 'Catálogo de Ejercicios & Guía Anatómica'}
             </h1>
             <p className="text-sm text-slate-600 dark:text-slate-300 max-w-3xl leading-relaxed">
-              Prescribe protocolos kinesiológicos con modelos anatómicos 3D interactivos, ángulos ROM objetivo y biofeedback en tiempo real.
+              {t('exercises.subtitle') || 'Prescribe protocolos kinesiológicos con modelos anatómicos 3D interactivos, ángulos ROM objetivo y biofeedback en tiempo real.'}
             </p>
           </div>
 
@@ -722,7 +735,7 @@ export function ExercisesPage() {
               className="px-5 py-3 rounded-2xl bg-teal-600 hover:bg-teal-700 active:scale-95 text-white font-bold text-sm transition-all shadow-md shadow-teal-600/20 flex items-center gap-2 shrink-0 self-start lg:self-center"
             >
               <Plus className="size-4" />
-              <span>Nuevo Ejercicio</span>
+              <span>{t('exercises.prescribe') || 'Nuevo Ejercicio'}</span>
             </button>
           )}
         </div>
@@ -763,7 +776,7 @@ export function ExercisesPage() {
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Buscar por ejercicio, músculo objetivo o articulación..."
+            placeholder={t('exercises.searchPlaceholder') || 'Buscar por ejercicio, músculo objetivo o articulación...'}
             className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-100/80 dark:bg-slate-800/80 border border-transparent focus:border-teal-500/40 focus:bg-white dark:focus:bg-slate-900 text-sm text-slate-800 dark:text-slate-100 placeholder:text-slate-400 outline-none transition-all"
           />
           {search && (
@@ -778,7 +791,7 @@ export function ExercisesPage() {
 
         {/* Category Pills */}
         <div className="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0 scrollbar-none">
-          {FILTER_CATEGORIES.map((cat) => {
+          {filterCategories.map((cat) => {
             const IconComp = cat.icon;
             const isSelected = activeFilter === cat.id;
             const count =
@@ -994,14 +1007,14 @@ export function ExercisesPage() {
                         className="flex-1 py-1.5 rounded-lg bg-slate-100/90 dark:bg-slate-800/90 hover:bg-teal-50 dark:hover:bg-teal-950/40 text-slate-600 dark:text-slate-300 hover:text-teal-600 text-xs font-bold transition-all flex items-center justify-center gap-1"
                       >
                         <Edit3 className="size-3" />
-                        <span>Editar</span>
+                        <span>{t('common.edit') || 'Editar'}</span>
                       </button>
                       <button
                         onClick={() => cloneExercise(ex)}
                         className="flex-1 py-1.5 rounded-lg bg-slate-100/90 dark:bg-slate-800/90 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 text-xs font-bold transition-all flex items-center justify-center gap-1"
                       >
                         <Copy className="size-3" />
-                        <span>Clonar</span>
+                        <span>{t('exercises.clone') || 'Clonar'}</span>
                       </button>
                       <button
                         onClick={() => deleteExercise(ex.id)}

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { 
   Sparkles, 
   Send, 
@@ -603,6 +604,7 @@ const SAMPLE_ROUTINE_CARDS: RoutineCardData[] = [
 ];
 
 export function UIShowcasePage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<FilterTab>('todos');
 

@@ -3,6 +3,25 @@ import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 import path from 'path';
 import { apiDevPlugin } from './vite-api-plugin';
+
+// Strict sanitization: ensure any VITE_ variables exposed to browser are purely sanitized values
+if (process.env.VITE_SUPABASE_URL) {
+  const match = process.env.VITE_SUPABASE_URL.match(/https:\/\/[a-zA-Z0-9-]+\.supabase\.co/);
+  process.env.VITE_SUPABASE_URL = match ? match[0] : 'https://mnkqfrulcpxpwaftokdi.supabase.co';
+}
+if (process.env.VITE_SUPABASE_ANON_KEY) {
+  const match = process.env.VITE_SUPABASE_ANON_KEY.match(/eyJ[a-zA-Z0-9_-]+\.[a-zA-Z0-9_-]+\.[a-zA-Z0-9_-]+/);
+  if (match) {
+    process.env.VITE_SUPABASE_ANON_KEY = match[0];
+  }
+}
+if (process.env.VITE_TURNSTILE_SITE_KEY) {
+  const match = process.env.VITE_TURNSTILE_SITE_KEY.match(/0x[a-zA-Z0-9_-]+/);
+  if (match) {
+    process.env.VITE_TURNSTILE_SITE_KEY = match[0];
+  }
+}
+
 export default defineConfig({
   server: {
     host: '0.0.0.0',

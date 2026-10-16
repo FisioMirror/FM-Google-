@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { ShieldCheck, FileText, HeartPulse, ScrollText, Lock, Stethoscope, Camera, Brain, CheckCircle2, XCircle } from 'lucide-react';
 import { GlassModal } from './GlassModal';
 
@@ -327,6 +328,7 @@ function ConsentLegend() {
 /* ------------------------------------------------------------------ */
 
 export function LegalModal({ isOpen, onClose, type }: LegalModalProps) {
+  const { t } = useTranslation();
   const doc = DOCS[type];
   const showConsentLegend = type === 'consent';
 
@@ -373,7 +375,7 @@ export function LegalModal({ isOpen, onClose, type }: LegalModalProps) {
           onClick={onClose}
           className="w-full mt-5 py-3 rounded-xl bg-primary text-on-primary font-bold hover:scale-[0.98] active:scale-95 transition-all glow-teal breathe-teal"
         >
-          Cerrar
+          {t('legal.close') || t('common.close') || 'Cerrar'}
         </button>
       </div>
     </GlassModal>

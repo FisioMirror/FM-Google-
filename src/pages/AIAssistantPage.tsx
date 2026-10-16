@@ -1,5 +1,6 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import {
   Volume2,
   VolumeX,
@@ -71,12 +72,13 @@ interface ChatMessage {
 }
 
 export function AIAssistantPage() {
+  const { t, i18n } = useTranslation();
   const user = useAuthStore((s) => s.user);
-  const [messages, setMessages] = useState<ChatMessage[]>([
+  const [messages, setMessages] = useState<ChatMessage[]>(() => [
     {
       id: '1',
       role: 'assistant',
-      text: '¡Hola! Soy Physi, tu asistente personal de rehabilitación en FisioMirror. Estoy aquí para acompañar tu recuperación, resolver dudas sobre tus ejercicios asignados y analizar tu progreso. ¿Cómo te sientes hoy?',
+      text: t('aiAssistant.greeting') || '¡Hola! Soy Physi, tu asistente personal de rehabilitación en FisioMirror. Estoy aquí para acompañar tu recuperación, resolver dudas sobre tus ejercicios asignados y analizar tu progreso. ¿Cómo te sientes hoy?',
       timestamp: 'Ahora',
     },
   ]);
@@ -374,12 +376,15 @@ Pregunta del paciente: ${messageText}`;
     }
   };
 
-  const quickPrompts = [
-    { label: '¿Qué ejercicios me tocan hoy?', prompt: '¿Cuáles son mis ejercicios recomendados para el día de hoy?' },
-    { label: '¿Cómo va mi progreso?', prompt: 'Explícame mi progreso de recuperación actual y qué debo seguir reforzando.' },
-    { label: 'Consejos para aliviar dolor', prompt: 'Siento ligera molestia tras la sesión, ¿qué consejos de autocuidado puedo aplicar de forma segura?' },
-    { label: 'Mejorar postura en AR', prompt: '¿Qué recomendaciones me das para calibrar y ejecutar mejor mis ejercicios frente a la cámara?' },
-  ];
+  const quickPrompts = useMemo(
+    () => [
+      { label: t('aiAssistant.quickPrompt1') || '¿Qué ejercicios me tocan hoy?', prompt: '¿Cuáles son mis ejercicios recomendados para el día de hoy?' },
+      { label: t('aiAssistant.quickPrompt2') || '¿Cómo va mi progreso?', prompt: 'Explícame mi progreso de recuperación actual y qué debo seguir reforzando.' },
+      { label: t('aiAssistant.quickPrompt3') || 'Consejos para aliviar dolor', prompt: 'Siento ligera molestia tras la sesión, ¿qué consejos de autocuidado puedo aplicar de forma segura?' },
+      { label: t('aiAssistant.quickPrompt4') || 'Mejorar postura en AR', prompt: '¿Qué recomendaciones me das para calibrar y ejecutar mejor mis ejercicios frente a la cámara?' },
+    ],
+    [t, i18n.language]
+  );
 
   return (
     <div className="h-full flex flex-col gap-3 sm:gap-4 overflow-hidden min-h-0 pb-2">
@@ -389,14 +394,14 @@ Pregunta del paciente: ${messageText}`;
           <MascotAnimation type="greeting" size="xs" className="breathe-blue shrink-0" />
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="font-bold text-base text-on-surface">Physi Asistente IA</h1>
+              <h1 className="font-bold text-base text-on-surface">{t('aiAssistant.title') || 'Physi Asistente IA'}</h1>
               <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-teal-500/10 text-teal-600 border border-teal-500/20">
                 <span className="size-1.5 rounded-full bg-teal-500 animate-pulse" />
-                Guía de Rehabilitación
+                {t('aiAssistant.badge') || 'Guía de Rehabilitación'}
               </span>
             </div>
             <p className="text-xs text-on-surface-variant line-clamp-1">
-              Acompañamiento biomecánico inteligente personalizado para tu terapia.
+              {t('aiAssistant.subtitle') || 'Acompañamiento biomecánico inteligente personalizado para tu terapia.'}
             </p>
           </div>
         </div>
@@ -415,7 +420,7 @@ Pregunta del paciente: ${messageText}`;
             }`}
           >
             {autoVoice ? <Volume2 className="size-3.5" /> : <VolumeX className="size-3.5" />}
-            <span>{autoVoice ? 'Voz Humana Activada' : 'Voz Silenciada'}</span>
+            <span>{autoVoice ? (t('aiAssistant.voiceActive') || 'Voz Humana Activada') : (t('aiAssistant.voiceMuted') || 'Voz Silenciada')}</span>
           </button>
         </div>
       </div>
@@ -596,7 +601,7 @@ Pregunta del paciente: ${messageText}`;
               sendMessage();
             }
           }}
-          placeholder="Escribe tu consulta a Physi (o presiona el micrófono)..."
+          placeholder={t('aiAssistant.inputPlaceholder') || 'Pregúntale a Physi sobre tus ejercicios o sensaciones...'}
           rows={1}
           className="flex-1 px-3 py-2.5 text-xs sm:text-sm bg-transparent outline-none resize-none text-on-surface placeholder:text-outline"
         />
@@ -604,7 +609,7 @@ Pregunta del paciente: ${messageText}`;
         <button
           onClick={() => sendMessage()}
           disabled={loading || (!input.trim() && images.length === 0)}
-          aria-label="Enviar mensaje a Physi"
+          aria-label={t('aiAssistant.send') || 'Enviar'}
           className="size-11 rounded-2xl bg-teal-600 hover:bg-teal-700 text-white flex items-center justify-center hover:scale-105 active:scale-95 transition-all disabled:opacity-40 disabled:hover:scale-100 shrink-0 shadow-sm"
         >
           <Send className="size-4" />

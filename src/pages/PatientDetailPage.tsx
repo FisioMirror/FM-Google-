@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { Icon } from '../components/ui/Icon';
 import { Spinner } from '../components/ui/Loader';
@@ -90,6 +91,7 @@ interface PatientProfile {
 type Tab = 'overview' | 'history' | 'routine' | 'statistics';
 
 export function PatientDetailPage() {
+  const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const toast = useToast();
@@ -359,10 +361,10 @@ export function PatientDetailPage() {
   };
 
   const tabs: { id: Tab; label: string; icon: string }[] = [
-    { id: 'overview', label: 'Resumen', icon: 'dashboard' },
-    { id: 'history', label: 'Historial Clínico', icon: 'history' },
-    { id: 'routine', label: 'Rutina Asignada', icon: 'assignment' },
-    { id: 'statistics', label: 'Estadísticas', icon: 'bar_chart' },
+    { id: 'overview', label: t('patientDetail.overview') || 'Resumen', icon: 'dashboard' },
+    { id: 'history', label: t('patientDetail.clinicalHistory') || 'Historial Clínico', icon: 'history' },
+    { id: 'routine', label: t('patientDetail.assignedRoutine') || 'Rutina Asignada', icon: 'assignment' },
+    { id: 'statistics', label: t('patientDetail.statistics') || 'Estadísticas', icon: 'bar_chart' },
   ];
 
   if (loading) {
@@ -382,9 +384,11 @@ export function PatientDetailPage() {
     return (
       <div className="empty-state-premium text-center py-20">
         <Icon name="person_off" size={64} className="mx-auto text-outline mb-4 opacity-30" />
-        <p className="text-on-surface-variant">No encontramos el paciente que buscas. Es posible que el registro haya sido removido o el enlace sea incorrecto.</p>
+        <p className="text-on-surface-variant">
+          {t('patientDetail.patientNotFound') || 'No encontramos el paciente que buscas. Es posible que el registro haya sido removido o el enlace sea incorrecto.'}
+        </p>
         <button onClick={() => navigate('/patients')} className="premium-btn mt-4 bg-primary text-on-primary px-6 py-3 rounded-xl font-bold">
-          Volver al Directorio
+          {t('patientDetail.backToDirectory') || 'Volver al Directorio'}
         </button>
       </div>
     );
@@ -408,17 +412,17 @@ export function PatientDetailPage() {
               </span>
             </div>
             <p className="text-sm text-on-surface-variant font-medium mt-0.5">
-              {patient.diagnostico || patient.patologia || 'Sin diagnóstico registrado'}
+              {patient.diagnostico || patient.patologia || (t('patients.noDiagnosis') || 'Sin diagnóstico registrado')}
             </p>
             <div className="flex items-center gap-3 mt-2 text-xs text-outline">
               <span className="font-bold">ID: #{patient.id.slice(0, 8)}</span>
               <span>•</span>
               {daysSinceLast !== null ? (
                 <span className={daysSinceLast > 7 ? 'text-amber-600 font-bold' : 'text-emerald-600 font-bold'}>
-                  {daysSinceLast > 7 ? `Inactivo hace ${daysSinceLast} días` : 'Sesión reciente'}
+                  {daysSinceLast > 7 ? `${t('patientDetail.inactiveFor', { days: daysSinceLast }) || `Inactivo hace ${daysSinceLast} días`}` : (t('patientDetail.recentSession') || 'Sesión reciente')}
                 </span>
               ) : (
-                <span>Nuevo ingreso</span>
+                <span>{t('patientDetail.newEntry') || 'Nuevo ingreso'}</span>
               )}
             </div>
           </div>
@@ -431,7 +435,7 @@ export function PatientDetailPage() {
             className="px-4 py-2.5 rounded-2xl bg-surface-container hover:bg-surface-container-high border border-outline/10 text-on-surface text-xs font-bold transition-all flex items-center gap-2"
           >
             <Icon name="upload_file" size={16} className="text-primary" />
-            <span>Actualizar con OCR</span>
+            <span>{t('patientDetail.updateWithOcr') || 'Actualizar con OCR'}</span>
           </button>
 
           <button
@@ -439,7 +443,7 @@ export function PatientDetailPage() {
             className="px-4 py-2.5 rounded-2xl bg-surface-container hover:bg-surface-container-high border border-outline/10 text-on-surface text-xs font-bold transition-all flex items-center gap-2"
           >
             <Icon name="picture_as_pdf" size={16} />
-            <span>Exportar PDF</span>
+            <span>{t('patientDetail.exportPdf') || 'Exportar PDF'}</span>
           </button>
 
           <button
@@ -447,7 +451,7 @@ export function PatientDetailPage() {
             className="px-5 py-2.5 rounded-2xl bg-primary text-on-primary hover:bg-primary/90 text-xs font-bold transition-all shadow-md shadow-primary/20 flex items-center gap-2"
           >
             <Icon name="videocam" size={16} />
-            <span>Iniciar Sesión AR</span>
+            <span>{t('arMirror.startExercise') || 'Iniciar Sesión AR'}</span>
           </button>
         </div>
       </div>
@@ -777,7 +781,7 @@ export function PatientDetailPage() {
               </ul>
             </div>
             <div className="flex gap-3">
-              <button onClick={() => setShowRoutineModal(false)} className="flex-1 px-6 py-3 rounded-xl bg-surface-variant/30 text-on-surface-variant font-bold hover:bg-surface-variant/50 transition-all">Cerrar</button>
+              <button onClick={() => setShowRoutineModal(false)} className="flex-1 px-6 py-3 rounded-xl bg-surface-variant/30 text-on-surface-variant font-bold hover:bg-surface-variant/50 transition-all">{t('common.close') || 'Cerrar'}</button>
               <button onClick={() => { setShowRoutineModal(false); setActiveTab('routine'); }} className="flex-1 px-6 py-3 rounded-xl bg-primary text-on-primary font-bold hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2"><Icon name="assignment" size={18} /> Ir a Rutina</button>
             </div>
           </div>
@@ -854,7 +858,7 @@ export function PatientDetailPage() {
                   <input id="ocr-update-file" type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && setOcrUpdateFile(e.target.files[0])} />
                 </div>
                 <div className="flex gap-3 mt-4">
-                  <button onClick={() => { setShowOcrUpdateModal(false); setOcrUpdateFile(null); }} disabled={ocrProcessing} className="flex-1 px-6 py-3 rounded-xl bg-surface-variant/30 text-on-surface-variant font-bold hover:bg-surface-variant/50 transition-all disabled:opacity-50">Cancelar</button>
+                  <button onClick={() => { setShowOcrUpdateModal(false); setOcrUpdateFile(null); }} disabled={ocrProcessing} className="flex-1 px-6 py-3 rounded-xl bg-surface-variant/30 text-on-surface-variant font-bold hover:bg-surface-variant/50 transition-all disabled:opacity-50">{t('common.cancel') || 'Cancelar'}</button>
                   <button onClick={async () => {
                     if (!ocrUpdateFile) return;
                     setOcrProcessing(true);
@@ -921,7 +925,7 @@ export function PatientDetailPage() {
                   })}
                 </div>
                 <div className="flex gap-3">
-                  <button onClick={() => { setOcrSuggestedChanges(null); setOcrUpdateFile(null); }} className="flex-1 px-6 py-3 rounded-xl bg-surface-variant/30 text-on-surface-variant font-bold hover:bg-surface-variant/50 transition-all">Cancelar</button>
+                  <button onClick={() => { setOcrSuggestedChanges(null); setOcrUpdateFile(null); }} className="flex-1 px-6 py-3 rounded-xl bg-surface-variant/30 text-on-surface-variant font-bold hover:bg-surface-variant/50 transition-all">{t('common.cancel') || 'Cancelar'}</button>
                   <button onClick={async () => {
                     if (!ocrSuggestedChanges) return;
                     const updates: Record<string, unknown> = {};
@@ -1019,7 +1023,7 @@ export function PatientDetailPage() {
                 ))}
               </div>
             )}
-            <button onClick={() => setShowRoutineHistory(false)} className="w-full mt-4 py-3 rounded-xl bg-surface-variant/30 text-on-surface-variant font-bold hover:bg-surface-variant/50 transition-all">Cerrar</button>
+            <button onClick={() => setShowRoutineHistory(false)} className="w-full mt-4 py-3 rounded-xl bg-surface-variant/30 text-on-surface-variant font-bold hover:bg-surface-variant/50 transition-all">{t('common.close') || 'Cerrar'}</button>
           </div>
         </div>
       )}

@@ -16,6 +16,7 @@ import {
   Smartphone,
 } from 'lucide-react';
 import { useToast } from './ToastProvider';
+import { useTranslation } from 'react-i18next';
 import { supabase } from '../../lib/supabase';
 import { useAuthStore } from '../../stores/authStore';
 import { notifyTokenCreated } from '../../lib/notificationService';
@@ -42,6 +43,7 @@ export function SendTokenModal({
   recipientPhone: initialPhone = '',
 }: SendTokenModalProps) {
   const isModalOpen = open ?? isOpen ?? false;
+  const { t } = useTranslation();
   const toast = useToast();
   const user = useAuthStore((s) => s.user);
 
@@ -364,7 +366,7 @@ Equipo FisioMirror`;
                 </div>
                 <div>
                   <h3 className="font-extrabold text-base text-slate-900 dark:text-white">
-                    Enviar Llave de Acceso
+                    {t('tokenModal.title') || 'Enviar Llave de Acceso'}
                   </h3>
                   <p className="text-xs text-slate-500 dark:text-slate-400">
                     Token:{' '}
@@ -377,7 +379,7 @@ Equipo FisioMirror`;
               <button
                 onClick={onClose}
                 className="p-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
-                aria-label="Cerrar ventana"
+                aria-label={t('common.close') || 'Cerrar ventana'}
               >
                 <X size={18} />
               </button>
@@ -388,7 +390,7 @@ Equipo FisioMirror`;
               <div className="p-3 rounded-2xl bg-teal-50/70 dark:bg-teal-950/30 border border-teal-200/60 dark:border-teal-800/40">
                 <div className="flex items-center gap-1.5 text-teal-700 dark:text-teal-300 font-bold uppercase tracking-wider text-[10px] mb-1">
                   <Stethoscope size={13} />
-                  <span>Fisio Remitente</span>
+                  <span>{t('auth.physio') || 'Fisio Remitente'}</span>
                 </div>
                 <p className="font-bold text-slate-800 dark:text-white truncate">{senderName}</p>
                 <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate">
@@ -400,7 +402,7 @@ Equipo FisioMirror`;
                     type="tel"
                     value={therapistPhone}
                     onChange={(e) => setTherapistPhone(e.target.value)}
-                    placeholder="Teléfono del fisio"
+                    placeholder={t('tokenModal.recipientPhone') || 'Teléfono del fisio'}
                     className="w-full text-[10px] bg-transparent border-b border-teal-300 dark:border-teal-700 font-mono text-teal-700 dark:text-teal-300 outline-none placeholder:text-teal-400"
                   />
                 </div>
@@ -409,13 +411,13 @@ Equipo FisioMirror`;
               <div className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/80 dark:border-slate-700/60">
                 <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-400 font-bold uppercase tracking-wider text-[10px] mb-1">
                   <UserCheck size={13} />
-                  <span>Paciente Destinatario</span>
+                  <span>{t('auth.patient') || 'Paciente Destinatario'}</span>
                 </div>
                 <input
                   type="text"
                   value={recipientName}
                   onChange={(e) => setRecipientName(e.target.value)}
-                  placeholder="Nombre del paciente"
+                  placeholder={t('tokenModal.recipientName') || 'Nombre del paciente'}
                   className="font-bold text-slate-800 dark:text-white bg-transparent border-b border-transparent hover:border-slate-300 focus:border-teal-500 outline-none w-full truncate"
                 />
                 <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate">
@@ -439,7 +441,7 @@ Equipo FisioMirror`;
                 }`}
               >
                 <Mail size={15} />
-                <span>Correo Email</span>
+                <span>{t('tokenModal.emailTab') || 'Correo Email'}</span>
               </button>
 
               <button
@@ -452,7 +454,7 @@ Equipo FisioMirror`;
                 }`}
               >
                 <MessageSquare size={15} />
-                <span>WhatsApp</span>
+                <span>{t('tokenModal.whatsappTab') || 'WhatsApp'}</span>
               </button>
 
               <button
@@ -465,7 +467,7 @@ Equipo FisioMirror`;
                 }`}
               >
                 <Smartphone size={15} />
-                <span>SMS</span>
+                <span>{t('tokenModal.smsTab') || 'SMS'}</span>
               </button>
             </div>
 
@@ -588,7 +590,7 @@ Equipo FisioMirror`;
                     ) : (
                       <Send size={14} />
                     )}
-                    <span>{sendingEmail ? 'Enviando invitación...' : 'Enviar Correo de Invitación'}</span>
+                    <span>{sendingEmail ? (t('tokenModal.sending') || 'Enviando...') : (t('tokenModal.sendViaEmail') || 'Enviar Correo de Invitación')}</span>
                   </button>
 
                   <button
@@ -597,7 +599,7 @@ Equipo FisioMirror`;
                     className="w-full py-2 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200/80 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-semibold text-xs transition-all flex items-center justify-center gap-1.5"
                   >
                     <ExternalLink size={13} />
-                    <span>Abrir en mi gestor de correo</span>
+                    <span>{t('tokenModal.sendViaEmail') || 'Abrir en mi gestor de correo'}</span>
                   </button>
                 </>
               )}
@@ -609,7 +611,7 @@ Equipo FisioMirror`;
                   className="w-full py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 active:scale-98 text-white font-bold text-xs transition-all flex items-center justify-center gap-1.5 shadow-md shadow-emerald-600/20"
                 >
                   <ExternalLink size={14} />
-                  <span>Abrir en WhatsApp</span>
+                  <span>{t('tokenModal.sendViaWhatsApp') || 'Abrir en WhatsApp'}</span>
                 </button>
               )}
 
@@ -620,7 +622,7 @@ Equipo FisioMirror`;
                   className="w-full py-2.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 active:scale-98 text-white font-bold text-xs transition-all flex items-center justify-center gap-1.5 shadow-md shadow-blue-600/20"
                 >
                   <Send size={14} />
-                  <span>Enviar por SMS</span>
+                  <span>{t('tokenModal.sendViaSms') || 'Enviar por SMS'}</span>
                 </button>
               )}
 
@@ -630,7 +632,7 @@ Equipo FisioMirror`;
                 className="w-full py-2 px-3 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 font-semibold text-xs transition-all flex items-center justify-center gap-1.5"
               >
                 {copied ? <Check size={13} className="text-emerald-500" /> : <Copy size={13} />}
-                <span>{copied ? 'Copiado al Portapapeles' : 'Copiar Mensaje Completo'}</span>
+                <span>{copied ? (t('tokenModal.tokenCopied') || 'Copiado al Portapapeles') : (t('tokenModal.copyToken') || 'Copiar Mensaje Completo')}</span>
               </button>
             </div>
           </motion.div>

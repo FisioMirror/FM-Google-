@@ -1,5 +1,6 @@
 import { useEffect, useState, useMemo } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { SkeletonList } from '../components/ui/Skeleton';
 import { EmptyState } from '../components/ui/EmptyState';
@@ -71,18 +72,19 @@ const defaultDemoTokens: TokenRow[] = [
   { id: 'demo-token-4', token: '582019', patientName: 'Jorge Ramírez', patientEmail: 'jorge.ramirez@example.com', patientPhone: '+58 416 3338899', status: 'pendiente', createdAt: '2026-03-25T11:45:00Z' },
 ];
 
-const filterOptions = [
-  { id: 'todos', label: 'Todos' },
-  { id: 'activos', label: 'Activos' },
-  { id: 'revision', label: 'Requieren Revisión' },
-  { id: 'recuperacion', label: 'En Recuperación' },
-];
-
 export function PatientsPage() {
+  const { t } = useTranslation();
   const user = useAuthStore((s) => s.user);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const toast = useToast();
+
+  const filterOptions = useMemo(() => [
+    { id: 'todos', label: t('common.all') || 'Todos' },
+    { id: 'activos', label: t('common.active') || 'Activos' },
+    { id: 'revision', label: t('patients.atRisk') || 'Requieren Revisión' },
+    { id: 'recuperacion', label: t('patients.statusActive') || 'En Recuperación' },
+  ], [t]);
 
   const [activeTab, setActiveTab] = useState<'patients' | 'tokens'>('patients');
   const [patients, setPatients] = useState<PatientCard[]>([]);
@@ -370,13 +372,13 @@ export function PatientsPage() {
         <div>
           <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-teal-600 dark:text-teal-400 mb-1">
             <Users className="size-4" />
-            <span>Gestión Clínica y Acceso</span>
+            <span>{t('dashboard.actionPatientsTitle') || 'Directorio Clínico'}</span>
           </div>
           <h1 className="text-3xl lg:text-4xl font-extrabold tracking-tight text-on-surface">
-            Pacientes y Llaves de Acceso
+            {t('patients.title') || 'Pacientes y Llaves de Acceso'}
           </h1>
           <p className="text-sm text-on-surface-variant mt-1">
-            Supervisa expedientes, rehabilitación remota y emite tokens seguros para tus pacientes.
+            {t('patients.subtitle') || 'Supervisa expedientes, rehabilitación remota y emite tokens seguros para tus pacientes.'}
           </p>
         </div>
 
@@ -388,14 +390,14 @@ export function PatientsPage() {
             className="px-4 py-2.5 rounded-2xl bg-surface/80 dark:bg-surface-container-low/70 border border-outline/15 text-on-surface hover:border-teal-500/40 text-xs font-bold transition-all flex items-center gap-2 shadow-sm"
           >
             <Key className="size-4 text-teal-600 dark:text-teal-400" />
-            <span>Emitir Token Rápido</span>
+            <span>{t('patients.generateToken') || 'Emitir Token Rápido'}</span>
           </button>
           <button
             onClick={() => navigate('/ocr-scanner')}
             className="px-5 py-2.5 rounded-2xl bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold transition-all shadow-md shadow-teal-700/20 flex items-center gap-2"
           >
             <Plus className="size-4" />
-            <span>Cargar Paciente (OCR)</span>
+            <span>{t('navigation.loadPatient') || 'Cargar Paciente (OCR)'}</span>
           </button>
         </div>
       </div>
@@ -416,14 +418,14 @@ export function PatientsPage() {
             <div className="size-9 sm:size-11 rounded-xl sm:rounded-2xl bg-teal-500/15 text-teal-700 dark:text-teal-300 flex items-center justify-center font-bold border border-teal-500/25">
               <Users className="size-4 sm:size-5" />
             </div>
-            <span className="text-[11px] sm:text-xs text-teal-800 dark:text-teal-200 font-bold">Total Pacientes</span>
+            <span className="text-[11px] sm:text-xs text-teal-800 dark:text-teal-200 font-bold">{t('patients.all') || 'Total Pacientes'}</span>
           </div>
           <div className="flex items-end justify-between gap-2">
             <p className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-slate-100 tabular-nums tracking-tight">{stats.total}</p>
             {onlineCount > 0 && (
               <span className="inline-flex items-center gap-1 sm:gap-1.5 text-[10px] sm:text-[11px] font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-500/15 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full border border-emerald-500/30">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                <span className="hidden xs:inline">{onlineCount} en vivo</span>
+                <span className="hidden xs:inline">{onlineCount} {t('common.live') || 'en vivo'}</span>
                 <span className="xs:hidden">{onlineCount}</span>
               </span>
             )}
@@ -439,7 +441,7 @@ export function PatientsPage() {
             <div className="size-9 sm:size-11 rounded-xl sm:rounded-2xl bg-sky-500/15 text-sky-700 dark:text-sky-300 flex items-center justify-center font-bold border border-sky-500/25">
               <CheckCircle2 className="size-4 sm:size-5" />
             </div>
-            <span className="text-[11px] sm:text-xs text-sky-800 dark:text-sky-200 font-bold">Tratamiento Activo</span>
+            <span className="text-[11px] sm:text-xs text-sky-800 dark:text-sky-200 font-bold">{t('patients.statusActive') || 'Tratamiento Activo'}</span>
           </div>
           <div className="flex items-end gap-2">
             <p className="text-2xl sm:text-3xl font-black text-sky-700 dark:text-sky-300 tabular-nums tracking-tight">{stats.active}</p>
@@ -455,7 +457,7 @@ export function PatientsPage() {
             <div className="size-9 sm:size-11 rounded-xl sm:rounded-2xl bg-amber-500/15 text-amber-700 dark:text-amber-300 flex items-center justify-center font-bold border border-amber-500/25">
               <AlertTriangle className="size-4 sm:size-5" />
             </div>
-            <span className="text-[11px] sm:text-xs text-amber-800 dark:text-amber-200 font-bold">Requieren Atención</span>
+            <span className="text-[11px] sm:text-xs text-amber-800 dark:text-amber-200 font-bold">{t('patients.atRisk') || 'Requieren Atención'}</span>
           </div>
           <div className="flex items-end gap-2">
             <p className="text-2xl sm:text-3xl font-black text-amber-600 dark:text-amber-400 tabular-nums tracking-tight">{stats.needReview}</p>
@@ -471,7 +473,7 @@ export function PatientsPage() {
             <div className="size-9 sm:size-11 rounded-xl sm:rounded-2xl bg-indigo-500/15 text-indigo-700 dark:text-indigo-300 flex items-center justify-center font-bold border border-indigo-500/25">
               <Key className="size-4 sm:size-5" />
             </div>
-            <span className="text-[11px] sm:text-xs text-indigo-800 dark:text-indigo-200 font-bold">Tokens Pendientes</span>
+            <span className="text-[11px] sm:text-xs text-indigo-800 dark:text-indigo-200 font-bold">{t('dashboard.pendingTokens') || 'Tokens Pendientes'}</span>
           </div>
           <div className="flex items-end gap-2">
             <p className="text-2xl sm:text-3xl font-black text-indigo-700 dark:text-indigo-300 tabular-nums tracking-tight">{stats.pendingTokCount}</p>
@@ -491,7 +493,7 @@ export function PatientsPage() {
           )}
         >
           <Users className="size-4" />
-          <span>Directorio Clínico ({patients.length})</span>
+          <span>{t('dashboard.actionPatientsTitle') || 'Directorio Clínico'} ({patients.length})</span>
         </button>
         <button
           onClick={() => setActiveTab('tokens')}
@@ -503,7 +505,7 @@ export function PatientsPage() {
           )}
         >
           <Key className="size-4" />
-          <span>Tokens y Llaves de Acceso ({tokens.length})</span>
+          <span>{t('dashboard.pendingTokens') || 'Tokens de Acceso'} ({tokens.length})</span>
         </button>
       </div>
 
@@ -517,7 +519,7 @@ export function PatientsPage() {
               <input
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Buscar por nombre, diagnóstico, cédula o patología..."
+                placeholder={t('patients.searchPlaceholder') || 'Buscar por nombre, diagnóstico, cédula o patología...'}
                 className="w-full pl-11 pr-4 py-2.5 rounded-2xl bg-surface-container/60 border border-transparent focus:border-teal-500/40 focus:bg-surface text-xs sm:text-sm text-on-surface placeholder:text-outline/70 outline-none transition-all"
               />
             </div>

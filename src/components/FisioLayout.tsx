@@ -1,6 +1,7 @@
-import { useState, useEffect, useRef, type ReactNode } from 'react';
+import { useState, useEffect, useRef, useMemo, type ReactNode } from 'react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import {
   UserPlus,
   Dumbbell,
@@ -29,12 +30,13 @@ import { Icon } from './ui/Icon';
 import { BackButton } from './ui/BackButton';
 import { FloatingMenu, type FloatingMenuItem } from './ui/FloatingMenu';
 import { LegalModal, type LegalDocType } from './ui/LegalModal';
+import { LanguageSelector } from './ui/LanguageSelector';
 import { useAuthStore } from '../stores/authStore';
 import { useTheme } from '../context/ThemeContext';
 import { useToast } from './ui/ToastProvider';
 import { useInstall } from '../lib/installContext';
 import { PhysiChatbot } from './ui/PhysiChatbot';
-import { supabase } from '../lib/supabase';
+import { supabase, supabaseUrl, supabaseAnonKey } from '../lib/supabase';
 import { cn } from '../lib/utils';
 import MascotAnimation from './ui/MascotAnimation';
 import { isDemoAccount } from '../lib/demoAuth';
@@ -44,33 +46,12 @@ import { useRealtimeNotifications } from '../hooks/useRealtimeNotifications';
 import { initGlobalPresence, updatePresenceStatus } from '../lib/presenceService';
 import { notifyVideoCall } from '../lib/notificationService';
 
-const navItems = [
-  { to: '/dashboard-fisio', label: 'Inicio', icon: LayoutDashboard, color: 'teal' },
-  { to: '/patients', label: 'Pacientes', icon: Users, color: 'teal', badge: 'Activos' },
-  { to: '/ocr-scanner', label: 'Cargar Paciente', icon: UserPlus, color: 'teal' },
-  { to: '/fisio-exercises', label: 'Ejercicios', icon: Dumbbell, color: 'cyan' },
-  { to: '/fisio-stats', label: 'Estadísticas', icon: Activity, color: 'teal' },
-  { to: '/tools', label: 'Herramientas', icon: Wrench, color: 'amber' },
-  { to: '/fisio-profile', label: 'Perfil', icon: UserCheck, color: 'teal' },
-  { to: '/fisio-settings', label: 'Configuración', icon: Settings, color: 'slate' },
-];
-
-const breadcrumbMap: Record<string, string> = {
-  '/dashboard-fisio': 'Dashboard',
-  '/patients': 'Pacientes',
-  '/ocr-scanner': 'Cargar Paciente',
-  '/fisio-exercises': 'Ejercicios',
-  '/fisio-stats': 'Estadísticas',
-  '/tools': 'Herramientas',
-  '/fisio-profile': 'Perfil',
-  '/fisio-settings': 'Configuración',
-};
-
 interface FisioLayoutProps {
   children: ReactNode;
 }
 
 export function FisioLayout({ children }: FisioLayoutProps) {
+  const { t, i18n } = useTranslation();
   const user = useAuthStore((s) => s.user);
   const signOut = useAuthStore((s) => s.signOut);
   const { theme, toggleTheme } = useTheme();
@@ -78,6 +59,34 @@ export function FisioLayout({ children }: FisioLayoutProps) {
   const { isInstalled, triggerInstall } = useInstall();
   const navigate = useNavigate();
   const location = useLocation();
+
+  const navItems = useMemo(
+    () => [
+      { to: '/dashboard-fisio', label: t('navigation.dashboard') || 'Inicio', icon: LayoutDashboard, color: 'teal' },
+      { to: '/patients', label: t('navigation.patients') || 'Pacientes', icon: Users, color: 'teal', badge: t('navigation.active') || 'Activos' },
+      { to: '/ocr-scanner', label: t('navigation.loadPatient') || 'Cargar Paciente', icon: UserPlus, color: 'teal' },
+      { to: '/fisio-exercises', label: t('navigation.exercises') || 'Ejercicios', icon: Dumbbell, color: 'cyan' },
+      { to: '/fisio-stats', label: t('navigation.stats') || 'Estadísticas', icon: Activity, color: 'teal' },
+      { to: '/tools', label: t('navigation.tools') || 'Herramientas', icon: Wrench, color: 'amber' },
+      { to: '/fisio-profile', label: t('navigation.profile') || 'Perfil', icon: UserCheck, color: 'teal' },
+      { to: '/fisio-settings', label: t('navigation.settings') || 'Configuración', icon: Settings, color: 'slate' },
+    ],
+    [t, i18n.language]
+  );
+
+  const breadcrumbMap: Record<string, string> = useMemo(
+    () => ({
+      '/dashboard-fisio': t('navigation.dashboard') || 'Inicio',
+      '/patients': t('navigation.patients') || 'Pacientes',
+      '/ocr-scanner': t('navigation.loadPatient') || 'Cargar Paciente',
+      '/fisio-exercises': t('navigation.exercises') || 'Ejercicios',
+      '/fisio-stats': t('navigation.stats') || 'Estadísticas',
+      '/tools': t('navigation.tools') || 'Herramientas',
+      '/fisio-profile': t('navigation.profile') || 'Perfil',
+      '/fisio-settings': t('navigation.settings') || 'Configuración',
+    }),
+    [t, i18n.language]
+  );
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(() => localStorage.getItem('fisio-sidebar-collapsed') === 'true');
 
@@ -269,8 +278,6 @@ export function FisioLayout({ children }: FisioLayoutProps) {
 
       // Intento complementario de Edge Function si existe
       try {
-        const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string;
-        const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string;
         await fetch(`${supabaseUrl}/functions/v1/send-notification`, {
           method: 'POST',
           headers: {
@@ -298,13 +305,16 @@ export function FisioLayout({ children }: FisioLayoutProps) {
     }
   };
 
-  const quickActionItems: FloatingMenuItem[] = [
-    { label: 'Nuevo paciente', icon: <UserPlus size={20} className="text-primary" />, onClick: () => navigate('/ocr-scanner') },
-    { label: 'Crear rutina', icon: <Dumbbell size={20} className="text-primary" />, onClick: () => navigate('/fisio-exercises') },
-    { label: 'Videollamada', icon: <Video size={20} className="text-primary" />, onClick: abrirSelectorPaciente },
-    { label: 'Herramientas IA', icon: <Sparkles size={20} className="text-primary" />, onClick: () => navigate('/tools') },
-    { label: 'Escanear receta', icon: <ScanLine size={20} className="text-primary" />, onClick: () => navigate('/ocr-scanner') },
-  ];
+  const quickActionItems: FloatingMenuItem[] = useMemo(
+    () => [
+      { label: t('common.newPatient') || 'Nuevo paciente', icon: <UserPlus size={20} className="text-primary" />, onClick: () => navigate('/ocr-scanner') },
+      { label: t('common.createRoutine') || 'Crear rutina', icon: <Dumbbell size={20} className="text-primary" />, onClick: () => navigate('/fisio-exercises') },
+      { label: t('common.videoCall') || 'Videollamada', icon: <Video size={20} className="text-primary" />, onClick: abrirSelectorPaciente },
+      { label: t('common.aiTools') || 'Herramientas IA', icon: <Sparkles size={20} className="text-primary" />, onClick: () => navigate('/tools') },
+      { label: t('common.scanPrescription') || 'Escanear receta', icon: <ScanLine size={20} className="text-primary" />, onClick: () => navigate('/ocr-scanner') },
+    ],
+    [t, i18n.language]
+  );
 
   const renderNavItem = (
     item: { to: string; label: string; icon: React.ElementType; color: string; badge?: string },
@@ -375,10 +385,10 @@ export function FisioLayout({ children }: FisioLayoutProps) {
             'rounded-xl text-slate-700 dark:text-slate-200 hover:bg-sky-50 dark:hover:bg-slate-800 hover:text-sky-700 dark:hover:text-sky-300 transition-colors',
             collapsed ? 'p-2' : 'flex items-center gap-3 px-3 py-2 w-full',
           )}
-          title={collapsed ? 'Instalar App' : undefined}
+          title={collapsed ? (t('common.installApp') || 'Instalar App') : undefined}
         >
           <Download size={18} className="shrink-0 text-sky-600 dark:text-sky-400" />
-          {!collapsed && <span className="text-sm font-medium">Instalar App</span>}
+          {!collapsed && <span className="text-sm font-medium">{t('common.installApp') || 'Instalar App'}</span>}
         </button>
       )}
       {!collapsed && (
@@ -392,10 +402,10 @@ export function FisioLayout({ children }: FisioLayoutProps) {
             <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-white dark:border-slate-900" />
           </div>
           <div className="min-w-0">
-            <p className="font-bold text-sm text-slate-900 dark:text-slate-100 truncate">{user?.full_name || 'Fisioterapeuta'}</p>
+            <p className="font-bold text-sm text-slate-900 dark:text-slate-100 truncate">{user?.full_name || (t('auth.physio') || 'Fisioterapeuta')}</p>
             <div className="flex items-center gap-1.5 mt-0.5">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              <p className="text-[10px] text-sky-600 dark:text-sky-400 uppercase tracking-wider font-semibold">En consulta</p>
+              <p className="text-[10px] text-sky-600 dark:text-sky-400 uppercase tracking-wider font-semibold">{t('common.activePhysio') || 'En consulta'}</p>
             </div>
           </div>
         </div>
@@ -403,14 +413,14 @@ export function FisioLayout({ children }: FisioLayoutProps) {
       <div className={cn(collapsed ? 'flex flex-col items-center gap-2' : 'flex items-center justify-between px-1')}>
         <button
           onClick={toggleTheme}
-          aria-label="Cambiar tema"
+          aria-label={t('common.theme') || 'Cambiar tema'}
           className="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-sky-50 dark:hover:bg-slate-800 hover:text-sky-600 dark:hover:text-sky-400 transition-colors"
         >
           {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
         </button>
         <button
           onClick={() => { onNavAway?.(); setShowNotifications(true); }}
-          aria-label="Notificaciones"
+          aria-label={t('notifications.title') || 'Notificaciones'}
           className="relative p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-sky-50 dark:hover:bg-slate-800 hover:text-sky-600 dark:hover:text-sky-400 transition-colors"
         >
           <Bell size={18} />
@@ -422,7 +432,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
         </button>
         <button
           onClick={() => { onNavAway?.(); setShowLogout(true); }}
-          aria-label="Cerrar sesión"
+          aria-label={t('common.logout') || 'Cerrar sesión'}
           className="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-red-50 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 transition-colors"
         >
           <LogOut size={18} />
@@ -439,7 +449,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
             <img src="/logo.png" alt="FisioMirror" className="h-9 w-9 min-w-[36px] min-h-[36px] object-contain shrink-0 aspect-square" />
             <div className="flex flex-col min-w-0">
               <h1 className="text-base font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight whitespace-nowrap">FisioMirror</h1>
-              <p className="text-[10px] uppercase tracking-wider text-sky-600 dark:text-sky-400 font-bold whitespace-nowrap">Edición Clínica</p>
+              <p className="text-[10px] uppercase tracking-wider text-sky-600 dark:text-sky-400 font-bold whitespace-nowrap">{t('dashboard.clinicalBadge') || 'Edición Clínica'}</p>
             </div>
           </div>
         ) : (
@@ -450,7 +460,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
         {opts?.showToggle && (
           <button
             onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-            aria-label={sidebarCollapsed ? 'Expandir menú' : 'Colapsar menú'}
+            aria-label={sidebarCollapsed ? (t('navigation.openMenu') || 'Expandir menú') : (t('navigation.closeMenu') || 'Colapsar menú')}
             className="hidden lg:flex absolute top-1/2 -translate-y-1/2 right-2 w-6 h-6 rounded-full bg-sky-500 text-white items-center justify-center text-xs shadow-md hover:scale-110 transition-transform z-10"
           >
             {sidebarCollapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
@@ -510,13 +520,13 @@ export function FisioLayout({ children }: FisioLayoutProps) {
                   <img src="/logo.png" alt="FisioMirror" className="h-9 w-9 object-contain shrink-0" />
                   <div>
                     <h2 className="text-base font-extrabold text-slate-900 dark:text-white leading-tight">FisioMirror</h2>
-                    <p className="text-[10px] uppercase tracking-wider text-sky-600 dark:text-sky-400 font-bold">Edición Clínica</p>
+                    <p className="text-[10px] uppercase tracking-wider text-sky-600 dark:text-sky-400 font-bold">{t('dashboard.clinicalBadge') || 'Edición Clínica'}</p>
                   </div>
                 </div>
                 <button
                   onClick={() => setSidebarOpen(false)}
                   className="p-2 rounded-xl text-slate-500 hover:text-slate-800 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-                  aria-label="Cerrar menú"
+                  aria-label={t('navigation.closeMenu') || 'Cerrar menú'}
                 >
                   <X size={20} />
                 </button>
@@ -536,7 +546,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
           <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
             <button
               onClick={() => setSidebarOpen(true)}
-              aria-label="Abrir menú"
+              aria-label={t('navigation.openMenu') || 'Abrir menú'}
               className="lg:hidden text-primary shrink-0 p-1.5 rounded-lg hover:bg-primary/10 transition-colors"
             >
               <Icon name="menu" size={22} />
@@ -549,7 +559,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
             </div>
             {/* Desktop breadcrumb */}
             <div className="hidden lg:flex items-center text-outline text-label-sm gap-2 min-w-0 truncate">
-              <span onClick={() => navigate('/dashboard-fisio')} className="hover:text-primary cursor-pointer shrink-0">Inicio</span>
+              <span onClick={() => navigate('/dashboard-fisio')} className="hover:text-primary cursor-pointer shrink-0">{t('navigation.dashboard') || 'Inicio'}</span>
               <Icon name="chevron_right" size={14} className="shrink-0" />
               <span className="text-on-surface font-bold truncate">{currentCrumb}</span>
             </div>
@@ -557,7 +567,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
           <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
             <div className={`hidden md:inline-flex online-indicator is-${isOnline ? 'online' : 'offline'}`}>
               <span className="dot" />
-              <span>{isOnline ? 'Online' : 'Offline'}</span>
+              <span>{isOnline ? t('navigation.online') || 'Online' : t('navigation.offline') || 'Offline'}</span>
             </div>
             <form onSubmit={handleSearch} className="hidden md:flex items-center bg-surface-variant/30 rounded-full pl-10 pr-4 py-2 w-72 relative">
               <Icon name="search" size={18} className="absolute left-3 text-outline" />
@@ -567,19 +577,19 @@ export function FisioLayout({ children }: FisioLayoutProps) {
                 onFocus={() => setShowSearchDropdown(true)}
                 onBlur={() => setTimeout(() => setShowSearchDropdown(false), 200)}
                 className="bg-transparent border-none focus:ring-0 text-label-sm w-full outline-none placeholder:text-outline"
-                placeholder="Buscar pacientes o ejercicios... (⌘K)"
+                placeholder={t('navigation.searchPlaceholder') || 'Buscar pacientes o ejercicios... (⌘K)'}
               />
               {showSearchDropdown && (searchResults.patients.length > 0 || searchResults.exercises.length > 0) && (
                 <div className="absolute top-full left-0 right-0 mt-2 glass-panel rounded-2xl shadow-2xl overflow-hidden z-50">
                   {searchResults.patients.length > 0 && (
                     <div className="p-2">
-                      <p className="text-[10px] font-bold uppercase tracking-widest text-outline px-2 py-1">Pacientes</p>
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-outline px-2 py-1">{t('navigation.patients') || 'Pacientes'}</p>
                       {searchResults.patients.map((p) => (
                         <button key={p.id} type="button" onClick={() => { navigate('/paciente/' + p.id); setSearchQuery(''); setShowSearchDropdown(false); }} className="w-full text-left px-3 py-2 rounded-xl hover:bg-primary/10 transition-colors flex items-center gap-2">
                           <Icon name="person" size={16} className="text-primary" />
                           <div className="min-w-0">
                             <p className="text-sm font-medium text-on-surface truncate">{p.name}</p>
-                            <p className="text-xs text-outline truncate">{p.email || p.diagnostico || 'Sin email'}</p>
+                            <p className="text-xs text-outline truncate">{p.email || p.diagnostico || (t('patients.noEmail') || 'Sin email')}</p>
                           </div>
                         </button>
                       ))}
@@ -587,7 +597,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
                   )}
                   {searchResults.exercises.length > 0 && (
                     <div className="p-2 border-t divider-teal">
-                      <p className="text-[10px] font-bold uppercase tracking-widest text-outline px-2 py-1">Ejercicios</p>
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-outline px-2 py-1">{t('navigation.exercises') || 'Ejercicios'}</p>
                       {searchResults.exercises.map((ex) => (
                         <button key={ex.id} type="button" onClick={() => { navigate('/fisio-exercises'); setSearchQuery(''); setShowSearchDropdown(false); }} className="w-full text-left px-3 py-2 rounded-xl hover:bg-primary/10 transition-colors flex items-center gap-2">
                           <Icon name="fitness_center" size={16} className="text-primary" />
@@ -605,25 +615,28 @@ export function FisioLayout({ children }: FisioLayoutProps) {
             <button
               onClick={() => setPhysiGuideOpen(true)}
               className="p-2 rounded-xl text-on-surface-variant hover:text-primary hover:bg-primary/5 transition-colors active-scale flex items-center gap-1.5"
-              aria-label="Abrir Chatbot IA Physi"
-              title="Chatbot IA Physi"
+              aria-label={t('navigation.chatbotTooltip') || 'Abrir Chatbot IA Physi'}
+              title={t('navigation.chatbotTooltip') || 'Chatbot IA Physi'}
             >
               <Bot size={20} className="text-primary" />
               <span className="hidden xl:inline text-xs font-semibold text-primary">
-                Chatbot Physi
+                {t('navigation.aiAssistant') || 'Chatbot Physi'}
               </span>
             </button>
+            <LanguageSelector variant="compact" />
             <button
               onClick={toggleTheme}
               className="text-on-surface-variant hover:text-primary transition-colors active-scale"
-              aria-label="Cambiar tema"
+              aria-label={t('common.theme') || 'Cambiar tema'}
+              title={t('common.theme') || 'Cambiar tema'}
             >
               <Icon name={theme === 'dark' ? 'light_mode' : 'dark_mode'} size={20} />
             </button>
             <button
               onClick={() => setShowNotifications((v) => !v)}
               className="relative text-on-surface-variant hover:text-primary transition-colors active-scale"
-              aria-label={`Notificaciones, ${unreadCount} sin leer`}
+              aria-label={`${t('notifications.title') || 'Notificaciones'}, ${unreadCount} ${t('notifications.unread') || 'sin leer'}`}
+              title={t('notifications.title') || 'Notificaciones'}
             >
               <Icon name="notifications" size={20} />
               {unreadCount > 0 && (
@@ -635,7 +648,8 @@ export function FisioLayout({ children }: FisioLayoutProps) {
             <button
               onClick={() => setShowLogout(true)}
               className="text-on-surface-variant hover:text-error transition-colors active-scale"
-              aria-label="Cerrar sesión"
+              aria-label={t('common.logout') || 'Cerrar sesión'}
+              title={t('common.logout') || 'Cerrar sesión'}
             >
               <Icon name="logout" size={20} />
             </button>
@@ -646,11 +660,11 @@ export function FisioLayout({ children }: FisioLayoutProps) {
         <div className="p-4 sm:p-6 lg:p-8 pb-8 flex-1 bg-teal-50/20 dark:bg-slate-950/20">{children}</div>
 
         <footer className="pt-6 pb-6 px-4 sm:px-8 flex flex-col md:flex-row justify-between text-outline text-xs gap-4 border-t border-white/10">
-          <span>&copy; 2025 FisioMirror S.A. | Edición Clínica Premium v2.0.42</span>
+          <span>&copy; 2025 FisioMirror S.A. | {t('dashboard.clinicalBadge') || 'Edición Clínica'} Premium v2.0.42</span>
           <div className="flex gap-4">
-            <button onClick={() => setLegalModal('consent')} className="text-outline hover:text-primary transition-colors">Consentimiento Informado</button>
-            <button onClick={() => setLegalModal('terms')} className="text-outline hover:text-primary transition-colors">Términos de Servicio</button>
-            <button onClick={() => setLegalModal('privacy')} className="text-outline hover:text-primary transition-colors">Privacidad de Datos</button>
+            <button onClick={() => setLegalModal('consent')} className="text-outline hover:text-primary transition-colors">{t('common.informedConsent') || 'Consentimiento Informado'}</button>
+            <button onClick={() => setLegalModal('terms')} className="text-outline hover:text-primary transition-colors">{t('common.termsOfService') || 'Términos de Servicio'}</button>
+            <button onClick={() => setLegalModal('privacy')} className="text-outline hover:text-primary transition-colors">{t('common.privacyPolicy') || 'Privacidad de Datos'}</button>
           </div>
         </footer>
       </main>
@@ -658,7 +672,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
       {/* Menú de acciones flotante (FAB) para el fisioterapeuta */}
       <FloatingMenu
         items={quickActionItems}
-        ariaLabel="Acciones del fisioterapeuta"
+        ariaLabel={t('dashboard.physioActions') || 'Acciones del fisioterapeuta'}
         className="fixed bottom-6 right-6 z-40"
       />
 
@@ -684,17 +698,17 @@ export function FisioLayout({ children }: FisioLayoutProps) {
                   <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
                     <Video size={22} />
                   </div>
-                  <h3 className="font-title-md text-title-md text-on-surface">Iniciar videollamada</h3>
+                  <h3 className="font-title-md text-title-md text-on-surface">{t('common.startVideoCall') || 'Iniciar videollamada'}</h3>
                 </div>
                 <button
                   onClick={() => !videoStarting && setShowVideoModal(false)}
-                  aria-label="Cerrar"
+                  aria-label={t('common.close') || 'Cerrar'}
                   className="text-outline hover:text-error transition-colors p-2 min-h-[44px] min-w-[44px] flex items-center justify-center"
                 >
                   <Icon name="close" size={20} />
                 </button>
               </div>
-              <p className="text-on-surface-variant text-sm mb-4">Selecciona el paciente con quien quieres iniciar la videollamada.</p>
+              <p className="text-on-surface-variant text-sm mb-4">{t('dashboard.selectPatientVideo') || 'Selecciona el paciente con quien quieres iniciar la videollamada.'}</p>
 
               {videoLoading ? (
                 <div className="flex items-center justify-center py-10">
@@ -702,12 +716,12 @@ export function FisioLayout({ children }: FisioLayoutProps) {
                 </div>
               ) : videoPatients.length === 0 ? (
                 <div className="text-center py-8">
-                  <p className="text-on-surface-variant text-sm mb-4">No tienes pacientes vinculados todavía.</p>
+                  <p className="text-on-surface-variant text-sm mb-4">{t('dashboard.noPatientsLinked') || 'No tienes pacientes vinculados todavía.'}</p>
                   <button
                     onClick={() => { setShowVideoModal(false); navigate('/ocr-scanner'); }}
                     className="px-5 py-3 rounded-xl bg-primary text-on-primary font-bold text-sm hover:scale-[0.98] transition-all min-h-[48px]"
                   >
-                    Cargar nuevo paciente
+                    {t('navigation.loadPatient') || 'Cargar nuevo paciente'}
                   </button>
                 </div>
               ) : (
@@ -751,20 +765,24 @@ export function FisioLayout({ children }: FisioLayoutProps) {
               className="glass-panel rounded-3xl p-8 max-w-sm w-full mx-4 text-center"
             >
               <MascotAnimation type="goodbye" size="md" className="bg-error/10 mx-auto mb-4" />
-              <h3 className="font-headline-lg text-headline-lg text-on-surface mb-2">¿Cerrar sesión?</h3>
-              <p className="text-on-surface-variant text-sm mb-6">Tendrás que volver a iniciar sesión para acceder a tu panel.</p>
+              <h3 className="font-headline-lg text-headline-lg text-on-surface mb-2">
+                {t('auth.signOutConfirmTitle') || '¿Cerrar sesión?'}
+              </h3>
+              <p className="text-on-surface-variant text-sm mb-6">
+                {t('auth.signOutConfirmDesc') || 'Tendrás que volver a iniciar sesión para acceder a tu panel.'}
+              </p>
               <div className="flex gap-3">
                 <button
                   onClick={() => setShowLogout(false)}
                   className="flex-1 py-3 rounded-xl bg-surface-variant/40 text-on-surface-variant font-bold hover:bg-surface-variant/60 transition-all"
                 >
-                  Cancelar
+                  {t('common.cancel') || 'Cancelar'}
                 </button>
                 <button
                   onClick={handleSignOut}
                   className="flex-1 py-3 rounded-xl bg-error text-on-error font-bold hover:scale-[0.98] transition-all"
                 >
-                  Cerrar sesión
+                  {t('common.logout') || 'Cerrar sesión'}
                 </button>
               </div>
             </motion.div>

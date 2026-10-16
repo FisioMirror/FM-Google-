@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import {
   BookOpen,
   HeartPulse,
@@ -36,6 +37,7 @@ export function VersiculoCard({
   className,
   allowCategoryChange = true,
 }: VersiculoCardProps) {
+  const { t } = useTranslation();
   const [enabled, setEnabled] = useState(() => isSpiritualModeEnabled());
   const [versiculo, setVersiculo] = useState<Versiculo | null>(null);
   const [categoria, setCategoria] = useState<VersiculoCategoria>(categoriaInicial);
@@ -118,7 +120,7 @@ export function VersiculoCard({
           className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold text-teal-700 dark:text-teal-300 bg-teal-500/10 hover:bg-teal-500/15 border border-teal-500/20 transition-all hover:scale-[1.02]"
         >
           <BookOpen className="size-3.5" />
-          <span>Palabra de Fortaleza & Fe</span>
+          <span>{t('spiritual.faithTitle') || 'Palabra de Fortaleza & Fe'}</span>
         </button>
       </motion.div>
     );
@@ -173,7 +175,7 @@ export function VersiculoCard({
           <div>
             <div className="flex items-center gap-2">
               <span className="text-[11px] font-black uppercase tracking-wider text-teal-700 dark:text-teal-300">
-                {contextTitle || 'Palabra de Fortaleza & Fe'}
+                {contextTitle || t('spiritual.faithTitle') || 'Palabra de Fortaleza & Fe'}
               </span>
               <span className="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-700 dark:text-teal-300 border border-teal-500/20 font-bold">
                 <Sparkles className="size-2.5" />
@@ -181,7 +183,7 @@ export function VersiculoCard({
               </span>
             </div>
             <p className="text-xs text-on-surface-variant font-medium">
-              Aliento e inspiración para tu recuperación física y bienestar.
+              {t('spiritual.faithDesc') || 'Aliento e inspiración para tu recuperación física y bienestar.'}
             </p>
           </div>
         </div>
@@ -192,8 +194,8 @@ export function VersiculoCard({
             onClick={handleCopy}
             disabled={!versiculo}
             className="size-8 rounded-xl bg-surface-container/60 hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface flex items-center justify-center transition-colors"
-            title="Copiar versículo"
-            aria-label="Copiar versículo"
+            title={t('spiritual.copy') || 'Copiar versículo'}
+            aria-label={t('spiritual.copy') || 'Copiar versículo'}
           >
             {copied ? <Check className="size-4 text-teal-600" /> : <Copy className="size-4" />}
           </button>
@@ -202,8 +204,8 @@ export function VersiculoCard({
             onClick={() => cargarVersiculo(categoria)}
             disabled={loading}
             className="size-8 rounded-xl bg-surface-container/60 hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface flex items-center justify-center transition-colors"
-            title="Recibir otra palabra"
-            aria-label="Recibir otra palabra"
+            title={t('spiritual.another') || 'Recibir otra palabra'}
+            aria-label={t('spiritual.another') || 'Recibir otra palabra'}
           >
             <RefreshCw className={cn('size-4', loading && 'animate-spin text-teal-600')} />
           </button>
@@ -211,8 +213,8 @@ export function VersiculoCard({
           <button
             onClick={handleDismiss}
             className="size-8 rounded-xl bg-surface-container/60 hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface flex items-center justify-center transition-colors"
-            title="Minimizar por ahora"
-            aria-label="Minimizar por ahora"
+            title={t('spiritual.minimize') || 'Minimizar por ahora'}
+            aria-label={t('spiritual.minimize') || 'Minimizar por ahora'}
           >
             <X className="size-4" />
           </button>
@@ -236,7 +238,7 @@ export function VersiculoCard({
                     : 'bg-surface-container-low/80 text-on-surface-variant hover:bg-surface-container hover:text-on-surface'
                 )}
               >
-                {cat === 'general' ? 'General' : meta?.label.split(' ')[0]}
+                {cat === 'general' ? (t('spiritual.general') || 'General') : (t(`spiritual.${cat}`) || meta?.label.split(' ')[0])}
               </button>
             );
           })}
@@ -255,7 +257,7 @@ export function VersiculoCard({
               className="py-4 text-center text-xs text-outline flex items-center justify-center gap-2"
             >
               <RefreshCw className="size-3.5 animate-spin text-teal-600" />
-              <span>Buscando palabra de fortaleza...</span>
+              <span>{t('spiritual.searching') || 'Buscando palabra de fortaleza...'}</span>
             </motion.div>
           ) : versiculo ? (
             <motion.div
@@ -288,14 +290,14 @@ export function VersiculoCard({
       {/* Footer bar */}
       <div className="relative z-10 mt-4 pt-3 border-t border-outline/10 flex items-center justify-between">
         <p className="text-[11px] text-on-surface-variant">
-          Persevera con fe: cada repetición y cada esfuerzo renuevan tu salud.
+          {t('spiritual.footer') || 'Persevera con fe: cada repetición y cada esfuerzo renuevan tu salud.'}
         </p>
         <button
           onClick={() => cargarVersiculo(categoria)}
           disabled={loading}
           className="text-xs font-bold text-teal-600 dark:text-teal-400 hover:text-teal-800 dark:hover:text-teal-200 transition-colors inline-flex items-center gap-1 shrink-0 ml-3"
         >
-          <span>Renovar reflexión</span>
+          <span>{t('spiritual.renew') || 'Renovar reflexión'}</span>
           <RefreshCw className={cn('size-3', loading && 'animate-spin')} />
         </button>
       </div>

@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { Icon } from '../components/ui/Icon';
 import { GlassPanel } from '../components/ui/Glass';
 import { useAuthStore } from '../stores/authStore';
@@ -77,6 +78,7 @@ interface Exercise {
 const defaultExercises: Exercise[] = [];
 
 export function OCRScannerPage() {
+  const { t } = useTranslation();
   const user = useAuthStore((s) => s.user);
   const navigate = useNavigate();
   const toast = useToast();
@@ -534,10 +536,10 @@ export function OCRScannerPage() {
   };
 
   const steps = [
-    { num: 1, label: 'Cargar' },
-    { num: 2, label: 'Validar' },
-    { num: 3, label: 'Prescribir' },
-    { num: 4, label: 'Finalizar' },
+    { num: 1, label: t('ocr.step1') || 'Cargar' },
+    { num: 2, label: t('ocr.step2') || 'Validar' },
+    { num: 3, label: t('ocr.step3') || 'Prescribir' },
+    { num: 4, label: t('ocr.step4') || 'Finalizar' },
   ];
 
   const inputClass = 'w-full glass-teal border border-outline-variant/20 rounded-xl px-4 py-3 font-title-md text-on-surface focus:ring-2 focus:ring-primary/20 outline-none';
@@ -547,11 +549,11 @@ export function OCRScannerPage() {
   return (
     <div className="max-w-4xl mx-auto space-y-6 overflow-x-hidden">
       <div className="flex items-center gap-2 text-primary font-label-sm text-label-sm">
-        <Icon name="person_add" size={18} /> Nuevo Paciente
+        <Icon name="person_add" size={18} /> {t('common.newPatient') || 'Nuevo Paciente'}
       </div>
       <div>
-        <h2 className="font-headline-lg text-headline-lg-mobile lg:text-headline-lg gradient-text-living">Cargar Prescripción</h2>
-        <p className="font-body-lg text-body-lg text-on-surface-variant">Inicie el alta del paciente procesando su historial clínico con nuestra IA.</p>
+        <h2 className="font-headline-lg text-headline-lg-mobile lg:text-headline-lg gradient-text-living">{t('ocr.title') || 'Cargar Prescripción'}</h2>
+        <p className="font-body-lg text-body-lg text-on-surface-variant">{t('ocr.subtitle') || 'Inicie el alta del paciente procesando su historial clínico con nuestra IA.'}</p>
       </div>
 
       <div className="flex justify-between items-center px-3 sm:px-6 py-4 glass-panel rounded-2xl card-glow-hover gap-2">
@@ -738,13 +740,13 @@ export function OCRScannerPage() {
                   )}
 
                   <div className="pt-6 border-t border-outline-variant/10 flex items-center justify-between">
-                    <button onClick={() => navigate('/patients')} className="px-8 py-3 text-on-surface-variant font-bold font-label-sm text-label-sm hover:bg-surface-variant/30 rounded-xl transition-all">Cancelar</button>
+                    <button onClick={() => navigate('/patients')} className="px-8 py-3 text-on-surface-variant font-bold font-label-sm text-label-sm hover:bg-surface-variant/30 rounded-xl transition-all">{t('common.cancel') || 'Cancelar'}</button>
                     <button
                       onClick={processWithAI}
                       disabled={processing || files.length === 0}
                       className="premium-btn relative overflow-hidden px-10 py-4 bg-primary text-white rounded-xl font-bold font-label-sm text-label-sm shadow-xl shadow-primary/20 hover:shadow-primary/40 hover:-translate-y-0.5 active:scale-95 flex items-center gap-3 disabled:opacity-50 transition-all"
                     >
-                      {processing ? <><Spinner size={20} className="text-white" /> <LoadingText context="ocr" /></> : <><Icon name="psychology" size={20} /> Procesar con IA</>}
+                      {processing ? <><Spinner size={20} className="text-white" /> <LoadingText context="ocr" /></> : <><Icon name="psychology" size={20} /> {t('common.aiTools') || 'Procesar con IA'}</>}
                     </button>
                   </div>
                 </>
@@ -1045,10 +1047,10 @@ export function OCRScannerPage() {
             </div>
             <div className="flex items-center justify-between mt-6 pb-6">
               <button onClick={() => setStep(2)} className="flex items-center gap-2 px-6 py-3 rounded-xl hover:bg-surface-container transition-all text-secondary font-semibold">
-                <Icon name="arrow_back" size={20} /> Volver a Validación
+                <Icon name="arrow_back" size={20} /> {t('common.back') || 'Volver'}
               </button>
               <button onClick={generateToken} className="premium-btn px-8 py-4 rounded-2xl bg-primary text-on-primary font-bold shadow-lg hover:shadow-primary/20 hover:-translate-y-0.5 active:scale-95 flex items-center gap-2 transition-all">
-                Generar Token del Paciente <Icon name="bolt" filled size={20} />
+                {t('ocr.generateActivationToken') || 'Generar Token del Paciente'} <Icon name="bolt" filled size={20} />
               </button>
             </div>
           </motion.div>
@@ -1061,14 +1063,14 @@ export function OCRScannerPage() {
                 <div className="mb-6 inline-flex items-center justify-center w-20 h-20 bg-primary/10 rounded-full">
                   <Icon name="verified_user" filled size={48} className="text-primary animate-breathe-icon" />
                 </div>
-                <h1 className="font-display-lg text-3xl lg:text-display-lg mb-2 shimmer-text">¡Paciente listo!</h1>
-                <p className="font-body-lg text-body-lg text-secondary mb-10 max-w-md mx-auto">El registro de {extractedData.nombre_completo} se ha completado exitosamente.</p>
+                <h1 className="font-display-lg text-3xl lg:text-display-lg mb-2 shimmer-text">{t('ocr.tokenGeneratedSuccess') || '¡Paciente listo!'}</h1>
+                <p className="font-body-lg text-body-lg text-secondary mb-10 max-w-md mx-auto">{extractedData.nombre_completo}</p>
 
                 <div className="glass-teal rounded-2xl p-4 sm:p-6 border border-outline-variant/40 mb-10 w-full max-w-[320px] mx-auto">
-                  <span className="block font-label-sm text-label-sm text-secondary uppercase tracking-widest mb-3">Token de Activación</span>
+                  <span className="block font-label-sm text-label-sm text-secondary uppercase tracking-widest mb-3">{t('auth.token') || 'Token de Activación'}</span>
                   <div className="flex items-center justify-center gap-3 sm:gap-6">
                     <span className="font-display-lg text-2xl sm:text-display-lg text-primary tracking-[0.15em] sm:tracking-[0.2em] break-all">{generatedToken}</span>
-                    <button onClick={copyToken} aria-label="Copiar token" className={`flex items-center justify-center w-12 h-12 rounded-xl ${copied ? 'bg-tertiary-container' : 'bg-primary'} text-on-primary hover:bg-primary-container active:scale-95 shadow-md transition-all`}>
+                    <button onClick={copyToken} aria-label={t('ocr.copyToken') || 'Copiar token'} className={`flex items-center justify-center w-12 h-12 rounded-xl ${copied ? 'bg-tertiary-container' : 'bg-primary'} text-on-primary hover:bg-primary-container active:scale-95 shadow-md transition-all`}>
                       <Icon name={copied ? 'check' : 'content_copy'} size={24} />
                     </button>
                   </div>
@@ -1078,30 +1080,30 @@ export function OCRScannerPage() {
                   <div className="glass-teal rounded-2xl p-4 border border-outline-variant/30 flex items-center gap-4">
                     <div className="w-12 h-12 rounded-full bg-secondary-container border border-outline-variant flex items-center justify-center"><Icon name="person" size={24} /></div>
                     <div>
-                      <p className="text-[10px] text-secondary uppercase">Paciente</p>
+                      <p className="text-[10px] text-secondary uppercase">{t('auth.patient') || 'Paciente'}</p>
                       <p className="font-title-md text-title-md text-on-surface">{extractedData.nombre_completo}</p>
                     </div>
                   </div>
                   <div className="glass-teal rounded-2xl p-4 border border-outline-variant/30 flex items-center gap-4">
                     <div className="w-12 h-12 rounded-full bg-tertiary-fixed flex items-center justify-center"><Icon name="document_scanner" size={24} /></div>
                     <div>
-                      <p className="text-[10px] text-secondary uppercase">Resumen Rutina</p>
-                      <p className="font-title-md text-title-md text-on-surface">{prescription.length} Ejercicios</p>
+                      <p className="text-[10px] text-secondary uppercase">{t('navigation.exercises') || 'Rutina'}</p>
+                      <p className="font-title-md text-title-md text-on-surface">{prescription.length} {t('navigation.exercises') || 'Ejercicios'}</p>
                     </div>
                   </div>
                 </div>
 
                 <div className="flex flex-wrap justify-center gap-4 mb-10">
                   <button onClick={() => setShowEmailModal(true)} className="bg-teal-600 text-white font-bold hover:bg-teal-700 shadow-md shadow-teal-600/20 rounded-full px-7 py-3 flex items-center gap-2 transition-all">
-                    <Icon name="send" size={20} /> Enviar Token (Email / SMS / WhatsApp)
+                    <Icon name="send" size={20} /> {t('ocr.sendByEmail') || 'Enviar Token'}
                   </button>
                   <button onClick={() => { try { window.print(); } catch { toast.error('No se pudo imprimir'); } }} className="bg-secondary-container/50 text-secondary font-semibold hover:bg-secondary-container border border-white/20 rounded-full px-6 py-3 flex items-center gap-2">
-                    <Icon name="print" size={20} /> Imprimir Receta
+                    <Icon name="print" size={20} /> {t('pdf.downloadPdf') || 'Imprimir'}
                   </button>
                 </div>
 
                 <button onClick={() => navigate('/patients')} className="premium-btn bg-primary text-on-primary py-5 px-10 rounded-2xl font-title-md text-title-md shadow-xl hover:shadow-2xl hover:-translate-y-1 flex items-center justify-center gap-3 transition-all">
-                  Finalizar y volver al Directorio <Icon name="arrow_forward" size={20} />
+                  {t('common.understood') || 'Finalizar'} <Icon name="arrow_forward" size={20} />
                 </button>
               </div>
             </div>
