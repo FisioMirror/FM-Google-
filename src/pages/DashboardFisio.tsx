@@ -41,6 +41,7 @@ import { DateRangePicker, RangeCalendar, type DateRange } from '../components/ui
 import { ScrollShadow } from '../components/ui/ScrollShadow';
 import { toast } from '../components/ui/Toast';
 import { Skeleton } from '../components/ui/Skeleton';
+import { useTranslation } from 'react-i18next';
 
 interface KpiData {
   activePatients: number;
@@ -229,6 +230,7 @@ const quickActions = [
 ];
 
 export function DashboardFisio() {
+  const { t, i18n } = useTranslation();
   const user = useAuthStore((s) => s.user);
   const navigate = useNavigate();
   const [kpi, setKpi] = useState<KpiData>(emptyKpi);
@@ -561,9 +563,9 @@ export function DashboardFisio() {
 
   const greeting = (() => {
     const hour = new Date().getHours();
-    if (hour < 12) return 'Buenos días';
-    if (hour < 20) return 'Buenas tardes';
-    return 'Buenas noches';
+    if (hour < 12) return t('dashboard.greetingMorning', 'Buenos días');
+    if (hour < 20) return t('dashboard.greetingAfternoon', 'Buenas tardes');
+    return t('dashboard.greetingEvening', 'Buenas noches');
   })();
 
   const commandItems: CommandItem[] = useMemo(() => {
@@ -644,7 +646,7 @@ export function DashboardFisio() {
 
   const kpiCards = [
     {
-      label: 'Pacientes Activos',
+      label: t('dashboard.activePatients', 'Pacientes Activos'),
       value: displayKpi.activePatients,
       numericValue: displayKpi.activePatients,
       colorHex: '#00504d',
@@ -654,7 +656,7 @@ export function DashboardFisio() {
       badgeClass: 'bg-teal-500/15 text-teal-700 dark:text-teal-300 border-teal-500/30',
     },
     {
-      label: 'Sesiones Hoy',
+      label: t('dashboard.appointmentsToday', 'Sesiones Hoy'),
       value: displayKpi.sessionsToday,
       numericValue: displayKpi.sessionsToday,
       colorHex: '#158f8a',
@@ -664,7 +666,7 @@ export function DashboardFisio() {
       badgeClass: 'bg-cyan-500/15 text-cyan-700 dark:text-cyan-300 border-cyan-500/30',
     },
     {
-      label: 'Adherencia Semanal',
+      label: t('dashboard.adherence', 'Adherencia Semanal'),
       value: displayKpi.weeklyAdherence > 0 ? `${displayKpi.weeklyAdherence}%` : '—',
       numericValue: displayKpi.weeklyAdherence,
       isPercent: true,
@@ -675,7 +677,7 @@ export function DashboardFisio() {
       badgeClass: 'bg-teal-500/15 text-teal-700 dark:text-teal-300 border-teal-500/30',
     },
     {
-      label: 'Tokens Pendientes',
+      label: t('dashboard.pendingReports', 'Tokens Pendientes'),
       value: String(displayKpi.pendingTokens).padStart(2, '0'),
       numericValue: displayKpi.pendingTokens,
       colorHex: '#E2725B',
@@ -709,7 +711,7 @@ export function DashboardFisio() {
               by="word"
               className="text-outline font-title-md text-title-md"
             >
-              {new Date().toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
+              {new Date().toLocaleDateString(i18n.language === 'en' ? 'en-US' : i18n.language === 'pt' ? 'pt-BR' : 'es-ES', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
             </TextAnimate>
           </div>
           <div className="ml-auto flex items-center gap-2.5">
@@ -720,7 +722,7 @@ export function DashboardFisio() {
               className="hidden lg:flex text-xs px-4 py-2 rounded-2xl shadow-sm"
             >
               <Sparkles className="size-3.5" />
-              <span>Iniciar Espejo AR</span>
+              <span>{t('dashboard.startSession', 'Iniciar Espejo AR')}</span>
             </PulsatingButton>
             <div className="hidden md:block">
               <DateRangePicker value={dateRange} onChange={setDateRange}>

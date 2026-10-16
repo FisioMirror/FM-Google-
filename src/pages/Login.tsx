@@ -15,6 +15,8 @@ import { BorderBeam } from '../components/ui/BorderBeam';
 import { AuroraText } from '../components/ui/AuroraText';
 import { LightRays } from '../components/ui/LightRays';
 import { ShimmerButton } from '../components/ui/ShimmerButton';
+import { useTranslation } from 'react-i18next';
+import { LanguageSelector } from '../components/ui/LanguageSelector';
 
 type AuthMode = 'login' | 'register';
 type LoginRole = 'paciente' | 'fisioterapeuta';
@@ -284,6 +286,7 @@ export function Login() {
   } = useAuthStore();
   const user = useAuthStore((s) => s.user);
   const { theme, toggleTheme } = useTheme();
+  const { t } = useTranslation();
   const toast = useToast();
   const navigate = useNavigate();
   const reduceMotion = useReducedMotion();
@@ -784,7 +787,7 @@ export function Login() {
           LEFT PANEL — MAIN FORM
           ═══════════════════════════════════════════════════ */}
       <div className="w-full md:w-[45%] lg:w-[42%] flex flex-col items-center justify-center px-4 py-8 md:px-8 relative z-20 overflow-y-auto">
-        {/* Top bar: logo + theme toggle */}
+        {/* Top bar: logo + language + theme toggle */}
         <div className="w-full max-w-[480px] flex items-center justify-between mb-5">
           <div className="flex items-center gap-2.5">
             <img src="/logo.png" alt="FisioMirror Logo" className="h-10 w-auto shrink-0 drop-shadow-sm" />
@@ -792,13 +795,16 @@ export function Login() {
               FisioMirror
             </span>
           </div>
-          <button
-            onClick={toggleTheme}
-            aria-label="Cambiar tema"
-            className="p-2.5 rounded-full border border-slate-200/80 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 backdrop-blur-md hover:scale-105 transition-all text-[#00504d] dark:text-[#8ad3cf] shadow-sm hover:shadow"
-          >
-            <Icon name={theme === 'dark' ? 'light_mode' : 'dark_mode'} size={18} />
-          </button>
+          <div className="flex items-center gap-2">
+            <LanguageSelector compact />
+            <button
+              onClick={toggleTheme}
+              aria-label="Cambiar tema"
+              className="p-2.5 rounded-full border border-slate-200/80 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 backdrop-blur-md hover:scale-105 transition-all text-[#00504d] dark:text-[#8ad3cf] shadow-sm hover:shadow cursor-pointer"
+            >
+              <Icon name={theme === 'dark' ? 'light_mode' : 'dark_mode'} size={18} />
+            </button>
+          </div>
         </div>
 
         {/* Main Card */}

@@ -43,34 +43,15 @@ import { NotificationDrawer } from './notifications/NotificationDrawer';
 import { useRealtimeNotifications } from '../hooks/useRealtimeNotifications';
 import { initGlobalPresence, updatePresenceStatus } from '../lib/presenceService';
 import { notifyVideoCall } from '../lib/notificationService';
-
-const navItems = [
-  { to: '/dashboard-fisio', label: 'Inicio', icon: LayoutDashboard, color: 'teal' },
-  { to: '/patients', label: 'Pacientes', icon: Users, color: 'teal', badge: 'Activos' },
-  { to: '/ocr-scanner', label: 'Cargar Paciente', icon: UserPlus, color: 'teal' },
-  { to: '/fisio-exercises', label: 'Ejercicios', icon: Dumbbell, color: 'cyan' },
-  { to: '/fisio-stats', label: 'Estadísticas', icon: Activity, color: 'teal' },
-  { to: '/tools', label: 'Herramientas', icon: Wrench, color: 'amber' },
-  { to: '/fisio-profile', label: 'Perfil', icon: UserCheck, color: 'teal' },
-  { to: '/fisio-settings', label: 'Configuración', icon: Settings, color: 'slate' },
-];
-
-const breadcrumbMap: Record<string, string> = {
-  '/dashboard-fisio': 'Dashboard',
-  '/patients': 'Pacientes',
-  '/ocr-scanner': 'Cargar Paciente',
-  '/fisio-exercises': 'Ejercicios',
-  '/fisio-stats': 'Estadísticas',
-  '/tools': 'Herramientas',
-  '/fisio-profile': 'Perfil',
-  '/fisio-settings': 'Configuración',
-};
+import { useTranslation } from 'react-i18next';
+import { LanguageSelector } from './ui/LanguageSelector';
 
 interface FisioLayoutProps {
   children: ReactNode;
 }
 
 export function FisioLayout({ children }: FisioLayoutProps) {
+  const { t } = useTranslation();
   const user = useAuthStore((s) => s.user);
   const signOut = useAuthStore((s) => s.signOut);
   const { theme, toggleTheme } = useTheme();
@@ -78,6 +59,28 @@ export function FisioLayout({ children }: FisioLayoutProps) {
   const { isInstalled, triggerInstall } = useInstall();
   const navigate = useNavigate();
   const location = useLocation();
+
+  const navItems = [
+    { to: '/dashboard-fisio', label: t('navigation.dashboard', 'Inicio'), icon: LayoutDashboard, color: 'teal' },
+    { to: '/patients', label: t('navigation.patients', 'Pacientes'), icon: Users, color: 'teal', badge: t('navigation.active', 'Activos') },
+    { to: '/ocr-scanner', label: t('navigation.loadPatient', 'Cargar Paciente'), icon: UserPlus, color: 'teal' },
+    { to: '/fisio-exercises', label: t('navigation.exercises', 'Ejercicios'), icon: Dumbbell, color: 'cyan' },
+    { to: '/fisio-stats', label: t('navigation.stats', 'Estadísticas'), icon: Activity, color: 'teal' },
+    { to: '/tools', label: t('navigation.tools', 'Herramientas'), icon: Wrench, color: 'amber' },
+    { to: '/fisio-profile', label: t('navigation.profile', 'Perfil'), icon: UserCheck, color: 'teal' },
+    { to: '/fisio-settings', label: t('navigation.settings', 'Configuración'), icon: Settings, color: 'slate' },
+  ];
+
+  const breadcrumbMap: Record<string, string> = {
+    '/dashboard-fisio': t('navigation.dashboard', 'Dashboard'),
+    '/patients': t('navigation.patients', 'Pacientes'),
+    '/ocr-scanner': t('navigation.loadPatient', 'Cargar Paciente'),
+    '/fisio-exercises': t('navigation.exercises', 'Ejercicios'),
+    '/fisio-stats': t('navigation.stats', 'Estadísticas'),
+    '/tools': t('navigation.tools', 'Herramientas'),
+    '/fisio-profile': t('navigation.profile', 'Perfil'),
+    '/fisio-settings': t('navigation.settings', 'Configuración'),
+  };
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(() => localStorage.getItem('fisio-sidebar-collapsed') === 'true');
 
@@ -567,13 +570,13 @@ export function FisioLayout({ children }: FisioLayoutProps) {
                 onFocus={() => setShowSearchDropdown(true)}
                 onBlur={() => setTimeout(() => setShowSearchDropdown(false), 200)}
                 className="bg-transparent border-none focus:ring-0 text-label-sm w-full outline-none placeholder:text-outline"
-                placeholder="Buscar pacientes o ejercicios... (⌘K)"
+                placeholder={t('navigation.searchPlaceholder', 'Buscar pacientes o ejercicios... (⌘K)')}
               />
               {showSearchDropdown && (searchResults.patients.length > 0 || searchResults.exercises.length > 0) && (
                 <div className="absolute top-full left-0 right-0 mt-2 glass-panel rounded-2xl shadow-2xl overflow-hidden z-50">
                   {searchResults.patients.length > 0 && (
                     <div className="p-2">
-                      <p className="text-[10px] font-bold uppercase tracking-widest text-outline px-2 py-1">Pacientes</p>
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-outline px-2 py-1">{t('navigation.patients', 'Pacientes')}</p>
                       {searchResults.patients.map((p) => (
                         <button key={p.id} type="button" onClick={() => { navigate('/paciente/' + p.id); setSearchQuery(''); setShowSearchDropdown(false); }} className="w-full text-left px-3 py-2 rounded-xl hover:bg-primary/10 transition-colors flex items-center gap-2">
                           <Icon name="person" size={16} className="text-primary" />
@@ -587,7 +590,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
                   )}
                   {searchResults.exercises.length > 0 && (
                     <div className="p-2 border-t divider-teal">
-                      <p className="text-[10px] font-bold uppercase tracking-widest text-outline px-2 py-1">Ejercicios</p>
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-outline px-2 py-1">{t('navigation.exercises', 'Ejercicios')}</p>
                       {searchResults.exercises.map((ex) => (
                         <button key={ex.id} type="button" onClick={() => { navigate('/fisio-exercises'); setSearchQuery(''); setShowSearchDropdown(false); }} className="w-full text-left px-3 py-2 rounded-xl hover:bg-primary/10 transition-colors flex items-center gap-2">
                           <Icon name="fitness_center" size={16} className="text-primary" />
@@ -610,9 +613,10 @@ export function FisioLayout({ children }: FisioLayoutProps) {
             >
               <Bot size={20} className="text-primary" />
               <span className="hidden xl:inline text-xs font-semibold text-primary">
-                Chatbot Physi
+                {t('navigation.chatbotPhysi', 'Chatbot Physi')}
               </span>
             </button>
+            <LanguageSelector compact />
             <button
               onClick={toggleTheme}
               className="text-on-surface-variant hover:text-primary transition-colors active-scale"
@@ -751,20 +755,20 @@ export function FisioLayout({ children }: FisioLayoutProps) {
               className="glass-panel rounded-3xl p-8 max-w-sm w-full mx-4 text-center max-h-[90vh] overflow-y-auto"
             >
               <MascotAnimation type="goodbye" size="md" className="bg-error/10 mx-auto mb-4" />
-              <h3 className="font-headline-lg text-headline-lg text-on-surface mb-2">¿Cerrar sesión?</h3>
-              <p className="text-on-surface-variant text-sm mb-6">Tendrás que volver a iniciar sesión para acceder a tu panel.</p>
+              <h3 className="font-headline-lg text-headline-lg text-on-surface mb-2">{t('navigation.logoutConfirm', '¿Cerrar sesión?')}</h3>
+              <p className="text-on-surface-variant text-sm mb-6">{t('navigation.logoutConfirmDesc', 'Tendrás que volver a iniciar sesión para acceder a tu panel.')}</p>
               <div className="flex gap-3">
                 <button
                   onClick={() => setShowLogout(false)}
                   className="flex-1 py-3 rounded-xl bg-surface-variant/40 text-on-surface-variant font-bold hover:bg-surface-variant/60 transition-all"
                 >
-                  Cancelar
+                  {t('common.cancel', 'Cancelar')}
                 </button>
                 <button
                   onClick={handleSignOut}
                   className="flex-1 py-3 rounded-xl bg-error text-on-error font-bold hover:scale-[0.98] transition-all"
                 >
-                  Cerrar sesión
+                  {t('common.logout', 'Cerrar sesión')}
                 </button>
               </div>
             </motion.div>

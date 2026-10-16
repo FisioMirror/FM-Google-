@@ -196,7 +196,7 @@ export const ROMDeviationLiveChart: React.FC<ROMDeviationLiveChartProps> = ({ cl
         </span>
       </div>
 
-      <div className="h-16 w-full flex items-center justify-center p-2 rounded-2xl bg-slate-950/60 border border-white/5 relative overflow-hidden">
+      <div className="h-16 w-full flex items-center justify-center p-2 rounded-2xl bg-slate-100 dark:bg-slate-950/60 border border-slate-200/80 dark:border-white/5 relative overflow-hidden transition-colors">
         <svg viewBox="0 0 200 40" className="w-full h-full overflow-visible">
           <defs>
             <linearGradient id="chartGrad" x1="0%" y1="0%" x2="100%" y2="0%">

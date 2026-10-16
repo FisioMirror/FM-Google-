@@ -476,7 +476,7 @@ export const TremorFrequencyCard: React.FC<TremorFrequencyCardProps> = ({
       </div>
 
       <div className="py-2">
-        <div className="h-16 flex items-center justify-center gap-1.5 px-2 bg-slate-900/40 rounded-2xl border border-white/5">
+        <div className="h-16 flex items-center justify-center gap-1.5 px-2 bg-slate-100 dark:bg-slate-900/50 rounded-2xl border border-slate-200/80 dark:border-white/5 transition-colors">
           {[4, 9, 15, 7, 13, 24, 11, 18, 9, 5, 20, 10, 14, 7, 12, 18, 8].map((val, idx) => (
             <motion.div
               key={idx}
@@ -560,7 +560,7 @@ export const PostureStabilityCard: React.FC<PostureStabilityCardProps> = ({
             setShiftX(centerShiftX);
             setShiftY(centerShiftY);
           }}
-          className="relative w-28 h-28 rounded-full border-2 border-emerald-500/30 flex items-center justify-center bg-slate-950/60 shadow-inner cursor-crosshair overflow-hidden"
+          className="relative w-28 h-28 rounded-full border-2 border-emerald-500/30 flex items-center justify-center bg-emerald-50/60 dark:bg-slate-950/60 shadow-inner cursor-crosshair overflow-hidden transition-colors"
         >
           {/* Anillos concéntricos de tolerancia */}
           <motion.div

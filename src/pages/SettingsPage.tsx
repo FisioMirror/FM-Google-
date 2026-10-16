@@ -60,9 +60,20 @@ export function SettingsPage() {
   const { theme, toggleTheme, zoom, setZoom, fontSize, setFontSize, resetDefaults } = useTheme();
   const { user, signOut } = useAuthStore();
   const { show } = useGlassToast();
-  const { i18n } = useTranslation();
-  const [currentLang, setCurrentLang] = useState<string>(() => i18n.language || localStorage.getItem('fisio_language') || 'es');
+  const { t, i18n } = useTranslation();
+  const [currentLang, setCurrentLang] = useState<string>(() => i18n.language || (typeof window !== 'undefined' ? localStorage.getItem('fisio_language') : 'es') || 'es');
   const { preference: arPreference, setPreference: setArPreference, activeModel: currentArModel } = useMediaPipeModel();
+
+  useEffect(() => {
+    const handleLangChange = (e: Event) => {
+      const customEvent = e as CustomEvent<{ lang: string }>;
+      if (customEvent.detail?.lang) {
+        setCurrentLang(customEvent.detail.lang);
+      }
+    };
+    window.addEventListener('fisio_language_changed', handleLangChange);
+    return () => window.removeEventListener('fisio_language_changed', handleLangChange);
+  }, []);
 
   /* ── Persistent settings ────────────────────────────────────── */
   const [reduceMotion, setReduceMotion] = usePersistentBool('fisio-reduce-motion', false);
@@ -333,25 +344,32 @@ export function SettingsPage() {
               <Globe size={24} className="text-blue-500" />
             </div>
             <div>
-              <p className="font-semibold text-on-surface">Idioma / Language</p>
-              <p className="text-sm text-on-surface-variant">Selecciona tu idioma preferido para la interfaz</p>
+              <p className="font-semibold text-on-surface">{t('settings.language', 'Idioma / Language')}</p>
+              <p className="text-sm text-on-surface-variant">{t('settings.languageDesc', 'Selecciona tu idioma preferido para la interfaz')}</p>
             </div>
           </div>
           <div className="grid grid-cols-3 gap-3">
             {[
-              { code: 'es', label: 'Español', badge: 'ES' },
-              { code: 'en', label: 'English', badge: 'EN' },
-              { code: 'pt', label: 'Português', badge: 'PT' },
+              { code: 'es', label: t('settings.spanish', 'Español'), badge: 'ES' },
+              { code: 'en', label: t('settings.english', 'English'), badge: 'EN' },
+              { code: 'pt', label: t('settings.portuguese', 'Português'), badge: 'PT' },
             ].map((lang) => (
               <button
                 key={lang.code}
                 onClick={() => {
                   changeAppLanguage(lang.code as 'es' | 'en' | 'pt');
                   setCurrentLang(lang.code);
-                  show(`Idioma cambiado a ${lang.label}`, 'success');
+                  show(
+                    lang.code === 'en'
+                      ? 'Language changed to English'
+                      : lang.code === 'pt'
+                      ? 'Idioma alterado para Português'
+                      : 'Idioma cambiado a Español',
+                    'success'
+                  );
                 }}
                 className={cn(
-                  'flex items-center justify-center gap-2 py-3 rounded-xl font-semibold text-sm transition-all duration-200 border',
+                  'flex items-center justify-center gap-2 py-3 rounded-xl font-semibold text-sm transition-all duration-200 border cursor-pointer',
                   currentLang.startsWith(lang.code)
                     ? 'bg-primary text-on-primary border-primary shadow-glow-primary'
                     : 'bg-surface-container-low text-on-surface-variant border-outline-variant/30 hover:bg-surface-container-high'

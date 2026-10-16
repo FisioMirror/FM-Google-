@@ -39,41 +39,44 @@ import { NotificationDrawer } from './notifications/NotificationDrawer';
 import { useRealtimeNotifications } from '../hooks/useRealtimeNotifications';
 import { initGlobalPresence, updatePresenceStatus } from '../lib/presenceService';
 import { notifyVideoCall } from '../lib/notificationService';
-
-const primaryNavItems = [
-  { to: '/dashboard-paciente', label: 'Inicio', icon: Home, accent: 'teal' },
-  { to: '/exercises', label: 'Ejercicios', icon: Dumbbell, accent: 'cyan' },
-  { to: '/stats', label: 'Progreso', icon: Activity, accent: 'emerald' },
-  { to: '/ai-assistant', label: 'Physi IA', icon: Bot, accent: 'blue' },
-];
-
-const secondaryNavItems = [
-  { to: '/profile', label: 'Perfil', icon: User, accent: 'teal' },
-  { to: '/settings', label: 'Configuración', icon: Settings, accent: 'teal' },
-];
-
-const navItems = [...primaryNavItems, ...secondaryNavItems];
-
-const breadcrumbMap: Record<string, string> = {
-  '/dashboard-paciente': 'Inicio',
-  '/exercises': 'Ejercicios',
-  '/stats': 'Progreso',
-  '/ai-assistant': 'Physi',
-  '/profile': 'Perfil',
-  '/settings': 'Configuración',
-};
+import { useTranslation } from 'react-i18next';
+import { LanguageSelector } from './ui/LanguageSelector';
 
 interface PatientLayoutProps {
   children: ReactNode;
 }
 
 export function PatientLayout({ children }: PatientLayoutProps) {
+  const { t } = useTranslation();
   const user = useAuthStore((s) => s.user);
   const signOut = useAuthStore((s) => s.signOut);
   const { theme, toggleTheme } = useTheme();
   const toast = useToast();
   const navigate = useNavigate();
   const location = useLocation();
+
+  const primaryNavItems = [
+    { to: '/dashboard-paciente', label: t('navigation.dashboard', 'Inicio'), icon: Home, accent: 'teal' },
+    { to: '/exercises', label: t('navigation.exercises', 'Ejercicios'), icon: Dumbbell, accent: 'cyan' },
+    { to: '/stats', label: t('navigation.stats', 'Progreso'), icon: Activity, accent: 'emerald' },
+    { to: '/ai-assistant', label: t('navigation.aiAssistant', 'Physi IA'), icon: Bot, accent: 'blue' },
+  ];
+
+  const secondaryNavItems = [
+    { to: '/profile', label: t('navigation.profile', 'Perfil'), icon: User, accent: 'teal' },
+    { to: '/settings', label: t('navigation.settings', 'Configuración'), icon: Settings, accent: 'teal' },
+  ];
+
+  const navItems = [...primaryNavItems, ...secondaryNavItems];
+
+  const breadcrumbMap: Record<string, string> = {
+    '/dashboard-paciente': t('navigation.dashboard', 'Inicio'),
+    '/exercises': t('navigation.exercises', 'Ejercicios'),
+    '/stats': t('navigation.stats', 'Progreso'),
+    '/ai-assistant': 'Physi',
+    '/profile': t('navigation.profile', 'Perfil'),
+    '/settings': t('navigation.settings', 'Configuración'),
+  };
   const [showLogout, setShowLogout] = useState(false);
   const [legalModal, setLegalModal] = useState<LegalDocType | null>(null);
   const [therapistPhone, setTherapistPhone] = useState<string | null>(null);
@@ -491,6 +494,7 @@ export function PatientLayout({ children }: PatientLayoutProps) {
                 <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-[16px] bg-error rounded-full text-white text-[9px] font-bold flex items-center justify-center px-1">{unreadCount > 9 ? '9+' : unreadCount}</span>
               )}
             </button>
+            <LanguageSelector compact />
             <button
               onClick={toggleTheme}
               className="text-on-surface-variant hover:text-primary transition-colors active-scale p-2 rounded-full"
@@ -506,7 +510,7 @@ export function PatientLayout({ children }: PatientLayoutProps) {
             >
               <Bot size={20} className="text-primary" />
               <span className="hidden xl:inline text-xs font-semibold text-primary">
-                Chatbot Physi
+                {t('navigation.chatbotPhysi', 'Chatbot Physi')}
               </span>
             </button>
             <button
@@ -583,20 +587,20 @@ export function PatientLayout({ children }: PatientLayoutProps) {
               className="glass-panel rounded-3xl p-8 max-w-sm w-full mx-4 text-center max-h-[90vh] overflow-y-auto"
             >
               <MascotAnimation type="goodbye" size="md" className="mx-auto mb-4" />
-              <h3 className="font-headline-lg text-headline-lg gradient-text-editorial mb-2">¿Cerrar sesión?</h3>
-              <p className="text-on-surface-variant text-sm mb-6">Tendrás que volver a ingresar tu token para acceder.</p>
+              <h3 className="font-headline-lg text-headline-lg gradient-text-editorial mb-2">{t('navigation.logoutConfirm', '¿Cerrar sesión?')}</h3>
+              <p className="text-on-surface-variant text-sm mb-6">{t('navigation.logoutConfirmDesc', 'Tendrás que volver a ingresar tu token para acceder.')}</p>
               <div className="flex gap-3">
                 <button
                   onClick={() => setShowLogout(false)}
                   className="flex-1 py-3 rounded-xl bg-surface-variant/40 text-on-surface-variant font-bold hover:bg-surface-variant/60 transition-all"
                 >
-                  Cancelar
+                  {t('common.cancel', 'Cancelar')}
                 </button>
                 <button
                   onClick={handleSignOut}
                   className="flex-1 py-3 rounded-xl bg-error text-on-error font-bold hover:scale-[0.98] transition-all"
                 >
-                  Cerrar sesión
+                  {t('common.logout', 'Cerrar sesión')}
                 </button>
               </div>
             </motion.div>

@@ -61,23 +61,23 @@ export const JointAnatomyTooltip: React.FC<JointAnatomyTooltipProps> = ({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 8, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            className="absolute left-0 bottom-full mb-2.5 z-50 w-72 p-4 rounded-3xl bg-slate-950/95 text-white border border-teal-500/40 shadow-2xl text-xs space-y-2 backdrop-blur-2xl"
+            className="absolute left-0 bottom-full mb-2.5 z-50 w-72 p-4 rounded-3xl bg-white/95 dark:bg-slate-950/95 text-slate-800 dark:text-white border border-teal-500/30 dark:border-teal-500/40 shadow-2xl text-xs space-y-2 backdrop-blur-2xl transition-colors"
           >
-            <div className="flex items-center justify-between pb-1 border-b border-white/10">
-              <span className="font-black text-teal-400 flex items-center gap-1.5">
+            <div className="flex items-center justify-between pb-1 border-b border-slate-200 dark:border-white/10">
+              <span className="font-black text-teal-600 dark:text-teal-400 flex items-center gap-1.5">
                 <Layers className="w-3.5 h-3.5" />
                 {jointName}
               </span>
               <button
                 type="button"
                 onClick={() => setVisible(false)}
-                className="text-slate-400 hover:text-white text-[10px]"
+                className="text-slate-400 hover:text-slate-700 dark:hover:text-white text-[10px] cursor-pointer"
               >
                 Cerrar
               </button>
             </div>
-            <p className="text-[11px] text-slate-300 leading-relaxed">
-              <strong className="text-white">Músculos Agonistas:</strong> {agonists}
+            <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed">
+              <strong className="text-slate-900 dark:text-white">Músculos Agonistas:</strong> {agonists}
             </p>
             <div className="p-2 rounded-xl bg-amber-500/15 border border-amber-500/30 text-[10px] text-amber-300 flex items-start gap-1.5">
               <ShieldAlert className="w-3.5 h-3.5 shrink-0 text-amber-400 mt-0.5" />
