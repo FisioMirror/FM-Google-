@@ -5,11 +5,12 @@ import { motion } from "framer-motion"
 import { Spinner } from "./Spinner"
 
 export const buttonVariants = cva(
-  "inline-flex items-center justify-center rounded-xl text-sm font-semibold transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background select-none active:scale-[0.98]",
+  "inline-flex items-center justify-center rounded-xl text-sm font-semibold transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background select-none active:scale-[0.98] cursor-pointer",
   {
     variants: {
       variant: {
         default: "bg-primary text-white hover:bg-primary/90 shadow-sm hover:shadow-md",
+        primary: "bg-primary text-white hover:bg-primary/90 shadow-sm hover:shadow-md",
         destructive: "bg-error text-white hover:bg-error/90 shadow-sm",
         outline: "border border-outline-variant/40 dark:border-white/15 bg-transparent hover:bg-surface-container text-on-surface hover:text-on-surface",
         secondary: "bg-secondary text-white hover:bg-secondary/90 shadow-sm",
@@ -23,7 +24,7 @@ export const buttonVariants = cva(
       },
       size: {
         default: "h-10 py-2 px-4",
-        sm: "h-8 px-3 rounded-lg text-xs",
+        sm: "h-8 px-3 rounded-xl text-xs",
         lg: "h-12 px-6 rounded-xl text-base",
         icon: "h-10 w-10 rounded-xl",
       },
@@ -50,17 +51,18 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         className={cn(buttonVariants({ variant, size, className }))}
         disabled={loading || props.disabled}
         whileHover={glowEffect ? { scale: 1.02 } : undefined}
-        whileTap={glowEffect ? { scale: 0.98 } : undefined}
+        whileTap={{ scale: 0.98 }}
+        transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
         {...props}
       >
         {loading && <Spinner className="mr-2 h-4 w-4" />}
-        {icon && iconPosition === "left" && <span className="mr-2">{icon}</span>}
+        {icon && iconPosition === "left" && <span className="mr-2 shrink-0">{icon}</span>}
         {children}
-        {icon && iconPosition === "right" && <span className="ml-2">{icon}</span>}
+        {icon && iconPosition === "right" && <span className="ml-2 shrink-0">{icon}</span>}
 
         {variant === "glow" && (
           <motion.span
-            className="absolute inset-0 rounded-lg bg-gradient-to-r from-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"
+            className="absolute inset-0 rounded-xl bg-gradient-to-r from-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"
             initial={{ x: -100 }}
             animate={{ x: 100 }}
             transition={{ duration: 0.6, repeat: Infinity, ease: "linear" }}
@@ -75,7 +77,7 @@ Button.displayName = "Button"
 // Variantes específicas
 export const IconButton = forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, icon, ...props }, ref) => (
-    <Button ref={ref} variant="ghost" size="icon" className={cn("hover:bg-muted", className)} {...props}>
+    <Button ref={ref} variant="ghost" size="icon" className={cn("hover:bg-surface-container text-on-surface", className)} {...props}>
       {icon}
     </Button>
   )
@@ -84,7 +86,7 @@ IconButton.displayName = "IconButton"
 
 export const BackButton = forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, ...props }, ref) => (
-    <Button ref={ref} variant="ghost" size="default" className={cn("hover:bg-surface-variant/30", className)} {...props}>
+    <Button ref={ref} variant="ghost" size="default" className={cn("hover:bg-surface-variant/30 text-on-surface", className)} {...props}>
       {props.children}
     </Button>
   )

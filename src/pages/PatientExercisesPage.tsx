@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { Icon } from '../components/ui/Icon';
 import { GlassModal } from '../components/ui/GlassModal';
@@ -100,7 +99,6 @@ const DEFAULT_FALLBACK_EXERCISES: AssignedExercise[] = [
 ];
 
 export function PatientExercisesPage() {
-  const { t } = useTranslation();
   const navigate = useNavigate();
   const toast = useToast();
   const user = useAuthStore((s) => s.user);
@@ -175,10 +173,10 @@ export function PatientExercisesPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="font-extrabold text-2xl sm:text-3xl text-on-surface tracking-tight">
-            {t('patientExercises.title') || 'Mi Rutina de Rehabilitación'}
+            Mi Rutina de Rehabilitación
           </h1>
           <p className="text-on-surface-variant text-sm mt-0.5">
-            {t('patientExercises.subtitle') || 'Ejercicios personalizados prescritos por tu fisioterapeuta con control biomecánico.'}
+            Ejercicios personalizados prescritos por tu fisioterapeuta con control biomecánico.
           </p>
         </div>
 
@@ -188,28 +186,28 @@ export function PatientExercisesPage() {
             <button
               onClick={() => {
                 const calExercises: CalendarExercise[] = exercises.map((ex) => ({
-                  nombre: ex.ejercicio_nombre || (t('navigation.exercises') || 'Ejercicio'),
+                  nombre: ex.ejercicio_nombre || 'Ejercicio',
                   series: ex.series,
                   repeticiones: ex.repeticiones,
                   frecuencia_semana: ex.frecuencia_semana,
                 }));
-                const url = buildGoogleCalendarUrl(calExercises, user?.full_name || (t('common.patient') || 'Paciente'));
+                const url = buildGoogleCalendarUrl(calExercises, user?.full_name || 'Paciente');
                 if (url) window.open(url, '_blank');
               }}
               className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-surface-container-high border border-outline-variant/30 text-on-surface hover:bg-surface-container-highest transition-all text-xs font-semibold"
             >
               <Calendar size={14} className="text-primary" />
-              <span>{t('common.googleCalendar') || 'Google Calendar'}</span>
+              <span>Google Calendar</span>
             </button>
             <button
               onClick={() => {
                 const calExercises: CalendarExercise[] = exercises.map((ex) => ({
-                  nombre: ex.ejercicio_nombre || (t('navigation.exercises') || 'Ejercicio'),
+                  nombre: ex.ejercicio_nombre || 'Ejercicio',
                   series: ex.series,
                   repeticiones: ex.repeticiones,
                   frecuencia_semana: ex.frecuencia_semana,
                 }));
-                const ics = buildIcsFileContent(calExercises, user?.full_name || (t('common.patient') || 'Paciente'));
+                const ics = buildIcsFileContent(calExercises, user?.full_name || 'Paciente');
                 if (!ics) return;
                 const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
                 const url = URL.createObjectURL(blob);
@@ -218,12 +216,12 @@ export function PatientExercisesPage() {
                 a.download = 'rutina-fisiomirror.ics';
                 a.click();
                 URL.revokeObjectURL(url);
-                toast.success(t('common.calendarDownloaded') || 'Calendario descargado');
+                toast.success('Calendario descargado');
               }}
               className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-surface-container-high border border-outline-variant/30 text-on-surface hover:bg-surface-container-highest transition-all text-xs font-semibold"
             >
               <Download size={14} className="text-primary" />
-              <span>{t('common.downloadIcs') || 'Descargar .ics'}</span>
+              <span>Descargar .ics</span>
             </button>
           </div>
         )}
@@ -232,7 +230,7 @@ export function PatientExercisesPage() {
       {isOffline && (
         <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-700 dark:text-amber-300 font-medium">
           <Icon name="cloud_off" size={16} />
-          <span>{t('patientExercises.offlineStoredRoutine') || 'Modo sin conexión — usando rutina local almacenada'}</span>
+          <span>Modo sin conexión — usando rutina local almacenada</span>
         </div>
       )}
 
@@ -240,13 +238,13 @@ export function PatientExercisesPage() {
         <div className="flex items-center justify-between gap-2 px-4 py-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-xs text-rose-700 dark:text-rose-300 font-medium">
           <div className="flex items-center gap-2">
             <Icon name="error_outline" size={16} />
-            <span>{t('patientExercises.syncError') || 'No se pudo sincronizar la rutina con el servidor. Mostrando ejercicios guardados.'}</span>
+            <span>No se pudo sincronizar la rutina con el servidor. Mostrando ejercicios guardados.</span>
           </div>
           <button
             onClick={() => loadExercises()}
             className="px-3 py-1 rounded-lg bg-rose-500/20 hover:bg-rose-500/30 text-rose-700 dark:text-rose-200 font-semibold transition-colors"
           >
-            {t('common.retry') || 'Reintentar'}
+            Reintentar
           </button>
         </div>
       )}
@@ -272,15 +270,13 @@ export function PatientExercisesPage() {
         </div>
         <div className="space-y-4">
           <MobilityQuestCard
-            questTitle={t('patientExercises.dailyQuestTitle') || 'Misión Diaria: 3 Series Cumplidas'}
+            questTitle="Misión Diaria: 3 Series Cumplidas"
             targetExercises={3}
             completedExercises={exercises.length > 0 ? 1 : 0}
             xpReward={150}
           />
           <div className="flex items-center justify-between p-4 rounded-3xl bg-surface/80 dark:bg-slate-900/60 border border-outline/10">
-            <span className="text-xs font-bold text-slate-700 dark:text-slate-200">
-              {t('patientExercises.sessionCompleted') || '¿Sesión completada?'}
-            </span>
+            <span className="text-xs font-bold text-slate-700 dark:text-slate-200">¿Sesión completada?</span>
             <CheerReactionButton />
           </div>
         </div>
@@ -306,14 +302,12 @@ export function PatientExercisesPage() {
                   <div className="rounded-2xl overflow-hidden mb-3.5 bg-slate-100 dark:bg-slate-800">
                     <ExerciseImage
                       src={getExerciseImage(ex.ejercicio_id)}
-                      name={ex.ejercicio_nombre || (t('navigation.exercises') || 'Ejercicio')}
+                      name={ex.ejercicio_nombre || 'Ejercicio asignado'}
                     />
                   </div>
                   {ex.notas && (
                     <div className="text-xs text-on-surface-variant mt-2 mb-3 bg-teal-500/10 dark:bg-teal-950/30 p-3 rounded-2xl border border-teal-500/20">
-                      <span className="font-bold text-teal-700 dark:text-teal-300 mr-1.5">
-                        {t('patientExercises.therapistInstructions') || 'Indicación del Fisioterapeuta:'}
-                      </span>
+                      <span className="font-bold text-teal-700 dark:text-teal-300 mr-1.5">Indicación del Fisioterapeuta:</span>
                       <span className="text-on-surface">{ex.notas}</span>
                     </div>
                   )}
@@ -323,23 +317,23 @@ export function PatientExercisesPage() {
                     <div className="flex flex-col items-center">
                       <p className="text-[10px] uppercase font-bold text-slate-400 dark:text-slate-500 flex items-center justify-center gap-1">
                         <Repeat size={11} className="text-teal-600 dark:text-teal-400" />
-                        <span>{t('patientExercises.series') || 'Series'}</span>
+                        <span>Series</span>
                       </p>
                       <span className="font-extrabold text-base text-slate-800 dark:text-slate-100 mt-0.5">{ex.series ?? 3}</span>
                     </div>
                     <div className="flex flex-col items-center pl-2">
                       <p className="text-[10px] uppercase font-bold text-slate-400 dark:text-slate-500 flex items-center justify-center gap-1">
                         <Flame size={11} className="text-amber-500" />
-                        <span>{t('patientExercises.reps') || 'Reps'}</span>
+                        <span>Reps</span>
                       </p>
                       <span className="font-extrabold text-base text-slate-800 dark:text-slate-100 mt-0.5">{ex.repeticiones ?? 12}</span>
                     </div>
                     <div className="flex flex-col items-center pl-2">
                       <p className="text-[10px] uppercase font-bold text-slate-400 dark:text-slate-500 flex items-center justify-center gap-1">
                         <Calendar size={11} className="text-teal-600 dark:text-teal-400" />
-                        <span>{t('patientExercises.frequency') || 'Frecuencia'}</span>
+                        <span>Frecuencia</span>
                       </p>
-                      <span className="font-extrabold text-base text-slate-800 dark:text-slate-100 mt-0.5">{ex.frecuencia_semana ?? 4}{t('patientExercises.timesPerWeek') || 'x/sem'}</span>
+                      <span className="font-extrabold text-base text-slate-800 dark:text-slate-100 mt-0.5">{ex.frecuencia_semana ?? 4}x/sem</span>
                     </div>
                   </div>
                 </div>
@@ -353,7 +347,7 @@ export function PatientExercisesPage() {
                       className="py-2.5 px-3 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-semibold text-xs transition-all flex items-center justify-center gap-1.5"
                     >
                       <BookOpen size={14} className="text-teal-600 dark:text-teal-400" />
-                      <span>{t('patientExercises.description') || 'Descripción'}</span>
+                      <span>Descripción</span>
                     </button>
 
                     {/* Botón 2: Demostración 3D Biomecánica Separada */}
@@ -362,7 +356,7 @@ export function PatientExercisesPage() {
                       className="py-2.5 px-3 rounded-xl bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/30 text-teal-700 dark:text-teal-300 font-semibold text-xs transition-all flex items-center justify-center gap-1.5"
                     >
                       <Layers size={14} className="text-teal-600 dark:text-teal-400" />
-                      <span>{t('patientExercises.demo3d') || 'Demostración 3D'}</span>
+                      <span>Demostración 3D</span>
                     </button>
                   </div>
 
@@ -374,7 +368,7 @@ export function PatientExercisesPage() {
                     className="w-full py-3 rounded-2xl bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs transition-all shadow-md shadow-teal-700/20 flex items-center justify-center gap-2 active:scale-[0.98]"
                   >
                     <Play size={16} fill="currentColor" />
-                    <span>{t('patientExercises.startInAr') || 'Iniciar en Espejo AR'}</span>
+                    <span>Iniciar en Espejo AR</span>
                   </button>
                 </div>
               </div>
@@ -386,7 +380,7 @@ export function PatientExercisesPage() {
       {/* Próximos Ejercicios por Desbloquear según Progresión */}
       <div className="mt-8 space-y-3">
         <h3 className="font-bold text-sm text-slate-700 dark:text-slate-200 uppercase tracking-wider">
-          {t('patientExercises.futureProgression') || 'Nivel de Progresión Clínica Futura'}
+          Nivel de Progresión Clínica Futura
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <UnlockableExerciseLocker
@@ -409,20 +403,20 @@ export function PatientExercisesPage() {
                 <BookOpen size={18} />
               </div>
               <h3 className="font-bold text-base text-on-surface">
-                {descriptionExercise.ejercicio_nombre || (t('navigation.exercises') || 'Ejercicio asignado')}
+                {descriptionExercise.ejercicio_nombre || 'Ejercicio asignado'}
               </h3>
             </div>
 
             <ExerciseImage
               src={getExerciseImage(descriptionExercise.ejercicio_id)}
-              name={descriptionExercise.ejercicio_nombre || (t('navigation.exercises') || 'Ejercicio asignado')}
+              name={descriptionExercise.ejercicio_nombre || 'Ejercicio asignado'}
               heightClass="h-40"
             />
 
             <div className="space-y-3">
               <div>
                 <p className="text-[11px] font-bold uppercase tracking-wider text-on-surface-variant mb-1">
-                  {t('patientExercises.executionInstructions') || 'Instrucciones de Ejecución'}
+                  Instrucciones de Ejecución
                 </p>
                 <p className="text-xs text-on-surface leading-relaxed whitespace-pre-wrap">
                   {descriptionExercise.ejercicio_detailed_description ||
@@ -433,7 +427,7 @@ export function PatientExercisesPage() {
               {descriptionExercise.notas && (
                 <div className="p-3 rounded-xl bg-teal-500/10 border border-teal-500/20">
                   <p className="text-[11px] font-bold text-teal-700 dark:text-teal-300">
-                    {t('patientExercises.therapistInstructions') || 'Nota del Terapeuta:'}
+                    Nota del Terapeuta:
                   </p>
                   <p className="text-xs text-on-surface mt-0.5">{descriptionExercise.notas}</p>
                 </div>
@@ -445,7 +439,7 @@ export function PatientExercisesPage() {
                 onClick={() => setDescriptionExercise(null)}
                 className="px-5 py-2 rounded-xl bg-primary text-white text-xs font-bold hover:opacity-90 transition-opacity"
               >
-                {t('common.understood') || 'Entendido'}
+                Entendido
               </button>
             </div>
           </div>

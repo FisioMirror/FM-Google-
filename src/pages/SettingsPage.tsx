@@ -7,6 +7,7 @@ import { useAuthStore } from '../stores/authStore';
 import { useMediaPipeModel, type ModelPreference } from '../hooks/useMediaPipeModel';
 import { changeAppLanguage } from '../i18n';
 import { talkBack } from '../lib/talkback';
+import { speakHumanVoice, stopHumanVoice, getVoiceMode, setVoiceMode, type VoiceMode } from '../lib/humanVoice';
 import { GlassPanel } from '../components/ui/Glass';
 import { Icon } from '../components/ui/Icon';
 import { AnimatedTabs } from '../components/ui/AnimatedTabs';
@@ -59,8 +60,8 @@ export function SettingsPage() {
   const { theme, toggleTheme, zoom, setZoom, fontSize, setFontSize, resetDefaults } = useTheme();
   const { user, signOut } = useAuthStore();
   const { show } = useGlassToast();
-  const { t, i18n } = useTranslation();
-  const activeLang = ((i18n.resolvedLanguage || i18n.language || 'es').slice(0, 2).toLowerCase()) as 'es' | 'en' | 'pt';
+  const { i18n } = useTranslation();
+  const [currentLang, setCurrentLang] = useState<string>(() => i18n.language || localStorage.getItem('fisio_language') || 'es');
   const { preference: arPreference, setPreference: setArPreference, activeModel: currentArModel } = useMediaPipeModel();
 
   /* ── Persistent settings ────────────────────────────────────── */
@@ -74,6 +75,33 @@ export function SettingsPage() {
   const [notifEmail, setNotifEmail] = usePersistentBool('fisio-notif-email', true);
   const [notifPush, setNotifPush] = usePersistentBool('fisio-notif-push', true);
   const [notifSound, setNotifSound] = usePersistentBool('fisio-notif-sound', true);
+  const [voiceMode, setLocalVoiceMode] = useState<VoiceMode>(() => getVoiceMode());
+  const [testingVoice, setTestingVoice] = useState(false);
+
+  const handleVoiceModeChange = (mode: VoiceMode) => {
+    setLocalVoiceMode(mode);
+    setVoiceMode(mode);
+    show({
+      title: mode === 'humanized' ? 'Voz Humanizada Activada' : 'Voz del Dispositivo Activada',
+      message: mode === 'humanized'
+        ? 'La retroalimentación usará voz natural Fish Audio / Neural con respaldo offline.'
+        : 'La retroalimentación usará el sintetizador local offline.',
+      variant: 'success',
+    });
+  };
+
+  const handleTestVoice = () => {
+    if (testingVoice) {
+      stopHumanVoice();
+      setTestingVoice(false);
+      return;
+    }
+    setTestingVoice(true);
+    speakHumanVoice('Hola, soy Physi, tu asistente en FisioMirror. Tu postura y progreso están en excelentes manos.', {
+      onEnd: () => setTestingVoice(false),
+      onError: () => setTestingVoice(false),
+    });
+  };
 
   /* ── Confirmation modal state ───────────────────────────────── */
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -181,11 +209,11 @@ export function SettingsPage() {
               <Icon name={theme === 'light' ? 'light_mode' : 'dark_mode'} size={24} className={theme === 'light' ? 'text-amber-600' : 'text-slate-300'} />
             </div>
             <div>
-              <p className="font-semibold text-on-surface">{theme === 'light' ? (t('settings.lightMode') || 'Modo Claro') : (t('settings.darkMode') || 'Modo Oscuro')}</p>
-              <p className="text-sm text-on-surface-variant">{t('settings.themeSubtitle') || 'Cambia entre tema claro y oscuro'}</p>
+              <p className="font-semibold text-on-surface">{theme === 'light' ? 'Modo Claro' : 'Modo Oscuro'}</p>
+              <p className="text-sm text-on-surface-variant">Cambia entre tema claro y oscuro</p>
             </div>
           </div>
-          <Toggle value={theme === 'dark'} onChange={toggleTheme} label={t('common.theme') || 'Cambiar tema'} />
+          <Toggle value={theme === 'dark'} onChange={toggleTheme} label="Cambiar tema" />
         </div>
       </GlassPanel>
 
@@ -194,7 +222,7 @@ export function SettingsPage() {
         <div className="blob-blue absolute -top-12 -right-12 w-32 h-32 opacity-20 pointer-events-none" />
         <div className="relative">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="font-semibold text-on-surface gradient-text-blue">{t('settings.fontSize') || 'Tamaño de Tipografía'}</h3>
+            <h3 className="font-semibold text-on-surface gradient-text-blue">Tamaño de Tipografía</h3>
             <span className="font-bold text-primary">{fontSize}px</span>
           </div>
           <div className="flex gap-2 flex-wrap mb-4">
@@ -209,9 +237,14 @@ export function SettingsPage() {
                     : 'bg-surface-container-low text-on-surface-variant hover:bg-surface-container-high'
                 )}
               >
-                {size === 14 ? '14px' : size === 16 ? '16px' : size === 18 ? '18px' : '20px'}
+                {size === 14 ? 'Pequeña' : size === 16 ? 'Normal' : size === 18 ? 'Grande' : 'Extra Grande'}
               </button>
             ))}
+          </div>
+          <div className="mt-4 p-4 rounded-xl bg-surface-container-low/60 border border-outline-variant/20">
+            <p className="text-on-surface" style={{ fontSize: `${fontSize}px` }}>
+              Texto de ejemplo: "Tu próxima sesión de rehabilitación es mañana a las 10:00."
+            </p>
           </div>
         </div>
       </GlassPanel>
@@ -220,8 +253,8 @@ export function SettingsPage() {
       <GlassPanel className="p-6 rounded-2xl relative overflow-hidden">
         <div className="blob-cyan absolute -top-12 -right-12 w-32 h-32 opacity-20 pointer-events-none" />
         <div className="relative">
-          <h3 className="font-semibold text-on-surface gradient-text-cyan mb-2">{t('settings.zoom') || 'Zoom de Interfaz'}</h3>
-          <p className="text-sm text-on-surface-variant mb-4">{t('settings.zoomSubtitle') || 'Amplía o reduce el tamaño de toda la interfaz'}</p>
+          <h3 className="font-semibold text-on-surface gradient-text-cyan mb-2">Zoom de Interfaz</h3>
+          <p className="text-sm text-on-surface-variant mb-4">Amplía o reduce el tamaño de toda la interfaz</p>
           <div className="flex gap-2 flex-wrap">
             {zoomOptions.map((z) => (
               <button
@@ -242,7 +275,7 @@ export function SettingsPage() {
             onClick={resetDefaults}
             className="mt-4 w-full py-2.5 rounded-xl bg-surface-container-low text-on-surface-variant font-semibold text-sm hover:bg-surface-container-high transition-colors border border-outline-variant/20 flex items-center justify-center gap-2"
           >
-            <Icon name="restart_alt" size={18} /> {t('settings.resetDefaults') || 'Restablecer predeterminados (100% / 16px)'}
+            <Icon name="restart_alt" size={18} /> Restablecer predeterminados (100% / 16px)
           </button>
         </div>
       </GlassPanel>
@@ -256,11 +289,11 @@ export function SettingsPage() {
               <Icon name="gradient" size={24} className="icon-accent-emerald" />
             </div>
             <div>
-              <p className="font-semibold text-on-surface">{t('settings.glassmorphism') || 'Glassmorfismo'}</p>
-              <p className="text-sm text-on-surface-variant">{t('settings.glassmorphismSubtitle') || 'Efectos de vidrio esmerilado en las superficies'}</p>
+              <p className="font-semibold text-on-surface">Glassmorfismo</p>
+              <p className="text-sm text-on-surface-variant">Efectos de vidrio esmerilado en las superficies</p>
             </div>
           </div>
-          <Toggle value={glassmorphism} onChange={setGlassmorphism} label={t('settings.glassmorphism') || 'Glassmorfismo'} />
+          <Toggle value={glassmorphism} onChange={setGlassmorphism} label="Glassmorfismo" />
         </div>
       </GlassPanel>
 
@@ -273,9 +306,9 @@ export function SettingsPage() {
               <BookOpen size={24} className="text-teal-600 dark:text-teal-400" />
             </div>
             <div>
-              <p className="font-semibold text-on-surface">{t('settings.spiritualMode') || 'Palabra de Fortaleza & Fe'}</p>
+              <p className="font-semibold text-on-surface">Palabra de Fortaleza & Fe</p>
               <p className="text-sm text-on-surface-variant">
-                {t('settings.spiritualDesc') || 'Muestra versículos de sanidad, constancia y perseverancia en tu recuperación'}
+                Muestra versículos de sanidad, constancia y perseverancia en tu recuperación
               </p>
             </div>
           </div>
@@ -300,8 +333,8 @@ export function SettingsPage() {
               <Globe size={24} className="text-blue-500" />
             </div>
             <div>
-              <p className="font-semibold text-on-surface">{t('settings.language') || 'Idioma / Language'}</p>
-              <p className="text-sm text-on-surface-variant">{t('settings.languageSubtitle') || 'Selecciona tu idioma preferido para la interfaz'}</p>
+              <p className="font-semibold text-on-surface">Idioma / Language</p>
+              <p className="text-sm text-on-surface-variant">Selecciona tu idioma preferido para la interfaz</p>
             </div>
           </div>
           <div className="grid grid-cols-3 gap-3">
@@ -309,34 +342,30 @@ export function SettingsPage() {
               { code: 'es', label: 'Español', badge: 'ES' },
               { code: 'en', label: 'English', badge: 'EN' },
               { code: 'pt', label: 'Português', badge: 'PT' },
-            ].map((lang) => {
-              const isSelected = activeLang === lang.code;
-              return (
-                <button
-                  key={lang.code}
-                  type="button"
-                  onClick={async () => {
-                    await changeAppLanguage(lang.code as 'es' | 'en' | 'pt');
-                    show(t('common.languageChanged', { lang: lang.label }) || `Idioma cambiado a ${lang.label}`, 'success');
-                  }}
-                  className={cn(
-                    'flex items-center justify-center gap-2 py-3 rounded-xl font-semibold text-sm transition-all duration-200 border active:scale-98',
-                    isSelected
-                      ? 'bg-primary text-on-primary border-primary shadow-glow-primary font-bold'
-                      : 'bg-surface-container-low text-on-surface-variant border-outline-variant/30 hover:bg-surface-container-high'
-                  )}
-                  aria-pressed={isSelected}
-                >
-                  <span className={cn(
-                    'text-xs font-bold px-2 py-0.5 rounded-md uppercase tracking-wider',
-                    isSelected ? 'bg-on-primary/20 text-on-primary' : 'bg-primary/10 text-primary'
-                  )}>
-                    {lang.badge}
-                  </span>
-                  <span>{lang.label}</span>
-                </button>
-              );
-            })}
+            ].map((lang) => (
+              <button
+                key={lang.code}
+                onClick={() => {
+                  changeAppLanguage(lang.code as 'es' | 'en' | 'pt');
+                  setCurrentLang(lang.code);
+                  show(`Idioma cambiado a ${lang.label}`, 'success');
+                }}
+                className={cn(
+                  'flex items-center justify-center gap-2 py-3 rounded-xl font-semibold text-sm transition-all duration-200 border',
+                  currentLang.startsWith(lang.code)
+                    ? 'bg-primary text-on-primary border-primary shadow-glow-primary'
+                    : 'bg-surface-container-low text-on-surface-variant border-outline-variant/30 hover:bg-surface-container-high'
+                )}
+              >
+                <span className={cn(
+                  'text-xs font-bold px-2 py-0.5 rounded-md uppercase tracking-wider',
+                  currentLang.startsWith(lang.code) ? 'bg-on-primary/20 text-on-primary' : 'bg-primary/10 text-primary'
+                )}>
+                  {lang.badge}
+                </span>
+                <span>{lang.label}</span>
+              </button>
+            ))}
           </div>
         </div>
       </GlassPanel>
@@ -398,8 +427,8 @@ export function SettingsPage() {
           icon: 'animation',
           color: 'text-primary',
           bg: 'bg-primary/10',
-          title: t('settings.reduceMotion') || 'Reducir Movimiento',
-          desc: t('settings.reduceMotionDesc') || 'Minimiza animaciones y efectos visuales para mayor comodidad',
+          title: 'Reducir Movimiento',
+          desc: 'Minimiza animaciones y efectos visuales para mayor comodidad',
           value: reduceMotion,
           onChange: setReduceMotion,
           blob: 'blob-teal',
@@ -409,8 +438,8 @@ export function SettingsPage() {
           icon: 'contrast',
           color: 'text-secondary',
           bg: 'bg-secondary-container/20',
-          title: t('settings.highContrast') || 'Alto Contraste',
-          desc: t('settings.highContrastDesc') || 'Aumenta el contraste de textos y bordes para mejor legibilidad',
+          title: 'Alto Contraste',
+          desc: 'Aumenta el contraste de textos y bordes para mejor legibilidad',
           value: highContrast,
           onChange: setHighContrast,
           blob: 'blob-blue',
@@ -420,8 +449,8 @@ export function SettingsPage() {
           icon: 'record_voice_over',
           color: 'icon-accent-cyan',
           bg: 'bg-cyan-500/10',
-          title: t('settings.talkback') || 'Lectura en Voz Alta (Talkback)',
-          desc: t('settings.talkbackDesc') || 'Lee en voz alta los mensajes de Physi y textos importantes',
+          title: 'Lectura en Voz Alta (Talkback)',
+          desc: 'Lee en voz alta los mensajes de Physi y textos importantes',
           value: talkback,
           onChange: setTalkback,
           blob: 'blob-cyan',
@@ -431,8 +460,8 @@ export function SettingsPage() {
           icon: 'menu_book',
           color: 'icon-accent-emerald',
           bg: 'bg-emerald-500/10',
-          title: t('settings.easyReading') || 'Lectura Fácil',
-          desc: t('settings.fontSizeSubtitle') || 'Aumenta el tamaño de texto y espaciado en secciones clave',
+          title: 'Lectura Fácil',
+          desc: 'Aumenta el tamaño de texto y espaciado en secciones clave',
           value: easyReading,
           onChange: setEasyReading,
           blob: 'blob-emerald',
@@ -442,8 +471,8 @@ export function SettingsPage() {
           icon: 'touch_app',
           color: 'text-primary',
           bg: 'bg-primary/10',
-          title: t('settings.largeTouch') || 'Botones Táctiles Grandes',
-          desc: t('settings.largeTouchDesc') || 'Asegura que los botones tengan al menos 48px para fácil toque',
+          title: 'Botones Táctiles Grandes',
+          desc: 'Asegura que los botones tengan al menos 48px para fácil toque',
           value: largeTouch,
           onChange: setLargeTouch,
           blob: 'blob-teal',
@@ -465,6 +494,97 @@ export function SettingsPage() {
           </div>
         </GlassPanel>
       ))}
+
+      {/* ── Motor de Voz de Retroalimentación en Vivo (Fish Audio / Neural / Offline) ── */}
+      <GlassPanel className="p-6 rounded-2xl relative overflow-hidden border border-teal-500/20 bg-surface/80">
+        <div className="blob-teal absolute -top-12 -right-12 w-40 h-40 opacity-20 pointer-events-none" />
+        <div className="relative space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-xl bg-teal-500/10 flex items-center justify-center text-teal-600 dark:text-teal-400">
+                <Icon name="graphic_eq" size={24} />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <p className="font-semibold text-on-surface">Motor de Voz en Vivo (TTS)</p>
+                  <span className="px-2 py-0.5 text-xs font-medium rounded-full bg-teal-500/15 text-teal-700 dark:text-teal-300">
+                    {voiceMode === 'humanized' ? 'Fish Audio IA' : 'Modo Dispositivo'}
+                  </span>
+                </div>
+                <p className="text-sm text-on-surface-variant">
+                  {voiceMode === 'humanized'
+                    ? 'Voz cálida y articulada con fallback automático a síntesis offline si se pierde conexión.'
+                    : 'Síntesis local sin consumo de datos y respuesta offline inmediata.'}
+                </p>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={handleTestVoice}
+              className={cn(
+                "px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all self-start sm:self-auto",
+                testingVoice
+                  ? "bg-rose-500 text-white shadow-md animate-pulse"
+                  : "bg-teal-600 hover:bg-teal-700 text-white shadow-sm hover:shadow"
+              )}
+            >
+              <Icon name={testingVoice ? "stop" : "volume_up"} size={16} />
+              <span>{testingVoice ? "Detener prueba" : "Probar voz"}</span>
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+            <button
+              type="button"
+              onClick={() => handleVoiceModeChange('humanized')}
+              className={cn(
+                "p-3.5 rounded-xl border text-left transition-all flex items-start gap-3",
+                voiceMode === 'humanized'
+                  ? "border-teal-500 bg-teal-500/10 shadow-sm"
+                  : "border-outline-variant/40 bg-surface hover:border-outline-variant"
+              )}
+            >
+              <div className={cn(
+                "w-4 h-4 rounded-full mt-0.5 border flex items-center justify-center",
+                voiceMode === 'humanized' ? "border-teal-600 bg-teal-600" : "border-outline"
+              )}>
+                {voiceMode === 'humanized' && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
+              </div>
+              <div>
+                <p className="text-xs font-bold text-on-surface">Voz Humanizada Clínica (Recomendada)</p>
+                <p className="text-[11px] text-on-surface-variant leading-relaxed">
+                  Fish Audio S2.1 Pro / Neural en vivo. Máxima empatía y articulación médica fluida.
+                </p>
+              </div>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => handleVoiceModeChange('device')}
+              className={cn(
+                "p-3.5 rounded-xl border text-left transition-all flex items-start gap-3",
+                voiceMode === 'device'
+                  ? "border-teal-500 bg-teal-500/10 shadow-sm"
+                  : "border-outline-variant/40 bg-surface hover:border-outline-variant"
+              )}
+            >
+              <div className={cn(
+                "w-4 h-4 rounded-full mt-0.5 border flex items-center justify-center",
+                voiceMode === 'device' ? "border-teal-600 bg-teal-600" : "border-outline"
+              )}>
+                {voiceMode === 'device' && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
+              </div>
+              <div>
+                <p className="text-xs font-bold text-on-surface">Voz del Dispositivo (Offline)</p>
+                <p className="text-[11px] text-on-surface-variant leading-relaxed">
+                  Sintetizador Web Speech del sistema operativo. Sin consumo de red, ideal para baja señal.
+                </p>
+              </div>
+            </button>
+          </div>
+        </div>
+      </GlassPanel>
     </div>
   );
 
@@ -476,7 +596,7 @@ export function SettingsPage() {
       <GlassPanel className="p-6 rounded-2xl relative overflow-hidden">
         <div className="blob-cyan absolute -top-12 -right-12 w-32 h-32 opacity-20 pointer-events-none" />
         <div className="relative space-y-5">
-          <h3 className="font-semibold text-on-surface gradient-text-cyan">{t('settings.notifications') || 'Preferencias de Notificaciones'}</h3>
+          <h3 className="font-semibold text-on-surface gradient-text-cyan">Preferencias de Notificaciones</h3>
           {[
             { icon: 'mail', color: 'text-primary', bg: 'bg-primary/10', title: 'Notificaciones por Email', desc: 'Recibe actualizaciones y recordatorios en tu correo', value: notifEmail, onChange: setNotifEmail },
             { icon: 'notifications_active', color: 'text-secondary', bg: 'bg-secondary-container/20', title: 'Notificaciones Push', desc: 'Recibe alertas en tiempo real en tu dispositivo', value: notifPush, onChange: setNotifPush },
@@ -511,7 +631,7 @@ export function SettingsPage() {
       <GlassPanel className="p-6 rounded-2xl relative overflow-hidden">
         <div className="blob-teal absolute -top-12 -right-12 w-32 h-32 opacity-20 pointer-events-none" />
         <div className="relative">
-          <h3 className="font-semibold text-on-surface gradient-text-teal mb-4">{t('settings.account') || 'Información de Cuenta'}</h3>
+          <h3 className="font-semibold text-on-surface gradient-text-teal mb-4">Información de Cuenta</h3>
           <div className="space-y-3">
             <div className="flex items-center justify-between p-3 rounded-xl bg-surface-container-low/60">
               <div className="flex items-center gap-2 text-on-surface-variant"><Icon name="alternate_email" size={18} /><span className="text-sm">Email</span></div>
@@ -534,7 +654,7 @@ export function SettingsPage() {
             onClick={() => setShowPasswordModal(true)}
             className="premium-btn w-full bg-primary text-on-primary py-3 rounded-xl font-semibold flex items-center justify-center gap-2"
           >
-            <Icon name="lock_reset" size={20} />{t('settings.changePassword') || 'Cambiar Contraseña'}
+            <Icon name="lock_reset" size={20} />Cambiar Contraseña
           </button>
         </div>
       </GlassPanel>
@@ -543,20 +663,20 @@ export function SettingsPage() {
       <GlassPanel className="p-6 rounded-2xl relative overflow-hidden border border-error/20">
         <div className="blob-warm absolute -top-12 -right-12 w-32 h-32 opacity-15 pointer-events-none" />
         <div className="relative">
-          <h3 className="font-semibold text-error mb-2">{t('settings.deleteAccount') || 'Zona de Peligro'}</h3>
-          <p className="text-sm text-on-surface-variant mb-4">{t('settings.deleteAccountWarning') || 'Estas acciones son permanentes y no se pueden deshacer'}</p>
+          <h3 className="font-semibold text-error mb-2">Zona de Peligro</h3>
+          <p className="text-sm text-on-surface-variant mb-4">Estas acciones son permanentes y no se pueden deshacer</p>
           <div className="space-y-3">
             <button
               onClick={() => setShowDeleteModal(true)}
               className="premium-btn w-full bg-error/10 text-error py-3 rounded-xl font-semibold flex items-center justify-center gap-2 hover:bg-error/20 transition-colors border border-error/20"
             >
-              <Icon name="delete_forever" size={20} />{t('settings.deleteAccount') || 'Eliminar Cuenta'}
+              <Icon name="delete_forever" size={20} />Eliminar Cuenta
             </button>
             <button
               onClick={() => signOut()}
               className="premium-btn w-full bg-surface-container-low text-on-surface-variant py-3 rounded-xl font-semibold flex items-center justify-center gap-2 hover:bg-surface-container-high transition-colors"
             >
-              <Icon name="logout" size={20} />{t('common.logout') || 'Cerrar Sesión'}
+              <Icon name="logout" size={20} />Cerrar Sesión
             </button>
           </div>
         </div>
@@ -740,13 +860,13 @@ export function SettingsPage() {
   );
 
   const tabs = [
-    { id: 'apariencia', label: t('settings.appearance') || 'Apariencia', content: AparienciaTab },
-    { id: 'accesibilidad', label: t('settings.accessibility') || 'Accesibilidad', content: AccesibilidadTab },
-    { id: 'ayuda', label: t('navigation.help') || 'Ayuda & FAQ', content: AyudaTab },
-    { id: 'notificaciones', label: t('settings.notifications') || 'Notificaciones', content: NotificacionesTab },
-    { id: 'cuenta', label: t('settings.account') || 'Cuenta', content: CuentaTab },
-    { id: 'acerca-de', label: t('settings.about') || 'Acerca de', content: AcercaDeTab },
-    { id: 'contacto', label: t('settings.contact') || 'Contacto', content: ContactoTab },
+    { id: 'apariencia', label: 'Apariencia', content: AparienciaTab },
+    { id: 'accesibilidad', label: 'Accesibilidad', content: AccesibilidadTab },
+    { id: 'ayuda', label: 'Ayuda & FAQ', content: AyudaTab },
+    { id: 'notificaciones', label: 'Notificaciones', content: NotificacionesTab },
+    { id: 'cuenta', label: 'Cuenta', content: CuentaTab },
+    { id: 'acerca-de', label: 'Acerca de', content: AcercaDeTab },
+    { id: 'contacto', label: 'Contacto', content: ContactoTab },
   ];
 
   return (
@@ -756,8 +876,8 @@ export function SettingsPage() {
           <Icon name="settings" size={28} className="text-primary animate-breathe-icon" />
         </div>
         <div>
-          <h1 className="text-headline-lg-mobile lg:text-headline-lg font-bold gradient-text-editorial">{t('settings.title') || 'Configuración'}</h1>
-          <p className="text-on-surface-variant text-sm">{t('settings.subtitle') || 'Personaliza tu experiencia en FisioMirror'}</p>
+          <h1 className="text-headline-lg-mobile lg:text-headline-lg font-bold gradient-text-editorial">Configuración</h1>
+          <p className="text-on-surface-variant text-sm">Personaliza tu experiencia en FisioMirror</p>
         </div>
       </motion.div>
 
@@ -805,8 +925,8 @@ export function SettingsPage() {
                 </div>
               </div>
               <div className="flex gap-3 mt-6">
-                <button onClick={() => setShowPasswordModal(false)} className="flex-1 py-3 rounded-xl bg-surface-container-low text-on-surface-variant font-semibold hover:bg-surface-container-high transition-colors">{t('common.cancel') || 'Cancelar'}</button>
-                <button onClick={handlePasswordChange} disabled={pwLoading} className="flex-1 py-3 rounded-xl bg-primary text-on-primary font-semibold hover:bg-primary/90 transition-colors disabled:opacity-50">{pwLoading ? (t('common.saving') || 'Guardando...') : (t('common.save') || 'Guardar')}</button>
+                <button onClick={() => setShowPasswordModal(false)} className="flex-1 py-3 rounded-xl bg-surface-container-low text-on-surface-variant font-semibold hover:bg-surface-container-high transition-colors">Cancelar</button>
+                <button onClick={handlePasswordChange} disabled={pwLoading} className="flex-1 py-3 rounded-xl bg-primary text-on-primary font-semibold hover:bg-primary/90 transition-colors disabled:opacity-50">{pwLoading ? 'Guardando...' : 'Guardar'}</button>
               </div>
             </motion.div>
           </motion.div>
@@ -845,8 +965,8 @@ export function SettingsPage() {
                 />
               </div>
               <div className="flex gap-3 mt-6">
-                <button onClick={() => setShowDeleteModal(false)} className="flex-1 py-3 rounded-xl bg-surface-container-low text-on-surface-variant font-semibold hover:bg-surface-container-high transition-colors">{t('common.cancel') || 'Cancelar'}</button>
-                <button onClick={handleDeleteAccount} disabled={deleteLoading} className="flex-1 py-3 rounded-xl bg-error text-white font-semibold hover:bg-error/90 transition-colors disabled:opacity-50">{deleteLoading ? (t('common.loading') || 'Eliminando...') : (t('common.delete') || 'Eliminar definitivamente')}</button>
+                <button onClick={() => setShowDeleteModal(false)} className="flex-1 py-3 rounded-xl bg-surface-container-low text-on-surface-variant font-semibold hover:bg-surface-container-high transition-colors">Cancelar</button>
+                <button onClick={handleDeleteAccount} disabled={deleteLoading} className="flex-1 py-3 rounded-xl bg-error text-white font-semibold hover:bg-error/90 transition-colors disabled:opacity-50">{deleteLoading ? 'Eliminando...' : 'Eliminar definitivamente'}</button>
               </div>
             </motion.div>
           </motion.div>
@@ -898,7 +1018,7 @@ export function SettingsPage() {
                   </ul>
                 </div>
               </div>
-              <button onClick={() => setShowDocModal(false)} className="w-full mt-6 py-3 rounded-xl bg-primary text-on-primary font-semibold hover:bg-primary/90 transition-colors">{t('common.close') || 'Cerrar'}</button>
+              <button onClick={() => setShowDocModal(false)} className="w-full mt-6 py-3 rounded-xl bg-primary text-on-primary font-semibold hover:bg-primary/90 transition-colors">Cerrar</button>
             </motion.div>
           </motion.div>
         )}
@@ -951,7 +1071,7 @@ export function SettingsPage() {
                   </div>
                 ))}
               </div>
-              <button onClick={() => setShowLicModal(false)} className="w-full mt-6 py-3 rounded-xl bg-primary text-on-primary font-semibold hover:bg-primary/90 transition-colors">{t('common.close') || 'Cerrar'}</button>
+              <button onClick={() => setShowLicModal(false)} className="w-full mt-6 py-3 rounded-xl bg-primary text-on-primary font-semibold hover:bg-primary/90 transition-colors">Cerrar</button>
             </motion.div>
           </motion.div>
         )}

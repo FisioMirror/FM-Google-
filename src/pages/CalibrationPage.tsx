@@ -1,7 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useTranslation } from 'react-i18next';
 import { Icon } from '../components/ui/Icon';
 import { useToast } from '../components/ui/ToastProvider';
 import { usePoseDetection } from '../hooks/usePoseDetection';
@@ -9,9 +8,7 @@ import { PulsatingButton } from '../components/ui/PulsatingButton';
 import { SparklesText } from '../components/ui/SparklesText';
 import { CalibrationCompass } from '../components/ui/FloatingControlsSuite';
 import {
-  CameraFramingGuideHUD,
   PoseConfidenceLiveIndicator,
-  HoldDurationTimerRing,
 } from '../components/ui/RealTimeMetricsSuite';
 
 type CalibState = 'idle' | 'detecting' | 'calibrating' | 'success' | 'error';
@@ -22,10 +19,9 @@ const DETECT_TIMEOUT = 15;
 const COUNTDOWN_FROM = 3;
 
 export function CalibrationPage() {
-  const { t } = useTranslation();
   const navigate = useNavigate();
   const toast = useToast();
-  const { videoRef, canvasRef, poseData, isReady, error, startCamera } = usePoseDetection();
+  const { videoRef, canvasRef, poseData, isReady, error, startCamera, isSimulated, reconnectCamera } = usePoseDetection();
   const vRef = videoRef as React.RefObject<HTMLVideoElement>;
   const cRef = canvasRef as React.RefObject<HTMLCanvasElement>;
 
@@ -180,158 +176,323 @@ export function CalibrationPage() {
     detectStartRef.current = Date.now();
   };
 
+  const [isPanelCollapsed, setIsPanelCollapsed] = useState(false);
+
   return (
-    <div className="fixed inset-0 z-[100] bg-slate-900 text-white flex flex-col overflow-hidden">
+    <div className="fixed inset-0 z-[100] bg-slate-950 text-white flex flex-col overflow-hidden select-none">
       <video ref={vRef} className="absolute inset-0 w-full h-full object-cover scale-x-[-1]" autoPlay playsInline muted style={{ zIndex: 1 }} />
       <canvas ref={cRef} className="absolute inset-0 w-full h-full object-cover scale-x-[-1]" style={{ zIndex: 2 }} />
 
-      <header className="relative z-30 flex items-center justify-between px-5 py-4" style={{ background: 'rgba(13,27,26,0.6)', backdropFilter: 'blur(20px)' }}>
+      {/* Header Compacto y Translúcido */}
+      <header className="relative z-30 flex items-center justify-between px-3 sm:px-5 py-2.5 sm:py-3.5 bg-slate-950/60 backdrop-blur-md border-b border-white/10">
         <button
           onClick={() => navigate('/dashboard-paciente')}
-          className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors"
-          aria-label={t('common.back') || 'Volver'}
+          className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors"
+          aria-label="Volver"
         >
           <Icon name="arrow_back" size={20} className="text-white" />
         </button>
-        <h1 className="font-bold text-lg">{t('calibration.title') || 'Calibración de Cámara'}</h1>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-col items-center">
+          <h1 className="font-bold text-sm sm:text-base tracking-wide">Calibración Postural</h1>
+          <span className="text-[10px] text-teal-300 font-semibold uppercase tracking-wider">Alineación de Cámara</span>
+        </div>
+        <div className="flex items-center gap-2">
           <PoseConfidenceLiveIndicator
             confidence={isReady && poseData?.isTracking ? 95 : 30}
-            className="bg-slate-900/60 border-white/20 text-white text-[11px]"
+            className="bg-slate-900/70 border-white/20 text-white text-[10px] sm:text-[11px] py-1 px-2.5"
           />
-          <span className="text-xs font-bold bg-teal-500/20 text-teal-300 px-3 py-1.5 rounded-full">SESIÓN AR</span>
+          <button
+            onClick={() => setShowSkipConfirm(true)}
+            className="text-[11px] font-bold text-white/70 hover:text-white px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/15 transition-colors sm:hidden"
+          >
+            Omitir
+          </button>
         </div>
       </header>
 
-      {/* Brújula y Sensor de Nivel Espacial */}
-      <div className="absolute top-20 right-6 z-30 pointer-events-auto hidden sm:block">
+      {/* Sutiles Guías de Encuadre en las Esquinas (sin obstruir el cuerpo) */}
+      <div className="absolute inset-4 sm:inset-10 pointer-events-none z-10">
+        <div className="w-full h-full relative rounded-3xl border border-white/10">
+          {/* Esquina Superior Izquierda */}
+          <div className="absolute top-0 left-0 w-6 sm:w-10 h-6 sm:h-10 border-t-2 border-l-2 border-teal-400/70 rounded-tl-xl" />
+          {/* Esquina Superior Derecha */}
+          <div className="absolute top-0 right-0 w-6 sm:w-10 h-6 sm:h-10 border-t-2 border-r-2 border-teal-400/70 rounded-tr-xl" />
+          {/* Esquina Inferior Izquierda */}
+          <div className="absolute bottom-0 left-0 w-6 sm:w-10 h-6 sm:h-10 border-b-2 border-l-2 border-teal-400/70 rounded-bl-xl" />
+          {/* Esquina Inferior Derecha */}
+          <div className="absolute bottom-0 right-0 w-6 sm:w-10 h-6 sm:h-10 border-b-2 border-r-2 border-teal-400/70 rounded-br-xl" />
+        </div>
+      </div>
+
+      {/* Indicador Flotante Superior de Detección */}
+      {isReady && !error && state !== 'idle' && state !== 'success' && (
+        <div className="absolute top-14 sm:top-16 left-3 sm:left-6 z-20 flex items-center gap-2 bg-slate-900/80 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/15 shadow-lg">
+          <span className={`w-2 h-2 rounded-full ${poseData?.isTracking ? 'bg-teal-400 animate-pulse' : 'bg-amber-400'}`} />
+          <span className="text-white text-[10px] sm:text-xs font-bold uppercase tracking-wider">
+            {poseData?.isTracking ? (isSimulated ? 'Simulación en vivo' : 'Cuerpo en cuadro') : 'Buscando postura...'}
+          </span>
+        </div>
+      )}
+
+      {/* Banner de Modo Simulación cuando la cámara física no está accesible */}
+      {isSimulated && isReady && (
+        <div className="absolute top-14 sm:top-16 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 bg-amber-500/20 border border-amber-400/40 backdrop-blur-md px-3 py-1.5 rounded-full text-amber-200 text-[11px] sm:text-xs font-medium shadow-md">
+          <Icon name="sensors" size={14} className="text-amber-400 shrink-0" />
+          <span>Modo Simulación Biomecánica</span>
+          <button
+            onClick={reconnectCamera}
+            className="ml-1 px-2 py-0.5 rounded-full bg-amber-400/30 hover:bg-amber-400/50 text-white text-[10px] font-bold uppercase tracking-wider transition-colors cursor-pointer"
+          >
+            Reconectar
+          </button>
+        </div>
+      )}
+
+      {/* Brújula y Sensor de Nivel Espacial (Desktop) */}
+      <div className="absolute top-16 right-6 z-20 pointer-events-auto hidden md:block">
         <CalibrationCompass pitch={3} roll={-1} className="bg-slate-900/80 backdrop-blur-md border-white/20 text-white" />
       </div>
 
-      <button
-        onClick={() => setShowSkipConfirm(true)}
-        className="absolute bottom-6 left-6 z-30 px-5 py-3 rounded-2xl bg-white/10 text-white font-bold flex items-center gap-2 hover:bg-white/20 transition-colors"
-        style={{ backdropFilter: 'blur(12px)', border: '1px solid rgba(255,255,255,0.15)', minHeight: '44px' }}
-        aria-label={t('calibration.skip') || 'Omitir calibración'}
-      >
-        <Icon name="skip_next" size={22} /> {t('calibration.skip') || 'Omitir'}
-      </button>
+      {/* Cuenta atrás sutil flotante en modo calibrando */}
+      {state === 'calibrating' && countdown > 0 && (
+        <div className="absolute top-14 sm:top-16 right-3 sm:right-6 z-20 pointer-events-none">
+          <motion.div
+            key={countdown}
+            initial={{ scale: 1.4, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.8, opacity: 0 }}
+            className="w-11 h-11 sm:w-14 sm:h-14 rounded-full bg-teal-500/90 text-slate-950 font-black text-xl sm:text-2xl flex items-center justify-center shadow-lg shadow-teal-500/30 border-2 border-white/40"
+          >
+            {countdown}
+          </motion.div>
+        </div>
+      )}
 
+      {/* Estado: Inicializando Cámara */}
       {state === 'idle' && (
-        <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-slate-900 gap-4">
-          <div className="w-16 h-16 rounded-full border-4 border-teal-500 border-t-transparent animate-spin" />
-          <p className="text-white/70 text-sm">{t('calibration.detecting') || 'Inicializando cámara...'}</p>
+        <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-slate-950/90 backdrop-blur-md gap-4">
+          <div className="w-14 h-14 rounded-full border-3 border-teal-400 border-t-transparent animate-spin" />
+          <p className="text-white/80 text-sm font-medium">Inicializando cámara y sensor corporal...</p>
         </div>
       )}
 
+      {/* Estado: Error */}
       {error && (
-        <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-slate-900 gap-4 p-6 text-center">
-          <div className="w-20 h-20 rounded-full bg-red-500/20 flex items-center justify-center">
-            <Icon name="videocam_off" filled size={40} className="text-red-400" />
+        <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-slate-950/90 backdrop-blur-md gap-4 p-6 text-center">
+          <div className="w-16 h-16 rounded-full bg-red-500/20 flex items-center justify-center border border-red-500/30">
+            <Icon name="videocam_off" filled size={36} className="text-red-400" />
           </div>
-          <p className="text-red-300 text-sm max-w-sm">{error}</p>
-          <button onClick={() => navigate('/dashboard-paciente')} className="px-6 py-3 bg-white/10 text-white rounded-xl font-bold hover:bg-white/20 transition-colors">{t('common.back') || 'Volver'}</button>
-        </div>
-      )}
-
-      {state === 'detecting' && !error && (
-        <div className="absolute inset-0 z-20 flex flex-col items-center justify-center pointer-events-none gap-4 p-4">
-          <CameraFramingGuideHUD
-            userFramed={Boolean(poseData?.isTracking)}
-            instruction={t('calibration.stepInstructions') || 'Asegúrate de que tu torso y brazos sean completamente visibles'}
-            className="w-full max-w-sm bg-slate-900/80 border-white/20 text-white"
-          />
-          <div className="relative flex items-center justify-center my-2">
-            <motion.div animate={{ scale: [1, 1.25, 1], opacity: [0.6, 1, 0.6] }} transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }} className="w-28 h-28 rounded-full border-4 border-teal-400" />
-            <motion.div animate={{ scale: [1, 1.4, 1], opacity: [0.3, 0, 0.3] }} transition={{ duration: 1.6, repeat: Infinity, ease: 'easeOut' }} className="absolute w-28 h-28 rounded-full border-2 border-cyan-400" />
-          </div>
-          <p className="text-white text-lg font-bold text-center drop-shadow-lg">{t('calibration.detecting') || 'Colócate frente a la cámara'}</p>
-          <div className="px-4 py-1.5 rounded-full" style={{ background: 'rgba(15,23,42,0.6)', backdropFilter: 'blur(12px)' }}>
-            <span className="text-white/60 text-xs">Tiempo: {detectElapsed}s / {DETECT_TIMEOUT}s</span>
+          <p className="text-red-200 text-sm max-w-sm">{error}</p>
+          <div className="flex flex-col sm:flex-row gap-3 mt-2">
+            <button
+              onClick={reconnectCamera}
+              className="px-5 py-2.5 bg-teal-500 hover:bg-teal-400 text-white rounded-xl font-bold transition-all text-sm cursor-pointer shadow-lg shadow-teal-500/25 active:scale-95"
+            >
+              Reintentar Cámara
+            </button>
+            <button
+              onClick={() => navigate('/dashboard-paciente')}
+              className="px-5 py-2.5 bg-white/10 text-white rounded-xl font-bold hover:bg-white/20 transition-colors text-sm"
+            >
+              Volver al inicio
+            </button>
           </div>
         </div>
       )}
 
-      {state === 'calibrating' && (
-        <div className="absolute inset-0 z-20 flex flex-col items-center justify-center pointer-events-none gap-4">
-          <div className="flex items-center gap-6">
-            <AnimatePresence mode="wait">
-              {countdown > 0 ? (
-                <motion.div key={countdown} initial={{ scale: 1.6, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.6, opacity: 0 }} className="text-9xl font-black text-teal-400 drop-shadow-2xl">
-                  {countdown}
+      {/* PANEL INFERIOR COLAPSABLE TIPO TARJETA FLOTANTE (Preferido por el usuario) */}
+      {!error && (state === 'detecting' || state === 'calibrating') && (
+        <motion.div
+          initial={{ y: 80, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+          className="fixed bottom-3 sm:bottom-6 left-3 right-3 sm:left-auto sm:right-6 sm:w-[420px] z-30 pointer-events-auto"
+        >
+          <div className="bg-slate-900/85 backdrop-blur-2xl border border-white/15 rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden transition-all duration-300">
+            {/* Cabecera de la tarjeta con botón colapsar */}
+            <div
+              onClick={() => setIsPanelCollapsed((prev) => !prev)}
+              className="flex items-center justify-between px-4 py-3 cursor-pointer hover:bg-white/5 transition-colors border-b border-white/10 select-none"
+            >
+              <div className="flex items-center gap-2.5">
+                <div className={`w-3 h-3 rounded-full ${poseData?.isTracking ? 'bg-teal-400 shadow-[0_0_8px_rgba(45,212,191,0.6)]' : 'bg-amber-400'}`} />
+                <span className="font-bold text-xs sm:text-sm text-white tracking-wide">
+                  {state === 'calibrating' ? 'Paso 2: Calibración Activa' : 'Paso 1: Encuadre Inicial'}
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] text-white/50 hidden xs:inline">
+                  {isPanelCollapsed ? 'Expandir' : 'Minimizar'}
+                </span>
+                <button
+                  type="button"
+                  aria-label={isPanelCollapsed ? 'Expandir guía de calibración' : 'Minimizar guía de calibración'}
+                  className="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center text-white/80 hover:bg-white/20 transition-all"
+                >
+                  <Icon name={isPanelCollapsed ? 'expand_less' : 'expand_more'} size={18} />
+                </button>
+              </div>
+            </div>
+
+            {/* Contenido expandible de la tarjeta */}
+            <AnimatePresence>
+              {!isPanelCollapsed ? (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: 'auto', opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="p-3.5 sm:p-4 space-y-3"
+                >
+                  {state === 'detecting' ? (
+                    <>
+                      <div className="flex items-start gap-3">
+                        <div className="w-8 h-8 rounded-xl bg-teal-500/20 text-teal-300 flex items-center justify-center shrink-0 border border-teal-500/30">
+                          <Icon name="accessibility_new" size={20} />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-white text-xs sm:text-sm font-semibold leading-snug">
+                            Colócate frente a la cámara
+                          </p>
+                          <p className="text-white/60 text-[11px] sm:text-xs mt-0.5 leading-relaxed">
+                            Asegúrate de que tu torso y ambos brazos queden visibles dentro del encuadre.
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-between pt-1 border-t border-white/10 text-[11px]">
+                        <span className="text-white/50">Tiempo: {detectElapsed}s / {DETECT_TIMEOUT}s</span>
+                        <button
+                          onClick={() => setShowSkipConfirm(true)}
+                          className="text-teal-300 hover:text-teal-200 font-semibold transition-colors"
+                        >
+                          Omitir paso
+                        </button>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="flex items-start gap-3">
+                        <div className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 border ${
+                          handRaisedDetected
+                            ? 'bg-teal-500/20 text-teal-300 border-teal-500/40'
+                            : 'bg-amber-500/20 text-amber-300 border-amber-500/40 animate-pulse'
+                        }`}>
+                          <Icon name={handRaisedDetected ? 'check_circle' : 'pan_tool'} size={20} />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className={`text-xs sm:text-sm font-bold leading-snug ${handRaisedDetected ? 'text-teal-300' : 'text-white'}`}>
+                            {handRaisedDetected ? '¡Mano detectada! Mantén la posición...' : '¡Levanta tu mano por encima del hombro!'}
+                          </p>
+                          <p className="text-white/60 text-[11px] sm:text-xs mt-0.5 leading-relaxed">
+                            {handRaisedDetected
+                              ? `Sostén la mano elevada durante ${countdown}s para calibrar los ángulos.`
+                              : 'Alza la mano derecha o izquierda para iniciar la calibración automática.'}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-between pt-1 border-t border-white/10 text-[11px]">
+                        <span className="text-teal-300/80 font-medium">Cuenta regresiva: {countdown}s</span>
+                        <button
+                          onClick={() => setShowSkipConfirm(true)}
+                          className="text-white/50 hover:text-white transition-colors"
+                        >
+                          Continuar sin calibrar
+                        </button>
+                      </div>
+                    </>
+                  )}
                 </motion.div>
-              ) : null}
+              ) : (
+                <div className="px-4 py-2 flex items-center justify-between text-[11px] text-white/70">
+                  <span className="truncate pr-2">
+                    {state === 'calibrating'
+                      ? (handRaisedDetected ? `Sostén postura (${countdown}s)` : 'Levanta tu mano sobre el hombro')
+                      : 'Ubícate dentro del marco'}
+                  </span>
+                  <span className="text-teal-300 font-semibold shrink-0">
+                    {state === 'calibrating' ? `${countdown}s` : `${detectElapsed}s`}
+                  </span>
+                </div>
+              )}
             </AnimatePresence>
-            <HoldDurationTimerRing
-              targetSeconds={COUNTDOWN_FROM}
-              className="bg-slate-900/80 border-white/20 text-white"
-            />
           </div>
-          <div className="rounded-2xl px-5 py-3" style={{ background: 'rgba(15,23,42,0.7)', backdropFilter: 'blur(12px)', border: handRaisedDetected ? '1px solid rgba(45,212,191,0.5)' : '1px solid rgba(255,255,255,0.1)' }}>
-            <p className={`font-bold text-center ${handRaisedDetected ? 'text-teal-300' : 'text-white'}`}>
-              {handRaisedDetected ? (t('calibration.calibrating') || '¡Mano detectada! Mantén la posición...') : (t('calibration.calibrating') || '¡Levanta tu mano por encima del hombro!')}
-            </p>
-            <p className="text-white/60 text-sm text-center mt-1">
-              {handRaisedDetected ? (t('calibration.calibrating') || 'Completando calibración postural') : (t('calibration.stepInstructions') || 'Mantén la posición durante la cuenta atrás')}
-            </p>
-          </div>
-        </div>
+        </motion.div>
       )}
 
+      {/* Modal de Calibración Exitosa */}
       <AnimatePresence>
         {state === 'success' && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-slate-900/80 backdrop-blur-md gap-6 p-6 text-center">
-            <motion.div initial={{ scale: 0, rotate: -30 }} animate={{ scale: 1, rotate: 0 }} transition={{ type: 'spring', stiffness: 200, damping: 15 }} className="w-28 h-28 rounded-full bg-teal-500 flex items-center justify-center shadow-xl shadow-teal-500/40">
-              <Icon name="check" size={64} className="text-white" />
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="absolute inset-0 z-40 flex flex-col items-center justify-center bg-slate-950/85 backdrop-blur-md gap-5 p-6 text-center select-none"
+          >
+            <motion.div
+              initial={{ scale: 0, rotate: -30 }}
+              animate={{ scale: 1, rotate: 0 }}
+              transition={{ type: 'spring', stiffness: 200, damping: 15 }}
+              className="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-teal-500 flex items-center justify-center shadow-xl shadow-teal-500/40"
+            >
+              <Icon name="check" size={56} className="text-white" />
             </motion.div>
             <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.2 }}>
               <SparklesText
                 sparklesCount={6}
                 colors={{ first: '#2dd4bf', second: '#c1ff72' }}
-                className="text-3xl font-bold text-white mb-2"
+                className="text-2xl sm:text-3xl font-bold text-white mb-2"
               >
-                {t('calibration.success') || '¡Calibración exitosa!'}
+                ¡Calibración exitosa!
               </SparklesText>
-              <p className="text-white/70">{t('calibration.subtitle') || 'Tu cámara está lista para el modo AR con bio-feedback'}</p>
+              <p className="text-white/70 text-sm max-w-sm">Tu cámara está optimizada para el modo AR con bio-feedback en tiempo real.</p>
             </motion.div>
             <PulsatingButton
               variant="ripple"
               pulseColor="rgba(45, 212, 191, 0.6)"
               onClick={goAR}
-              className="mt-4 px-8 py-4 bg-teal-500 text-white rounded-2xl font-bold flex items-center gap-2 shadow-lg shadow-teal-500/30 text-base"
+              className="mt-3 px-7 py-3.5 bg-teal-500 hover:bg-teal-400 text-white rounded-2xl font-bold flex items-center gap-2 shadow-lg shadow-teal-500/30 text-sm sm:text-base cursor-pointer"
             >
-              <Icon name="play_arrow" size={22} /> {t('calibration.proceedToExercise') || 'Continuar al Modo AR'}
+              <Icon name="play_arrow" size={20} /> Continuar al Modo AR
             </PulsatingButton>
           </motion.div>
         )}
       </AnimatePresence>
 
+      {/* Modal de Fallo de Detección con Reintentar */}
       <AnimatePresence>
         {state === 'error' && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-slate-900/85 backdrop-blur-md gap-5 p-6 text-center">
-            <div className="w-20 h-20 rounded-full bg-amber-500/20 flex items-center justify-center">
-              <Icon name="warning" filled size={40} className="text-amber-400" />
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="absolute inset-0 z-40 flex flex-col items-center justify-center bg-slate-950/90 backdrop-blur-md gap-4 p-6 text-center select-none"
+          >
+            <div className="w-16 h-16 rounded-full bg-amber-500/20 flex items-center justify-center border border-amber-500/40">
+              <Icon name="warning" filled size={36} className="text-amber-400" />
             </div>
-            <h2 className="text-2xl font-bold text-white">{t('stats.compensationDetected') || 'No se detectó tu cuerpo'}</h2>
-            <p className="text-white/70 max-w-sm">{t('calibration.stepInstructions') || 'Asegúrate de tener buena iluminación y de estar frente a la cámara con tu cuerpo visible.'}</p>
-            <div className="flex flex-col sm:flex-row gap-3 mt-2">
-              <button onClick={retry} className="px-6 py-3 bg-teal-500 text-white rounded-xl font-bold flex items-center gap-2 justify-center hover:scale-105 active:scale-95 transition-transform">
-                <Icon name="refresh" size={20} /> {t('calibration.restart') || 'Reintentar'}
+            <h2 className="text-xl sm:text-2xl font-bold text-white">No se detectó tu postura</h2>
+            <p className="text-white/70 text-sm max-w-sm">
+              Verifica que haya suficiente iluminación y que tu torso y ambos brazos queden dentro del encuadre.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3 mt-3 w-full max-w-xs">
+              <button
+                onClick={retry}
+                className="flex-1 py-3 bg-teal-500 hover:bg-teal-400 text-white rounded-xl font-bold flex items-center gap-2 justify-center transition-all cursor-pointer text-sm shadow-lg shadow-teal-500/25 active:scale-95"
+              >
+                <Icon name="refresh" size={18} /> Reintentar
               </button>
-              <button onClick={() => setShowSkipConfirm(true)} className="px-6 py-3 bg-white/10 text-white rounded-xl font-bold flex items-center gap-2 justify-center hover:bg-white/20 transition-colors">
-                {t('calibration.skip') || 'Omitir calibración'}
+              <button
+                onClick={() => setShowSkipConfirm(true)}
+                className="flex-1 py-3 bg-white/10 hover:bg-white/15 text-white rounded-xl font-bold flex items-center gap-2 justify-center transition-all cursor-pointer text-sm"
+              >
+                Omitir
               </button>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
-
-      {isReady && !error && state !== 'idle' && state !== 'success' && (
-        <div className="absolute top-20 left-4 z-20 flex items-center gap-2 bg-black/50 px-3 py-1.5 rounded-full" style={{ backdropFilter: 'blur(8px)' }}>
-          <span className={`w-2.5 h-2.5 rounded-full ${poseData?.isTracking ? 'bg-teal-400 animate-pulse' : 'bg-amber-400'}`} />
-          <span className="text-white text-xs font-bold uppercase tracking-wider">{poseData?.isTracking ? (t('stats.goodPosture') || 'Cuerpo detectado') : (t('common.loading') || 'Buscando...')}</span>
-        </div>
-      )}
 
       <AnimatePresence>
         {showSkipConfirm && (
@@ -340,11 +501,11 @@ export function CalibrationPage() {
               <div className="w-16 h-16 rounded-full bg-amber-500/20 flex items-center justify-center mx-auto mb-4">
                 <Icon name="warning" filled size={32} className="text-amber-400" />
               </div>
-              <h3 className="text-white text-xl font-bold mb-2">{t('calibration.skip') || '¿Continuar sin calibrar?'}</h3>
-              <p className="text-white/70 text-sm mb-6">{t('calibration.subtitle') || 'La precisión del seguimiento puede verse afectada sin calibrar. ¿Deseas continuar?'}</p>
+              <h3 className="text-white text-xl font-bold mb-2">Continuar sin calibrar?</h3>
+              <p className="text-white/70 text-sm mb-6">La precision del seguimiento puede verse afectada sin calibrar. Deseas continuar?</p>
               <div className="flex gap-3">
-                <button onClick={() => setShowSkipConfirm(false)} className="flex-1 py-3 bg-white/10 text-white rounded-xl font-bold hover:bg-white/20 transition-colors">{t('common.cancel') || 'Cancelar'}</button>
-                <button onClick={handleSkip} className="flex-1 py-3 bg-teal-500 text-white rounded-xl font-bold hover:scale-105 active:scale-95 transition-transform">{t('common.confirm') || 'Continuar'}</button>
+                <button onClick={() => setShowSkipConfirm(false)} className="flex-1 py-3 bg-white/10 text-white rounded-xl font-bold hover:bg-white/20 transition-colors">Cancelar</button>
+                <button onClick={handleSkip} className="flex-1 py-3 bg-teal-500 text-white rounded-xl font-bold hover:scale-105 active:scale-95 transition-transform">Continuar</button>
               </div>
             </motion.div>
           </motion.div>

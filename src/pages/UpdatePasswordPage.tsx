@@ -1,14 +1,12 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { Lock, Eye, EyeOff, AlertCircle, ArrowRight, KeyRound } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
 import { supabase } from '../lib/supabase';
 import { hashPassword } from '../stores/authStore';
 import { useToast } from '../components/ui/ToastProvider';
 import { TurnstileWidget, type TurnstileWidgetRef } from '../components/auth/TurnstileWidget';
 
 export function UpdatePasswordPage() {
-  const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const toast = useToast();
@@ -153,10 +151,10 @@ export function UpdatePasswordPage() {
             <KeyRound size={28} />
           </div>
           <h1 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
-            {t('auth.resetPasswordTitle') || 'Restablecer Contraseña'}
+            Restablecer Contraseña
           </h1>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            {t('auth.resetPasswordSubtitle') || 'Ingresa tu nueva contraseña para acceder a FisioMirror'}
+            Ingresa tu nueva contraseña para acceder a FisioMirror
           </p>
         </div>
 
@@ -170,7 +168,7 @@ export function UpdatePasswordPage() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-              {t('auth.newPassword') || 'Nueva Contraseña'}
+              Nueva Contraseña
             </label>
             <div className="relative">
               <Lock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -179,7 +177,7 @@ export function UpdatePasswordPage() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder={t('auth.passwordRequirements') || 'Mínimo 6 caracteres'}
+                placeholder="Mínimo 6 caracteres"
                 className="w-full pl-10 pr-10 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500"
               />
               <button
@@ -194,7 +192,7 @@ export function UpdatePasswordPage() {
 
           <div>
             <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-              {t('auth.confirmNewPassword') || 'Confirmar Nueva Contraseña'}
+              Confirmar Nueva Contraseña
             </label>
             <div className="relative">
               <Lock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -203,7 +201,7 @@ export function UpdatePasswordPage() {
                 required
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder={t('auth.confirmPassword') || 'Repite la contraseña'}
+                placeholder="Repite la contraseña"
                 className="w-full pl-10 pr-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500"
               />
             </div>
@@ -225,7 +223,7 @@ export function UpdatePasswordPage() {
               <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
             ) : (
               <>
-                <span>{t('auth.updatePassword') || 'Guardar Nueva Contraseña'}</span>
+                <span>Guardar Nueva Contraseña</span>
                 <ArrowRight size={17} />
               </>
             )}
@@ -233,8 +231,9 @@ export function UpdatePasswordPage() {
         </form>
 
         <div className="mt-5 text-center text-xs text-slate-500">
+          ¿Recordaste tu clave?{' '}
           <Link to="/login" className="text-teal-600 dark:text-teal-400 font-bold hover:underline">
-            {t('auth.backToLogin') || 'Volver a Iniciar Sesión'}
+            Volver a Iniciar Sesión
           </Link>
         </div>
       </div>

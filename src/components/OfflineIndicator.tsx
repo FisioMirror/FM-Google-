@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { WifiOff } from "lucide-react";
-import { useTranslation } from "react-i18next";
 
 export function OfflineIndicator() {
-  const { t } = useTranslation();
   const [isOffline, setIsOffline] = useState(!navigator.onLine);
 
   useEffect(() => {
@@ -28,7 +26,7 @@ export function OfflineIndicator() {
           className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 px-4 py-2 rounded-full bg-warning/15 text-warning text-sm font-medium shadow-glass backdrop-blur-md"
         >
           <WifiOff className="w-4 h-4" />
-          {t('installModal.offlineToast') || 'Sin conexión'}
+          Sin conexión
         </motion.div>
       )}
     </AnimatePresence>

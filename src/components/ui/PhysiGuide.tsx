@@ -1,22 +1,25 @@
 import { useState, useRef, useEffect, useCallback, type ReactNode } from 'react';
 import { useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bot, X, Send, RotateCcw } from 'lucide-react';
+import { Bot, X, Send, RotateCcw, Volume2, VolumeX, Sparkles, User, Mic } from 'lucide-react';
 import { PHYSI_FAQS, matchFAQ as matchGlobalFAQ, type FAQ } from '../../data/physiFAQs';
 import { useAuthStore } from '../../stores/authStore';
 import { runAIJob } from '../../lib/ai';
+import { humanVoice, getVoiceGender, setVoiceGender, type VoiceGender } from '../../lib/humanVoice';
+import { QuickVoiceSelector } from './QuickVoiceSelector';
 
 interface Message {
   id: string;
   role: 'user' | 'assistant';
   text: string;
+  timestamp?: string;
 }
 
 const WELCOME =
-  '¡Hola! Soy Physi, tu guía rápida de FisioMirror. Selecciona una sugerencia o escribe tu consulta y te ayudaré al instante.';
+  '¡Hola! Soy Physi, tu asistente y guía interactivo en FisioMirror. Puedes hacerme cualquier consulta sobre tus ejercicios, pacientes, análisis biomecánico o la plataforma. ¡Te responderé con voz alta natural y en tiempo real!';
 
 const NO_MATCH =
-  'No he entendido tu pregunta. Prueba con términos como **paciente**, **rutina**, **AR** o contacta a soporte: **fisioMirror@proton.me**';
+  'No he entendido tu pregunta. Prueba con términos como paciente, rutina, rango articular o contacta a soporte: fisiomirror@proton.me';
 
 /** Preguntas frecuentes según la ruta actual */
 function getFAQs(pathname: string): string[] {
@@ -30,38 +33,30 @@ function getFAQs(pathname: string): string[] {
     return ['¿Cómo cambio mi contraseña?', '¿Cómo activo el modo oscuro?'];
   }
   if (pathname.includes('assistant')) {
-    return ['¿Cómo uso las herramientas de IA?', '¿Cómo uso el chatbot Physi?'];
+    return ['¿Cómo uso las herramientas de IA?', '¿Cómo calibro el rango articular?'];
   }
   if (pathname.includes('mirror')) {
-    return ['¿Cómo uso el modo espejo AR?', '¿Qué hago si la cámara no funciona?'];
+    return ['¿Cómo uso el modo espejo AR?', '¿Qué hago si la cámara no detecta articulaciones?'];
   }
   return ['¿Qué puedo hacer en FisioMirror?', '¿Cómo contacto a soporte?'];
 }
-
-// ---------------------------------------------------------------------------
-// Matcher offline — puntúa FAQs por coincidencia de palabras clave.
-// ---------------------------------------------------------------------------
 
 /** Quita acentos y pasa a minúsculas para comparar de forma tolerante. */
 function normalize(text: string): string {
   return text
     .toLowerCase()
     .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '') // separa y elimina diacríticos
+    .replace(/[\u0300-\u036f]/g, '')
     .trim();
 }
 
 /**
  * Busca el FAQ que mejor encaja con el texto del usuario.
- * Cuenta cuántas palabras clave aparecen en el texto y devuelve el de mayor
- * puntuación. Si hay empate, gana el primero. Si ninguna coincide (score 0)
- * devuelve null para que el llamador muestre el mensaje por defecto.
  */
 function matchFAQ(input: string): FAQ | null {
   const normalized = normalize(input);
   if (!normalized) return null;
 
-  // Tokens del usuario para coincidencia por palabra completa.
   const tokens = new Set(normalized.split(/\s+/).filter((t) => t.length > 1));
 
   let best: FAQ | null = null;
@@ -72,12 +67,10 @@ function matchFAQ(input: string): FAQ | null {
     for (const kw of faq.keywords) {
       const nkw = normalize(kw);
       if (!nkw) continue;
-      // Coincidencia de frase completa (ej: "modo espejo")
       if (normalized.includes(nkw)) {
         score += nkw.includes(' ') ? 3 : 2;
         continue;
       }
-      // Coincidencia por palabra completa para keywords de una sola palabra
       if (!nkw.includes(' ') && tokens.has(nkw)) {
         score += 1;
       }
@@ -91,25 +84,6 @@ function matchFAQ(input: string): FAQ | null {
   return bestScore > 0 ? best : null;
 }
 
-// ---------------------------------------------------------------------------
-// Formato de texto — convierte la respuesta (markdown básico) en React.
-// ---------------------------------------------------------------------------
-
-/** Renderiza **negritas** inline */
-function renderInline(text: string): ReactNode[] {
-  const parts = text.split(/(\*\*[^*]+\*\*)/g);
-  return parts.filter(Boolean).map((part, i) => {
-    if (part.startsWith('**') && part.endsWith('**')) {
-      return (
-        <strong key={i} className="font-bold text-on-surface">
-          {part.slice(2, -2)}
-        </strong>
-      );
-    }
-    return <span key={i}>{part}</span>;
-  });
-}
-
 /** Renderiza texto con formato markdown básico (bullet points, encabezados, negritas) */
 function renderMarkdown(text: string): ReactNode {
   const lines = text.split('\n');
@@ -119,60 +93,37 @@ function renderMarkdown(text: string): ReactNode {
   const flushList = (key: string) => {
     if (listItems.length > 0) {
       blocks.push(
-        <ul key={key} className="space-y-1.5">
+        <ul key={key} className="list-disc pl-4 space-y-1 my-1.5 text-xs text-on-surface">
           {listItems}
-        </ul>,
+        </ul>
       );
       listItems = [];
     }
   };
 
-  lines.forEach((line, i) => {
+  lines.forEach((line, index) => {
     const trimmed = line.trim();
-    if (!trimmed) {
-      flushList(`list-${i}`);
-      return;
-    }
-    const isBullet = /^[-•*]\s/.test(trimmed);
-    const isNumbered = /^\d+[.)]\s/.test(trimmed);
-    const isHeader = /^#{1,3}\s/.test(trimmed);
-
-    if (isBullet || isNumbered) {
-      const content = trimmed.replace(/^[-•*]\s*/, '').replace(/^\d+[.)]\s*/, '');
+    if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
       listItems.push(
-        <li key={i} className="flex gap-2 text-sm leading-relaxed">
-          <span className="text-primary mt-0.5 shrink-0">•</span>
-          <span>{renderInline(content)}</span>
-        </li>,
-      );
-    } else if (isHeader) {
-      flushList(`list-${i}`);
-      const level = (trimmed.match(/^#+/) ?? ['#'])[0].length;
-      const content = trimmed.replace(/^#+\s/, '');
-      blocks.push(
-        <p
-          key={i}
-          className={`font-bold text-primary ${level <= 1 ? 'text-base' : 'text-sm'}`}
-        >
-          {renderInline(content)}
-        </p>,
+        <li key={`li-${index}`} className="leading-relaxed">
+          {trimmed.slice(2)}
+        </li>
       );
     } else {
-      flushList(`list-${i}`);
-      blocks.push(
-        <p key={i} className="text-sm leading-relaxed">
-          {renderInline(trimmed)}
-        </p>,
-      );
+      flushList(`ul-${index}`);
+      if (trimmed) {
+        blocks.push(
+          <p key={`p-${index}`} className="my-1 leading-relaxed">
+            {trimmed}
+          </p>
+        );
+      }
     }
   });
-  flushList('list-final');
-  return <div className="space-y-2">{blocks}</div>;
-}
 
-// ---------------------------------------------------------------------------
-// Componente principal — burbuja flotante de chat
-// ---------------------------------------------------------------------------
+  flushList(`ul-end`);
+  return <div className="space-y-1">{blocks}</div>;
+}
 
 export interface PhysiGuideProps {
   className?: string;
@@ -200,6 +151,10 @@ export function PhysiGuide({
 
   const setOpen = useCallback(
     (v: boolean) => {
+      if (!v) {
+        humanVoice.stop();
+        setSpeakingMsgId(null);
+      }
       if (isControlled) {
         if (!v) {
           onControlledClose?.();
@@ -213,16 +168,67 @@ export function PhysiGuide({
   );
 
   const [messages, setMessages] = useState<Message[]>([
-    { id: 'welcome', role: 'assistant', text: WELCOME },
+    {
+      id: 'welcome',
+      role: 'assistant',
+      text: WELCOME,
+      timestamp: 'Ahora',
+    },
   ]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+  const [autoVoice, setAutoVoice] = useState<boolean>(() => {
+    if (typeof localStorage !== 'undefined') {
+      const stored = localStorage.getItem('fisio_guide_autovoice');
+      return stored !== 'false';
+    }
+    return true;
+  });
+  const [voiceGender, setVoiceGenderState] = useState<VoiceGender>(() => humanVoice.getVoiceGender());
+  const [speakingMsgId, setSpeakingMsgId] = useState<string | null>(null);
+
   const location = useLocation();
   const scrollRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const faqs = getFAQs(location.pathname);
   const showFAQs = messages.length <= 1 && !loading;
+
+  // Persistir preferencia de autoVoice
+  const toggleAutoVoice = () => {
+    const nextVal = !autoVoice;
+    setAutoVoice(nextVal);
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('fisio_guide_autovoice', String(nextVal));
+    }
+    if (!nextVal) {
+      humanVoice.stop();
+      setSpeakingMsgId(null);
+    }
+  };
+
+  // Alternar entre voz masculina cálida y femenina
+  const toggleVoiceGender = () => {
+    const nextGender: VoiceGender = voiceGender === 'male' ? 'female' : 'male';
+    setVoiceGenderState(nextGender);
+    humanVoice.setVoiceGender(nextGender);
+  };
+
+  // Hablar o detener un mensaje específico
+  const toggleSpeakMessage = (msgId: string, text: string) => {
+    if (speakingMsgId === msgId) {
+      humanVoice.stop();
+      setSpeakingMsgId(null);
+    } else {
+      humanVoice.stop();
+      setSpeakingMsgId(msgId);
+      humanVoice.speak(text, {
+        gender: voiceGender,
+        onEnd: () => setSpeakingMsgId(null),
+        onError: () => setSpeakingMsgId(null),
+      });
+    }
+  };
 
   // Auto-scroll al final del chat
   useEffect(() => {
@@ -232,7 +238,7 @@ export function PhysiGuide({
     });
   }, [messages, loading]);
 
-  // Cerrar con tecla Escape
+  // Cerrar con tecla Escape y detener voz
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
@@ -240,7 +246,7 @@ export function PhysiGuide({
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [open]);
+  }, [open, setOpen]);
 
   // Enfocar el textarea al abrir
   useEffect(() => {
@@ -258,7 +264,7 @@ export function PhysiGuide({
     ta.style.height = `${Math.min(ta.scrollHeight, 96)}px`;
   }, [input]);
 
-  // Respuesta offline/online combinada: busca en FAQ y opcionalmente en AI con fallback
+  // Respuesta offline/online combinada con salida a voz alta
   const sendMessage = useCallback(
     async (text: string) => {
       const trimmed = text.trim();
@@ -268,59 +274,81 @@ export function PhysiGuide({
         id: `u-${Date.now()}`,
         role: 'user',
         text: trimmed,
+        timestamp: new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }),
       };
       setMessages((prev) => [...prev, userMsg]);
       setInput('');
       setLoading(true);
 
-      // 1. Buscar coincidencia en FAQ local o global
       const localMatch = matchFAQ(trimmed);
       const roleMatch = matchGlobalFAQ(trimmed, isFisio);
       const faqAnswer = roleMatch?.answer || localMatch?.answer || null;
 
-      // 2. Si está conectado, intentar respuesta de IA con timeout de 3 segundos
+      const finishAndSpeak = (replyText: string) => {
+        const assistantId = `a-${Date.now()}`;
+        setMessages((prev) => [
+          ...prev,
+          {
+            id: assistantId,
+            role: 'assistant',
+            text: replyText,
+            timestamp: new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }),
+          },
+        ]);
+        setLoading(false);
+
+        if (autoVoice) {
+          setSpeakingMsgId(assistantId);
+          humanVoice.speak(replyText, {
+            gender: voiceGender,
+            onEnd: () => setSpeakingMsgId(null),
+            onError: () => setSpeakingMsgId(null),
+          });
+        }
+      };
+
       if (navigator.onLine) {
         try {
-          const aiJobPromise = runAIJob({
-            prompt: `Eres Physi, la guía rápida interactiva de la aplicación FisioMirror. Responde de forma clara, directa y estructurada a la siguiente consulta sobre la plataforma o rehabilitación: "${trimmed}". Si hay pasos concretos, usa listas o viñetas cortas.`,
-            context: isFisio ? 'Rol: Fisioterapeuta en FisioMirror' : 'Rol: Paciente en FisioMirror',
+          const aiJobPromise = runAIJob('text_generation', {
+            userPrompt: `Eres Physi, la guía rápida interactiva de la aplicación FisioMirror. Responde de forma clara, directa y estructurada a la siguiente consulta sobre la plataforma o rehabilitación: "${trimmed}". Si hay pasos concretos, usa listas cortas.`,
+            context: { role: isFisio ? 'Fisioterapeuta' : 'Paciente' },
           });
 
           const timeoutPromise = new Promise<{ result?: string }>((resolve) =>
-            setTimeout(() => resolve({}), 3200)
+            setTimeout(() => resolve({}), 3500)
           );
 
           const res = await Promise.race([aiJobPromise, timeoutPromise]);
           if (res && 'result' in res && res.result && res.result.trim()) {
-            setMessages((prev) => [
-              ...prev,
-              { id: `a-${Date.now()}`, role: 'assistant', text: res.result!.trim() },
-            ]);
-            setLoading(false);
+            finishAndSpeak(res.result.trim());
             return;
           }
         } catch {
-          // Fallback a FAQ
+          // fallback a FAQ
         }
       }
 
-      // 3. Fallback inmediato a FAQ o mensaje de ayuda
       setTimeout(() => {
         const replyText = faqAnswer || NO_MATCH;
-        setMessages((prev) => [
-          ...prev,
-          { id: `a-${Date.now()}`, role: 'assistant', text: replyText },
-        ]);
-        setLoading(false);
-      }, 400);
+        finishAndSpeak(replyText);
+      }, 350);
     },
-    [loading, isFisio]
+    [loading, isFisio, autoVoice, voiceGender]
   );
 
   const handleSend = () => sendMessage(input);
 
   const resetChat = () => {
-    setMessages([{ id: 'welcome', role: 'assistant', text: WELCOME }]);
+    humanVoice.stop();
+    setSpeakingMsgId(null);
+    setMessages([
+      {
+        id: 'welcome',
+        role: 'assistant',
+        text: WELCOME,
+        timestamp: 'Ahora',
+      },
+    ]);
     setInput('');
   };
 
@@ -328,7 +356,7 @@ export function PhysiGuide({
 
   return (
     <div className={className}>
-      {/* Botón flotante — esquina inferior izquierda (no choca con FloatingMenu, que está a la derecha) */}
+      {/* Botón flotante — esquina inferior izquierda */}
       {!controlled && (
         <motion.button
           onClick={() => setOpen(!open)}
@@ -336,24 +364,21 @@ export function PhysiGuide({
           whileHover={{ scale: 1.05 }}
           aria-label={open ? 'Cerrar guía de Physi' : 'Abrir guía de Physi'}
           aria-expanded={open}
-          className="fixed bottom-24 left-4 lg:bottom-8 lg:left-8 z-[120] flex items-center justify-center w-14 h-14 rounded-full min-h-[56px] min-w-[56px] touch-manipulation active:scale-95 pb-[env(safe-area-inset-bottom)] relative group"
+          className="fixed bottom-24 left-4 lg:bottom-8 lg:left-8 z-[120] flex items-center justify-center w-14 h-14 rounded-full min-h-[56px] min-w-[56px] touch-manipulation active:scale-95 pb-[env(safe-area-inset-bottom)] relative group cursor-pointer"
         >
-          {/* Anillo pulsante */}
           {!open && (
             <motion.span
-              className="absolute inset-0 rounded-full bg-primary/30"
+              className="absolute inset-0 rounded-full bg-teal-500/30"
               animate={{ scale: [1, 1.4, 1], opacity: [0.5, 0, 0.5] }}
               transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
             />
           )}
-          {/* Cuerpo del botón con gradiente */}
           <motion.span
-            className="absolute inset-0 rounded-full bg-gradient-to-br from-teal-500 to-cyan-600 shadow-lg shadow-primary/30"
+            className="absolute inset-0 rounded-full bg-gradient-to-br from-teal-600 via-teal-700 to-slate-900 shadow-xl shadow-teal-900/30 border border-teal-400/30"
             animate={{ scale: open ? 0.95 : 1 }}
           />
-          {/* Badge "IA" */}
           {!open && (
-            <span className="absolute -top-1 -right-1 bg-amber-400 text-amber-950 text-[9px] font-black px-1.5 py-0.5 rounded-full shadow-md z-10">
+            <span className="absolute -top-1 -right-1 bg-kinetic text-slate-950 text-[10px] font-black px-1.5 py-0.5 rounded-full shadow-md z-10">
               IA
             </span>
           )}
@@ -375,37 +400,72 @@ export function PhysiGuide({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 16, scale: 0.96 }}
             transition={{ type: 'spring', damping: 26, stiffness: 320 }}
-            className="fixed bottom-40 left-4 right-4 sm:right-auto sm:left-4 sm:w-80 lg:left-8 lg:bottom-28 z-[120] w-[calc(100vw-2rem)] max-h-[55vh] flex flex-col glass-panel rounded-3xl border divider-teal shadow-2xl overflow-hidden"
+            className="fixed bottom-24 left-4 right-4 sm:right-auto sm:left-4 sm:w-96 lg:left-8 lg:bottom-28 z-[120] w-[calc(100vw-2rem)] max-h-[62vh] flex flex-col rounded-3xl border border-teal-500/25 bg-surface/95 dark:bg-surface-container/95 backdrop-blur-2xl shadow-2xl overflow-hidden text-on-surface"
           >
             {/* Cabecera */}
-            <div className="flex items-center justify-between px-4 py-3 border-b divider-teal shrink-0 bg-primary/5">
+            <div className="flex items-center justify-between px-4 py-3 border-b border-outline-variant/20 dark:border-white/10 shrink-0 bg-teal-500/5">
               <div className="flex items-center gap-2.5 min-w-0">
-                <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
+                <div className="size-9 rounded-2xl bg-teal-500/15 text-teal-600 dark:text-teal-400 border border-teal-500/25 flex items-center justify-center shrink-0">
                   <Bot size={20} />
                 </div>
                 <div className="min-w-0">
-                  <h3 className="font-bold text-sm text-on-surface truncate">
-                    Physi - Guía Rápida
-                  </h3>
-                  <p className="text-[11px] text-outline truncate">
-                    Guía rápida de FisioMirror
+                  <div className="flex items-center gap-1.5">
+                    <h3 className="font-bold text-sm text-on-surface truncate">
+                      Physi IA
+                    </h3>
+                    <span className="text-[10px] px-1.5 py-0.2 rounded-full font-bold bg-teal-500/15 text-teal-700 dark:text-teal-300">
+                      {voiceGender === 'male' ? 'Voz Masculina' : 'Voz Femenina'}
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-on-surface-variant truncate">
+                    Asistente clínico y bio-feedback
                   </p>
                 </div>
               </div>
-              <div className="flex items-center gap-1 shrink-0">
+
+              {/* Botones de acción en cabecera: Selector de Voz, Toggle AutoVoice, Reset, Cerrar */}
+              <div className="flex items-center gap-1.5 shrink-0">
+                {/* Selector rápido multi-proveedor y tono */}
+                <QuickVoiceSelector
+                  compact
+                  onVoiceChange={(newG) => {
+                    setVoiceGenderState(newG);
+                    setVoiceGender(newG);
+                  }}
+                />
+
+                {/* Toggle de AutoVoice */}
+                <button
+                  onClick={toggleAutoVoice}
+                  aria-label={autoVoice ? 'Silenciar voz' : 'Activar voz automática'}
+                  title={autoVoice ? 'Voz automática activada' : 'Voz silenciada'}
+                  className={`p-1.5 rounded-xl transition-all cursor-pointer border ${
+                    autoVoice
+                      ? 'bg-teal-500/15 border-teal-500/30 text-teal-600 dark:text-teal-300'
+                      : 'bg-surface-container border-outline-variant/20 text-on-surface-variant'
+                  }`}
+                >
+                  {autoVoice ? <Volume2 size={16} /> : <VolumeX size={16} />}
+                </button>
+
+                {/* Reset Chat */}
                 <button
                   onClick={resetChat}
-                  aria-label="Nueva consulta"
-                  className="text-outline hover:text-primary transition-colors p-2 rounded-lg hover:bg-primary/5 min-h-[40px] min-w-[40px] flex items-center justify-center"
+                  aria-label="Reiniciar conversación"
+                  title="Reiniciar chat"
+                  className="text-on-surface-variant hover:text-teal-600 transition-colors p-1.5 rounded-xl hover:bg-surface-container-high cursor-pointer"
                 >
-                  <RotateCcw size={16} />
+                  <RotateCcw size={15} />
                 </button>
+
+                {/* Cerrar */}
                 <button
                   onClick={() => setOpen(false)}
-                  aria-label="Cerrar guía"
-                  className="text-outline hover:text-error transition-colors p-2 rounded-lg hover:bg-error/5 min-h-[40px] min-w-[40px] flex items-center justify-center"
+                  aria-label="Cerrar ventana"
+                  title="Cerrar"
+                  className="text-on-surface-variant hover:text-rose-500 transition-colors p-1.5 rounded-xl hover:bg-rose-500/10 cursor-pointer"
                 >
-                  <X size={18} />
+                  <X size={17} />
                 </button>
               </div>
             </div>
@@ -413,56 +473,88 @@ export function PhysiGuide({
             {/* Mensajes */}
             <div
               ref={scrollRef}
-              className="flex-1 overflow-y-auto p-3 space-y-3 scrollbar-thin"
+              className="flex-1 overflow-y-auto p-3.5 space-y-3.5 scrollbar-thin"
             >
-              {messages.map((msg) => (
-                <motion.div
-                  key={msg.id}
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.25 }}
-                  className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
-                >
-                  <div
-                    className={`max-w-[90%] flex gap-2 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}
-                  >
-                    {/* Avatar */}
-                    <div
-                      className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${
-                        msg.role === 'user'
-                          ? 'bg-primary-container text-on-primary-container'
-                          : 'bg-primary/10 text-primary'
-                      }`}
-                    >
-                      {msg.role === 'user' ? (
-                        <span className="text-[10px] font-bold">Tú</span>
-                      ) : (
-                        <Bot size={14} />
-                      )}
-                    </div>
+              {messages.map((msg) => {
+                const isSpeaking = speakingMsgId === msg.id;
 
-                    {/* Burbuja */}
+                return (
+                  <motion.div
+                    key={msg.id}
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.25 }}
+                    className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                  >
                     <div
-                      className={`p-2.5 rounded-2xl text-sm ${
-                        msg.role === 'user'
-                          ? 'chat-bubble-user text-on-surface rounded-tr-sm'
-                          : 'chat-bubble-physi text-on-surface rounded-tl-sm'
-                      }`}
+                      className={`max-w-[90%] flex gap-2.5 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}
                     >
-                      {msg.role === 'assistant' ? renderMarkdown(msg.text) : msg.text}
+                      {/* Avatar */}
+                      <div
+                        className={`size-7 rounded-xl flex items-center justify-center shrink-0 mt-0.5 ${
+                          msg.role === 'user'
+                            ? 'bg-teal-600 text-white shadow-xs'
+                            : 'bg-teal-500/15 text-teal-600 dark:text-teal-400 border border-teal-500/25'
+                        }`}
+                      >
+                        {msg.role === 'user' ? (
+                          <span className="text-[10px] font-bold">Tú</span>
+                        ) : (
+                          <Bot size={15} />
+                        )}
+                      </div>
+
+                      {/* Burbuja */}
+                      <div
+                        className={`p-3 rounded-2xl text-xs sm:text-sm leading-relaxed shadow-xs transition-all ${
+                          msg.role === 'user'
+                            ? 'bg-teal-600 text-white rounded-tr-none font-medium'
+                            : 'bg-surface dark:bg-surface-container-low border border-outline-variant/25 dark:border-white/10 text-on-surface rounded-tl-none'
+                        }`}
+                      >
+                        {msg.role === 'assistant' ? renderMarkdown(msg.text) : msg.text}
+
+                        {/* Botón de reproducción de voz para respuestas de Physi */}
+                        {msg.role === 'assistant' && (
+                          <div className="mt-2.5 pt-2 border-t border-outline-variant/15 dark:border-white/5 flex items-center justify-between text-[11px] text-on-surface-variant">
+                            <span className="text-[10px] opacity-75">{msg.timestamp || 'Ahora'}</span>
+                            <button
+                              onClick={() => toggleSpeakMessage(msg.id, msg.text)}
+                              className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-lg text-[11px] font-semibold transition-all cursor-pointer ${
+                                isSpeaking
+                                  ? 'bg-teal-500/20 text-teal-700 dark:text-teal-300 ring-1 ring-teal-500/40 animate-pulse'
+                                  : 'hover:bg-teal-500/10 text-teal-600 dark:text-teal-400'
+                              }`}
+                              title={isSpeaking ? 'Detener voz' : 'Escuchar respuesta en voz alta'}
+                            >
+                              {isSpeaking ? (
+                                <>
+                                  <VolumeX size={13} className="text-rose-500" />
+                                  <span className="text-rose-600 dark:text-rose-400 font-bold">Detener</span>
+                                </>
+                              ) : (
+                                <>
+                                  <Volume2 size={13} />
+                                  <span>Escuchar</span>
+                                </>
+                              )}
+                            </button>
+                          </div>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                </motion.div>
-              ))}
+                  </motion.div>
+                );
+              })}
 
               {/* Indicador de escritura */}
               {loading && (
                 <div className="flex justify-start">
-                  <div className="flex gap-2">
-                    <div className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-                      <Bot size={14} className="text-primary" />
+                  <div className="flex gap-2.5 items-center">
+                    <div className="size-7 rounded-xl bg-teal-500/15 flex items-center justify-center shrink-0 border border-teal-500/25">
+                      <Bot size={15} className="text-teal-600 dark:text-teal-400" />
                     </div>
-                    <div className="chat-bubble-physi p-2.5 rounded-2xl rounded-tl-sm">
+                    <div className="p-3 rounded-2xl bg-surface dark:bg-surface-container-low border border-outline-variant/25 rounded-tl-none">
                       <div className="flex gap-1.5 items-center">
                         {[0, 1, 2].map((i) => (
                           <motion.span
@@ -476,7 +568,7 @@ export function PhysiGuide({
                               repeat: Infinity,
                               delay: i * 0.18,
                             }}
-                            className="w-2 h-2 bg-primary rounded-full"
+                            className="w-2 h-2 bg-teal-600 dark:bg-teal-400 rounded-full"
                           />
                         ))}
                       </div>
@@ -488,9 +580,10 @@ export function PhysiGuide({
 
             {/* Sugerencias frecuentes según la ruta */}
             {showFAQs && (
-              <div className="px-3 pb-2 shrink-0">
-                <p className="text-[11px] font-bold uppercase tracking-wider text-outline mb-1.5">
-                  Sugerencias
+              <div className="px-3.5 pb-2 shrink-0">
+                <p className="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant mb-1.5 flex items-center gap-1">
+                  <Sparkles size={11} className="text-teal-500" />
+                  <span>Sugerencias para empezar</span>
                 </p>
                 <div className="flex flex-wrap gap-1.5 max-h-20 overflow-y-auto scrollbar-thin">
                   {faqs.map((faq, i) => (
@@ -501,7 +594,7 @@ export function PhysiGuide({
                       transition={{ delay: i * 0.06 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={() => sendMessage(faq)}
-                      className="px-2.5 py-1.5 rounded-full glass-teal text-xs font-medium hover:scale-105 transition-all text-primary"
+                      className="px-2.5 py-1.5 rounded-xl border border-teal-500/25 bg-teal-500/10 text-xs font-semibold text-teal-800 dark:text-teal-200 hover:bg-teal-500/20 transition-all cursor-pointer"
                     >
                       {faq}
                     </motion.button>
@@ -511,7 +604,7 @@ export function PhysiGuide({
             )}
 
             {/* Entrada de texto */}
-            <div className="p-3 border-t divider-teal shrink-0">
+            <div className="p-3 border-t border-outline-variant/20 dark:border-white/10 shrink-0 bg-surface/50">
               <div className="flex gap-2 items-end">
                 <textarea
                   ref={textareaRef}
@@ -523,17 +616,17 @@ export function PhysiGuide({
                       handleSend();
                     }
                   }}
-                  placeholder="Escribe tu consulta..."
+                  placeholder="Pregúntale a Physi..."
                   rows={1}
-                  className="flex-1 px-3 py-2.5 rounded-xl glass-teal outline-none focus:ring-2 focus:ring-primary/20 resize-none text-sm max-h-24"
+                  className="flex-1 resize-none rounded-xl border border-outline-variant/30 dark:border-white/10 bg-surface/90 dark:bg-surface-container/60 px-3 py-2 text-xs sm:text-sm text-on-surface outline-none focus:ring-2 focus:ring-primary focus:border-primary/50 transition-all placeholder:text-on-surface-variant/50 max-h-24"
                 />
                 <button
                   onClick={handleSend}
-                  disabled={loading || !input.trim()}
-                  aria-label="Enviar consulta"
-                  className="w-10 h-10 rounded-xl bg-primary text-white flex items-center justify-center hover:scale-105 active:scale-95 transition-all disabled:opacity-40 shrink-0"
+                  disabled={!input.trim() || loading}
+                  className="size-10 rounded-xl bg-teal-600 text-white flex items-center justify-center shrink-0 hover:bg-teal-500 disabled:opacity-40 disabled:cursor-not-allowed transition-all active:scale-95 shadow-md shadow-teal-900/15 cursor-pointer"
+                  aria-label="Enviar mensaje"
                 >
-                  <Send size={18} />
+                  <Send size={16} />
                 </button>
               </div>
             </div>

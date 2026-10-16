@@ -1,4 +1,4 @@
-import { forwardRef, type ComponentType } from "react"
+import { forwardRef, type ComponentType, type HTMLAttributes } from "react"
 import { motion, type HTMLMotionProps } from "framer-motion"
 import { cn } from "@/lib/utils"
 import { CLINICAL_PASTELS } from "@/lib/designTokens"
@@ -32,11 +32,11 @@ export interface HarmonizedSurfaceProps extends Omit<HTMLMotionProps<"div">, "ch
 }
 
 const variantStyles: Record<HarmonizedSurfaceVariant, string> = {
-  // Contenedor principal de pantalla / sección: rounded-3xl
+  // Contenedor principal de pantalla / sección / modal: rounded-3xl
   panel: "rounded-3xl border border-outline-variant/30 dark:border-white/10 shadow-sm",
   // Contenedor modular interactivo / tarjeta: rounded-2xl
   card: "rounded-2xl border border-outline-variant/25 dark:border-white/10 shadow-sm",
-  // Elemento interno anidado: rounded-xl
+  // Elemento interno anidado / subcontenedor: rounded-xl
   subcontainer: "rounded-xl border border-outline-variant/15 dark:border-white/5",
   // Variantes Pastel Clínicas (Soft Sky, Mint/Teal, Lavender Blue)
   "pastel-sky": `rounded-2xl ${CLINICAL_PASTELS.sky.card}`,
@@ -97,7 +97,6 @@ export const HarmonizedSurface = forwardRef<HTMLDivElement, HarmonizedSurfacePro
     },
     ref
   ) => {
-    // Si la variante es pastel, priorizamos el estilo de la variante sobre el glass básico
     const isPastelVariant = variant.startsWith("pastel-")
     const resolvedGlassStyle = isPastelVariant ? "" : glassStyles[glass]
 
@@ -126,6 +125,36 @@ export const HarmonizedSurface = forwardRef<HTMLDivElement, HarmonizedSurfacePro
 HarmonizedSurface.displayName = "HarmonizedSurface"
 
 /**
+ * HarmonizedCard: Wrapper directo de nivel tarjeta (rounded-2xl)
+ */
+export const HarmonizedCard = forwardRef<HTMLDivElement, HarmonizedSurfaceProps>(
+  ({ variant = "card", padding = "md", interactive = true, ...props }, ref) => (
+    <HarmonizedSurface ref={ref} variant={variant} padding={padding} interactive={interactive} {...props} />
+  )
+)
+HarmonizedCard.displayName = "HarmonizedCard"
+
+/**
+ * HarmonizedPanel: Wrapper directo de nivel panel/sección (rounded-3xl)
+ */
+export const HarmonizedPanel = forwardRef<HTMLDivElement, HarmonizedSurfaceProps>(
+  ({ variant = "panel", padding = "lg", interactive = false, ...props }, ref) => (
+    <HarmonizedSurface ref={ref} variant={variant} padding={padding} interactive={interactive} {...props} />
+  )
+)
+HarmonizedPanel.displayName = "HarmonizedPanel"
+
+/**
+ * HarmonizedSubcontainer: Wrapper directo de nivel subelemento anidado (rounded-xl)
+ */
+export const HarmonizedSubcontainer = forwardRef<HTMLDivElement, HarmonizedSurfaceProps>(
+  ({ variant = "subcontainer", padding = "sm", interactive = false, ...props }, ref) => (
+    <HarmonizedSurface ref={ref} variant={variant} padding={padding} interactive={interactive} {...props} />
+  )
+)
+HarmonizedSubcontainer.displayName = "HarmonizedSubcontainer"
+
+/**
  * withHarmonizedSurface (HOC):
  * Envuelve y normaliza cualquier componente heterogéneo para inyectarle
  * automáticamente el contrato de diseño de FisioMirror sin reescribir su lógica interna.
@@ -151,4 +180,21 @@ export function withHarmonizedSurface<P extends object>(
   })`
 
   return HarmonizedComponent
+}
+
+/**
+ * withHarmonizedCard (HOC):
+ * HOC preconfigurado para tarjetas modulares interactivas.
+ */
+export function withHarmonizedCard<P extends object>(
+  WrappedComponent: ComponentType<P>,
+  defaultOptions: Partial<HarmonizedSurfaceProps> = {}
+) {
+  return withHarmonizedSurface(WrappedComponent, {
+    variant: "card",
+    interactive: true,
+    padding: "md",
+    glass: "subtle",
+    ...defaultOptions,
+  })
 }

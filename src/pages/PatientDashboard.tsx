@@ -4,7 +4,6 @@ import { motion } from 'framer-motion';
 import { SkeletonCard } from '../components/ui/Skeleton';
 import { SimpleCalendar } from '../components/ui/SimpleCalendar';
 import { MedicalIcon } from '../components/ui/MedicalIcon';
-import { useTranslation } from 'react-i18next';
 import { useAuthStore } from '../stores/authStore';
 import { supabase } from '../lib/supabase';
 import { runAIJob } from '../lib/ai';
@@ -41,7 +40,10 @@ import {
   Activity,
   Bot,
   User,
+  Volume2,
+  VolumeX,
 } from 'lucide-react';
+import { humanVoice, isHumanVoiceSpeaking, stopHumanVoice } from '../lib/humanVoice';
 import { staggerContainer, staggerItem, springTactile } from '../lib/motionVariants';
 
 interface PatientKpi {
@@ -73,7 +75,6 @@ interface EvolutionWeek {
 const weekDays = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
 
 export function PatientDashboard() {
-  const { t, i18n } = useTranslation();
   const user = useAuthStore((s) => s.user);
   const navigate = useNavigate();
   const [kpi, setKpi] = useState<PatientKpi>(emptyKpi);
@@ -90,6 +91,7 @@ export function PatientDashboard() {
   ]);
   const [recommendation, setRecommendation] = useState<string | null>(null);
   const [recLoading, setRecLoading] = useState(false);
+  const [isSpeakingCopilot, setIsSpeakingCopilot] = useState(false);
   const toast = useToast();
   const gamification = useGamification();
 
@@ -297,11 +299,7 @@ export function PatientDashboard() {
 
   const maxMinutes = Math.max(...weekActivity.map((d) => d.minutes), 1);
   const hour = new Date().getHours();
-  const greeting = hour < 12
-    ? (t('dashboard.greetingMorning') || 'Buenos días')
-    : hour < 19
-    ? (t('dashboard.greetingAfternoon') || 'Buenas tardes')
-    : (t('dashboard.greetingEvening') || 'Buenas noches');
+  const greeting = hour < 12 ? 'Buenos días' : hour < 19 ? 'Buenas tardes' : 'Buenas noches';
 
   return (
     <div className="space-y-8 max-w-7xl mx-auto w-full pb-12">
@@ -325,10 +323,10 @@ export function PatientDashboard() {
               colors={{ first: '#0d9488', second: '#c1ff72' }}
               className="font-display font-headline-lg text-headline-lg-mobile lg:text-headline-lg gradient-text-living"
             >
-              {greeting}, {user?.full_name?.split(' ')[0] || (t('auth.patient') || 'Paciente')}
+              {greeting}, {user?.full_name?.split(' ')[0] || 'Paciente'}
             </SparklesText>
             <p className="text-outline font-title-md text-title-md">
-              {new Date().toLocaleDateString(i18n.language === 'en' ? 'en-US' : i18n.language === 'pt' ? 'pt-BR' : 'es-ES', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
+              {new Date().toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
             </p>
           </div>
           <div className="ml-auto flex items-center gap-3">
@@ -358,12 +356,12 @@ export function PatientDashboard() {
               <div className="size-9 sm:size-11 rounded-xl sm:rounded-2xl bg-amber-500/15 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0 border border-amber-500/20">
                 <Flame className="size-4 sm:size-5" />
               </div>
-              <span className="text-[10px] sm:text-xs font-bold text-amber-700 dark:text-amber-300 uppercase tracking-wider hidden xs:inline">{t('dashboard.streak') || 'Racha'}</span>
+              <span className="text-[10px] sm:text-xs font-bold text-amber-700 dark:text-amber-300 uppercase tracking-wider hidden xs:inline">Racha</span>
             </div>
             <div>
-              <p className="text-[10px] sm:text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider line-clamp-1 xs:hidden">{t('dashboard.streak') || 'Racha'}</p>
+              <p className="text-[10px] sm:text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider line-clamp-1 xs:hidden">Racha</p>
               <p className="text-xl sm:text-2xl lg:text-3xl font-black text-slate-900 dark:text-slate-100 tabular-nums tracking-tight">
-                {kpi.streak} <span className="text-[10px] sm:text-xs font-semibold text-slate-400">{t('common.days') || 'días'}</span>
+                {kpi.streak} <span className="text-[10px] sm:text-xs font-semibold text-slate-400">días</span>
               </p>
             </div>
           </CardSpotlight>
@@ -382,10 +380,10 @@ export function PatientDashboard() {
               <div className="size-9 sm:size-11 rounded-xl sm:rounded-2xl bg-teal-500/15 text-teal-600 dark:text-teal-400 flex items-center justify-center shrink-0 border border-teal-500/25">
                 <CheckCircle2 className="size-4 sm:size-5" />
               </div>
-              <span className="text-[10px] sm:text-xs font-bold text-teal-700 dark:text-teal-300 uppercase tracking-wider hidden xs:inline">{t('dashboard.totalSessions') || 'Sesiones'}</span>
+              <span className="text-[10px] sm:text-xs font-bold text-teal-700 dark:text-teal-300 uppercase tracking-wider hidden xs:inline">Sesiones</span>
             </div>
             <div>
-              <p className="text-[10px] sm:text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider line-clamp-1 xs:hidden">{t('dashboard.totalSessions') || 'Sesiones'}</p>
+              <p className="text-[10px] sm:text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider line-clamp-1 xs:hidden">Sesiones</p>
               <p className="text-xl sm:text-2xl lg:text-3xl font-black text-teal-700 dark:text-teal-300 tabular-nums tracking-tight">
                 {kpi.totalSessions} <span className="text-[10px] sm:text-xs font-semibold text-slate-400">total</span>
               </p>
@@ -406,10 +404,10 @@ export function PatientDashboard() {
               <div className="size-9 sm:size-11 rounded-xl sm:rounded-2xl bg-sky-500/15 text-sky-700 dark:text-sky-300 flex items-center justify-center shrink-0 border border-sky-500/25">
                 <Clock className="size-4 sm:size-5" />
               </div>
-              <span className="text-[10px] sm:text-xs font-bold text-sky-700 dark:text-sky-300 uppercase tracking-wider hidden xs:inline">{t('common.minutes') || 'Minutos'}</span>
+              <span className="text-[10px] sm:text-xs font-bold text-sky-700 dark:text-sky-300 uppercase tracking-wider hidden xs:inline">Minutos</span>
             </div>
             <div>
-              <p className="text-[10px] sm:text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider line-clamp-1 xs:hidden">{t('common.minutes') || 'Minutos'}</p>
+              <p className="text-[10px] sm:text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider line-clamp-1 xs:hidden">Minutos</p>
               <p className="text-xl sm:text-2xl lg:text-3xl font-black text-slate-900 dark:text-slate-100 tabular-nums tracking-tight">
                 {kpi.weeklyMinutes} <span className="text-[10px] sm:text-xs font-semibold text-slate-400">min</span>
               </p>
@@ -467,13 +465,13 @@ export function PatientDashboard() {
               <div className="space-y-2 max-w-md">
                 <span className="inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-full bg-teal-500/15 text-teal-700 dark:text-teal-300 border border-teal-500/30">
                   <span className="w-1.5 h-1.5 rounded-full bg-teal-500 animate-pulse" />
-                  {t('dashboard.startArMirror') || 'Sesión Guiada AR'}
+                  Sesión Guiada AR
                 </span>
-                <h3 className="text-xl font-black text-slate-900 dark:text-white">{t('patientDashboard.todayRoutine') || 'Rutina de Hoy'}</h3>
+                <h3 className="text-xl font-black text-slate-900 dark:text-white">Rutina de Hoy</h3>
                 <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-medium">
                   {exercises.length > 0
-                    ? `${exercises[0].name} • ${t('patientDashboard.exercisesCompleted')}`
-                    : t('dashboard.noActiveRoutine')}
+                    ? `${exercises[0].name} con corrección de postura en tiempo real por visión computacional.`
+                    : 'Inicia el seguimiento guiado con tu cámara para registrar ángulos articulares.'}
                 </p>
               </div>
 
@@ -484,20 +482,20 @@ export function PatientDashboard() {
                 className="px-6 py-3.5 rounded-2xl text-white font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-teal-700/25 shrink-0 bg-teal-600 hover:bg-teal-500"
               >
                 <Play className="size-4 fill-current" />
-                <span>{t('patientDashboard.startExercise') || 'Comenzar Sesión'}</span>
+                <span>Comenzar Sesión</span>
               </PulsatingButton>
             </div>
           </div>
 
           {/* Assigned Exercises List */}
-          <CollapsibleSection title={t('patientDashboard.todayRoutine') || 'Mis Ejercicios Asignados'} icon="assignment" defaultOpen>
+          <CollapsibleSection title="Mis Ejercicios Asignados" icon="assignment" defaultOpen>
             <div className="flex justify-between items-center mb-3">
-              <p className="text-xs text-on-surface-variant">{t('patientDashboard.therapistNotes') || 'Rutina prescrita por tu fisioterapeuta'}</p>
+              <p className="text-xs text-on-surface-variant">Rutina prescrita por tu fisioterapeuta</p>
               <button
                 onClick={() => navigate('/exercises')}
                 className="text-xs font-bold text-teal-600 dark:text-teal-400 hover:underline"
               >
-                {t('common.viewAll') || 'Ver todos'}
+                Ver todos
               </button>
             </div>
 
@@ -645,33 +643,64 @@ export function PatientDashboard() {
               )}
             </div>
 
-            <button
-              onClick={async () => {
-                if (!recommendation && !recLoading) {
-                  setRecLoading(true);
-                  try {
-                    const result = await runAIJob('insights', {
-                      userPrompt: `Genera un consejo clínico breve y motivador para un paciente con ${kpi.totalSessions} sesiones y ${kpi.streak} días de racha. Máximo 2 frases. Responde en español.`,
+            <div className="flex gap-2 items-center">
+              <button
+                onClick={() => {
+                  if (isSpeakingCopilot || isHumanVoiceSpeaking()) {
+                    stopHumanVoice();
+                    setIsSpeakingCopilot(false);
+                  } else {
+                    const textToSpeak =
+                      recommendation ||
+                      (kpi.streak >= 3
+                        ? `¡Excelente trabajo! Llevas ${kpi.streak} días consecutivos. Tu adherencia al tratamiento reduce el tiempo de recuperación.`
+                        : 'Completa al menos una sesión hoy para mantener la movilidad articular y evitar rigidez.');
+                    setIsSpeakingCopilot(true);
+                    humanVoice.speak(textToSpeak, {
+                      onEnd: () => setIsSpeakingCopilot(false),
+                      onError: () => setIsSpeakingCopilot(false),
                     });
-                    if (result.success && result.result) {
-                      setRecommendation(result.result);
-                      toast.success('Consejo clínico actualizado');
-                    }
-                  } catch {
-                    toast.error('No se pudo conectar con Physi');
-                  } finally {
-                    setRecLoading(false);
                   }
-                } else {
-                  navigate('/calibration');
-                }
-              }}
-              disabled={recLoading}
-              className="w-full py-2.5 rounded-xl bg-primary/10 hover:bg-primary/20 text-primary text-xs font-bold transition-colors flex items-center justify-center gap-1.5"
-            >
-              <Sparkles className="size-3.5" />
-              <span>{recommendation ? 'Iniciar sesión recomendada' : 'Consultar a Physi'}</span>
-            </button>
+                }}
+                className={`py-2 px-3 rounded-xl border text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                  isSpeakingCopilot
+                    ? 'bg-teal-500 text-white shadow-xs animate-pulse border-teal-400'
+                    : 'bg-teal-500/10 hover:bg-teal-500/20 text-teal-700 dark:text-teal-300 border-teal-500/20'
+                }`}
+                title="Escuchar consejo con voz humana de Physi"
+              >
+                {isSpeakingCopilot ? <VolumeX className="size-3.5" /> : <Volume2 className="size-3.5" />}
+                <span>{isSpeakingCopilot ? 'Detener voz' : 'Escuchar consejo'}</span>
+              </button>
+
+              <button
+                onClick={async () => {
+                  if (!recommendation && !recLoading) {
+                    setRecLoading(true);
+                    try {
+                      const result = await runAIJob('insights', {
+                        userPrompt: `Genera un consejo clínico breve y motivador para un paciente con ${kpi.totalSessions} sesiones y ${kpi.streak} días de racha. Máximo 2 frases. Responde en español.`,
+                      });
+                      if (result.success && result.result) {
+                        setRecommendation(result.result);
+                        toast.success('Consejo clínico actualizado');
+                      }
+                    } catch {
+                      toast.error('No se pudo conectar con Physi');
+                    } finally {
+                      setRecLoading(false);
+                    }
+                  } else {
+                    navigate('/calibration');
+                  }
+                }}
+                disabled={recLoading}
+                className="flex-1 py-2 rounded-xl bg-primary/10 hover:bg-primary/20 text-primary text-xs font-bold transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+              >
+                <Sparkles className="size-3.5" />
+                <span>{recommendation ? 'Iniciar sesión' : 'Consultar'}</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>

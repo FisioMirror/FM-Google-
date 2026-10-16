@@ -292,6 +292,53 @@ async function callHFVision(imageBase64: string, prompt: string, temperature: nu
   throw new Error(`HuggingFace Vision no devolvió texto: ${lastErr}`);
 }
 
+const OPENROUTER_VISION_MODELS = [
+  "nvidia/llama-nemotron-rerank-vl-1b-v2:free",
+  "meta-llama/llama-3.2-11b-vision-instruct:free",
+  "qwen/qwen2.5-vl-72b-instruct",
+];
+
+async function callOpenRouterVision(imageBase64: string, prompt: string, temperature: number, maxTokens: number, mimeType: string): Promise<string> {
+  const apiKey = Deno.env.get("OPENROUTER_API_KEY");
+  if (!apiKey) throw new Error("OPENROUTER_API_KEY no configurada");
+  const dataUrl = `data:${mimeType};base64,${imageBase64}`;
+  let lastErr = "";
+  for (const model of OPENROUTER_VISION_MODELS) {
+    const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+        "HTTP-Referer": "https://fisiomirror.app",
+        "X-Title": "FisioMirror Tele-rehabilitation",
+      },
+      body: JSON.stringify({
+        model,
+        messages: [
+          {
+            role: "user",
+            content: [
+              { type: "text", text: prompt },
+              { type: "image_url", image_url: { url: dataUrl } },
+            ],
+          },
+        ],
+        temperature,
+        max_tokens: maxTokens,
+      }),
+    });
+    if (!res.ok) {
+      lastErr = await res.text().catch(() => "unknown");
+      continue;
+    }
+    const data = await res.json();
+    const text = data.choices?.[0]?.message?.content;
+    if (text && text.trim().length > 0) return text;
+    lastErr = "empty response";
+  }
+  throw new Error(`OpenRouter Vision no devolvió texto: ${lastErr}`);
+}
+
 const IMAGE_MODELS = [
   {
     name: "Gemini Flash (multimodal)",
@@ -303,6 +350,18 @@ const IMAGE_MODELS = [
     name: "Groq Vision (Llama 4 / 3.2)",
     provider: async (imageBase64: string, prompt: string, temperature: number, maxTokens: number, mimeType: string) => {
       return callGroqVision(imageBase64, prompt, temperature, maxTokens, mimeType);
+    },
+  },
+  {
+    name: "OpenRouter Vision (Nemotron / Llama 3.2)",
+    provider: async (imageBase64: string, prompt: string, temperature: number, maxTokens: number, mimeType: string) => {
+      return callOpenRouterVision(imageBase64, prompt, temperature, maxTokens, mimeType);
+    },
+  },
+  {
+    name: "HuggingFace Vision (Llama 3.2 / Qwen2-VL)",
+    provider: async (imageBase64: string, prompt: string, temperature: number, maxTokens: number, mimeType: string) => {
+      return callHFVision(imageBase64, prompt, temperature, maxTokens, mimeType);
     },
   },
   {
@@ -329,12 +388,6 @@ const IMAGE_MODELS = [
       const response = data.result?.response;
       if (!response) throw new Error("Cloudflare no devolvió respuesta");
       return response;
-    },
-  },
-  {
-    name: "HuggingFace Vision (Llama 3.2 / Qwen2-VL)",
-    provider: async (imageBase64: string, prompt: string, temperature: number, maxTokens: number, mimeType: string) => {
-      return callHFVision(imageBase64, prompt, temperature, maxTokens, mimeType);
     },
   },
 ];
@@ -435,6 +488,46 @@ async function callHFText(prompt: string, temperature: number, maxTokens: number
   return text;
 }
 
+const OPENROUTER_TEXT_MODELS = [
+  "nvidia/nemotron-3.5-lightning:free",
+  "meta-llama/llama-3.3-70b-instruct:free",
+  "qwen/qwen-2.5-72b-instruct:free",
+  "inception/mercurio-decide:free",
+  "liquid/lfm-2.5-2.6b:free",
+];
+
+async function callOpenRouterText(prompt: string, temperature: number, maxTokens: number): Promise<string> {
+  const apiKey = Deno.env.get("OPENROUTER_API_KEY");
+  if (!apiKey) throw new Error("OPENROUTER_API_KEY no configurada");
+  let lastErr = "";
+  for (const model of OPENROUTER_TEXT_MODELS) {
+    const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+        "HTTP-Referer": "https://fisiomirror.app",
+        "X-Title": "FisioMirror Tele-rehabilitation",
+      },
+      body: JSON.stringify({
+        model,
+        messages: [{ role: "user", content: prompt }],
+        temperature,
+        max_tokens: maxTokens,
+      }),
+    });
+    if (!res.ok) {
+      lastErr = await res.text().catch(() => "unknown");
+      continue;
+    }
+    const data = await res.json();
+    const text = data.choices?.[0]?.message?.content;
+    if (text && text.trim().length > 0) return text;
+    lastErr = "empty response";
+  }
+  throw new Error(`OpenRouter Text no devolvió texto: ${lastErr}`);
+}
+
 const TEXT_MODELS = [
   {
     name: "Gemini Flash (texto)",
@@ -446,6 +539,18 @@ const TEXT_MODELS = [
     name: "Groq (Llama 3.3 70B)",
     provider: async (prompt: string, temperature: number, maxTokens: number) => {
       return callGroqText(prompt, temperature, maxTokens);
+    },
+  },
+  {
+    name: "OpenRouter (Nemotron / Llama 3.3 / Mercurio)",
+    provider: async (prompt: string, temperature: number, maxTokens: number) => {
+      return callOpenRouterText(prompt, temperature, maxTokens);
+    },
+  },
+  {
+    name: "HuggingFace (Llama 3.1 8B)",
+    provider: async (prompt: string, temperature: number, maxTokens: number) => {
+      return callHFText(prompt, temperature, maxTokens);
     },
   },
   {
@@ -465,12 +570,6 @@ const TEXT_MODELS = [
       const data = await res.json();
       if (!data.success) throw new Error(data.errors?.[0]?.message || "Error Cloudflare Texto");
       return data.result.response;
-    },
-  },
-  {
-    name: "HuggingFace (Llama 3.1 8B)",
-    provider: async (prompt: string, temperature: number, maxTokens: number) => {
-      return callHFText(prompt, temperature, maxTokens);
     },
   },
 ];

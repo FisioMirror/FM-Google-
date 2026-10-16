@@ -1,5 +1,4 @@
 import { useEffect, useState, useCallback, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   ResponsiveContainer,
@@ -111,7 +110,6 @@ interface PatientWithSessions {
 }
 
 export function StatsPage() {
-  const { t, i18n } = useTranslation();
   const user = useAuthStore((s) => s.user);
   const isFisio = user?.role === 'fisioterapeuta';
   const toast = useToast();
@@ -594,7 +592,7 @@ export function StatsPage() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
         <div>
           <h2 className="font-headline-lg text-headline-lg-mobile lg:text-headline-lg gradient-text-living mb-2">
-            {isFisio ? (t('stats.title') || 'Métricas de Práctica Clínica') : (t('stats.subtitle') || 'Progreso de Recuperación')}
+            {isFisio ? 'Métricas de Práctica Clínica' : 'Progreso de Recuperación'}
           </h2>
           {!isFisio && (
             <div className="flex flex-wrap items-center gap-3 mt-2">
@@ -605,9 +603,7 @@ export function StatsPage() {
         </div>
         <div className="glass-panel px-4 py-2 rounded-xl flex items-center gap-2">
           <Icon name="calendar_today" size={18} className="text-outline" />
-          <span className="font-bold text-on-surface">
-            {new Date().toLocaleDateString(i18n.language === 'en' ? 'en-US' : i18n.language === 'pt' ? 'pt-BR' : 'es-ES', { month: 'long', day: 'numeric', year: 'numeric' })}
-          </span>
+          <span className="font-bold text-on-surface">{new Date().toLocaleDateString('es-ES', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
         </div>
       </div>
 
@@ -615,7 +611,7 @@ export function StatsPage() {
         <div className="space-y-3">
           <div className="flex gap-3 items-center">
             <label htmlFor="patient-filter" className="text-sm font-bold text-on-surface-variant flex items-center gap-1">
-              <Icon name="filter_list" size={18} /> {t('common.filter') || 'Filtrar'}:
+              <Icon name="filter_list" size={18} /> Filtrar:
             </label>
             <select
               id="patient-filter"
@@ -623,14 +619,14 @@ export function StatsPage() {
               onChange={(e) => onPatientFilter(e.target.value)}
               className="px-4 py-3 rounded-xl bg-surface-variant/20 border border-outline-variant/30 outline-none focus:ring-2 focus:ring-primary/20 text-on-surface w-full sm:min-w-[200px] sm:w-auto"
             >
-              <option value="">{t('patients.all') || 'Todos los pacientes'}</option>
+              <option value="">Todos los pacientes</option>
               {patients.map(p => (
                 <option key={p.id} value={p.id}>{p.full_name}</option>
               ))}
             </select>
             {selectedPatient && (
               <button onClick={() => onPatientFilter('')} className="text-outline hover:text-primary transition-colors flex items-center gap-1 text-sm">
-                <Icon name="close" size={16} /> {t('common.reset') || 'Limpiar filtro'}
+                <Icon name="close" size={16} /> Limpiar filtro
               </button>
             )}
           </div>

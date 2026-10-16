@@ -33,7 +33,7 @@ export default async function handler(req, res) {
     },
     supabaseAuth: {
       configured: false,
-      url: (process.env.VITE_SUPABASE_URL || '').match(/https:\/\/[a-zA-Z0-9-]+\.supabase\.co/)?.[0] || 'https://mnkqfrulcpxpwaftokdi.supabase.co',
+      url: process.env.VITE_SUPABASE_URL || 'https://mnkqfrulcpxpwaftokdi.supabase.co',
       status: 'pending',
       message: '',
     },
@@ -136,10 +136,8 @@ export default async function handler(req, res) {
 
   // 3. Diagnóstico de Supabase Auth
   try {
-    const rawUrl = process.env.VITE_SUPABASE_URL || '';
-    const supabaseUrl = rawUrl.match(/https:\/\/[a-zA-Z0-9-]+\.supabase\.co/)?.[0] || 'https://mnkqfrulcpxpwaftokdi.supabase.co';
-    const rawKey = process.env.VITE_SUPABASE_ANON_KEY || '';
-    const supabaseKey = rawKey.match(/eyJ[a-zA-Z0-9_-]+\.[a-zA-Z0-9_-]+\.[a-zA-Z0-9_-]+/)?.[0] || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1ua3FmcnVsY3B4cHdhZnRva2RpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIwNzA5OTAsImV4cCI6MjA5NzY0Njk5MH0.lsbk4vs8F3uvp4gOqs0Ydz7V7zh04MJqWC919KssRQ0';
+    const supabaseUrl = process.env.VITE_SUPABASE_URL || 'https://mnkqfrulcpxpwaftokdi.supabase.co';
+    const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1ua3FmcnVsY3B4cHdhZnRva2RpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIwNzA5OTAsImV4cCI6MjA5NzY0Njk5MH0.lsbk4vs8F3uvp4gOqs0Ydz7V7zh04MJqWC919KssRQ0';
     const supabase = createClient(supabaseUrl, supabaseKey);
 
     const { data: healthData, error: healthErr } = await supabase.from('profiles').select('id').limit(1);

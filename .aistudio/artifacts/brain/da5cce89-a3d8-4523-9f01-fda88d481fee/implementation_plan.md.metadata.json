@@ -1,6 +1,0 @@
-{
-  "summary": "Plan de Refinación y Mejora Funcional para FisioMirror:\n1. Sistema de Reportes PDF Clínicos con Identidad FisioMirror (Informe de Fin de Sesión, Receta/Prescripción de Rutina y Expediente Integral).\n2. Internacionalización Completa (i18n) para Español, Inglés y Portugués con selector reactivo persistente en barra superior y ajustes.\n3. Optimización de Biomecánica con MediaPipe básico (eliminación de lag con modelComplexity adaptativo, control de frames en vuelo y suavizado exponencial de ángulos).",
-  "updatedAt": "2026-10-12T19:15:38.073772991Z",
-  "requestFeedback": true,
-  "userFacing": true
-}

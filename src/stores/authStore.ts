@@ -4,6 +4,7 @@ import type { Profile } from '../types';
 import { supabase, supabaseUrl, supabaseAnonKey } from '../lib/supabase';
 import { DEMO_PATIENT_PROFILE, DEMO_FISIO_PROFILE, DEMO_TOKENS } from '../data/demoProfiles';
 import { isDemoAccount } from '../lib/demoAuth';
+import { logAuthEvent } from '../lib/auditService';
 
 const STORAGE_KEY = 'fisiomirror-auth';
 const SESSION_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000;
@@ -175,6 +176,12 @@ export const useAuthStore = create<AuthState>()(
               let profile = userId ? await fetchProfileById(userId) : null;
               if (!profile && userEmail) profile = await fetchProfileByEmail(userEmail);
               if (profile) {
+                logAuthEvent('AUTH_LOGIN_SUCCESS', {
+                  email: cleanEmail,
+                  userId: profile.id,
+                  role: profile.role,
+                  success: true,
+                }).catch(() => {});
                 set({ user: profile, loading: false });
                 return true;
               }
@@ -197,19 +204,43 @@ export const useAuthStore = create<AuthState>()(
           }
 
           if (!profile) {
+            logAuthEvent('AUTH_LOGIN_FAILED', {
+              email: cleanEmail,
+              success: false,
+              reason: 'Usuario no encontrado',
+            }).catch(() => {});
             set({ error: 'Correo o contraseña incorrectos', loading: false });
             return false;
           }
 
           if (profile.password_hash && profile.password_hash !== computedHash && profile.password_hash !== 'TOKEN_AUTH') {
+            logAuthEvent('AUTH_LOGIN_FAILED', {
+              email: cleanEmail,
+              userId: profile.id,
+              role: profile.role,
+              success: false,
+              reason: 'Contraseña incorrecta',
+            }).catch(() => {});
             set({ error: 'Contraseña incorrecta', loading: false });
             return false;
           }
+
+          logAuthEvent('AUTH_LOGIN_SUCCESS', {
+            email: cleanEmail,
+            userId: profile.id,
+            role: profile.role,
+            success: true,
+          }).catch(() => {});
 
           const { password_hash: _, ...userWithoutHash } = profile;
           set({ user: userWithoutHash as Profile, loading: false });
           return true;
         } catch (e) {
+          logAuthEvent('AUTH_LOGIN_FAILED', {
+            email: cleanEmail,
+            success: false,
+            reason: (e as Error).message,
+          }).catch(() => {});
           set({ error: (e as Error).message, loading: false });
           return false;
         }
@@ -782,6 +813,15 @@ export const useAuthStore = create<AuthState>()(
       },
 
       signOut: () => {
+        const currentUser = get().user;
+        if (currentUser) {
+          logAuthEvent('AUTH_LOGOUT', {
+            email: currentUser.email,
+            userId: currentUser.id,
+            role: currentUser.role,
+            success: true,
+          }).catch(() => {});
+        }
         localStorage.removeItem(STORAGE_KEY);
         set({ user: null, error: null });
       },

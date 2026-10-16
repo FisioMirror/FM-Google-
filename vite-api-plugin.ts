@@ -6,6 +6,8 @@ import sendSecurityEmailHandler from './api/send-security-email.js';
 import emailDiagnosticsHandler from './api/email-diagnostics.js';
 import sendPasswordResetHandler from './api/send-password-reset.js';
 import processPasswordResetHandler from './api/process-password-reset.js';
+import transcribeAudioHandler from './api/transcribe-audio.js';
+import synthesizeSpeechHandler from './api/synthesize-speech.js';
 
 export function apiDevPlugin(): Plugin {
   return {
@@ -81,6 +83,14 @@ export function apiDevPlugin(): Plugin {
           }
           if (pathname === '/api/process-password-reset') {
             await processPasswordResetHandler(reqProxy as any, resProxy as any);
+            return;
+          }
+          if (pathname === '/api/transcribe-audio') {
+            await transcribeAudioHandler(reqProxy as any, resProxy as any);
+            return;
+          }
+          if (pathname === '/api/synthesize-speech') {
+            await synthesizeSpeechHandler(reqProxy as any, resProxy as any);
             return;
           }
         } catch (err: any) {

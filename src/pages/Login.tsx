@@ -14,8 +14,7 @@ import { TurnstileWidget, type TurnstileWidgetRef } from '../components/auth/Tur
 import { BorderBeam } from '../components/ui/BorderBeam';
 import { AuroraText } from '../components/ui/AuroraText';
 import { LightRays } from '../components/ui/LightRays';
-import { useTranslation } from 'react-i18next';
-import { LanguageSelector } from '../components/ui/LanguageSelector';
+import { ShimmerButton } from '../components/ui/ShimmerButton';
 
 type AuthMode = 'login' | 'register';
 type LoginRole = 'paciente' | 'fisioterapeuta';
@@ -62,7 +61,6 @@ function CharacterSpotlight({
   reduceMotion: boolean | null;
   onSelectRole: (role: LoginRole) => void;
 }) {
-  const { t } = useTranslation();
   const isPaciente = activeRole === 'paciente';
   const isFisio = activeRole === 'fisioterapeuta';
 
@@ -165,7 +163,7 @@ function CharacterSpotlight({
               {/* Glass status badge */}
               <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/95 dark:bg-slate-900/90 backdrop-blur-md shadow-lg border border-emerald-500/35 text-emerald-800 dark:text-emerald-300 text-xs font-extrabold tracking-tight">
                 <Icon name="medical_services" size={13} className="text-emerald-600 dark:text-emerald-400" />
-                <span>{t('auth.physio') || 'Fisioterapeuta'}</span>
+                <span>Fisioterapeuta</span>
               </div>
             </motion.div>
           )}
@@ -176,7 +174,7 @@ function CharacterSpotlight({
           <div className="absolute top-[28%] left-[24%] opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none transform -translate-y-1 group-hover:translate-y-0">
             <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-md shadow-md border border-slate-200/90 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-[11px] font-bold">
               <Icon name="touch_app" size={12} />
-              <span>{t('auth.viewTherapist') || 'Ver Fisioterapeuta'}</span>
+              <span>Ver Fisioterapeuta</span>
             </div>
           </div>
         )}
@@ -213,7 +211,7 @@ function CharacterSpotlight({
               {/* Glass status badge */}
               <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/95 dark:bg-slate-900/90 backdrop-blur-md shadow-lg border border-sky-500/35 text-sky-800 dark:text-sky-300 text-xs font-extrabold tracking-tight">
                 <Icon name="person" size={13} className="text-sky-600 dark:text-sky-400" />
-                <span>{t('auth.patient') || 'Paciente'}</span>
+                <span>Paciente</span>
               </div>
             </motion.div>
           )}
@@ -224,7 +222,7 @@ function CharacterSpotlight({
           <div className="absolute top-[32%] right-[24%] opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none transform -translate-y-1 group-hover:translate-y-0">
             <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-md shadow-md border border-slate-200/90 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-[11px] font-bold">
               <Icon name="touch_app" size={12} />
-              <span>{t('auth.viewPatient') || 'Ver Paciente'}</span>
+              <span>Ver Paciente</span>
             </div>
           </div>
         )}
@@ -286,7 +284,6 @@ export function Login() {
   } = useAuthStore();
   const user = useAuthStore((s) => s.user);
   const { theme, toggleTheme } = useTheme();
-  const { t } = useTranslation();
   const toast = useToast();
   const navigate = useNavigate();
   const reduceMotion = useReducedMotion();
@@ -734,38 +731,38 @@ export function Login() {
 
   const statusMessage =
     loading
-      ? (t('common.loading') || 'Preparando tu espacio...')
+      ? 'Preparando tu espacio...'
       : error
-      ? (t('common.error') || 'Revisa tus credenciales')
+      ? 'Revisa tus credenciales'
       : isPaciente
       ? mode === 'register'
-        ? (t('auth.enterToken') || 'Vincula tu token de recuperación')
-        : (t('auth.welcomeTitle') || 'Tu recuperación empieza aquí')
+        ? 'Vincula tu token de recuperación'
+        : 'Tu recuperación empieza aquí'
       : mode === 'register'
-      ? (t('auth.professionalRegister') || 'Evolución clínica personalizada')
-      : (t('auth.physioTitle') || 'Gestión clínica de alto rendimiento');
+      ? 'Evolución clínica personalizada'
+      : 'Gestión clínica de alto rendimiento';
 
   // Dynamic titles and subtitles
   const getHeaderTitle = () => {
     if (isPaciente) {
       return mode === 'register'
-        ? (t('auth.signUp') || 'Registro de Paciente')
-        : (t('auth.welcomeTitle') || 'Comienza tu recuperación hoy');
+        ? 'Registro de Paciente'
+        : 'Comienza tu recuperación hoy';
     }
     return mode === 'register'
-      ? (t('auth.signUp') || 'Registro Profesional')
-      : (t('dashboard.physioTitle') || 'Gestión Clínica de Alto Rendimiento');
+      ? 'Registro Profesional'
+      : 'Gestión Clínica de Alto Rendimiento';
   };
 
   const getHeaderSubtitle = () => {
     if (isPaciente) {
       return mode === 'register'
-        ? (t('auth.tokenHelp') || 'Ingresa tu código de 6 dígitos asignado por tu fisioterapeuta para vincular tu cuenta.')
-        : (t('auth.welcomeSubtitle') || 'Ingresa con tu correo y contraseña para acceder a tus terapias.');
+        ? 'Ingresa tu código de 6 dígitos asignado por tu fisioterapeuta para vincular tu cuenta.'
+        : 'Ingresa con tu correo y contraseña para acceder a tus terapias.';
     }
     return mode === 'register'
-      ? (t('auth.welcomeSubtitle') || 'Crea tu cuenta clínica para gestionar pacientes, métricas y prescripción digital.')
-      : (t('dashboard.physioSubtitle') || 'Accede a tu panel de control clínico y seguimiento de pacientes.');
+      ? 'Crea tu cuenta clínica para gestionar pacientes, métricas y prescripción digital.'
+      : 'Accede a tu panel de control clínico y seguimiento de pacientes.';
   };
 
   return (
@@ -787,7 +784,7 @@ export function Login() {
           LEFT PANEL — MAIN FORM
           ═══════════════════════════════════════════════════ */}
       <div className="w-full md:w-[45%] lg:w-[42%] flex flex-col items-center justify-center px-4 py-8 md:px-8 relative z-20 overflow-y-auto">
-        {/* Top bar: logo + language selector + theme toggle */}
+        {/* Top bar: logo + theme toggle */}
         <div className="w-full max-w-[480px] flex items-center justify-between mb-5">
           <div className="flex items-center gap-2.5">
             <img src="/logo.png" alt="FisioMirror Logo" className="h-10 w-auto shrink-0 drop-shadow-sm" />
@@ -795,16 +792,13 @@ export function Login() {
               FisioMirror
             </span>
           </div>
-          <div className="flex items-center gap-2">
-            <LanguageSelector variant="compact" />
-            <button
-              onClick={toggleTheme}
-              aria-label={t('common.theme') || 'Cambiar tema'}
-              className="p-2.5 rounded-full border border-slate-200/80 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 backdrop-blur-md hover:scale-105 transition-all text-[#00504d] dark:text-[#8ad3cf] shadow-sm hover:shadow"
-            >
-              <Icon name={theme === 'dark' ? 'light_mode' : 'dark_mode'} size={18} />
-            </button>
-          </div>
+          <button
+            onClick={toggleTheme}
+            aria-label="Cambiar tema"
+            className="p-2.5 rounded-full border border-slate-200/80 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 backdrop-blur-md hover:scale-105 transition-all text-[#00504d] dark:text-[#8ad3cf] shadow-sm hover:shadow"
+          >
+            <Icon name={theme === 'dark' ? 'light_mode' : 'dark_mode'} size={18} />
+          </button>
         </div>
 
         {/* Main Card */}
@@ -872,7 +866,7 @@ export function Login() {
                 )}
               >
                 <Icon name="person" filled={isPaciente} size={18} />
-                {t('auth.patient') || 'Paciente'}
+                Paciente
               </button>
               <button
                 type="button"
@@ -885,7 +879,7 @@ export function Login() {
                 )}
               >
                 <Icon name="medical_services" filled={isFisio} size={18} />
-                {t('auth.physio') || 'Fisioterapeuta'}
+                Fisioterapeuta
               </button>
             </div>
           )}
@@ -949,8 +943,8 @@ export function Login() {
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        placeholder={t('auth.email') || 'Correo electrónico'}
-                        aria-label={t('auth.email') || 'Correo electrónico'}
+                        placeholder="Correo electrónico"
+                        aria-label="Correo electrónico del paciente"
                         autoComplete="email"
                         required
                         className="w-full rounded-2xl border border-slate-200/80 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 pl-11 pr-4 py-3.5 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 outline-none transition-all focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20 dark:focus:border-teal-400 dark:focus:ring-teal-400/20 shadow-sm"
@@ -967,8 +961,8 @@ export function Login() {
                         type={showPassword ? 'text' : 'password'}
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        placeholder={t('auth.password') || 'Contraseña'}
-                        aria-label={t('auth.password') || 'Contraseña'}
+                        placeholder="Contraseña"
+                        aria-label="Contraseña del paciente"
                         autoComplete="current-password"
                         required
                         className="w-full rounded-2xl border border-slate-200/80 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 pl-11 pr-11 py-3.5 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 outline-none transition-all focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20 dark:focus:border-teal-400 dark:focus:ring-teal-400/20 shadow-sm"
@@ -976,7 +970,7 @@ export function Login() {
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        aria-label={showPassword ? (t('common.close') || 'Ocultar') : (t('common.details') || 'Mostrar')}
+                        aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
                         className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1"
                       >
                         <Icon name={showPassword ? 'visibility_off' : 'visibility'} size={19} />
@@ -990,7 +984,7 @@ export function Login() {
                       onClick={() => setShowResetModal(true)}
                       className="text-xs font-semibold text-[#00504d] dark:text-[#8ad3cf] hover:underline"
                     >
-                      {t('auth.forgotPassword') || '¿Olvidaste tu contraseña?'}
+                      ¿Olvidaste tu contraseña?
                     </button>
                   </div>
 
@@ -1019,10 +1013,10 @@ export function Login() {
                     {loading ? (
                       <Spinner size={18} className="text-white" />
                     ) : cooldown > 0 ? (
-                      `${t('common.loading')} ${cooldown}s`
+                      `Espera ${cooldown}s`
                     ) : (
                       <>
-                        {t('auth.signIn') || 'Iniciar Sesión'}
+                        Iniciar Sesión
                         <Icon name="arrow_forward" size={18} />
                       </>
                     )}
@@ -1030,13 +1024,13 @@ export function Login() {
 
                   <div className="pt-2 text-center text-xs text-slate-600 dark:text-slate-400 space-y-1.5">
                     <p>
-                      {t('auth.tokenHelp')}{' '}
+                      ¿Tienes un código de tu fisioterapeuta?{' '}
                       <button
                         type="button"
                         onClick={() => switchMode('register')}
                         className="font-bold text-[#00504d] dark:text-[#8ad3cf] hover:underline"
                       >
-                        {t('auth.signUp') || 'Registrarse'}
+                        Crear Cuenta / Registrarse
                       </button>
                     </p>
                   </div>
@@ -1058,7 +1052,7 @@ export function Login() {
                   <div className="space-y-3">
                     <div>
                       <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5 text-center">
-                        {t('auth.enterToken') || 'Código de Acceso (6 dígitos)'}
+                        Código de Acceso (6 dígitos)
                       </label>
                       <PinInput
                         value={token}
@@ -1079,7 +1073,7 @@ export function Login() {
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        placeholder={t('auth.email') || 'Tu correo electrónico personal'}
+                        placeholder="Tu correo electrónico personal"
                         autoComplete="email"
                         required
                         className="w-full rounded-2xl border border-slate-200/80 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 pl-11 pr-4 py-3 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 outline-none transition-all focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20 dark:focus:border-teal-400 dark:focus:ring-teal-400/20 shadow-sm"
@@ -1096,7 +1090,7 @@ export function Login() {
                         type={showPassword ? 'text' : 'password'}
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        placeholder={t('auth.password') || 'Crear contraseña'}
+                        placeholder="Crear contraseña"
                         autoComplete="new-password"
                         required
                         className="w-full rounded-2xl border border-slate-200/80 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 pl-11 pr-11 py-3 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 outline-none transition-all focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20 dark:focus:border-teal-400 dark:focus:ring-teal-400/20 shadow-sm"
@@ -1104,7 +1098,6 @@ export function Login() {
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        aria-label={showPassword ? (t('common.close') || 'Ocultar') : (t('common.details') || 'Mostrar')}
                         className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1"
                       >
                         <Icon name={showPassword ? 'visibility_off' : 'visibility'} size={19} />
@@ -1121,7 +1114,7 @@ export function Login() {
                         type={showPassword ? 'text' : 'password'}
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
-                        placeholder={t('auth.confirmPassword') || 'Confirmar contraseña'}
+                        placeholder="Confirmar contraseña"
                         autoComplete="new-password"
                         required
                         className={cn(
@@ -1176,20 +1169,20 @@ export function Login() {
                       <Spinner size={18} className="text-white" />
                     ) : (
                       <>
-                        {t('auth.activateAccount') || 'Crear Cuenta y Vincular Token'}
+                        Crear Cuenta y Vincular Token
                         <Icon name="arrow_forward" size={18} />
                       </>
                     )}
                   </button>
 
                   <div className="text-center text-xs text-slate-600 dark:text-slate-400 pt-1">
-                    <span>{t('auth.haveAccount') || '¿Ya vinculaste tu cuenta?'} </span>
+                    <span>¿Ya vinculaste tu cuenta? </span>
                     <button
                       type="button"
                       onClick={() => switchMode('login')}
                       className="font-bold text-[#00504d] dark:text-[#8ad3cf] hover:underline"
                     >
-                      {t('auth.signIn') || 'Iniciar Sesión'}
+                      Iniciar Sesión
                     </button>
                   </div>
                 </motion.div>
@@ -1219,7 +1212,7 @@ export function Login() {
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        placeholder={t('auth.professionalEmail') || 'Correo profesional'}
+                        placeholder="Correo profesional"
                         aria-label="Correo del fisioterapeuta"
                         autoComplete="email"
                         required
@@ -1237,7 +1230,7 @@ export function Login() {
                         type={showPassword ? 'text' : 'password'}
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        placeholder={t('auth.password') || 'Contraseña'}
+                        placeholder="Contraseña"
                         aria-label="Contraseña del fisioterapeuta"
                         autoComplete="current-password"
                         required
@@ -1259,7 +1252,7 @@ export function Login() {
                       onClick={() => setShowResetModal(true)}
                       className="text-xs font-semibold text-[#00504d] dark:text-[#8ad3cf] hover:underline"
                     >
-                      {t('auth.forgotPassword') || '¿Olvidaste tu contraseña?'}
+                      ¿Olvidaste tu contraseña?
                     </button>
                   </div>
 
@@ -1289,20 +1282,20 @@ export function Login() {
                       <Spinner size={18} className="text-white" />
                     ) : (
                       <>
-                        {t('auth.signIn') || 'Iniciar Sesión'}
+                        Iniciar Sesión
                         <Icon name="login" size={18} />
                       </>
                     )}
                   </button>
 
                   <div className="pt-2 text-center text-xs text-slate-600 dark:text-slate-400">
-                    <span>{t('auth.newProfessionalPrompt') || '¿Nuevo profesional en FisioMirror?'} </span>
+                    <span>¿Nuevo profesional en FisioMirror? </span>
                     <button
                       type="button"
                       onClick={() => switchMode('register')}
                       className="font-bold text-[#00504d] dark:text-[#8ad3cf] hover:underline"
                     >
-                      {t('auth.createProAccount') || 'Crear Cuenta Profesional'}
+                      Crear Cuenta Profesional
                     </button>
                   </div>
                 </motion.div>
@@ -1658,25 +1651,25 @@ export function Login() {
                       <Spinner size={18} className="text-white" />
                     ) : fisioStep === 1 ? (
                       <>
-                        {t('auth.step1Continue') || 'Continuar al Paso 2'}
+                        Continuar al Paso 2
                         <Icon name="arrow_forward" size={18} />
                       </>
                     ) : (
                       <>
-                        {t('auth.step2Finish') || 'Crear Cuenta y Finalizar'}
+                        Crear Cuenta y Finalizar
                         <Icon name="arrow_forward" size={18} />
                       </>
                     )}
                   </button>
 
                   <div className="text-center text-xs text-slate-600 dark:text-slate-400 pt-1">
-                    <span>{t('auth.haveProAccount') || '¿Ya tienes cuenta profesional?'} </span>
+                    <span>¿Ya tienes cuenta profesional? </span>
                     <button
                       type="button"
                       onClick={() => switchMode('login')}
                       className="font-bold text-[#00504d] dark:text-[#8ad3cf] hover:underline"
                     >
-                      {t('auth.signIn') || 'Iniciar Sesión'}
+                      Iniciar Sesión
                     </button>
                   </div>
                 </motion.div>
@@ -1688,7 +1681,7 @@ export function Login() {
         {/* Demo Fast Access Buttons */}
         <div className="w-full max-w-[480px] flex flex-col items-center gap-y-2 mt-5">
           <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">
-            {t('common.demoMode') || 'Acceso Rápido de Prueba'}
+            Acceso Rápido de Prueba & Galería
           </span>
           <div className="flex flex-wrap justify-center gap-2.5">
             <button
@@ -1696,21 +1689,21 @@ export function Login() {
               className="px-4 py-2 rounded-full border border-slate-200/80 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 backdrop-blur-md hover:bg-white dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-[#00504d] dark:hover:text-[#8ad3cf] text-xs font-bold shadow-sm transition-all flex items-center gap-1.5 active:scale-95"
             >
               <Icon name="medical_services" size={15} className="text-[#00504d] dark:text-teal-400" />
-              {t('auth.demoPhysio') || 'Demo Fisio'}
+              Demo Fisio
             </button>
             <button
               onClick={fillPacienteDemo}
               className="px-4 py-2 rounded-full border border-slate-200/80 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 backdrop-blur-md hover:bg-white dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 text-xs font-bold shadow-sm transition-all flex items-center gap-1.5 active:scale-95"
             >
               <Icon name="person" size={15} className="text-blue-600 dark:text-blue-400" />
-              {t('auth.demoPatient') || 'Demo Paciente'}
+              Demo Paciente
             </button>
             <button
               onClick={() => navigate('/ui-showcase')}
               className="px-4 py-2 rounded-full border border-teal-500/30 bg-teal-500/10 hover:bg-teal-500/20 text-teal-700 dark:text-teal-300 text-xs font-bold shadow-sm transition-all flex items-center gap-1.5 active:scale-95"
             >
               <Icon name="palette" size={15} className="text-teal-600 dark:text-teal-400" />
-              {t('dashboard.uiComponents') || 'Galería UI'}
+              Galería UI
             </button>
           </div>
         </div>
@@ -1861,10 +1854,10 @@ export function Login() {
                 <Icon name="lock_reset" filled size={24} />
               </div>
               <h3 className="font-extrabold text-xl text-center text-[#00504d] dark:text-[#8ad3cf] mb-1">
-                {t('auth.forgotPassword') || 'Recuperar Contraseña'}
+                Recuperar Contraseña
               </h3>
               <p className="text-xs text-slate-600 dark:text-slate-400 text-center mb-5 leading-relaxed">
-                {t('auth.resetPassDesc') || 'Ingresa tu correo y te enviaremos un enlace seguro para restablecer tu acceso.'}
+                Ingresa tu correo y te enviaremos un enlace seguro para restablecer tu acceso.
               </p>
 
               <div className="relative mb-4">
@@ -1877,7 +1870,7 @@ export function Login() {
                   type="email"
                   value={resetEmail}
                   onChange={(e) => setResetEmail(e.target.value)}
-                  placeholder={t('auth.email') || 'Correo electrónico'}
+                  placeholder="Correo electrónico"
                   className="w-full pl-10 pr-4 py-2.5 rounded-xl text-sm border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 outline-none focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20"
                 />
               </div>
@@ -1888,7 +1881,7 @@ export function Login() {
                   onClick={() => setShowResetModal(false)}
                   className="flex-1 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold text-xs hover:bg-slate-200 dark:hover:bg-slate-700 transition-all"
                 >
-                  {t('common.cancel') || 'Cancelar'}
+                  Cancelar
                 </button>
                 <button
                   type="button"
@@ -1897,7 +1890,7 @@ export function Login() {
                   className="flex-1 py-2.5 rounded-xl bg-[#00504d] dark:bg-teal-600 text-white font-bold text-xs hover:bg-[#0c403d] dark:hover:bg-teal-500 transition-all disabled:opacity-50 flex items-center justify-center gap-1.5"
                 >
                   {resetLoading ? <Spinner size={16} className="text-white" /> : <Icon name="send" size={16} />}
-                  {resetLoading ? (t('auth.sendingLink') || 'Enviando...') : (t('auth.sendLink') || 'Enviar enlace')}
+                  {resetLoading ? 'Enviando...' : 'Enviar enlace'}
                 </button>
               </div>
 
@@ -1910,7 +1903,7 @@ export function Login() {
                   }}
                   className="text-xs text-primary dark:text-teal-400 hover:underline font-semibold"
                 >
-                  {t('auth.haveDirectLinkPrompt') || '¿Tienes el enlace o deseas restablecer directamente? Pulsa aquí'}
+                  ¿Tienes el enlace o deseas restablecer directamente? Pulsa aquí
                 </button>
               </div>
             </motion.div>
@@ -1938,10 +1931,10 @@ export function Login() {
                 <Icon name="check_circle" filled size={38} />
               </div>
               <h3 className="font-extrabold text-2xl text-[#00504d] dark:text-[#8ad3cf]">
-                {t('auth.accountCreatedSuccess') || '¡Cuenta Creada con Éxito!'}
+                ¡Cuenta Creada con Éxito!
               </h3>
               <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-                {t('auth.accountCreatedDesc') || 'Tus datos han sido registrados correctamente en FisioMirror. Ya puedes iniciar sesión para acceder a tu plataforma clínica.'}
+                Tus datos han sido registrados correctamente en FisioMirror. Ya puedes iniciar sesión para acceder a tu plataforma clínica.
               </p>
               <button
                 type="button"
@@ -1952,7 +1945,7 @@ export function Login() {
                 }}
                 className="w-full py-3.5 bg-[#00504d] dark:bg-teal-600 text-white rounded-2xl font-bold text-sm hover:bg-[#0c403d] dark:hover:bg-teal-500 active:scale-95 transition-all shadow-md"
               >
-                {t('auth.goToSignIn') || 'Ir a Iniciar Sesión'}
+                Ir a Iniciar Sesión
               </button>
             </motion.div>
           </motion.div>

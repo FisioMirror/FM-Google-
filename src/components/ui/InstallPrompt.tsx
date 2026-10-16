@@ -1,7 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { X, Download, Smartphone } from 'lucide-react';
 import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { useInstall } from '../../lib/installContext';
 
 function Toast({ message, onDone }: { message: string; onDone: () => void }) {
@@ -23,7 +22,6 @@ function Toast({ message, onDone }: { message: string; onDone: () => void }) {
 }
 
 export function InstallModal() {
-  const { t } = useTranslation();
   const { modalOpen, closeModal, triggerInstall, isInstallable } = useInstall();
   const [toast, setToast] = useState<string | null>(null);
   const [showToast, setShowToast] = useState(false);
@@ -31,7 +29,7 @@ export function InstallModal() {
   const handleInstall = async () => {
     if (!isInstallable) {
       closeModal();
-      setToast(t('installModal.manualInstruction') || 'Abrí el menú del navegador y tocá "Agregar a pantalla principal" o "Instalar app".');
+      setToast('Abrí el menú del navegador y tocá "Agregar a pantalla principal" o "Instalar app".');
       setShowToast(true);
       setTimeout(() => setShowToast(false), 5000);
       return;
@@ -88,27 +86,28 @@ export function InstallModal() {
                 </div>
 
                 <h2 className="text-xl font-bold text-primary-800 dark:text-slate-100">
-                  {t('installModal.title') || 'Instalá FisioMirror'}
+                  Instalá FisioMirror
                 </h2>
                 <p className="mt-1 text-sm text-primary-500 dark:text-slate-400 font-medium">
-                  {t('installModal.tagline') || 'Tele-rehabilitación inteligente'}
+                  Tele-rehabilitación inteligente
                 </p>
               </div>
 
               {/* Body */}
               <div className="px-6 pb-2">
                 <p className="text-sm text-primary-600 dark:text-slate-300 text-center leading-relaxed">
-                  {t('installModal.description') || 'FisioMirror te permite hacer ejercicios de tele-rehabilitación guiados por IA. Instalala en tu dispositivo para acceder más rápido, incluso sin conexión.'}
+                  FisioMirror te permite hacer ejercicios de tele-rehabilitación guiados por IA.
+                  Instalala en tu dispositivo para acceder más rápido, incluso sin conexión.
                 </p>
 
                 <div className="mt-4 flex flex-col gap-2">
                   <div className="flex items-center gap-2 text-xs text-primary-500 dark:text-slate-400">
                     <Smartphone className="w-4 h-4 text-accent flex-shrink-0" />
-                    {t('installModal.featureHome') || 'Acceso directo desde tu pantalla de inicio'}
+                    Acceso directo desde tu pantalla de inicio
                   </div>
                   <div className="flex items-center gap-2 text-xs text-primary-500 dark:text-slate-400">
                     <Download className="w-4 h-4 text-accent flex-shrink-0" />
-                    {t('installModal.featureOffline') || 'Disponible sin conexión a internet'}
+                    Disponible sin conexión a internet
                   </div>
                 </div>
               </div>
@@ -120,13 +119,13 @@ export function InstallModal() {
                   className="w-full py-3 px-4 rounded-2xl bg-gradient-to-r from-primary-600 to-accent text-white font-semibold text-sm shadow-lg hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
                 >
                   <Download className="w-4 h-4" />
-                  {t('installModal.installNow') || 'Instalar ahora'}
+                  Instalar ahora
                 </button>
                 <button
                   onClick={closeModal}
                   className="w-full py-3 px-4 rounded-2xl text-primary-500 dark:text-slate-400 font-medium text-sm hover:bg-white/20 active:scale-[0.98] transition-all"
                 >
-                  {t('installModal.notNow') || 'Ahora no'}
+                  Ahora no
                 </button>
               </div>
             </motion.div>

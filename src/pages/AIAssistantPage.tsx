@@ -1,6 +1,5 @@
-import { useState, useRef, useEffect, useMemo } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useTranslation } from 'react-i18next';
 import {
   Volume2,
   VolumeX,
@@ -11,15 +10,17 @@ import {
   MicOff,
   Image as ImageIcon,
   Send,
+  User,
 } from 'lucide-react';
 import { useAuthStore } from '../stores/authStore';
 import { supabase } from '../lib/supabase';
 import { runAIJob, normalizeBase64, inferMimeType } from '../lib/ai';
 import { useToast } from '../components/ui/ToastProvider';
-import { humanVoice } from '../lib/humanVoice';
+import { humanVoice, getVoiceGender, setVoiceGender, type VoiceGender } from '../lib/humanVoice';
 import { formatAIReport } from '../lib/formatReport';
 import { LoadingText } from '../components/ui/LoadingText';
 import { MascotAnimation } from '../components/ui/MascotAnimation';
+import { QuickVoiceSelector } from '../components/ui/QuickVoiceSelector';
 import { isValidUUID } from '../lib/utils';
 import { PRIMARY_DEMO_PATIENT } from '../data/unifiedDemoData';
 
@@ -72,13 +73,12 @@ interface ChatMessage {
 }
 
 export function AIAssistantPage() {
-  const { t, i18n } = useTranslation();
   const user = useAuthStore((s) => s.user);
-  const [messages, setMessages] = useState<ChatMessage[]>(() => [
+  const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: '1',
       role: 'assistant',
-      text: t('aiAssistant.greeting') || '¡Hola! Soy Physi, tu asistente personal de rehabilitación en FisioMirror. Estoy aquí para acompañar tu recuperación, resolver dudas sobre tus ejercicios asignados y analizar tu progreso. ¿Cómo te sientes hoy?',
+      text: '¡Hola! Soy Physi, tu asistente personal de rehabilitación en FisioMirror. Estoy aquí para acompañar tu recuperación, resolver dudas sobre tus ejercicios asignados y analizar tu progreso. ¿Cómo te sientes hoy?',
       timestamp: 'Ahora',
     },
   ]);
@@ -87,6 +87,7 @@ export function AIAssistantPage() {
   const [images, setImages] = useState<string[]>([]);
   const [isRecording, setIsRecording] = useState(false);
   const [autoVoice, setAutoVoice] = useState(true);
+  const [voiceGender, setVoiceGenderState] = useState<VoiceGender>(() => humanVoice.getVoiceGender());
   const [currentlySpeakingId, setCurrentlySpeakingId] = useState<string | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
@@ -96,6 +97,13 @@ export function AIAssistantPage() {
   const mediaStreamRef = useRef<MediaStream | null>(null);
   const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
   const toast = useToast();
+
+  const toggleVoiceGender = () => {
+    const nextGender: VoiceGender = voiceGender === 'male' ? 'female' : 'male';
+    setVoiceGenderState(nextGender);
+    humanVoice.setVoiceGender(nextGender);
+    toast.info(`Tono de voz de Physi: ${nextGender === 'male' ? 'Masculino cálido y amigable' : 'Femenino'}`);
+  };
 
   useEffect(() => {
     loadConversation();
@@ -148,6 +156,7 @@ export function AIAssistantPage() {
       humanVoice.stop();
       setCurrentlySpeakingId(id);
       humanVoice.speak(text, {
+        gender: voiceGender,
         onEnd: () => setCurrentlySpeakingId(null),
         onError: () => setCurrentlySpeakingId(null),
       });
@@ -348,6 +357,7 @@ Pregunta del paciente: ${messageText}`;
       if (autoVoice) {
         setCurrentlySpeakingId(assistantMsg.id);
         humanVoice.speak(assistantText, {
+          gender: voiceGender,
           onEnd: () => setCurrentlySpeakingId(null),
           onError: () => setCurrentlySpeakingId(null),
         });
@@ -376,15 +386,12 @@ Pregunta del paciente: ${messageText}`;
     }
   };
 
-  const quickPrompts = useMemo(
-    () => [
-      { label: t('aiAssistant.quickPrompt1') || '¿Qué ejercicios me tocan hoy?', prompt: '¿Cuáles son mis ejercicios recomendados para el día de hoy?' },
-      { label: t('aiAssistant.quickPrompt2') || '¿Cómo va mi progreso?', prompt: 'Explícame mi progreso de recuperación actual y qué debo seguir reforzando.' },
-      { label: t('aiAssistant.quickPrompt3') || 'Consejos para aliviar dolor', prompt: 'Siento ligera molestia tras la sesión, ¿qué consejos de autocuidado puedo aplicar de forma segura?' },
-      { label: t('aiAssistant.quickPrompt4') || 'Mejorar postura en AR', prompt: '¿Qué recomendaciones me das para calibrar y ejecutar mejor mis ejercicios frente a la cámara?' },
-    ],
-    [t, i18n.language]
-  );
+  const quickPrompts = [
+    { label: '¿Qué ejercicios me tocan hoy?', prompt: '¿Cuáles son mis ejercicios recomendados para el día de hoy?' },
+    { label: '¿Cómo va mi progreso?', prompt: 'Explícame mi progreso de recuperación actual y qué debo seguir reforzando.' },
+    { label: 'Consejos para aliviar dolor', prompt: 'Siento ligera molestia tras la sesión, ¿qué consejos de autocuidado puedo aplicar de forma segura?' },
+    { label: 'Mejorar postura en AR', prompt: '¿Qué recomendaciones me das para calibrar y ejecutar mejor mis ejercicios frente a la cámara?' },
+  ];
 
   return (
     <div className="h-full flex flex-col gap-3 sm:gap-4 overflow-hidden min-h-0 pb-2">
@@ -394,33 +401,43 @@ Pregunta del paciente: ${messageText}`;
           <MascotAnimation type="greeting" size="xs" className="breathe-blue shrink-0" />
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="font-bold text-base text-on-surface">{t('aiAssistant.title') || 'Physi Asistente IA'}</h1>
+              <h1 className="font-bold text-base text-on-surface">Physi Asistente IA</h1>
               <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-teal-500/10 text-teal-600 border border-teal-500/20">
                 <span className="size-1.5 rounded-full bg-teal-500 animate-pulse" />
-                {t('aiAssistant.badge') || 'Guía de Rehabilitación'}
+                Guía de Rehabilitación
               </span>
             </div>
             <p className="text-xs text-on-surface-variant line-clamp-1">
-              {t('aiAssistant.subtitle') || 'Acompañamiento biomecánico inteligente personalizado para tu terapia.'}
+              Acompañamiento biomecánico inteligente personalizado para tu terapia.
             </p>
           </div>
         </div>
 
-        {/* Voice Autoplay Toggle */}
-        <div className="flex items-center gap-2">
+        {/* Voice Persona & Autoplay Controls */}
+        <div className="flex items-center flex-wrap gap-2">
+          {/* Quick Voice Selector (Multi-provider & Persona) */}
+          <QuickVoiceSelector
+            onVoiceChange={(newGender) => {
+              setVoiceGenderState(newGender);
+              setVoiceGender(newGender);
+            }}
+          />
+
+          {/* Voice Autoplay Toggle */}
           <button
             onClick={() => {
-              setAutoVoice(!autoVoice);
-              if (autoVoice) humanVoice.stop();
+              const nextVal = !autoVoice;
+              setAutoVoice(nextVal);
+              if (!nextVal) humanVoice.stop();
             }}
-            className={`px-3 py-1.5 rounded-2xl text-xs font-semibold flex items-center gap-1.5 transition-all border ${
+            className={`px-3 py-1.5 rounded-2xl text-xs font-semibold flex items-center gap-1.5 transition-all border cursor-pointer ${
               autoVoice
                 ? 'bg-teal-500/15 border-teal-500/30 text-teal-700 dark:text-teal-300'
-                : 'bg-surface-container border-outline/15 text-outline'
+                : 'bg-surface-container border-outline/15 text-on-surface-variant'
             }`}
           >
             {autoVoice ? <Volume2 className="size-3.5" /> : <VolumeX className="size-3.5" />}
-            <span>{autoVoice ? (t('aiAssistant.voiceActive') || 'Voz Humana Activada') : (t('aiAssistant.voiceMuted') || 'Voz Silenciada')}</span>
+            <span>{autoVoice ? 'Lectura Automática' : 'Lectura Manual'}</span>
           </button>
         </div>
       </div>
@@ -480,18 +497,27 @@ Pregunta del paciente: ${messageText}`;
                       <div className="flex items-center gap-2">
                         <button
                           onClick={() => handleSpeakToggle(msg.id, msg.text)}
-                          className="p-1.5 rounded-xl hover:bg-teal-500/10 text-teal-600 dark:text-teal-400 transition-colors flex items-center gap-1 font-semibold"
-                          title="Escuchar mensaje con voz humana"
+                          className={`p-1.5 px-2.5 rounded-xl transition-all flex items-center gap-1.5 font-semibold cursor-pointer ${
+                            currentlySpeakingId === msg.id
+                              ? 'bg-teal-500 text-white shadow-xs animate-pulse ring-2 ring-teal-400/40'
+                              : 'hover:bg-teal-500/10 text-teal-600 dark:text-teal-400'
+                          }`}
+                          title="Escuchar mensaje con voz humana de Physi"
                         >
                           {currentlySpeakingId === msg.id ? (
                             <>
                               <VolumeX className="size-3.5" />
                               <span>Detener</span>
+                              <span className="flex gap-0.5 items-center ml-0.5">
+                                <span className="size-1 rounded-full bg-white animate-bounce" style={{ animationDelay: '0ms' }} />
+                                <span className="size-1 rounded-full bg-white animate-bounce" style={{ animationDelay: '150ms' }} />
+                                <span className="size-1 rounded-full bg-white animate-bounce" style={{ animationDelay: '300ms' }} />
+                              </span>
                             </>
                           ) : (
                             <>
                               <Volume2 className="size-3.5" />
-                              <span>Escuchar</span>
+                              <span>Escuchar voz natural</span>
                             </>
                           )}
                         </button>
@@ -601,7 +627,7 @@ Pregunta del paciente: ${messageText}`;
               sendMessage();
             }
           }}
-          placeholder={t('aiAssistant.inputPlaceholder') || 'Pregúntale a Physi sobre tus ejercicios o sensaciones...'}
+          placeholder="Escribe tu consulta a Physi (o presiona el micrófono)..."
           rows={1}
           className="flex-1 px-3 py-2.5 text-xs sm:text-sm bg-transparent outline-none resize-none text-on-surface placeholder:text-outline"
         />
@@ -609,7 +635,7 @@ Pregunta del paciente: ${messageText}`;
         <button
           onClick={() => sendMessage()}
           disabled={loading || (!input.trim() && images.length === 0)}
-          aria-label={t('aiAssistant.send') || 'Enviar'}
+          aria-label="Enviar mensaje a Physi"
           className="size-11 rounded-2xl bg-teal-600 hover:bg-teal-700 text-white flex items-center justify-center hover:scale-105 active:scale-95 transition-all disabled:opacity-40 disabled:hover:scale-100 shrink-0 shadow-sm"
         >
           <Send className="size-4" />

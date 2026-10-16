@@ -18,7 +18,6 @@ import {
 } from 'lucide-react';
 import { useRealtimeNotifications, NotificationFilter } from '../../hooks/useRealtimeNotifications';
 import { AppNotification } from '../../lib/notificationService';
-import { useTranslation } from 'react-i18next';
 
 interface NotificationDrawerProps {
   isOpen: boolean;
@@ -86,7 +85,6 @@ function getNotificationBadgeStyle(type: string) {
 }
 
 export function NotificationDrawer({ isOpen, onClose, userId }: NotificationDrawerProps) {
-  const { t } = useTranslation();
   const {
     notifications,
     unreadCount,
@@ -100,8 +98,8 @@ export function NotificationDrawer({ isOpen, onClose, userId }: NotificationDraw
   } = useRealtimeNotifications(userId);
 
   const filters: { id: NotificationFilter; label: string; count?: number }[] = [
-    { id: 'todas', label: t('common.all') || 'Todas' },
-    { id: 'no_leidas', label: t('notifications.unread') || 'No leídas', count: unreadCount },
+    { id: 'todas', label: 'Todas' },
+    { id: 'no_leidas', label: 'No leídas', count: unreadCount },
     { id: 'clinica', label: 'Clínica' },
     { id: 'seguridad', label: 'Seguridad' },
   ];
@@ -146,16 +144,16 @@ export function NotificationDrawer({ isOpen, onClose, userId }: NotificationDraw
                 <div>
                   <div className="flex items-center gap-2">
                     <h2 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white">
-                      {t('notifications.title') || 'Centro de Notificaciones'}
+                      Centro de Notificaciones
                     </h2>
                     {unreadCount > 0 && (
                       <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-teal-600 text-white shadow-xs">
-                        {unreadCount} {t('notifications.unread') || 'nuevas'}
+                        {unreadCount} nuevas
                       </span>
                     )}
                   </div>
                   <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                    {t('dashboard.physioSubtitle') || 'Sincronización clínica en tiempo real'}
+                    Sincronización clínica en tiempo real
                   </p>
                 </div>
               </div>

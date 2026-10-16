@@ -1,6 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Icon } from '../components/ui/Icon';
 import { useToast } from '../components/ui/ToastProvider';
@@ -13,8 +12,7 @@ import { speakHumanVoice } from '../lib/humanVoice';
 import { notifySessionCompleted, createNotification } from '../lib/notificationService';
 import { updatePresenceStatus } from '../lib/presenceService';
 import { isSpiritualModeEnabled, getVersiculoContextual, type Versiculo } from '../lib/versiculosService';
-import { BookOpen, Download } from 'lucide-react';
-import { exportSessionSummaryPDF } from '../lib/pdfExport';
+import { BookOpen } from 'lucide-react';
 import { Popover } from '../components/ui/Popover';
 import { Modal } from '../components/ui/Modal';
 import { PulsatingButton } from '../components/ui/PulsatingButton';
@@ -29,6 +27,7 @@ import {
   SessionQualityScoreTile,
 } from '../components/ui/RealTimeMetricsSuite';
 import { AudioMuteFloatingPill } from '../components/ui/FloatingControlsSuite';
+import { ARModel3DOverlayPiP } from '../components/rehabilitation/ARModel3DOverlayPiP';
 
 // Rep completion particle burst
 function repParticleBurst() {
@@ -88,7 +87,6 @@ const TOTAL_SETS = 3;
 const REST_DURATION = 15;
 
 export function ARMirrorPage() {
-  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const toast = useToast();
@@ -109,6 +107,8 @@ export function ARMirrorPage() {
     setTargetAngle,
     facingMode,
     toggleFacingMode,
+    isSimulated,
+    reconnectCamera,
   } = usePoseDetection();
   const vRef = videoRef as React.RefObject<HTMLVideoElement>;
   const cRef = canvasRef as React.RefObject<HTMLCanvasElement>;
@@ -141,6 +141,7 @@ export function ARMirrorPage() {
   const [volumeLevel, setVolumeLevel] = useState<'high' | 'low' | 'muted'>('high');
   const [hudVisible, setHudVisible] = useState(true);
   const [hudMode, setHudMode] = useState<'full' | 'minimal' | 'camera'>('full');
+  const [showModel3D, setShowModel3D] = useState<boolean>(true);
   const aiFeedbackRef = useRef<string>('Buen ritmo. Mantén la postura erguida y completa el rango de movimiento.');
   const lastSpokenRef = useRef<number>(0);
 
@@ -397,31 +398,9 @@ export function ARMirrorPage() {
     }
   };
 
-  const handleDownloadSessionPDF = () => {
-    try {
-      exportSessionSummaryPDF({
-        patientName: user?.full_name || 'Paciente',
-        exerciseName: exerciseName || 'Ejercicio Terapéutico',
-        targetRom: 90,
-        achievedRom: Math.max(90, Math.round(currentAngle || 90)),
-        repetitions: repCount,
-        targetRepetitions: TARGET_REPS * TOTAL_SETS,
-        postureQualityScore: qualityScore,
-        durationSeconds: timer,
-        compensationsDetected: compensation ? [`Compensación motriz: ${compensation}`] : undefined,
-        feedbackNotes: aiFeedbackRef.current || 'Sesión finalizada con seguimiento biomecánico satisfactorio en el Espejo AR.',
-        date: new Date().toLocaleDateString('es-ES', { dateStyle: 'long' }),
-      });
-      toast.success('Informe de sesión en PDF descargado');
-    } catch {
-      toast.error('No se pudo generar el informe en PDF');
-    }
-  };
-
   const formatTime = (s: number) => `${Math.floor(s / 60).toString().padStart(2, '0')}:${(s % 60).toString().padStart(2, '0')}`;
 
   const currentAngle = poseData ? Math.max(poseData.leftElbowAngle, poseData.rightElbowAngle) : 0;
-  const angleProgress = 2 * Math.PI * 80 - (currentAngle / 180) * 2 * Math.PI * 80;
 
   const toggleFullscreen = async () => {
     try {
@@ -470,37 +449,127 @@ export function ARMirrorPage() {
         style={{ zIndex: 2 }}
       />
 
-      {/* Floating camera / HUD controls */}
+      {/* Barra Superior Flotante Unificada de Micro-Métricas (Mobile First & Desktop) */}
       {sessionStarted && !error && (
-        <div className="fixed top-4 right-4 z-[35] flex items-center gap-2">
+        <header className="fixed top-2 sm:top-3 left-2 right-2 sm:left-4 sm:right-4 z-[35] flex items-center justify-between gap-1.5 sm:gap-3 pointer-events-none select-none">
+          {/* Lado Izquierdo: Salir y Estado de Detección */}
+          <div className="flex items-center gap-1.5 sm:gap-2 pointer-events-auto shrink-0">
+            <button
+              onClick={() => navigate('/dashboard-paciente')}
+              title="Volver al panel"
+              aria-label="Volver al panel de paciente"
+              className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-slate-900/80 hover:bg-slate-900 text-white/80 hover:text-white flex items-center justify-center border border-white/15 backdrop-blur-xl transition-all shadow-md active:scale-95"
+            >
+              <Icon name="arrow_back" size={18} />
+            </button>
+
+            <div
+              className="rounded-full px-2 sm:px-2.5 py-1 flex items-center gap-1.5 bg-slate-900/80 backdrop-blur-xl border border-white/15 shadow-md"
+              title={poseData?.isTracking ? 'Seguimiento corporal activo' : 'Buscando postura corporal'}
+            >
+              <span className={`w-2 h-2 rounded-full ${poseData?.isTracking ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'}`} />
+              <span className="text-white/80 text-[10px] font-bold uppercase tracking-wider hidden xs:inline">
+                {poseData?.isTracking ? 'AR' : 'Buscando'}
+              </span>
+            </div>
+          </div>
+
+          {/* Centro: Cápsula de Micro-Métricas Unificadas (Ejercicio, Reps, Series, Ángulo y Tiempo) */}
+          <div className="pointer-events-auto min-w-0 max-w-full">
+            <div
+              className="rounded-2xl px-2.5 sm:px-3.5 py-1 sm:py-1.5 flex items-center gap-1.5 sm:gap-2.5 bg-slate-900/90 backdrop-blur-2xl border border-teal-500/35 shadow-xl text-white"
+            >
+              {/* Nombre de Ejercicio con truncado inteligente */}
+              <div className="flex items-center gap-1 min-w-0">
+                <span className="w-1.5 h-1.5 rounded-full bg-teal-400 shrink-0 hidden sm:inline-block" />
+                <span className="text-[11px] sm:text-xs md:text-sm font-bold text-white truncate max-w-[80px] xs:max-w-[110px] sm:max-w-[170px]">
+                  {exerciseName}
+                </span>
+              </div>
+
+              <div className="w-px h-3.5 bg-white/20 shrink-0" />
+
+              {/* Repeticiones */}
+              <div className="flex items-baseline gap-0.5 shrink-0" title={`Repeticiones: ${repCount} de ${TARGET_REPS}`}>
+                <span className="text-teal-300 font-black text-xs sm:text-sm md:text-base leading-none">{repCount}</span>
+                <span className="text-white/40 text-[9px] sm:text-[10px]">/{TARGET_REPS}</span>
+              </div>
+
+              <div className="w-px h-3.5 bg-white/20 shrink-0" />
+
+              {/* Serie Actual */}
+              <span className="text-white/80 font-bold text-[10px] sm:text-xs shrink-0" title={`Serie ${currentSet} de ${TOTAL_SETS}`}>
+                S{currentSet}/{TOTAL_SETS}
+              </span>
+
+              <div className="w-px h-3.5 bg-white/20 shrink-0" />
+
+              {/* Ángulo Biomecánico en Tiempo Real */}
+              <div
+                className="font-mono text-[10px] sm:text-xs font-bold text-teal-300 bg-teal-500/20 px-1.5 py-0.5 rounded flex items-center shrink-0 border border-teal-500/30"
+                title={`Ángulo articular actual: ${currentAngle}°`}
+              >
+                <span>{currentAngle}°</span>
+              </div>
+
+              <div className="w-px h-3.5 bg-white/20 shrink-0 hidden xs:block" />
+
+              {/* Cronómetro de Sesión */}
+              <span className="font-mono text-[10px] sm:text-xs text-white/90 font-medium shrink-0 hidden xs:inline" title="Tiempo transcurrido">
+                {formatTime(timer)}
+              </span>
+            </div>
+          </div>
+
+          {/* Lado Derecho: Controles Rápidos de Cámara y Modo HUD */}
+          <div className="flex items-center gap-1 sm:gap-1.5 pointer-events-auto shrink-0">
+            <button
+              onClick={toggleFacingMode}
+              title={facingMode === 'user' ? 'Cámara trasera' : 'Cámara frontal'}
+              aria-label="Alternar cámara"
+              className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-slate-900/80 hover:bg-slate-900 text-white/80 hover:text-white flex items-center justify-center border border-white/15 backdrop-blur-xl transition-all shadow-md active:scale-95"
+            >
+              <Icon name="flip_camera_ios" size={17} />
+            </button>
+            <button
+              onClick={() => setIsMirrored((prev) => !prev)}
+              title={isMirrored ? 'Desactivar efecto espejo' : 'Activar efecto espejo'}
+              aria-label="Modo espejo"
+              className={cn(
+                'w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-slate-900/80 hover:bg-slate-900 flex items-center justify-center border backdrop-blur-xl transition-all shadow-md active:scale-95',
+                isMirrored ? 'text-teal-300 border-teal-500/50' : 'text-white/60 border-white/15'
+              )}
+            >
+              <Icon name="sync_alt" size={17} />
+            </button>
+            <button
+              onClick={() => setHudMode((prev) => (prev === 'full' ? 'minimal' : 'full'))}
+              title={hudMode === 'minimal' ? 'Modo Esencial Activo. Toca para Modo Completo.' : 'Modo Completo. Toca para Modo Esencial.'}
+              aria-label={hudMode === 'minimal' ? 'Cambiar a modo completo' : 'Cambiar a modo esencial'}
+              className={cn(
+                'px-2.5 sm:px-3 h-8 sm:h-9 rounded-full flex items-center gap-1 border backdrop-blur-xl transition-all shadow-md active:scale-95 text-[10px] sm:text-xs font-bold uppercase tracking-wider',
+                hudMode === 'minimal'
+                  ? 'bg-amber-500/30 text-amber-300 border-amber-400/50 shadow-amber-500/20'
+                  : 'bg-slate-900/80 text-white/80 border-white/15 hover:text-white'
+              )}
+            >
+              <Icon name={hudMode === 'minimal' ? 'auto_awesome' : 'visibility'} size={16} />
+              <span className="hidden sm:inline">{hudMode === 'minimal' ? 'Esencial' : 'Completo'}</span>
+            </button>
+          </div>
+        </header>
+      )}
+
+      {/* Badge discreto si el modo simulación biomecánica está activo */}
+      {isSimulated && isReady && (
+        <div className="fixed top-12 sm:top-14 left-1/2 -translate-x-1/2 z-[34] flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/20 border border-amber-400/40 backdrop-blur-xl text-amber-200 text-[10px] sm:text-xs font-semibold shadow-lg">
+          <Icon name="sensors" size={13} className="text-amber-400 shrink-0" />
+          <span>Simulación Biomecánica</span>
           <button
-            onClick={toggleFacingMode}
-            title={facingMode === 'user' ? 'Cambiar a cámara trasera' : 'Cambiar a cámara frontal'}
-            aria-label="Cambiar cámara"
-            className="glass-panel rounded-full p-3 text-white hover:scale-110 active:scale-95 transition-all"
-            style={{ background: 'rgba(255,255,255,0.08)', backdropFilter: 'blur(24px)', border: '1px solid rgba(255,255,255,0.15)' }}
+            onClick={reconnectCamera}
+            className="ml-1 px-1.5 py-0.5 rounded bg-amber-400/30 hover:bg-amber-400/50 text-white font-bold uppercase tracking-wider text-[9px] transition-colors cursor-pointer"
           >
-            <Icon name="flip_camera_ios" size={22} />
-          </button>
-          <button
-            onClick={() => setIsMirrored((prev) => !prev)}
-            title={isMirrored ? 'Desactivar modo espejo' : 'Activar modo espejo'}
-            aria-label="Modo espejo"
-            className={cn(
-              'glass-panel rounded-full p-3 transition-all hover:scale-110 active:scale-95',
-              isMirrored ? 'text-[#8ad3cf] border-[#8ad3cf]/40' : 'text-white/60'
-            )}
-            style={{ background: 'rgba(255,255,255,0.08)', backdropFilter: 'blur(24px)', border: '1px solid rgba(255,255,255,0.15)' }}
-          >
-            <Icon name="sync_alt" size={22} />
-          </button>
-          <button
-            onClick={() => { setHudVisible(!hudVisible); setHudMode(hudMode === 'full' ? 'minimal' : 'full'); }}
-            aria-label={hudVisible ? 'Ocultar panel' : 'Mostrar panel'}
-            className="glass-panel rounded-full p-3 text-white hover:scale-110 active:scale-95 transition-all"
-            style={{ background: 'rgba(255,255,255,0.08)', backdropFilter: 'blur(24px)', border: '1px solid rgba(255,255,255,0.15)' }}
-          >
-            <Icon name={hudVisible ? 'visibility_off' : 'visibility'} size={22} />
+            Reconectar
           </button>
         </div>
       )}
@@ -513,12 +582,23 @@ export function ARMirrorPage() {
         </div>
       )}
       {error && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 p-6 text-center">
+        <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 p-6 text-center z-40 bg-slate-950/90 backdrop-blur-md">
           <MascotAnimation type="error" size="md" />
           <p className="text-white/80 text-center max-w-sm">{error}</p>
-          <button onClick={() => navigate('/dashboard-paciente')} className="px-6 py-3 bg-white/10 text-white rounded-xl hover:bg-white/20 transition-all">
-            Volver
-          </button>
+          <div className="flex items-center gap-3 mt-2">
+            <button
+              onClick={reconnectCamera}
+              className="px-5 py-2.5 bg-teal-500 hover:bg-teal-400 text-white rounded-xl font-bold transition-all text-sm cursor-pointer shadow-lg shadow-teal-500/25 active:scale-95"
+            >
+              Reintentar Cámara
+            </button>
+            <button
+              onClick={() => navigate('/dashboard-paciente')}
+              className="px-5 py-2.5 bg-white/10 text-white rounded-xl hover:bg-white/20 transition-all font-semibold text-sm cursor-pointer"
+            >
+              Volver
+            </button>
+          </div>
         </div>
       )}
 
@@ -533,26 +613,9 @@ export function ARMirrorPage() {
           {!calibrated && (
             <div className="mt-2 max-w-md rounded-2xl bg-amber-500/15 border border-amber-400/40 px-4 py-3 text-amber-200 text-sm flex items-center gap-2">
               <Icon name="warning" filled size={18} />
-              <span>{t('arMirror.uncalibratedWarning') || 'Modo sin calibrar: la precisión del seguimiento puede ser menor.'}</span>
+              <span>Modo sin calibrar: la precisión del seguimiento puede ser menor.</span>
             </div>
           )}
-        </div>
-      )}
-
-      {/* Tracking indicator — hidden when HUD is off */}
-      {isReady && !error && hudVisible && (
-        <div className="absolute top-4 left-4 z-20 flex flex-col gap-2">
-          <div className="glass-panel rounded-full px-4 py-2 flex items-center gap-2" style={{ background: 'rgba(255,255,255,0.08)', backdropFilter: 'blur(24px)' }}>
-            <span className={`w-2.5 h-2.5 rounded-full ${poseData?.isTracking ? 'bg-green-400 animate-pulse' : 'bg-orange-400'}`} />
-            <span className="text-white/80 text-xs font-bold uppercase tracking-wider">
-              {poseData?.isTracking ? (t('common.active') || 'Seguimiento Activo') : (t('arMirror.adjustAngle') || 'Buscando Postura...')}
-            </span>
-          </div>
-          {/* REC indicator */}
-          <div className="glass-panel rounded-full px-4 py-2 flex items-center gap-2" style={{ background: 'rgba(255,255,255,0.08)', backdropFilter: 'blur(24px)' }}>
-            <span className="w-3 h-3 bg-red-500 rounded-full animate-pulse" />
-            <span className="text-white/80 text-xs font-bold uppercase tracking-wider">REC 1080p 60fps</span>
-          </div>
         </div>
       )}
 
@@ -570,7 +633,7 @@ export function ARMirrorPage() {
               animate={{ scale: 1 }}
               className="text-white text-4xl font-bold mb-4"
             >
-              {t('exercises.rest') || 'Descanso'}
+              Descanso
             </motion.h2>
             <motion.span
               key={restCountdown}
@@ -580,139 +643,92 @@ export function ARMirrorPage() {
             >
               {restCountdown}
             </motion.span>
-            <p className="text-white/60 mt-4">{t('common.series') || 'Serie'} {currentSet} {t('common.completed') || 'completada'}</p>
+            <p className="text-white/60 mt-4">Serie {currentSet} completada</p>
             <button onClick={() => setRestCountdown(0)} className="mt-8 px-6 py-3 rounded-full bg-white/20 text-white font-bold hover:bg-white/30 active:scale-95 transition-all">
-              {t('common.skip') || 'Saltar descanso'}
+              Saltar descanso
             </button>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* HUD — controlled by hudVisible/hudMode */}
-      <div className={`relative z-20 flex flex-col h-full p-4 md:p-8 pointer-events-none transition-opacity duration-300 ${hudMode === 'camera' ? 'opacity-0' : 'opacity-100'}`}>
-        {/* Top HUD — hidden in minimal mode */}
-        <div className={`flex justify-between items-start mt-12 transition-all duration-300 gap-4 ${hudMode === 'minimal' ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
-          <div className="flex flex-col gap-2 pointer-events-auto max-w-[90%]">
-            <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="glass-panel rounded-xl p-2 md:rounded-2xl md:p-4"
-              style={{ background: 'rgba(255,255,255,0.08)', backdropFilter: 'blur(24px)', border: '1px solid rgba(255,255,255,0.15)' }}
-            >
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-primary-container rounded-lg flex items-center justify-center">
-                  <Icon name="accessibility" filled size={20} className="text-on-primary-container" />
-                </div>
-                <div>
-                  <p className="text-white font-bold text-sm md:text-base">{exerciseName}</p>
-                  <p className="text-white/60 text-xs">Sesión AR con MediaPipe</p>
-                </div>
-              </div>
-            </motion.div>
-            <PoseConfidenceLiveIndicator
-              confidence={isReady && poseData?.isTracking ? 96 : 45}
-              className="w-fit bg-slate-900/80 border-white/15 text-white text-[11px]"
+      {/* 3D Model Picture-in-Picture Exercise Demonstrator (Elemento Esencial y Clínico) */}
+      <AnimatePresence>
+        {showModel3D && state !== 'finished' && (
+          <div className="absolute top-14 sm:top-16 md:top-20 right-2 sm:right-4 md:right-6 z-30 pointer-events-none">
+            <ARModel3DOverlayPiP
+              exerciseName={exerciseName}
+              targetAngle={90}
+              isOpen={showModel3D}
+              onClose={() => setShowModel3D(false)}
             />
           </div>
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="glass-panel rounded-2xl p-3 md:p-4 flex items-center gap-3 md:gap-4 pointer-events-auto"
-            style={{ background: 'rgba(255,255,255,0.08)', backdropFilter: 'blur(24px)', border: '1px solid rgba(255,255,255,0.15)' }}
-          >
-            <div className="text-center">
-              <p className="text-white/60 text-xs">Tiempo</p>
-              <p className="text-white font-mono text-base md:text-xl">{formatTime(timer)}</p>
-            </div>
-            <div className="w-px h-8 bg-white/20" />
-            {/* Animated countdown timer (alternative visual timer) */}
-            <div className="text-center">
-              <p className="text-white/60 text-xs mb-1">Cuenta atrás</p>
-              <AnimatedCountdown initialCount={60} className="scale-75 origin-center" />
-            </div>
-            <div className="w-px h-8 bg-white/20" />
-            {bpm > 0 && (
-            <div className="text-center">
-              <p className="text-white/60 text-xs">BPM</p>
-              <div className="flex items-center gap-1">
-                <Icon name="favorite" filled size={16} className="text-red-500 animate-pulse animate-breathe-icon" />
-                <span className="text-white font-bold text-base md:text-xl">{bpm}</span>
+        )}
+      </AnimatePresence>
+
+      {/* HUD — Espacio central despejado en móvil; widgets adaptativos en escritorio */}
+      <div className="relative z-20 flex flex-col h-full pt-12 sm:pt-14 pb-3 sm:pb-5 px-2.5 sm:px-4 md:px-8 pointer-events-none transition-opacity duration-300">
+        {/* Espacio Central: En móvil 100% libre para el paciente; en escritorio muestra paneles laterales discretos */}
+        <div className="flex-1 flex items-center justify-between transition-all duration-300">
+          {hudMode === 'full' ? (
+            <>
+              {/* Escritorio Izquierda: Series y Cadencia (Oculto en móvil para no tapar el cuerpo) */}
+              <div className="hidden md:block space-y-3 pointer-events-auto">
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  className="rounded-2xl p-3.5 w-48 bg-slate-900/80 backdrop-blur-xl border border-white/15 text-white shadow-xl"
+                >
+                  <p className="text-white/60 text-[10px] uppercase font-bold tracking-wider mb-1">Series del Ejercicio</p>
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-white text-3xl font-black">{currentSet}</span>
+                    <span className="text-white/40 text-base">/ {TOTAL_SETS}</span>
+                  </div>
+                  <div className="mt-2 pt-2 border-t border-white/10 flex items-center justify-between text-xs">
+                    <span className="text-white/60">Repeticiones</span>
+                    <span className="text-teal-300 font-bold">{repCount} / {TARGET_REPS}</span>
+                  </div>
+                </motion.div>
+
+                <div className="w-48">
+                  <RepCadenceMetronome
+                    targetCadenceBpm={42}
+                    className="w-full bg-slate-900/80 backdrop-blur-xl border-white/15 text-white"
+                  />
+                </div>
               </div>
-            </div>
-            )}
-          </motion.div>
-        </div>
 
-        {/* Middle HUD — in minimal mode only show rep count */}
-        <div className={`flex-1 flex items-center justify-between transition-all duration-300 ${hudMode === 'minimal' ? 'justify-center' : ''}`}>
-          {/* Left: RepetitionCounterSpring + Series + Metronome */}
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.2 }}
-            className={`space-y-3 md:space-y-4 pointer-events-auto ${hudMode === 'minimal' ? 'hidden' : ''}`}
-          >
-            <div className="glass-panel rounded-2xl p-3 md:p-4 w-44 md:w-56" style={{ background: 'rgba(255,255,255,0.08)', backdropFilter: 'blur(24px)', border: '1px solid rgba(255,255,255,0.15)' }}>
-              <p className="text-white/60 text-xs uppercase tracking-wider mb-1">Series</p>
-              <div className="flex items-baseline gap-2">
-                <span className="text-white text-3xl md:text-4xl font-black">{currentSet}</span>
-                <span className="text-white/40 text-lg md:text-xl">/ {TOTAL_SETS}</span>
+              {/* Escritorio Derecha: Medidor Biomecánico (Solo si el modelo 3D no está activo para no recargar) */}
+              <div className="hidden md:block pointer-events-auto">
+                {!showModel3D && (
+                  <motion.div
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                  >
+                    <BiomechanicalAngleGauge
+                      currentAngle={currentAngle}
+                      targetAngle={90}
+                      jointName={exerciseName}
+                      safeTolerance={10}
+                      size={140}
+                      className="bg-slate-900/80 backdrop-blur-xl border-white/15 text-white shadow-2xl"
+                    />
+                  </motion.div>
+                )}
               </div>
-            </div>
-
-            <RepetitionCounterSpring
-              currentReps={repCount}
-              targetReps={TARGET_REPS}
-              cadenceSeconds={3.5}
-              className="w-44 md:w-56 bg-slate-900/75 border-white/15 text-white"
-            />
-
-            <RepCadenceMetronome
-              targetCadenceBpm={42}
-              className="w-44 md:w-56 bg-slate-900/75 border-white/15 text-white"
-            />
-          </motion.div>
-
-          {/* Right: BiomechanicalAngleGauge — hidden in minimal mode, but show compact rep counter */}
-          {hudMode === 'minimal' ? (
-            <div className="glass-panel rounded-2xl px-6 py-4 flex items-center gap-4" style={{ background: 'rgba(255,255,255,0.08)', backdropFilter: 'blur(24px)', border: '1px solid rgba(255,255,255,0.15)' }}>
-              <Icon name="visibility" filled size={24} className="text-white/80" />
-              <div>
-                <p className="text-white/60 text-xs uppercase tracking-wider">Reps</p>
-                <span className="text-white text-4xl font-black">{repCount}</span>
-              </div>
-              <div className="w-px h-10 bg-white/20" />
-              <button onClick={() => setState('paused')} className="text-white p-2 rounded-xl hover:bg-white/10 transition-colors" aria-label="Pausar">
-                <Icon name="pause" size={24} />
-              </button>
-            </div>
+            </>
           ) : (
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.3 }}
-              className="relative pointer-events-auto"
-            >
-              <BiomechanicalAngleGauge
-                currentAngle={currentAngle}
-                targetAngle={90}
-                jointName={exerciseName}
-                safeTolerance={10}
-                size={230}
-                className="bg-slate-900/75 border-white/15 text-white shadow-2xl"
-              />
-            </motion.div>
+            <div className="w-full" />
           )}
         </div>
 
-        {/* Bottom HUD: AI feedback, compensation banner, energy bar + controls */}
-        <div className="space-y-3 md:space-y-4">
+        {/* Zona Inferior: Alertas, Feedback por Voz y Dock Ergonómico */}
+        <div className="space-y-2 pointer-events-auto flex flex-col items-center w-full max-w-2xl mx-auto">
+          {/* Banner de Compensación Postural */}
           {compensation && (
             <motion.div
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
-              className="pointer-events-auto max-w-xl mx-auto w-full"
+              className="w-full px-2"
             >
               <CompensationAlertBanner
                 deviationJoint={exerciseName}
@@ -723,72 +739,138 @@ export function ARMirrorPage() {
             </motion.div>
           )}
 
-          {/* RehabEnergyBar for muscular stamina */}
-          {hudMode === 'full' && (
-            <div className="max-w-md mx-auto w-full pointer-events-auto">
-              <RehabEnergyBar
-                currentEnergy={Math.max(20, 100 - (repCount * 5))}
-                fatigueScore={Number((repCount * 0.35).toFixed(1))}
-                repsCompleted={repCount}
-                totalTargetReps={TARGET_REPS}
-                className="bg-slate-900/80 backdrop-blur-xl border-white/15 text-white shadow-lg"
-              />
-            </div>
-          )}
-
+          {/* Banner de Feedback por Voz — Píldora ultra-compacta no invasiva */}
           {hudMode === 'full' && !compensation && (
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-              className="max-w-xl mx-auto w-full pointer-events-auto"
+              className="w-full px-2 max-w-lg"
             >
               <VoiceFeedbackWaveHUD
                 isSpeaking={Boolean(aiFeedbackRef.current)}
-                instructionText={aiFeedbackRef.current || 'Postura adecuada. Mantén la velocidad controlada y la respiración fluida.'}
-                className="bg-slate-900/80 backdrop-blur-xl border-white/15 text-white"
+                instructionText={aiFeedbackRef.current || 'Postura adecuada. Mantén la velocidad y respira naturalmente.'}
+                className="bg-slate-900/85 backdrop-blur-xl border-white/15 text-white py-1.5 px-3 text-xs"
               />
             </motion.div>
           )}
-          <div className="flex items-center justify-center gap-2 md:gap-4 pointer-events-auto flex-wrap">
+
+          {/* Dock de Controles Inferior Unificado (Mobile First, Touch Targets >= 44px) */}
+          <div className="bg-slate-900/85 backdrop-blur-2xl border border-white/15 rounded-2xl sm:rounded-3xl p-1.5 sm:p-2 shadow-2xl flex items-center justify-center gap-1.5 sm:gap-2.5 max-w-full overflow-x-auto">
             {state === 'active' && (
               <>
-                <button onClick={() => setState('paused')} className="glass-panel rounded-2xl px-4 md:px-6 py-3 md:py-4 text-white flex items-center gap-2 hover:scale-105 active:scale-95 transition-all" style={{ background: 'rgba(255,255,255,0.08)', backdropFilter: 'blur(24px)' }}>
-                  <Icon name="pause" size={24} /> Pausar
+                {/* Pausar */}
+                <button
+                  onClick={() => setState('paused')}
+                  className="rounded-xl px-3 sm:px-4 py-2 sm:py-2.5 bg-white/10 hover:bg-white/15 text-white flex items-center gap-1.5 hover:scale-105 active:scale-95 transition-all cursor-pointer font-bold text-xs sm:text-sm min-h-[40px] sm:min-h-[44px]"
+                  aria-label="Pausar ejercicio"
+                >
+                  <Icon name="pause" size={18} />
+                  <span>Pausar</span>
                 </button>
-                <button onClick={() => { setState('finished'); setShowPainReport(true); }} className="bg-red-500/80 backdrop-blur-xl border border-red-400/50 rounded-2xl px-4 md:px-6 py-3 md:py-4 text-white flex items-center gap-2 hover:scale-105 active:scale-95 transition-all">
-                  <Icon name="stop" size={24} /> Finalizar
+
+                {/* Finalizar */}
+                <button
+                  onClick={() => { setState('finished'); setShowPainReport(true); }}
+                  className="rounded-xl px-3 sm:px-4 py-2 sm:py-2.5 bg-red-500/80 hover:bg-red-500 text-white flex items-center gap-1.5 hover:scale-105 active:scale-95 transition-all cursor-pointer font-bold text-xs sm:text-sm min-h-[40px] sm:min-h-[44px]"
+                  aria-label="Finalizar ejercicio"
+                >
+                  <Icon name="stop" size={18} />
+                  <span>Finalizar</span>
                 </button>
-                <button onClick={toggleFullscreen} aria-label={isFullscreen ? 'Salir de pantalla completa' : 'Pantalla completa'} className="glass-panel rounded-2xl p-3 md:p-4 text-white hover:scale-105 active:scale-95 transition-all" style={{ background: 'rgba(255,255,255,0.08)', backdropFilter: 'blur(24px)' }}>
-                  <Icon name={isFullscreen ? 'fullscreen_exit' : 'fullscreen'} size={24} />
+
+                <div className="w-px h-6 bg-white/15 my-auto" />
+
+                {/* Botón Particular Modelo 3D (Elemento Esencial y Clínico) */}
+                <button
+                  onClick={() => setShowModel3D((prev) => !prev)}
+                  aria-label={showModel3D ? 'Ocultar modelo 3D demostrador' : 'Mostrar modelo 3D demostrador'}
+                  className={cn(
+                    "rounded-xl px-2.5 sm:px-3 py-2 sm:py-2.5 flex items-center gap-1.5 hover:scale-105 active:scale-95 transition-all cursor-pointer min-h-[40px] sm:min-h-[44px]",
+                    showModel3D
+                      ? "bg-teal-500/30 text-teal-300 border border-teal-400/50 shadow-md shadow-teal-500/20"
+                      : "bg-white/5 text-white/70 hover:text-white"
+                  )}
+                  title={showModel3D ? 'Guía 3D Activa (Toca para ocultar)' : 'Mostrar Guía 3D de ejercicio'}
+                >
+                  <Icon name="view_in_ar" size={18} />
+                  <span className="text-xs font-bold hidden sm:inline">
+                    {showModel3D ? 'Guía 3D ON' : 'Guía 3D'}
+                  </span>
                 </button>
-                <button onClick={() => setShowSettings(true)} aria-label="Abrir configuración" className="glass-panel rounded-2xl p-3 md:p-4 text-white hover:scale-105 active:scale-95 transition-all" style={{ background: 'rgba(255,255,255,0.08)', backdropFilter: 'blur(24px)' }}>
-                  <Icon name="settings" size={24} />
+
+                {/* Modo Esencial / Completo */}
+                <button
+                  onClick={() => setHudMode((prev) => (prev === 'full' ? 'minimal' : 'full'))}
+                  aria-label={hudMode === 'minimal' ? 'Cambiar a modo completo' : 'Cambiar a modo esencial'}
+                  className={cn(
+                    "rounded-xl px-2.5 sm:px-3 py-2 sm:py-2.5 flex items-center gap-1.5 hover:scale-105 active:scale-95 transition-all cursor-pointer min-h-[40px] sm:min-h-[44px]",
+                    hudMode === 'minimal'
+                      ? "bg-amber-500/25 text-amber-300 border border-amber-400/50"
+                      : "bg-white/5 text-white/70 hover:text-white"
+                  )}
+                  title={hudMode === 'minimal' ? 'Modo Esencial Activo' : 'Modo Completo Activo'}
+                >
+                  <Icon name={hudMode === 'minimal' ? 'auto_awesome' : 'dashboard'} size={18} />
+                  <span className="text-xs font-bold hidden sm:inline">
+                    {hudMode === 'minimal' ? 'Esencial' : 'Completo'}
+                  </span>
                 </button>
-                <button onClick={() => {
-                  const states: Array<'high' | 'low' | 'muted'> = ['high', 'low', 'muted'];
-                  const idx = states.indexOf(volumeLevel);
-                  setVolumeLevel(states[(idx + 1) % 3]);
-                }} className="glass-panel rounded-2xl p-3 md:p-4 text-white hover:scale-105 active:scale-95 transition-all" style={{ background: 'rgba(255,255,255,0.08)', backdropFilter: 'blur(24px)' }} aria-label="Cambiar volumen">
-                  <Icon name={volumeLevel === 'muted' ? 'volume_off' : volumeLevel === 'low' ? 'volume_down' : 'volume_up'} size={24} />
+
+                {/* Pantalla completa (oculto en móviles estrechos) */}
+                <button
+                  onClick={toggleFullscreen}
+                  aria-label={isFullscreen ? 'Salir de pantalla completa' : 'Pantalla completa'}
+                  className="rounded-xl p-2 sm:p-2.5 bg-white/5 hover:bg-white/10 text-white/70 hover:text-white hover:scale-105 active:scale-95 transition-all cursor-pointer hidden xs:flex items-center justify-center min-h-[40px] sm:min-h-[44px] min-w-[40px]"
+                >
+                  <Icon name={isFullscreen ? 'fullscreen_exit' : 'fullscreen'} size={18} />
+                </button>
+
+                {/* Volumen */}
+                <button
+                  onClick={() => {
+                    const states: Array<'high' | 'low' | 'muted'> = ['high', 'low', 'muted'];
+                    const idx = states.indexOf(volumeLevel);
+                    setVolumeLevel(states[(idx + 1) % 3]);
+                  }}
+                  className="rounded-xl p-2 sm:p-2.5 bg-white/5 hover:bg-white/10 text-white/70 hover:text-white hover:scale-105 active:scale-95 transition-all cursor-pointer flex items-center justify-center min-h-[40px] sm:min-h-[44px] min-w-[40px]"
+                  aria-label="Cambiar volumen de audio"
+                  title={`Volumen: ${volumeLevel}`}
+                >
+                  <Icon name={volumeLevel === 'muted' ? 'volume_off' : volumeLevel === 'low' ? 'volume_down' : 'volume_up'} size={18} />
+                </button>
+
+                {/* Configuración */}
+                <button
+                  onClick={() => setShowSettings(true)}
+                  aria-label="Abrir ajustes"
+                  className="rounded-xl p-2 sm:p-2.5 bg-white/5 hover:bg-white/10 text-white/70 hover:text-white hover:scale-105 active:scale-95 transition-all cursor-pointer flex items-center justify-center min-h-[40px] sm:min-h-[44px] min-w-[40px]"
+                >
+                  <Icon name="settings" size={18} />
                 </button>
               </>
             )}
+
             {state === 'paused' && (
               <>
                 <PulsatingButton
                   variant="pulse"
                   pulseColor="rgba(45, 212, 191, 0.6)"
                   onClick={() => setState('active')}
-                  className="bg-teal-600 hover:bg-teal-500 rounded-2xl px-4 md:px-6 py-3 md:py-4 text-white flex items-center gap-2"
+                  className="bg-teal-600 hover:bg-teal-500 rounded-xl px-4 sm:px-6 py-2 sm:py-2.5 text-white flex items-center gap-2 cursor-pointer font-bold text-xs sm:text-sm min-h-[40px] sm:min-h-[44px]"
                 >
-                  <Icon name="play_arrow" size={24} /> Reanudar
+                  <Icon name="play_arrow" size={18} /> Reanudar
                 </PulsatingButton>
-                <button onClick={handleRestart} className="glass-panel rounded-2xl px-4 md:px-6 py-3 md:py-4 text-white flex items-center gap-2 hover:scale-105 active:scale-95 transition-all" style={{ background: 'rgba(255,255,255,0.08)', backdropFilter: 'blur(24px)' }}>
-                  <Icon name="refresh" size={24} /> Reiniciar
+                <button
+                  onClick={handleRestart}
+                  className="rounded-xl px-3 sm:px-4 py-2 sm:py-2.5 bg-white/10 hover:bg-white/15 text-white flex items-center gap-1.5 hover:scale-105 active:scale-95 transition-all cursor-pointer font-bold text-xs sm:text-sm min-h-[40px] sm:min-h-[44px]"
+                >
+                  <Icon name="refresh" size={18} /> Reiniciar
                 </button>
-                <button onClick={() => { setState('finished'); setShowPainReport(true); }} className="bg-red-500/80 backdrop-blur-xl border border-red-400/50 rounded-2xl px-4 md:px-6 py-3 md:py-4 text-white flex items-center gap-2 hover:scale-105 active:scale-95 transition-all">
-                  <Icon name="stop" size={24} /> Abandonar
+                <button
+                  onClick={() => { setState('finished'); setShowPainReport(true); }}
+                  className="rounded-xl px-3 sm:px-4 py-2 sm:py-2.5 bg-red-500/80 hover:bg-red-500 text-white flex items-center gap-1.5 hover:scale-105 active:scale-95 transition-all cursor-pointer font-bold text-xs sm:text-sm min-h-[40px] sm:min-h-[44px]"
+                >
+                  <Icon name="stop" size={18} /> Abandonar
                 </button>
               </>
             )}
@@ -806,7 +888,7 @@ export function ARMirrorPage() {
                 <Modal.Icon className="bg-teal-500/20 text-teal-300">
                   <Icon name="settings" size={20} />
                 </Modal.Icon>
-                <Modal.Heading className="text-white">{t('arMirror.mirrorSettings') || 'Configuración del Espejo'}</Modal.Heading>
+                <Modal.Heading className="text-white">Configuración del Espejo</Modal.Heading>
               </Modal.Header>
               <Modal.Body className="space-y-3">
                 <button
@@ -814,7 +896,7 @@ export function ARMirrorPage() {
                   onClick={() => { setVolumeLevel(volumeLevel === 'muted' ? 'high' : 'muted'); }}
                   className="w-full flex items-center justify-between p-3 rounded-xl bg-white/10 hover:bg-white/15 text-white transition-colors"
                 >
-                  <span className="text-sm font-semibold">{t('arMirror.audioGuide') || 'Audio de Guía'}</span>
+                  <span className="text-sm font-semibold">Audio de Guía</span>
                   <Icon name={volumeLevel !== 'muted' ? 'toggle_on' : 'toggle_off'} size={28} className={volumeLevel !== 'muted' ? 'text-teal-300' : 'text-white/40'} />
                 </button>
                 <button
@@ -822,7 +904,7 @@ export function ARMirrorPage() {
                   onClick={toggleFacingMode}
                   className="w-full flex items-center justify-between p-3 rounded-xl bg-white/10 hover:bg-white/15 text-white transition-colors"
                 >
-                  <span className="text-sm font-semibold">{t('arMirror.camera') || 'Cámara'} ({facingMode === 'user' ? (t('arMirror.frontCamera') || 'Frontal') : (t('arMirror.backCamera') || 'Trasera')})</span>
+                  <span className="text-sm font-semibold">Cámara ({facingMode === 'user' ? 'Frontal' : 'Trasera'})</span>
                   <Icon name="flip_camera_ios" size={20} className="text-[#8ad3cf]" />
                 </button>
                 <button
@@ -830,15 +912,23 @@ export function ARMirrorPage() {
                   onClick={() => setIsMirrored((prev) => !prev)}
                   className="w-full flex items-center justify-between p-3 rounded-xl bg-white/10 hover:bg-white/15 text-white transition-colors"
                 >
-                  <span className="text-sm font-semibold">{t('arMirror.invertedMirror') || 'Modo Espejo Invertido'}</span>
+                  <span className="text-sm font-semibold">Modo Espejo Invertido</span>
                   <Icon name={isMirrored ? 'toggle_on' : 'toggle_off'} size={28} className={isMirrored ? 'text-teal-300' : 'text-white/40'} />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowModel3D((prev) => !prev)}
+                  className="w-full flex items-center justify-between p-3 rounded-xl bg-white/10 hover:bg-white/15 text-white transition-colors"
+                >
+                  <span className="text-sm font-semibold">Demostrador 3D en Vivo (PiP)</span>
+                  <Icon name={showModel3D ? 'toggle_on' : 'toggle_off'} size={28} className={showModel3D ? 'text-teal-300' : 'text-white/40'} />
                 </button>
                 <button
                   type="button"
                   onClick={() => { handleRestart(); setShowSettings(false); }}
                   className="w-full flex items-center justify-between p-3 rounded-xl bg-white/10 hover:bg-white/15 text-white transition-colors"
                 >
-                  <span className="text-sm font-semibold">{t('arMirror.restartSession') || 'Reiniciar sesión actual'}</span>
+                  <span className="text-sm font-semibold">Reiniciar sesión actual</span>
                   <Icon name="refresh" size={20} className="text-teal-300" />
                 </button>
               </Modal.Body>
@@ -849,7 +939,7 @@ export function ARMirrorPage() {
                   onClick={() => setShowSettings(false)}
                   className="w-full py-2.5 px-4 rounded-xl bg-teal-500/25 hover:bg-teal-500/35 text-teal-200 font-bold border border-teal-500/40 transition-colors"
                 >
-                  {t('arMirror.ready') || 'Listo'}
+                  Listo
                 </button>
               </Modal.Footer>
             </Modal.Dialog>
@@ -945,19 +1035,19 @@ export function ARMirrorPage() {
               >
                 <MascotAnimation type="success" size="md" className="w-full h-full" />
               </motion.div>
-              <h2 className="text-white text-3xl font-bold mb-2">{t('arMirror.sessionFinished') || '¡Sesión Completada!'}</h2>
-              <p className="text-white/60 mb-6">{t('arMirror.sessionSummary', { sets: currentSet, reps: repCount }) || `Has completado ${currentSet} series con ${repCount} repeticiones.`}</p>
+              <h2 className="text-white text-3xl font-bold mb-2">¡Sesión Completada!</h2>
+              <p className="text-white/60 mb-6">Has completado {currentSet} series con {repCount} repeticiones.</p>
               <div className="grid grid-cols-3 gap-4 mb-6">
-                <div><p className="text-white/40 text-xs">{t('arMirror.time') || 'Tiempo'}</p><p className="text-white text-xl font-bold">{formatTime(timer)}</p></div>
-                <div><p className="text-white/40 text-xs">{t('arMirror.repetitions') || 'Repeticiones'}</p><p className="text-white text-xl font-bold">{repCount}</p></div>
-                <div><p className="text-white/40 text-xs">{t('arMirror.quality') || 'Calidad'}</p><p className="text-white text-xl font-bold">{qualityScore}%</p></div>
+                <div><p className="text-white/40 text-xs">Tiempo</p><p className="text-white text-xl font-bold">{formatTime(timer)}</p></div>
+                <div><p className="text-white/40 text-xs">Repeticiones</p><p className="text-white text-xl font-bold">{repCount}</p></div>
+                <div><p className="text-white/40 text-xs">Calidad</p><p className="text-white text-xl font-bold">{qualityScore}%</p></div>
               </div>
 
               {isSpiritualModeEnabled() && finishVerse && (
                 <div className="mb-6 p-4 rounded-2xl bg-white/10 border border-white/15 text-left">
                   <div className="flex items-center gap-1.5 mb-1.5 text-[11px] font-bold uppercase tracking-wider text-teal-300">
                     <BookOpen className="size-3.5" />
-                    <span>{t('arMirror.spiritualWord') || 'Palabra de Sanidad & Fortaleza'}</span>
+                    <span>Palabra de Sanidad & Fortaleza</span>
                   </div>
                   <p className="text-xs text-white/95 italic font-medium leading-relaxed">
                     «{finishVerse.texto}»
@@ -968,23 +1058,13 @@ export function ARMirrorPage() {
                 </div>
               )}
 
-              <div className="flex flex-col gap-2.5">
-                <button
-                  type="button"
-                  onClick={handleDownloadSessionPDF}
-                  className="w-full py-3.5 px-4 bg-teal-500/20 hover:bg-teal-500/30 text-teal-200 border border-teal-500/40 rounded-2xl font-bold transition-all flex items-center justify-center gap-2 shadow-sm"
-                >
-                  <Download size={18} />
-                  <span>{t('arMirror.downloadClinicalPdf') || 'Descargar Informe Clínico en PDF'}</span>
+              <div className="flex gap-3">
+                <button onClick={() => navigate('/stats')} className="premium-btn flex-1 py-4 bg-primary text-white rounded-2xl font-bold hover:scale-[1.02] active:scale-95 transition-all">
+                  Ver Progreso
                 </button>
-                <div className="flex gap-3">
-                  <button onClick={() => navigate('/stats')} className="premium-btn flex-1 py-3.5 bg-primary text-white rounded-2xl font-bold hover:scale-[1.02] active:scale-95 transition-all">
-                    {t('arMirror.viewProgress') || 'Ver Progreso'}
-                  </button>
-                  <button onClick={() => navigate('/dashboard-paciente')} className="flex-1 py-3.5 bg-white/10 text-white rounded-2xl font-bold hover:bg-white/20 transition-all">
-                    {t('arMirror.home') || 'Inicio'}
-                  </button>
-                </div>
+                <button onClick={() => navigate('/dashboard-paciente')} className="flex-1 py-4 bg-white/10 text-white rounded-2xl font-bold hover:bg-white/20 transition-all">
+                  Inicio
+                </button>
               </div>
             </motion.div>
         </motion.div>

@@ -1,9 +1,9 @@
 /**
  * ═══════════════════════════════════════════════════════════════════════════
- * FISIOMIRROR DESIGN SYSTEM TOKENS & HARMONIZATION CONTRACT
+ * FISIOMIRROR DESIGN SYSTEM — TOKENS, MAPPING & HARMONIZATION CONTRACT
  * ═══════════════════════════════════════════════════════════════════════════
- * Guía de Tokens y Clases Utilitarias Estándar para normalizar componentes
- * procedentes de Bolt, Google Stitch, Deepcheck y fragmentos manuales.
+ * Motor de Estandarización Global para unificar componentes provenientes de
+ * Bolt, Google Stitch, Deepcheck y fragmentos manuales bajo un contrato único.
  */
 
 export const FM_DESIGN_SYSTEM = {
@@ -44,6 +44,15 @@ export const FM_DESIGN_SYSTEM = {
     tactile: "transition-transform duration-200 active:scale-[0.98]",
   },
 
+  typography: {
+    /** Familia Sans principal */
+    fontFamily: "font-sans",
+    /** Display para títulos editoriales */
+    fontDisplay: "font-display",
+    /** Mono para métricas y datos articulares */
+    fontMono: "font-mono tabular-nums",
+  },
+
   colors: {
     primaryTeal: "#006965",
     deepTeal: "#00504d",
@@ -52,6 +61,92 @@ export const FM_DESIGN_SYSTEM = {
     clinicalAzure: "#3a5f94",
   },
 } as const;
+
+/**
+ * ═══════════════════════════════════════════════════════════════════════════
+ * GUÍA DE REEMPLAZO Y MAPEO DIRECTO (FIND & REPLACE CHEAT SHEET)
+ * ═══════════════════════════════════════════════════════════════════════════
+ * Úsalo para corregir discrepancias entre fuentes en lotes o revisiones rápidas:
+ */
+export const TAILWIND_HARMONIZATION_MAP = [
+  // 1. Radios de borde (Border-radius)
+  {
+    category: "Radios - Contenedores principales (Modales, Paneles)",
+    find: "rounded-lg | rounded-xl | rounded-none",
+    replaceWith: "rounded-3xl",
+    rationale: "Unifica la envoltura estructural exterior bajo el estándar editorial de FisioMirror.",
+  },
+  {
+    category: "Radios - Tarjetas y Módulos de contenido",
+    find: "rounded-lg | rounded-md | rounded-3xl",
+    replaceWith: "rounded-2xl",
+    rationale: "Garantiza consistencia visual matemática: r_inner = r_outer - padding.",
+  },
+  {
+    category: "Radios - Elementos interactivos internos (Botones, Inputs, Dropdowns)",
+    find: "rounded-md | rounded-lg | rounded-none",
+    replaceWith: "rounded-xl",
+    rationale: "Proporciona ergonomía táctil moderna sin caer en píldoras genéricas.",
+  },
+
+  // 2. Sombras y Elevaciones
+  {
+    category: "Sombras - Tarjetas regulares",
+    find: "shadow-md | shadow-lg | shadow-xl | shadow",
+    replaceWith: "shadow-sm hover:shadow-md",
+    rationale: "Evita la pesadez de sombras artificiales oscuras en fondos clínicos.",
+  },
+  {
+    category: "Sombras - Modales y Diálogos",
+    find: "shadow-2xl | shadow-[...]",
+    replaceWith: "shadow-[0_8px_30px_rgba(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.35)]",
+    rationale: "Profundidad sutil sin halos opacos no controlados.",
+  },
+
+  // 3. Bordes y Delimitadores
+  {
+    category: "Bordes - Superficies generales",
+    find: "border-gray-200 | border-slate-200 | border-neutral-300",
+    replaceWith: "border-outline-variant/30 dark:border-white/10",
+    rationale: "Adapta automáticamente el borde entre modo claro y oscuro con variables semánticas.",
+  },
+
+  // 4. Fondos y Glassmorphism
+  {
+    category: "Fondos - Tarjetas y Paneles",
+    find: "bg-white | bg-slate-50 | bg-gray-50",
+    replaceWith: "bg-surface/85 dark:bg-surface-container/65 backdrop-blur-xl",
+    rationale: "Implementa el glassmorphism clínico sin perder legibilidad ni contraste WCAG AA.",
+  },
+
+  // 5. Transiciones y Duraciones
+  {
+    category: "Microinteracciones",
+    find: "transition | transition-colors | duration-150 | duration-200 | duration-500",
+    replaceWith: "transition-all duration-300 ease-out",
+    rationale: "Curva de amortiguación clínica orgánica idéntica en toda la aplicación.",
+  },
+
+  // 6. Tipografía y Textos
+  {
+    category: "Color de texto principal",
+    find: "text-gray-900 | text-black | text-slate-900",
+    replaceWith: "text-on-surface",
+    rationale: "Respeta el modo oscuro automático sin necesidad de dark:text-white repetitivo.",
+  },
+  {
+    category: "Color de texto secundario/muted",
+    find: "text-gray-500 | text-slate-500 | text-gray-400",
+    replaceWith: "text-on-surface-variant",
+    rationale: "Garantiza contraste mínimo 4.5:1 en ambos esquemas de color.",
+  },
+  {
+    category: "Cifras numéricas y métricas clínicas",
+    find: "font-bold text-...",
+    replaceWith: "font-mono tabular-nums font-bold text-...",
+    rationale: "Evita fluctuaciones de ancho al renderizar ángulos y tiempos biomecánicos.",
+  },
+] as const;
 
 /**
  * ═══════════════════════════════════════════════════════════════════════════

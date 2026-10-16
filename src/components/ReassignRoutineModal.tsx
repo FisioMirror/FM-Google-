@@ -1,6 +1,5 @@
 import { useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useTranslation } from 'react-i18next';
 import { supabase } from '../lib/supabase';
 import { useToast } from './ui/ToastProvider';
 import { Icon } from './ui/Icon';
@@ -99,7 +98,6 @@ export function ReassignRoutineModal({
   pacienteNombre,
   onSaved,
 }: ReassignRoutineModalProps) {
-  const { t } = useTranslation();
   const toast = useToast();
   const [step, setStep] = useState<Step>(0);
   const [selected, setSelected] = useState<SelectedExercise[]>([]);
@@ -265,9 +263,9 @@ export function ReassignRoutineModal({
   };
 
   const steps = [
-    { num: 0, label: t('reassign.selectRoutine') || 'Seleccionar ejercicios' },
-    { num: 1, label: t('exercises.series') || 'Configurar series y reps' },
-    { num: 2, label: t('common.confirm') || 'Confirmar' },
+    { num: 0, label: 'Seleccionar ejercicios' },
+    { num: 1, label: 'Configurar series y reps' },
+    { num: 2, label: 'Confirmar' },
   ] as const;
 
   return (
@@ -288,16 +286,16 @@ export function ReassignRoutineModal({
                   <Icon name="autorenew" size={24} className="text-primary" />
                 </div>
                 <div className="min-w-0">
-                  <h2 className="font-title-md text-title-md text-on-surface truncate">{t('reassign.title') || 'Reasignar Rutina'}</h2>
+                  <h2 className="font-title-md text-title-md text-on-surface truncate">Reasignar Rutina</h2>
                   <p className="text-xs text-on-surface-variant truncate">
-                    {t('auth.patient') || 'Paciente'}: <span className="font-semibold">{pacienteNombre}</span>
+                    Paciente: <span className="font-semibold">{pacienteNombre}</span>
                   </p>
                 </div>
               </div>
               <button
                 onClick={handleClose}
                 disabled={saving}
-                aria-label={t('common.close') || 'Cerrar'}
+                aria-label="Cerrar"
                 className="w-10 h-10 rounded-xl bg-surface-container text-on-surface-variant hover:bg-surface-container-high transition-all flex items-center justify-center disabled:opacity-50"
               >
                 <Icon name="close" size={22} />
@@ -587,7 +585,7 @@ export function ReassignRoutineModal({
                 className="flex items-center gap-2 px-5 py-3 rounded-xl bg-surface-container text-on-surface-variant font-bold hover:bg-surface-container-high transition-all disabled:opacity-50"
               >
                 <Icon name="arrow_back" size={18} />
-                {step === 0 ? (t('common.cancel') || 'Cancelar') : (t('common.back') || 'Atrás')}
+                {step === 0 ? 'Cancelar' : 'Atrás'}
               </button>
 
               {step < 2 ? (
@@ -596,7 +594,7 @@ export function ReassignRoutineModal({
                   disabled={(step === 0 && !canNextFromStep0) || saving}
                   className="flex items-center gap-2 px-6 py-3 rounded-xl bg-primary text-on-primary font-bold hover:scale-[1.02] active:scale-95 transition-all shadow-lg shadow-primary/20 disabled:opacity-50 disabled:hover:scale-100"
                 >
-                  {t('common.continue') || 'Continuar'}
+                  Continuar
                   <Icon name="arrow_forward" size={18} />
                 </button>
               ) : (
@@ -608,12 +606,12 @@ export function ReassignRoutineModal({
                   {saving ? (
                     <>
                       <Spinner size={18} className="text-on-primary" />
-                      {t('common.saving') || 'Guardando...'}
+                      Guardando...
                     </>
                   ) : (
                     <>
                       <Icon name="save" size={18} />
-                      {t('reassign.confirmReassign') || 'Confirmar y Guardar'}
+                      Confirmar y Guardar
                     </>
                   )}
                 </button>

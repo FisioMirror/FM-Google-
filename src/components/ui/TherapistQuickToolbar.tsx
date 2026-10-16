@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
 import {
   ChevronLeft,
@@ -29,7 +28,6 @@ export const TherapistQuickToolbar: React.FC<TherapistQuickToolbarProps> = ({
   onVoiceNote,
   onAdjustTargetAngle,
 }) => {
-  const { t } = useTranslation();
   const [isExpanded, setIsExpanded] = useState(true);
   const [isPaused, setIsPaused] = useState(false);
   const [isRecordingVoice, setIsRecordingVoice] = useState(false);
@@ -47,7 +45,7 @@ export const TherapistQuickToolbar: React.FC<TherapistQuickToolbarProps> = ({
 
   return (
     <aside
-      aria-label={t('toolbar.ariaLabel') || 'Barra de herramientas de control para el fisioterapeuta'}
+      aria-label="Barra de herramientas de control para el fisioterapeuta"
       className={cn(
         'relative inline-flex items-center rounded-2xl border transition-all duration-300 backdrop-blur-2xl shadow-xl',
         'bg-surface/90 dark:bg-slate-900/90 border-outline-variant/30 dark:border-white/10 p-1.5',
@@ -59,7 +57,7 @@ export const TherapistQuickToolbar: React.FC<TherapistQuickToolbarProps> = ({
         type="button"
         onClick={() => setIsExpanded(!isExpanded)}
         className="p-2 rounded-xl text-slate-500 dark:text-slate-400 hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
-        aria-label={isExpanded ? (t('toolbar.collapse') || 'Contraer barra clínica') : (t('toolbar.expand') || 'Expandir barra clínica')}
+        aria-label={isExpanded ? 'Contraer barra clínica' : 'Expandir barra clínica'}
       >
         {isExpanded ? <ChevronLeft className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
       </button>
@@ -86,7 +84,7 @@ export const TherapistQuickToolbar: React.FC<TherapistQuickToolbarProps> = ({
               )}
             >
               {isPaused ? <Play className="w-3.5 h-3.5" /> : <Pause className="w-3.5 h-3.5" />}
-              <span>{isPaused ? (t('toolbar.resume') || 'Reanudar') : (t('toolbar.pause') || 'Pausar')}</span>
+              <span>{isPaused ? 'Reanudar' : 'Pausar'}</span>
             </button>
 
             {/* Instant Snapshot */}
@@ -94,7 +92,7 @@ export const TherapistQuickToolbar: React.FC<TherapistQuickToolbarProps> = ({
               type="button"
               onClick={onSnapshot}
               className="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
-              title={t('toolbar.snapshot') || 'Congelar fotograma clínico'}
+              title="Congelar fotograma clínico"
             >
               <Camera className="w-4 h-4" />
             </button>
@@ -109,7 +107,7 @@ export const TherapistQuickToolbar: React.FC<TherapistQuickToolbarProps> = ({
                   ? 'bg-rose-500/20 text-rose-500 animate-pulse'
                   : 'text-slate-600 dark:text-slate-300 hover:bg-black/5 dark:hover:bg-white/10'
               )}
-              title={t('toolbar.voiceNote') || 'Dictar nota clínica de voz'}
+              title="Dictar nota clínica de voz"
             >
               <Mic className="w-4 h-4" />
             </button>
@@ -119,7 +117,7 @@ export const TherapistQuickToolbar: React.FC<TherapistQuickToolbarProps> = ({
               type="button"
               onClick={onAdjustTargetAngle}
               className="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
-              title={t('toolbar.adjustAngle') || 'Ajustar objetivo ROM en vivo'}
+              title="Ajustar objetivo ROM en vivo"
             >
               <Sliders className="w-4 h-4" />
             </button>
@@ -130,7 +128,7 @@ export const TherapistQuickToolbar: React.FC<TherapistQuickToolbarProps> = ({
               className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-teal-500/10 text-teal-600 dark:text-teal-300 hover:bg-teal-500/20 text-xs font-semibold"
             >
               <Sparkles className="w-3.5 h-3.5 text-teal-500" />
-              <span>{t('toolbar.evaluateAI') || 'Evaluar IA'}</span>
+              <span>Evaluar IA</span>
             </button>
           </motion.div>
         )}
