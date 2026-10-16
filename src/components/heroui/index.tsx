@@ -173,7 +173,7 @@ export const DeleteDialog = ({
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.94, y: 16 }}
               transition={{ type: 'spring', damping: 25, stiffness: 350 }}
-              className="relative w-full max-w-md rounded-3xl bg-surface border border-outline/20 p-6 sm:p-7 shadow-2xl z-10 space-y-4"
+              className="relative w-full max-w-md rounded-3xl bg-surface border border-outline/20 p-6 sm:p-7 shadow-2xl z-10 space-y-4 max-h-[90vh] overflow-y-auto"
             >
               <div className="flex items-start gap-4">
                 <div className="p-3 rounded-2xl bg-rose-500/15 text-rose-600 border border-rose-500/20 shrink-0">

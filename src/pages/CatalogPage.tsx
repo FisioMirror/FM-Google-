@@ -949,10 +949,14 @@ export function CatalogPage() {
           <p className="text-slate-600 dark:text-slate-300">
             Este bottom sheet deslizable erradica el scroll infinito en pantallas móviles, ofreciendo snap points interactivos y selectores de 1 toque.
           </p>
-          <div className="p-3.5 rounded-2xl bg-teal-50/70 dark:bg-slate-800/80 border border-teal-100 dark:border-slate-700 space-y-3">
+          <HarmonizedSurface variant="mint" className="p-3.5 rounded-2xl space-y-3">
             <CompactJointSelector selectedJoint={selectedJoint} onSelectJoint={setSelectedJoint} />
             <CompactRomStepper value={gaugeAngle} onChange={setGaugeAngle} min={30} max={170} label="Meta ROM" />
-          </div>
+            <div className="flex items-center justify-between gap-2 pt-1 border-t border-teal-200/40 dark:border-slate-700/60">
+              <CompactToleranceDropdown toleranceDegrees={10} onSelectTolerance={() => {}} />
+              <JointDetailPopover jointName={selectedJoint} currentAngle={gaugeAngle} targetAngle={120} />
+            </div>
+          </HarmonizedSurface>
         </div>
       </MobileBottomSheet>
     </div>

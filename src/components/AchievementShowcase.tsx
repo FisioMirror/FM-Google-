@@ -28,7 +28,7 @@ export function AchievementUnlockModal({ achievement, role, onClose }: Achieveme
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.8, opacity: 0, y: 30 }}
             transition={{ type: 'spring', stiffness: 260, damping: 22 }}
-            className="glass-panel rounded-[2rem] max-w-sm w-full p-8 text-center relative overflow-hidden"
+            className="glass-panel rounded-[2rem] max-w-sm w-full p-6 sm:p-8 text-center relative max-h-[90vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="absolute inset-0 pointer-events-none">

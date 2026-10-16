@@ -1005,22 +1005,22 @@ export function Login() {
                     onExpire={() => setTurnstileToken(null)}
                   />
 
-                  <button
+                  <ShimmerButton
                     type="submit"
                     disabled={loading || cooldown > 0}
-                    className="w-full rounded-2xl bg-[#00504d] dark:bg-teal-600 py-3.5 text-sm font-bold text-white shadow-md shadow-teal-900/20 hover:bg-[#0c403d] dark:hover:bg-teal-500 active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                    className="w-full py-3.5 text-sm font-bold text-white disabled:opacity-50"
                   >
                     {loading ? (
                       <Spinner size={18} className="text-white" />
                     ) : cooldown > 0 ? (
                       `Espera ${cooldown}s`
                     ) : (
-                      <>
+                      <span className="flex items-center justify-center gap-2">
                         Iniciar Sesión
                         <Icon name="arrow_forward" size={18} />
-                      </>
+                      </span>
                     )}
-                  </button>
+                  </ShimmerButton>
 
                   <div className="pt-2 text-center text-xs text-slate-600 dark:text-slate-400 space-y-1.5">
                     <p>
@@ -1847,7 +1847,7 @@ export function Login() {
               initial={{ scale: 0.92, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.92, opacity: 0 }}
-              className="bg-white dark:bg-slate-900 rounded-3xl p-7 max-w-sm w-full shadow-2xl border border-slate-200 dark:border-slate-800"
+              className="bg-white dark:bg-slate-900 rounded-3xl p-7 max-w-sm w-full shadow-2xl border border-slate-200 dark:border-slate-800 max-h-[90vh] overflow-y-auto"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="w-12 h-12 bg-teal-50 dark:bg-teal-950/60 rounded-full flex items-center justify-center mx-auto mb-3 text-[#00504d] dark:text-teal-400">
@@ -1925,7 +1925,7 @@ export function Login() {
             <motion.div
               initial={{ scale: 0.92, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              className="max-w-md w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-8 rounded-[2.5rem] text-center space-y-5 shadow-2xl"
+              className="max-w-md w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-8 rounded-[2.5rem] text-center space-y-5 shadow-2xl max-h-[90vh] overflow-y-auto"
             >
               <div className="w-16 h-16 bg-teal-50 dark:bg-teal-950/60 rounded-full flex items-center justify-center mx-auto text-[#00504d] dark:text-teal-400 shadow-inner">
                 <Icon name="check_circle" filled size={38} />

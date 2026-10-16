@@ -26,6 +26,7 @@ import { Icon } from './ui/Icon';
 import { BackButton } from './ui/BackButton';
 
 import { FloatingMenu, type FloatingMenuItem } from './ui/FloatingMenu';
+import { CurvedMobileDock } from './ui/NavigationDocksSuite';
 import { PhysiChatbot } from './ui/PhysiChatbot';
 import { LegalModal, type LegalDocType } from './ui/LegalModal';
 import { useAuthStore } from '../stores/authStore';
@@ -531,13 +532,30 @@ export function PatientLayout({ children }: PatientLayoutProps) {
         </footer>
       </main>
 
-      {/* Botón de acción flotante — oculto en la página de chat de Physi para mantener la vista limpia */}
+      {/* Mobile Fixed Curved Navigation Dock (MegaSuite 41) */}
       {location.pathname !== '/ai-assistant' && (
-        <FloatingMenu
-          items={quickActionItems}
-          ariaLabel="Acciones del paciente"
-          className="fixed bottom-6 right-6 z-40"
-        />
+        <div className="md:hidden fixed bottom-4 inset-x-4 z-40 flex justify-center pointer-events-auto">
+          <CurvedMobileDock
+            className="w-full max-w-sm shadow-2xl"
+            currentTab={
+              location.pathname === '/exercises' ? 'ejercicios' : location.pathname === '/stats' ? 'progreso' : 'scan'
+            }
+            onExercisesClick={() => navigate('/exercises')}
+            onScanClick={() => navigate('/ar-mirror')}
+            onProgressClick={() => navigate('/stats')}
+          />
+        </div>
+      )}
+
+      {/* Botón de acción flotante — oculto en móvil donde está el CurvedMobileDock y en la página de chat de Physi */}
+      {location.pathname !== '/ai-assistant' && (
+        <div className="hidden md:block">
+          <FloatingMenu
+            items={quickActionItems}
+            ariaLabel="Acciones del paciente"
+            className="fixed bottom-6 right-6 z-40"
+          />
+        </div>
       )}
 
       {/* Centro de Notificaciones Clínico Avanzado */}
@@ -562,7 +580,7 @@ export function PatientLayout({ children }: PatientLayoutProps) {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               onClick={(e) => e.stopPropagation()}
-              className="glass-panel rounded-3xl p-8 max-w-sm w-full mx-4 text-center"
+              className="glass-panel rounded-3xl p-8 max-w-sm w-full mx-4 text-center max-h-[90vh] overflow-y-auto"
             >
               <MascotAnimation type="goodbye" size="md" className="mx-auto mb-4" />
               <h3 className="font-headline-lg text-headline-lg gradient-text-editorial mb-2">¿Cerrar sesión?</h3>

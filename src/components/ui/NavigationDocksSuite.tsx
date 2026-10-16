@@ -26,13 +26,20 @@ import {
 export interface CurvedMobileDockProps {
   className?: string;
   onScanClick?: () => void;
+  onExercisesClick?: () => void;
+  onProgressClick?: () => void;
+  currentTab?: 'ejercicios' | 'scan' | 'progreso';
 }
 
 export const CurvedMobileDock: React.FC<CurvedMobileDockProps> = ({
   className,
   onScanClick,
+  onExercisesClick,
+  onProgressClick,
+  currentTab,
 }) => {
-  const [activeTab, setActiveTab] = useState<'ejercicios' | 'scan' | 'progreso'>('scan');
+  const [internalTab, setInternalTab] = useState<'ejercicios' | 'scan' | 'progreso'>('scan');
+  const activeTab = currentTab || internalTab;
 
   return (
     <div
@@ -44,10 +51,13 @@ export const CurvedMobileDock: React.FC<CurvedMobileDockProps> = ({
       <motion.button
         type="button"
         whileTap={{ scale: 0.95 }}
-        onClick={() => setActiveTab('ejercicios')}
+        onClick={() => {
+          setInternalTab('ejercicios');
+          onExercisesClick?.();
+        }}
         className={cn(
           "text-xs font-bold transition-colors py-1",
-          activeTab === 'ejercicios' ? "text-teal-400" : "text-slate-400 hover:text-white"
+          activeTab === 'ejercicios' ? "text-teal-400 font-black" : "text-slate-400 hover:text-white"
         )}
       >
         Ejercicios
@@ -60,7 +70,7 @@ export const CurvedMobileDock: React.FC<CurvedMobileDockProps> = ({
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.92 }}
           onClick={() => {
-            setActiveTab('scan');
+            setInternalTab('scan');
             onScanClick?.();
           }}
           className="size-14 rounded-2xl bg-gradient-to-tr from-teal-600 via-teal-500 to-cyan-400 text-white flex items-center justify-center shadow-xl shadow-teal-500/40 border-2 border-slate-950"
@@ -73,10 +83,13 @@ export const CurvedMobileDock: React.FC<CurvedMobileDockProps> = ({
       <motion.button
         type="button"
         whileTap={{ scale: 0.95 }}
-        onClick={() => setActiveTab('progreso')}
+        onClick={() => {
+          setInternalTab('progreso');
+          onProgressClick?.();
+        }}
         className={cn(
           "text-xs font-bold transition-colors py-1",
-          activeTab === 'progreso' ? "text-teal-400" : "text-slate-400 hover:text-white"
+          activeTab === 'progreso' ? "text-teal-400 font-black" : "text-slate-400 hover:text-white"
         )}
       >
         Progreso
@@ -88,10 +101,17 @@ export const CurvedMobileDock: React.FC<CurvedMobileDockProps> = ({
 /* 42. TherapistSidebarMini */
 export interface TherapistSidebarMiniProps {
   className?: string;
+  activeId?: string;
+  onSelect?: (id: string) => void;
 }
 
-export const TherapistSidebarMini: React.FC<TherapistSidebarMiniProps> = ({ className }) => {
-  const [active, setActive] = useState('grid');
+export const TherapistSidebarMini: React.FC<TherapistSidebarMiniProps> = ({
+  className,
+  activeId = 'grid',
+  onSelect,
+}) => {
+  const [internalActive, setInternalActive] = useState(activeId);
+  const active = activeId || internalActive;
 
   return (
     <div
@@ -113,13 +133,17 @@ export const TherapistSidebarMini: React.FC<TherapistSidebarMiniProps> = ({ clas
             type="button"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            onClick={() => setActive(item.id)}
+            onClick={() => {
+              setInternalActive(item.id);
+              onSelect?.(item.id);
+            }}
             className={cn(
               "p-2.5 rounded-xl transition-all relative group",
               isCurrent
                 ? "bg-teal-600 text-white shadow-md shadow-teal-600/30"
                 : "text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5"
             )}
+            title={item.label}
           >
             <IconComponent className="w-4 h-4" />
           </motion.button>

@@ -20,6 +20,8 @@ import {
   FloatingMiniStopwatch,
   QuickPrescriptionModalButton,
 } from '../components/ui/FloatingControlsSuite';
+import { BentoGrid, BentoCard } from '../components/ui/BentoGrid';
+import { Calculator, Camera, FileText } from 'lucide-react';
 
 interface ChatMessage {
   role: 'user' | 'assistant';
@@ -416,7 +418,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
     return (
     <>
             {showTool('ocr') && (
-            <div className="md:col-span-2 lg:col-span-3 p-6 sm:p-8 rounded-3xl relative overflow-hidden ios-glass-heavy refraction-border shadow-sm hover:shadow-xl transition-all duration-300 w-full">
+            <div id="tool-ocr" className="md:col-span-2 lg:col-span-3 p-6 sm:p-8 rounded-3xl relative overflow-hidden ios-glass-heavy refraction-border shadow-sm hover:shadow-xl transition-all duration-300 w-full scroll-mt-24">
             <div className="flex justify-between items-start mb-6 relative">
               <div className="flex items-center gap-3">
                 <div className="size-12 rounded-2xl bg-teal-500/10 text-teal-700 dark:text-teal-300 flex items-center justify-center">
@@ -527,7 +529,8 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
 
           {/* BMI Calculator with SpotlightCard & ClinicalSliders */}
           {showTool('bmi') && (
-          <SpotlightCard className="md:col-span-2 lg:col-span-1 p-6 sm:p-8 rounded-3xl flex flex-col justify-between relative overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 w-full">
+          <div id="tool-bmi" className="md:col-span-2 lg:col-span-1 scroll-mt-24">
+          <SpotlightCard className="p-6 sm:p-8 rounded-3xl flex flex-col justify-between relative overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 w-full">
             <div>
               <div className="flex items-center gap-3 mb-6 relative">
                 <div className="size-12 rounded-2xl bg-teal-500/10 text-teal-700 dark:text-teal-300 flex items-center justify-center">
@@ -581,11 +584,12 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
               </div>
             </div>
           </SpotlightCard>
+          </div>
           )}
 
           {/* Session Summary */}
           {showTool('summary') && (
-          <div className="md:col-span-2 lg:col-span-3 p-6 sm:p-8 rounded-3xl relative overflow-hidden ios-glass-heavy refraction-border shadow-sm hover:shadow-xl transition-all duration-300 w-full">
+          <div id="tool-summary" className="md:col-span-2 lg:col-span-3 p-6 sm:p-8 rounded-3xl relative overflow-hidden ios-glass-heavy refraction-border shadow-sm hover:shadow-xl transition-all duration-300 w-full scroll-mt-24">
             <div className="flex items-center gap-3 mb-6 relative">
               <div className="size-12 rounded-2xl bg-teal-500/10 text-teal-700 dark:text-teal-300 flex items-center justify-center">
                 <Icon name="auto_awesome" size={24} className="animate-breathe-icon" />
@@ -807,6 +811,48 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
             <p className="text-on-surface-variant font-body-lg">Acelera tu flujo de trabajo con instrumentos clínicos de precisión potenciados por IA.</p>
           </div>
 
+          {/* Featured Clinical Bento Showcase */}
+          <div className="space-y-3">
+            <h2 className="text-xs font-bold uppercase tracking-wider text-teal-600 dark:text-teal-400 flex items-center gap-1.5">
+              <Icon name="grid_view" size={16} /> Suite de Herramientas Destacadas
+            </h2>
+            <BentoGrid className="auto-rows-[14rem]">
+              <BentoCard
+                name="Calculadora de IMC y Composición"
+                description="Clasificación antropométrica y estimación en tiempo real con validación clínica."
+                badge="Biomecánica"
+                Icon={Calculator}
+                cta="Calcular Parámetros"
+                onClick={() => {
+                  const el = document.getElementById('tool-bmi');
+                  el?.scrollIntoView({ behavior: 'smooth' });
+                }}
+              />
+              <BentoCard
+                name="Digitalizador OCR & Visión Médica"
+                description="Extracción instantánea de prescripciones, rangos articulares y antecedentes."
+                badge="Visión IA"
+                Icon={Camera}
+                cta="Escanear Documento"
+                onClick={() => {
+                  const el = document.getElementById('tool-ocr');
+                  el?.scrollIntoView({ behavior: 'smooth' });
+                }}
+              />
+              <BentoCard
+                name="Generador Narrativo de Sesión"
+                description="Síntesis clínica contextual con lenguaje profesional lista para exportar a PDF."
+                badge="Gemini AI"
+                Icon={FileText}
+                cta="Generar Informe"
+                onClick={() => {
+                  const el = document.getElementById('tool-summary');
+                  el?.scrollIntoView({ behavior: 'smooth' });
+                }}
+              />
+            </BentoGrid>
+          </div>
+
           <AnimatedTabs
             tabs={[
               { id: 'todas', label: 'Todas', content: (
@@ -880,7 +926,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
       {/* PDF Confirmation Modal */}
       {pdfModalOpen && (
         <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4" onClick={() => setPdfModalOpen(false)}>
-          <div className="glass-panel rounded-3xl p-5 sm:p-6 lg:p-8 max-w-full sm:max-w-md w-full" onClick={(e) => e.stopPropagation()}>
+          <div className="glass-panel rounded-3xl p-5 sm:p-6 lg:p-8 max-w-full sm:max-w-md w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center gap-3 mb-4">
               <Icon name="picture_as_pdf" size={28} className="text-error" />
               <h3 className="font-title-md text-title-md">Confirmar Reporte PDF</h3>
@@ -913,11 +959,11 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
             <select
               value={updatePatientId}
               onChange={(e) => setUpdatePatientId(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl bg-surface-variant/20 text-on-surface border border-divider focus:border-primary focus:outline-none transition-colors mb-4"
+              className="w-full px-4 py-3 rounded-xl bg-surface-variant/20 dark:bg-slate-800 text-on-surface border border-divider focus:border-primary focus:outline-none transition-colors mb-4"
             >
-              <option value="">Selecciona un paciente...</option>
+              <option className="bg-white dark:bg-slate-800 text-slate-900 dark:text-white" value="">Selecciona un paciente...</option>
               {patients.map((p) => (
-                <option key={p.id} value={p.id}>{p.full_name}</option>
+                <option className="bg-white dark:bg-slate-800 text-slate-900 dark:text-white" key={p.id} value={p.id}>{p.full_name}</option>
               ))}
             </select>
 

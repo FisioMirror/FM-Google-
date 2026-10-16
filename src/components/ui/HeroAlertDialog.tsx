@@ -73,7 +73,7 @@ export function AlertDialogDialog({ children, className }: { children: React.Rea
       exit={{ opacity: 0, scale: 0.94, y: 16 }}
       transition={{ type: 'spring', damping: 25, stiffness: 350 }}
       className={cn(
-        'relative w-full max-w-md rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200 dark:border-slate-800 p-6 sm:p-7 shadow-2xl space-y-4',
+        'relative w-full max-w-md rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200 dark:border-slate-800 p-6 sm:p-7 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto',
         className
       )}
     >

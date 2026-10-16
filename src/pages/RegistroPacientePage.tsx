@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import {
-  KeyRound,
   UserCheck,
   Lock,
   Mail,
@@ -10,7 +9,6 @@ import {
   CheckCircle2,
   AlertCircle,
   ArrowRight,
-  Sparkles,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../stores/authStore';
@@ -18,8 +16,6 @@ import { useToast } from '../components/ui/ToastProvider';
 import { TurnstileWidget, type TurnstileWidgetRef } from '../components/auth/TurnstileWidget';
 import { Button } from '../components/ui/Button';
 import { OtpInput } from '../components/ui/OtpInput';
-import { Card, CardContent } from '../components/ui/Card';
-import { Tooltip } from '../components/ui/Tooltip';
 
 export function RegistroPacientePage() {
   const navigate = useNavigate();

@@ -91,7 +91,7 @@ export function PDFExportModal({ open, onClose, data, filename }: PDFModalProps)
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.9, opacity: 0 }}
-            className="glass-panel rounded-3xl p-8 max-w-md w-full"
+            className="glass-panel rounded-3xl p-6 sm:p-8 max-w-md w-full max-h-[90vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex justify-between items-center mb-6">

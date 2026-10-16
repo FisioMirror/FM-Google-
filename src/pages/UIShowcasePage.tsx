@@ -1,10 +1,8 @@
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Sparkles, 
   Send, 
   Trash2, 
-  Check, 
   Copy, 
   Heart, 
   ArrowLeft, 
@@ -13,9 +11,7 @@ import {
   Activity, 
   ShieldCheck, 
   Smartphone, 
-  MessageSquare, 
   CheckCircle, 
-  ExternalLink,
   Sliders,
   Eye,
   RefreshCw,
@@ -24,8 +20,6 @@ import {
   MousePointer,
   CheckCircle2,
   Calendar,
-  Lock,
-  ChevronRight,
   BarChart3,
   ListTodo,
   Bell,
@@ -42,13 +36,12 @@ import {
 } from 'lucide-react';
 import { Button, IconButton, BackButton } from '../components/ui/Button';
 import { Dialog, DialogHeader, DialogTitle, DialogDescription, DialogContent, DialogFooter, ConfirmDialog } from '../components/ui/Dialog';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter, StatCard, CardWithImage } from '../components/ui/Card';
+import { Card, StatCard } from '../components/ui/Card';
 import { Input } from '../components/ui/Input';
 import { OtpInput } from '../components/ui/OtpInput';
 import { Tooltip } from '../components/ui/Tooltip';
 import { CardSpotlight } from '../components/ui/CardSpotlight';
 import { BorderBeam } from '../components/ui/BorderBeam';
-import { BentoGrid, BentoCard } from '../components/ui/BentoGrid';
 import { NumberTicker } from '../components/ui/NumberTicker';
 import { ShimmerButton } from '../components/ui/ShimmerButton';
 import { ClinicalSlider } from '../components/ui/ClinicalSlider';
@@ -58,12 +51,12 @@ import { ShimmerText } from '../components/ui/ShimmerText';
 // 8 Componentes Solicitados Previos
 import { IncidentReportCard } from '../components/ui/IncidentReportCard';
 import { AssignmentProgressCard, type RoutineCardData } from '../components/ui/AssignmentProgressCard';
-import { Alert, BasicAlertsDemo } from '../components/ui/HeroAlert';
-import { AlertDialog, DeleteProjectDialogDemo } from '../components/ui/HeroAlertDialog';
-import { Avatar, AvatarDemo } from '../components/ui/HeroAvatar';
+import { BasicAlertsDemo } from '../components/ui/HeroAlert';
+import { DeleteProjectDialogDemo } from '../components/ui/HeroAlertDialog';
+import { AvatarDemo } from '../components/ui/HeroAvatar';
 import { PromoCardDemo } from '../components/ui/HeroPromoCard';
 import { CheckboxPreferencesDemo } from '../components/ui/HeroCheckbox';
-import { Chip, ChipStatusesDemo } from '../components/ui/HeroChip';
+import { ChipStatusesDemo } from '../components/ui/HeroChip';
 
 // 4 Componentes de Suite Reciente (Modal, Popover, Drawer, DateRangePicker)
 import { CustomModalDemo } from '../components/ui/Modal';
@@ -122,7 +115,7 @@ import {
   CompactRomStepper, 
   CompactToleranceDropdown 
 } from '../components/ui/CompactQuickSelector';
-import { MotionBlurFade, TactileFeedback, InViewStaggerContainer } from '../components/ui/MotionWrappers';
+import { MotionBlurFade, TactileFeedback } from '../components/ui/MotionWrappers';
 
 import { useNavigate } from 'react-router-dom';
 import { cn } from '../lib/utils';
@@ -3255,7 +3248,7 @@ export function UIShowcasePage() {
                   <Tooltip content="IconButton accesible para navegación">
                     <IconButton icon={<Heart className="w-4 h-4 text-rose-500" />} />
                   </Tooltip>
-                  <BackButton onClick={() => {}}>BackButton Atrás</BackButton>
+                  <BackButton onClick={() => toast.info('Simulación de navegación: retrocediendo a la pantalla anterior')}>BackButton Atrás</BackButton>
                 </div>
               </div>
             </div>

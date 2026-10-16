@@ -18,13 +18,18 @@ import { getUnifiedPatientById } from '../data/unifiedDemoData';
 import { isValidUUID } from '../lib/utils';
 import { PatientStatisticsView } from '../components/patient/PatientStatisticsView';
 import { JointDetailPopover } from '../components/ui/JointDetailPopover';
+import { TherapistQuickToolbar } from '../components/ui/TherapistQuickToolbar';
 import {
   StrengthProgressionCard,
   RehabPhaseStepCard,
   PatientAdherenceHeatmapCard,
   PostureStabilityCard,
+  EdemaAssessmentCard,
+  TremorFrequencyCard,
 } from '../components/ui/ActivityCardsSuite';
-import { HoldDurationTimerRing } from '../components/ui/RealTimeMetricsSuite';
+import { AIBiomechanicalSummaryBadge } from '../components/ui/RealTimeMetricsSuite';
+import { CompactTelehealthBar } from '../components/ui/NavigationDocksSuite';
+import { ScrollProgress } from '../components/ui/ScrollProgress';
 
 interface SessionRow {
   id: string;
@@ -396,6 +401,8 @@ export function PatientDetailPage() {
 
   return (
     <div className="space-y-8 max-w-7xl mx-auto pb-12">
+      <ScrollProgress className="top-0 fixed z-50 h-1 bg-gradient-to-r from-teal-500 to-cyan-400" />
+
       {/* Patient Header Section */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 p-6 rounded-3xl bg-surface/85 dark:bg-surface-container-low/70 border border-outline/15 shadow-sm">
         <div className="flex items-center gap-4">
@@ -428,8 +435,14 @@ export function PatientDetailPage() {
           </div>
         </div>
 
-        {/* Action Buttons */}
+        {/* Action Buttons & Therapist Quick Toolbar */}
         <div className="flex flex-wrap items-center gap-2.5">
+          <TherapistQuickToolbar
+            onVoiceNote={() => toast.success('Nota de voz clínica guardada')}
+            onSnapshot={() => toast.success('Captura biomecánica archivada')}
+            onAdjustTargetAngle={() => toast.info(`Ajustando objetivo angular (${patient.rom_objetivo || '135°'})`)}
+          />
+
           <button
             onClick={() => setShowOcrUpdateModal(true)}
             className="px-4 py-2.5 rounded-2xl bg-surface-container hover:bg-surface-container-high border border-outline/10 text-on-surface text-xs font-bold transition-all flex items-center gap-2"
@@ -454,6 +467,24 @@ export function PatientDetailPage() {
             <span>Iniciar Sesión AR</span>
           </button>
         </div>
+      </div>
+
+      {/* Telehealth & AI Biomechanical Status Ribbon */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <AIBiomechanicalSummaryBadge
+          qualityScore={Math.min(98, Math.max(70, Math.round(75 + recoveryProgress * 0.25)))}
+          postureState={recoveryProgress > 60 ? 'Simetría Óptima' : 'Desviación Leve'}
+          lastUpdated="Evaluado en última sesión"
+        />
+        <CompactTelehealthBar
+          therapistName={patient.full_name}
+          status="Paciente activo · Disponible para teleconsulta"
+          onQuickCall={() => {
+            if (patient.telefono) window.location.href = `tel:${patient.telefono}`;
+            else toast.info('No hay teléfono registrado');
+          }}
+          onQuickMessage={() => navigate('/ai-assistant')}
+        />
       </div>
 
       {/* Navigation Tabs */}
@@ -525,10 +556,10 @@ export function PatientDetailPage() {
               </div>
             )}
             {patient.es_menor_edad && (patient.tutor_nombre || patient.tutor_telefono || patient.tutor_email) && (
-              <div className="mt-4 p-4 rounded-xl bg-tertiary-fixed/10 border border-tertiary-fixed/20">
+              <div className="mt-4 p-4 rounded-xl bg-amber-500/10 dark:bg-amber-500/15 border border-amber-500/25">
                 <div className="flex items-center gap-2 mb-2">
-                  <Icon name="guardian" size={16} className="text-tertiary-fixed" />
-                  <span className="text-xs font-bold uppercase tracking-wider text-tertiary-fixed">Datos del Tutor</span>
+                  <Icon name="guardian" size={16} className="text-amber-600 dark:text-amber-400" />
+                  <span className="text-xs font-bold uppercase tracking-wider text-amber-700 dark:text-amber-300">Datos del Tutor</span>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-2 text-sm text-on-surface">
                   <span>{patient.tutor_nombre || 'Sin nombre'}</span>
@@ -552,12 +583,20 @@ export function PatientDetailPage() {
             <div className="h-48 flex items-end justify-between gap-2">
               {weekBuckets.map((v, i) => (
                 <div key={i} className="flex-1 flex flex-col items-center gap-1">
-                  <div className="w-full rounded-t-xl relative group cursor-pointer transition-all" style={{ height: `${Math.max((v / maxWeekVal) * 100, 5)}%`, background: i === 7 ? 'linear-gradient(to top, #156966, #8ad3cf)' : `rgba(0, 80, 77, ${0.1 + (i / 8) * 0.5})` }}>
+                  <div
+                    className={cn(
+                      "w-full rounded-t-xl relative group cursor-pointer transition-all",
+                      i === 7
+                        ? "bg-gradient-to-t from-teal-600 to-teal-400 shadow-md shadow-teal-500/30"
+                        : "bg-teal-500/20 hover:bg-teal-500/35 dark:bg-teal-400/20 dark:hover:bg-teal-400/35"
+                    )}
+                    style={{ height: `${Math.max((v / maxWeekVal) * 100, 8)}%` }}
+                  >
                     {i === 7 && recoveryProgress > 0 && (
                       <div className="absolute -top-8 left-1/2 -translate-x-1/2 text-[10px] font-bold bg-primary text-on-primary px-2 py-1 rounded-full shadow-lg whitespace-nowrap">ACT: {recoveryProgress}%</div>
                     )}
                   </div>
-                  <span className="text-[10px] text-outline font-medium">S{i + 1}</span>
+                  <span className="text-[10px] text-outline font-medium">{weekLabels[i]}</span>
                 </div>
               ))}
             </div>
@@ -595,9 +634,11 @@ export function PatientDetailPage() {
             </GlassPanel>
           </div>
 
-          <div className="lg:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="lg:col-span-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <PatientAdherenceHeatmapCard />
             <PostureStabilityCard balanceScore={Math.min(99, Math.max(70, Math.round(75 + recoveryProgress * 0.25)))} />
+            <TremorFrequencyCard frequencyHz={2.4} amplitudeMm={1.8} status="Estable (Rango Fisiológico)" />
+            <EdemaAssessmentCard grade={recoveryProgress > 75 ? 1 : 2} circumDeltaMm={recoveryProgress > 75 ? 3 : 8} />
           </div>
 
           <GlassPanel className="card-glow-hover lg:col-span-3 p-8 rounded-[2rem] bg-primary-container border-primary/20">
@@ -764,7 +805,7 @@ export function PatientDetailPage() {
       {/* Routine adjustment modal */}
       {showRoutineModal && (
         <div className="fixed inset-0 z-[100] bg-black/40 flex items-center justify-center p-4" onClick={() => setShowRoutineModal(false)}>
-          <div className="glass-panel rounded-3xl p-5 sm:p-6 lg:p-8 max-w-full sm:max-w-lg w-full" onClick={(e) => e.stopPropagation()}>
+          <div className="glass-panel rounded-3xl p-5 sm:p-6 lg:p-8 max-w-full sm:max-w-lg w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center gap-3 mb-4">
               <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
                 <Icon name="tune" size={24} className="text-primary" />
@@ -829,7 +870,7 @@ export function PatientDetailPage() {
       {/* OCR Update Modal */}
       {showOcrUpdateModal && (
         <div className="fixed inset-0 z-[100] bg-black/40 flex items-center justify-center p-4" onClick={() => !ocrProcessing && setShowOcrUpdateModal(false)}>
-          <div className="glass-panel rounded-3xl p-6 max-w-lg w-full" onClick={(e) => e.stopPropagation()}>
+          <div className="glass-panel rounded-3xl p-6 max-w-lg w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center gap-3 mb-4">
               <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
                 <Icon name="document_scanner" size={24} className="text-primary" />

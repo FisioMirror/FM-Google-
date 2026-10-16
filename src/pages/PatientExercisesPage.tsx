@@ -29,6 +29,11 @@ import {
   MobilityQuestCard,
   CheerReactionButton,
 } from '../components/ui/GamificationSuite';
+import {
+  JointAnatomyTooltip,
+  ExerciseSwitchFloatingMenu,
+} from '../components/ui/FloatingControlsSuite';
+import { ExerciseTimelineScrubber } from '../components/ui/NavigationDocksSuite';
 
 interface AssignedExercise {
   id: string;
@@ -282,6 +287,20 @@ export function PatientExercisesPage() {
         </div>
       </div>
 
+      {/* Cronograma de la Rutina y Selector de Ejercicios */}
+      <div className="space-y-4 mb-2">
+        <ExerciseTimelineScrubber />
+        {exercises.length > 0 && (
+          <div className="flex items-center justify-between gap-3 flex-wrap">
+            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Filtro rápido:</span>
+            <ExerciseSwitchFloatingMenu
+              exercises={exercises.map(e => e.ejercicio_nombre || 'Ejercicio')}
+              currentExercise={exercises[0]?.ejercicio_nombre || 'Ejercicio'}
+            />
+          </div>
+        )}
+      </div>
+
       {loading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {Array.from({ length: 4 }).map((_, i) => (
@@ -305,6 +324,15 @@ export function PatientExercisesPage() {
                       name={ex.ejercicio_nombre || 'Ejercicio asignado'}
                     />
                   </div>
+
+                  <div className="mb-2">
+                    <JointAnatomyTooltip
+                      jointName={ex.ejercicio_nombre || 'Articulación'}
+                      agonists={ex.ejercicio_detailed_description?.slice(0, 70) || 'Músculos flexores y estabilizadores'}
+                      precautions={ex.notas || 'Controlar velocidad y mantener rango sin dolor'}
+                    />
+                  </div>
+
                   {ex.notas && (
                     <div className="text-xs text-on-surface-variant mt-2 mb-3 bg-teal-500/10 dark:bg-teal-950/30 p-3 rounded-2xl border border-teal-500/20">
                       <span className="font-bold text-teal-700 dark:text-teal-300 mr-1.5">Indicación del Fisioterapeuta:</span>

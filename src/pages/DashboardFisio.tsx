@@ -18,11 +18,12 @@ import MascotAnimation from '../components/ui/MascotAnimation';
 import { AuroraText } from '../components/ui/AuroraText';
 import { BorderBeam } from '../components/ui/BorderBeam';
 import { ConfettiSideCannons } from '../components/ui/ConfettiButton';
-import { ClinicalActivityFeed } from '../components/ui/ClinicalActivityFeed';
+import { ClinicalActivityFeed, ClinicalNotificationCard } from '../components/ui/ClinicalActivityFeed';
 import { KineticText } from '../components/ui/KineticText';
 import { ClinicalHighlighter } from '../components/ui/Highlighter';
 import { PulsatingButton } from '../components/ui/PulsatingButton';
 import { ShimmerButton } from '../components/ui/ShimmerButton';
+import { ShimmerText } from '../components/ui/ShimmerText';
 import { ShineBorder } from '../components/ui/ShineBorder';
 import { MagicCard } from '../components/ui/MagicCard';
 import { NumberTicker } from '../components/ui/NumberTicker';
@@ -696,7 +697,9 @@ export function DashboardFisio() {
           <div>
             <div className="flex items-center gap-2 mb-1">
               <KineticText text="FisioMirror" as="span" className="text-xs font-bold uppercase tracking-widest text-primary/80" />
-              <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-600 dark:text-teal-400 border border-teal-500/20">Clínico</span>
+              <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-600 dark:text-teal-400 border border-teal-500/20">
+                <ShimmerText text="Edición Clínica IA" className="text-[10px] font-bold uppercase" />
+              </span>
             </div>
             <h2 className="font-display font-headline-lg text-headline-lg-mobile lg:text-headline-lg gradient-text-living">
               {greeting}, <AuroraText>{user?.full_name?.split(' ')[0] || 'Doctor'}</AuroraText>
@@ -1103,15 +1106,30 @@ export function DashboardFisio() {
                 {displayedPatients.length} pacientes monitorizados
               </p>
             </div>
+
+            <div className="pt-2">
+              <ClinicalNotificationCard
+                item={{
+                  id: 'notif-featured',
+                  name: 'Telemetría Clínica Activa',
+                  description: `${displayedPatients.length} expedientes sincronizados con streaming angular`,
+                  time: 'Ahora',
+                  icon: <Icon name="sync" size={16} className="text-teal-500" />,
+                  badge: 'MediaPipe Live',
+                  category: 'sesion',
+                  color: 'bg-teal-500/10 text-teal-600 dark:text-teal-400 border-teal-500/20',
+                }}
+              />
+            </div>
           </div>
 
           <div className="relative z-10 pt-6 border-t border-outline-variant/20 flex flex-wrap items-center gap-3">
-            <button
+            <InteractiveHoverButton
               onClick={() => navigate('/patients')}
-              className="bg-primary text-on-primary font-bold px-5 py-2.5 rounded-xl shadow-glow-primary hover:scale-[0.98] transition-all text-sm"
+              className="text-xs font-bold"
             >
               Ver Expedientes
-            </button>
+            </InteractiveHoverButton>
             <ConfettiSideCannons
               className="px-4 py-2.5 rounded-xl text-xs font-bold"
               onClick={() => toast.success('¡Celebración disparada!', { description: 'Ráfaga festiva de objetivos clínicos cumplidos.' })}

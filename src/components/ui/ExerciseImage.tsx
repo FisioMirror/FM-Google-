@@ -1,4 +1,5 @@
 import { cn } from '../../lib/utils';
+import { PixelImage } from './PixelImage';
 import {
   Activity,
   Dumbbell,
@@ -154,11 +155,12 @@ export function ExerciseImage({ src, name, articulacion, categoria, className, h
   if (src) {
     return (
       <div className={cn('relative w-full overflow-hidden rounded-2xl mb-4', heightClass, className)}>
-        <img
+        <PixelImage
           src={src}
           alt={name}
-          loading="lazy"
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          grid="6x4"
+          className="w-full h-full"
+          imageClassName="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
         {/* Gradiente sutil inferior para legibilidad del nombre */}
         <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />

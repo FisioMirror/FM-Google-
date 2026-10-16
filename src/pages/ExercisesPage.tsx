@@ -38,7 +38,11 @@ import { cn } from '../lib/utils';
 import { Spinner } from '../components/ui/Loader';
 import { SkeletonCard } from '../components/ui/Skeleton';
 import { MuscleTargetRadarCard } from '../components/ui/ActivityCardsSuite';
-import { RapidToleranceAdjuster } from '../components/ui/FloatingControlsSuite';
+import {
+  RapidToleranceAdjuster,
+  JointAnatomyTooltip,
+} from '../components/ui/FloatingControlsSuite';
+import { SkeletonJointSelectorHUD } from '../components/ui/RealTimeMetricsSuite';
 import { celebrateAchievement } from '../lib/confetti';
 import { GlassModal } from '../components/ui/GlassModal';
 import { SpotlightCard } from '../components/ui/SpotlightCard';
@@ -746,11 +750,18 @@ export function ExercisesPage() {
               <span className="text-[10px] uppercase font-bold text-teal-700 dark:text-teal-300 block mb-1">
                 Tolerancia Global de Calibración
               </span>
-              <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+              <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-3">
                 Ajusta el margen de aceptación angular para los ejercicios con detección MediaPipe activa.
               </p>
+              <RapidToleranceAdjuster />
             </div>
-            <RapidToleranceAdjuster />
+
+            <div className="pt-2 border-t border-teal-200/40 dark:border-slate-700">
+              <SkeletonJointSelectorHUD
+                selectedJoint={activeFilter === 'todos' ? 'Hombro' : activeFilter.charAt(0).toUpperCase() + activeFilter.slice(1)}
+                onSelect={(j) => setActiveFilter(j.toLowerCase())}
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -969,6 +980,14 @@ export function ExercisesPage() {
 
                 {/* Card Action Buttons */}
                 <div className="space-y-2 pt-2 border-t border-slate-200/60 dark:border-slate-800">
+                  <div className="mb-1">
+                    <JointAnatomyTooltip
+                      jointName={ex.nombre}
+                      agonists={ex.grupo_muscular || 'Musculatura estabilizadora principal'}
+                      precautions={ex.descripcion || 'Mantener control cinemático durante el recorrido'}
+                    />
+                  </div>
+
                   <button
                     onClick={() => setDescriptionExercise(ex)}
                     className="w-full py-2.5 px-3 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold transition-all flex items-center justify-center gap-1.5 active:scale-98"
@@ -1299,7 +1318,7 @@ export function ExercisesPage() {
                   <input
                     value={form.nombre}
                     onChange={(e) => setForm({ ...form, nombre: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-teal-500 text-sm outline-none"
+                    className="w-full px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-teal-500 text-sm outline-none text-slate-900 dark:text-white"
                     placeholder="Ej: Flexión de Hombro Activa"
                   />
                 </div>
@@ -1311,7 +1330,7 @@ export function ExercisesPage() {
                   <textarea
                     value={form.descripcion}
                     onChange={(e) => setForm({ ...form, descripcion: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-teal-500 text-sm outline-none"
+                    className="w-full px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-teal-500 text-sm outline-none text-slate-900 dark:text-white"
                     rows={2}
                     placeholder="Resumen del objetivo terapéutico..."
                   />
@@ -1324,7 +1343,7 @@ export function ExercisesPage() {
                   <textarea
                     value={form.detailed_description}
                     onChange={(e) => setForm({ ...form, detailed_description: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-teal-500 text-sm outline-none font-mono text-xs"
+                    className="w-full px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-teal-500 text-sm outline-none font-mono text-xs text-slate-900 dark:text-white"
                     rows={4}
                     placeholder="Detalla la posición inicial, fase concéntrica, sostén isométrico y retorno excéntrico..."
                   />
@@ -1338,7 +1357,7 @@ export function ExercisesPage() {
                     <select
                       value={form.articulacion}
                       onChange={(e) => setForm({ ...form, articulacion: e.target.value })}
-                      className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-teal-500 text-xs outline-none font-bold"
+                      className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-teal-500 text-xs outline-none font-bold text-slate-900 dark:text-white"
                     >
                       <option value="hombro">Hombro</option>
                       <option value="codo">Codo</option>
@@ -1356,7 +1375,7 @@ export function ExercisesPage() {
                     <input
                       value={form.grupo_muscular}
                       onChange={(e) => setForm({ ...form, grupo_muscular: e.target.value })}
-                      className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-teal-500 text-xs outline-none"
+                      className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-teal-500 text-xs outline-none text-slate-900 dark:text-white"
                       placeholder="Ej: Deltoides, Supraespinoso"
                     />
                   </div>
@@ -1369,7 +1388,7 @@ export function ExercisesPage() {
                       type="number"
                       value={form.series}
                       onChange={(e) => setForm({ ...form, series: parseInt(e.target.value) || 1 })}
-                      className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-teal-500 text-xs outline-none"
+                      className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-teal-500 text-xs outline-none text-slate-900 dark:text-white"
                       min={1}
                     />
                   </div>
@@ -1382,7 +1401,7 @@ export function ExercisesPage() {
                       type="number"
                       value={form.repeticiones}
                       onChange={(e) => setForm({ ...form, repeticiones: parseInt(e.target.value) || 1 })}
-                      className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-teal-500 text-xs outline-none"
+                      className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-teal-500 text-xs outline-none text-slate-900 dark:text-white"
                       min={1}
                     />
                   </div>
@@ -1395,7 +1414,7 @@ export function ExercisesPage() {
                       type="number"
                       value={form.angulo_objetivo}
                       onChange={(e) => setForm({ ...form, angulo_objetivo: parseInt(e.target.value) || 0 })}
-                      className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-teal-500 text-xs outline-none"
+                      className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-teal-500 text-xs outline-none text-slate-900 dark:text-white"
                       min={0}
                       max={360}
                     />
@@ -1408,7 +1427,7 @@ export function ExercisesPage() {
                     <select
                       value={form.lado}
                       onChange={(e) => setForm({ ...form, lado: e.target.value })}
-                      className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-teal-500 text-xs outline-none font-bold"
+                      className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-teal-500 text-xs outline-none font-bold text-slate-900 dark:text-white"
                     >
                       <option value="bilateral">Bilateral</option>
                       <option value="derecho">Derecho</option>

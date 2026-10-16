@@ -59,13 +59,7 @@ export function InstallModal() {
               exit={{ opacity: 0, y: 40, scale: 0.95 }}
               transition={{ type: 'spring', damping: 22, stiffness: 280 }}
               onClick={(e) => e.stopPropagation()}
-              className="w-full max-w-sm rounded-3xl overflow-hidden shadow-2xl"
-              style={{
-                background: 'rgba(255,255,255,0.18)',
-                backdropFilter: 'blur(24px)',
-                WebkitBackdropFilter: 'blur(24px)',
-                border: '1px solid rgba(255,255,255,0.35)',
-              }}
+              className="w-full max-w-sm rounded-3xl overflow-y-auto max-h-[90vh] shadow-2xl bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border border-slate-200/80 dark:border-slate-800"
             >
               {/* Header */}
               <div className="relative px-6 pt-6 pb-4 text-center">

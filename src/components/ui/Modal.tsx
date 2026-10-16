@@ -140,6 +140,7 @@ export function ModalDialog({
       onClick={(e) => e.stopPropagation()}
       className={cn(
         "relative w-full max-w-lg z-10 p-6 md:p-8 rounded-2xl md:rounded-3xl",
+        "max-h-[calc(100vh-3rem)] overflow-y-auto",
         "bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl",
         "border border-slate-200/80 dark:border-slate-800/80",
         "shadow-2xl shadow-primary/10 dark:shadow-teal-950/40 text-foreground",

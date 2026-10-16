@@ -28,14 +28,13 @@ import {
   Calendar,
   ArrowRight,
   Eye,
-  Activity,
-  Crosshair,
 } from 'lucide-react';
 import { DrawerClinicalDemo } from '../components/ui/Drawer';
 import { useRealtimePresence } from '../lib/presenceService';
 import { staggerContainer, staggerItem, springTactile } from '../lib/motionVariants';
 import { MobileBottomSheet } from '../components/ui/MobileBottomSheet';
 import { JointDetailPopover } from '../components/ui/JointDetailPopover';
+import { TherapistSidebarMini } from '../components/ui/NavigationDocksSuite';
 
 interface PatientCard {
   id: string;
@@ -561,28 +560,41 @@ export function PatientsPage() {
               })}
             </div>
 
-            {/* Grid / List Mode */}
-            <div className="flex items-center gap-1 p-1 rounded-xl bg-surface-container/80 shrink-0">
-              <button
-                onClick={() => setViewMode('cards')}
-                aria-label="Vista cuadrícula"
-                className={cn(
-                  'p-1.5 rounded-lg transition-all',
-                  viewMode === 'cards' ? 'bg-surface text-teal-600 shadow-xs font-bold' : 'text-outline hover:text-on-surface'
-                )}
-              >
-                <LayoutGrid className="size-4" />
-              </button>
-              <button
-                onClick={() => setViewMode('list')}
-                aria-label="Vista lista"
-                className={cn(
-                  'p-1.5 rounded-lg transition-all',
-                  viewMode === 'list' ? 'bg-surface text-teal-600 shadow-xs font-bold' : 'text-outline hover:text-on-surface'
-                )}
-              >
-                <List className="size-4" />
-              </button>
+            {/* Grid / List Mode & Therapist Mini Toolbar */}
+            <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1 p-1 rounded-xl bg-surface-container/80 shrink-0">
+                <button
+                  onClick={() => setViewMode('cards')}
+                  aria-label="Vista cuadrícula"
+                  className={cn(
+                    'p-1.5 rounded-lg transition-all',
+                    viewMode === 'cards' ? 'bg-surface text-teal-600 shadow-xs font-bold' : 'text-outline hover:text-on-surface'
+                  )}
+                >
+                  <LayoutGrid className="size-4" />
+                </button>
+                <button
+                  onClick={() => setViewMode('list')}
+                  aria-label="Vista lista"
+                  className={cn(
+                    'p-1.5 rounded-lg transition-all',
+                    viewMode === 'list' ? 'bg-surface text-teal-600 shadow-xs font-bold' : 'text-outline hover:text-on-surface'
+                  )}
+                >
+                  <List className="size-4" />
+                </button>
+              </div>
+
+              <div className="hidden sm:flex items-center">
+                <TherapistSidebarMini
+                  activeId="users"
+                  onSelect={(id) => {
+                    if (id === 'grid') navigate('/dashboard-fisio');
+                    if (id === 'users') setActiveTab('patients');
+                    if (id === 'video') navigate('/tools');
+                  }}
+                />
+              </div>
             </div>
           </div>
 

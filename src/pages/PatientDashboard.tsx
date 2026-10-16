@@ -31,6 +31,12 @@ import {
   CheerReactionButton,
 } from '../components/ui/GamificationSuite';
 import { PainScaleInteractiveCard } from '../components/ui/ActivityCardsSuite';
+import { GamifiedBadgeCard } from '../components/ui/GamifiedBadgeCard';
+import {
+  ExerciseTimelineScrubber,
+  CompactTelehealthBar,
+} from '../components/ui/NavigationDocksSuite';
+import { HarmonizedSurface } from '../components/ui/HarmonizedSurface';
 import {
   Flame,
   CheckCircle2,
@@ -334,6 +340,18 @@ export function PatientDashboard() {
             <HelpGuideButton />
           </div>
         </div>
+
+        {/* Telehealth Status Bar */}
+        <HarmonizedSurface variant="mint" className="mt-4 p-1 rounded-2xl">
+          <CompactTelehealthBar
+            therapistName={therapist || 'Dra. Ramos'}
+            status="En línea · Fisioterapeuta asignada"
+            onQuickCall={() => {
+              window.location.href = 'tel:+34900123456';
+            }}
+            onQuickMessage={() => navigate('/ai-assistant')}
+          />
+        </HarmonizedSurface>
       </div>
 
       {/* Main KPI Row con acentos pastel clínicos */}
@@ -497,6 +515,11 @@ export function PatientDashboard() {
               >
                 Ver todos
               </button>
+            </div>
+
+            {/* Cronograma visual interactivo de la rutina */}
+            <div className="mb-4">
+              <ExerciseTimelineScrubber />
             </div>
 
             {loading ? (
@@ -714,6 +737,24 @@ export function PatientDashboard() {
               <span className="font-bold text-teal-600 dark:text-teal-400">{Math.round(gamification.totalProgress * 100)}% desbloqueado</span>
             </div>
             <AchievementShowcase achievements={gamification.achievements} compact={false} />
+
+            {/* Medallas 3D Gamificadas de FisioMirror */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6 pt-6 border-t border-outline/10">
+              <GamifiedBadgeCard
+                title="Constancia Inquebrantable"
+                description="5 días seguidos completando rutina prescrita"
+                tier="gold"
+                xpPoints={250}
+                progressPct={Math.min(100, Math.round(((kpi.streak || 4) / 5) * 100))}
+              />
+              <GamifiedBadgeCard
+                title="Precisión Articular"
+                description="ROM > 90° con simetría biomecánica óptima"
+                tier="diamond"
+                xpPoints={500}
+                progressPct={88}
+              />
+            </div>
           </div>
           <VirtualTrophyCabinet />
         </div>
