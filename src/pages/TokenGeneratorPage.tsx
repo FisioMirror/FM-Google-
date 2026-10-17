@@ -215,7 +215,7 @@ export function TokenGeneratorPage() {
             className={cn(
               'px-4 py-2 rounded-2xl text-xs font-bold whitespace-nowrap transition-all',
               i === activeFilter
-                ? 'bg-teal-600 text-white shadow-sm'
+                ? 'bg-primary text-on-primary shadow-sm'
                 : 'bg-surface-container/70 hover:bg-surface-container text-on-surface-variant border border-outline/10',
             )}
           >
@@ -276,7 +276,7 @@ export function TokenGeneratorPage() {
                       'px-2.5 py-1 rounded-full text-xs font-bold border',
                       t.status === 'pendiente' && 'bg-amber-500/10 border-amber-500/20 text-amber-700 dark:text-amber-300',
                       t.status === 'activado' && 'bg-emerald-500/10 border-emerald-500/20 text-emerald-700 dark:text-emerald-300',
-                      t.status === 'expirado' && 'bg-slate-500/10 border-slate-500/20 text-slate-500',
+                      t.status === 'expirado' && 'bg-slate-500/10 border-slate-500/20 text-on-surface-variant',
                     )}>
                       {t.status.charAt(0).toUpperCase() + t.status.slice(1)}
                     </span>

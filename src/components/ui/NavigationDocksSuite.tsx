@@ -36,7 +36,7 @@ export const CurvedMobileDock: React.FC<CurvedMobileDockProps> = ({
   return (
     <div
       className={cn(
-        "relative p-2 px-6 rounded-3xl bg-white/95 dark:bg-slate-950/95 text-slate-800 dark:text-white border border-teal-500/25 dark:border-teal-500/30 shadow-elevated backdrop-blur-2xl flex items-center justify-between gap-6 transition-colors",
+        "relative p-2 px-6 rounded-3xl bg-white/95 dark:bg-slate-950/95 text-on-surface dark:text-white border border-teal-500/25 dark:border-teal-500/30 shadow-elevated backdrop-blur-2xl flex items-center justify-between gap-6 transition-colors",
         className
       )}
     >
@@ -51,7 +51,7 @@ export const CurvedMobileDock: React.FC<CurvedMobileDockProps> = ({
           "text-xs font-bold transition-colors py-1 cursor-pointer",
           activeTab === 'ejercicios'
             ? "text-teal-600 dark:text-teal-400 font-black"
-            : "text-slate-500 dark:text-slate-400 hover:text-teal-700 dark:hover:text-white"
+            : "text-on-surface-variant hover:text-teal-700 dark:hover:text-white"
         )}
       >
         Ejercicios
@@ -86,7 +86,7 @@ export const CurvedMobileDock: React.FC<CurvedMobileDockProps> = ({
           "text-xs font-bold transition-colors py-1 cursor-pointer",
           activeTab === 'progreso'
             ? "text-teal-600 dark:text-teal-400 font-black"
-            : "text-slate-500 dark:text-slate-400 hover:text-teal-700 dark:hover:text-white"
+            : "text-on-surface-variant hover:text-teal-700 dark:hover:text-white"
         )}
       >
         Progreso
@@ -137,8 +137,8 @@ export const TherapistSidebarMini: React.FC<TherapistSidebarMiniProps> = ({
             className={cn(
               "p-2.5 rounded-xl transition-all relative group cursor-pointer",
               isCurrent
-                ? "bg-teal-600 text-white shadow-md shadow-teal-600/30"
-                : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5"
+                ? "bg-primary text-on-primary shadow-md shadow-teal-600/30"
+                : "text-on-surface-variant hover:text-on-surface dark:text-on-surface-variant dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5"
             )}
             title={item.label}
           >
@@ -194,8 +194,8 @@ export const QuickPatientSwitcherBar: React.FC<QuickPatientSwitcherBarProps> = (
             className={cn(
               "px-3.5 py-1.5 rounded-2xl text-xs font-bold whitespace-nowrap transition-all border flex items-center gap-1.5 cursor-pointer",
               isCurrent
-                ? "bg-teal-600 text-white border-teal-600 shadow-md shadow-teal-600/30"
-                : "bg-white/80 dark:bg-slate-800/80 border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:border-teal-500/40"
+                ? "bg-primary text-on-primary border-teal-600 shadow-md shadow-teal-600/30"
+                : "bg-white/80 dark:bg-slate-800/80 border-slate-200 dark:border-white/10 text-on-surface-variant hover:text-on-surface dark:hover:text-white hover:border-teal-500/40"
             )}
           >
             {isCurrent && <span className="size-1.5 rounded-full bg-lime-300 animate-ping" />}
@@ -250,13 +250,13 @@ export const SessionStateBreadcrumb: React.FC<SessionStateBreadcrumbProps> = ({
                   ? "text-teal-600 dark:text-teal-400 font-black"
                   : isDone
                   ? "text-emerald-600 dark:text-emerald-400 font-semibold"
-                  : "text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+                  : "text-on-surface-variant hover:text-on-surface-variant dark:hover:text-slate-200"
               )}
             >
               {isDone && <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />}
               <span>{s}</span>
             </button>
-            {idx < steps.length - 1 && <ChevronRight className="w-3.5 h-3.5 text-slate-300 dark:text-slate-500" />}
+            {idx < steps.length - 1 && <ChevronRight className="w-3.5 h-3.5 text-slate-300 dark:text-on-surface-variant" />}
           </React.Fragment>
         );
       })}
@@ -303,8 +303,8 @@ export const SplitViewPerspectiveToggle: React.FC<SplitViewPerspectiveToggleProp
             className={cn(
               "px-3 py-1.5 rounded-xl transition-all capitalize cursor-pointer",
               isSelected
-                ? "bg-teal-600 text-white shadow-md shadow-teal-600/30 font-extrabold"
-                : "text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
+                ? "bg-primary text-on-primary shadow-md shadow-teal-600/30 font-extrabold"
+                : "text-on-surface-variant hover:text-on-surface dark:text-on-surface-variant dark:hover:text-white"
             )}
           >
             {m === 'front' ? 'Frontal 2D' : m === 'side' ? 'Sagital 90°' : 'Dual Split'}
@@ -370,7 +370,7 @@ export const ErgonomicHandModeSwitcher: React.FC<ErgonomicHandModeSwitcherProps>
       whileTap={{ scale: 0.95 }}
       onClick={toggleHand}
       className={cn(
-        "inline-flex items-center gap-2.5 p-2 px-3.5 rounded-2xl bg-white/90 dark:bg-slate-800/90 border border-teal-500/30 text-xs font-bold text-slate-800 dark:text-slate-100 shadow-md cursor-pointer transition-colors",
+        "inline-flex items-center gap-2.5 p-2 px-3.5 rounded-2xl bg-white/90 dark:bg-slate-800/90 border border-teal-500/30 text-xs font-bold text-on-surface shadow-md cursor-pointer transition-colors",
         className
       )}
       title="Alternar mano dominante para la rutina"
@@ -402,7 +402,7 @@ export const CompactTelehealthBar: React.FC<CompactTelehealthBarProps> = ({
   return (
     <div
       className={cn(
-        "p-3 px-4 rounded-2xl bg-white/90 dark:bg-slate-950/95 text-slate-800 dark:text-white border border-teal-500/25 dark:border-teal-500/30 shadow-elevated flex items-center justify-between gap-4 text-xs backdrop-blur-2xl transition-colors",
+        "p-3 px-4 rounded-2xl bg-white/90 dark:bg-slate-950/95 text-on-surface dark:text-white border border-teal-500/25 dark:border-teal-500/30 shadow-elevated flex items-center justify-between gap-4 text-xs backdrop-blur-2xl transition-colors",
         className
       )}
     >
@@ -410,7 +410,7 @@ export const CompactTelehealthBar: React.FC<CompactTelehealthBarProps> = ({
         <span className="size-2 rounded-full bg-emerald-500 shrink-0 animate-ping" />
         <div className="truncate">
           <p className="font-bold truncate text-on-surface">{therapistName}</p>
-          {status && <p className="text-2xs text-slate-500 dark:text-slate-400 truncate">{status}</p>}
+          {status && <p className="text-2xs text-on-surface-variant truncate">{status}</p>}
         </div>
       </div>
 
@@ -436,7 +436,7 @@ export const CompactTelehealthBar: React.FC<CompactTelehealthBarProps> = ({
             type="button"
             onClick={onQuickMessage}
             aria-label="Mensaje al asistente"
-            className="p-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-teal-500/20 text-slate-700 dark:text-slate-200 transition-all border border-slate-200 dark:border-white/10 active:scale-95 cursor-pointer"
+            className="p-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-teal-500/20 text-on-surface transition-all border border-slate-200 dark:border-white/10 active:scale-95 cursor-pointer"
             title="Chat clínico"
           >
             <MessageSquare className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400" />
@@ -475,7 +475,7 @@ export const ExerciseTimelineScrubber: React.FC<ExerciseTimelineScrubberProps> =
 
   return (
     <div className={cn("space-y-1.5 w-full select-none", className)}>
-      <div className="flex justify-between text-2xs font-mono font-bold text-slate-500 dark:text-slate-400">
+      <div className="flex justify-between text-2xs font-mono font-bold text-on-surface-variant">
         <span className="text-teal-600 dark:text-teal-400">{formatMinSec(sec)}</span>
         <span>{formatMinSec(totalSeconds)} Total</span>
       </div>
@@ -523,7 +523,7 @@ export const ContextualActionIsland: React.FC<ContextualActionIslandProps> = ({
       layout
       onClick={() => setExpanded(!expanded)}
       className={cn(
-        "inline-flex flex-col rounded-3xl bg-white/95 dark:bg-slate-950/95 text-slate-800 dark:text-white border border-teal-500/30 dark:border-teal-500/40 shadow-elevated text-xs font-semibold cursor-pointer select-none backdrop-blur-2xl transition-all",
+        "inline-flex flex-col rounded-3xl bg-white/95 dark:bg-slate-950/95 text-on-surface dark:text-white border border-teal-500/30 dark:border-teal-500/40 shadow-elevated text-xs font-semibold cursor-pointer select-none backdrop-blur-2xl transition-all",
         expanded ? "p-3 px-5 gap-2" : "p-2 px-4 flex-row items-center gap-2.5",
         className
       )}
@@ -539,7 +539,7 @@ export const ContextualActionIsland: React.FC<ContextualActionIslandProps> = ({
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="flex items-center gap-4 text-2xs font-mono text-slate-500 dark:text-slate-400 border-t border-slate-200 dark:border-white/10 pt-2"
+            className="flex items-center gap-4 text-2xs font-mono text-on-surface-variant border-t border-slate-200 dark:border-white/10 pt-2"
           >
             <span>Latencia: {latencyMs}ms</span>
             <span>FPS: {fps}</span>

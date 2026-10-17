@@ -808,7 +808,7 @@ export function DashboardFisio() {
               </div>
               
               <div className="relative z-10">
-                <p className="text-xs sm:text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-0.5 sm:mb-1 line-clamp-1">{card.label}</p>
+                <p className="text-xs sm:text-xs font-semibold text-on-surface-variant dark:text-on-surface-variant uppercase tracking-wider mb-0.5 sm:mb-1 line-clamp-1">{card.label}</p>
                 {loadingKpis ? (
                   <Skeleton variant="text" width="60%" height={36} className="mt-1" />
                 ) : (
@@ -1225,7 +1225,7 @@ export function DashboardFisio() {
                           <div className={`w-12 h-12 rounded-full flex items-center justify-center font-extrabold text-base border-2 shadow-sm ${
                             isWarning
                               ? "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-200 dark:border-amber-800"
-                              : "bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-100 border-white dark:border-slate-700"
+                              : "bg-slate-100 dark:bg-slate-800 text-on-surface border-white dark:border-slate-700"
                           }`}>
                             {initials}
                           </div>

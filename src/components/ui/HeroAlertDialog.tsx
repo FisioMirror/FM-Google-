@@ -89,7 +89,7 @@ export function AlertDialogCloseTrigger({ className }: { className?: string }) {
     <button
       onClick={() => setOpen(false)}
       className={cn(
-        'absolute top-4 right-4 p-1.5 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors',
+        'absolute top-4 right-4 p-1.5 rounded-xl text-on-surface-variant hover:text-on-surface-variant dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors',
         className
       )}
       aria-label="Cerrar diálogo"
@@ -116,7 +116,7 @@ export function AlertDialogHeading({ children, className }: { children: React.Re
 }
 
 export function AlertDialogBody({ children, className }: { children: React.ReactNode; className?: string }) {
-  return <div className={cn('text-xs text-slate-600 dark:text-slate-400 leading-relaxed', className)}>{children}</div>;
+  return <div className={cn('text-xs text-on-surface-variant leading-relaxed', className)}>{children}</div>;
 }
 
 export function AlertDialogFooter({ children, className }: { children: React.ReactNode; className?: string }) {

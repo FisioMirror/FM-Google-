@@ -715,7 +715,7 @@ export function ExercisesPage() {
             <h1 className="fm-title text-on-surface">
               Catálogo de Ejercicios & Guía Anatómica
             </h1>
-            <p className="text-sm text-slate-600 dark:text-slate-300 max-w-3xl leading-relaxed">
+            <p className="text-sm text-on-surface-variant max-w-3xl leading-relaxed">
               Prescribe protocolos kinesiológicos con modelos anatómicos 3D interactivos, ángulos ROM objetivo y biofeedback en tiempo real.
             </p>
           </div>
@@ -750,7 +750,7 @@ export function ExercisesPage() {
               <span className="text-2xs uppercase font-bold text-teal-700 dark:text-teal-300 block mb-1">
                 Tolerancia Global de Calibración
               </span>
-              <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-3">
+              <p className="text-xs text-on-surface-variant leading-relaxed mb-3">
                 Ajusta el margen de aceptación angular para los ejercicios con detección MediaPipe activa.
               </p>
               <RapidToleranceAdjuster />
@@ -770,17 +770,17 @@ export function ExercisesPage() {
       <div className="rounded-2xl p-3 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-white/60 dark:border-teal-500/20 shadow-xs flex flex-col md:flex-row items-stretch md:items-center gap-3">
         {/* Search input */}
         <div className="relative flex-1">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 size-4" />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant size-4" />
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Buscar por ejercicio, músculo objetivo o articulación..."
-            className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-100/80 dark:bg-slate-800/80 border border-transparent focus:border-teal-500/40 focus:bg-white dark:focus:bg-slate-900 text-sm text-slate-800 dark:text-slate-100 placeholder:text-slate-400 outline-none transition-all"
+            className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-100/80 dark:bg-slate-800/80 border border-transparent focus:border-teal-500/40 focus:bg-white dark:focus:bg-slate-900 text-sm text-on-surface placeholder:text-on-surface-variant outline-none transition-all"
           />
           {search && (
             <button
               onClick={() => setSearch('')}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-on-surface-variant p-1"
             >
               <X className="size-3.5" />
             </button>
@@ -810,8 +810,8 @@ export function ExercisesPage() {
                 className={cn(
                   'px-3.5 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all flex items-center gap-2 shrink-0',
                   isSelected
-                    ? 'bg-teal-600 text-white shadow-xs'
-                    : 'bg-slate-100/80 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 hover:bg-slate-200/80 dark:hover:bg-slate-700/80'
+                    ? 'bg-primary text-on-primary shadow-xs'
+                    : 'bg-slate-100/80 dark:bg-slate-800/80 text-on-surface-variant hover:bg-slate-200/80 dark:hover:bg-slate-700/80'
                 )}
               >
                 <IconComp className="size-3.5" />
@@ -821,7 +821,7 @@ export function ExercisesPage() {
                     'text-2xs px-1.5 py-0.5 rounded-full font-bold',
                     isSelected
                       ? 'bg-white/20 text-white'
-                      : 'bg-slate-200 dark:bg-slate-700 text-slate-500 dark:text-slate-400'
+                      : 'bg-slate-200 dark:bg-slate-700 text-on-surface-variant'
                   )}
                 >
                   {count}
@@ -843,7 +843,7 @@ export function ExercisesPage() {
         <div className="p-12 text-center rounded-3xl bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl border border-dashed border-slate-300 dark:border-slate-800">
           <Activity className="size-12 mx-auto text-teal-600/40 mb-3" />
           <h3 className="text-base font-bold text-on-surface">No se encontraron ejercicios</h3>
-          <p className="text-xs text-slate-500 max-w-sm mx-auto mt-1 mb-4">
+          <p className="text-xs text-on-surface-variant max-w-sm mx-auto mt-1 mb-4">
             Intenta con otro término de búsqueda o cambia la categoría de articulación seleccionada.
           </p>
           <button
@@ -918,7 +918,7 @@ export function ExercisesPage() {
                         <span className="capitalize">{ex.articulacion || 'Articular'}</span>
                       </span>
 
-                      <span className="inline-flex items-center gap-1 text-2xs font-bold uppercase px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
+                      <span className="inline-flex items-center gap-1 text-2xs font-bold uppercase px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-on-surface-variant border border-slate-200 dark:border-slate-700">
                         <CatIcon className="size-3" />
                         <span className="capitalize">{ex.categoria || 'Movilidad'}</span>
                       </span>
@@ -941,13 +941,13 @@ export function ExercisesPage() {
                   </div>
 
                   {/* Short Description */}
-                  <p className="text-xs text-slate-600 dark:text-slate-400 line-clamp-2 mb-3 leading-relaxed">
+                  <p className="text-xs text-on-surface-variant line-clamp-2 mb-3 leading-relaxed">
                     {ex.descripcion || 'Protocolo kinesiológico guiado con biofeedback computarizado.'}
                   </p>
 
                   {/* Muscle group target */}
                   {ex.grupo_muscular && (
-                    <div className="text-xs text-slate-500 dark:text-slate-400 mb-3 flex items-center gap-1.5 truncate">
+                    <div className="text-xs text-on-surface-variant mb-3 flex items-center gap-1.5 truncate">
                       <Target className="size-3 text-teal-600 dark:text-teal-400 shrink-0" />
                       <span className="truncate">{ex.grupo_muscular}</span>
                     </div>
@@ -956,19 +956,19 @@ export function ExercisesPage() {
                   {/* Biomechanical Telemetry metrics tile (Instrument style) */}
                   <div className="grid grid-cols-3 gap-2 py-3 px-3 rounded-2xl bg-slate-100/70 dark:bg-slate-800/60 border border-slate-200/50 dark:border-slate-700/50 text-center mb-4 divide-x divide-slate-200/60 dark:divide-slate-700/60">
                     <div className="flex flex-col items-center">
-                      <p className="text-2xs uppercase font-bold text-slate-400 dark:text-slate-500 flex items-center justify-center gap-1">
+                      <p className="text-2xs uppercase font-bold text-on-surface-variant flex items-center justify-center gap-1">
                         <Repeat className="size-2.5 text-teal-600 dark:text-teal-400" /> SERIES
                       </p>
-                      <p className="text-base font-extrabold text-slate-800 dark:text-slate-100 mt-0.5">{ex.series ?? 3}</p>
+                      <p className="text-base font-extrabold text-on-surface mt-0.5">{ex.series ?? 3}</p>
                     </div>
                     <div className="flex flex-col items-center pl-2">
-                      <p className="text-2xs uppercase font-bold text-slate-400 dark:text-slate-500 flex items-center justify-center gap-1">
+                      <p className="text-2xs uppercase font-bold text-on-surface-variant flex items-center justify-center gap-1">
                         <Flame className="size-2.5 text-amber-500" /> REPS
                       </p>
-                      <p className="text-base font-extrabold text-slate-800 dark:text-slate-100 mt-0.5">{ex.repeticiones ?? 10}</p>
+                      <p className="text-base font-extrabold text-on-surface mt-0.5">{ex.repeticiones ?? 10}</p>
                     </div>
                     <div className="flex flex-col items-center pl-2">
-                      <p className="text-2xs uppercase font-bold text-slate-400 dark:text-slate-500 flex items-center justify-center gap-1">
+                      <p className="text-2xs uppercase font-bold text-on-surface-variant flex items-center justify-center gap-1">
                         <Gauge className="size-2.5 text-teal-500" /> ROM
                       </p>
                       <p className="text-base font-extrabold text-teal-600 dark:text-teal-400 font-mono mt-0.5">
@@ -990,7 +990,7 @@ export function ExercisesPage() {
 
                   <button
                     onClick={() => setDescriptionExercise(ex)}
-                    className="w-full py-2.5 px-3 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold transition-all flex items-center justify-center gap-1.5 active:scale-98"
+                    className="w-full py-2.5 px-3 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-on-surface text-xs font-bold transition-all flex items-center justify-center gap-1.5 active:scale-98"
                   >
                     <BookOpen className="size-3.5 text-teal-600 dark:text-teal-400" />
                     <span>Ver Guía Anatómica</span>
@@ -1010,14 +1010,14 @@ export function ExercisesPage() {
                     <div className="flex gap-2 pt-1">
                       <button
                         onClick={() => openEdit(ex)}
-                        className="flex-1 py-1.5 rounded-lg bg-slate-100/90 dark:bg-slate-800/90 hover:bg-teal-50 dark:hover:bg-teal-950/40 text-slate-600 dark:text-slate-300 hover:text-teal-600 text-xs font-bold transition-all flex items-center justify-center gap-1"
+                        className="flex-1 py-1.5 rounded-lg bg-slate-100/90 dark:bg-slate-800/90 hover:bg-teal-50 dark:hover:bg-teal-950/40 text-on-surface-variant hover:text-teal-600 text-xs font-bold transition-all flex items-center justify-center gap-1"
                       >
                         <Edit3 className="size-3" />
                         <span>Editar</span>
                       </button>
                       <button
                         onClick={() => cloneExercise(ex)}
-                        className="flex-1 py-1.5 rounded-lg bg-slate-100/90 dark:bg-slate-800/90 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 text-xs font-bold transition-all flex items-center justify-center gap-1"
+                        className="flex-1 py-1.5 rounded-lg bg-slate-100/90 dark:bg-slate-800/90 hover:bg-slate-200 dark:hover:bg-slate-700 text-on-surface-variant text-xs font-bold transition-all flex items-center justify-center gap-1"
                       >
                         <Copy className="size-3" />
                         <span>Clonar</span>
@@ -1050,20 +1050,20 @@ export function ExercisesPage() {
                   <span className="px-2.5 py-0.5 rounded-full bg-teal-500/10 text-teal-700 dark:text-teal-300 text-2xs font-bold uppercase tracking-wider border border-teal-500/20">
                     {descriptionExercise.articulacion || 'Articulación'}
                   </span>
-                  <span className="px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-2xs font-bold uppercase tracking-wider">
+                  <span className="px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-on-surface-variant text-2xs font-bold uppercase tracking-wider">
                     {descriptionExercise.categoria || 'Movilidad'}
                   </span>
                 </div>
                 <h2 className="text-xl sm:text-2xl font-extrabold text-on-surface">
                   {descriptionExercise.nombre}
                 </h2>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                <p className="text-xs text-on-surface-variant mt-0.5">
                   Músculos objetivo: <strong className="text-teal-600 dark:text-teal-400">{descriptionExercise.grupo_muscular || 'Musculatura estabilizadora'}</strong>
                 </p>
               </div>
 
               <div className="text-right shrink-0">
-                <span className="text-2xs uppercase font-bold text-slate-400 block">Rango Objetivo</span>
+                <span className="text-2xs uppercase font-bold text-on-surface-variant block">Rango Objetivo</span>
                 <span className="text-lg font-mono font-extrabold text-teal-600 dark:text-teal-400">
                   {descriptionExercise.angulo_objetivo !== null ? `${descriptionExercise.angulo_objetivo}° ROM` : '0° - 90°'}
                 </span>
@@ -1077,25 +1077,25 @@ export function ExercisesPage() {
                 {/* Clinical Parameter Summary */}
                 <div className="grid grid-cols-4 gap-2 p-3 rounded-2xl bg-slate-100/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-center">
                   <div>
-                    <span className="text-2xs uppercase font-bold text-slate-400 block">Series</span>
-                    <span className="text-sm font-extrabold text-slate-800 dark:text-slate-100">
+                    <span className="text-2xs uppercase font-bold text-on-surface-variant block">Series</span>
+                    <span className="text-sm font-extrabold text-on-surface">
                       {descriptionExercise.series ?? 3}
                     </span>
                   </div>
                   <div>
-                    <span className="text-2xs uppercase font-bold text-slate-400 block">Reps</span>
-                    <span className="text-sm font-extrabold text-slate-800 dark:text-slate-100">
+                    <span className="text-2xs uppercase font-bold text-on-surface-variant block">Reps</span>
+                    <span className="text-sm font-extrabold text-on-surface">
                       {descriptionExercise.repeticiones ?? 10}
                     </span>
                   </div>
                   <div>
-                    <span className="text-2xs uppercase font-bold text-slate-400 block">Sostén</span>
-                    <span className="text-sm font-extrabold text-slate-800 dark:text-slate-100">
+                    <span className="text-2xs uppercase font-bold text-on-surface-variant block">Sostén</span>
+                    <span className="text-sm font-extrabold text-on-surface">
                       3s Isom.
                     </span>
                   </div>
                   <div>
-                    <span className="text-2xs uppercase font-bold text-slate-400 block">Lado</span>
+                    <span className="text-2xs uppercase font-bold text-on-surface-variant block">Lado</span>
                     <span className="text-xs font-extrabold text-teal-600 dark:text-teal-400 capitalize">
                       {descriptionExercise.lado || 'Bilateral'}
                     </span>
@@ -1109,7 +1109,7 @@ export function ExercisesPage() {
                     <span>Prescripción Paso a Paso & Control Biomecánico</span>
                   </div>
 
-                  <div className="text-xs sm:text-sm text-slate-700 dark:text-slate-300 whitespace-pre-wrap leading-relaxed space-y-2">
+                  <div className="text-xs sm:text-sm text-on-surface whitespace-pre-wrap leading-relaxed space-y-2">
                     {descriptionExercise.detailed_description ? (
                       descriptionExercise.detailed_description
                     ) : (
@@ -1133,7 +1133,7 @@ export function ExercisesPage() {
               {/* Right Column: Live 3D Model with Skeleton and Biomechanical Controls */}
               <div className="lg:col-span-5 flex flex-col items-center">
                 <div className="w-full flex items-center justify-between mb-2">
-                  <span className="text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
+                  <span className="text-xs font-bold uppercase tracking-wider text-on-surface-variant flex items-center gap-1.5">
                     <Activity className="size-3.5 text-teal-600" />
                     <span>Simulación 3D Sincronizada</span>
                   </span>
@@ -1175,7 +1175,7 @@ export function ExercisesPage() {
 
               <button
                 onClick={() => setDescriptionExercise(null)}
-                className="px-5 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold transition-all"
+                className="px-5 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-on-surface text-xs font-bold transition-all"
               >
                 Cerrar Guía
               </button>
@@ -1190,31 +1190,31 @@ export function ExercisesPage() {
           <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800">
             <div>
               <h3 className="text-lg font-bold text-on-surface">Asignar a Paciente</h3>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-on-surface-variant">
                 Ejercicio: <strong className="text-teal-600 dark:text-teal-400">{assignExercise?.nombre}</strong>
               </p>
             </div>
             <button
               onClick={() => setAssignExercise(null)}
-              className="p-1 rounded-lg text-slate-400 hover:text-slate-600"
+              className="p-1 rounded-lg text-on-surface-variant hover:text-on-surface-variant"
             >
               <X className="size-4" />
             </button>
           </div>
 
           <div className="space-y-3">
-            <label className="block text-xs font-bold text-slate-600 dark:text-slate-300">
+            <label className="block text-xs font-bold text-on-surface-variant">
               Seleccionar Paciente de la Clínica
             </label>
 
             <div className="relative">
-              <Search className="size-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+              <Search className="size-4 absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant" />
               <input
                 type="text"
                 value={patientSearch}
                 onChange={(e) => setPatientSearch(e.target.value)}
                 placeholder="Buscar por nombre del paciente..."
-                className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-sm text-slate-800 dark:text-slate-100 border border-slate-200 dark:border-slate-700 focus:border-teal-500 focus:outline-none transition-colors"
+                className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-sm text-on-surface border border-slate-200 dark:border-slate-700 focus:border-teal-500 focus:outline-none transition-colors"
               />
             </div>
 
@@ -1230,8 +1230,8 @@ export function ExercisesPage() {
                       className={cn(
                         'w-full px-3.5 py-2.5 rounded-xl text-left transition-all flex items-center justify-between gap-3 text-xs',
                         isSelected
-                          ? 'bg-teal-600 text-white font-bold shadow-xs'
-                          : 'bg-slate-100/70 dark:bg-slate-800/70 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+                          ? 'bg-primary text-on-primary font-bold shadow-xs'
+                          : 'bg-slate-100/70 dark:bg-slate-800/70 text-on-surface hover:bg-slate-200 dark:hover:bg-slate-700'
                       )}
                     >
                       <div className="flex items-center gap-2.5 truncate">
@@ -1243,7 +1243,7 @@ export function ExercisesPage() {
                   );
                 })}
               {patients.length === 0 && (
-                <p className="text-center text-slate-400 text-xs py-4">No hay pacientes disponibles</p>
+                <p className="text-center text-on-surface-variant text-xs py-4">No hay pacientes disponibles</p>
               )}
             </div>
           </div>
@@ -1251,7 +1251,7 @@ export function ExercisesPage() {
           <div className="pt-3 border-t border-slate-200 dark:border-slate-800 flex gap-2">
             <button
               onClick={() => setAssignExercise(null)}
-              className="flex-1 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-xs font-bold hover:bg-slate-200"
+              className="flex-1 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-on-surface-variant text-xs font-bold hover:bg-slate-200"
             >
               Cancelar
             </button>
@@ -1304,7 +1304,7 @@ export function ExercisesPage() {
                 <button
                   onClick={() => setShowModal(false)}
                   aria-label="Cerrar modal"
-                  className="text-slate-400 hover:text-slate-600 p-1"
+                  className="text-on-surface-variant hover:text-on-surface-variant p-1"
                 >
                   <X className="size-5" />
                 </button>
@@ -1312,7 +1312,7 @@ export function ExercisesPage() {
 
               <div className="space-y-4">
                 <div>
-                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">
+                  <label className="text-xs font-bold text-on-surface block mb-1">
                     Nombre del Ejercicio
                   </label>
                   <input
@@ -1324,7 +1324,7 @@ export function ExercisesPage() {
                 </div>
 
                 <div>
-                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">
+                  <label className="text-xs font-bold text-on-surface block mb-1">
                     Descripción Breve
                   </label>
                   <textarea
@@ -1337,7 +1337,7 @@ export function ExercisesPage() {
                 </div>
 
                 <div>
-                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">
+                  <label className="text-xs font-bold text-on-surface block mb-1">
                     Instrucciones Clínicas Detalladas (Fases 1 a 4)
                   </label>
                   <textarea
@@ -1351,7 +1351,7 @@ export function ExercisesPage() {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">
+                    <label className="text-xs font-bold text-on-surface block mb-1">
                       Articulación Principal
                     </label>
                     <select
@@ -1369,7 +1369,7 @@ export function ExercisesPage() {
                   </div>
 
                   <div>
-                    <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">
+                    <label className="text-xs font-bold text-on-surface block mb-1">
                       Músculos Objetivo
                     </label>
                     <input
@@ -1381,7 +1381,7 @@ export function ExercisesPage() {
                   </div>
 
                   <div>
-                    <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">
+                    <label className="text-xs font-bold text-on-surface block mb-1">
                       Series Prescritas
                     </label>
                     <input
@@ -1394,7 +1394,7 @@ export function ExercisesPage() {
                   </div>
 
                   <div>
-                    <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">
+                    <label className="text-xs font-bold text-on-surface block mb-1">
                       Repeticiones por Serie
                     </label>
                     <input
@@ -1407,7 +1407,7 @@ export function ExercisesPage() {
                   </div>
 
                   <div>
-                    <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">
+                    <label className="text-xs font-bold text-on-surface block mb-1">
                       Ángulo ROM Objetivo (Grados °)
                     </label>
                     <input
@@ -1421,7 +1421,7 @@ export function ExercisesPage() {
                   </div>
 
                   <div>
-                    <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">
+                    <label className="text-xs font-bold text-on-surface block mb-1">
                       Lado Articular
                     </label>
                     <select
@@ -1439,7 +1439,7 @@ export function ExercisesPage() {
                 {/* Live 3D Preview in form */}
                 {form.nombre.trim() && (
                   <div className="pt-2">
-                    <p className="text-xs font-bold uppercase tracking-wide text-slate-500 mb-2 flex items-center gap-1.5">
+                    <p className="text-xs font-bold uppercase tracking-wide text-on-surface-variant mb-2 flex items-center gap-1.5">
                       <Gauge className="size-4 text-teal-600" />
                       <span>Vista Previa Biomecánica 3D</span>
                     </p>
@@ -1464,7 +1464,7 @@ export function ExercisesPage() {
                 <div className="flex gap-3 pt-3 border-t border-slate-200 dark:border-slate-800">
                   <button
                     onClick={() => setShowModal(false)}
-                    className="flex-1 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold text-xs hover:bg-slate-200"
+                    className="flex-1 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-on-surface font-bold text-xs hover:bg-slate-200"
                   >
                     Cancelar
                   </button>

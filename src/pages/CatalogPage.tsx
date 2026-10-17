@@ -140,7 +140,7 @@ export function CatalogPage() {
               className={cn(
                 'px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer',
                 activeTab === tab.id
-                  ? 'bg-teal-600 text-white shadow-md shadow-teal-600/20'
+                  ? 'bg-primary text-on-primary shadow-md shadow-teal-600/20'
                   : 'bg-surface-container hover:bg-surface-container-high text-on-surface-variant'
               )}
             >
@@ -636,7 +636,7 @@ export function CatalogPage() {
                   Macro Suite FisioMirror (50 Componentes Modulares)
                 </h2>
               </div>
-              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 max-w-2xl">
+              <p className="text-xs sm:text-sm text-on-surface-variant max-w-2xl">
                 Catálogo masivo de 50 componentes modulares creados con HeroUI, Magic UI y DaisyUI para telemetría MediaPipe, diagnóstico clínico, microinteracciones, gamificación y docks AR.
               </p>
             </div>
@@ -649,7 +649,7 @@ export function CatalogPage() {
           <div className="space-y-4">
             <div className="flex items-center gap-2 pb-2 border-b border-cyan-500/15">
               <span className="size-2 rounded-full bg-cyan-500" />
-              <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+              <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
                 Categoría 1: Tarjetas de Actividad y Diagnóstico Clínico (1 - 10)
               </h3>
             </div>
@@ -671,7 +671,7 @@ export function CatalogPage() {
           <div className="space-y-4 pt-6 border-t border-cyan-500/15">
             <div className="flex items-center gap-2 pb-2 border-b border-cyan-500/15">
               <span className="size-2 rounded-full bg-teal-500" />
-              <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+              <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
                 Categoría 2: Paneles y Métricas en Tiempo Real (MediaPipe / IA) (11 - 20)
               </h3>
             </div>
@@ -693,7 +693,7 @@ export function CatalogPage() {
           <div className="space-y-4 pt-6 border-t border-cyan-500/15">
             <div className="flex items-center gap-2 pb-2 border-b border-cyan-500/15">
               <span className="size-2 rounded-full bg-indigo-500" />
-              <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+              <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
                 Categoría 3: Microinteracciones y Controles Flotantes Contextuales (21 - 30)
               </h3>
             </div>
@@ -715,7 +715,7 @@ export function CatalogPage() {
           <div className="space-y-4 pt-6 border-t border-cyan-500/15">
             <div className="flex items-center gap-2 pb-2 border-b border-cyan-500/15">
               <span className="size-2 rounded-full bg-amber-500" />
-              <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+              <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
                 Categoría 4: Gamificación, Rachas y Motivación de Pacientes (31 - 40)
               </h3>
             </div>
@@ -741,7 +741,7 @@ export function CatalogPage() {
           <div className="space-y-4 pt-6 border-t border-cyan-500/15">
             <div className="flex items-center gap-2 pb-2 border-b border-cyan-500/15">
               <span className="size-2 rounded-full bg-emerald-500" />
-              <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+              <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
                 Categoría 5: Docks, Barras de Herramientas y Navegación Ergonómica (41 - 50)
               </h3>
             </div>
@@ -786,7 +786,7 @@ export function CatalogPage() {
                   Suite Estelar de Innovación Biomecánica FisioMirror
                 </h2>
               </div>
-              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 max-w-2xl">
+              <p className="text-xs sm:text-sm text-on-surface-variant max-w-2xl">
                 8 componentes estelares para tele-rehabilitación con IA: goniómetro digital, contador con física de resortes, barra de fatiga, dock AR flotante y badges gamificados.
               </p>
             </div>
@@ -802,7 +802,7 @@ export function CatalogPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* 1. BiomechanicalAngleGauge */}
             <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col items-center justify-center space-y-4">
-              <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+              <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
                 1. Goniómetro Dinámico Circular (BiomechanicalAngleGauge)
               </h3>
               <BiomechanicalAngleGauge
@@ -813,7 +813,7 @@ export function CatalogPage() {
                 size={220}
               />
               <div className="flex items-center gap-2 w-full max-w-xs pt-2">
-                <span className="text-xs text-slate-400 font-mono">0°</span>
+                <span className="text-xs text-on-surface-variant font-mono">0°</span>
                 <input
                   type="range"
                   min={0}
@@ -822,13 +822,13 @@ export function CatalogPage() {
                   onChange={(e) => setGaugeAngle(Number(e.target.value))}
                   className="w-full accent-teal-500 cursor-pointer"
                 />
-                <span className="text-xs text-slate-400 font-mono">180°</span>
+                <span className="text-xs text-on-surface-variant font-mono">180°</span>
               </div>
             </div>
 
             {/* 2. RepetitionCounterSpring */}
             <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col items-center justify-center space-y-4">
-              <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+              <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
                 2. Contador con Resortes Elásticos (RepetitionCounterSpring)
               </h3>
               <RepetitionCounterSpring
@@ -847,7 +847,7 @@ export function CatalogPage() {
                 </button>
                 <button
                   onClick={() => setSpringReps(0)}
-                  className="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 text-xs font-bold hover:bg-slate-200"
+                  className="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-on-surface-variant text-xs font-bold hover:bg-slate-200"
                 >
                   Reiniciar
                 </button>
@@ -856,7 +856,7 @@ export function CatalogPage() {
 
             {/* 3. RehabEnergyBar */}
             <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
-              <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+              <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
                 3. Barra de Energía y Fatiga Muscular (RehabEnergyBar)
               </h3>
               <RehabEnergyBar
@@ -866,7 +866,7 @@ export function CatalogPage() {
                 totalTargetReps={15}
               />
               <div className="flex items-center gap-3 pt-2">
-                <span className="text-xs text-slate-400">Simular Energía:</span>
+                <span className="text-xs text-on-surface-variant">Simular Energía:</span>
                 <input
                   type="range"
                   min={10}
@@ -881,7 +881,7 @@ export function CatalogPage() {
 
             {/* 4. GamifiedBadgeCard */}
             <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
-              <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+              <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
                 4. Medalla 3D Gamificada (GamifiedBadgeCard)
               </h3>
               <div className="grid grid-cols-2 gap-3">
@@ -904,7 +904,7 @@ export function CatalogPage() {
 
             {/* 5. CompensationAlertBanner */}
             <div className="lg:col-span-2 p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
-              <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+              <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
                 5. Banner de Compensación Postural (CompensationAlertBanner)
               </h3>
               <CompensationAlertBanner
@@ -917,7 +917,7 @@ export function CatalogPage() {
 
             {/* 6 & 7. ARFloatingDock & TherapistQuickToolbar */}
             <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4 flex flex-col items-center justify-center">
-              <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+              <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
                 6. Dock Flotante AR (ARFloatingDock)
               </h3>
               <ARFloatingDock
@@ -927,7 +927,7 @@ export function CatalogPage() {
             </div>
 
             <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4 flex flex-col items-center justify-center">
-              <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+              <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
                 7. Barra Rápida de Terapeuta (TherapistQuickToolbar)
               </h3>
               <TherapistQuickToolbar />
@@ -946,7 +946,7 @@ export function CatalogPage() {
         variant="pastel-mint"
       >
         <div className="space-y-4 text-xs sm:text-sm">
-          <p className="text-slate-600 dark:text-slate-300">
+          <p className="text-on-surface-variant">
             Este bottom sheet deslizable erradica el scroll infinito en pantallas móviles, ofreciendo snap points interactivos y selectores de 1 toque.
           </p>
           <HarmonizedSurface variant="mint" className="p-3.5 rounded-2xl space-y-3">

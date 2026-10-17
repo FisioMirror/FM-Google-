@@ -61,7 +61,7 @@ export const StreakFlameCounter: React.FC<StreakFlameCounterProps> = ({
             Días Consecutivos
           </span>
         </div>
-        <p className="text-xs text-slate-600 dark:text-slate-300 font-medium">
+        <p className="text-xs text-on-surface-variant font-medium">
           ¡Constancia clínica ejemplar! Multiplicador de XP <strong className="text-amber-500">x1.5 activo</strong>.
         </p>
       </div>
@@ -105,10 +105,10 @@ export const LevelProgressRibbon: React.FC<LevelProgressRibbonProps> = ({
             <Medal className="w-4 h-4" />
           </div>
           <div>
-            <span className="text-xs font-bold text-slate-800 dark:text-white block">
+            <span className="text-xs font-bold text-on-surface dark:text-white block">
               Nivel Terapéutico
             </span>
-            <span className="text-2xs text-slate-400">Rango de rehabilitación</span>
+            <span className="text-2xs text-on-surface-variant">Rango de rehabilitación</span>
           </div>
         </div>
         <button
@@ -128,7 +128,7 @@ export const LevelProgressRibbon: React.FC<LevelProgressRibbonProps> = ({
         />
       </div>
 
-      <div className="flex justify-between text-xs text-slate-500 font-mono font-semibold">
+      <div className="flex justify-between text-xs text-on-surface-variant font-mono font-semibold">
         <span>{xp} XP</span>
         <span className="text-teal-600 dark:text-teal-400">{percent}% completado</span>
         <span>{nextLevelXp} XP</span>
@@ -169,7 +169,7 @@ export const MilestoneCelebrationModal: React.FC<MilestoneCelebrationModalProps>
 
       <div>
         <h4 className="text-sm font-black text-on-surface">{milestoneTitle}</h4>
-        <p className="text-xs text-slate-600 dark:text-slate-300 max-w-xs mx-auto mt-0.5">
+        <p className="text-xs text-on-surface-variant max-w-xs mx-auto mt-0.5">
           Tu fisioterapeuta ha sido notificado del avance clínico en el portal.
         </p>
       </div>
@@ -229,10 +229,10 @@ export const MobilityQuestCard: React.FC<MobilityQuestCardProps> = ({
           {completed ? <Check className="w-5 h-5" /> : <Compass className="w-5 h-5" />}
         </motion.button>
         <div>
-          <h4 className={cn("text-xs font-bold text-slate-800 dark:text-white", completed && "line-through text-slate-400")}>
+          <h4 className={cn("text-xs font-bold text-on-surface dark:text-white", completed && "line-through text-on-surface-variant")}>
             {questTitle}
           </h4>
-          <span className="text-xs text-slate-400 font-mono">
+          <span className="text-xs text-on-surface-variant font-mono">
             {completed ? '3 / 3 Completada' : progressText}
           </span>
         </div>
@@ -268,8 +268,8 @@ export const VirtualTrophyCabinet: React.FC<VirtualTrophyCabinetProps> = ({
           <Trophy className="w-6 h-6 animate-pulse" />
         </div>
         <div>
-          <h4 className="text-xs font-bold text-slate-800 dark:text-white">Vitrina de Trofeos Clínicos</h4>
-          <span className="text-xs text-slate-400 font-medium">
+          <h4 className="text-xs font-bold text-on-surface dark:text-white">Vitrina de Trofeos Clínicos</h4>
+          <span className="text-xs text-on-surface-variant font-medium">
             {trophiesCount} medallas biomecánicas desbloqueadas
           </span>
         </div>
@@ -314,8 +314,8 @@ export const DailyHealthPointsWidget: React.FC<DailyHealthPointsWidgetProps> = (
           <Coins className="w-6 h-6" />
         </motion.div>
         <div>
-          <h4 className="text-xs font-bold text-slate-800 dark:text-white">Puntos de Salud</h4>
-          <span className="text-xs text-slate-400">Canjeables por consultas prioritarias</span>
+          <h4 className="text-xs font-bold text-on-surface dark:text-white">Puntos de Salud</h4>
+          <span className="text-xs text-on-surface-variant">Canjeables por consultas prioritarias</span>
         </div>
       </div>
       <button
@@ -357,7 +357,7 @@ export const RehabHeroAvatarCard: React.FC<RehabHeroAvatarCardProps> = ({
       <div>
         <h4 className="text-sm font-black text-on-surface">{patientName}</h4>
         <span className="text-xs text-primary font-bold">{rankTitle}</span>
-        <span className="text-2xs text-slate-400 block">Nivel 5 • 86% Adherencia</span>
+        <span className="text-2xs text-on-surface-variant block">Nivel 5 • 86% Adherencia</span>
       </div>
     </motion.div>
   );
@@ -466,16 +466,16 @@ export const UnlockableExerciseLocker: React.FC<UnlockableExerciseLockerProps> =
         <motion.div
           animate={jiggling ? { x: [-4, 4, -4, 4, 0] } : {}}
           transition={{ duration: 0.3 }}
-          className="p-2.5 rounded-2xl bg-slate-200 dark:bg-slate-800 text-slate-500"
+          className="p-2.5 rounded-2xl bg-slate-200 dark:bg-slate-800 text-on-surface-variant"
         >
           <Lock className="w-5 h-5" />
         </motion.div>
         <div>
-          <h4 className="text-xs font-bold text-slate-800 dark:text-slate-200">{exerciseTitle}</h4>
-          <span className="text-2xs text-slate-400">{requirement}</span>
+          <h4 className="text-xs font-bold text-on-surface">{exerciseTitle}</h4>
+          <span className="text-2xs text-on-surface-variant">{requirement}</span>
         </div>
       </div>
-      <span className="text-2xs uppercase font-bold text-slate-400 bg-black/5 dark:bg-white/5 px-2.5 py-1 rounded-full">
+      <span className="text-2xs uppercase font-bold text-on-surface-variant bg-black/5 dark:bg-white/5 px-2.5 py-1 rounded-full">
         85% Bloqueado
       </span>
     </motion.div>

@@ -108,7 +108,7 @@ export const GamifiedBadgeCard: React.FC<GamifiedBadgeCardProps> = ({
               : 'bg-slate-200 dark:bg-slate-800 border-slate-300 dark:border-slate-700'
           )}
         >
-          {unlocked ? renderIcon() : <Lock className="w-8 h-8 text-slate-400" />}
+          {unlocked ? renderIcon() : <Lock className="w-8 h-8 text-on-surface-variant" />}
 
           {/* Level Badge */}
           {unlocked && (
@@ -124,14 +124,14 @@ export const GamifiedBadgeCard: React.FC<GamifiedBadgeCardProps> = ({
         <h4 className="text-base font-bold text-on-surface dark:text-white mb-1">
           {title}
         </h4>
-        <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed line-clamp-2">
+        <p className="text-xs text-on-surface-variant leading-relaxed line-clamp-2">
           {description}
         </p>
       </div>
 
       {/* Action / Status Footer */}
       <div className="mt-5 pt-3 border-t border-outline-variant/15 dark:border-white/5 flex items-center justify-between">
-        <span className="text-xs text-slate-400">
+        <span className="text-xs text-on-surface-variant">
           {unlocked ? `Desbloqueado: ${unlockedDate}` : 'Bloqueado'}
         </span>
 

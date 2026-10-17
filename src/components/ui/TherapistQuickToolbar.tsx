@@ -56,7 +56,7 @@ export const TherapistQuickToolbar: React.FC<TherapistQuickToolbarProps> = ({
       <button
         type="button"
         onClick={() => setIsExpanded(!isExpanded)}
-        className="p-2 rounded-xl text-slate-500 dark:text-slate-400 hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
+        className="p-2 rounded-xl text-on-surface-variant hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
         aria-label={isExpanded ? 'Contraer barra clínica' : 'Expandir barra clínica'}
       >
         {isExpanded ? <ChevronLeft className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
@@ -91,7 +91,7 @@ export const TherapistQuickToolbar: React.FC<TherapistQuickToolbarProps> = ({
             <button
               type="button"
               onClick={onSnapshot}
-              className="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
+              className="p-2 rounded-xl text-on-surface-variant hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
               title="Congelar fotograma clínico"
             >
               <Camera className="w-4 h-4" />
@@ -105,7 +105,7 @@ export const TherapistQuickToolbar: React.FC<TherapistQuickToolbarProps> = ({
                 'p-2 rounded-xl transition-colors',
                 isRecordingVoice
                   ? 'bg-rose-500/20 text-rose-500 animate-pulse'
-                  : 'text-slate-600 dark:text-slate-300 hover:bg-black/5 dark:hover:bg-white/10'
+                  : 'text-on-surface-variant hover:bg-black/5 dark:hover:bg-white/10'
               )}
               title="Dictar nota clínica de voz"
             >
@@ -116,7 +116,7 @@ export const TherapistQuickToolbar: React.FC<TherapistQuickToolbarProps> = ({
             <button
               type="button"
               onClick={onAdjustTargetAngle}
-              className="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
+              className="p-2 rounded-xl text-on-surface-variant hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
               title="Ajustar objetivo ROM en vivo"
             >
               <Sliders className="w-4 h-4" />

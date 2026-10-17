@@ -204,7 +204,7 @@ export function ModalHeading({ children, className }: { children: React.ReactNod
 
 export function ModalBody({ children, className }: { children: React.ReactNode; className?: string }) {
   return (
-    <div className={cn("text-sm text-neutral-600 dark:text-neutral-300 leading-relaxed mb-6 space-y-3", className)}>
+    <div className={cn("text-sm text-on-surface-variant leading-relaxed mb-6 space-y-3", className)}>
       {children}
     </div>
   );
@@ -281,7 +281,7 @@ export function CustomModalDemo() {
                 <Modal.Heading>Configuración de FisioMirror</Modal.Heading>
               </Modal.Header>
               <Modal.Body>
-                <p className="text-sm text-neutral-600 dark:text-neutral-300">
+                <p className="text-sm text-on-surface-variant">
                   Ajusta los parámetros del análisis biomecánico en tiempo real y la sensibilidad de la cámara para la sesión activa.
                 </p>
 
@@ -302,7 +302,7 @@ export function CustomModalDemo() {
                   </div>
 
                   <label className="flex items-center justify-between cursor-pointer pt-1">
-                    <span className="text-xs font-medium text-neutral-700 dark:text-neutral-300">
+                    <span className="text-xs font-medium text-on-surface">
                       Superposición de Malla Biomecánica
                     </span>
                     <input

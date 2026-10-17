@@ -64,11 +64,11 @@ export const PoseConfidenceLiveIndicator: React.FC<PoseConfidenceLiveIndicatorPr
           />
         </div>
         <div>
-          <span className="text-xs font-bold text-slate-800 dark:text-slate-100 flex items-center gap-1.5">
+          <span className="text-xs font-bold text-on-surface flex items-center gap-1.5">
             Certidumbre MediaPipe AR
             <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />
           </span>
-          <span className="text-2xs text-slate-500 dark:text-slate-400 font-mono">
+          <span className="text-2xs text-on-surface-variant font-mono">
             {visibleLandmarksCount}/33 puntos anatómicos rastreados a 60 FPS
           </span>
         </div>
@@ -127,10 +127,10 @@ export const AngularVelocityStreamGauge: React.FC<AngularVelocityStreamGaugeProp
             <Gauge className="w-4 h-4 animate-pulse" />
           </div>
           <div>
-            <span className="text-xs font-bold text-slate-800 dark:text-slate-100 block">
+            <span className="text-xs font-bold text-on-surface block">
               Velocidad Angular en Vivo
             </span>
-            <span className="text-2xs text-slate-500 dark:text-slate-400">
+            <span className="text-2xs text-on-surface-variant">
               Control motriz articular
             </span>
           </div>
@@ -152,7 +152,7 @@ export const AngularVelocityStreamGauge: React.FC<AngularVelocityStreamGaugeProp
         />
       </div>
 
-      <div className="flex justify-between text-2xs text-slate-400 font-mono font-semibold">
+      <div className="flex justify-between text-2xs text-on-surface-variant font-mono font-semibold">
         <span>0 °/s</span>
         <span className="text-teal-600 dark:text-teal-400">Zona de Control Óptimo</span>
         <span>{maxSafeVelocity} °/s</span>
@@ -184,10 +184,10 @@ export const ROMDeviationLiveChart: React.FC<ROMDeviationLiveChartProps> = ({ cl
             <LineChart className="w-4 h-4" />
           </div>
           <div>
-            <span className="text-xs font-bold text-slate-800 dark:text-slate-100 block">
+            <span className="text-xs font-bold text-on-surface block">
               Trayectoria Real vs. Ideal
             </span>
-            <span className="text-2xs text-slate-500 dark:text-slate-400">Osciloscopio ROM</span>
+            <span className="text-2xs text-on-surface-variant">Osciloscopio ROM</span>
           </div>
         </div>
         <span className="text-2xs font-mono font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/15 border border-emerald-500/30 px-2.5 py-0.5 rounded-full flex items-center gap-1">
@@ -235,7 +235,7 @@ export const ROMDeviationLiveChart: React.FC<ROMDeviationLiveChartProps> = ({ cl
         </svg>
       </div>
 
-      <div className="flex items-center justify-between text-2xs text-slate-500 dark:text-slate-400">
+      <div className="flex items-center justify-between text-2xs text-on-surface-variant">
         <span className="flex items-center gap-1">
           <span className="size-2 rounded-full bg-teal-400" /> Paciente Real
         </span>
@@ -295,7 +295,7 @@ export const VoiceFeedbackWaveHUD: React.FC<VoiceFeedbackWaveHUDProps> = ({
             ))}
           </div>
         </div>
-        <p className="text-xs font-bold text-slate-800 dark:text-slate-100 truncate">
+        <p className="text-xs font-bold text-on-surface truncate">
           &ldquo;{instructionText}&rdquo;
         </p>
       </div>
@@ -336,10 +336,10 @@ export const CameraFramingGuideHUD: React.FC<CameraFramingGuideHUDProps> = ({
           <Scan className="w-4 h-4 animate-spin" style={{ animationDuration: '24s' }} />
         </div>
         <div>
-          <span className="text-xs font-bold text-slate-800 dark:text-slate-100 block">
+          <span className="text-xs font-bold text-on-surface block">
             Encuadre Óptimo AR
           </span>
-          <span className="text-2xs text-slate-500 dark:text-slate-400">
+          <span className="text-2xs text-on-surface-variant">
             Distancia ideal: 2.1 metros
           </span>
         </div>
@@ -408,10 +408,10 @@ export const RepCadenceMetronome: React.FC<RepCadenceMetronomeProps> = ({
             <Timer className="w-4 h-4" />
           </div>
           <div>
-            <span className="text-xs font-bold text-slate-800 dark:text-slate-100 block">
+            <span className="text-xs font-bold text-on-surface block">
               Metrónomo de Cadencia
             </span>
-            <span className="text-2xs text-slate-500 dark:text-slate-400">Ritmo 2-1-3</span>
+            <span className="text-2xs text-on-surface-variant">Ritmo 2-1-3</span>
           </div>
         </div>
         <button
@@ -468,14 +468,14 @@ export const AIBiomechanicalSummaryBadge: React.FC<AIBiomechanicalSummaryBadgePr
             <span className="text-xs font-bold text-primary block">
               Evaluación Rápida Physi IA
             </span>
-            <span className="text-2xs text-slate-400">Análisis cinemático automático</span>
+            <span className="text-2xs text-on-surface-variant">Análisis cinemático automático</span>
           </div>
         </div>
         <span className="text-xs font-mono font-black text-teal-600 dark:text-teal-400 bg-teal-500/15 border border-teal-500/30 px-3 py-1 rounded-full">
           {score}/100 Score
         </span>
       </div>
-      <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed font-medium">
+      <p className="text-xs text-on-surface leading-relaxed font-medium">
         {summaryText}
       </p>
     </motion.div>
@@ -512,7 +512,7 @@ export const SkeletonJointSelectorHUD: React.FC<SkeletonJointSelectorHUDProps> =
         className
       )}
     >
-      <div className="flex items-center gap-2 text-xs font-bold text-slate-800 dark:text-white">
+      <div className="flex items-center gap-2 text-xs font-bold text-on-surface dark:text-white">
         <UserCheck className="w-4 h-4 text-primary" />
         <span>Articulación Focal MediaPipe</span>
       </div>
@@ -531,12 +531,12 @@ export const SkeletonJointSelectorHUD: React.FC<SkeletonJointSelectorHUDProps> =
               className={cn(
                 "px-2.5 py-1.5 rounded-xl text-xs font-bold transition-all border flex items-center gap-1.5",
                 isSelected
-                  ? "bg-teal-600 text-white border-teal-600 shadow-md shadow-teal-600/30"
-                  : "bg-surface/60 dark:bg-slate-800/60 border-outline-variant/30 text-slate-500 hover:text-slate-900 dark:hover:text-white"
+                  ? "bg-primary text-on-primary border-teal-600 shadow-md shadow-teal-600/30"
+                  : "bg-surface/60 dark:bg-slate-800/60 border-outline-variant/30 text-on-surface-variant hover:text-on-surface dark:hover:text-white"
               )}
             >
               <span>{j.name}</span>
-              <span className={cn("text-2xs font-mono", isSelected ? "text-teal-200" : "text-slate-400")}>
+              <span className={cn("text-2xs font-mono", isSelected ? "text-teal-200" : "text-on-surface-variant")}>
                 {j.rom}
               </span>
             </motion.button>
@@ -594,10 +594,10 @@ export const HoldDurationTimerRing: React.FC<HoldDurationTimerRingProps> = ({
           {running ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
         </button>
         <div>
-          <span className="text-xs font-bold text-slate-800 dark:text-white block">
+          <span className="text-xs font-bold text-on-surface dark:text-white block">
             Sostenimiento Isométrico
           </span>
-          <span className="text-2xs text-slate-500 dark:text-slate-400">
+          <span className="text-2xs text-on-surface-variant">
             {running ? 'Contando contracción fija...' : 'Toca para iniciar cuenta'}
           </span>
         </div>
@@ -633,10 +633,10 @@ export const SessionQualityScoreTile: React.FC<SessionQualityScoreTileProps> = (
           <Sparkles className="w-4 h-4 animate-spin" style={{ animationDuration: '10s' }} />
         </div>
         <div>
-          <span className="text-xs font-bold text-slate-800 dark:text-white block">
+          <span className="text-xs font-bold text-on-surface dark:text-white block">
             Índice de Calidad Biomecánica
           </span>
-          <span className="text-2xs text-slate-500 dark:text-slate-400">
+          <span className="text-2xs text-on-surface-variant">
             Simetría 94% • Cadencia 92% • Rango 90%
           </span>
         </div>

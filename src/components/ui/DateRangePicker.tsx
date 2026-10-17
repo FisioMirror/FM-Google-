@@ -801,7 +801,7 @@ export function WeekViewRangeCalendar() {
   return (
     <div className="flex flex-col items-center gap-6 w-full max-w-sm">
       <div className="w-full flex items-center justify-between">
-        <span className="text-xs font-bold text-slate-700 dark:text-slate-300">Semanas a visualizar:</span>
+        <span className="text-xs font-bold text-on-surface">Semanas a visualizar:</span>
         <Select
           className="w-40"
           value={String(weeks)}
@@ -966,7 +966,7 @@ export function DateRangePickerDemo() {
 
       {/* Subsección interactiva demostrando WeekViewRangeCalendar y BasicRangeCalendar */}
       <div className="pt-4 border-t border-slate-200/80 dark:border-slate-800/80">
-        <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">
+        <p className="text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-3">
           Vista Multisemana (visibleDuration dinámico):
         </p>
         <WeekViewRangeCalendar />

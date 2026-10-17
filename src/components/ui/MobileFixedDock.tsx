@@ -114,7 +114,7 @@ export function MobileFixedDock({
                   'size-6 flex items-center justify-center transition-transform group-active:scale-90',
                   active
                     ? 'text-teal-600 dark:text-teal-400'
-                    : 'text-slate-500 dark:text-slate-400'
+                    : 'text-on-surface-variant'
                 )}
               >
                 <IconComponent className={cn('size-5', active && 'stroke-[2.5]')} />
@@ -124,7 +124,7 @@ export function MobileFixedDock({
                   'text-2xs font-bold tracking-tight leading-none',
                   active
                     ? 'text-teal-700 dark:text-teal-300 font-extrabold'
-                    : 'text-slate-500 dark:text-slate-400'
+                    : 'text-on-surface-variant'
                 )}
               >
                 {tab.label}
@@ -173,7 +173,7 @@ export function MobileFixedDock({
                   'size-6 flex items-center justify-center transition-transform group-active:scale-90',
                   active
                     ? 'text-teal-600 dark:text-teal-400'
-                    : 'text-slate-500 dark:text-slate-400'
+                    : 'text-on-surface-variant'
                 )}
               >
                 <IconComponent className={cn('size-5', active && 'stroke-[2.5]')} />
@@ -183,7 +183,7 @@ export function MobileFixedDock({
                   'text-2xs font-bold tracking-tight leading-none',
                   active
                     ? 'text-teal-700 dark:text-teal-300 font-extrabold'
-                    : 'text-slate-500 dark:text-slate-400'
+                    : 'text-on-surface-variant'
                 )}
               >
                 {tab.label}

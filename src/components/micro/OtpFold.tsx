@@ -40,7 +40,7 @@ const OtpFold = () => {
           <Check size={28} />
         </div>
       </div>
-      <p className="text-sm text-slate-500">Escribe el código de 4 dígitos</p>
+      <p className="text-sm text-on-surface-variant">Escribe el código de 4 dígitos</p>
     </div>
   );
 };

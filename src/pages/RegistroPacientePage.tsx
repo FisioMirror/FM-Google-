@@ -200,7 +200,7 @@ export function RegistroPacientePage() {
           <h1 className="fm-title text-on-surface">
             Activar Cuenta de Paciente
           </h1>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+          <p className="text-xs text-on-surface-variant mt-1">
             Ingresa el código proporcionado por tu fisioterapeuta para vincular tu expediente
           </p>
         </div>
@@ -208,7 +208,7 @@ export function RegistroPacientePage() {
         {/* Step 1: Token Input & Verification */}
         <div className="mb-6 p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80">
           <div className="flex items-center justify-between mb-2">
-            <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+            <label className="block text-xs font-bold text-on-surface uppercase tracking-wider">
               Código de Acceso (Token de 6 dígitos)
             </label>
             {tokenValidated && (
@@ -299,7 +299,7 @@ export function RegistroPacientePage() {
         {/* Step 2: Patient Registration Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+            <label className="block text-xs font-bold text-on-surface mb-1">
               Nombre Completo
             </label>
             <input
@@ -313,11 +313,11 @@ export function RegistroPacientePage() {
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+            <label className="block text-xs font-bold text-on-surface mb-1">
               Correo Electrónico (para tu cuenta)
             </label>
             <div className="relative">
-              <Mail size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+              <Mail size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant" />
               <input
                 type="email"
                 required
@@ -331,11 +331,11 @@ export function RegistroPacientePage() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+              <label className="block text-xs font-bold text-on-surface mb-1">
                 Contraseña
               </label>
               <div className="relative">
-                <Lock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                <Lock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant" />
                 <input
                   type={showPassword ? 'text' : 'password'}
                   required
@@ -347,7 +347,7 @@ export function RegistroPacientePage() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1"
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-on-surface-variant p-1"
                 >
                   {showPassword ? <EyeOff size={14} /> : <Eye size={14} />}
                 </button>
@@ -355,11 +355,11 @@ export function RegistroPacientePage() {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+              <label className="block text-xs font-bold text-on-surface mb-1">
                 Confirmar Contraseña
               </label>
               <div className="relative">
-                <Lock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                <Lock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant" />
                 <input
                   type={showPassword ? 'text' : 'password'}
                   required
@@ -395,7 +395,7 @@ export function RegistroPacientePage() {
           </Button>
         </form>
 
-        <div className="mt-5 text-center text-xs text-slate-500">
+        <div className="mt-5 text-center text-xs text-on-surface-variant">
           ¿Ya tienes cuenta activa?{' '}
           <Link to="/login" className="text-teal-600 dark:text-teal-400 font-bold hover:underline">
             Iniciar Sesión

@@ -278,14 +278,14 @@ export function PatientLayout({ children }: PatientLayoutProps) {
       <div className={cn(collapsed ? 'flex flex-col items-center gap-2' : 'flex items-center justify-between px-1')}>
         <button
           onClick={toggleTheme}
-          className="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-teal-50 dark:hover:bg-slate-800 hover:text-teal-600 dark:hover:text-teal-400 transition-colors"
+          className="p-2 rounded-xl text-on-surface-variant hover:bg-teal-50 dark:hover:bg-slate-800 hover:text-teal-600 dark:hover:text-teal-400 transition-colors"
           aria-label="Cambiar tema"
         >
           {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
         </button>
         <button
           onClick={() => { onNavAway?.(); setShowNotifications((v) => !v); }}
-          className="relative p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-teal-50 dark:hover:bg-slate-800 hover:text-teal-600 dark:hover:text-teal-400 transition-colors"
+          className="relative p-2 rounded-xl text-on-surface-variant hover:bg-teal-50 dark:hover:bg-slate-800 hover:text-teal-600 dark:hover:text-teal-400 transition-colors"
           aria-label={`Notificaciones, ${unreadCount} sin leer`}
         >
           <Bell size={18} />
@@ -297,7 +297,7 @@ export function PatientLayout({ children }: PatientLayoutProps) {
         </button>
         <button
           onClick={() => { onNavAway?.(); setShowLogout(true); }}
-          className="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-red-50 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 transition-colors"
+          className="p-2 rounded-xl text-on-surface-variant hover:bg-red-50 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 transition-colors"
           aria-label="Cerrar sesión"
         >
           <LogOut size={18} />
@@ -346,7 +346,7 @@ export function PatientLayout({ children }: PatientLayoutProps) {
                   collapsed ? 'justify-center p-2.5 my-1' : 'gap-3 px-3.5 py-2.5 my-0.5',
                   isActive
                     ? 'text-teal-700 dark:text-teal-300 font-bold'
-                    : 'text-slate-600 dark:text-slate-300 font-medium hover:text-slate-900 dark:hover:text-white'
+                    : 'text-on-surface-variant font-medium hover:text-on-surface dark:hover:text-white'
                 )
               }
               title={collapsed ? item.label : undefined}
@@ -365,7 +365,7 @@ export function PatientLayout({ children }: PatientLayoutProps) {
                       'w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-transform duration-200 group-hover:scale-105',
                       isActive
                         ? 'bg-teal-500 text-white shadow-sm shadow-teal-500/25'
-                        : 'bg-slate-100 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 group-hover:bg-teal-50 dark:group-hover:bg-slate-700/80 group-hover:text-teal-600 dark:group-hover:text-teal-400'
+                        : 'bg-slate-100 dark:bg-slate-800/80 text-on-surface-variant group-hover:bg-teal-50 dark:group-hover:bg-slate-700/80 group-hover:text-teal-600 dark:group-hover:text-teal-400'
                     )}
                   >
                     <IconComp size={18} />
@@ -383,7 +383,7 @@ export function PatientLayout({ children }: PatientLayoutProps) {
 
   const desktopSidebar = (
     <aside
-      className="fixed left-0 top-0 h-[100dvh] z-40 flex flex-col bg-gradient-to-b from-white/90 via-teal-50/30 to-surface/90 dark:from-slate-900 dark:via-slate-900/95 dark:to-slate-950 border-r border-teal-200/50 dark:border-slate-800 text-slate-900 dark:text-slate-200 transition-all duration-300 overflow-hidden backdrop-blur-xl"
+      className="fixed left-0 top-0 h-[100dvh] z-40 flex flex-col bg-gradient-to-b from-white/90 via-teal-50/30 to-surface/90 dark:from-slate-900 dark:via-slate-900/95 dark:to-slate-950 border-r border-teal-200/50 dark:border-slate-800 text-on-surface dark:text-slate-200 transition-all duration-300 overflow-hidden backdrop-blur-xl"
       style={{ width: `${sidebarWidth}px` }}
     >
       {sidebarContent(sidebarCollapsed, { showToggle: true })}
@@ -433,7 +433,7 @@ export function PatientLayout({ children }: PatientLayoutProps) {
                 </div>
                 <button
                   onClick={() => setSidebarOpen(false)}
-                  className="p-2 rounded-xl text-slate-500 hover:text-slate-800 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                  className="p-2 rounded-xl text-on-surface-variant hover:text-on-surface dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
                   aria-label="Cerrar menú"
                 >
                   <X size={20} />
@@ -452,11 +452,11 @@ export function PatientLayout({ children }: PatientLayoutProps) {
                           'group relative flex items-center gap-3 px-3.5 py-2.5 my-0.5 rounded-xl transition-all duration-200 select-none',
                           isActive
                             ? 'text-teal-700 dark:text-teal-300 font-bold bg-teal-500/10'
-                            : 'text-slate-600 dark:text-slate-300 font-medium hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/60 dark:hover:bg-slate-800/60'
+                            : 'text-on-surface-variant font-medium hover:text-on-surface dark:hover:text-white hover:bg-slate-100/60 dark:hover:bg-slate-800/60'
                         )
                       }
                     >
-                      <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400">
+                      <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 bg-slate-100 dark:bg-slate-800 text-on-surface-variant">
                         <IconComp size={18} />
                       </div>
                       <span className="text-sm truncate flex-1">{item.label}</span>

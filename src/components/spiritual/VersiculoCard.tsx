@@ -232,7 +232,7 @@ export function VersiculoCard({
                 className={cn(
                   'px-3 py-1 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5',
                   isSelected
-                    ? 'bg-teal-600 text-white shadow-xs'
+                    ? 'bg-primary text-on-primary shadow-xs'
                     : 'bg-surface-container-low/80 text-on-surface-variant hover:bg-surface-container hover:text-on-surface'
                 )}
               >

@@ -1092,7 +1092,7 @@ export function OCRScannerPage() {
                 </div>
 
                 <div className="flex flex-wrap justify-center gap-4 mb-10">
-                  <button onClick={() => setShowEmailModal(true)} className="bg-teal-600 text-white font-bold hover:bg-teal-700 shadow-md shadow-teal-600/20 rounded-full px-7 py-3 flex items-center gap-2 transition-all">
+                  <button onClick={() => setShowEmailModal(true)} className="bg-primary text-on-primary font-bold hover:bg-teal-700 shadow-md shadow-teal-600/20 rounded-full px-7 py-3 flex items-center gap-2 transition-all">
                     <Icon name="send" size={20} /> Enviar Token (Email / SMS / WhatsApp)
                   </button>
                   <button onClick={() => { try { window.print(); } catch { toast.error('No se pudo imprimir'); } }} className="bg-secondary-container/50 text-secondary font-semibold hover:bg-secondary-container border border-white/20 rounded-full px-6 py-3 flex items-center gap-2">

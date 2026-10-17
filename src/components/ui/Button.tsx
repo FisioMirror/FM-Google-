@@ -20,7 +20,7 @@ export const buttonVariants = cva(
         glow: "relative overflow-hidden bg-primary text-white shadow-md shadow-primary/20 hover:shadow-card hover:shadow-primary/35 hover:-translate-y-0.5",
         glass: "bg-surface/70 dark:bg-white/10 backdrop-blur-xl border border-outline-variant/30 dark:border-white/20 text-on-surface hover:bg-surface/90 dark:hover:bg-white/20 shadow-sm",
         gradient: "bg-gradient-to-r from-teal-700 via-teal-600 to-secondary text-white hover:from-teal-600 hover:to-secondary/90 shadow-md shadow-teal-900/15",
-        kinetic: "bg-kinetic text-slate-950 font-bold hover:bg-kinetic-light shadow-md shadow-kinetic/20 hover:shadow-kinetic/40",
+        kinetic: "bg-kinetic text-on-surface font-bold hover:bg-kinetic-light shadow-md shadow-kinetic/20 hover:shadow-kinetic/40",
       },
       size: {
         default: "h-10 py-2 px-4",

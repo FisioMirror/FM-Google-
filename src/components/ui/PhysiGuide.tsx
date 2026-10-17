@@ -378,7 +378,7 @@ export function PhysiGuide({
             animate={{ scale: open ? 0.95 : 1 }}
           />
           {!open && (
-            <span className="absolute -top-1 -right-1 bg-kinetic text-slate-950 text-2xs font-black px-1.5 py-0.5 rounded-full shadow-md z-10">
+            <span className="absolute -top-1 -right-1 bg-kinetic text-on-surface text-2xs font-black px-1.5 py-0.5 rounded-full shadow-md z-10">
               IA
             </span>
           )}
@@ -493,7 +493,7 @@ export function PhysiGuide({
                       <div
                         className={`size-7 rounded-xl flex items-center justify-center shrink-0 mt-0.5 ${
                           msg.role === 'user'
-                            ? 'bg-teal-600 text-white shadow-xs'
+                            ? 'bg-primary text-on-primary shadow-xs'
                             : 'bg-teal-500/15 text-teal-600 dark:text-teal-400 border border-teal-500/25'
                         }`}
                       >
@@ -508,7 +508,7 @@ export function PhysiGuide({
                       <div
                         className={`p-3 rounded-2xl text-xs sm:text-sm leading-relaxed shadow-xs transition-all ${
                           msg.role === 'user'
-                            ? 'bg-teal-600 text-white rounded-tr-none font-medium'
+                            ? 'bg-primary text-on-primary rounded-tr-none font-medium'
                             : 'bg-surface dark:bg-surface-container-low border border-outline-variant/25 dark:border-white/10 text-on-surface rounded-tl-none'
                         }`}
                       >
@@ -623,7 +623,7 @@ export function PhysiGuide({
                 <button
                   onClick={handleSend}
                   disabled={!input.trim() || loading}
-                  className="size-10 rounded-xl bg-teal-600 text-white flex items-center justify-center shrink-0 hover:bg-teal-500 disabled:opacity-40 disabled:cursor-not-allowed transition-all active:scale-95 shadow-md shadow-teal-900/15 cursor-pointer"
+                  className="size-10 rounded-xl bg-primary text-on-primary flex items-center justify-center shrink-0 hover:bg-teal-500 disabled:opacity-40 disabled:cursor-not-allowed transition-all active:scale-95 shadow-md shadow-teal-900/15 cursor-pointer"
                   aria-label="Enviar mensaje"
                 >
                   <Send size={16} />

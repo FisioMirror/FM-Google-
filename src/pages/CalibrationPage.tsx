@@ -261,7 +261,7 @@ export function CalibrationPage() {
             initial={{ scale: 1.4, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.8, opacity: 0 }}
-            className="w-11 h-11 sm:w-14 sm:h-14 rounded-full bg-teal-500/90 text-slate-950 font-black text-xl sm:text-2xl flex items-center justify-center shadow-card shadow-teal-500/30 border-2 border-white/40"
+            className="w-11 h-11 sm:w-14 sm:h-14 rounded-full bg-teal-500/90 text-on-surface font-black text-xl sm:text-2xl flex items-center justify-center shadow-card shadow-teal-500/30 border-2 border-white/40"
           >
             {countdown}
           </motion.div>

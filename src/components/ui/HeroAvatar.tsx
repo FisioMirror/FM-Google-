@@ -99,7 +99,7 @@ export function AvatarDemo() {
         </Avatar>
         <div>
           <p className="text-xs font-bold text-on-surface">Carlos Romero</p>
-          <p className="text-xs text-slate-400">Paciente Activo • Rodilla</p>
+          <p className="text-xs text-on-surface-variant">Paciente Activo • Rodilla</p>
         </div>
       </div>
 
@@ -109,7 +109,7 @@ export function AvatarDemo() {
         </Avatar>
         <div>
           <p className="text-xs font-bold text-on-surface">Jorge Ramírez</p>
-          <p className="text-xs text-slate-400">Token Pendiente (Sin foto)</p>
+          <p className="text-xs text-on-surface-variant">Token Pendiente (Sin foto)</p>
         </div>
       </div>
     </div>

@@ -463,7 +463,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
                           .join('\n');
                         try { navigator.clipboard?.writeText(text); toast.success('Texto copiado al portapapeles'); } catch { toast.error('No se pudo copiar'); }
                       }}
-                      className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-teal-600 text-white font-bold text-xs hover:bg-teal-700 transition-colors min-h-[36px]"
+                      className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-primary text-on-primary font-bold text-xs hover:bg-teal-700 transition-colors min-h-[36px]"
                     >
                       <Icon name="content_copy" size={16} /> Copiar texto
                     </button>
@@ -999,7 +999,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
                     setUpdateLoading(false);
                   }
                 }}
-                className="w-full py-3 rounded-xl bg-teal-600 text-white font-bold hover:bg-teal-700 transition-colors flex items-center justify-center gap-2 min-h-[44px]"
+                className="w-full py-3 rounded-xl bg-primary text-on-primary font-bold hover:bg-teal-700 transition-colors flex items-center justify-center gap-2 min-h-[44px]"
               >
                 <Icon name="auto_awesome" size={20} /> Analizar cambios sugeridos
               </button>
@@ -1041,7 +1041,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
                       }
                     }}
                     disabled={updateLoading}
-                    className="premium-btn flex-1 py-3 rounded-xl bg-teal-600 text-white font-bold hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50 min-h-[44px]"
+                    className="premium-btn flex-1 py-3 rounded-xl bg-primary text-on-primary font-bold hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50 min-h-[44px]"
                   >
                     Confirmar actualizacion
                   </button>

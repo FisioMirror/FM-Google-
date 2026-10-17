@@ -65,7 +65,7 @@ export function InstallModal() {
               <div className="relative px-6 pt-6 pb-4 text-center">
                 <button
                   onClick={closeModal}
-                  className="absolute top-4 right-4 p-1.5 rounded-xl text-primary-400 dark:text-slate-400 hover:bg-white/20 transition-colors"
+                  className="absolute top-4 right-4 p-1.5 rounded-xl text-primary-400 dark:text-on-surface-variant hover:bg-white/20 transition-colors"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -82,7 +82,7 @@ export function InstallModal() {
                 <h2 className="text-xl font-bold text-primary-800 dark:text-slate-100">
                   Instalá FisioMirror
                 </h2>
-                <p className="mt-1 text-sm text-primary-500 dark:text-slate-400 font-medium">
+                <p className="mt-1 text-sm text-primary-500 dark:text-on-surface-variant font-medium">
                   Tele-rehabilitación inteligente
                 </p>
               </div>
@@ -95,11 +95,11 @@ export function InstallModal() {
                 </p>
 
                 <div className="mt-4 flex flex-col gap-2">
-                  <div className="flex items-center gap-2 text-xs text-primary-500 dark:text-slate-400">
+                  <div className="flex items-center gap-2 text-xs text-primary-500 dark:text-on-surface-variant">
                     <Smartphone className="w-4 h-4 text-accent flex-shrink-0" />
                     Acceso directo desde tu pantalla de inicio
                   </div>
-                  <div className="flex items-center gap-2 text-xs text-primary-500 dark:text-slate-400">
+                  <div className="flex items-center gap-2 text-xs text-primary-500 dark:text-on-surface-variant">
                     <Download className="w-4 h-4 text-accent flex-shrink-0" />
                     Disponible sin conexión a internet
                   </div>
@@ -117,7 +117,7 @@ export function InstallModal() {
                 </button>
                 <button
                   onClick={closeModal}
-                  className="w-full py-3 px-4 rounded-2xl text-primary-500 dark:text-slate-400 font-medium text-sm hover:bg-white/20 active:scale-[0.98] transition-all"
+                  className="w-full py-3 px-4 rounded-2xl text-primary-500 dark:text-on-surface-variant font-medium text-sm hover:bg-white/20 active:scale-[0.98] transition-all"
                 >
                   Ahora no
                 </button>

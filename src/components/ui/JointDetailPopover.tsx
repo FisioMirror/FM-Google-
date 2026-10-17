@@ -74,14 +74,14 @@ export const JointDetailPopover: React.FC<JointDetailPopoverProps> = ({
                   <h4 className="text-xs font-bold text-on-surface dark:text-white">
                     {metrics.jointName}
                   </h4>
-                  <span className="text-2xs text-slate-400">Telemetría Asistida por MediaPipe</span>
+                  <span className="text-2xs text-on-surface-variant">Telemetría Asistida por MediaPipe</span>
                 </div>
               </div>
 
               <button
                 type="button"
                 onClick={() => setIsOpen(false)}
-                className="p-1 rounded-lg hover:bg-black/5 dark:hover:bg-white/10 text-slate-400 hover:text-slate-200"
+                className="p-1 rounded-lg hover:bg-black/5 dark:hover:bg-white/10 text-on-surface-variant hover:text-slate-200"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -90,7 +90,7 @@ export const JointDetailPopover: React.FC<JointDetailPopoverProps> = ({
             {/* Metrics Grid */}
             <div className="grid grid-cols-2 gap-3 py-3">
               <div className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800/60 border border-black/5 dark:border-white/5">
-                <span className="text-2xs uppercase font-bold text-slate-400 block mb-0.5">
+                <span className="text-2xs uppercase font-bold text-on-surface-variant block mb-0.5">
                   ROM Actual
                 </span>
                 <span className="text-xl font-bold font-mono text-on-surface dark:text-white tabular-nums">
@@ -102,21 +102,21 @@ export const JointDetailPopover: React.FC<JointDetailPopoverProps> = ({
               </div>
 
               <div className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800/60 border border-black/5 dark:border-white/5">
-                <span className="text-2xs uppercase font-bold text-slate-400 block mb-0.5">
+                <span className="text-2xs uppercase font-bold text-on-surface-variant block mb-0.5">
                   Velocidad Angular
                 </span>
                 <span className="text-xl font-bold font-mono text-on-surface dark:text-white tabular-nums">
                   {metrics.angularVelocity}
-                  <span className="text-xs text-slate-400 ml-0.5 font-normal">°/s</span>
+                  <span className="text-xs text-on-surface-variant ml-0.5 font-normal">°/s</span>
                 </span>
-                <span className="text-2xs text-slate-400 block">Control motor suave</span>
+                <span className="text-2xs text-on-surface-variant block">Control motor suave</span>
               </div>
             </div>
 
             {/* Asymmetry Bar */}
             <div className="p-3 rounded-xl bg-slate-100/70 dark:bg-slate-800/40 border border-black/5 dark:border-white/5">
               <div className="flex items-center justify-between text-xs mb-1">
-                <span className="text-slate-500 dark:text-slate-400">Asimetría Contralateral</span>
+                <span className="text-on-surface-variant">Asimetría Contralateral</span>
                 <span className="font-mono font-bold text-on-surface dark:text-white">
                   {metrics.asymmetryPercentage}%
                 </span>
@@ -130,7 +130,7 @@ export const JointDetailPopover: React.FC<JointDetailPopoverProps> = ({
                   style={{ width: `${Math.min(100, metrics.asymmetryPercentage * 3)}%` }}
                 />
               </div>
-              <span className="text-2xs text-slate-400 mt-1 block">
+              <span className="text-2xs text-on-surface-variant mt-1 block">
                 {metrics.asymmetryPercentage <= 10 ? 'Balance biomecánico normal' : 'Requiere ajuste unilateral'}
               </span>
             </div>

@@ -708,7 +708,7 @@ export function UIShowcasePage() {
               <h1 className="fm-title mt-1 flex items-center gap-2">
                 Galería de Componentes Evolved
               </h1>
-              <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
+              <p className="text-xs sm:text-sm text-on-surface-variant">
                 Inventario de componentes de FisioMirror con integración completa de Reaviz, HeroUI, Magic UI y Aceternity.
               </p>
             </div>
@@ -731,31 +731,31 @@ export function UIShowcasePage() {
         {/* System KPIs Bar */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 p-4 rounded-2xl bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 backdrop-blur-md shadow-xs">
           <div>
-            <span className="text-2xs uppercase font-bold tracking-wider text-slate-400">Componentes Usados</span>
+            <span className="text-2xs uppercase font-bold tracking-wider text-on-surface-variant">Componentes Usados</span>
             <div className="text-xl sm:text-2xl font-black text-on-surface tabular-nums flex items-baseline gap-1">
               <span>72</span>
-              <span className="text-2xs font-medium text-slate-400">en FisioMirror</span>
+              <span className="text-2xs font-medium text-on-surface-variant">en FisioMirror</span>
             </div>
           </div>
           <div>
-            <span className="text-2xs uppercase font-bold tracking-wider text-slate-400">Nuevos Solicitados</span>
+            <span className="text-2xs uppercase font-bold tracking-wider text-on-surface-variant">Nuevos Solicitados</span>
             <div className="text-xl sm:text-2xl font-black text-teal-600 dark:text-teal-400 tabular-nums flex items-baseline gap-1">
               <span>12</span>
               <span className="text-2xs font-medium text-teal-500/80">integrados 100%</span>
             </div>
           </div>
           <div>
-            <span className="text-2xs uppercase font-bold tracking-wider text-slate-400">Gráficos Vectoriales</span>
+            <span className="text-2xs uppercase font-bold tracking-wider text-on-surface-variant">Gráficos Vectoriales</span>
             <div className="text-xl sm:text-2xl font-black text-lime-600 dark:text-lime-400 tabular-nums flex items-baseline gap-1">
               <span>Reaviz</span>
-              <span className="text-2xs font-medium text-slate-400">Áreas Suaves</span>
+              <span className="text-2xs font-medium text-on-surface-variant">Áreas Suaves</span>
             </div>
           </div>
           <div>
-            <span className="text-2xs uppercase font-bold tracking-wider text-slate-400">Micro-interacción</span>
+            <span className="text-2xs uppercase font-bold tracking-wider text-on-surface-variant">Micro-interacción</span>
             <div className="text-xl sm:text-2xl font-black text-blue-600 dark:text-blue-400 tabular-nums flex items-baseline gap-1">
               <span>&lt; 300ms</span>
-              <span className="text-2xs font-medium text-slate-400">Regla Oro</span>
+              <span className="text-2xs font-medium text-on-surface-variant">Regla Oro</span>
             </div>
           </div>
         </div>
@@ -768,8 +768,8 @@ export function UIShowcasePage() {
               onClick={() => setActiveTab(tab.id)}
               className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all ${
                 activeTab === tab.id
-                  ? 'bg-teal-600 text-white shadow-sm shadow-teal-600/30'
-                  : 'bg-white/60 dark:bg-slate-800/60 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100 border border-slate-200/60 dark:border-slate-700/60'
+                  ? 'bg-primary text-on-primary shadow-sm shadow-teal-600/30'
+                  : 'bg-white/60 dark:bg-slate-800/60 text-on-surface-variant hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-on-surface dark:hover:text-slate-100 border border-slate-200/60 dark:border-slate-700/60'
               }`}
             >
               {tab.icon}
@@ -799,7 +799,7 @@ export function UIShowcasePage() {
                     Macro Suite FisioMirror (50 Componentes)
                   </h2>
                 </div>
-                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 max-w-2xl">
+                <p className="text-xs sm:text-sm text-on-surface-variant max-w-2xl">
                   Catálogo masivo de 50 componentes modulares creados con HeroUI, Magic UI y DaisyUI para dashboards clínicos, telemetría MediaPipe, microinteracciones táctiles, gamificación y docks AR.
                 </p>
               </div>
@@ -822,7 +822,7 @@ export function UIShowcasePage() {
                       "px-3 py-1.5 rounded-xl text-xs font-bold transition-all",
                       megaSuiteCategory === cat.id
                         ? "bg-cyan-600 text-white shadow-sm"
-                        : "bg-surface-container-low text-slate-500 hover:text-slate-900 dark:hover:text-white"
+                        : "bg-surface-container-low text-on-surface-variant hover:text-on-surface dark:hover:text-white"
                     )}
                   >
                     {cat.label}
@@ -836,7 +836,7 @@ export function UIShowcasePage() {
               <div className="space-y-4">
                 <div className="flex items-center gap-2 pb-2 border-b border-cyan-500/15">
                   <span className="size-2 rounded-full bg-cyan-500" />
-                  <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                  <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
                     Categoría 1: Tarjetas de Actividad y Diagnóstico Clínico (10 Componentes)
                   </h3>
                 </div>
@@ -860,7 +860,7 @@ export function UIShowcasePage() {
               <div className="space-y-4 pt-4 border-t border-cyan-500/15">
                 <div className="flex items-center gap-2 pb-2 border-b border-cyan-500/15">
                   <span className="size-2 rounded-full bg-teal-500" />
-                  <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                  <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
                     Categoría 2: Paneles y Métricas en Tiempo Real (MediaPipe / IA) (10 Componentes)
                   </h3>
                 </div>
@@ -884,7 +884,7 @@ export function UIShowcasePage() {
               <div className="space-y-4 pt-4 border-t border-cyan-500/15">
                 <div className="flex items-center gap-2 pb-2 border-b border-cyan-500/15">
                   <span className="size-2 rounded-full bg-indigo-500" />
-                  <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                  <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
                     Categoría 3: Microinteracciones y Controles Flotantes Contextuales (10 Componentes)
                   </h3>
                 </div>
@@ -908,7 +908,7 @@ export function UIShowcasePage() {
               <div className="space-y-4 pt-4 border-t border-cyan-500/15">
                 <div className="flex items-center gap-2 pb-2 border-b border-cyan-500/15">
                   <span className="size-2 rounded-full bg-amber-500" />
-                  <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                  <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
                     Categoría 4: Gamificación, Rachas y Motivación para Pacientes (10 Componentes)
                   </h3>
                 </div>
@@ -936,7 +936,7 @@ export function UIShowcasePage() {
               <div className="space-y-4 pt-4 border-t border-cyan-500/15">
                 <div className="flex items-center gap-2 pb-2 border-b border-cyan-500/15">
                   <span className="size-2 rounded-full bg-emerald-500" />
-                  <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                  <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
                     Categoría 5: Docks, Barras de Herramientas y Navegación Ergonómica (10 Componentes)
                   </h3>
                 </div>
@@ -985,7 +985,7 @@ export function UIShowcasePage() {
                     Suite Estelar de Innovación FisioMirror
                   </h2>
                 </div>
-                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 max-w-2xl">
+                <p className="text-xs sm:text-sm text-on-surface-variant max-w-2xl">
                   8 componentes de vanguardia para rehabilitación física con IA: arcos biomecánicos continuos, dock flotante AR no intrusivo, barras de fatiga muscular, gamificación 3D y herramientas clínicas para fisioterapeutas.
                 </p>
               </div>
@@ -1002,14 +1002,14 @@ export function UIShowcasePage() {
               {/* 1. BiomechanicalAngleGauge */}
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-2">
+                  <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface flex items-center gap-2">
                     <span className="size-2 rounded-full bg-teal-500" />
                     1. Medidor Biomecánico Continuo (BiomechanicalAngleGauge)
                   </h3>
                 </div>
 
                 <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
-                  <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                  <p className="text-xs text-on-surface-variant leading-relaxed">
                     Arco SVG graduado con semáforo biomecánico continuo (verde para rango seguro, amarillo para compensación moderada, rojo para alerta de dolor).
                   </p>
 
@@ -1025,13 +1025,13 @@ export function UIShowcasePage() {
 
                     {/* Interactive Simulator Controls */}
                     <div className="flex-1 w-full space-y-3 p-4 rounded-2xl bg-surface-container-low/60 dark:bg-slate-900/60 border border-outline-variant/20">
-                      <span className="text-xs font-bold uppercase tracking-wider text-slate-400 block">
+                      <span className="text-xs font-bold uppercase tracking-wider text-on-surface-variant block">
                         Simulador de Ángulo en Vivo:
                       </span>
                       
                       <div className="space-y-1">
                         <div className="flex justify-between text-xs font-mono">
-                          <span className="text-slate-500">Ángulo Actual:</span>
+                          <span className="text-on-surface-variant">Ángulo Actual:</span>
                           <span className="font-bold text-teal-600 dark:text-teal-400">{gaugeAngle}°</span>
                         </div>
                         <input
@@ -1046,7 +1046,7 @@ export function UIShowcasePage() {
 
                       <div className="space-y-1">
                         <div className="flex justify-between text-xs font-mono">
-                          <span className="text-slate-500">Meta Prescrita:</span>
+                          <span className="text-on-surface-variant">Meta Prescrita:</span>
                           <span className="font-bold text-primary">{gaugeTarget}°</span>
                         </div>
                         <input
@@ -1069,7 +1069,7 @@ export function UIShowcasePage() {
                               "px-2 py-1 rounded-lg text-2xs font-semibold border transition-all",
                               gaugeJoint === j
                                 ? "bg-primary text-white border-primary"
-                                : "bg-white/60 dark:bg-slate-800 text-slate-500 border-slate-200 dark:border-slate-700"
+                                : "bg-white/60 dark:bg-slate-800 text-on-surface-variant border-slate-200 dark:border-slate-700"
                             )}
                           >
                             {j}
@@ -1084,14 +1084,14 @@ export function UIShowcasePage() {
               {/* 2. RepetitionCounterSpring */}
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-2">
+                  <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface flex items-center gap-2">
                     <span className="size-2 rounded-full bg-teal-500" />
                     2. Contador con Físicas de Resorte (RepetitionCounterSpring)
                   </h3>
                 </div>
 
                 <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
-                  <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                  <p className="text-xs text-on-surface-variant leading-relaxed">
                     Contador cinético de alta visibilidad para modo espejo AR con física de rebote elástica en cada repetición válida detectada por IA y control de cadencia.
                   </p>
 
@@ -1110,12 +1110,12 @@ export function UIShowcasePage() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-4 border-t border-teal-500/20">
               {/* 3. ARFloatingDock */}
               <div className="space-y-3">
-                <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-2">
+                <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface flex items-center gap-2">
                   <span className="size-2 rounded-full bg-teal-500" />
                   3. Dock Flotante Contextual AR (ARFloatingDock)
                 </h3>
                 <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4 flex flex-col items-center justify-center min-h-[190px]">
-                  <p className="text-xs text-slate-500 dark:text-slate-400 text-center max-w-md">
+                  <p className="text-xs text-on-surface-variant text-center max-w-md">
                     Diseñado para la parte inferior del modo espejo AR. Magnifica íconos en hover y permite alternar articulación y audio sin obstruir la vista clínica.
                   </p>
                   
@@ -1128,12 +1128,12 @@ export function UIShowcasePage() {
 
               {/* 4. TherapistQuickToolbar */}
               <div className="space-y-3">
-                <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-2">
+                <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface flex items-center gap-2">
                   <span className="size-2 rounded-full bg-teal-500" />
                   4. Barra Rápida de Terapeuta (TherapistQuickToolbar)
                 </h3>
                 <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4 flex flex-col items-center justify-center min-h-[190px]">
-                  <p className="text-xs text-slate-500 dark:text-slate-400 text-center max-w-md">
+                  <p className="text-xs text-on-surface-variant text-center max-w-md">
                     Panel colapsable con microinteracción elástica para pausar la sesión, tomar capturas de postura, dictar notas de voz y calibrar metas ROM.
                   </p>
 
@@ -1146,7 +1146,7 @@ export function UIShowcasePage() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-4 border-t border-teal-500/20">
               {/* 5. RehabEnergyBar */}
               <div className="space-y-3">
-                <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-2">
+                <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface flex items-center gap-2">
                   <span className="size-2 rounded-full bg-teal-500" />
                   5. Barra de Fatiga y Energía Muscular (RehabEnergyBar)
                 </h3>
@@ -1161,7 +1161,7 @@ export function UIShowcasePage() {
                   {/* Energy simulator sliders */}
                   <div className="grid grid-cols-2 gap-3 pt-2">
                     <div>
-                      <span className="text-2xs uppercase font-bold text-slate-400 block mb-1">
+                      <span className="text-2xs uppercase font-bold text-on-surface-variant block mb-1">
                         Energía: {energyLevel}%
                       </span>
                       <input
@@ -1174,7 +1174,7 @@ export function UIShowcasePage() {
                       />
                     </div>
                     <div>
-                      <span className="text-2xs uppercase font-bold text-slate-400 block mb-1">
+                      <span className="text-2xs uppercase font-bold text-on-surface-variant block mb-1">
                         Fatiga: {fatigueLevel.toFixed(1)}/10
                       </span>
                       <input
@@ -1194,7 +1194,7 @@ export function UIShowcasePage() {
               {/* 6. CompensationAlertBanner */}
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-2">
+                  <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface flex items-center gap-2">
                     <span className="size-2 rounded-full bg-teal-500" />
                     6. Monitor de Compensaciones Posturales (CompensationAlertBanner)
                   </h3>
@@ -1206,7 +1206,7 @@ export function UIShowcasePage() {
                         onClick={() => setAlertSeverity(s)}
                         className={cn(
                           "px-2 py-0.5 rounded text-2xs font-bold capitalize transition-all",
-                          alertSeverity === s ? "bg-primary text-white" : "bg-slate-200 dark:bg-slate-800 text-slate-500"
+                          alertSeverity === s ? "bg-primary text-white" : "bg-slate-200 dark:bg-slate-800 text-on-surface-variant"
                         )}
                       >
                         {s}
@@ -1216,7 +1216,7 @@ export function UIShowcasePage() {
                 </div>
                 
                 <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                  <p className="text-xs text-on-surface-variant">
                     Alerta semántica de biofeedback en tiempo real cuando MediaPipe detecta compensaciones o trampas motoras durante el ejercicio.
                   </p>
 
@@ -1234,12 +1234,12 @@ export function UIShowcasePage() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-4 border-t border-teal-500/20">
               {/* 7. GamifiedBadgeCard */}
               <div className="space-y-3">
-                <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-2">
+                <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface flex items-center gap-2">
                   <span className="size-2 rounded-full bg-teal-500" />
                   7. Tarjeta Holográfica 3D de Logros (GamifiedBadgeCard)
                 </h3>
                 <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                  <p className="text-xs text-on-surface-variant">
                     Efecto interactivo de inclinación tridimensional (3D tilt) según la posición del cursor, con emblema holográfico y reclamo de XP para incentivar la adherencia del paciente.
                   </p>
 
@@ -1269,12 +1269,12 @@ export function UIShowcasePage() {
 
               {/* 8. JointDetailPopover */}
               <div className="space-y-3">
-                <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-2">
+                <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface flex items-center gap-2">
                   <span className="size-2 rounded-full bg-teal-500" />
                   8. Popover Flotante de Desglose Articular (JointDetailPopover)
                 </h3>
                 <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4 flex flex-col items-center justify-center min-h-[260px]">
-                  <p className="text-xs text-slate-500 dark:text-slate-400 text-center max-w-sm mb-2">
+                  <p className="text-xs text-on-surface-variant text-center max-w-sm mb-2">
                     Permite anclar sobre cualquier articulación un panel flotante que expone ROM actual, velocidad angular y asimetría respecto al lado contralateral sin bloquear la cámara.
                   </p>
 
@@ -1325,7 +1325,7 @@ export function UIShowcasePage() {
                     PWA Móvil de Alta Densidad & Físicas de Resorte (Spring Motion)
                   </h2>
                 </div>
-                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 max-w-2xl">
+                <p className="text-xs sm:text-sm text-on-surface-variant max-w-2xl">
                   Erradicación del scroll infinito mediante cajones inferiores deslizables (bottom sheets con snap points), barra inferior fija ergonómica para el pulgar, selectores compactos de 1-toque y animaciones orgánicas estilo Magic UI / 21st.dev.
                 </p>
               </div>
@@ -1349,11 +1349,11 @@ export function UIShowcasePage() {
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-sm font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200 flex items-center gap-2">
+                  <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface flex items-center gap-2">
                     <span className="size-2 rounded-full bg-emerald-500" />
                     1. Selectores Compactos de 1-Toque (Reemplazo de Formularios Largos)
                   </h3>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                  <p className="text-xs text-on-surface-variant">
                     Diseñados para sustituir inputs pequeños y desplegables torpes en smartphones.
                   </p>
                 </div>
@@ -1367,7 +1367,7 @@ export function UIShowcasePage() {
                     onSelectJoint={(j) => setCompactJoint(j)}
                   />
                   <div className="mt-3 pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs">
-                    <span className="text-slate-500">Seleccionada:</span>
+                    <span className="text-on-surface-variant">Seleccionada:</span>
                     <span className="font-bold text-teal-600 dark:text-teal-400 uppercase">{compactJoint}</span>
                   </div>
                 </div>
@@ -1383,7 +1383,7 @@ export function UIShowcasePage() {
                     label="Meta ROM Articular"
                   />
                   <div className="mt-3 pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs">
-                    <span className="text-slate-500">Estado Clínico:</span>
+                    <span className="text-on-surface-variant">Estado Clínico:</span>
                     <span className="font-bold text-emerald-600 dark:text-emerald-400">Rango Seguro (+12%)</span>
                   </div>
                 </div>
@@ -1391,7 +1391,7 @@ export function UIShowcasePage() {
                 {/* Dropdown Popover de Tolerancia IA */}
                 <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
                   <div className="space-y-1.5">
-                    <span className="text-2xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 block px-1">
+                    <span className="text-2xs font-bold uppercase tracking-wider text-on-surface-variant block px-1">
                       Calibración MediaPipe
                     </span>
                     <CompactToleranceDropdown
@@ -1400,7 +1400,7 @@ export function UIShowcasePage() {
                     />
                   </div>
                   <div className="mt-3 pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs">
-                    <span className="text-slate-500">Sensibilidad:</span>
+                    <span className="text-on-surface-variant">Sensibilidad:</span>
                     <span className="font-mono text-sky-600 dark:text-sky-400 font-bold">
                       {compactTolerance === 'strict' ? '±3° Exacta' : compactTolerance === 'standard' ? '±7° Estándar' : '±12° Asistida'}
                     </span>
@@ -1411,7 +1411,7 @@ export function UIShowcasePage() {
 
             {/* Demostración 2: Wrappers de Motion & Microinteracciones Táctiles */}
             <div className="space-y-4 pt-2">
-              <h3 className="text-sm font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200 flex items-center gap-2">
+              <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface flex items-center gap-2">
                 <span className="size-2 rounded-full bg-emerald-500" />
                 2. Wrappers de Motion: Blur-Fade & Tactile Spring Feedback
               </h3>
@@ -1423,12 +1423,12 @@ export function UIShowcasePage() {
                     <span className="text-2xs font-bold px-2 py-0.5 rounded-full bg-teal-500/15 text-teal-700 dark:text-teal-300 border border-teal-500/30">
                       MotionBlurFade Wrapper
                     </span>
-                    <span className="text-xs font-mono text-slate-400">ease: [0.16, 1, 0.3, 1]</span>
+                    <span className="text-xs font-mono text-on-surface-variant">ease: [0.16, 1, 0.3, 1]</span>
                   </div>
                   <h4 className="text-sm font-bold text-on-surface">
                     Revelación Progresiva con Desenfoque Dinámico
                   </h4>
-                  <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                  <p className="text-xs text-on-surface-variant leading-relaxed">
                     Las estadísticas y reportes médicos aparecen fluidamente desde un desenfoque sutil (6px blur) con física amortiguada, reduciendo la carga cognitiva en móviles.
                   </p>
                   <div className="flex items-center gap-2 pt-2">
@@ -1445,12 +1445,12 @@ export function UIShowcasePage() {
                     <span className="text-2xs font-bold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30">
                       TactileFeedback Wrapper
                     </span>
-                    <span className="text-xs font-mono text-slate-400">stiffness: 420 · damping: 18</span>
+                    <span className="text-xs font-mono text-on-surface-variant">stiffness: 420 · damping: 18</span>
                   </div>
                   <h4 className="text-sm font-bold text-on-surface">
                     Respuesta Táctil Visual Inmediata
                   </h4>
-                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                  <p className="text-xs text-on-surface-variant leading-relaxed">
                     Toca o haz clic sobre los botones de prueba para sentir la física de resorte optimizada sin retardo de interacción:
                   </p>
                   <div className="flex items-center gap-3 pt-2 flex-wrap">
@@ -1460,7 +1460,7 @@ export function UIShowcasePage() {
                         onClick={() => {
                           setCompactRom((r) => Math.min(180, r + 5));
                         }}
-                        className="px-3.5 py-2 rounded-xl bg-teal-600 text-white font-bold text-xs shadow-xs"
+                        className="px-3.5 py-2 rounded-xl bg-primary text-on-primary font-bold text-xs shadow-xs"
                       >
                         +5° ROM Rápido
                       </button>
@@ -1472,7 +1472,7 @@ export function UIShowcasePage() {
                         onClick={() => {
                           setCompactRom((r) => Math.max(30, r - 5));
                         }}
-                        className="px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-bold text-xs border border-slate-200 dark:border-slate-700"
+                        className="px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-on-surface font-bold text-xs border border-slate-200 dark:border-slate-700"
                       >
                         -5° ROM Rápido
                       </button>
@@ -1494,15 +1494,15 @@ export function UIShowcasePage() {
 
             {/* Demostración 3: Previsualización de la Barra Fija Inferior (MobileFixedDock) */}
             <div className="space-y-3 pt-2">
-              <h3 className="text-sm font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200 flex items-center gap-2">
+              <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface flex items-center gap-2">
                 <span className="size-2 rounded-full bg-emerald-500" />
                 3. Barra Fija Inferior Ergonómica (MobileFixedDock)
               </h3>
               <div className="p-5 rounded-2xl bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 space-y-3">
-                <p className="text-xs text-slate-600 dark:text-slate-400">
+                <p className="text-xs text-on-surface-variant">
                   Ubicada rígidamente en la base de la pantalla móvil (debajo de esta vista). Permite cambiar de módulo instantáneamente con el pulgar e iniciar la sesión de Espejo AR con un toque central prominente.
                 </p>
-                <div className="max-w-md mx-auto p-2 rounded-2xl bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700 flex items-center justify-around text-center text-2xs font-bold text-slate-500">
+                <div className="max-w-md mx-auto p-2 rounded-2xl bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700 flex items-center justify-around text-center text-2xs font-bold text-on-surface-variant">
                   <div className="py-1 px-3 rounded-xl bg-teal-500/20 text-teal-700 dark:text-teal-300">
                     <Home className="size-4 mx-auto mb-0.5" />
                     <span>Inicio</span>
@@ -1544,7 +1544,7 @@ export function UIShowcasePage() {
               <button
                 type="button"
                 onClick={() => setIsBottomSheetOpen(false)}
-                className="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
+                className="px-4 py-2 rounded-xl text-xs font-bold text-on-surface-variant hover:bg-slate-100 dark:hover:bg-slate-800"
               >
                 Cerrar
               </button>
@@ -1566,7 +1566,7 @@ export function UIShowcasePage() {
           <div className="space-y-4">
             {/* Controles de snap point dentro del sheet */}
             <div className="flex items-center justify-between p-2.5 rounded-xl bg-white/70 dark:bg-slate-800/70 border border-slate-200/60 dark:border-slate-700/60">
-              <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
+              <span className="text-xs font-bold text-on-surface">
                 Nivel de Altura (Snap Point):
               </span>
               <div className="flex items-center gap-1">
@@ -1578,8 +1578,8 @@ export function UIShowcasePage() {
                     className={cn(
                       'px-2.5 py-1 rounded-lg text-xs font-bold capitalize transition-all',
                       bottomSheetSnap === s
-                        ? 'bg-teal-600 text-white shadow-xs'
-                        : 'text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-700'
+                        ? 'bg-primary text-on-primary shadow-xs'
+                        : 'text-on-surface-variant hover:bg-slate-200 dark:hover:bg-slate-700'
                     )}
                   >
                     {s === 'peek' ? 'Compacto (35%)' : s === 'medium' ? 'Medio (65%)' : 'Completo (92%)'}
@@ -1638,7 +1638,7 @@ export function UIShowcasePage() {
                     Armonización Cromática Pastel Clínica (FisioMirror Design System)
                   </h2>
                 </div>
-                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 max-w-2xl">
+                <p className="text-xs sm:text-sm text-on-surface-variant max-w-2xl">
                   Reemplazo de los fondos blancos y grises fríos por una paleta médica cálida y tecnológica: celeste suave (soft sky), menta/turquesa (mint/teal) y azul lavanda sutil. Alternancia entre vidrio translúcido con gradiente y capas sólidas para tarjetas secundarias y badges.
                 </p>
               </div>
@@ -1655,7 +1655,7 @@ export function UIShowcasePage() {
                         "px-2.5 py-1 text-xs font-bold rounded-lg capitalize transition-all",
                         activePastelDemo === tone
                           ? "bg-white dark:bg-slate-900 text-sky-700 dark:text-sky-300 shadow-xs"
-                          : "text-slate-500 hover:text-slate-800 dark:hover:text-slate-200"
+                          : "text-on-surface-variant hover:text-on-surface dark:hover:text-slate-200"
                       )}
                     >
                       {tone === 'sky' ? 'Celeste' : tone === 'mint' ? 'Menta' : tone === 'lavender' ? 'Lavanda' : 'Gradiente'}
@@ -1671,7 +1671,7 @@ export function UIShowcasePage() {
                       "px-2.5 py-1 text-xs font-bold rounded-lg transition-all",
                       pastelFinish === 'glass'
                         ? "bg-white dark:bg-slate-900 text-teal-700 dark:text-teal-300 shadow-xs"
-                        : "text-slate-500 hover:text-slate-800 dark:hover:text-slate-200"
+                        : "text-on-surface-variant hover:text-on-surface dark:hover:text-slate-200"
                     )}
                   >
                     Translúcido Glass
@@ -1683,7 +1683,7 @@ export function UIShowcasePage() {
                       "px-2.5 py-1 text-xs font-bold rounded-lg transition-all",
                       pastelFinish === 'solid'
                         ? "bg-white dark:bg-slate-900 text-teal-700 dark:text-teal-300 shadow-xs"
-                        : "text-slate-500 hover:text-slate-800 dark:hover:text-slate-200"
+                        : "text-on-surface-variant hover:text-on-surface dark:hover:text-slate-200"
                     )}
                   >
                     Capa Sólida
@@ -1787,25 +1787,25 @@ export function UIShowcasePage() {
 
             {/* Fila 2: Comparativa Visual Directa "Antes vs Ahora" */}
             <div className="space-y-3 pt-2">
-              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-on-surface-variant">
                 Comparativa Visual: Gris/Blanco Plano vs. Harmonized Pastel Clínico
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 {/* Antes: Blanco plano / gris aburrido */}
                 <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-on-surface relative">
                   <div className="flex items-center justify-between mb-3">
-                    <span className="text-2xs font-bold px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-300 dark:border-slate-700">
+                    <span className="text-2xs font-bold px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-on-surface-variant border border-slate-300 dark:border-slate-700">
                       Estilo Previo (Blanco / Gris Plano)
                     </span>
-                    <span className="text-xs text-slate-400">Sin matiz</span>
+                    <span className="text-xs text-on-surface-variant">Sin matiz</span>
                   </div>
-                  <p className="text-sm font-bold text-slate-800 dark:text-slate-200 mb-1">
+                  <p className="text-sm font-bold text-on-surface mb-1">
                     Evaluación Postural de Hombro
                   </p>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mb-4">
+                  <p className="text-xs text-on-surface-variant mb-4">
                     Contenedor frío y genérico que produce fatiga visual y no transmite calidez médica.
                   </p>
-                  <div className="flex items-center gap-3 text-xs text-slate-600 dark:text-slate-400">
+                  <div className="flex items-center gap-3 text-xs text-on-surface-variant">
                     <span className="size-2 rounded-full bg-slate-400" />
                     <span>8 repeticiones registradas sin resaltado sensorial</span>
                   </div>
@@ -1827,7 +1827,7 @@ export function UIShowcasePage() {
                   <p className="text-sm font-bold text-on-surface mb-1">
                     Evaluación Postural de Hombro
                   </p>
-                  <p className="text-xs text-slate-700 dark:text-slate-300 mb-4 leading-relaxed">
+                  <p className="text-xs text-on-surface mb-4 leading-relaxed">
                     Elegancia clínica, micro-resplandor bio-adaptativo y contraste nítido garantizado para adultos mayores.
                   </p>
                   <div className="flex items-center justify-between text-xs font-semibold">
@@ -1843,7 +1843,7 @@ export function UIShowcasePage() {
 
             {/* Fila 3: Semáforos Biomecánicos & Badges Pastel */}
             <div className="space-y-3 pt-2">
-              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-on-surface-variant">
                 Semáforos Biomecánicos & Badges con Acentos Pastel
               </h3>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -1905,7 +1905,7 @@ export function UIShowcasePage() {
                   <Sparkles className="w-5 h-5 text-teal-500" />
                   Los 12 Componentes Solicitados con Temática FisioMirror
                 </h2>
-                <p className="text-xs text-slate-500 dark:text-slate-400">
+                <p className="text-xs text-on-surface-variant">
                   Implementación funcional adaptada a la paleta médica (Teal, Azure, Kinetic Lime) y tipografías oficiales.
                 </p>
               </div>
@@ -1915,7 +1915,7 @@ export function UIShowcasePage() {
             <div className="space-y-3">
               <div className="flex items-center gap-2">
                 <BarChart3 className="w-4 h-4 text-teal-600" />
-                <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
                   1. Tarjeta de Reportes con Gráficos Reaviz (IncidentReportCard)
                 </h3>
               </div>
@@ -1928,7 +1928,7 @@ export function UIShowcasePage() {
             <div className="space-y-3 pt-6 border-t border-teal-500/15">
               <div className="flex items-center gap-2">
                 <ListTodo className="w-4 h-4 text-teal-600" />
-                <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
                   2. Tarjetas de Asignación y Progreso (course-design-cards)
                 </h3>
               </div>
@@ -1945,7 +1945,7 @@ export function UIShowcasePage() {
               <div className="space-y-3">
                 <div className="flex items-center gap-2">
                   <Bell className="w-4 h-4 text-teal-600" />
-                  <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                  <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
                     3. Sistema de Alertas de HeroUI (Alert)
                   </h3>
                 </div>
@@ -1956,7 +1956,7 @@ export function UIShowcasePage() {
               <div className="space-y-3">
                 <div className="flex items-center gap-2">
                   <AlertTriangle className="w-4 h-4 text-rose-600" />
-                  <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                  <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
                     4. Diálogos de Alerta / Confirmación (AlertDialog)
                   </h3>
                 </div>
@@ -1965,7 +1965,7 @@ export function UIShowcasePage() {
                     <h4 className="text-sm font-bold text-on-surface mb-1">
                       Modal de Confirmación Crítica
                     </h4>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mb-6 leading-relaxed">
+                    <p className="text-xs text-on-surface-variant mb-6 leading-relaxed">
                       Sustituye llamadas estándar <code className="text-rose-500 font-mono">window.confirm</code> por un diálogo con backdrop difuminado, spring physics y confirmación accesible.
                     </p>
                   </div>
@@ -1982,7 +1982,7 @@ export function UIShowcasePage() {
               <div className="space-y-3">
                 <div className="flex items-center gap-2">
                   <UserCheck className="w-4 h-4 text-teal-600" />
-                  <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                  <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
                     5. Avatares de Usuario con Fallback (Avatar)
                   </h3>
                 </div>
@@ -1995,7 +1995,7 @@ export function UIShowcasePage() {
               <div className="space-y-3">
                 <div className="flex items-center gap-2">
                   <Megaphone className="w-4 h-4 text-teal-600" />
-                  <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                  <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
                     6. Tarjeta Multimedia & Banner (Cards with Images)
                   </h3>
                 </div>
@@ -2009,7 +2009,7 @@ export function UIShowcasePage() {
               <div className="space-y-3">
                 <div className="flex items-center gap-2">
                   <CheckSquare className="w-4 h-4 text-teal-600" />
-                  <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                  <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
                     7. Grupos de Casillas de Verificación (CheckboxGroup)
                   </h3>
                 </div>
@@ -2020,12 +2020,12 @@ export function UIShowcasePage() {
               <div className="space-y-3">
                 <div className="flex items-center gap-2">
                   <Tag className="w-4 h-4 text-teal-600" />
-                  <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                  <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
                     8. Etiquetas de Estado (Chip)
                   </h3>
                 </div>
                 <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                  <p className="text-xs text-on-surface-variant">
                     Semáforo de estados de pacientes y severidad clínica:
                   </p>
                   <ChipStatusesDemo />
@@ -2039,7 +2039,7 @@ export function UIShowcasePage() {
               <div className="space-y-3">
                 <div className="flex items-center gap-2">
                   <Sliders className="w-4 h-4 text-teal-600" />
-                  <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                  <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
                     9. Ventana Modal Interactiva (Modal)
                   </h3>
                 </div>
@@ -2048,7 +2048,7 @@ export function UIShowcasePage() {
                     <h4 className="text-sm font-bold text-on-surface mb-1">
                       Calibración y Configuración Modal
                     </h4>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mb-4">
+                    <p className="text-xs text-on-surface-variant leading-relaxed mb-4">
                       Ventana emergente accesible con física de muelle, disparador de cierre automático (slot=&quot;close&quot;), selector de sensibilidad y mallas AR.
                     </p>
                   </div>
@@ -2060,7 +2060,7 @@ export function UIShowcasePage() {
               <div className="space-y-3">
                 <div className="flex items-center gap-2">
                   <Activity className="w-4 h-4 text-teal-600" />
-                  <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                  <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
                     10. Menú Desplegable Contextual (Popover)
                   </h3>
                 </div>
@@ -2069,7 +2069,7 @@ export function UIShowcasePage() {
                     <h4 className="text-sm font-bold text-on-surface mb-1">
                       Detalle Biomecánico Dinámico
                     </h4>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mb-4">
+                    <p className="text-xs text-on-surface-variant leading-relaxed mb-4">
                       Cuadro anclado con micro-interacción que muestra el semáforo y rango fisiológico óptimo según la articulación seleccionada (rodilla, hombro, codo).
                     </p>
                   </div>
@@ -2084,7 +2084,7 @@ export function UIShowcasePage() {
               <div className="space-y-3">
                 <div className="flex items-center gap-2">
                   <Sliders className="w-4 h-4 text-teal-600" />
-                  <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                  <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
                     11. Panel Lateral Deslizante (Drawer)
                   </h3>
                 </div>
@@ -2093,7 +2093,7 @@ export function UIShowcasePage() {
                     <h4 className="text-sm font-bold text-on-surface mb-1">
                       Panel Lateral de Ajustes de Sesión
                     </h4>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mb-4">
+                    <p className="text-xs text-on-surface-variant leading-relaxed mb-4">
                       Emerge desde el lateral derecho sin desconectar al terapeuta de su pantalla actual, permitiendo ajustar repeticiones y redactar observaciones.
                     </p>
                   </div>
@@ -2105,7 +2105,7 @@ export function UIShowcasePage() {
               <div className="space-y-3">
                 <div className="flex items-center gap-2">
                   <Calendar className="w-4 h-4 text-teal-600" />
-                  <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                  <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
                     12. Selector de Rango de Fechas (DateRangePicker)
                   </h3>
                 </div>
@@ -2114,7 +2114,7 @@ export function UIShowcasePage() {
                     <h4 className="text-sm font-bold text-on-surface mb-1">
                       Calendario de Intervalo Clínico
                     </h4>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mb-4">
+                    <p className="text-xs text-on-surface-variant leading-relaxed mb-4">
                       Selecciona fecha inicial y final para filtrar la evolución y adherencia del paciente, con botones rápidos para 7, 14 o 30 días.
                     </p>
                   </div>
@@ -2129,7 +2129,7 @@ export function UIShowcasePage() {
               <div className="space-y-3">
                 <div className="flex items-center gap-2">
                   <Calendar className="w-4 h-4 text-teal-600" />
-                  <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                  <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
                     Calendarios de Rango Avanzados (RangeCalendar y Vistas Múltiples)
                   </h3>
                 </div>
@@ -2143,7 +2143,7 @@ export function UIShowcasePage() {
                       <h4 className="text-sm font-bold text-on-surface mt-1 mb-1">
                         firstDayOfWeek=&quot;mon&quot;
                       </h4>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">
+                      <p className="text-xs text-on-surface-variant mb-3">
                         Subcomponentes Headings, NavButtons y Grid con selección táctil de inicio y fin.
                       </p>
                     </div>
@@ -2161,7 +2161,7 @@ export function UIShowcasePage() {
                       <h4 className="text-sm font-bold text-on-surface mt-1 mb-1">
                         visibleDuration Dinámico
                       </h4>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">
+                      <p className="text-xs text-on-surface-variant mb-3">
                         Selector HeroUI Select que amplía o contrae la vista de 1 a 8 semanas según el plan.
                       </p>
                     </div>
@@ -2179,7 +2179,7 @@ export function UIShowcasePage() {
                       <h4 className="text-sm font-bold text-on-surface mt-1 mb-1">
                         parseDate(&quot;2026-02-03&quot;)
                       </h4>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">
+                      <p className="text-xs text-on-surface-variant mb-3">
                         Carga directa de intervalo médico pre-seleccionado con colores y contrastes clínicos.
                       </p>
                     </div>
@@ -2196,7 +2196,7 @@ export function UIShowcasePage() {
                 <div className="space-y-3">
                   <div className="flex items-center gap-2">
                     <Layers className="w-4 h-4 text-teal-600" />
-                    <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                    <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
                       Sombras de Desbordamiento de Scroll (ScrollShadow)
                     </h3>
                   </div>
@@ -2205,7 +2205,7 @@ export function UIShowcasePage() {
                       <h4 className="text-sm font-bold text-on-surface mb-1">
                         Contenedor con Gradientes Automáticos
                       </h4>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mb-3">
+                      <p className="text-xs text-on-surface-variant leading-relaxed mb-3">
                         Haz scroll en la lista de ejercicios de rehabilitación. Las sombras superior e inferior aparecen de forma reactiva avisando que hay más tareas.
                       </p>
                     </div>
@@ -2223,7 +2223,7 @@ export function UIShowcasePage() {
                           <div key={i} className="p-3 rounded-xl bg-white dark:bg-slate-800/80 border border-slate-200/60 dark:border-slate-700/60 flex items-center justify-between shadow-xs">
                             <div>
                               <p className="text-xs font-bold text-on-surface">{ex.name}</p>
-                              <p className="text-xs text-slate-500 dark:text-slate-400">{ex.target} • {ex.reps}</p>
+                              <p className="text-xs text-on-surface-variant">{ex.target} • {ex.reps}</p>
                             </div>
                             <span className="text-2xs font-bold px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-600 dark:text-teal-400 border border-teal-500/20">
                               {ex.status}
@@ -2241,7 +2241,7 @@ export function UIShowcasePage() {
                   <div className="space-y-3">
                     <div className="flex items-center gap-2">
                       <Activity className="w-4 h-4 text-teal-600" />
-                      <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                      <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
                         Placeholders de Carga Progresiva (Skeleton)
                       </h3>
                     </div>
@@ -2250,7 +2250,7 @@ export function UIShowcasePage() {
                         <h4 className="text-sm font-bold text-on-surface mb-1">
                           Animación Shimmer / Wave sin parpadeos
                         </h4>
-                        <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mb-3">
+                        <p className="text-xs text-on-surface-variant leading-relaxed mb-3">
                           Permite mantener la estructura del layout mientras se sincronizan las métricas del sensor LiDAR o cámara.
                         </p>
                       </div>
@@ -2276,19 +2276,19 @@ export function UIShowcasePage() {
                   <div className="space-y-3">
                     <div className="flex items-center gap-2">
                       <Bell className="w-4 h-4 text-teal-600" />
-                      <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                      <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
                         Notificaciones Toast HeroUI / Sonner (toast)
                       </h3>
                     </div>
                     <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-3">
-                      <p className="text-xs text-slate-500 dark:text-slate-400">
+                      <p className="text-xs text-on-surface-variant">
                         Dispara notificaciones ergonómicas directas con feedback háptico y física suave:
                       </p>
                       <div className="flex flex-wrap gap-2.5">
                         <button
                           type="button"
                           onClick={() => toast("Sesión de fisioterapia iniciada correctamente")}
-                          className="px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900 hover:opacity-90 transition-opacity"
+                          className="px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-900 text-white dark:bg-slate-100 dark:text-on-surface hover:opacity-90 transition-opacity"
                         >
                           Toast Default
                         </button>
@@ -2327,7 +2327,7 @@ export function UIShowcasePage() {
                 <div className="lg:col-span-7 space-y-3">
                   <div className="flex items-center gap-2">
                     <Radio className="w-4 h-4 text-emerald-500 animate-pulse" />
-                    <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                    <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
                       16. Feed de Actividad Clínica en Vivo (AnimatedList)
                     </h3>
                   </div>
@@ -2338,7 +2338,7 @@ export function UIShowcasePage() {
                 <div className="lg:col-span-5 space-y-3">
                   <div className="flex items-center gap-2">
                     <Sparkles className="w-4 h-4 text-teal-600" />
-                    <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                    <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
                       17. Ráfaga de Cañones Laterales (ConfettiSideCannons)
                     </h3>
                   </div>
@@ -2347,7 +2347,7 @@ export function UIShowcasePage() {
                       <h4 className="text-sm font-bold text-on-surface mb-1">
                         Efecto Festivo Bidireccional Continuo
                       </h4>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mb-4">
+                      <p className="text-xs text-on-surface-variant leading-relaxed mb-4">
                         Dispara ráfagas de confeti a 60° y 120° desde los dos extremos de la pantalla durante 2.5 segundos con la paleta turquesa/kinetic de FisioMirror.
                       </p>
                     </div>
@@ -2377,13 +2377,13 @@ export function UIShowcasePage() {
                 <div className="space-y-3">
                   <div className="flex items-center gap-2">
                     <Sparkles className="w-4 h-4 text-teal-600" />
-                    <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                    <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
                       18. Resaltador Dinámico de Texto (Highlighter)
                     </h3>
                   </div>
                   <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
                     <div className="flex flex-wrap items-center justify-between gap-2">
-                      <p className="text-xs text-slate-500 dark:text-slate-400">
+                      <p className="text-xs text-on-surface-variant">
                         Trazos orgánicos tipo rough-notation animados:
                       </p>
                       <button
@@ -2441,7 +2441,7 @@ export function UIShowcasePage() {
                 <div className="space-y-3">
                   <div className="flex items-center gap-2">
                     <MousePointer className="w-4 h-4 text-teal-600" />
-                    <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                    <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
                       19. Botón Interactivo con Desplazamiento (InteractiveHoverButton)
                     </h3>
                   </div>
@@ -2450,7 +2450,7 @@ export function UIShowcasePage() {
                       <h4 className="text-sm font-bold text-on-surface mb-1">
                         Microinteracción Radial & Slide
                       </h4>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mb-4">
+                      <p className="text-xs text-on-surface-variant leading-relaxed mb-4">
                         Al pasar el cursor sobre el botón, el punto central indicador se expande y desliza suavemente el texto junto con la flecha directriz.
                       </p>
                     </div>
@@ -2485,7 +2485,7 @@ export function UIShowcasePage() {
                 <div className="space-y-3">
                   <div className="flex items-center gap-2">
                     <Sparkles className="w-4 h-4 text-teal-600" />
-                    <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                    <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
                       20. Tipografía Cinética (KineticText)
                     </h3>
                   </div>
@@ -2494,7 +2494,7 @@ export function UIShowcasePage() {
                       <h4 className="text-sm font-bold text-on-surface mb-1">
                         Deformación de Peso Tipográfico por Proximidad
                       </h4>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mb-3">
+                      <p className="text-xs text-on-surface-variant leading-relaxed mb-3">
                         Pasa el cursor letra por letra para ver cómo el font-weight se altera orgánicamente de 300 a 900.
                       </p>
                     </div>
@@ -2530,7 +2530,7 @@ export function UIShowcasePage() {
                 <div className="space-y-3">
                   <div className="flex items-center gap-2">
                     <Sparkles className="w-4 h-4 text-teal-600" />
-                    <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                    <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
                       21. Rayos de Luz Atmosféricos (LightRays)
                     </h3>
                   </div>
@@ -2572,7 +2572,7 @@ export function UIShowcasePage() {
                 <div className="space-y-3">
                   <div className="flex items-center gap-2">
                     <Activity className="w-4 h-4 text-teal-600" />
-                    <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                    <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
                       22. Contador Numérico Animado con Resortes (NumberTicker)
                     </h3>
                   </div>
@@ -2581,7 +2581,7 @@ export function UIShowcasePage() {
                       <h4 className="text-sm font-bold text-on-surface mb-1">
                         Física de Resortes sin Saltos Bruscos
                       </h4>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mb-4">
+                      <p className="text-xs text-on-surface-variant leading-relaxed mb-4">
                         Modifica los valores numéricos y observa la transición elástica mediante useSpring:
                       </p>
                     </div>
@@ -2637,13 +2637,13 @@ export function UIShowcasePage() {
                 <div className="space-y-3">
                   <div className="flex items-center gap-2">
                     <Sparkles className="w-4 h-4 text-teal-600" />
-                    <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                    <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
                       23. Tarjeta Mágica Interactiva (MagicCard)
                     </h3>
                   </div>
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <p className="text-xs text-slate-500 dark:text-slate-400">
+                      <p className="text-xs text-on-surface-variant">
                         Mueve el cursor dentro de la tarjeta:
                       </p>
                       <div className="flex items-center gap-1 bg-surface-container-high/60 p-1 rounded-xl">
@@ -2708,7 +2708,7 @@ export function UIShowcasePage() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <Eye className="w-4 h-4 text-teal-600" />
-                    <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                    <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
                       24. Imagen Pixelada con Revelación Gradual (PixelImage)
                     </h3>
                   </div>
@@ -2787,7 +2787,7 @@ export function UIShowcasePage() {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <Zap className="w-4 h-4 text-teal-600" />
-                      <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                      <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
                         25. Botón Pulsante Dinámico (PulsatingButton)
                       </h3>
                     </div>
@@ -2820,7 +2820,7 @@ export function UIShowcasePage() {
                       <h4 className="text-sm font-bold text-on-surface mb-1">
                         Llamada a la Acción Crítica con Ondas de Frecuencia
                       </h4>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mb-4">
+                      <p className="text-xs text-on-surface-variant leading-relaxed mb-4">
                         Emite anillos de pulso o expansiones de onda continua. Identifica de inmediato el próximo paso crítico del paciente o fisioterapeuta.
                       </p>
                     </div>
@@ -2847,7 +2847,7 @@ export function UIShowcasePage() {
                       </PulsatingButton>
                     </div>
 
-                    <div className="flex items-center gap-2 pt-2 text-xs text-slate-400">
+                    <div className="flex items-center gap-2 pt-2 text-xs text-on-surface-variant">
                       <span>Color de Pulso:</span>
                       <button
                         type="button"
@@ -2878,7 +2878,7 @@ export function UIShowcasePage() {
                 <div className="space-y-3">
                   <div className="flex items-center gap-2">
                     <Sliders className="w-4 h-4 text-teal-600" />
-                    <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                    <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
                       26. Barra de Progreso de Desplazamiento (ScrollProgress)
                     </h3>
                   </div>
@@ -2887,20 +2887,20 @@ export function UIShowcasePage() {
                       <h4 className="text-sm font-bold text-on-surface mb-1">
                         Lectura Dinámica del Scroll con Escala GPU
                       </h4>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mb-3">
+                      <p className="text-xs text-on-surface-variant leading-relaxed mb-3">
                         Mira la línea continua en la parte superior fija de esta página: se actualiza en tiempo real con scaleX y el gradiente oficial de FisioMirror.
                       </p>
                     </div>
 
                     <div className="p-4 rounded-2xl bg-slate-100/70 dark:bg-slate-900/60 border border-slate-200/60 dark:border-slate-800/80 space-y-3">
-                      <div className="flex items-center justify-between text-xs font-semibold text-slate-600 dark:text-slate-300">
+                      <div className="flex items-center justify-between text-xs font-semibold text-on-surface-variant">
                         <span>Gradiente:</span>
                         <code className="text-xs text-teal-600 dark:text-teal-400 font-mono">
                           from-teal-600 via-cyan-400 to-[#c1ff72]
                         </code>
                       </div>
                       <div className="h-2 w-full rounded-full bg-gradient-to-r from-teal-600 via-cyan-400 to-[#c1ff72] shadow-sm shadow-teal-500/20" />
-                      <p className="text-xs text-slate-500 dark:text-slate-400 leading-normal">
+                      <p className="text-xs text-on-surface-variant leading-normal">
                         Activa en todas las pantallas clínicas para que el paciente o terapeuta conozca su progreso en la lectura de expedientes y guías biomecánicas.
                       </p>
                     </div>
@@ -2916,7 +2916,7 @@ export function UIShowcasePage() {
                 <div className="space-y-3">
                   <div className="flex items-center gap-2">
                     <Sparkles className="w-4 h-4 text-teal-600" />
-                    <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                    <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
                       27. Botón con Brillo Deslizante (ShimmerButton)
                     </h3>
                   </div>
@@ -2925,7 +2925,7 @@ export function UIShowcasePage() {
                       <h4 className="text-sm font-bold text-on-surface mb-1">
                         Rotación Cónica Continua (Conic Gradient)
                       </h4>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mb-4">
+                      <p className="text-xs text-on-surface-variant leading-relaxed mb-4">
                         Brillo periférico que rota continuamente a 360°, ideal para acciones de alta jerarquía médica como generación de informes IA o exportación clínica.
                       </p>
                     </div>
@@ -2958,7 +2958,7 @@ export function UIShowcasePage() {
                 <div className="space-y-3">
                   <div className="flex items-center gap-2">
                     <ShieldCheck className="w-4 h-4 text-teal-600" />
-                    <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                    <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
                       28. Borde Brillante Animado (ShineBorder)
                     </h3>
                   </div>
@@ -2977,14 +2977,14 @@ export function UIShowcasePage() {
                           Prioridad Alta
                         </span>
                       </div>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mb-3">
+                      <p className="text-xs text-on-surface-variant leading-relaxed mb-3">
                         El gradiente radial animado recorre las 4 esquinas sin alterar el contenido interno gracias a una máscara XOR de doble capa.
                       </p>
                     </div>
 
                     <div className="p-3.5 rounded-2xl bg-teal-500/5 dark:bg-teal-950/20 border border-teal-500/20 flex items-center justify-between">
                       <div>
-                        <p className="text-xs font-bold text-slate-800 dark:text-slate-200">Paciente: Roberto Santana</p>
+                        <p className="text-xs font-bold text-on-surface">Paciente: Roberto Santana</p>
                         <p className="text-xs text-teal-600 dark:text-teal-400 font-semibold">Tendinopatía Rotuliana • Sesión 6 de 12</p>
                       </div>
                       <span className="text-xs font-black text-on-surface">125° Flexión</span>
@@ -3001,7 +3001,7 @@ export function UIShowcasePage() {
                 <div className="space-y-3">
                   <div className="flex items-center gap-2">
                     <Sparkles className="w-4 h-4 text-teal-600" />
-                    <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                    <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
                       29. Texto con Destellos Mágicos (SparklesText)
                     </h3>
                   </div>
@@ -3010,7 +3010,7 @@ export function UIShowcasePage() {
                       <h4 className="text-sm font-bold text-on-surface mb-1">
                         Estrellas y Destellos Festivos Vectoriales
                       </h4>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mb-4">
+                      <p className="text-xs text-on-surface-variant leading-relaxed mb-4">
                         Ideal para celebraciones de objetivos clínicos cumplidos, rachas de rehabilitación y ascensos de nivel en la recuperación.
                       </p>
                     </div>
@@ -3049,7 +3049,7 @@ export function UIShowcasePage() {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <Activity className="w-4 h-4 text-teal-600" />
-                      <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                      <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
                         30. Texto Animado por Segmentos (TextAnimate)
                       </h3>
                     </div>
@@ -3064,7 +3064,7 @@ export function UIShowcasePage() {
 
                   <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
                     <div className="flex flex-wrap items-center gap-2">
-                      <span className="text-xs text-slate-400">Variante:</span>
+                      <span className="text-xs text-on-surface-variant">Variante:</span>
                       {(['blurInUp', 'fadeIn', 'slideUp', 'scaleUp', 'blurIn'] as AnimationVariant[]).map((anim) => (
                         <button
                           key={anim}
@@ -3085,7 +3085,7 @@ export function UIShowcasePage() {
                       ))}
                     </div>
 
-                    <div className="flex items-center gap-2 text-xs text-slate-400">
+                    <div className="flex items-center gap-2 text-xs text-on-surface-variant">
                       <span>Segmentación:</span>
                       {(['word', 'character', 'line'] as AnimationType[]).map((type) => (
                         <button
@@ -3098,7 +3098,7 @@ export function UIShowcasePage() {
                           className={cn(
                             "px-2 py-0.5 text-2xs font-bold rounded-md transition-all",
                             textAnimateType === type
-                              ? "bg-teal-600 text-white"
+                              ? "bg-primary text-on-primary"
                               : "bg-surface-container-low text-on-surface-variant"
                           )}
                         >
@@ -3135,7 +3135,7 @@ export function UIShowcasePage() {
                   <Search className="w-5 h-5 text-teal-600 dark:text-teal-400" />
                   Inventario Completo: Componentes Originales vs. Versiones Evolved
                 </h2>
-                <p className="text-xs text-slate-500 dark:text-slate-400">
+                <p className="text-xs text-on-surface-variant">
                   Mapeo directo de componentes de FisioMirror con sus reemplazos de Magic UI, Aceternity UI, 21st, HeroUI y Reaviz.
                 </p>
               </div>
@@ -3155,9 +3155,9 @@ export function UIShowcasePage() {
 
                   <div className="space-y-2 mb-3">
                     <div className="p-2 rounded-lg bg-slate-100/60 dark:bg-slate-800/40 border border-slate-200/50 dark:border-slate-700/50">
-                      <p className="text-2xs uppercase font-bold text-slate-400">Componente Original en FisioMirror:</p>
-                      <p className="text-xs font-semibold text-slate-700 dark:text-slate-300">{item.originalComponent}</p>
-                      <code className="text-2xs text-slate-400 font-mono">{item.originalFile}</code>
+                      <p className="text-2xs uppercase font-bold text-on-surface-variant">Componente Original en FisioMirror:</p>
+                      <p className="text-xs font-semibold text-on-surface">{item.originalComponent}</p>
+                      <code className="text-2xs text-on-surface-variant font-mono">{item.originalFile}</code>
                     </div>
 
                     <div className="p-2 rounded-lg bg-teal-50/50 dark:bg-teal-950/20 border border-teal-500/20">
@@ -3167,10 +3167,10 @@ export function UIShowcasePage() {
                   </div>
 
                   <div>
-                    <p className="text-xs font-bold text-slate-600 dark:text-slate-300 mb-1.5">Ventajas y Características Superiores:</p>
+                    <p className="text-xs font-bold text-on-surface-variant mb-1.5">Ventajas y Características Superiores:</p>
                     <ul className="space-y-1">
                       {item.keyImprovements.map((improvement, i) => (
-                        <li key={i} className="text-xs text-slate-500 dark:text-slate-400 flex items-start gap-1.5">
+                        <li key={i} className="text-xs text-on-surface-variant flex items-start gap-1.5">
                           <CheckCircle2 className="w-3.5 h-3.5 text-teal-500 shrink-0 mt-0.5" />
                           <span>{improvement}</span>
                         </li>
@@ -3194,7 +3194,7 @@ export function UIShowcasePage() {
                   <Zap className="w-5 h-5 text-teal-600 dark:text-teal-400" />
                   Botones Evolved (ShimmerButton, Glow, Kinetic & CVA)
                 </h2>
-                <p className="text-xs text-slate-500 dark:text-slate-400">
+                <p className="text-xs text-on-surface-variant">
                   Sustituye botones planos por microinteracciones de muelle y rayos lumínicos giratorios.
                 </p>
               </div>
@@ -3210,7 +3210,7 @@ export function UIShowcasePage() {
 
             <div className="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-6">
               <div>
-                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3 flex items-center gap-2">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-on-surface-variant mb-3 flex items-center gap-2">
                   <span>Variantes Premium Evolved</span>
                   <span className="text-2xs text-teal-500 lowercase">(framer-motion + cva + magic-ui)</span>
                 </h3>
@@ -3238,7 +3238,7 @@ export function UIShowcasePage() {
               </div>
 
               <div className="pt-4 border-t border-slate-100 dark:border-slate-800">
-                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">Escalas & Botones de Utilidad</h3>
+                <h3 className="text-xs font-bold uppercase tracking-wider text-on-surface-variant mb-3">Escalas & Botones de Utilidad</h3>
                 <div className="flex flex-wrap gap-3 items-center">
                   <Button size="sm" variant="glow">Pequeño (sm)</Button>
                   <Button size="default" variant="glow">Normal (default)</Button>
@@ -3265,7 +3265,7 @@ export function UIShowcasePage() {
                 <MousePointer className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
                 Tarjetas Activas: CardSpotlight (Aceternity) & Bento con BorderBeam (Magic UI)
               </h2>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
+              <p className="text-xs text-on-surface-variant">
                 Mueve el mouse sobre las tarjetas para apreciar el haz de luz radial matemático y el haz orbital en el borde.
               </p>
             </div>
@@ -3283,11 +3283,11 @@ export function UIShowcasePage() {
                 <h3 className="text-lg font-bold text-on-surface mb-1">
                   CardSpotlight Reactivo
                 </h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mb-4 leading-relaxed">
+                <p className="text-xs text-on-surface-variant mb-4 leading-relaxed">
                   Proyecta un gradiente radial matemático dinámico que persigue al cursor exactamente sin forzar re-renderizados del DOM.
                 </p>
                 <div className="pt-3 border-t border-slate-200/50 dark:border-slate-700/50 flex justify-between items-center text-xs">
-                  <span className="text-slate-400">Efecto Biomecánico</span>
+                  <span className="text-on-surface-variant">Efecto Biomecánico</span>
                   <span className="font-bold text-teal-600 dark:text-teal-400">60 FPS Suave</span>
                 </div>
               </CardSpotlight>
@@ -3306,7 +3306,7 @@ export function UIShowcasePage() {
                   <h3 className="text-lg font-bold text-on-surface mb-1">
                     Borde Orbital Cinético
                   </h3>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mb-4 leading-relaxed">
+                  <p className="text-xs text-on-surface-variant mb-4 leading-relaxed">
                     Un rayo lumínico SVG recorre el perímetro de la tarjeta constantemente para destacar elementos de alta prioridad clínica.
                   </p>
                 </div>
@@ -3351,7 +3351,7 @@ export function UIShowcasePage() {
                 <Layers className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                 Modales & Diálogos Evolved (Física Spring & Liquid Glass)
               </h2>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
+              <p className="text-xs text-on-surface-variant">
                 Sustituye ventanas rígidas por transiciones fluidas con resorte y desenfoque óptico de cristal.
               </p>
             </div>
@@ -3395,14 +3395,14 @@ export function UIShowcasePage() {
                 <Smartphone className="w-5 h-5 text-amber-600 dark:text-amber-400" />
                 Inputs Clínicos & OtpInput (Origin UI + 21st.dev)
               </h2>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
+              <p className="text-xs text-on-surface-variant">
                 Formularios con micro-escalado en foco y entrada segmentada de 6 casillas para vinculación de pacientes.
               </p>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
               <div className="space-y-4">
-                <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200">
+                <h3 className="text-sm font-bold text-on-surface">
                   Campo Clínico con Micro-Zoom (Input)
                 </h3>
                 <Input 
@@ -3434,7 +3434,7 @@ export function UIShowcasePage() {
 
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200">
+                  <h3 className="text-sm font-bold text-on-surface">
                     Entrada OTP de 6 Casillas (OtpInput)
                   </h3>
                   <div className="flex items-center gap-2">
@@ -3459,7 +3459,7 @@ export function UIShowcasePage() {
                     </Button>
                   </div>
                 </div>
-                <p className="text-xs text-slate-500 dark:text-slate-400">
+                <p className="text-xs text-on-surface-variant">
                   Pega o escribe un token. Salta de casilla automáticamente con compatibilidad teclado numérico móvil.
                 </p>
                 
@@ -3494,7 +3494,7 @@ export function UIShowcasePage() {
                 <Sliders className="w-5 h-5 text-teal-600 dark:text-teal-400" />
                 Controles Clínicos Hápticos: Deslizador de ROM Articular & Dolor (Origin UI)
               </h2>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
+              <p className="text-xs text-on-surface-variant">
                 Diseñado para calibración de ángulos biomecánicos con marcas visuales de 0° a 180°.
               </p>
             </div>
@@ -3538,32 +3538,32 @@ export function UIShowcasePage() {
                 <Sparkles className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
                 Tipografía Lumínica en Movimiento & Tooltips con Flecha (Magic UI)
               </h2>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
+              <p className="text-xs text-on-surface-variant">
                 Textos con flujo de gradiente orgánico vivo y tooltips en 4 orientaciones con desenfoque de cristal.
               </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
-                <span className="text-2xs uppercase font-bold tracking-wider text-slate-400">Tipografía Dinámica</span>
+                <span className="text-2xs uppercase font-bold tracking-wider text-on-surface-variant">Tipografía Dinámica</span>
                 <div>
-                  <p className="text-xs text-slate-400 mb-1">Efecto Aurora Text:</p>
+                  <p className="text-xs text-on-surface-variant mb-1">Efecto Aurora Text:</p>
                   <h3 className="text-2xl font-black">
                     Rehabilitación con <AuroraText>Inteligencia Artificial</AuroraText>
                   </h3>
                 </div>
                 <div className="pt-3 border-t border-slate-100 dark:border-slate-800">
-                  <p className="text-xs text-slate-400 mb-1">Efecto Shimmer Text (Barrido):</p>
+                  <p className="text-xs text-on-surface-variant mb-1">Efecto Shimmer Text (Barrido):</p>
                   <ShimmerText text="Análisis Biomecánico a 30 FPS en Tiempo Real" className="text-lg font-bold" />
                 </div>
               </div>
 
               <div className="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
                 <div>
-                  <span className="text-2xs uppercase font-bold tracking-wider text-slate-400 block mb-2">
+                  <span className="text-2xs uppercase font-bold tracking-wider text-on-surface-variant block mb-2">
                     Tooltips con Flecha Geométrica
                   </span>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mb-4">
+                  <p className="text-xs text-on-surface-variant mb-4">
                     Pasa el cursor para ver el posicionamiento y la micro-flecha alineada:
                   </p>
                 </div>
@@ -3598,7 +3598,7 @@ export function UIShowcasePage() {
         </DialogHeader>
         <DialogContent>
           <div className="space-y-3">
-            <p className="text-xs text-slate-600 dark:text-slate-300">
+            <p className="text-xs text-on-surface-variant">
               Inspirado en la ergonomía de HeroUI y modales de tele-rehabilitación con accesibilidad completa.
             </p>
             <Input 

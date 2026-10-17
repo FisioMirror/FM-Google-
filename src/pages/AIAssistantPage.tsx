@@ -478,7 +478,7 @@ Pregunta del paciente: ${messageText}`;
                 <div
                   className={`p-4 sm:p-5 rounded-3xl text-xs sm:text-sm leading-relaxed transition-all shadow-xs ${
                     msg.role === 'user'
-                      ? 'bg-teal-600 text-white rounded-tr-none font-medium ml-auto'
+                      ? 'bg-primary text-on-primary rounded-tr-none font-medium ml-auto'
                       : 'bg-surface/90 dark:bg-surface-container-low/90 border border-teal-500/20 text-on-surface rounded-tl-none'
                   }`}
                 >

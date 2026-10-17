@@ -84,7 +84,7 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
         className={cn(
           'flex items-center gap-1.5 rounded-xl border transition-all duration-200 cursor-pointer text-xs font-semibold',
           'bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-teal-500/30 dark:border-white/10',
-          'text-slate-800 dark:text-slate-100 hover:border-teal-500/60 hover:bg-teal-50/40 dark:hover:bg-slate-800/80 shadow-xs',
+          'text-on-surface hover:border-teal-500/60 hover:bg-teal-50/40 dark:hover:bg-slate-800/80 shadow-xs',
           compact ? 'px-2 py-1.5' : 'px-2.5 sm:px-3 py-1.5'
         )}
         aria-label="Seleccionar idioma / Select language"
@@ -100,7 +100,7 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
         <ChevronDown
           size={12}
           className={cn(
-            'text-slate-400 dark:text-slate-500 transition-transform duration-200 shrink-0',
+            'text-on-surface-variant transition-transform duration-200 shrink-0',
             isOpen && 'rotate-180 text-teal-600 dark:text-teal-400'
           )}
         />
@@ -115,12 +115,12 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
             transition={{ duration: 0.15, ease: 'easeOut' }}
             className={cn(
               'absolute top-full mt-1.5 z-50 w-44 rounded-2xl p-1.5 shadow-elevated',
-              'bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl border border-teal-500/20 dark:border-white/10 text-slate-800 dark:text-slate-100',
+              'bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl border border-teal-500/20 dark:border-white/10 text-on-surface',
               dropdownAlign === 'right' ? 'right-0' : 'left-0'
             )}
             role="menu"
           >
-            <div className="px-2.5 py-1.5 border-b border-slate-100 dark:border-slate-800/80 flex items-center gap-1.5 text-2xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+            <div className="px-2.5 py-1.5 border-b border-slate-100 dark:border-slate-800/80 flex items-center gap-1.5 text-2xs font-bold uppercase tracking-wider text-on-surface-variant">
               <Globe size={11} className="text-teal-500" />
               <span>Idioma / Language</span>
             </div>
@@ -138,7 +138,7 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
                       'w-full flex items-center justify-between px-2.5 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer text-left',
                       isSelected
                         ? 'bg-teal-500/15 text-teal-800 dark:text-teal-200 font-bold border border-teal-500/30'
-                        : 'hover:bg-slate-100/80 dark:hover:bg-slate-800/80 text-slate-700 dark:text-slate-300 border border-transparent'
+                        : 'hover:bg-slate-100/80 dark:hover:bg-slate-800/80 text-on-surface border border-transparent'
                     )}
                   >
                     <div className="flex items-center gap-2">

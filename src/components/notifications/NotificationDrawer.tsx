@@ -61,7 +61,7 @@ function getNotificationIcon(type: string) {
       return <Sparkles size={16} className="text-purple-600 dark:text-purple-400" />;
     case 'sistema':
     default:
-      return <Info size={16} className="text-slate-600 dark:text-slate-400" />;
+      return <Info size={16} className="text-on-surface-variant" />;
   }
 }
 
@@ -80,7 +80,7 @@ function getNotificationBadgeStyle(type: string) {
       return 'bg-purple-500/10 border-purple-500/20 text-purple-700 dark:text-purple-300';
     case 'sistema':
     default:
-      return 'bg-slate-500/10 border-slate-500/20 text-slate-700 dark:text-slate-300';
+      return 'bg-slate-500/10 border-slate-500/20 text-on-surface';
   }
 }
 
@@ -147,12 +147,12 @@ export function NotificationDrawer({ isOpen, onClose, userId }: NotificationDraw
                       Centro de Notificaciones
                     </h2>
                     {unreadCount > 0 && (
-                      <span className="px-2 py-0.5 rounded-full text-2xs font-bold bg-teal-600 text-white shadow-xs">
+                      <span className="px-2 py-0.5 rounded-full text-2xs font-bold bg-primary text-on-primary shadow-xs">
                         {unreadCount} nuevas
                       </span>
                     )}
                   </div>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                  <p className="text-xs text-on-surface-variant">
                     Sincronización clínica en tiempo real
                   </p>
                 </div>
@@ -166,7 +166,7 @@ export function NotificationDrawer({ isOpen, onClose, userId }: NotificationDraw
                   title={soundMuted ? 'Activar sonido de alertas' : 'Silenciar sonido de alertas'}
                   className={`p-2 rounded-xl transition-colors ${
                     soundMuted
-                      ? 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-200'
+                      ? 'text-on-surface-variant hover:text-on-surface-variant dark:hover:text-slate-200'
                       : 'text-teal-600 dark:text-teal-400 bg-teal-50 dark:bg-teal-950/40'
                   }`}
                   aria-label="Alternar sonido"
@@ -178,7 +178,7 @@ export function NotificationDrawer({ isOpen, onClose, userId }: NotificationDraw
                   id="btn-close-notifications"
                   type="button"
                   onClick={onClose}
-                  className="p-2 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                  className="p-2 rounded-xl text-on-surface-variant hover:text-on-surface-variant dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
                   aria-label="Cerrar notificaciones"
                 >
                   <X size={18} />
@@ -196,8 +196,8 @@ export function NotificationDrawer({ isOpen, onClose, userId }: NotificationDraw
                     onClick={() => setActiveFilter(f.id)}
                     className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all flex items-center gap-1.5 ${
                       activeFilter === f.id
-                        ? 'bg-teal-600 text-white shadow-xs'
-                        : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200/70 dark:border-slate-700/60 hover:bg-slate-50'
+                        ? 'bg-primary text-on-primary shadow-xs'
+                        : 'bg-white dark:bg-slate-800 text-on-surface-variant border border-slate-200/70 dark:border-slate-700/60 hover:bg-slate-50'
                     }`}
                   >
                     <span>{f.label}</span>
@@ -206,7 +206,7 @@ export function NotificationDrawer({ isOpen, onClose, userId }: NotificationDraw
                         className={`px-1.5 py-0.2 rounded-full text-2xs font-bold ${
                           activeFilter === f.id
                             ? 'bg-white text-teal-700'
-                            : 'bg-teal-600 text-white'
+                            : 'bg-primary text-on-primary'
                         }`}
                       >
                         {f.count}
@@ -232,15 +232,15 @@ export function NotificationDrawer({ isOpen, onClose, userId }: NotificationDraw
             {/* List Body */}
             <div className="flex-1 overflow-y-auto p-4 space-y-2.5">
               {notifications.length === 0 ? (
-                <div className="h-full flex flex-col items-center justify-center text-center p-6 text-slate-500 dark:text-slate-400 space-y-3">
-                  <div className="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400">
+                <div className="h-full flex flex-col items-center justify-center text-center p-6 text-on-surface-variant space-y-3">
+                  <div className="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-on-surface-variant">
                     <Bell size={22} />
                   </div>
                   <div>
-                    <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200">
+                    <h3 className="text-sm font-bold text-on-surface">
                       Sin notificaciones
                     </h3>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-xs">
+                    <p className="text-xs text-on-surface-variant mt-1 max-w-xs">
                       {activeFilter === 'no_leidas'
                         ? 'No tienes notificaciones pendientes de leer.'
                         : 'No hay registros en esta categoría.'}
@@ -279,12 +279,12 @@ export function NotificationDrawer({ isOpen, onClose, userId }: NotificationDraw
                             <h4 className="text-xs font-bold text-on-surface truncate">
                               {notif.title}
                             </h4>
-                            <span className="text-2xs text-slate-400 shrink-0 font-medium">
+                            <span className="text-2xs text-on-surface-variant shrink-0 font-medium">
                               {timeAgo(notif.created_at)}
                             </span>
                           </div>
 
-                          <p className="text-xs text-slate-600 dark:text-slate-300 mt-1 leading-relaxed line-clamp-2">
+                          <p className="text-xs text-on-surface-variant mt-1 leading-relaxed line-clamp-2">
                             {notif.message}
                           </p>
 
@@ -316,7 +316,7 @@ export function NotificationDrawer({ isOpen, onClose, userId }: NotificationDraw
                               <button
                                 type="button"
                                 onClick={() => removeNotification(notif.id)}
-                                className="p-1 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/40 transition-colors"
+                                className="p-1 rounded-lg text-on-surface-variant hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/40 transition-colors"
                                 title="Eliminar notificación"
                                 aria-label="Eliminar"
                               >
@@ -339,7 +339,7 @@ export function NotificationDrawer({ isOpen, onClose, userId }: NotificationDraw
 
             {/* Footer */}
             <div className="p-3 border-t border-slate-100 dark:border-slate-800 text-center bg-slate-50/50 dark:bg-slate-900/50">
-              <p className="text-2xs text-slate-400">
+              <p className="text-2xs text-on-surface-variant">
                 FisioMirror Realtime • Avisos de sesiones, videoconsultas y seguridad
               </p>
             </div>

@@ -277,7 +277,7 @@ export function ClinicalAnalyticsHub() {
             onClick={() => setActiveTab('rom')}
             className={`flex-1 sm:flex-initial px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
               activeTab === 'rom'
-                ? 'bg-teal-600 text-white shadow-md'
+                ? 'bg-primary text-on-primary shadow-md'
                 : 'text-on-surface-variant hover:text-on-surface'
             }`}
           >
@@ -288,7 +288,7 @@ export function ClinicalAnalyticsHub() {
             onClick={() => setActiveTab('vas')}
             className={`flex-1 sm:flex-initial px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
               activeTab === 'vas'
-                ? 'bg-teal-600 text-white shadow-md'
+                ? 'bg-primary text-on-primary shadow-md'
                 : 'text-on-surface-variant hover:text-on-surface'
             }`}
           >
@@ -299,7 +299,7 @@ export function ClinicalAnalyticsHub() {
             onClick={() => setActiveTab('cohorts')}
             className={`flex-1 sm:flex-initial px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
               activeTab === 'cohorts'
-                ? 'bg-teal-600 text-white shadow-md'
+                ? 'bg-primary text-on-primary shadow-md'
                 : 'text-on-surface-variant hover:text-on-surface'
             }`}
           >
@@ -726,7 +726,7 @@ export function ClinicalAnalyticsHub() {
             <div className="mt-5 pt-4 border-t border-outline/10">
               <button
                 onClick={() => navigate('/patients')}
-                className="w-full py-2.5 rounded-xl bg-teal-600 text-white font-bold text-xs hover:bg-teal-700 transition-colors flex items-center justify-center gap-1.5"
+                className="w-full py-2.5 rounded-xl bg-primary text-on-primary font-bold text-xs hover:bg-teal-700 transition-colors flex items-center justify-center gap-1.5"
               >
                 <span>Explorar Directorio de Pacientes</span>
                 <ChevronRight className="size-4" />

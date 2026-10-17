@@ -420,7 +420,7 @@ export function PatientStatisticsView({
               <Icon name="tune" size={20} className="text-teal-600 dark:text-teal-400" />
               Patrones de Compensación Postural Detectados
             </h3>
-            <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
+            <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-on-surface">
               Sensor AR Mirror
             </span>
           </div>
@@ -473,7 +473,7 @@ export function PatientStatisticsView({
 
           <div className="p-3.5 rounded-2xl bg-teal-500/5 border border-teal-500/15">
             <div className="flex items-center justify-between text-xs mb-1.5 font-bold">
-              <span className="text-slate-700 dark:text-slate-300">Fase de Rehabilitación</span>
+              <span className="text-on-surface">Fase de Rehabilitación</span>
               <span className="text-teal-700 dark:text-teal-300">Fase 3 / 4</span>
             </div>
             <div className="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
@@ -518,7 +518,7 @@ export function PatientStatisticsView({
                   <th className="py-3 px-3">Observaciones / Notas</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-outline/5 text-slate-800 dark:text-slate-200">
+              <tbody className="divide-y divide-outline/5 text-on-surface">
                 {sessions.map((s, idx) => {
                   const d = new Date(s.fecha);
                   const formattedDate = isNaN(d.getTime())

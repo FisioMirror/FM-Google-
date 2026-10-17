@@ -153,7 +153,7 @@ export function UpdatePasswordPage() {
           <h1 className="fm-title text-on-surface">
             Restablecer Contraseña
           </h1>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+          <p className="text-xs text-on-surface-variant mt-1">
             Ingresa tu nueva contraseña para acceder a FisioMirror
           </p>
         </div>
@@ -167,11 +167,11 @@ export function UpdatePasswordPage() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+            <label className="block text-xs font-bold text-on-surface mb-1">
               Nueva Contraseña
             </label>
             <div className="relative">
-              <Lock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+              <Lock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant" />
               <input
                 type={showPassword ? 'text' : 'password'}
                 required
@@ -184,7 +184,7 @@ export function UpdatePasswordPage() {
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
                 aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-on-surface-variant p-1"
               >
                 {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
               </button>
@@ -192,11 +192,11 @@ export function UpdatePasswordPage() {
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+            <label className="block text-xs font-bold text-on-surface mb-1">
               Confirmar Nueva Contraseña
             </label>
             <div className="relative">
-              <Lock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+              <Lock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant" />
               <input
                 type={showPassword ? 'text' : 'password'}
                 required
@@ -231,7 +231,7 @@ export function UpdatePasswordPage() {
           </button>
         </form>
 
-        <div className="mt-5 text-center text-xs text-slate-500">
+        <div className="mt-5 text-center text-xs text-on-surface-variant">
           ¿Recordaste tu clave?{' '}
           <Link to="/login" className="text-teal-600 dark:text-teal-400 font-bold hover:underline">
             Volver a Iniciar Sesión

@@ -60,7 +60,7 @@ export function AlertIndicator({ className }: { className?: string }) {
   const { status } = useContext(AlertContext);
 
   const iconMap: Record<AlertStatus, React.ReactNode> = {
-    default: <Info className="size-4 text-slate-500" />,
+    default: <Info className="size-4 text-on-surface-variant" />,
     accent: <Info className="size-4 text-teal-600 dark:text-teal-400" />,
     success: <CheckCircle2 className="size-4 text-emerald-600 dark:text-emerald-400" />,
     warning: <AlertTriangle className="size-4 text-amber-600 dark:text-amber-400" />,
@@ -101,7 +101,7 @@ export function AlertCloseButton({ className, onClick }: { className?: string; o
     <button
       onClick={onClick || onClose}
       className={cn(
-        'size-7 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-black/5 dark:hover:bg-white/5 transition-colors shrink-0',
+        'size-7 rounded-lg flex items-center justify-center text-on-surface-variant hover:text-on-surface dark:hover:text-slate-200 hover:bg-black/5 dark:hover:bg-white/5 transition-colors shrink-0',
         className
       )}
       aria-label="Cerrar aviso"

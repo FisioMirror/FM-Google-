@@ -850,7 +850,7 @@ export function SettingsPage() {
             href="tel:+584124081077"
             className="flex items-center gap-3.5 p-4 rounded-2xl bg-teal-500/10 border border-teal-500/20 text-teal-950 dark:text-teal-200 hover:bg-teal-500/20 transition-all hover:scale-[1.02]"
           >
-            <div className="w-10 h-10 rounded-xl bg-teal-600 text-white flex items-center justify-center shrink-0">
+            <div className="w-10 h-10 rounded-xl bg-primary text-on-primary flex items-center justify-center shrink-0">
               <Phone size={20} />
             </div>
             <div>

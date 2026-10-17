@@ -17,11 +17,11 @@ const DragDropRetry = () => {
     <div className={`border-2 border-dashed border-teal-500 rounded-3xl p-12 text-center cursor-pointer transition-all ${isDragOver ? 'bg-teal-50 dark:bg-teal-900/20' : 'bg-slate-50 dark:bg-slate-800'} ${status === 'uploading' ? 'opacity-60 pointer-events-none' : ''}`}
       onDragOver={(e) => { e.preventDefault(); setIsDragOver(true); }} onDragLeave={() => setIsDragOver(false)}
       onDrop={(e) => { e.preventDefault(); setIsDragOver(false); simulateUpload(); }} onClick={simulateUpload}>
-      <div className="flex items-center justify-center gap-2 text-lg font-medium text-slate-700 dark:text-slate-200">
+      <div className="flex items-center justify-center gap-2 text-lg font-medium text-on-surface">
         <FolderUp size={22} className="text-primary" />
         <span>Arrastra un archivo o haz clic</span>
       </div>
-      <div className="mt-4 text-sm text-slate-500 dark:text-slate-400 flex items-center justify-center gap-1.5">
+      <div className="mt-4 text-sm text-on-surface-variant flex items-center justify-center gap-1.5">
         {status === 'idle' && <span>Esperando archivo...</span>}
         {status === 'uploading' && <><Loader2 size={16} className="animate-spin text-primary" /> <span>Subiendo...</span></>}
         {status === 'success' && <><CheckCircle2 size={16} className="text-emerald-500" /> <span className="text-emerald-600 dark:text-emerald-400 font-medium">Archivo subido correctamente</span></>}

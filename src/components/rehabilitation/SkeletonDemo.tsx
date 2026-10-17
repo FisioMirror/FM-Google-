@@ -94,7 +94,7 @@ export const SkeletonDemo: React.FC<SkeletonDemoProps> = ({ exercise, userRole =
           aria-pressed={selectedRole === 'patient'}
           className={`flex-1 px-3 py-1.5 rounded-lg transition-all flex items-center justify-center gap-1.5 text-xs font-bold ${
             selectedRole === 'patient'
-              ? 'bg-teal-600 text-white shadow-xs'
+              ? 'bg-primary text-on-primary shadow-xs'
               : 'text-on-surface-variant hover:text-on-surface'
           }`}
         >
@@ -107,7 +107,7 @@ export const SkeletonDemo: React.FC<SkeletonDemoProps> = ({ exercise, userRole =
           aria-pressed={selectedRole === 'physio'}
           className={`flex-1 px-3 py-1.5 rounded-lg transition-all flex items-center justify-center gap-1.5 text-xs font-bold ${
             selectedRole === 'physio'
-              ? 'bg-teal-600 text-white shadow-xs'
+              ? 'bg-primary text-on-primary shadow-xs'
               : 'text-on-surface-variant hover:text-on-surface'
           }`}
         >

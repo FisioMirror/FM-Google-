@@ -46,7 +46,7 @@ export const JointAnatomyTooltip: React.FC<JointAnatomyTooltipProps> = ({
         whileTap={{ scale: 0.97 }}
         onClick={() => setVisible(!visible)}
         onMouseEnter={() => setVisible(true)}
-        className="flex items-center gap-2 px-3.5 py-2 rounded-2xl bg-gradient-to-r from-surface/90 via-surface-container/90 to-surface/90 dark:from-slate-800/90 dark:to-slate-900/90 border border-teal-500/30 text-xs font-bold text-slate-800 dark:text-slate-100 shadow-md hover:border-teal-500/50 transition-all cursor-pointer"
+        className="flex items-center gap-2 px-3.5 py-2 rounded-2xl bg-gradient-to-r from-surface/90 via-surface-container/90 to-surface/90 dark:from-slate-800/90 dark:to-slate-900/90 border border-teal-500/30 text-xs font-bold text-on-surface shadow-md hover:border-teal-500/50 transition-all cursor-pointer"
       >
         <span className="p-1 rounded-lg bg-teal-500/20 text-teal-600 dark:text-teal-400">
           <HelpCircle className="w-3.5 h-3.5" />
@@ -61,7 +61,7 @@ export const JointAnatomyTooltip: React.FC<JointAnatomyTooltipProps> = ({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 8, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            className="absolute left-0 bottom-full mb-2.5 z-50 w-72 p-4 rounded-3xl bg-white/95 dark:bg-slate-950/95 text-slate-800 dark:text-white border border-teal-500/30 dark:border-teal-500/40 shadow-elevated text-xs space-y-2 backdrop-blur-2xl transition-colors"
+            className="absolute left-0 bottom-full mb-2.5 z-50 w-72 p-4 rounded-3xl bg-white/95 dark:bg-slate-950/95 text-on-surface dark:text-white border border-teal-500/30 dark:border-teal-500/40 shadow-elevated text-xs space-y-2 backdrop-blur-2xl transition-colors"
           >
             <div className="flex items-center justify-between pb-1 border-b border-slate-200 dark:border-white/10">
               <span className="font-black text-teal-600 dark:text-teal-400 flex items-center gap-1.5">
@@ -71,12 +71,12 @@ export const JointAnatomyTooltip: React.FC<JointAnatomyTooltipProps> = ({
               <button
                 type="button"
                 onClick={() => setVisible(false)}
-                className="text-slate-400 hover:text-slate-700 dark:hover:text-white text-2xs cursor-pointer"
+                className="text-on-surface-variant hover:text-on-surface dark:hover:text-white text-2xs cursor-pointer"
               >
                 Cerrar
               </button>
             </div>
-            <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+            <p className="text-xs text-on-surface-variant leading-relaxed">
               <strong className="text-on-surface">Músculos Agonistas:</strong> {agonists}
             </p>
             <div className="p-2 rounded-xl bg-amber-500/15 border border-amber-500/30 text-2xs text-amber-300 flex items-start gap-1.5">
@@ -117,13 +117,13 @@ export const ARCameraFilterDropdown: React.FC<ARCameraFilterDropdownProps> = ({
         type="button"
         whileTap={{ scale: 0.97 }}
         onClick={() => setOpen(!open)}
-        className="flex items-center gap-2.5 px-4 py-2 rounded-2xl bg-gradient-to-r from-surface/90 via-surface-container/90 to-surface/90 dark:from-slate-800/90 dark:to-slate-900/90 border border-cyan-500/30 text-xs font-bold text-slate-800 dark:text-slate-100 shadow-md hover:border-cyan-500/50 transition-all"
+        className="flex items-center gap-2.5 px-4 py-2 rounded-2xl bg-gradient-to-r from-surface/90 via-surface-container/90 to-surface/90 dark:from-slate-800/90 dark:to-slate-900/90 border border-cyan-500/30 text-xs font-bold text-on-surface shadow-md hover:border-cyan-500/50 transition-all"
       >
         <span className="p-1 rounded-lg bg-cyan-500/20 text-cyan-600 dark:text-cyan-400">
           <Eye className="w-3.5 h-3.5" />
         </span>
         <span>{selected}</span>
-        <ChevronDown className={cn("w-3.5 h-3.5 text-slate-400 transition-transform", open && "rotate-180")} />
+        <ChevronDown className={cn("w-3.5 h-3.5 text-on-surface-variant transition-transform", open && "rotate-180")} />
       </motion.button>
 
       <AnimatePresence>
@@ -150,12 +150,12 @@ export const ARCameraFilterDropdown: React.FC<ARCameraFilterDropdownProps> = ({
                     "w-full text-left p-2 rounded-xl text-xs font-semibold transition-all flex items-center justify-between",
                     isCurrent
                       ? "bg-cyan-600 text-white shadow-sm"
-                      : "hover:bg-black/5 dark:hover:bg-white/5 text-slate-700 dark:text-slate-300"
+                      : "hover:bg-black/5 dark:hover:bg-white/5 text-on-surface"
                   )}
                 >
                   <div>
                     <span className="block font-bold">{f.id}</span>
-                    <span className={cn("text-2xs", isCurrent ? "text-cyan-100" : "text-slate-400")}>
+                    <span className={cn("text-2xs", isCurrent ? "text-cyan-100" : "text-on-surface-variant")}>
                       {f.desc}
                     </span>
                   </div>
@@ -203,7 +203,7 @@ export const RapidToleranceAdjuster: React.FC<RapidToleranceAdjusterProps> = ({
         <SlidersHorizontal className="w-3.5 h-3.5" />
       </div>
       <div>
-        <span className="text-2xs font-bold text-slate-400 uppercase tracking-wider block">Tolerancia ROM</span>
+        <span className="text-2xs font-bold text-on-surface-variant uppercase tracking-wider block">Tolerancia ROM</span>
         <div className="flex items-center gap-2">
           <span className={cn("text-2xs font-bold px-1.5 py-0.2 rounded border", mode.color)}>
             {mode.text}
@@ -321,8 +321,8 @@ export const ExerciseSwitchFloatingMenu: React.FC<ExerciseSwitchFloatingMenuProp
             className={cn(
               "px-3 py-1.5 rounded-xl text-xs font-bold transition-all",
               isCurrent
-                ? "bg-teal-600 text-white shadow-md shadow-teal-600/30"
-                : "text-slate-500 hover:text-slate-900 dark:hover:text-white"
+                ? "bg-primary text-on-primary shadow-md shadow-teal-600/30"
+                : "text-on-surface-variant hover:text-on-surface dark:hover:text-white"
             )}
           >
             {ex}
@@ -384,7 +384,7 @@ export const QuickPrescriptionModalButton: React.FC<QuickPrescriptionModalButton
         <ClipboardPen className="w-3.5 h-3.5" />
       </div>
       <div>
-        <span className="text-2xs font-bold text-slate-400 uppercase tracking-wider block">Prescripción Rápida</span>
+        <span className="text-2xs font-bold text-on-surface-variant uppercase tracking-wider block">Prescripción Rápida</span>
         <span className="font-mono font-bold text-teal-600 dark:text-teal-400">
           {series} Series × {reps} Repeticiones
         </span>
@@ -430,7 +430,7 @@ export const BiomechanicalTagSelector: React.FC<BiomechanicalTagSelectorProps> =
               "px-3 py-1.5 rounded-xl text-xs font-bold border transition-all flex items-center gap-1.5",
               isSelected
                 ? "bg-teal-500/20 text-teal-800 dark:text-teal-200 border-teal-500/50 shadow-sm"
-                : "bg-surface/50 border-outline-variant/30 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+                : "bg-surface/50 border-outline-variant/30 text-on-surface-variant hover:text-on-surface-variant dark:hover:text-slate-200"
             )}
           >
             <Tag className="w-3 h-3 opacity-70" />
@@ -466,7 +466,7 @@ export const CalibrationCompass: React.FC<CalibrationCompassProps> = ({
         <Compass className="w-5 h-5 animate-spin" style={{ animationDuration: '24s' }} />
       </div>
       <div>
-        <span className="font-bold text-slate-800 dark:text-white block">Giroscopio Sagital AR</span>
+        <span className="font-bold text-on-surface dark:text-white block">Giroscopio Sagital AR</span>
         <span className="text-2xs text-teal-600 dark:text-teal-400 font-mono font-bold">
           Pitch: {pitch}° • Roll: {roll}° (Nivelado)
         </span>
@@ -499,7 +499,7 @@ export const FloatingMiniStopwatch: React.FC<FloatingMiniStopwatchProps> = ({ cl
         {active ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
       </button>
       <div>
-        <span className="text-2xs uppercase font-bold text-slate-400 block tracking-wider">Descanso Restante</span>
+        <span className="text-2xs uppercase font-bold text-on-surface-variant block tracking-wider">Descanso Restante</span>
         <span className="font-mono font-black text-on-surface text-sm">
           00:{seconds < 10 ? `0${seconds}` : seconds}s
         </span>
@@ -507,7 +507,7 @@ export const FloatingMiniStopwatch: React.FC<FloatingMiniStopwatchProps> = ({ cl
       <button
         type="button"
         onClick={() => setSeconds(45)}
-        className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-white"
+        className="p-1 text-on-surface-variant hover:text-on-surface-variant dark:hover:text-white"
       >
         <RotateCcw className="w-3.5 h-3.5" />
       </button>

@@ -383,9 +383,9 @@ export function PatientDashboard() {
               <span className="text-2xs sm:text-xs font-bold text-amber-700 dark:text-amber-300 uppercase tracking-wider hidden xs:inline">{t('dashboard.streak', 'Racha')}</span>
             </div>
             <div>
-              <p className="text-2xs sm:text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider line-clamp-1 xs:hidden">{t('dashboard.streak', 'Racha')}</p>
+              <p className="text-2xs sm:text-xs font-semibold text-on-surface-variant uppercase tracking-wider line-clamp-1 xs:hidden">{t('dashboard.streak', 'Racha')}</p>
               <p className="text-xl sm:text-2xl lg:text-3xl font-black text-on-surface tabular-nums tracking-tight">
-                {kpi.streak} <span className="text-2xs sm:text-xs font-semibold text-slate-400">{t('common.days', 'días')}</span>
+                {kpi.streak} <span className="text-2xs sm:text-xs font-semibold text-on-surface-variant">{t('common.days', 'días')}</span>
               </p>
             </div>
           </CardSpotlight>
@@ -407,9 +407,9 @@ export function PatientDashboard() {
               <span className="text-2xs sm:text-xs font-bold text-teal-700 dark:text-teal-300 uppercase tracking-wider hidden xs:inline">{t('dashboard.totalSessions', 'Sesiones')}</span>
             </div>
             <div>
-              <p className="text-2xs sm:text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider line-clamp-1 xs:hidden">{t('dashboard.totalSessions', 'Sesiones')}</p>
+              <p className="text-2xs sm:text-xs font-semibold text-on-surface-variant uppercase tracking-wider line-clamp-1 xs:hidden">{t('dashboard.totalSessions', 'Sesiones')}</p>
               <p className="text-xl sm:text-2xl lg:text-3xl font-black text-teal-700 dark:text-teal-300 tabular-nums tracking-tight">
-                {kpi.totalSessions} <span className="text-2xs sm:text-xs font-semibold text-slate-400">{t('common.all', 'total')}</span>
+                {kpi.totalSessions} <span className="text-2xs sm:text-xs font-semibold text-on-surface-variant">{t('common.all', 'total')}</span>
               </p>
             </div>
           </CardSpotlight>
@@ -431,9 +431,9 @@ export function PatientDashboard() {
               <span className="text-2xs sm:text-xs font-bold text-sky-700 dark:text-sky-300 uppercase tracking-wider hidden xs:inline">{t('dashboard.totalMinutes', 'Minutos')}</span>
             </div>
             <div>
-              <p className="text-2xs sm:text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider line-clamp-1 xs:hidden">{t('dashboard.totalMinutes', 'Minutos')}</p>
+              <p className="text-2xs sm:text-xs font-semibold text-on-surface-variant uppercase tracking-wider line-clamp-1 xs:hidden">{t('dashboard.totalMinutes', 'Minutos')}</p>
               <p className="text-xl sm:text-2xl lg:text-3xl font-black text-on-surface tabular-nums tracking-tight">
-                {kpi.weeklyMinutes} <span className="text-2xs sm:text-xs font-semibold text-slate-400">{t('common.minutes', 'min')}</span>
+                {kpi.weeklyMinutes} <span className="text-2xs sm:text-xs font-semibold text-on-surface-variant">{t('common.minutes', 'min')}</span>
               </p>
             </div>
           </CardSpotlight>
@@ -492,7 +492,7 @@ export function PatientDashboard() {
                   Sesión Guiada AR
                 </span>
                 <h3 className="text-xl font-black text-on-surface">{t('dashboard.todaySession', 'Rutina de Hoy')}</h3>
-                <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-medium">
+                <p className="text-xs text-on-surface-variant leading-relaxed font-medium">
                   {exercises.length > 0
                     ? `${exercises[0].name} con corrección de postura en tiempo real por visión computacional.`
                     : 'Inicia el seguimiento guiado con tu cámara para registrar ángulos articulares.'}

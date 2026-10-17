@@ -328,7 +328,7 @@ export const CustomBreadcrumbs = ({
 export const IconButtons = () => {
   return (
     <div className="flex flex-wrap gap-2.5">
-      <button className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-teal-600 text-white text-xs font-bold hover:bg-teal-500 transition-all active:scale-95 shadow-md shadow-teal-600/20 cursor-pointer">
+      <button className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-primary text-on-primary text-xs font-bold hover:bg-teal-500 transition-all active:scale-95 shadow-md shadow-teal-600/20 cursor-pointer">
         <Globe className="size-3.5" /> Buscar
       </button>
       <button className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-teal-500/10 text-teal-600 dark:text-teal-400 border border-teal-500/20 text-xs font-bold hover:bg-teal-500/20 transition-all active:scale-95 cursor-pointer">
@@ -410,7 +410,7 @@ export const ButtonGroupDropdown = ({
                 }}
                 className={cn(
                   'w-full text-left px-3.5 py-2 text-xs rounded-xl font-bold transition-colors cursor-pointer flex items-center justify-between',
-                  selected === opt ? 'bg-teal-600 text-white' : 'text-on-surface hover:bg-surface-container-high'
+                  selected === opt ? 'bg-primary text-on-primary' : 'text-on-surface hover:bg-surface-container-high'
                 )}
               >
                 <span>{opt}</span>
@@ -484,7 +484,7 @@ export const CardWithImage = ({
         <span className="text-xs text-teal-200/80 font-medium">3 series • 12 reps</span>
         <button
           onClick={onAction}
-          className="px-3.5 py-1.5 rounded-xl bg-white text-slate-950 text-xs font-bold hover:bg-teal-100 transition-all shadow cursor-pointer active:scale-95"
+          className="px-3.5 py-1.5 rounded-xl bg-white text-on-surface text-xs font-bold hover:bg-teal-100 transition-all shadow cursor-pointer active:scale-95"
         >
           Ver demostración
         </button>
@@ -687,7 +687,7 @@ export const ActionDropdown = () => {
     <div className="relative inline-block">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="px-4 py-2.5 rounded-2xl bg-teal-600 text-white text-xs font-bold hover:bg-teal-500 transition-all flex items-center gap-2 shadow-md shadow-teal-600/20 cursor-pointer active:scale-95"
+        className="px-4 py-2.5 rounded-2xl bg-primary text-on-primary text-xs font-bold hover:bg-teal-500 transition-all flex items-center gap-2 shadow-md shadow-teal-600/20 cursor-pointer active:scale-95"
       >
         <span>Acciones Rápidas</span>
         <ChevronDown className="size-3.5" />
@@ -841,7 +841,7 @@ export const DateRange = ({
               className={cn(
                 'py-1.5 rounded-xl text-xs font-semibold transition-colors',
                 isEndpoint
-                  ? 'bg-teal-600 text-white font-black shadow-sm'
+                  ? 'bg-primary text-on-primary font-black shadow-sm'
                   : isSelected
                   ? 'bg-teal-500/20 text-teal-700 dark:text-teal-300 font-bold'
                   : 'text-on-surface-variant hover:bg-surface-container-high'
@@ -1022,7 +1022,7 @@ export const CustomAlert = ({
 export const ChipVariants = () => {
   return (
     <div className="flex flex-wrap gap-2">
-      <span className="px-3.5 py-1.5 rounded-full text-xs font-bold bg-teal-600 text-white shadow-sm">Solid</span>
+      <span className="px-3.5 py-1.5 rounded-full text-xs font-bold bg-primary text-on-primary shadow-sm">Solid</span>
       <span className="px-3.5 py-1.5 rounded-full text-xs font-bold bg-teal-500/10 text-teal-600 dark:text-teal-400 border border-teal-500/30">Bordered</span>
       <span className="px-3.5 py-1.5 rounded-full text-xs font-bold bg-surface-container-high text-on-surface">Flat</span>
       <span className="px-3.5 py-1.5 rounded-full text-xs font-bold bg-cyan-500/15 text-cyan-700 dark:text-cyan-300">Light</span>
@@ -1093,7 +1093,7 @@ export const PopoverInteractive = ({
                 onClick={() => setFollowing(!following)}
                 className={cn(
                   'px-3.5 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer',
-                  following ? 'bg-surface-container-high text-on-surface' : 'bg-teal-600 text-white shadow-sm'
+                  following ? 'bg-surface-container-high text-on-surface' : 'bg-primary text-on-primary shadow-sm'
                 )}
               >
                 {following ? 'Siguiendo' : 'Seguir'}

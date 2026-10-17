@@ -174,7 +174,7 @@ function CharacterSpotlight({
         {/* Discreet hover indicator when inactive */}
         {!isFisio && (
           <div className="absolute top-[28%] left-[24%] opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none transform -translate-y-1 group-hover:translate-y-0">
-            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-md shadow-md border border-slate-200/90 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold">
+            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-md shadow-md border border-slate-200/90 dark:border-slate-700 text-on-surface text-xs font-bold">
               <Icon name="touch_app" size={12} />
               <span>Ver Fisioterapeuta</span>
             </div>
@@ -222,7 +222,7 @@ function CharacterSpotlight({
         {/* Discreet hover indicator when inactive */}
         {!isPaciente && (
           <div className="absolute top-[32%] right-[24%] opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none transform -translate-y-1 group-hover:translate-y-0">
-            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-md shadow-md border border-slate-200/90 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold">
+            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-md shadow-md border border-slate-200/90 dark:border-slate-700 text-on-surface text-xs font-bold">
               <Icon name="touch_app" size={12} />
               <span>Ver Paciente</span>
             </div>
@@ -830,7 +830,7 @@ export function Login() {
                 <span className="font-extrabold text-xl text-[#00504d] dark:text-[#8ad3cf]">
                   FisioMirror Profesional
                 </span>
-                <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5">
+                <p className="text-xs text-on-surface-variant mt-0.5">
                   Tu evolución profesional comienza aquí.
                 </p>
               </div>
@@ -868,7 +868,7 @@ export function Login() {
                   'relative flex-1 py-3 text-sm font-bold z-10 transition-colors flex items-center justify-center gap-2 rounded-xl',
                   isPaciente
                     ? 'text-blue-600 dark:text-blue-400 font-extrabold'
-                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
+                    : 'text-on-surface-variant hover:text-on-surface dark:hover:text-slate-200'
                 )}
               >
                 <Icon name="person" filled={isPaciente} size={18} />
@@ -881,7 +881,7 @@ export function Login() {
                   'relative flex-1 py-3 text-sm font-bold z-10 transition-colors flex items-center justify-center gap-2 rounded-xl',
                   isFisio
                     ? 'text-[#00504d] dark:text-[#8ad3cf] font-extrabold'
-                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
+                    : 'text-on-surface-variant hover:text-on-surface dark:hover:text-slate-200'
                 )}
               >
                 <Icon name="medical_services" filled={isFisio} size={18} />
@@ -893,13 +893,13 @@ export function Login() {
           {/* Header Typography matching HTML document */}
           {(!isFisio || !isRegister) && (
             <div className="text-center space-y-1.5 pt-1">
-              <span className="text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">
+              <span className="text-xs font-bold uppercase tracking-widest text-on-surface-variant">
                 {greeting}
               </span>
               <h2 className="font-extrabold text-2xl sm:text-[26px] tracking-tight leading-tight">
                 <AuroraText>{getHeaderTitle()}</AuroraText>
               </h2>
-              <p className="text-sm text-slate-600 dark:text-slate-400 leading-snug px-1">
+              <p className="text-sm text-on-surface-variant leading-snug px-1">
                 {getHeaderSubtitle()}
               </p>
             </div>
@@ -916,7 +916,7 @@ export function Login() {
                   Etapa {fisioStep}/2
                 </span>
               </div>
-              <p className="text-xs text-slate-600 dark:text-slate-400">
+              <p className="text-xs text-on-surface-variant">
                 Completa tus datos profesionales para validar tu acceso.
               </p>
             </div>
@@ -942,7 +942,7 @@ export function Login() {
                       <Icon
                         name="alternate_email"
                         size={19}
-                        className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+                        className="absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant"
                       />
                       <input
                         ref={emailRef}
@@ -961,7 +961,7 @@ export function Login() {
                       <Icon
                         name="lock"
                         size={19}
-                        className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+                        className="absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant"
                       />
                       <input
                         type={showPassword ? 'text' : 'password'}
@@ -977,7 +977,7 @@ export function Login() {
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
                         aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
-                        className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1"
+                        className="absolute right-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-on-surface-variant dark:hover:text-slate-200 p-1"
                       >
                         <Icon name={showPassword ? 'visibility_off' : 'visibility'} size={19} />
                       </button>
@@ -1028,7 +1028,7 @@ export function Login() {
                     )}
                   </ShimmerButton>
 
-                  <div className="pt-2 text-center text-xs text-slate-600 dark:text-slate-400 space-y-1.5">
+                  <div className="pt-2 text-center text-xs text-on-surface-variant space-y-1.5">
                     <p>
                       ¿Tienes un código de tu fisioterapeuta?{' '}
                       <button
@@ -1057,7 +1057,7 @@ export function Login() {
                 >
                   <div className="space-y-3">
                     <div>
-                      <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5 text-center">
+                      <label className="block text-xs font-bold uppercase tracking-wider text-on-surface-variant mb-1.5 text-center">
                         Código de Acceso (6 dígitos)
                       </label>
                       <PinInput
@@ -1073,7 +1073,7 @@ export function Login() {
                       <Icon
                         name="alternate_email"
                         size={19}
-                        className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+                        className="absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant"
                       />
                       <input
                         type="email"
@@ -1090,7 +1090,7 @@ export function Login() {
                       <Icon
                         name="lock"
                         size={19}
-                        className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+                        className="absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant"
                       />
                       <input
                         type={showPassword ? 'text' : 'password'}
@@ -1104,7 +1104,7 @@ export function Login() {
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1"
+                        className="absolute right-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-on-surface-variant dark:hover:text-slate-200 p-1"
                       >
                         <Icon name={showPassword ? 'visibility_off' : 'visibility'} size={19} />
                       </button>
@@ -1114,7 +1114,7 @@ export function Login() {
                       <Icon
                         name="lock_reset"
                         size={19}
-                        className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+                        className="absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant"
                       />
                       <input
                         type={showPassword ? 'text' : 'password'}
@@ -1142,7 +1142,7 @@ export function Login() {
                             transition={{ duration: 0.3 }}
                           />
                         </div>
-                        <span className="text-xs font-bold text-slate-600 dark:text-slate-400 whitespace-nowrap">
+                        <span className="text-xs font-bold text-on-surface-variant whitespace-nowrap">
                           {pwStrength.label}
                         </span>
                       </div>
@@ -1181,7 +1181,7 @@ export function Login() {
                     )}
                   </button>
 
-                  <div className="text-center text-xs text-slate-600 dark:text-slate-400 pt-1">
+                  <div className="text-center text-xs text-on-surface-variant pt-1">
                     <span>¿Ya vinculaste tu cuenta? </span>
                     <button
                       type="button"
@@ -1211,7 +1211,7 @@ export function Login() {
                       <Icon
                         name="alternate_email"
                         size={19}
-                        className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+                        className="absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant"
                       />
                       <input
                         ref={emailRef}
@@ -1230,7 +1230,7 @@ export function Login() {
                       <Icon
                         name="lock"
                         size={19}
-                        className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+                        className="absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant"
                       />
                       <input
                         type={showPassword ? 'text' : 'password'}
@@ -1245,7 +1245,7 @@ export function Login() {
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1"
+                        className="absolute right-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-on-surface-variant dark:hover:text-slate-200 p-1"
                       >
                         <Icon name={showPassword ? 'visibility_off' : 'visibility'} size={19} />
                       </button>
@@ -1294,7 +1294,7 @@ export function Login() {
                     )}
                   </button>
 
-                  <div className="pt-2 text-center text-xs text-slate-600 dark:text-slate-400">
+                  <div className="pt-2 text-center text-xs text-on-surface-variant">
                     <span>¿Nuevo profesional en FisioMirror? </span>
                     <button
                       type="button"
@@ -1330,7 +1330,7 @@ export function Login() {
                       >
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                           <div>
-                            <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                            <label className="block text-xs font-bold text-on-surface mb-1">
                               Nombre Completo <span className="text-red-500">*</span>
                             </label>
                             <input
@@ -1342,7 +1342,7 @@ export function Login() {
                             />
                           </div>
                           <div>
-                            <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                            <label className="block text-xs font-bold text-on-surface mb-1">
                               Email Profesional <span className="text-red-500">*</span>
                             </label>
                             <input
@@ -1355,7 +1355,7 @@ export function Login() {
                             />
                           </div>
                           <div>
-                            <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                            <label className="block text-xs font-bold text-on-surface mb-1">
                               Contraseña <span className="text-red-500">*</span>
                             </label>
                             <input
@@ -1368,7 +1368,7 @@ export function Login() {
                             />
                           </div>
                           <div>
-                            <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                            <label className="block text-xs font-bold text-on-surface mb-1">
                               Confirmar Contraseña <span className="text-red-500">*</span>
                             </label>
                             <input
@@ -1397,7 +1397,7 @@ export function Login() {
                                 transition={{ duration: 0.3 }}
                               />
                             </div>
-                            <span className="text-xs font-bold text-slate-600 dark:text-slate-400">
+                            <span className="text-xs font-bold text-on-surface-variant">
                               {pwStrength.label}
                             </span>
                           </div>
@@ -1407,7 +1407,7 @@ export function Login() {
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                           <div>
-                            <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                            <label className="block text-xs font-bold text-on-surface mb-1">
                               Cédula / Documento <span className="text-red-500">*</span>
                             </label>
                             <input
@@ -1419,7 +1419,7 @@ export function Login() {
                             />
                           </div>
                           <div>
-                            <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                            <label className="block text-xs font-bold text-on-surface mb-1">
                               Teléfono / WhatsApp <span className="text-red-500">*</span>
                             </label>
                             <input
@@ -1432,7 +1432,7 @@ export function Login() {
                             />
                           </div>
                           <div>
-                            <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                            <label className="block text-xs font-bold text-on-surface mb-1">
                               Universidad de Egreso
                             </label>
                             <input
@@ -1443,7 +1443,7 @@ export function Login() {
                             />
                           </div>
                           <div>
-                            <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                            <label className="block text-xs font-bold text-on-surface mb-1">
                               Nº Colegiado (opcional)
                             </label>
                             <input
@@ -1454,7 +1454,7 @@ export function Login() {
                             />
                           </div>
                           <div>
-                            <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                            <label className="block text-xs font-bold text-on-surface mb-1">
                               Año de Formación
                             </label>
                             <select
@@ -1474,7 +1474,7 @@ export function Login() {
                         </div>
 
                         <div>
-                          <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                          <label className="block text-xs font-bold text-on-surface mb-1">
                             Especialidades Clínicas
                           </label>
                           <div className="flex flex-wrap gap-2 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 min-h-[46px] items-center">
@@ -1501,7 +1501,7 @@ export function Login() {
                                     setEspecialidadesSel([...especialidadesSel, e.target.value]);
                                   }
                                 }}
-                                className="bg-transparent text-xs text-slate-700 dark:text-slate-300 outline-none cursor-pointer"
+                                className="bg-transparent text-xs text-on-surface outline-none cursor-pointer"
                               >
                                 <option value="">+ Añadir...</option>
                                 {especialidadesOpts
@@ -1537,7 +1537,7 @@ export function Login() {
                         className="space-y-4"
                       >
                         <div>
-                          <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-2">
+                          <label className="block text-xs font-bold text-on-surface mb-2">
                             Carga de credencial profesional (opcional)
                           </label>
                           <div
@@ -1558,7 +1558,7 @@ export function Login() {
                                     <span className="text-xs font-bold">{credencialFile?.name}</span>
                                   </div>
                                 )}
-                                <span className="text-xs text-slate-500">
+                                <span className="text-xs text-on-surface-variant">
                                   Click para cambiar de archivo
                                 </span>
                               </div>
@@ -1570,7 +1570,7 @@ export function Login() {
                                 <span className="font-bold text-sm text-[#00504d] dark:text-[#8ad3cf]">
                                   Cédula Profesional o Título
                                 </span>
-                                <p className="text-xs text-slate-500">
+                                <p className="text-xs text-on-surface-variant">
                                   Arrastra o selecciona un archivo (PDF o Imagen)
                                 </p>
                               </div>
@@ -1596,7 +1596,7 @@ export function Login() {
                           <button
                             type="button"
                             onClick={() => setFisioStep(1)}
-                            className="flex items-center gap-1.5 text-xs font-bold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100"
+                            className="flex items-center gap-1.5 text-xs font-bold text-on-surface-variant hover:text-on-surface dark:hover:text-slate-100"
                           >
                             <Icon name="arrow_back" size={16} /> Volver
                           </button>
@@ -1668,7 +1668,7 @@ export function Login() {
                     )}
                   </button>
 
-                  <div className="text-center text-xs text-slate-600 dark:text-slate-400 pt-1">
+                  <div className="text-center text-xs text-on-surface-variant pt-1">
                     <span>¿Ya tienes cuenta profesional? </span>
                     <button
                       type="button"
@@ -1686,20 +1686,20 @@ export function Login() {
 
         {/* Demo Fast Access Buttons */}
         <div className="w-full max-w-[480px] flex flex-col items-center gap-y-2 mt-5">
-          <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">
+          <span className="text-xs font-bold text-on-surface-variant uppercase tracking-widest">
             Acceso Rápido de Prueba & Galería
           </span>
           <div className="flex flex-wrap justify-center gap-2.5">
             <button
               onClick={fillFisioDemo}
-              className="px-4 py-2 rounded-full border border-slate-200/80 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 backdrop-blur-md hover:bg-white dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-[#00504d] dark:hover:text-[#8ad3cf] text-xs font-bold shadow-sm transition-all flex items-center gap-1.5 active:scale-95"
+              className="px-4 py-2 rounded-full border border-slate-200/80 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 backdrop-blur-md hover:bg-white dark:hover:bg-slate-800 text-on-surface hover:text-[#00504d] dark:hover:text-[#8ad3cf] text-xs font-bold shadow-sm transition-all flex items-center gap-1.5 active:scale-95"
             >
               <Icon name="medical_services" size={15} className="text-[#00504d] dark:text-teal-400" />
               Demo Fisio
             </button>
             <button
               onClick={fillPacienteDemo}
-              className="px-4 py-2 rounded-full border border-slate-200/80 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 backdrop-blur-md hover:bg-white dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 text-xs font-bold shadow-sm transition-all flex items-center gap-1.5 active:scale-95"
+              className="px-4 py-2 rounded-full border border-slate-200/80 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 backdrop-blur-md hover:bg-white dark:hover:bg-slate-800 text-on-surface hover:text-blue-600 dark:hover:text-blue-400 text-xs font-bold shadow-sm transition-all flex items-center gap-1.5 active:scale-95"
             >
               <Icon name="person" size={15} className="text-blue-600 dark:text-blue-400" />
               Demo Paciente
@@ -1865,7 +1865,7 @@ export function Login() {
               <h3 className="font-extrabold text-xl text-center text-[#00504d] dark:text-[#8ad3cf] mb-1">
                 Recuperar Contraseña
               </h3>
-              <p className="text-xs text-slate-600 dark:text-slate-400 text-center mb-5 leading-relaxed">
+              <p className="text-xs text-on-surface-variant text-center mb-5 leading-relaxed">
                 Ingresa tu correo y te enviaremos un enlace seguro para restablecer tu acceso.
               </p>
 
@@ -1873,7 +1873,7 @@ export function Login() {
                 <Icon
                   name="alternate_email"
                   size={18}
-                  className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"
+                  className="absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant"
                 />
                 <input
                   type="email"
@@ -1888,7 +1888,7 @@ export function Login() {
                 <button
                   type="button"
                   onClick={() => setShowResetModal(false)}
-                  className="flex-1 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold text-xs hover:bg-slate-200 dark:hover:bg-slate-700 transition-all"
+                  className="flex-1 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-on-surface font-bold text-xs hover:bg-slate-200 dark:hover:bg-slate-700 transition-all"
                 >
                   Cancelar
                 </button>
@@ -1896,7 +1896,7 @@ export function Login() {
                   type="button"
                   onClick={handleResetPassword}
                   disabled={resetLoading}
-                  className="flex-1 py-2.5 rounded-xl bg-[#00504d] dark:bg-teal-600 text-white font-bold text-xs hover:bg-[#0c403d] dark:hover:bg-teal-500 transition-all disabled:opacity-50 flex items-center justify-center gap-1.5"
+                  className="flex-1 py-2.5 rounded-xl bg-[#00504d] dark:bg-primary text-on-primary font-bold text-xs hover:bg-[#0c403d] dark:hover:bg-teal-500 transition-all disabled:opacity-50 flex items-center justify-center gap-1.5"
                 >
                   {resetLoading ? <Spinner size={16} className="text-white" /> : <Icon name="send" size={16} />}
                   {resetLoading ? 'Enviando...' : 'Enviar enlace'}
@@ -1945,7 +1945,7 @@ export function Login() {
               <h3 className="font-extrabold text-2xl text-[#00504d] dark:text-[#8ad3cf]">
                 ¡Cuenta Creada con Éxito!
               </h3>
-              <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+              <p className="text-sm text-on-surface-variant leading-relaxed">
                 Tus datos han sido registrados correctamente en FisioMirror. Ya puedes iniciar sesión para acceder a tu plataforma clínica.
               </p>
               <button
@@ -1955,7 +1955,7 @@ export function Login() {
                   setMode('login');
                   setFisioStep(1);
                 }}
-                className="w-full py-3.5 bg-[#00504d] dark:bg-teal-600 text-white rounded-2xl font-bold text-sm hover:bg-[#0c403d] dark:hover:bg-teal-500 active:scale-95 transition-all shadow-md"
+                className="w-full py-3.5 bg-[#00504d] dark:bg-primary text-on-primary rounded-2xl font-bold text-sm hover:bg-[#0c403d] dark:hover:bg-teal-500 active:scale-95 transition-all shadow-md"
               >
                 Ir a Iniciar Sesión
               </button>

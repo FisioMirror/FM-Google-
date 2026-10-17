@@ -69,7 +69,7 @@ export const CompensationAlertBanner: React.FC<CompensationAlertBannerProps> = (
         </div>
         <button
           onClick={() => setCorrected(false)}
-          className="text-xs text-slate-500 hover:underline"
+          className="text-xs text-on-surface-variant hover:underline"
         >
           Reiniciar
         </button>
@@ -101,7 +101,7 @@ export const CompensationAlertBanner: React.FC<CompensationAlertBannerProps> = (
                 {deviationJoint}
               </span>
             </div>
-            <p className="text-sm text-slate-700 dark:text-slate-200 font-medium">
+            <p className="text-sm text-on-surface font-medium">
               {detectedIssue}
             </p>
           </div>
@@ -110,7 +110,7 @@ export const CompensationAlertBanner: React.FC<CompensationAlertBannerProps> = (
         <button
           type="button"
           onClick={() => setExpanded(!expanded)}
-          className="p-1.5 rounded-xl hover:bg-black/5 dark:hover:bg-white/10 text-slate-500 transition-colors"
+          className="p-1.5 rounded-xl hover:bg-black/5 dark:hover:bg-white/10 text-on-surface-variant transition-colors"
           aria-label="Expandir sugerencia correctiva"
         >
           <motion.div animate={{ rotate: expanded ? 180 : 0 }}>
@@ -132,7 +132,7 @@ export const CompensationAlertBanner: React.FC<CompensationAlertBannerProps> = (
               <span className="text-xs font-semibold text-primary dark:text-teal-400 block mb-1">
                 Guía Biomecánica Inmediata:
               </span>
-              <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+              <p className="text-xs text-on-surface-variant leading-relaxed">
                 {recommendedCorrection}
               </p>
             </div>
@@ -141,7 +141,7 @@ export const CompensationAlertBanner: React.FC<CompensationAlertBannerProps> = (
               <button
                 type="button"
                 onClick={onDismiss}
-                className="px-3 py-1.5 text-xs text-slate-500 hover:text-slate-700 dark:hover:text-slate-200"
+                className="px-3 py-1.5 text-xs text-on-surface-variant hover:text-on-surface dark:hover:text-slate-200"
               >
                 Ignorar
               </button>

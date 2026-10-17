@@ -49,7 +49,7 @@ const RingToBar = () => {
         {progressState === 'complete' && <><CheckCircle2 size={18} /> <span>Descarga Completa</span></>}
       </button>
       {progressState === 'complete' && (
-        <button className="flex items-center gap-2 px-4 py-2 border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 rounded-full text-sm font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" onClick={resetProgress}>
+        <button className="flex items-center gap-2 px-4 py-2 border border-slate-300 dark:border-slate-600 text-on-surface-variant rounded-full text-sm font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" onClick={resetProgress}>
           <RotateCcw size={16} /> <span>Reiniciar</span>
         </button>
       )}

@@ -326,7 +326,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
             collapsed ? 'justify-center p-2.5 my-1' : 'gap-3 px-3.5 py-2.5 my-0.5',
             isActive
               ? 'text-teal-700 dark:text-teal-300 font-bold'
-              : 'text-slate-600 dark:text-slate-300 font-medium hover:text-slate-900 dark:hover:text-white'
+              : 'text-on-surface-variant font-medium hover:text-on-surface dark:hover:text-white'
           )
         }
         title={collapsed ? item.label : undefined}
@@ -344,8 +344,8 @@ export function FisioLayout({ children }: FisioLayoutProps) {
               className={cn(
                 'w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-transform duration-200 group-hover:scale-105',
                 isActive
-                  ? 'bg-teal-600 text-white shadow-sm shadow-teal-600/25'
-                  : 'bg-slate-100 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 group-hover:bg-teal-50 dark:group-hover:bg-slate-700/80 group-hover:text-teal-600 dark:group-hover:text-teal-400'
+                  ? 'bg-primary text-on-primary shadow-sm shadow-teal-600/25'
+                  : 'bg-slate-100 dark:bg-slate-800/80 text-on-surface-variant group-hover:bg-teal-50 dark:group-hover:bg-slate-700/80 group-hover:text-teal-600 dark:group-hover:text-teal-400'
               )}
             >
               <IconComp size={18} />
@@ -375,7 +375,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
             }
           }}
           className={cn(
-            'rounded-xl text-slate-700 dark:text-slate-200 hover:bg-sky-50 dark:hover:bg-slate-800 hover:text-sky-700 dark:hover:text-sky-300 transition-colors',
+            'rounded-xl text-on-surface hover:bg-sky-50 dark:hover:bg-slate-800 hover:text-sky-700 dark:hover:text-sky-300 transition-colors',
             collapsed ? 'p-2' : 'flex items-center gap-3 px-3 py-2 w-full',
           )}
           title={collapsed ? 'Instalar App' : undefined}
@@ -407,14 +407,14 @@ export function FisioLayout({ children }: FisioLayoutProps) {
         <button
           onClick={toggleTheme}
           aria-label="Cambiar tema"
-          className="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-sky-50 dark:hover:bg-slate-800 hover:text-sky-600 dark:hover:text-sky-400 transition-colors"
+          className="p-2 rounded-xl text-on-surface-variant hover:bg-sky-50 dark:hover:bg-slate-800 hover:text-sky-600 dark:hover:text-sky-400 transition-colors"
         >
           {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
         </button>
         <button
           onClick={() => { onNavAway?.(); setShowNotifications(true); }}
           aria-label="Notificaciones"
-          className="relative p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-sky-50 dark:hover:bg-slate-800 hover:text-sky-600 dark:hover:text-sky-400 transition-colors"
+          className="relative p-2 rounded-xl text-on-surface-variant hover:bg-sky-50 dark:hover:bg-slate-800 hover:text-sky-600 dark:hover:text-sky-400 transition-colors"
         >
           <Bell size={18} />
           {unreadCount > 0 && (
@@ -426,7 +426,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
         <button
           onClick={() => { onNavAway?.(); setShowLogout(true); }}
           aria-label="Cerrar sesión"
-          className="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-red-50 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 transition-colors"
+          className="p-2 rounded-xl text-on-surface-variant hover:bg-red-50 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 transition-colors"
         >
           <LogOut size={18} />
         </button>
@@ -471,7 +471,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
 
   const desktopSidebar = (
     <aside
-      className="fixed left-0 top-0 h-[100dvh] flex flex-col z-30 bg-gradient-to-b from-white/90 via-sky-50/30 to-surface/90 dark:from-slate-900 dark:via-slate-900/95 dark:to-slate-950 border-r border-sky-200/50 dark:border-slate-800 text-slate-900 dark:text-slate-200 transition-all duration-300 overflow-hidden backdrop-blur-xl"
+      className="fixed left-0 top-0 h-[100dvh] flex flex-col z-30 bg-gradient-to-b from-white/90 via-sky-50/30 to-surface/90 dark:from-slate-900 dark:via-slate-900/95 dark:to-slate-950 border-r border-sky-200/50 dark:border-slate-800 text-on-surface dark:text-slate-200 transition-all duration-300 overflow-hidden backdrop-blur-xl"
       style={{ width: `${sidebarWidth}px` }}
     >
       {sidebarContent(sidebarCollapsed, { showToggle: true })}
@@ -518,7 +518,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
                 </div>
                 <button
                   onClick={() => setSidebarOpen(false)}
-                  className="p-2 rounded-xl text-slate-500 hover:text-slate-800 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                  className="p-2 rounded-xl text-on-surface-variant hover:text-on-surface dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
                   aria-label="Cerrar menú"
                 >
                   <X size={20} />

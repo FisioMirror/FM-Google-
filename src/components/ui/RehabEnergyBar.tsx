@@ -59,7 +59,7 @@ export const RehabEnergyBar: React.FC<RehabEnergyBarProps> = ({
             <h4 className="text-sm font-semibold text-on-surface dark:text-white flex items-center gap-1.5">
               Energía Muscular de Rehabilitación
             </h4>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
+            <p className="text-xs text-on-surface-variant">
               {repsCompleted} de {totalTargetReps} repeticiones completadas
             </p>
           </div>
@@ -70,7 +70,7 @@ export const RehabEnergyBar: React.FC<RehabEnergyBarProps> = ({
           <div className="text-xl font-bold font-mono tabular-nums text-on-surface dark:text-white">
             {Math.round(clampedEnergy)}%
           </div>
-          <span className="text-2xs uppercase font-semibold tracking-wider text-slate-400">
+          <span className="text-2xs uppercase font-semibold tracking-wider text-on-surface-variant">
             {isLowEnergy ? 'Fatiga Alta' : clampedEnergy < 60 ? 'Moderada' : 'Óptima'}
           </span>
         </div>
@@ -98,13 +98,13 @@ export const RehabEnergyBar: React.FC<RehabEnergyBarProps> = ({
 
       {/* Footer Metrics */}
       <div className="grid grid-cols-2 gap-3 mt-4 pt-3 border-t border-outline-variant/15 dark:border-white/5 text-xs">
-        <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300">
+        <div className="flex items-center gap-1.5 text-on-surface-variant">
           <Flame className="w-3.5 h-3.5 text-amber-500" />
           <span>Índice de Fatiga:</span>
           <span className="font-mono font-bold text-on-surface dark:text-white">{fatigueScore.toFixed(1)} / 10</span>
         </div>
 
-        <div className="flex items-center justify-end gap-1.5 text-slate-600 dark:text-slate-300">
+        <div className="flex items-center justify-end gap-1.5 text-on-surface-variant">
           {isHighFatigue ? (
             <span className="flex items-center gap-1 text-rose-500 font-medium">
               <ShieldAlert className="w-3.5 h-3.5" />

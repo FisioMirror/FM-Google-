@@ -317,7 +317,7 @@ export const ARModel3DOverlayPiP: React.FC<ARModel3DOverlayPiPProps> = ({
                 onClick={() => setPlaybackSpeed(speed)}
                 className={`px-1.5 py-0.5 rounded text-2xs sm:text-2xs font-bold transition-all cursor-pointer ${
                   playbackSpeed === speed
-                    ? 'bg-teal-600 text-white shadow-xs'
+                    ? 'bg-primary text-on-primary shadow-xs'
                     : 'text-white/60 hover:text-white'
                 }`}
               >
@@ -332,7 +332,7 @@ export const ARModel3DOverlayPiP: React.FC<ARModel3DOverlayPiPProps> = ({
               onClick={() => setCharacterRole('physio')}
               className={`p-1 rounded transition-all cursor-pointer ${
                 characterRole === 'physio'
-                  ? 'bg-teal-600 text-white shadow-xs'
+                  ? 'bg-primary text-on-primary shadow-xs'
                   : 'text-white/60 hover:text-white'
               }`}
               title="Avatar Fisioterapeuta"
@@ -343,7 +343,7 @@ export const ARModel3DOverlayPiP: React.FC<ARModel3DOverlayPiPProps> = ({
               onClick={() => setCharacterRole('patient')}
               className={`p-1 rounded transition-all cursor-pointer ${
                 characterRole === 'patient'
-                  ? 'bg-teal-600 text-white shadow-xs'
+                  ? 'bg-primary text-on-primary shadow-xs'
                   : 'text-white/60 hover:text-white'
               }`}
               title="Avatar Paciente"

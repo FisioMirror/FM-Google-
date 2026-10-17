@@ -48,7 +48,7 @@ export function CompactJointSelector({
   return (
     <div className={cn('w-full space-y-1.5', className)}>
       <div className="flex items-center justify-between px-1">
-        <span className="text-2xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+        <span className="text-2xs font-bold uppercase tracking-wider text-on-surface-variant">
           Articulación Objetivo
         </span>
         <span className="text-2xs font-mono text-teal-600 dark:text-teal-400 font-bold">
@@ -67,8 +67,8 @@ export function CompactJointSelector({
               className={cn(
                 'relative px-3.5 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all snap-start select-none border',
                 isSelected
-                  ? 'bg-teal-600 text-white border-teal-600 shadow-xs'
-                  : 'bg-white/80 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700'
+                  ? 'bg-primary text-on-primary border-teal-600 shadow-xs'
+                  : 'bg-white/80 dark:bg-slate-800/80 text-on-surface-variant border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700'
               )}
             >
               {isSelected && (
@@ -122,7 +122,7 @@ export function CompactRomStepper({
       )}
     >
       <div className="min-w-0">
-        <span className="text-2xs uppercase font-bold text-slate-500 dark:text-slate-400 block leading-tight truncate">
+        <span className="text-2xs uppercase font-bold text-on-surface-variant block leading-tight truncate">
           {label}
         </span>
         <div className="flex items-baseline gap-1 mt-0.5">
@@ -143,7 +143,7 @@ export function CompactRomStepper({
           whileTap={{ scale: 0.9 }}
           transition={springBouncy}
           aria-label="Disminuir valor"
-          className="size-9 rounded-xl bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-200 flex items-center justify-center font-bold shadow-xs disabled:opacity-30 disabled:pointer-events-none active:bg-slate-100 dark:active:bg-slate-600"
+          className="size-9 rounded-xl bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-on-surface flex items-center justify-center font-bold shadow-xs disabled:opacity-30 disabled:pointer-events-none active:bg-slate-100 dark:active:bg-slate-600"
         >
           <Minus className="size-4" />
         </motion.button>
@@ -155,7 +155,7 @@ export function CompactRomStepper({
           whileTap={{ scale: 0.9 }}
           transition={springBouncy}
           aria-label="Aumentar valor"
-          className="size-9 rounded-xl bg-teal-600 text-white flex items-center justify-center font-bold shadow-xs shadow-teal-600/30 disabled:opacity-30 disabled:pointer-events-none active:bg-teal-700"
+          className="size-9 rounded-xl bg-primary text-on-primary flex items-center justify-center font-bold shadow-xs shadow-teal-600/30 disabled:opacity-30 disabled:pointer-events-none active:bg-teal-700"
         >
           <Plus className="size-4" />
         </motion.button>
@@ -215,10 +215,10 @@ export function CompactToleranceDropdown({
             <ShieldCheck className="size-4" />
           </div>
           <div className="min-w-0">
-            <span className="text-2xs uppercase font-bold text-slate-400 block leading-none">
+            <span className="text-2xs uppercase font-bold text-on-surface-variant block leading-none">
               Tolerancia IA
             </span>
-            <span className="text-xs font-bold text-slate-800 dark:text-slate-100 truncate block mt-0.5">
+            <span className="text-xs font-bold text-on-surface truncate block mt-0.5">
               {current.label}
             </span>
           </div>
@@ -226,7 +226,7 @@ export function CompactToleranceDropdown({
 
         <ChevronDown
           className={cn(
-            'size-4 text-slate-400 transition-transform duration-200 shrink-0',
+            'size-4 text-on-surface-variant transition-transform duration-200 shrink-0',
             open && 'rotate-180'
           )}
         />
@@ -259,12 +259,12 @@ export function CompactToleranceDropdown({
                     'w-full p-2 rounded-xl text-left flex items-center justify-between gap-2 transition-colors',
                     tolerance === opt.id
                       ? 'bg-teal-50 dark:bg-teal-950/40 text-teal-900 dark:text-teal-100'
-                      : 'hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300'
+                      : 'hover:bg-slate-100 dark:hover:bg-slate-800 text-on-surface'
                   )}
                 >
                   <div className="min-w-0">
                     <p className="text-xs font-bold leading-tight">{opt.label}</p>
-                    <p className="text-2xs text-slate-500 dark:text-slate-400 truncate">
+                    <p className="text-2xs text-on-surface-variant truncate">
                       {opt.desc}
                     </p>
                   </div>

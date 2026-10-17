@@ -231,7 +231,7 @@ export function DrawerHeading({ children, className }: { children: React.ReactNo
 
 export function DrawerBody({ children, className }: { children: React.ReactNode; className?: string }) {
   return (
-    <div className={cn("p-6 flex-1 overflow-y-auto space-y-4 text-sm text-neutral-600 dark:text-neutral-300", className)}>
+    <div className={cn("p-6 flex-1 overflow-y-auto space-y-4 text-sm text-on-surface-variant", className)}>
       {children}
     </div>
   );
@@ -320,7 +320,7 @@ export function DrawerClinicalDemo() {
                     <span className="font-bold text-teal-700 dark:text-teal-300 block mb-1">
                       Paciente Vinculado: Carlos Mendoza (ID: #FM-4029)
                     </span>
-                    <p className="text-neutral-600 dark:text-neutral-300">
+                    <p className="text-on-surface-variant">
                       Sesión 6 de 14. Diagnóstico: Tendinopatía supraespinosa derecha con limitación articular leve.
                     </p>
                   </div>

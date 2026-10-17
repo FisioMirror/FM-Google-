@@ -189,7 +189,7 @@ export function MobileBottomSheet({
                       {title}
                     </h3>
                     {subtitle && (
-                      <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
+                      <p className="text-xs text-on-surface-variant truncate">
                         {subtitle}
                       </p>
                     )}
@@ -205,7 +205,7 @@ export function MobileBottomSheet({
                         onClick={() => cycleSnap('up')}
                         disabled={activeSnap === 'full'}
                         aria-label="Expandir cajón"
-                        className="p-1 rounded-md text-slate-600 dark:text-slate-300 hover:text-teal-600 dark:hover:text-teal-400 disabled:opacity-30 disabled:pointer-events-none"
+                        className="p-1 rounded-md text-on-surface-variant hover:text-teal-600 dark:hover:text-teal-400 disabled:opacity-30 disabled:pointer-events-none"
                       >
                         <ChevronUp className="size-4" />
                       </button>
@@ -213,7 +213,7 @@ export function MobileBottomSheet({
                         type="button"
                         onClick={() => cycleSnap('down')}
                         aria-label="Reducir cajón"
-                        className="p-1 rounded-md text-slate-600 dark:text-slate-300 hover:text-teal-600 dark:hover:text-teal-400"
+                        className="p-1 rounded-md text-on-surface-variant hover:text-teal-600 dark:hover:text-teal-400"
                       >
                         <ChevronDown className="size-4" />
                       </button>
@@ -224,7 +224,7 @@ export function MobileBottomSheet({
                     type="button"
                     onClick={onClose}
                     aria-label="Cerrar cajón"
-                    className="size-8 rounded-full bg-slate-100 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 flex items-center justify-center transition-colors"
+                    className="size-8 rounded-full bg-slate-100 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-700 text-on-surface-variant flex items-center justify-center transition-colors"
                   >
                     <X className="size-4" />
                   </button>

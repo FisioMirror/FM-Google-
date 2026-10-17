@@ -80,10 +80,10 @@ export const MuscleTargetRadarCard: React.FC<MuscleTargetRadarCardProps> = ({
             <Activity className="w-4 h-4 animate-pulse" />
           </div>
           <div>
-            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-on-surface">
               Activación Muscular
             </h4>
-            <span className="text-2xs text-slate-500 dark:text-slate-400">Mapa de esfuerzo EMG</span>
+            <span className="text-2xs text-on-surface-variant">Mapa de esfuerzo EMG</span>
           </div>
         </div>
         <span className="text-2xs font-mono font-bold text-teal-700 dark:text-teal-300 bg-teal-500/15 border border-teal-500/30 px-2.5 py-0.5 rounded-full shadow-xs flex items-center gap-1">
@@ -120,7 +120,7 @@ export const MuscleTargetRadarCard: React.FC<MuscleTargetRadarCardProps> = ({
                 fill="none"
                 stroke="currentColor"
                 strokeWidth="1"
-                className="text-slate-200/80 dark:text-slate-800/80"
+                className="text-slate-200/80 dark:text-on-surface/80"
                 strokeDasharray={idx < 2 ? '3 3' : 'none'}
               />
             ))}
@@ -137,7 +137,7 @@ export const MuscleTargetRadarCard: React.FC<MuscleTargetRadarCardProps> = ({
                   y2={y}
                   stroke="currentColor"
                   strokeWidth="0.75"
-                  className="text-slate-300/60 dark:text-slate-700/60"
+                  className="text-slate-300/60 dark:text-on-surface/60"
                 />
               );
             })}
@@ -204,7 +204,7 @@ export const MuscleTargetRadarCard: React.FC<MuscleTargetRadarCardProps> = ({
                   "w-full flex items-center justify-between gap-3 px-2 py-1 rounded-xl transition-all text-left",
                   isSelected
                     ? "bg-teal-500/20 border border-teal-500/40 text-teal-800 dark:text-teal-200 font-bold"
-                    : "hover:bg-black/5 dark:hover:bg-white/5 text-slate-600 dark:text-slate-300"
+                    : "hover:bg-black/5 dark:hover:bg-white/5 text-on-surface-variant"
                 )}
               >
                 <div className="flex items-center gap-1.5 truncate">
@@ -276,10 +276,10 @@ export const PainScaleInteractiveCard: React.FC<PainScaleInteractiveCardProps> =
     >
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <div className="p-1.5 rounded-xl bg-slate-200/60 dark:bg-slate-800/60 text-slate-700 dark:text-slate-300">
+          <div className="p-1.5 rounded-xl bg-slate-200/60 dark:bg-slate-800/60 text-on-surface">
             <Activity className="w-4 h-4" />
           </div>
-          <span className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200">
+          <span className="text-xs font-bold uppercase tracking-wider text-on-surface">
             Escala Analógica Visual (EVA)
           </span>
         </div>
@@ -305,7 +305,7 @@ export const PainScaleInteractiveCard: React.FC<PainScaleInteractiveCardProps> =
         </motion.div>
         <div className="flex-1 min-w-0">
           <div className="text-sm font-black text-on-surface mb-0.5 truncate">{getLabel()}</div>
-          <p className="text-xs text-slate-500 dark:text-slate-400">
+          <p className="text-xs text-on-surface-variant">
             Ajusta el slider táctil según la sensación percibida al final del rango de movimiento.
           </p>
         </div>
@@ -326,7 +326,7 @@ export const PainScaleInteractiveCard: React.FC<PainScaleInteractiveCardProps> =
             className="w-full accent-teal-600 cursor-pointer h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none"
           />
         </div>
-        <div className="flex justify-between text-2xs font-mono font-bold text-slate-400">
+        <div className="flex justify-between text-2xs font-mono font-bold text-on-surface-variant">
           <span className="text-emerald-500">0 (Confort)</span>
           <span className="text-amber-500">5 (Moderado)</span>
           <span className="text-rose-500">10 (Crítico)</span>
@@ -380,7 +380,7 @@ export const GaitSymmetryCard: React.FC<GaitSymmetryCardProps> = ({
           <div className="p-1.5 rounded-xl bg-cyan-500/15 text-cyan-600 dark:text-cyan-400">
             <Footprints className="w-4 h-4 animate-bounce" />
           </div>
-          <h4 className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200">
+          <h4 className="text-xs font-bold uppercase tracking-wider text-on-surface">
             Simetría de Apoyo Plantar
           </h4>
         </div>
@@ -423,9 +423,9 @@ export const GaitSymmetryCard: React.FC<GaitSymmetryCardProps> = ({
         <div className="absolute left-1/2 top-0 bottom-0 w-0.5 bg-white shadow-sm z-10 -translate-x-1/2" />
       </div>
 
-      <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 mt-2">
+      <div className="flex items-center justify-between text-xs text-on-surface-variant mt-2">
         <span className="flex items-center gap-1">
-          Cadencia: <strong className="font-mono text-slate-800 dark:text-white">{cadenceSteps}</strong> ppm
+          Cadencia: <strong className="font-mono text-on-surface dark:text-white">{cadenceSteps}</strong> ppm
         </span>
         <button
           type="button"
@@ -466,7 +466,7 @@ export const TremorFrequencyCard: React.FC<TremorFrequencyCardProps> = ({
           <div className="p-1.5 rounded-xl bg-cyan-500/15 text-cyan-600 dark:text-cyan-400">
             <Waves className="w-4 h-4" />
           </div>
-          <h4 className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200">
+          <h4 className="text-xs font-bold uppercase tracking-wider text-on-surface">
             Estabilidad Isométrica
           </h4>
         </div>
@@ -496,7 +496,7 @@ export const TremorFrequencyCard: React.FC<TremorFrequencyCardProps> = ({
         </div>
       </div>
 
-      <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 pt-2 border-t border-black/5 dark:border-white/5">
+      <div className="flex items-center justify-between text-xs text-on-surface-variant pt-2 border-t border-black/5 dark:border-white/5">
         <span className="flex items-center gap-1">
           <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
           Micro-oscilaciones:
@@ -538,7 +538,7 @@ export const PostureStabilityCard: React.FC<PostureStabilityCardProps> = ({
           <div className="p-1.5 rounded-xl bg-emerald-500/15 text-emerald-600 dark:text-emerald-400">
             <Crosshair className="w-4 h-4 animate-spin" style={{ animationDuration: '16s' }} />
           </div>
-          <h4 className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200">
+          <h4 className="text-xs font-bold uppercase tracking-wider text-on-surface">
             Centro de Presión & Gravedad
           </h4>
         </div>
@@ -586,7 +586,7 @@ export const PostureStabilityCard: React.FC<PostureStabilityCardProps> = ({
         </div>
       </div>
 
-      <p className="text-xs text-center text-slate-500 dark:text-slate-400">
+      <p className="text-xs text-center text-on-surface-variant">
         Desviación coronal: <strong className="font-mono text-emerald-500">{shiftX}°</strong> | Sagital:{' '}
         <strong className="font-mono text-emerald-500">{shiftY}°</strong>
       </p>
@@ -626,7 +626,7 @@ export const CardioEffortPillCard: React.FC<CardioEffortPillCardProps> = ({
           >
             <HeartPulse className="w-4 h-4" />
           </motion.div>
-          <h4 className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200">
+          <h4 className="text-xs font-bold uppercase tracking-wider text-on-surface">
             Esfuerzo Cardiovascular (Borg)
           </h4>
         </div>
@@ -655,7 +655,7 @@ export const CardioEffortPillCard: React.FC<CardioEffortPillCardProps> = ({
         />
       </div>
 
-      <div className="flex justify-between text-2xs font-mono text-slate-400">
+      <div className="flex justify-between text-2xs font-mono text-on-surface-variant">
         <span>6 (Reposo)</span>
         <span>12 (Moderado)</span>
         <span>20 (Máximo)</span>
@@ -695,7 +695,7 @@ export const RehabPhaseStepCard: React.FC<RehabPhaseStepCardProps> = ({
           <div className="p-1.5 rounded-xl bg-primary/15 text-primary">
             <Milestone className="w-4 h-4" />
           </div>
-          <h4 className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200">
+          <h4 className="text-xs font-bold uppercase tracking-wider text-on-surface">
             Fase de Recuperación Clínica
           </h4>
         </div>
@@ -719,8 +719,8 @@ export const RehabPhaseStepCard: React.FC<RehabPhaseStepCardProps> = ({
                 isCurrent
                   ? "bg-teal-500/15 border-teal-500/40 text-teal-900 dark:text-teal-100 shadow-sm"
                   : isDone
-                  ? "bg-slate-100/60 dark:bg-slate-800/40 border-black/5 dark:border-white/5 text-slate-400"
-                  : "bg-transparent border-dashed border-slate-300 dark:border-slate-800 text-slate-400 opacity-60"
+                  ? "bg-slate-100/60 dark:bg-slate-800/40 border-black/5 dark:border-white/5 text-on-surface-variant"
+                  : "bg-transparent border-dashed border-slate-300 dark:border-slate-800 text-on-surface-variant opacity-60"
               )}
             >
               <div>
@@ -732,7 +732,7 @@ export const RehabPhaseStepCard: React.FC<RehabPhaseStepCardProps> = ({
                     </span>
                   )}
                 </div>
-                <p className="text-2xs text-slate-500 dark:text-slate-400 mt-0.5">{p.detail}</p>
+                <p className="text-2xs text-on-surface-variant mt-0.5">{p.detail}</p>
               </div>
 
               {isDone && <Check className="w-4 h-4 text-emerald-500 shrink-0" />}
@@ -775,7 +775,7 @@ export const EdemaAssessmentCard: React.FC<EdemaAssessmentCardProps> = ({
       )}
     >
       <div className="flex items-center justify-between mb-2">
-        <h4 className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200">
+        <h4 className="text-xs font-bold uppercase tracking-wider text-on-surface">
           Control de Edema & Signo de Fóvea
         </h4>
         <span className="text-xs font-mono font-bold text-teal-600 dark:text-teal-400 bg-teal-500/15 border border-teal-500/30 px-2.5 py-0.5 rounded-full">
@@ -784,7 +784,7 @@ export const EdemaAssessmentCard: React.FC<EdemaAssessmentCardProps> = ({
       </div>
 
       <div className="my-2 p-3 rounded-2xl bg-slate-100/70 dark:bg-slate-800/60 flex items-center justify-between text-xs">
-        <span className="text-slate-500">Perímetro Articular:</span>
+        <span className="text-on-surface-variant">Perímetro Articular:</span>
         <span className="font-mono font-bold text-on-surface text-sm">{perimeterMm} cm</span>
       </div>
 
@@ -804,7 +804,7 @@ export const EdemaAssessmentCard: React.FC<EdemaAssessmentCardProps> = ({
         </button>
       </div>
 
-      <p className="text-xs text-slate-500 dark:text-slate-400">
+      <p className="text-xs text-on-surface-variant">
         Recuperación elástica rápida. Inflamación periarticular en resolución progresiva.
       </p>
     </motion.div>
@@ -837,7 +837,7 @@ export const StrengthProgressionCard: React.FC<StrengthProgressionCardProps> = (
           <div className="p-1.5 rounded-xl bg-primary/15 text-primary">
             <TrendingUp className="w-4 h-4" />
           </div>
-          <h4 className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200">
+          <h4 className="text-xs font-bold uppercase tracking-wider text-on-surface">
             Fuerza en Velocidad (VBT)
           </h4>
         </div>
@@ -851,7 +851,7 @@ export const StrengthProgressionCard: React.FC<StrengthProgressionCardProps> = (
           <span className="text-3xl font-black font-mono text-on-surface tabular-nums">
             {estimated1RMKg}
           </span>
-          <span className="text-xs text-slate-400 ml-1 font-bold">kg 1RM Est.</span>
+          <span className="text-xs text-on-surface-variant ml-1 font-bold">kg 1RM Est.</span>
         </div>
         <span className="text-xs font-bold text-teal-600 dark:text-teal-400 bg-teal-500/10 px-2 py-0.5 rounded-full">
           Velocidad de ejecución óptima
@@ -893,7 +893,7 @@ export const PatientAdherenceHeatmapCard: React.FC<PatientAdherenceHeatmapCardPr
           <div className="p-1.5 rounded-xl bg-teal-500/15 text-teal-600 dark:text-teal-400">
             <Calendar className="w-4 h-4" />
           </div>
-          <h4 className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200">
+          <h4 className="text-xs font-bold uppercase tracking-wider text-on-surface">
             Adherencia Semanal
           </h4>
         </div>
@@ -914,7 +914,7 @@ export const PatientAdherenceHeatmapCard: React.FC<PatientAdherenceHeatmapCardPr
               onClick={() => setSelectedDay(isSelected ? null : i)}
               className="space-y-1.5 group/day"
             >
-              <span className="text-2xs text-slate-400 font-bold block">{d}</span>
+              <span className="text-2xs text-on-surface-variant font-bold block">{d}</span>
               <motion.div
                 whileHover={{ scale: 1.08 }}
                 whileTap={{ scale: 0.95 }}
@@ -923,7 +923,7 @@ export const PatientAdherenceHeatmapCard: React.FC<PatientAdherenceHeatmapCardPr
                   val === 3 && "bg-teal-500 text-white shadow-md shadow-teal-500/30",
                   val === 2 && "bg-teal-500/70 text-white",
                   val === 1 && "bg-teal-500/30 text-teal-900 dark:text-teal-200",
-                  val === 0 && "bg-slate-200 dark:bg-slate-800 text-slate-400",
+                  val === 0 && "bg-slate-200 dark:bg-slate-800 text-on-surface-variant",
                   isSelected && "ring-2 ring-primary ring-offset-2 dark:ring-offset-slate-900"
                 )}
               >
@@ -940,7 +940,7 @@ export const PatientAdherenceHeatmapCard: React.FC<PatientAdherenceHeatmapCardPr
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="mt-3 p-2 rounded-xl bg-teal-500/10 border border-teal-500/20 text-xs text-slate-600 dark:text-slate-300 flex items-center justify-between"
+            className="mt-3 p-2 rounded-xl bg-teal-500/10 border border-teal-500/20 text-xs text-on-surface-variant flex items-center justify-between"
           >
             <span>Día {days[selectedDay]}: <strong>{minutes[selectedDay]} minutos</strong> de rutina</span>
             <span className="font-bold text-teal-600 dark:text-teal-400">100% postura validada</span>

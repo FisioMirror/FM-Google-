@@ -172,9 +172,9 @@ export const TurnstileWidget = forwardRef<TurnstileWidgetRef, TurnstileWidgetPro
 
     return (
       <div className={`turnstile-wrapper my-2 ${className}`}>
-        <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 mb-1.5 px-0.5">
+        <div className="flex items-center justify-between text-xs text-on-surface-variant mb-1.5 px-0.5">
           <span className="flex items-center gap-1.5 font-medium">
-            <ShieldCheck size={13} className={status === 'verified' ? 'text-teal-500' : 'text-slate-400'} />
+            <ShieldCheck size={13} className={status === 'verified' ? 'text-teal-500' : 'text-on-surface-variant'} />
             Protección de acceso Cloudflare Turnstile
           </span>
           {status === 'verified' && (

@@ -239,7 +239,7 @@ export function ResetPassword() {
               ? 'Restablecer Contraseña'
               : 'Recuperar Cuenta'}
           </h1>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+          <p className="text-xs text-on-surface-variant mt-1">
             {isCompleted
               ? 'Tu cuenta ha sido protegida con la nueva clave'
               : mode === 'reset'
@@ -267,7 +267,7 @@ export function ResetPassword() {
               className="space-y-5 text-center py-2"
             >
               <div className="p-4 rounded-2xl bg-teal-50 dark:bg-teal-950/40 border border-teal-200 dark:border-teal-800 space-y-2">
-                <div className="w-12 h-12 rounded-full bg-teal-600 text-white flex items-center justify-center mx-auto shadow-md shadow-teal-600/20">
+                <div className="w-12 h-12 rounded-full bg-primary text-on-primary flex items-center justify-center mx-auto shadow-md shadow-teal-600/20">
                   <Check size={26} />
                 </div>
                 <h3 className="text-sm font-bold text-teal-950 dark:text-teal-200">
@@ -300,7 +300,7 @@ export function ResetPassword() {
               {requestSent ? (
                 <div className="space-y-4">
                   <div className="p-4 rounded-2xl bg-teal-50 dark:bg-teal-950/40 border border-teal-200 dark:border-teal-800 text-center space-y-2">
-                    <div className="w-10 h-10 rounded-full bg-teal-600 text-white flex items-center justify-center mx-auto shadow-md shadow-teal-600/20">
+                    <div className="w-10 h-10 rounded-full bg-primary text-on-primary flex items-center justify-center mx-auto shadow-md shadow-teal-600/20">
                       <CheckCircle2 size={22} />
                     </div>
                     <h3 className="text-sm font-bold text-teal-900 dark:text-teal-200">
@@ -326,7 +326,7 @@ export function ResetPassword() {
                       type="button"
                       disabled={cooldown > 0 || loading}
                       onClick={handleRequestReset}
-                      className="w-full py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                      className="w-full py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-on-surface text-xs font-semibold transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                     >
                       <RefreshCw size={13} className={loading ? 'animate-spin' : ''} />
                       {cooldown > 0 ? `Reenviar en ${cooldown}s` : 'Reenviar Correo'}
@@ -336,11 +336,11 @@ export function ResetPassword() {
               ) : (
                 <form onSubmit={handleRequestReset} className="space-y-4">
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                    <label className="block text-xs font-bold text-on-surface mb-1.5">
                       Correo Electrónico de tu Cuenta
                     </label>
                     <div className="relative">
-                      <Mail size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                      <Mail size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant" />
                       <input
                         type="email"
                         required
@@ -391,11 +391,11 @@ export function ResetPassword() {
             >
               <form onSubmit={handleUpdatePassword} className="space-y-3.5">
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                  <label className="block text-xs font-bold text-on-surface mb-1">
                     Correo Electrónico
                   </label>
                   <div className="relative">
-                    <Mail size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                    <Mail size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant" />
                     <input
                       type="email"
                       required
@@ -408,11 +408,11 @@ export function ResetPassword() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                  <label className="block text-xs font-bold text-on-surface mb-1">
                     Código PIN (6 dígitos) o Token del Correo
                   </label>
                   <div className="relative">
-                    <KeyRound size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                    <KeyRound size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant" />
                     <input
                       type="text"
                       required
@@ -425,11 +425,11 @@ export function ResetPassword() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                  <label className="block text-xs font-bold text-on-surface mb-1">
                     Nueva Contraseña
                   </label>
                   <div className="relative">
-                    <Lock size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                    <Lock size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant" />
                     <input
                       type={showPassword ? 'text' : 'password'}
                       required
@@ -441,7 +441,7 @@ export function ResetPassword() {
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-on-surface-variant dark:hover:text-slate-200 p-1"
                       aria-label={showPassword ? 'Ocultar' : 'Mostrar'}
                     >
                       {showPassword ? <EyeOff size={14} /> : <Eye size={14} />}
@@ -464,7 +464,7 @@ export function ResetPassword() {
                           }`}
                         />
                       </div>
-                      <div className="flex justify-between text-2xs text-slate-500 font-medium">
+                      <div className="flex justify-between text-2xs text-on-surface-variant font-medium">
                         <span>Fortaleza: {strengthScore <= 1 ? 'Baja' : strengthScore <= 3 ? 'Media' : 'Alta'}</span>
                         <span>{hasMinLength ? 'Cumple 8+ car.' : 'Mínimo 8 car.'}</span>
                       </div>
@@ -473,11 +473,11 @@ export function ResetPassword() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                  <label className="block text-xs font-bold text-on-surface mb-1">
                     Confirmar Nueva Contraseña
                   </label>
                   <div className="relative">
-                    <Lock size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                    <Lock size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant" />
                     <input
                       type={showPassword ? 'text' : 'password'}
                       required
@@ -516,7 +516,7 @@ export function ResetPassword() {
                   <button
                     type="button"
                     onClick={() => setMode('request')}
-                    className="text-xs text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 font-semibold"
+                    className="text-xs text-on-surface-variant hover:text-on-surface dark:hover:text-slate-300 font-semibold"
                   >
                     Volver a solicitar enlace por correo
                   </button>
@@ -530,7 +530,7 @@ export function ResetPassword() {
         <div className="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800 text-center">
           <Link
             to="/login"
-            className="inline-flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 hover:text-teal-600 dark:hover:text-teal-400 font-bold transition-colors"
+            className="inline-flex items-center gap-1.5 text-xs text-on-surface-variant hover:text-teal-600 dark:hover:text-teal-400 font-bold transition-colors"
           >
             <ArrowLeft size={14} />
             <span>Volver a Iniciar Sesión</span>

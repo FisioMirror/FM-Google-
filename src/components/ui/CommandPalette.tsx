@@ -206,7 +206,7 @@ export function CommandPalette({
               ✕
             </button>
           ) : (
-            <kbd className="hidden sm:inline-flex items-center gap-0.5 px-2 py-0.5 text-2xs font-semibold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-md shadow-xs">
+            <kbd className="hidden sm:inline-flex items-center gap-0.5 px-2 py-0.5 text-2xs font-semibold text-on-surface-variant bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-md shadow-xs">
               ⌘K
             </kbd>
           )}
@@ -277,7 +277,7 @@ export function CommandPalette({
 
                       <div className="flex items-center gap-2 shrink-0 ml-2">
                         {item.category && (
-                          <span className="text-2xs uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-slate-200/50 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
+                          <span className="text-2xs uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-slate-200/50 dark:bg-slate-800 text-on-surface-variant">
                             {item.category}
                           </span>
                         )}

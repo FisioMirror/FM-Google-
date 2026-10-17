@@ -63,12 +63,12 @@ export function PromoCardDemo({
             <button
               onClick={() => setVisible(false)}
               aria-label="Cerrar banner"
-              className="p-1 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors shrink-0"
+              className="p-1 rounded-xl text-on-surface-variant hover:text-on-surface-variant dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors shrink-0"
             >
               <X className="w-4 h-4" />
             </button>
           </div>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
+          <p className="text-xs text-on-surface-variant mt-1 leading-relaxed">
             {description}
           </p>
         </div>

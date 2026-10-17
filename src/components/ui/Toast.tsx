@@ -258,7 +258,7 @@ export const ToastItemComponent = React.forwardRef<HTMLDivElement, ToastItemComp
           type="button"
           onClick={onClose}
           aria-label="Cerrar notificación"
-          className="size-6 rounded-lg shrink-0 flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 transition-colors"
+          className="size-6 rounded-lg shrink-0 flex items-center justify-center text-on-surface-variant hover:text-white hover:bg-white/10 transition-colors"
         >
           <X className="size-3.5" />
         </button>

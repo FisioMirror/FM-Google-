@@ -190,12 +190,12 @@ export const IncidentReportCard: React.FC<{ className?: string }> = ({ className
           <span className="text-2xs font-extrabold uppercase tracking-widest text-teal-600 dark:text-teal-400 bg-teal-500/10 px-2.5 py-0.5 rounded-full border border-teal-500/20">
             Reaviz Analytics 2.0
           </span>
-          <span className="text-2xs text-slate-400">Últimos 7 días</span>
+          <span className="text-2xs text-on-surface-variant">Últimos 7 días</span>
         </div>
         <h3 className="fm-title text-on-surface">
           Evolución Biomecánica
         </h3>
-        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+        <p className="text-xs text-on-surface-variant mt-0.5">
           Tendencia clínica de movilidad y adherencia del paciente
         </p>
       </div>
@@ -205,7 +205,7 @@ export const IncidentReportCard: React.FC<{ className?: string }> = ({ className
         {LEGEND_ITEMS.map((item) => (
           <div key={item.name} className="flex gap-1.5 items-center">
             <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} />
-            <span className="text-slate-600 dark:text-slate-300 text-xs font-semibold">{item.name}</span>
+            <span className="text-on-surface-variant text-xs font-semibold">{item.name}</span>
           </div>
         ))}
       </div>
@@ -273,7 +273,7 @@ export const IncidentReportCard: React.FC<{ className?: string }> = ({ className
             transition={{ delay: metric.delay }}
             className="flex w-full py-3.5 items-center justify-between gap-2"
           >
-            <div className="flex items-center gap-2.5 text-xs text-slate-600 dark:text-slate-300">
+            <div className="flex items-center gap-2.5 text-xs text-on-surface-variant">
               <metric.Icon />
               <span className="font-semibold" title={metric.tooltip}>
                 {metric.label}

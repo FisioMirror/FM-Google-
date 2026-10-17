@@ -281,7 +281,7 @@ export function PatientExercisesPage() {
             xpReward={150}
           />
           <div className="flex items-center justify-between p-4 rounded-3xl bg-surface/80 dark:bg-slate-900/60 border border-outline/10">
-            <span className="text-xs font-bold text-slate-700 dark:text-slate-200">¿Sesión completada?</span>
+            <span className="text-xs font-bold text-on-surface">¿Sesión completada?</span>
             <CheerReactionButton />
           </div>
         </div>
@@ -292,7 +292,7 @@ export function PatientExercisesPage() {
         <ExerciseTimelineScrubber />
         {exercises.length > 0 && (
           <div className="flex items-center justify-between gap-3 flex-wrap">
-            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Filtro rápido:</span>
+            <span className="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Filtro rápido:</span>
             <ExerciseSwitchFloatingMenu
               exercises={exercises.map(e => e.ejercicio_nombre || 'Ejercicio')}
               currentExercise={exercises[0]?.ejercicio_nombre || 'Ejercicio'}
@@ -343,25 +343,25 @@ export function PatientExercisesPage() {
                   {/* Prescription Parameters Tile (Instrument Style) */}
                   <div className="grid grid-cols-3 gap-2 py-3.5 px-3 my-3 rounded-2xl bg-slate-100/70 dark:bg-slate-800/60 border border-slate-200/50 dark:border-slate-700/50 text-center divide-x divide-slate-200/60 dark:divide-slate-700/60">
                     <div className="flex flex-col items-center">
-                      <p className="text-2xs uppercase font-bold text-slate-400 dark:text-slate-500 flex items-center justify-center gap-1">
+                      <p className="text-2xs uppercase font-bold text-on-surface-variant flex items-center justify-center gap-1">
                         <Repeat size={11} className="text-teal-600 dark:text-teal-400" />
                         <span>Series</span>
                       </p>
-                      <span className="font-extrabold text-base text-slate-800 dark:text-slate-100 mt-0.5">{ex.series ?? 3}</span>
+                      <span className="font-extrabold text-base text-on-surface mt-0.5">{ex.series ?? 3}</span>
                     </div>
                     <div className="flex flex-col items-center pl-2">
-                      <p className="text-2xs uppercase font-bold text-slate-400 dark:text-slate-500 flex items-center justify-center gap-1">
+                      <p className="text-2xs uppercase font-bold text-on-surface-variant flex items-center justify-center gap-1">
                         <Flame size={11} className="text-amber-500" />
                         <span>Reps</span>
                       </p>
-                      <span className="font-extrabold text-base text-slate-800 dark:text-slate-100 mt-0.5">{ex.repeticiones ?? 12}</span>
+                      <span className="font-extrabold text-base text-on-surface mt-0.5">{ex.repeticiones ?? 12}</span>
                     </div>
                     <div className="flex flex-col items-center pl-2">
-                      <p className="text-2xs uppercase font-bold text-slate-400 dark:text-slate-500 flex items-center justify-center gap-1">
+                      <p className="text-2xs uppercase font-bold text-on-surface-variant flex items-center justify-center gap-1">
                         <Calendar size={11} className="text-teal-600 dark:text-teal-400" />
                         <span>Frecuencia</span>
                       </p>
-                      <span className="font-extrabold text-base text-slate-800 dark:text-slate-100 mt-0.5">{ex.frecuencia_semana ?? 4}x/sem</span>
+                      <span className="font-extrabold text-base text-on-surface mt-0.5">{ex.frecuencia_semana ?? 4}x/sem</span>
                     </div>
                   </div>
                 </div>
@@ -372,7 +372,7 @@ export function PatientExercisesPage() {
                     {/* Botón 1: Descripción en Texto */}
                     <button
                       onClick={() => setDescriptionExercise(ex)}
-                      className="py-2.5 px-3 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-semibold text-xs transition-all flex items-center justify-center gap-1.5"
+                      className="py-2.5 px-3 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-on-surface font-semibold text-xs transition-all flex items-center justify-center gap-1.5"
                     >
                       <BookOpen size={14} className="text-teal-600 dark:text-teal-400" />
                       <span>Descripción</span>
@@ -407,7 +407,7 @@ export function PatientExercisesPage() {
 
       {/* Próximos Ejercicios por Desbloquear según Progresión */}
       <div className="mt-8 space-y-3">
-        <h3 className="font-bold text-sm text-slate-700 dark:text-slate-200 uppercase tracking-wider">
+        <h3 className="font-bold text-sm text-on-surface uppercase tracking-wider">
           Nivel de Progresión Clínica Futura
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

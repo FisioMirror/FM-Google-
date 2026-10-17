@@ -112,7 +112,7 @@ export const BiomechanicalAngleGauge: React.FC<BiomechanicalAngleGaugeProps> = (
             strokeDasharray={`${arcLength} ${circumference}`}
             strokeDashoffset={0}
             strokeLinecap="round"
-            className="text-slate-200 dark:text-slate-800"
+            className="text-slate-200 dark:text-on-surface"
             style={{
               transformOrigin: 'center',
               transform: `rotate(${startAngleOffset}deg)`,
@@ -151,9 +151,9 @@ export const BiomechanicalAngleGauge: React.FC<BiomechanicalAngleGaugeProps> = (
           >
             <div className="text-4xl font-extrabold font-mono tracking-tight text-on-surface dark:text-white tabular-nums flex items-baseline justify-center">
               <span>{Math.round(currentAngle)}</span>
-              <span className="text-xl font-normal text-slate-400 ml-0.5">{unit}</span>
+              <span className="text-xl font-normal text-on-surface-variant ml-0.5">{unit}</span>
             </div>
-            <div className="text-xs font-medium text-slate-500 dark:text-slate-400 mt-0.5">
+            <div className="text-xs font-medium text-on-surface-variant mt-0.5">
               Objetivo: <span className="font-mono font-bold text-primary dark:text-teal-400">{targetAngle}{unit}</span>
             </div>
           </motion.div>
@@ -161,7 +161,7 @@ export const BiomechanicalAngleGauge: React.FC<BiomechanicalAngleGaugeProps> = (
       </div>
 
       {/* Target Marker & Min/Max Footnote */}
-      <div className="w-full flex items-center justify-between text-xs font-mono text-slate-400 px-3 mt-1">
+      <div className="w-full flex items-center justify-between text-xs font-mono text-on-surface-variant px-3 mt-1">
         <span>{minAngle}{unit}</span>
         <div className="flex items-center gap-1 text-xs">
           {status.color === 'emerald' ? (

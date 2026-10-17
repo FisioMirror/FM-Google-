@@ -275,7 +275,7 @@ export function PopoverMetricDemo() {
                 <span className="text-muted">Rango óptimo:</span>
                 <span className="font-semibold text-primary">{current.optimalRange}</span>
               </div>
-              <p className="mt-2 text-xs text-neutral-600 dark:text-neutral-300 leading-relaxed bg-slate-50 dark:bg-slate-850 p-2.5 rounded-lg border border-border/40">
+              <p className="mt-2 text-xs text-on-surface-variant leading-relaxed bg-slate-50 dark:bg-slate-850 p-2.5 rounded-lg border border-border/40">
                 {current.description}
               </p>
             </div>

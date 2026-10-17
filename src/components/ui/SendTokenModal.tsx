@@ -353,7 +353,7 @@ Equipo FisioMirror`;
             initial={{ scale: 0.94, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.94, opacity: 0 }}
-            className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-7 max-w-lg w-full shadow-elevated border border-slate-200 dark:border-slate-800 flex flex-col gap-4 text-slate-800 dark:text-slate-100 max-h-[90vh] overflow-y-auto"
+            className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-7 max-w-lg w-full shadow-elevated border border-slate-200 dark:border-slate-800 flex flex-col gap-4 text-on-surface max-h-[90vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
@@ -366,7 +366,7 @@ Equipo FisioMirror`;
                   <h3 className="font-extrabold text-base text-on-surface">
                     Enviar Llave de Acceso
                   </h3>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                  <p className="text-xs text-on-surface-variant">
                     Token:{' '}
                     <span className="font-mono font-bold text-teal-600 dark:text-teal-400 tracking-wider">
                       {token}
@@ -376,7 +376,7 @@ Equipo FisioMirror`;
               </div>
               <button
                 onClick={onClose}
-                className="p-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
+                className="p-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-on-surface-variant hover:text-on-surface-variant dark:hover:text-slate-200 transition-colors"
                 aria-label="Cerrar ventana"
               >
                 <X size={18} />
@@ -390,8 +390,8 @@ Equipo FisioMirror`;
                   <Stethoscope size={13} />
                   <span>Fisio Remitente</span>
                 </div>
-                <p className="font-bold text-slate-800 dark:text-white truncate">{senderName}</p>
-                <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
+                <p className="font-bold text-on-surface dark:text-white truncate">{senderName}</p>
+                <p className="text-xs text-on-surface-variant truncate">
                   {senderEmail || 'Email registrado'}
                 </p>
                 <div className="mt-1 flex items-center gap-1">
@@ -407,7 +407,7 @@ Equipo FisioMirror`;
               </div>
 
               <div className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/80 dark:border-slate-700/60">
-                <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-400 font-bold uppercase tracking-wider text-2xs mb-1">
+                <div className="flex items-center gap-1.5 text-on-surface-variant font-bold uppercase tracking-wider text-2xs mb-1">
                   <UserCheck size={13} />
                   <span>Paciente Destinatario</span>
                 </div>
@@ -416,9 +416,9 @@ Equipo FisioMirror`;
                   value={recipientName}
                   onChange={(e) => setRecipientName(e.target.value)}
                   placeholder="Nombre del paciente"
-                  className="font-bold text-slate-800 dark:text-white bg-transparent border-b border-transparent hover:border-slate-300 focus:border-teal-500 outline-none w-full truncate"
+                  className="font-bold text-on-surface dark:text-white bg-transparent border-b border-transparent hover:border-slate-300 focus:border-teal-500 outline-none w-full truncate"
                 />
-                <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
+                <p className="text-xs text-on-surface-variant truncate">
                   {channel === 'email' ? email || 'Ingresa el correo' : phone || 'Ingresa el teléfono'}
                 </p>
                 <span className="inline-block mt-0.5 text-2xs px-1.5 py-0.2 bg-teal-500/10 text-teal-600 dark:text-teal-400 rounded font-semibold">
@@ -435,7 +435,7 @@ Equipo FisioMirror`;
                 className={`py-2 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all ${
                   channel === 'email'
                     ? 'bg-white dark:bg-slate-700 text-teal-700 dark:text-teal-300 shadow-xs'
-                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                    : 'text-on-surface-variant hover:text-on-surface dark:hover:text-white'
                 }`}
               >
                 <Mail size={15} />
@@ -448,7 +448,7 @@ Equipo FisioMirror`;
                 className={`py-2 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all ${
                   channel === 'whatsapp'
                     ? 'bg-white dark:bg-slate-700 text-emerald-600 dark:text-emerald-400 shadow-xs'
-                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                    : 'text-on-surface-variant hover:text-on-surface dark:hover:text-white'
                 }`}
               >
                 <MessageSquare size={15} />
@@ -461,7 +461,7 @@ Equipo FisioMirror`;
                 className={`py-2 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all ${
                   channel === 'sms'
                     ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-xs'
-                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                    : 'text-on-surface-variant hover:text-on-surface dark:hover:text-white'
                 }`}
               >
                 <Smartphone size={15} />
@@ -473,11 +473,11 @@ Equipo FisioMirror`;
             {channel === 'email' && (
               <div className="space-y-3">
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                  <label className="block text-xs font-bold text-on-surface mb-1">
                     Correo electrónico del paciente
                   </label>
                   <div className="relative">
-                    <Mail size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                    <Mail size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant" />
                     <input
                       type="email"
                       value={email}
@@ -497,16 +497,16 @@ Equipo FisioMirror`;
                   <p className="text-xs text-teal-800/90 dark:text-teal-300/90 leading-relaxed">
                     El paciente recibirá una plantilla profesional con su token de acceso rápido y botón de activación directa.
                   </p>
-                  <p className="text-2xs text-slate-500 dark:text-slate-400 leading-snug pt-1 border-t border-teal-200/50 dark:border-teal-800/40">
+                  <p className="text-2xs text-on-surface-variant leading-snug pt-1 border-t border-teal-200/50 dark:border-teal-800/40">
                     Incluye recordatorio automático para revisar la carpeta de <em>Spam / Correo no deseado</em>.
                   </p>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                  <label className="block text-xs font-bold text-on-surface mb-1">
                     Vista previa del mensaje
                   </label>
-                  <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700 text-xs font-mono leading-relaxed text-slate-700 dark:text-slate-300 max-h-24 overflow-y-auto whitespace-pre-wrap">
+                  <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700 text-xs font-mono leading-relaxed text-on-surface max-h-24 overflow-y-auto whitespace-pre-wrap">
                     {messageBody}
                   </div>
                 </div>
@@ -517,11 +517,11 @@ Equipo FisioMirror`;
             {channel === 'whatsapp' && (
               <div className="space-y-3">
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                  <label className="block text-xs font-bold text-on-surface mb-1">
                     Teléfono de WhatsApp del paciente
                   </label>
                   <div className="relative">
-                    <Phone size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                    <Phone size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant" />
                     <input
                       type="tel"
                       value={phone}
@@ -533,7 +533,7 @@ Equipo FisioMirror`;
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                  <label className="block text-xs font-bold text-on-surface mb-1">
                     Vista previa de mensaje estructurado
                   </label>
                   <div className="p-3 rounded-xl bg-emerald-50/50 dark:bg-emerald-950/20 border border-emerald-200/60 dark:border-emerald-800/40 text-xs font-mono leading-relaxed text-emerald-950 dark:text-emerald-200 max-h-28 overflow-y-auto whitespace-pre-wrap">
@@ -547,11 +547,11 @@ Equipo FisioMirror`;
             {channel === 'sms' && (
               <div className="space-y-3">
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                  <label className="block text-xs font-bold text-on-surface mb-1">
                     Número telefónico registrado del paciente
                   </label>
                   <div className="relative">
-                    <Phone size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                    <Phone size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant" />
                     <input
                       type="tel"
                       value={phone}
@@ -563,7 +563,7 @@ Equipo FisioMirror`;
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                  <label className="block text-xs font-bold text-on-surface mb-1">
                     Texto del SMS (conciso)
                   </label>
                   <div className="p-3 rounded-xl bg-blue-50/50 dark:bg-blue-950/20 border border-blue-200/60 dark:border-blue-800/40 text-xs font-mono leading-relaxed text-blue-950 dark:text-blue-200 max-h-28 overflow-y-auto whitespace-pre-wrap">
@@ -594,7 +594,7 @@ Equipo FisioMirror`;
                   <button
                     type="button"
                     onClick={handleOpenNativeMail}
-                    className="w-full py-2 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200/80 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-semibold text-xs transition-all flex items-center justify-center gap-1.5"
+                    className="w-full py-2 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200/80 dark:border-slate-700 text-on-surface font-semibold text-xs transition-all flex items-center justify-center gap-1.5"
                   >
                     <ExternalLink size={13} />
                     <span>Abrir en mi gestor de correo</span>
@@ -627,7 +627,7 @@ Equipo FisioMirror`;
               <button
                 type="button"
                 onClick={handleCopy}
-                className="w-full py-2 px-3 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 font-semibold text-xs transition-all flex items-center justify-center gap-1.5"
+                className="w-full py-2 px-3 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-on-surface-variant font-semibold text-xs transition-all flex items-center justify-center gap-1.5"
               >
                 {copied ? <Check size={13} className="text-emerald-500" /> : <Copy size={13} />}
                 <span>{copied ? 'Copiado al Portapapeles' : 'Copiar Mensaje Completo'}</span>

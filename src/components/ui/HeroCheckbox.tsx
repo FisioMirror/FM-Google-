@@ -31,7 +31,7 @@ export function Label({ children, className = '' }: { children: React.ReactNode;
 }
 
 export function Description({ children, className = '' }: { children: React.ReactNode; className?: string }) {
-  return <p className={cn('text-xs text-slate-500 dark:text-slate-400 mt-0.5 mb-4', className)}>{children}</p>;
+  return <p className={cn('text-xs text-on-surface-variant mt-0.5 mb-4', className)}>{children}</p>;
 }
 
 export function CheckboxGroup({
@@ -86,7 +86,7 @@ export function Checkbox({
           'flex items-center gap-3.5 p-3.5 rounded-2xl border transition-all cursor-pointer select-none',
           isChecked
             ? 'bg-teal-500/10 border-teal-500/30 text-teal-950 dark:text-teal-200'
-            : 'bg-slate-50 dark:bg-slate-800/40 border-slate-200/70 dark:border-slate-700/60 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800',
+            : 'bg-slate-50 dark:bg-slate-800/40 border-slate-200/70 dark:border-slate-700/60 text-on-surface hover:bg-slate-100 dark:hover:bg-slate-800',
           className
         )}
       >
@@ -139,7 +139,7 @@ export function CheckboxPreferencesDemo() {
             </Checkbox.Control>
             <div>
               <p className="font-bold text-on-surface">Notificaciones por Correo</p>
-              <p className="text-xs font-normal text-slate-500 dark:text-slate-400">
+              <p className="text-xs font-normal text-on-surface-variant">
                 Resúmenes semanales de evolución y notas de tu fisioterapeuta.
               </p>
             </div>
@@ -153,7 +153,7 @@ export function CheckboxPreferencesDemo() {
             </Checkbox.Control>
             <div>
               <p className="font-bold text-on-surface">Alertas Push en Navegador</p>
-              <p className="text-xs font-normal text-slate-500 dark:text-slate-400">
+              <p className="text-xs font-normal text-on-surface-variant">
                 Avisos instantáneos al momento de iniciar tu rutina de ejercicios.
               </p>
             </div>
@@ -167,7 +167,7 @@ export function CheckboxPreferencesDemo() {
             </Checkbox.Control>
             <div>
               <p className="font-bold text-on-surface">Recordatorios SMS / WhatsApp</p>
-              <p className="text-xs font-normal text-slate-500 dark:text-slate-400">
+              <p className="text-xs font-normal text-on-surface-variant">
                 Mensaje directo de recordatorio si tienes más de 48 horas sin entrenar.
               </p>
             </div>
