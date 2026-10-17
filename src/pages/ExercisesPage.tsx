@@ -34,6 +34,7 @@ import {
 import { useAuthStore } from '../stores/authStore';
 import { supabase } from '../lib/supabase';
 import { useToast } from '../components/ui/ToastProvider';
+import { useTranslation } from 'react-i18next';
 import { cn } from '../lib/utils';
 import { Spinner } from '../components/ui/Loader';
 import { SkeletonCard } from '../components/ui/Skeleton';
@@ -280,6 +281,7 @@ const FILTER_CATEGORIES = [
 ];
 
 export function ExercisesPage() {
+  const { t } = useTranslation();
   const user = useAuthStore((s) => s.user);
   const toast = useToast();
   const [exercises, setExercises] = useState<Exercise[]>([]);
@@ -289,6 +291,17 @@ export function ExercisesPage() {
   const [loading, setLoading] = useState(true);
   const [prevExerciseCount, setPrevExerciseCount] = useState(0);
   const isFisio = user?.role === 'fisioterapeuta';
+
+  const filterCategories = [
+    { id: 'todos', label: t('exercises.allProtocols', 'Todos los Protocolos'), icon: Activity },
+    { id: 'hombro', label: t('exercises.shoulder', 'Hombro'), icon: RotateCw },
+    { id: 'rodilla', label: t('exercises.knee', 'Rodilla'), icon: Target },
+    { id: 'cadera', label: t('exercises.hip', 'Cadera & Pelvis'), icon: Compass },
+    { id: 'tobillo', label: t('exercises.ankle', 'Tobillo & Pie'), icon: Footprints },
+    { id: 'columna', label: t('exercises.spine', 'Columna & Core'), icon: Shield },
+    { id: 'codo', label: t('exercises.elbow', 'Codo & Brazos'), icon: Dumbbell },
+    { id: 'cervical', label: t('exercises.cervical', 'Cervical'), icon: CircleDot },
+  ];
 
   const [showModal, setShowModal] = useState(false);
   const [editing, setEditing] = useState<Exercise | null>(null);
@@ -713,10 +726,10 @@ export function ExercisesPage() {
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 relative z-10">
           <div className="space-y-2">
             <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white">
-              Catálogo de Ejercicios & Guía Anatómica
+              {t('exercises.catalogTitle', 'Catálogo de Ejercicios & Guía Anatómica')}
             </h1>
             <p className="text-sm text-slate-600 dark:text-slate-300 max-w-3xl leading-relaxed">
-              Prescribe protocolos kinesiológicos con modelos anatómicos 3D interactivos, ángulos ROM objetivo y biofeedback en tiempo real.
+              {t('exercises.catalogSubtitle', 'Prescribe protocolos kinesiológicos con modelos anatómicos 3D interactivos, ángulos ROM objetivo y biofeedback en tiempo real.')}
             </p>
           </div>
 
@@ -726,7 +739,7 @@ export function ExercisesPage() {
               className="px-5 py-3 rounded-2xl bg-teal-600 hover:bg-teal-700 active:scale-95 text-white font-bold text-sm transition-all shadow-md shadow-teal-600/20 flex items-center gap-2 shrink-0 self-start lg:self-center"
             >
               <Plus className="size-4" />
-              <span>Nuevo Ejercicio</span>
+              <span>{t('exercises.newExercise', 'Nuevo Ejercicio')}</span>
             </button>
           )}
         </div>
@@ -774,7 +787,7 @@ export function ExercisesPage() {
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Buscar por ejercicio, músculo objetivo o articulación..."
+            placeholder={t('exercises.searchPlaceholderEx', 'Buscar por ejercicio, músculo objetivo o articulación...')}
             className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-100/80 dark:bg-slate-800/80 border border-transparent focus:border-teal-500/40 focus:bg-white dark:focus:bg-slate-900 text-sm text-slate-800 dark:text-slate-100 placeholder:text-slate-400 outline-none transition-all"
           />
           {search && (
@@ -789,7 +802,7 @@ export function ExercisesPage() {
 
         {/* Category Pills */}
         <div className="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0 scrollbar-none">
-          {FILTER_CATEGORIES.map((cat) => {
+          {filterCategories.map((cat) => {
             const IconComp = cat.icon;
             const isSelected = activeFilter === cat.id;
             const count =
@@ -842,9 +855,9 @@ export function ExercisesPage() {
       ) : filtered.length === 0 ? (
         <div className="p-12 text-center rounded-3xl bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl border border-dashed border-slate-300 dark:border-slate-800">
           <Activity className="size-12 mx-auto text-teal-600/40 mb-3" />
-          <h3 className="text-base font-bold text-slate-900 dark:text-white">No se encontraron ejercicios</h3>
+          <h3 className="text-base font-bold text-slate-900 dark:text-white">{t('exercises.noExercisesFound', 'No se encontraron ejercicios')}</h3>
           <p className="text-xs text-slate-500 max-w-sm mx-auto mt-1 mb-4">
-            Intenta con otro término de búsqueda o cambia la categoría de articulación seleccionada.
+            {t('exercises.noExercisesFoundDesc', 'Intenta con otro término de búsqueda o cambia la categoría de articulación seleccionada.')}
           </p>
           <button
             onClick={() => {
@@ -854,7 +867,7 @@ export function ExercisesPage() {
             }}
             className="px-4 py-2 rounded-xl bg-teal-600/10 text-teal-700 dark:text-teal-300 text-xs font-bold hover:bg-teal-600/20 transition-colors"
           >
-            Restablecer filtros
+            {t('exercises.resetFilters', 'Restablecer filtros')}
           </button>
         </div>
       ) : (

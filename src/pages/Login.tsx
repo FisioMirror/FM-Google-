@@ -749,23 +749,23 @@ export function Login() {
   const getHeaderTitle = () => {
     if (isPaciente) {
       return mode === 'register'
-        ? 'Registro de Paciente'
-        : 'Comienza tu recuperación hoy';
+        ? t('auth.patientRegisterTitle', 'Registro de Paciente')
+        : t('auth.patientLoginTitle', 'Comienza tu recuperación hoy');
     }
     return mode === 'register'
-      ? 'Registro Profesional'
-      : 'Gestión Clínica de Alto Rendimiento';
+      ? t('auth.fisioRegisterTitle', 'Registro Profesional')
+      : t('auth.fisioLoginTitle', 'Gestión Clínica de Alto Rendimiento');
   };
 
   const getHeaderSubtitle = () => {
     if (isPaciente) {
       return mode === 'register'
-        ? 'Ingresa tu código de 6 dígitos asignado por tu fisioterapeuta para vincular tu cuenta.'
-        : 'Ingresa con tu correo y contraseña para acceder a tus terapias.';
+        ? t('auth.patientRegisterSubtitle', 'Ingresa tu código de 6 dígitos asignado por tu fisioterapeuta para vincular tu cuenta.')
+        : t('auth.patientLoginSubtitle', 'Ingresa con tu correo y contraseña para acceder a tus terapias.');
     }
     return mode === 'register'
-      ? 'Crea tu cuenta clínica para gestionar pacientes, métricas y prescripción digital.'
-      : 'Accede a tu panel de control clínico y seguimiento de pacientes.';
+      ? t('auth.fisioRegisterSubtitle', 'Crea tu cuenta clínica para gestionar pacientes, métricas y prescripción digital.')
+      : t('auth.fisioLoginSubtitle', 'Accede a tu panel de control clínico y seguimiento de pacientes.');
   };
 
   return (
@@ -872,7 +872,7 @@ export function Login() {
                 )}
               >
                 <Icon name="person" filled={isPaciente} size={18} />
-                Paciente
+                {t('roles.patient', 'Paciente')}
               </button>
               <button
                 type="button"
@@ -885,7 +885,7 @@ export function Login() {
                 )}
               >
                 <Icon name="medical_services" filled={isFisio} size={18} />
-                Fisioterapeuta
+                {t('roles.physiotherapist', 'Fisioterapeuta')}
               </button>
             </div>
           )}
@@ -949,7 +949,7 @@ export function Login() {
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        placeholder="Correo electrónico"
+                        placeholder={t('auth.email', 'Correo electrónico')}
                         aria-label="Correo electrónico del paciente"
                         autoComplete="email"
                         required
@@ -967,7 +967,7 @@ export function Login() {
                         type={showPassword ? 'text' : 'password'}
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        placeholder="Contraseña"
+                        placeholder={t('auth.password', 'Contraseña')}
                         aria-label="Contraseña del paciente"
                         autoComplete="current-password"
                         required
@@ -990,7 +990,7 @@ export function Login() {
                       onClick={() => setShowResetModal(true)}
                       className="text-xs font-semibold text-[#00504d] dark:text-[#8ad3cf] hover:underline"
                     >
-                      ¿Olvidaste tu contraseña?
+                      {t('auth.forgotPassword', '¿Olvidaste tu contraseña?')}
                     </button>
                   </div>
 
@@ -1022,7 +1022,7 @@ export function Login() {
                       `Espera ${cooldown}s`
                     ) : (
                       <span className="flex items-center justify-center gap-2">
-                        Iniciar Sesión
+                        {t('auth.signIn', 'Iniciar Sesión')}
                         <Icon name="arrow_forward" size={18} />
                       </span>
                     )}
@@ -1030,13 +1030,13 @@ export function Login() {
 
                   <div className="pt-2 text-center text-xs text-slate-600 dark:text-slate-400 space-y-1.5">
                     <p>
-                      ¿Tienes un código de tu fisioterapeuta?{' '}
+                      {t('auth.hasCode', '¿Tienes un código de tu fisioterapeuta? ')}{' '}
                       <button
                         type="button"
                         onClick={() => switchMode('register')}
                         className="font-bold text-[#00504d] dark:text-[#8ad3cf] hover:underline"
                       >
-                        Crear Cuenta / Registrarse
+                        {t('auth.signUp', 'Crear Cuenta / Registrarse')}
                       </button>
                     </p>
                   </div>

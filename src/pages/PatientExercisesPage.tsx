@@ -7,6 +7,7 @@ import { SkeletonCard } from '../components/ui/Skeleton';
 import { useAuthStore } from '../stores/authStore';
 import { supabase } from '../lib/supabase';
 import { useToast } from '../components/ui/ToastProvider';
+import { useTranslation } from 'react-i18next';
 import { ExerciseImage } from '../components/ui/ExerciseImage';
 import { getExerciseImage } from '../data/exerciseImages';
 import { SkeletonDemo } from '../components/rehabilitation/SkeletonDemo';
@@ -104,6 +105,7 @@ const DEFAULT_FALLBACK_EXERCISES: AssignedExercise[] = [
 ];
 
 export function PatientExercisesPage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const toast = useToast();
   const user = useAuthStore((s) => s.user);
@@ -178,10 +180,10 @@ export function PatientExercisesPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="font-extrabold text-2xl sm:text-3xl text-on-surface tracking-tight">
-            Mi Rutina de Rehabilitación
+            {t('exercises.myPrescribedRoutine', 'Mi Rutina de Rehabilitación')}
           </h1>
           <p className="text-on-surface-variant text-sm mt-0.5">
-            Ejercicios personalizados prescritos por tu fisioterapeuta con control biomecánico.
+            {t('exercises.prescribedRoutineDesc', 'Ejercicios personalizados prescritos por tu fisioterapeuta con control biomecánico.')}
           </p>
         </div>
 
@@ -202,7 +204,7 @@ export function PatientExercisesPage() {
               className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-surface-container-high border border-outline-variant/30 text-on-surface hover:bg-surface-container-highest transition-all text-xs font-semibold"
             >
               <Calendar size={14} className="text-primary" />
-              <span>Google Calendar</span>
+              <span>{t('exercises.googleCalendar', 'Google Calendar')}</span>
             </button>
             <button
               onClick={() => {
@@ -226,7 +228,7 @@ export function PatientExercisesPage() {
               className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-surface-container-high border border-outline-variant/30 text-on-surface hover:bg-surface-container-highest transition-all text-xs font-semibold"
             >
               <Download size={14} className="text-primary" />
-              <span>Descargar .ics</span>
+              <span>{t('exercises.downloadIcs', 'Descargar .ics')}</span>
             </button>
           </div>
         )}
@@ -235,7 +237,7 @@ export function PatientExercisesPage() {
       {isOffline && (
         <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-700 dark:text-amber-300 font-medium">
           <Icon name="cloud_off" size={16} />
-          <span>Modo sin conexión — usando rutina local almacenada</span>
+          <span>{t('exercises.offlineMode', 'Modo sin conexión — usando rutina local almacenada')}</span>
         </div>
       )}
 
@@ -249,7 +251,7 @@ export function PatientExercisesPage() {
             onClick={() => loadExercises()}
             className="px-3 py-1 rounded-lg bg-rose-500/20 hover:bg-rose-500/30 text-rose-700 dark:text-rose-200 font-semibold transition-colors"
           >
-            Reintentar
+            {t('exercises.retry', 'Reintentar')}
           </button>
         </div>
       )}
