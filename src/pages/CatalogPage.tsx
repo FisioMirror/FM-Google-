@@ -490,7 +490,7 @@ export function CatalogPage() {
 
             {/* 12. PremiumCard */}
             <div className="rounded-3xl border border-outline/15 bg-surface/80 p-6 space-y-3 shadow-sm">
-              <h3 className="text-sm font-bold text-on-surface">12. PremiumCard (Plan Clínico Pro)</h3>
+              <h3 className="text-sm font-bold text-on-surface">Tarjeta de Plan Clínico</h3>
               <p className="text-xs text-on-surface-variant mb-2">Tarjeta de suscripción y nivel hospitalario.</p>
               <PremiumCard />
             </div>

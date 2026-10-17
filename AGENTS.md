@@ -39,5 +39,9 @@ git add -A && git commit -m "..." && git push origin dev/opencode-mobile
 ```
 
 ## Estado del barrido de refinamiento
-- **Hecho**: shells (`FisioLayout`, `PatientLayout`), de-slop global (emojis/etiquetas), `100dvh`, `Login`, auth (Reset/Registro/UpdatePassword), normalización masiva de tipografía/radios/sombras/duraciones por tokens.
-- **Pendiente**: `PatientDetailPage`, resto de páginas, integración de componentes de galería (`UIShowcasePage`/`megaSuite`) con lógica real.
+- **Hecho (global, por commits)**: shells (`FisioLayout`, `PatientLayout`), de-slop (emojis/etiquetas/v2.0/Premium), `100dvh`; tipografía/radios/sombras/duraciones a tokens; primitivas `.fm-page`/`.fm-page-narrow`/`.fm-title`/`.fm-section-title`; color de texto neutro → `on-surface`/`on-surface-variant`; controles activos → `bg-primary text-on-primary`; sombras → `shadow-sm`/`shadow-card`; bordes → `outline/15`; títulos `font-headline-lg` → primitivas.
+- **Páginas con shell/título normalizados**: `PatientDetailPage`, `DashboardFisio`, `PatientsPage`, `StatsPage`, `ExercisesPage`, `ToolsPage`, `ProfilePage`, `PatientDashboard`, `PatientExercisesPage`, `SettingsPage`, `OCRScannerPage`, `UIShowcasePage`, `NotFound` + modales (`LegalModal`, layouts).
+- **Pendiente**: repaso fino por página (estados vacío/loading, a11y de modales, ritmo de espaciado) en `AIAssistantPage`, `CalibrationPage`, `CatalogPage`, `ARMirrorPage`, `TokenGeneratorPage`, `Login`/auth; integración de componentes de galería (`UIShowcasePage`/`megaSuite`) con lógica real.
+
+## Nota de seguridad (subagentes)
+- Un subagente ejecutó comandos destructivos (revert con `git restore` y un regex que borró dígitos). **Regla**: los subagentes que editen código deben usar solo Read/Edit/Write; **prohibido** `git`/`sed` destructivo. Revisar `git diff` antes de commitear.

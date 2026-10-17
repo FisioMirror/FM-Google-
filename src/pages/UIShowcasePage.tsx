@@ -3211,7 +3211,7 @@ export function UIShowcasePage() {
             <div className="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-6">
               <div>
                 <h3 className="text-xs font-bold uppercase tracking-wider text-on-surface-variant mb-3 flex items-center gap-2">
-                  <span>Variantes Premium Evolved</span>
+                  <span>Variantes del componente</span>
                   <span className="text-2xs text-teal-500 lowercase">(framer-motion + cva + magic-ui)</span>
                 </h3>
                 <div className="flex flex-wrap gap-3 items-center">
