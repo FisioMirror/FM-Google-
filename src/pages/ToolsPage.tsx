@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Icon } from '../components/ui/Icon';
 import { GlassPanel } from '../components/ui/Glass';
 import { useToast } from '../components/ui/ToastProvider';
@@ -35,16 +36,17 @@ interface PatientOption {
 }
 
 export function ToolsPage() {
+  const { t } = useTranslation();
   const toast = useToast();
   const user = useAuthStore((s) => s.user);
   const [bmi, setBmi] = useState(23.5);
-  const [bmiStatus, setBmiStatus] = useState('Peso Saludable');
+  const [bmiStatus, setBmiStatus] = useState('healthy');
   const [height, setHeight] = useState(175);
   const [weight, setWeight] = useState(72);
   const [patients, setPatients] = useState<PatientOption[]>([]);
   const [selectedPatient, setSelectedPatient] = useState('');
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([
-    { role: 'assistant', text: 'Hola. Soy Physi, tu asistente clínico. ¿En qué puedo ayudarte?' },
+    { role: 'assistant', text: t('tools.physiIntro') },
   ]);
   const [chatInput, setChatInput] = useState('');
   const [aiLoading, setAiLoading] = useState(false);
@@ -69,10 +71,10 @@ export function ToolsPage() {
     const h = height / 100;
     const result = weight / (h * h);
     setBmi(parseFloat(result.toFixed(1)));
-    if (result < 18.5) setBmiStatus('Bajo Peso');
-    else if (result < 25) setBmiStatus('Peso Saludable');
-    else if (result < 30) setBmiStatus('Sobrepeso');
-    else setBmiStatus('Obesidad');
+    if (result < 18.5) setBmiStatus('low');
+    else if (result < 25) setBmiStatus('healthy');
+    else if (result < 30) setBmiStatus('over');
+    else setBmiStatus('obese');
   }, [height, weight]);
 
   useEffect(() => {
@@ -210,7 +212,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
         userPrompt: userMsg,
       });
 
-      let text = result.success && result.result ? result.result : 'Lo siento, hubo un error procesando tu consulta.';
+      let text = result.success && result.result ? result.result : t('tools.aiProcessError');
       try {
         const parsed = JSON.parse(text);
         if (parsed.hallazgos || parsed.recomendaciones) {
@@ -228,7 +230,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
         });
       }
     } catch {
-      setChatMessages((prev) => [...prev, { role: 'assistant', text: 'Error de conexión con Physi. Intenta de nuevo en unos momentos.' }]);
+      setChatMessages((prev) => [...prev, { role: 'assistant', text: t('tools.aiConnectionError') }]);
     } finally {
       setAiLoading(false);
     }
@@ -257,8 +259,8 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
         .maybeSingle();
 
       const sessionData = {
-        patientName: patientProfile?.full_name || 'Paciente',
-        diagnosis: patientProfile?.diagnostico || 'No especificado',
+        patientName: patientProfile?.full_name || t('common.patientDefault'),
+        diagnosis: patientProfile?.diagnostico || t('tools.notSpecified'),
         sessions: sessions || [],
       };
 
@@ -290,7 +292,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
         .eq('terapeuta_id', user?.id);
 
       const patientIds = (links || []).map((l) => l.paciente_id);
-      let summaryContext = 'No hay pacientes activos.';
+      let summaryContext = t('tools.noActivePatients');
 
       if (patientIds.length > 0) {
         const { data: patientProfiles } = await supabase
@@ -359,11 +361,11 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
         : 0;
 
       const pdfData: PDFPatientData = {
-        patientName: patientProfile?.full_name || 'Paciente',
+        patientName: patientProfile?.full_name || t('common.patientDefault'),
         diagnosis: patientProfile?.diagnostico,
         sessions: (sessions || []).map((s) => ({
           fecha: s.fecha,
-          ejercicio: s.ejercicio_nombre || 'Ejercicio',
+          ejercicio: s.ejercicio_nombre || t('ex.defaultName'),
           duracion_segundos: s.duracion_segundos || 0,
           repeticiones: s.repeticiones || 0,
           calidad_ejecucion: s.calidad_ejecucion || 0,
@@ -376,12 +378,12 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
 
       if (pdfMode === 'simple') {
         exportSimplePDF(pdfData, `FisioMirror_${pdfData.patientName}.pdf`);
-        toast.success('PDF descargado correctamente');
+        toast.success(t('tools.pdfDownloaded'));
       } else {
         const result = await runAIJob('pdf_report', {
           data: {
             patientName: pdfData.patientName,
-            diagnosis: pdfData.diagnosis || 'No especificado',
+            diagnosis: pdfData.diagnosis || t('tools.notSpecified'),
             sessions: pdfData.sessions,
             globalMetrics: pdfData.globalMetrics,
           },
@@ -389,13 +391,13 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
 
         if (result.success && result.result) {
           await exportPremiumPDF(pdfData, `FisioMirror_IA_${pdfData.patientName}.pdf`, result.result);
-          toast.success('PDF con IA descargado correctamente');
+          toast.success(t('tools.pdfAiDownloaded'));
         } else {
-          toast.error(result.error || 'Error generando PDF con IA');
+          toast.error(result.error || t('tools.pdfAiError'));
         }
       }
     } catch {
-      toast.error('Error al exportar el PDF');
+      toast.error(t('tools.pdfExportError'));
     } finally {
       setPdfLoading(false);
       setPdfModalOpen(false);
@@ -425,8 +427,8 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
                   <MedicalIcon name="clipboard" size={24} className="animate-breathe-icon" />
                 </div>
                 <div>
-                  <h3 className="fm-section-title text-xl text-teal-900 dark:text-teal-100">OCR Clínico Rápido</h3>
-                  <p className="text-xs text-on-surface-variant mt-0.5">Convierte recetas e informes médicos en datos estructurados</p>
+                  <h3 className="fm-section-title text-xl text-teal-900 dark:text-teal-100">{t('tools.ocrTitle')}</h3>
+                  <p className="text-xs text-on-surface-variant mt-0.5">{t('tools.ocrSubtitle')}</p>
                 </div>
               </div>
             </div>
@@ -440,11 +442,11 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
                 {scanProcessing ? <Spinner size={32} className="text-teal-600 dark:text-teal-400" /> : scanComplete ? <Icon name="check_circle" filled size={32} className="text-teal-600 animate-breathe-icon" /> : <Icon name="upload_file" size={32} className="text-teal-600 dark:text-teal-400" />}
               </div>
               <div>
-                <p className="font-bold text-base text-on-surface">{scanProcessing ? <LoadingText context="ocr" /> : scanComplete ? 'Análisis Completado' : 'Arrastra o selecciona un documento clínico'}</p>
-                <p className="text-xs text-on-surface-variant mt-1">Soporta PDF, JPG, PNG (Máx 15MB)</p>
+                <p className="font-bold text-base text-on-surface">{scanProcessing ? <LoadingText context="ocr" /> : scanComplete ? t('tools.scanComplete') : t('tools.dropDoc')}</p>
+                <p className="text-xs text-on-surface-variant mt-1">{t('tools.supportedFormats')}</p>
               </div>
               <button onClick={(e) => { e.stopPropagation(); fileInputRef.current?.click(); }} className="bg-primary hover:bg-primary/90 text-on-primary px-6 py-2.5 rounded-full font-bold text-xs shadow-sm shadow-teal-700/20 hover:scale-105 active:scale-95 transition-all">
-                Seleccionar Archivo
+                {t('tools.selectFile')}
               </button>
               <input ref={fileInputRef} type="file" accept=".pdf,image/*" className="hidden" onChange={onFileSelected} />
               </div>
@@ -453,7 +455,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
             {scanResult && (
               <div className="mt-4 p-5 ios-glass-heavy refraction-border rounded-2xl space-y-3">
                 <div className="flex items-center justify-between mb-2">
-                  <h4 className="font-bold text-sm text-teal-800 dark:text-teal-200">Resultado del Análisis (22 Campos)</h4>
+                  <h4 className="font-bold text-sm text-teal-800 dark:text-teal-200">{t('tools.scanResult')}</h4>
                   <div className="flex gap-2">
                     <button
                       onClick={() => {
@@ -461,11 +463,11 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
                           .filter(([, v]) => v != null && v !== '' && v !== false)
                           .map(([k, v]) => `${k}: ${String(v)}`)
                           .join('\n');
-                        try { navigator.clipboard?.writeText(text); toast.success('Texto copiado al portapapeles'); } catch { toast.error('No se pudo copiar'); }
+                        try { navigator.clipboard?.writeText(text); toast.success(t('tools.copied')); } catch { toast.error(t('tools.copyError')); }
                       }}
                       className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-primary text-on-primary font-bold text-xs hover:bg-teal-700 transition-colors min-h-[36px]"
                     >
-                      <Icon name="content_copy" size={16} /> Copiar texto
+                      <Icon name="content_copy" size={16} /> {t('tools.copyText')}
                     </button>
                     <button
                       onClick={() => { setShowUpdatePatientModal(true); setUpdatePreview({}); setUpdatePatientId(''); }}
@@ -478,28 +480,28 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
                 {(() => {
                   const r = scanResult as Record<string, unknown>;
                   const fields: { key: string; label: string }[] = [
-                    { key: 'nombre_completo', label: 'Nombre Completo' },
-                    { key: 'documento_identidad', label: 'Documento' },
-                    { key: 'fecha_nacimiento', label: 'Fecha Nacimiento' },
-                    { key: 'telefono', label: 'Teléfono' },
-                    { key: 'tipo_sangre', label: 'Tipo Sangre' },
-                    { key: 'ocupacion', label: 'Ocupación' },
-                    { key: 'nivel_actividad', label: 'Nivel Actividad' },
-                    { key: 'es_menor_edad', label: 'Menor de Edad' },
-                    { key: 'patologia', label: 'Patología' },
-                    { key: 'diagnostico_secundario', label: 'Diagnóstico Secundario' },
-                    { key: 'medicamentos_actuales', label: 'Medicamentos' },
-                    { key: 'alergias', label: 'Alergias' },
-                    { key: 'enfermedades_cronicas', label: 'Enf. Crónicas' },
-                    { key: 'lesiones_previas', label: 'Lesiones Previas' },
-                    { key: 'estatura_cm', label: 'Estatura (cm)' },
-                    { key: 'peso_kg', label: 'Peso (kg)' },
-                    { key: 'extremidad_afectada', label: 'Extremidad Afectada' },
-                    { key: 'rom_objetivo', label: 'ROM Objetivo' },
-                    { key: 'frecuencia_sesiones', label: 'Frecuencia Sesiones' },
-                    { key: 'medico_remitente', label: 'Médico Tratante' },
-                    { key: 'contacto_emergencia_nombre', label: 'Contacto Emergencia' },
-                    { key: 'contacto_emergencia_telefono', label: 'Tel. Emergencia' },
+                    { key: 'nombre_completo', labelKey: 'tools.fFullName' },
+                    { key: 'documento_identidad', labelKey: 'tools.fDocId' },
+                    { key: 'fecha_nacimiento', labelKey: 'tools.fBirthDate' },
+                    { key: 'telefono', labelKey: 'tools.fPhone' },
+                    { key: 'tipo_sangre', labelKey: 'tools.fBloodType' },
+                    { key: 'ocupacion', labelKey: 'tools.fOccupation' },
+                    { key: 'nivel_actividad', labelKey: 'tools.fActivityLevel' },
+                    { key: 'es_menor_edad', labelKey: 'tools.fMinor' },
+                    { key: 'patologia', labelKey: 'tools.fPathology' },
+                    { key: 'diagnostico_secundario', labelKey: 'tools.fSecondaryDx' },
+                    { key: 'medicamentos_actuales', labelKey: 'tools.fMeds' },
+                    { key: 'alergias', labelKey: 'tools.fAllergies' },
+                    { key: 'enfermedades_cronicas', labelKey: 'tools.fChronic' },
+                    { key: 'lesiones_previas', labelKey: 'tools.fPrevInjuries' },
+                    { key: 'estatura_cm', labelKey: 'tools.fHeight' },
+                    { key: 'peso_kg', labelKey: 'tools.fWeight' },
+                    { key: 'extremidad_afectada', labelKey: 'tools.fAffectedLimb' },
+                    { key: 'rom_objetivo', labelKey: 'tools.fTargetRom' },
+                    { key: 'frecuencia_sesiones', labelKey: 'tools.fSessionFreq' },
+                    { key: 'medico_remitente', labelKey: 'tools.fPhysician' },
+                    { key: 'contacto_emergencia_nombre', labelKey: 'tools.fEmergencyName' },
+                    { key: 'contacto_emergencia_telefono', labelKey: 'tools.fEmergencyPhone' },
                   ];
                   const hasStructured = fields.some(f => r[f.key] != null && r[f.key] !== '');
                   if (hasStructured) {
@@ -510,7 +512,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
                           if (val == null || val === '' || val === false) return null;
                           return (
                             <div key={f.key} className="flex items-start gap-2 p-2 rounded-xl bg-teal-500/5 border border-teal-500/10">
-                              <span className="text-2xs font-bold text-on-surface-variant uppercase whitespace-nowrap min-w-[80px]">{f.label}</span>
+                              <span className="text-2xs font-bold text-on-surface-variant uppercase whitespace-nowrap min-w-[80px]">{t(f.labelKey)}</span>
                               <span className="text-xs font-bold text-on-surface break-words">{String(val)}</span>
                             </div>
                           );
@@ -537,8 +539,8 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
                   <Icon name="calculate" size={24} className="animate-breathe-icon" />
                 </div>
                 <div>
-                  <h3 className="fm-section-title text-xl text-teal-900 dark:text-teal-100">Calculadora IMC</h3>
-                  <p className="text-xs text-on-surface-variant mt-0.5">Clasificación clínica en tiempo real</p>
+                  <h3 className="fm-section-title text-xl text-teal-900 dark:text-teal-100">{t('tools.bmiTitle')}</h3>
+                  <p className="text-xs text-on-surface-variant mt-0.5">{t('tools.bmiSubtitle')}</p>
                 </div>
               </div>
               <div className="space-y-6">
@@ -548,7 +550,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
                   min={100}
                   max={250}
                   step={1}
-                  label="Estatura"
+                  label={t("tools.height")}
                   unit=" cm"
                   ticks={[120, 150, 175, 200, 220]}
                 />
@@ -558,7 +560,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
                   min={30}
                   max={200}
                   step={1}
-                  label="Peso"
+                  label={t("tools.weight")}
                   unit=" kg"
                   ticks={[40, 70, 100, 130, 160]}
                 />
@@ -572,7 +574,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
                   <span className="text-4xl font-black font-mono tracking-tight">{bmi}</span>
                 </div>
                 <div className="text-right">
-                  <span className={`px-3 py-1 rounded-full text-xs font-bold shadow-xs ${bmiStatus === 'Peso Saludable' ? 'bg-emerald-500 text-white' : bmiStatus === 'Bajo Peso' ? 'bg-amber-500 text-white' : bmiStatus === 'Sobrepeso' ? 'bg-orange-500 text-white' : 'bg-red-500 text-white'}`}>{bmiStatus}</span>
+                  <span className={`px-3 py-1 rounded-full text-xs font-bold shadow-xs ${bmiStatus === 'healthy' ? 'bg-emerald-500 text-white' : bmiStatus === 'low' ? 'bg-amber-500 text-white' : bmiStatus === 'over' ? 'bg-orange-500 text-white' : 'bg-red-500 text-white'}`}>{t('tools.bmi.' + bmiStatus)}</span>
                   <p className="text-2xs text-teal-200 font-medium mt-1">Normal: 18.5 – 24.9</p>
                 </div>
               </div>
@@ -595,29 +597,29 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
                 <Icon name="auto_awesome" size={24} className="animate-breathe-icon" />
               </div>
               <div>
-                <h3 className="fm-section-title text-xl text-teal-900 dark:text-teal-100">Resumen de Sesión IA</h3>
-                <p className="text-xs text-on-surface-variant mt-0.5">Genera un resumen narrativo a partir de las últimas sesiones reales</p>
+                <h3 className="fm-section-title text-xl text-teal-900 dark:text-teal-100">{t('tools.summaryTitle')}</h3>
+                <p className="text-xs text-on-surface-variant mt-0.5">{t('tools.summarySubtitle')}</p>
               </div>
             </div>
             <div className="flex flex-col sm:flex-row gap-4 mb-4">
               <select value={selectedPatient} onChange={(e) => setSelectedPatient(e.target.value)} className="flex-1 px-4 py-3 rounded-xl bg-white/70 dark:bg-slate-800/70 border border-outline-variant/30 outline-none focus:ring-2 focus:ring-teal-500/20 text-on-surface text-sm font-semibold">
-                <option value="">Seleccionar Paciente</option>
-                {patients.length === 0 && <option value="" disabled>No hay pacientes asignados</option>}
+                <option value="">{t('tools.selPatient')}</option>
+                {patients.length === 0 && <option value="" disabled>{t('tools.noPatients')}</option>}
                 {patients.map((p) => (
                   <option key={p.id} value={p.id}>{p.full_name}</option>
                 ))}
               </select>
               <button onClick={generateSessionSummary} disabled={summaryLoading || !selectedPatient} className="bg-primary hover:bg-primary/90 text-on-primary shadow-sm shadow-teal-700/20 px-6 py-3 rounded-xl font-bold text-xs flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50 whitespace-nowrap">
                 {summaryLoading ? <Spinner size={16} className="text-white" /> : <Icon name="auto_awesome" size={16} />}
-                {summaryLoading ? <LoadingText context="ai" /> : 'Generar Resumen'}
+                {summaryLoading ? <LoadingText context="ai" /> : t('tools.generateSummary')}
               </button>
             </div>
 
             {/* Quick Clinical Controls Bar */}
             <div className="flex flex-wrap items-center justify-between gap-3 mb-6 p-3 rounded-2xl bg-teal-500/5 border border-teal-500/15">
               <div className="space-y-1.5">
-                <span className="text-2xs font-bold uppercase tracking-wider text-outline block">Criterios Clínicos:</span>
-                <BiomechanicalTagSelector tags={['Movilidad', 'Fuerza', 'Propiocepción', 'Sin Dolor', 'Post-Op']} />
+                <span className="text-2xs font-bold uppercase tracking-wider text-outline block">{t('tools.clinicalCriteria')}:</span>
+                <BiomechanicalTagSelector tags={[t('tools.tMobility'), t('tools.tStrength'), t('tools.tPropioception'), t('tools.tNoPain'), t('tools.tPostOp')]} />
               </div>
               <div className="flex flex-wrap items-center gap-2">
                 <QuickPrescriptionModalButton />
@@ -630,13 +632,13 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
                 <div>
                   <div className="flex items-center gap-2 mb-2">
                     <Icon name="sensors" size={18} className="text-teal-600 dark:text-teal-400 animate-breathe-icon" />
-                    <span className="font-bold text-sm text-on-surface">Telemetría Clínica</span>
+                    <span className="font-bold text-sm text-on-surface">{t('tools.telemetry')}</span>
                   </div>
-                  <p className="text-xs text-on-surface-variant leading-relaxed">El resumen se genera a partir de las últimas 5 sesiones registradas del paciente seleccionado en la base de datos.</p>
+                  <p className="text-xs text-on-surface-variant leading-relaxed">{t('tools.telemetryHint')}</p>
                 </div>
                 <PhysioNoteAnnotationBubble
-                  author="Fisio Supervisor"
-                  noteText="Revisar progresión de ROM antes de aumentar repeticiones."
+                  author={t("tools.supervisor")}
+                  noteText={t("tools.supervisorNote")}
                   className="w-full"
                 />
               </div>
@@ -649,13 +651,13 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
                         <MedicalIcon name="clipboard" size={20} />
                       </div>
                       <div>
-                        <h4 className="font-bold text-sm text-teal-950 dark:text-teal-100">Informe de Sesión</h4>
-                        <p className="text-2xs text-on-surface-variant font-semibold uppercase tracking-wider">Resumen Clínico IA</p>
+                        <h4 className="font-bold text-sm text-teal-950 dark:text-teal-100">{t('tools.sessionReport')}</h4>
+                        <p className="text-2xs text-on-surface-variant font-semibold uppercase tracking-wider">{t('tools.aiClinicalSummary')}</p>
                       </div>
                     </div>
                     <div className="flex gap-1.5">
-                      <button onClick={() => { if (summaryText) { try { navigator.clipboard?.writeText(summaryText); toast.info('Copiado al portapapeles'); } catch { toast.error('No se pudo copiar'); } } else { toast.error('No hay resumen para copiar'); } }} className="w-8 h-8 rounded-lg flex items-center justify-center text-outline hover:text-primary hover:bg-primary/10 transition-colors"><Icon name="content_copy" size={16} /></button>
-                      <button onClick={() => { try { window.print(); } catch { toast.error('No se pudo imprimir'); } }} className="w-8 h-8 rounded-lg flex items-center justify-center text-outline hover:text-primary hover:bg-primary/10 transition-colors"><Icon name="print" size={16} /></button>
+                      <button onClick={() => { if (summaryText) { try { navigator.clipboard?.writeText(summaryText); toast.info(t('tools.copied')); } catch { toast.error(t('tools.copyError')); } } else { toast.error(t('tools.nothingToCopy')); } }} className="w-8 h-8 rounded-lg flex items-center justify-center text-outline hover:text-primary hover:bg-primary/10 transition-colors"><Icon name="content_copy" size={16} /></button>
+                      <button onClick={() => { try { window.print(); } catch { toast.error(t('tools.printError')); } }} className="w-8 h-8 rounded-lg flex items-center justify-center text-outline hover:text-primary hover:bg-primary/10 transition-colors"><Icon name="print" size={16} /></button>
                     </div>
                   </div>
                   {/* Body */}
@@ -680,7 +682,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
                       </span>
                       <div className="flex items-center gap-3">
                         <button
-                          onClick={() => { try { exportPremiumPDF({ patientName: 'Resumen de Sesión', sessions: [], globalMetrics: { totalSessions: 0, avgQuality: 0 } }, `FisioMirror_Informe_Sesion_${Date.now()}.pdf`, summaryText); toast.success('Descargando PDF...'); } catch { toast.error('No se pudo exportar'); } }}
+                          onClick={() => { try { exportPremiumPDF({ patientName: 'Resumen de Sesión', sessions: [], globalMetrics: { totalSessions: 0, avgQuality: 0 } }, `FisioMirror_Informe_Sesion_${Date.now()}.pdf`, summaryText); toast.success(t('tools.downloadingPdf')); } catch { toast.error(t('tools.exportError')); } }}
                           className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-primary hover:bg-primary/10 px-2.5 py-1.5 rounded-lg transition-colors"
                         >
                           <Icon name="download" size={14} />
@@ -706,7 +708,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
             <div className="flex items-center gap-3 mb-6 relative">
               <div className="w-12 h-12 rounded-xl bg-secondary-container/20 flex items-center justify-center"><Icon name="group" size={24} className="text-secondary animate-breathe-icon" /></div>
               <div>
-                <h3 className="fm-section-title gradient-text-blue">Resumen de Pacientes</h3>
+                <h3 className="fm-section-title gradient-text-blue">{t('tools.patientsSummary')}</h3>
                 <p className="text-sm text-on-surface-variant">Resumen general del progreso de todos tus pacientes activos</p>
               </div>
             </div>
@@ -725,12 +727,12 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
                       <MedicalIcon name="heart" size={22} className="text-secondary" />
                     </div>
                     <div>
-                      <h4 className="fm-section-title text-secondary tracking-wide">Informe de Paciente</h4>
+                      <h4 className="fm-section-title text-secondary tracking-wide">{t('tools.patientReport')}</h4>
                       <p className="text-2xs text-on-surface-variant font-semibold uppercase tracking-wider">Progreso General IA</p>
                     </div>
                   </div>
                   <button
-                    onClick={() => { try { navigator.clipboard?.writeText(patientSummaryText); toast.info('Copiado al portapapeles'); } catch { toast.error('No se pudo copiar'); } }}
+                    onClick={() => { try { navigator.clipboard?.writeText(patientSummaryText); toast.info(t('tools.copied')); } catch { toast.error(t('tools.copyError')); } }}
                     className="w-8 h-8 rounded-lg flex items-center justify-center text-outline hover:text-secondary hover:bg-secondary/10 transition-colors"
                   >
                     <Icon name="content_copy" size={16} />
@@ -768,13 +770,13 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
             <div className="flex items-center gap-3 mb-6 relative">
               <div className="w-12 h-12 rounded-xl bg-error/10 flex items-center justify-center"><Icon name="picture_as_pdf" size={24} className="text-error animate-breathe-icon" /></div>
               <div>
-                <h3 className="fm-section-title gradient-text-editorial">Exportar Reporte PDF</h3>
+                <h3 className="fm-section-title gradient-text-editorial">{t('tools.exportPdf')}</h3>
                 <p className="text-sm text-on-surface-variant">Genera un reporte clínico en PDF con datos reales del paciente</p>
               </div>
             </div>
             <div className="flex flex-col sm:flex-row gap-4 mb-4">
               <select value={selectedPatient} onChange={(e) => setSelectedPatient(e.target.value)} className="flex-1 px-4 py-3 rounded-xl bg-surface-variant/20 border border-outline-variant/30 outline-none focus:ring-2 focus:ring-primary/20 text-on-surface">
-                <option value="">Seleccionar Paciente</option>
+                <option value="">{t('tools.selPatient')}</option>
                 {patients.map((p) => (
                   <option key={p.id} value={p.id}>{p.full_name}</option>
                 ))}
@@ -807,44 +809,44 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
       <div className="flex flex-col xl:flex-row gap-6">
         <div className="flex-1 flex flex-col gap-6 min-w-0">
           <div>
-            <h1 className="fm-title gradient-text-editorial">Herramientas IA Clínicas</h1>
+            <h1 className="fm-title gradient-text-editorial">{t('tools.pageTitle')}</h1>
             <p className="text-on-surface-variant font-body-lg">Acelera tu flujo de trabajo con instrumentos clínicos de precisión potenciados por IA.</p>
           </div>
 
           {/* Featured Clinical Bento Showcase */}
           <div className="space-y-3">
             <h2 className="text-xs font-bold uppercase tracking-wider text-teal-600 dark:text-teal-400 flex items-center gap-1.5">
-              <Icon name="grid_view" size={16} /> Suite de Herramientas Destacadas
+              <Icon name="grid_view" size={16} /> {t('tools.featuredSuite')}
             </h2>
             <BentoGrid className="auto-rows-[14rem]">
               <BentoCard
-                name="Calculadora de IMC y Composición"
-                description="Clasificación antropométrica y estimación en tiempo real con validación clínica."
-                badge="Biomecánica"
+                name={t('tools.bmiBentoName')}
+                description={t('tools.bmiBentoDesc')}
+                badge={t('tools.badgeBiomech')}
                 Icon={Calculator}
-                cta="Calcular Parámetros"
+                cta={t('tools.ctaCalc')}
                 onClick={() => {
                   const el = document.getElementById('tool-bmi');
                   el?.scrollIntoView({ behavior: 'smooth' });
                 }}
               />
               <BentoCard
-                name="Digitalizador OCR & Visión Médica"
-                description="Extracción instantánea de prescripciones, rangos articulares y antecedentes."
-                badge="Visión IA"
+                name={t('tools.ocrBentoName')}
+                description={t('tools.ocrBentoDesc')}
+                badge={t('tools.badgeVision')}
                 Icon={Camera}
-                cta="Escanear Documento"
+                cta={t('tools.ctaScan')}
                 onClick={() => {
                   const el = document.getElementById('tool-ocr');
                   el?.scrollIntoView({ behavior: 'smooth' });
                 }}
               />
               <BentoCard
-                name="Generador Narrativo de Sesión"
-                description="Síntesis clínica contextual con lenguaje profesional lista para exportar a PDF."
-                badge="Gemini AI"
+                name={t('tools.summaryBentoName')}
+                description={t('tools.summaryBentoDesc')}
+                badge={t('tools.badgeGemini')}
                 Icon={FileText}
-                cta="Generar Informe"
+                cta={t('tools.ctaReport')}
                 onClick={() => {
                   const el = document.getElementById('tool-summary');
                   el?.scrollIntoView({ behavior: 'smooth' });
@@ -855,17 +857,17 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
 
           <AnimatedTabs
             tabs={[
-              { id: 'todas', label: 'Todas', content: (
+              { id: 'todas', label: t('tools.tabAll'), content: (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
                   {toolsGrid('todas')}
                 </div>
               ) },
-              { id: 'ia', label: 'IA Clínica', content: (
+              { id: 'ia', label: t('tools.tabAi'), content: (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
                   {toolsGrid('ia')}
                 </div>
               ) },
-              { id: 'ocr', label: 'OCR', content: (
+              { id: 'ocr', label: t('tools.tabOcr'), content: (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
                   {toolsGrid('ocr')}
                 </div>
@@ -883,7 +885,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
               <Icon name="smart_toy" filled size={28} className="animate-breathe-icon" />
               <div>
                 <h3 className="font-bold gradient-text-teal">Physi</h3>
-                <p className="text-xs opacity-80">Activo y Listo</p>
+                <p className="text-xs opacity-80">{t('tools.activeReady')}</p>
               </div>
             </div>
           </div>
@@ -912,14 +914,14 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
               value={chatInput}
               onChange={(e) => setChatInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && sendChat()}
-              placeholder="Escribe tu consulta clínica..."
+              placeholder={t("tools.chatPlaceholder")}
               className="flex-1 px-4 py-3 rounded-xl bg-surface-variant/20 border border-outline-variant/30 outline-none focus:ring-2 focus:ring-primary/20 text-on-surface placeholder:text-on-surface-variant"
             />
-            <button onClick={sendChat} disabled={aiLoading} aria-label="Enviar consulta clínica" className="premium-btn w-12 h-12 rounded-xl bg-primary text-on-primary flex items-center justify-center hover:scale-105 active:scale-95 transition-all disabled:opacity-50">
+            <button onClick={sendChat} disabled={aiLoading} aria-label={t("tools.sendQuery")} className="premium-btn w-12 h-12 rounded-xl bg-primary text-on-primary flex items-center justify-center hover:scale-105 active:scale-95 transition-all disabled:opacity-50">
               <Icon name="send" size={20} />
             </button>
           </div>
-          <p className="text-2xs text-outline mt-2 flex items-center gap-1"><span className="w-2 h-2 bg-green-500 rounded-full" /> Cumple HIPAA</p>
+          <p className="text-2xs text-outline mt-2 flex items-center gap-1"><span className="w-2 h-2 bg-green-500 rounded-full" /> {t('tools.hipaa')}</p>
         </div>
       </div>
 
@@ -929,12 +931,12 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
           <div className="glass-panel rounded-3xl p-5 sm:p-6 lg:p-8 max-w-full sm:max-w-md w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center gap-3 mb-4">
               <Icon name="picture_as_pdf" size={28} className="text-error" />
-              <h3 className="fm-section-title">Confirmar Reporte PDF</h3>
+              <h3 className="fm-section-title">{t('tools.confirmPdf')}</h3>
             </div>
             <p className="text-sm text-on-surface-variant mb-6">
               {pdfMode === 'simple'
-                ? 'Se generará un PDF rápido con los datos de las últimas 20 sesiones del paciente seleccionado.'
-                : 'Se generará un PDF estilizado usando IA con los datos del paciente. Esto puede tardar unos segundos.'}
+                ? t('tools.pdfSimpleInfo')
+                : t('tools.pdfAiInfo')}
             </p>
             <div className="flex gap-3">
               <button onClick={() => setPdfModalOpen(false)} className="flex-1 px-6 py-3 rounded-xl bg-surface-variant/30 text-on-surface-variant font-bold hover:bg-surface-variant/50 transition-all">
