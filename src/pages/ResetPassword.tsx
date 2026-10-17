@@ -64,7 +64,7 @@ export function ResetPassword() {
         const { data } = await supabase.auth.getSession();
         if (data?.session?.user?.email && isMounted) {
           setEmail((prev) => prev || data.session.user.email || '');
-          if (hash.includes('recovery) {
+          if (hash.includes('recovery')) {
             setMode('reset');
           }
         }
