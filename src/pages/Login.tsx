@@ -786,7 +786,7 @@ export function Login() {
       {/* ═══════════════════════════════════════════════════
           LEFT PANEL — MAIN FORM
           ═══════════════════════════════════════════════════ */}
-      <div className="w-full md:w-[45%] lg:w-[42%] flex flex-col items-center justify-center px-4 py-8 md:px-8 relative z-20 overflow-y-auto">
+      <div className="w-full md:w-[45%] lg:w-[42%] flex flex-col items-center justify-start md:justify-center px-4 py-8 md:px-8 relative z-20 overflow-y-auto">
         {/* Top bar: logo + language + theme toggle */}
         <div className="w-full max-w-[480px] flex items-center justify-between mb-5">
           <div className="flex items-center gap-2.5">
@@ -1463,7 +1463,7 @@ export function Login() {
                               className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 px-3.5 py-2.5 text-sm text-slate-900 dark:text-slate-100 outline-none focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20 cursor-pointer"
                             >
                               <option value="">Selecciona un año</option>
-                              {[2025, 2024, 2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016, 2015].map((y) => (
+                              {[2026, 2025, 2024, 2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016, 2015].map((y) => (
                                 <option key={y} value={y}>
                                   {y}
                                 </option>
@@ -1853,7 +1853,10 @@ export function Login() {
               initial={{ scale: 0.92, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.92, opacity: 0 }}
-              className="bg-white dark:bg-slate-900 rounded-3xl p-7 max-w-sm w-full shadow-2xl border border-slate-200 dark:border-slate-800 max-h-[90vh] overflow-y-auto"
+              role="dialog"
+              aria-modal="true"
+              aria-label="Recuperar contraseña"
+              className="bg-white dark:bg-slate-900 rounded-3xl p-7 max-w-sm w-full shadow-2xl border border-slate-200 dark:border-slate-800 max-h-[90dvh] overflow-y-auto"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="w-12 h-12 bg-teal-50 dark:bg-teal-950/60 rounded-full flex items-center justify-center mx-auto mb-3 text-[#00504d] dark:text-teal-400">
@@ -1931,7 +1934,10 @@ export function Login() {
             <motion.div
               initial={{ scale: 0.92, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              className="max-w-md w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-8 rounded-[2.5rem] text-center space-y-5 shadow-2xl max-h-[90vh] overflow-y-auto"
+              role="dialog"
+              aria-modal="true"
+              aria-label="Cuenta creada"
+              className="max-w-md w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-8 rounded-[2.5rem] text-center space-y-5 shadow-2xl max-h-[90dvh] overflow-y-auto"
             >
               <div className="w-16 h-16 bg-teal-50 dark:bg-teal-950/60 rounded-full flex items-center justify-center mx-auto text-[#00504d] dark:text-teal-400 shadow-inner">
                 <Icon name="check_circle" filled size={38} />

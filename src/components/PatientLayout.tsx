@@ -602,7 +602,10 @@ export function PatientLayout({ children }: PatientLayoutProps) {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               onClick={(e) => e.stopPropagation()}
-              className="glass-panel rounded-3xl p-8 max-w-sm w-full mx-4 text-center max-h-[90vh] overflow-y-auto"
+              role="dialog"
+              aria-modal="true"
+              aria-label="Confirmar cierre de sesión"
+              className="glass-panel rounded-3xl p-8 max-w-sm w-full mx-4 text-center max-h-[90dvh] overflow-y-auto"
             >
               <MascotAnimation type="goodbye" size="md" className="mx-auto mb-4" />
               <h3 className="font-headline-lg text-headline-lg gradient-text-editorial mb-2">{t('navigation.logoutConfirm', '¿Cerrar sesión?')}</h3>
