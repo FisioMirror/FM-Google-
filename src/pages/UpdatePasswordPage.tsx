@@ -185,7 +185,7 @@ export function UpdatePasswordPage() {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                aria-label={showPassword ? 't('common.hide')' : 't('common.show')'}
+                aria-label={showPassword ? t('common.hide') : t('common.show')}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-on-surface-variant p-1"
               >
                 {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}

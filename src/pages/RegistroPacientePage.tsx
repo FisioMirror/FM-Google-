@@ -49,7 +49,7 @@ export function RegistroPacientePage() {
   const validateToken = useCallback(async (tokenToTest: string) => {
     const clean = tokenToTest.trim().toUpperCase();
     if (!clean || clean.length < 4) {
-      setTokenError('t('reg.tokenTooShort')');
+      setTokenError(t('reg.tokenTooShort'));
       return;
     }
 
@@ -77,13 +77,13 @@ export function RegistroPacientePage() {
           toast.success(t('reg.demoTokenOk'));
           return;
         }
-        setTokenError('t('reg.tokenInvalid')');
+        setTokenError(t('reg.tokenInvalid'));
         setTokenValidated(false);
         return;
       }
 
       if (tokenData.used) {
-        setTokenError('t('reg.tokenUsed')');
+        setTokenError(t('reg.tokenUsed'));
         setTokenValidated(false);
         return;
       }
@@ -125,7 +125,7 @@ export function RegistroPacientePage() {
     } catch (err: any) {
       console.warn('Error validating token:', err);
       // If table missing or offline, offer fallback
-      setTokenError('t('reg.tokenServerError')');
+      setTokenError(t('reg.tokenServerError'));
     } finally {
       setTokenValidating(false);
     }
@@ -141,7 +141,7 @@ export function RegistroPacientePage() {
     e.preventDefault();
 
     if (!tokenValidated) {
-      toast.error('t('reg.validateFirst')');
+      toast.error(t('reg.validateFirst'));
       return;
     }
 
