@@ -11,6 +11,7 @@ import {
   Zap,
   Target
 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
 import { springSnappy, springBouncy } from '@/lib/motionVariants';
 import { CLINICAL_PASTELS } from '@/lib/designTokens';
@@ -45,11 +46,13 @@ export function CompactJointSelector({
   onSelectJoint: (jointId: string) => void;
   className?: string;
 }) {
+  const { t } = useTranslation();
+
   return (
     <div className={cn('w-full space-y-1.5', className)}>
       <div className="flex items-center justify-between px-1">
         <span className="text-2xs font-bold uppercase tracking-wider text-on-surface-variant">
-          Articulación Objetivo
+          {t('joints.targetJoint')}
         </span>
         <span className="text-2xs font-mono text-teal-600 dark:text-teal-400 font-bold">
           1-Tap
@@ -78,7 +81,7 @@ export function CompactJointSelector({
                   className="absolute inset-0 bg-teal-600 rounded-xl -z-10"
                 />
               )}
-              <span>{joint.name}</span>
+              <span>{t(`joints.${joint.id}`)}</span>
             </button>
           );
         })}
