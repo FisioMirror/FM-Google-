@@ -100,7 +100,7 @@ export function ResetPassword() {
     setErrorMessage(null);
 
     const cleanEmail = email.trim().toLowerCase();
-    if (!cleanEmail || !cleanEmail.includes('@) {
+    if (!cleanEmail || !cleanEmail.includes('@')) {
       toast.error(t('reset.invalidEmail'));
       return;
     }
@@ -141,7 +141,7 @@ export function ResetPassword() {
     const cleanEmail = email.trim().toLowerCase();
     const cleanToken = tokenOrCode.trim();
 
-    if (!cleanEmail || !cleanEmail.includes('@) {
+    if (!cleanEmail || !cleanEmail.includes('@')) {
       toast.error(t('reset.specifyEmail'));
       return;
     }
