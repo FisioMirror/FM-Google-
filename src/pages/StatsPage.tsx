@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   ResponsiveContainer,
@@ -112,6 +113,7 @@ interface PatientWithSessions {
 export function StatsPage() {
   const user = useAuthStore((s) => s.user);
   const isFisio = user?.role === 'fisioterapeuta';
+  const { t } = useTranslation();
   const toast = useToast();
 
   // ---- Shared state ----
@@ -399,9 +401,9 @@ export function StatsPage() {
         userPrompt: `Genera una recomendación clínica breve basada en estos datos reales: ${dataContext}`,
       });
       if (result.success && result.result) setAiInsight(result.result);
-      else setAiInsight('No hay datos suficientes para generar una recomendación.');
+      else setAiInsight(t('st.notEnoughData'));
     } catch {
-      setAiInsight('Error conectando con Physi.');
+      setAiInsight(t('patientDetail.physiConnectError'));
     } finally {
       setAiLoading(false);
     }
@@ -410,7 +412,7 @@ export function StatsPage() {
   const handleGeneratePDF = async () => {
     const patientName = (isFisio && selectedPatient
       ? patients.find((p) => p.id === selectedPatient)?.full_name
-      : user?.full_name) || 'Usuario';
+      : user?.full_name) || t('common.user');
     const weeklyMinutes = Math.round(
       sessions
         .filter((s) => (Date.now() - new Date(s.fecha).getTime()) / 86400000 < 7)
@@ -430,7 +432,7 @@ export function StatsPage() {
           evolutionData: !isFisio ? weekData : undefined,
           sessions: sessions.slice(0, 20).map((s) => ({
             fecha: s.fecha,
-            ejercicio: s.ejercicio_nombre || 'Ejercicio',
+            ejercicio: s.ejercicio_nombre || t('ex.defaultName'),
             duracion_segundos: s.duracion_segundos || 0,
             repeticiones: s.repeticiones || 0,
             calidad_ejecucion: s.calidad_ejecucion || 0,
@@ -442,11 +444,11 @@ export function StatsPage() {
             weeklyMinutes,
           },
         },
-        'Informe_Recuperacion_Paciente.pdf',
+        t('st.reportFileName'),
       );
-      toast.success('Informe de recuperación descargado correctamente');
+      toast.success(t('st.pdfDownloadedOk'));
     } catch {
-      toast.error('Error al generar el informe');
+      toast.error(t('st.pdfGenerateError'));
     } finally {
       setPdfLoading(false);
     }
@@ -454,29 +456,29 @@ export function StatsPage() {
 
   // ---- KPI cards ----
   const fisioKpis = [
-    { label: 'Pacientes Totales', value: totalPatients, icon: 'group', bg: 'bg-primary/10', color: 'text-primary', trend: '+2' },
-    { label: 'Sesiones Supervisadas', value: totalSessions, icon: 'monitoring', bg: 'bg-secondary/10', color: 'text-secondary', trend: '+12%' },
-    { label: 'Calidad Media', value: avgPrecision > 0 ? `${avgPrecision}%` : '—', icon: 'target', bg: 'bg-tertiary/10', color: 'text-tertiary', trend: 'Óptimo' },
-    { label: 'Pacientes Activos', value: activePatients, icon: 'person_check', bg: 'bg-error/10', color: 'text-error', trend: 'Activo' },
+    { labelKey: 'st.kpiTotalPatients', value: totalPatients, icon: 'group', bg: 'bg-primary/10', color: 'text-primary', trendKey: 'st.plus2' },
+    { labelKey: 'st.kpiSupervisedSessions', value: totalSessions, icon: 'monitoring', bg: 'bg-secondary/10', color: 'text-secondary', trendKey: 'st.plus12pct' },
+    { labelKey: 'st.kpiAvgQuality', value: avgPrecision > 0 ? `${avgPrecision}%` : '—', icon: 'target', bg: 'bg-tertiary/10', color: 'text-tertiary', trendKey: 'st.optimal' },
+    { labelKey: 'st.kpiActivePatients', value: activePatients, icon: 'person_check', bg: 'bg-error/10', color: 'text-error', trendKey: 'st.active' },
   ];
 
   const patientKpis = [
-    { label: 'Sesiones Totales', value: totalSessions, icon: 'analytics', bg: 'bg-primary/10', color: 'text-primary', trend: '+12%' },
-    { label: 'Minutos Totales', value: totalMinutes, icon: 'timer', bg: 'bg-secondary/10', color: 'text-secondary', trend: '+4h' },
-    { label: 'Precisión Media', value: avgPrecision > 0 ? `${avgPrecision}%` : '—', icon: 'target', bg: 'bg-tertiary/10', color: 'text-tertiary', trend: 'Óptimo' },
-    { label: 'Racha', value: streak > 0 ? `${streak} días` : '—', icon: 'local_fire_department', bg: 'bg-error/10', color: 'text-error', trend: 'Activo' },
+    { labelKey: 'st.kpiTotalSessions', value: totalSessions, icon: 'analytics', bg: 'bg-primary/10', color: 'text-primary', trendKey: 'st.plus12pct' },
+    { labelKey: 'st.kpiTotalMinutes', value: totalMinutes, icon: 'timer', bg: 'bg-secondary/10', color: 'text-secondary', trendKey: 'st.plus4h' },
+    { labelKey: 'st.kpiAvgPrecision', value: avgPrecision > 0 ? `${avgPrecision}%` : '—', icon: 'target', bg: 'bg-tertiary/10', color: 'text-tertiary', trendKey: 'st.optimal' },
+    { labelKey: 'st.kpiStreak', value: streak > 0 ? t('st.streakDays', { d: streak }) : '—', icon: 'local_fire_department', bg: 'bg-error/10', color: 'text-error', trendKey: 'st.active' },
   ];
 
   const kpiCards = isFisio ? fisioKpis : patientKpis;
 
   // ---- Achievements (patient gamification) ----
   const achievements = [
-    { name: 'Primera Sesión', desc: 'Completaste tu primera sesión', icon: 'check_circle', earned: totalSessions >= 1, date: sessions.length > 0 ? sessions[sessions.length - 1]?.fecha ?? null : null },
-    { name: 'Constancia', desc: '3 días de racha consecutivos', icon: 'chronic', earned: streak >= 3, date: streak >= 3 ? sessions[0]?.fecha ?? null : null },
-    { name: 'Dedicación', desc: '10 sesiones completadas', icon: 'verified', earned: totalSessions >= 10, date: totalSessions >= 10 ? sessions[sessions.length - 10]?.fecha ?? null : null },
-    { name: 'Excelencia', desc: '90%+ calidad promedio', icon: 'military_tech', earned: avgPrecision >= 90, date: avgPrecision >= 90 ? sessions[0]?.fecha ?? null : null },
-    { name: 'Imparable', desc: '7 días de racha consecutivos', icon: 'workspace_premium', earned: streak >= 7, date: streak >= 7 ? sessions[0]?.fecha ?? null : null },
-    { name: 'Maestro', desc: '30 sesiones completadas', icon: 'emoji_events', earned: totalSessions >= 30, date: totalSessions >= 30 ? sessions[sessions.length - 30]?.fecha ?? null : null },
+    { nameKey: 'st.bFirstSession', descKey: 'st.bFirstSessionDesc', icon: 'check_circle', earned: totalSessions >= 1, date: sessions.length > 0 ? sessions[sessions.length - 1]?.fecha ?? null : null },
+    { nameKey: 'st.bConsistency', descKey: 'st.bConsistencyDesc', icon: 'chronic', earned: streak >= 3, date: streak >= 3 ? sessions[0]?.fecha ?? null : null },
+    { nameKey: 'st.bDedication', descKey: 'st.bDedicationDesc', icon: 'verified', earned: totalSessions >= 10, date: totalSessions >= 10 ? sessions[sessions.length - 10]?.fecha ?? null : null },
+    { nameKey: 'st.bExcellence', descKey: 'st.bExcellenceDesc', icon: 'military_tech', earned: avgPrecision >= 90, date: avgPrecision >= 90 ? sessions[0]?.fecha ?? null : null },
+    { nameKey: 'st.bUnstoppable', descKey: 'st.bUnstoppableDesc', icon: 'workspace_premium', earned: streak >= 7, date: streak >= 7 ? sessions[0]?.fecha ?? null : null },
+    { nameKey: 'st.bMaster', descKey: 'st.bMasterDesc', icon: 'emoji_events', earned: totalSessions >= 30, date: totalSessions >= 30 ? sessions[sessions.length - 30]?.fecha ?? null : null },
   ];
   const earnedAchievements = achievements.filter(a => a.earned);
 
@@ -516,19 +518,19 @@ export function StatsPage() {
       else buckets.Bajo++;
     });
     return [
-      { name: 'Excelente (≥85%)', value: buckets.Excelente, color: CHART_COLORS.success },
-      { name: 'Bueno (70-84%)', value: buckets.Bueno, color: CHART_COLORS.primary },
-      { name: 'Regular (50-69%)', value: buckets.Regular, color: CHART_COLORS.warm },
-      { name: 'Bajo (<50%)', value: buckets.Bajo, color: CHART_COLORS.error },
+      { name: t('st.qExcellent'), value: buckets.Excelente, color: CHART_COLORS.success },
+      { name: t('st.qGood'), value: buckets.Bueno, color: CHART_COLORS.primary },
+      { name: t('st.qRegular'), value: buckets.Regular, color: CHART_COLORS.warm },
+      { name: t('st.qLow'), value: buckets.Bajo, color: CHART_COLORS.error },
     ].filter((d) => d.value > 0);
-  }, [sessions]);
+  }, [sessions, t]);
 
   // Fisio: diagnosis breakdown (pie)
   const diagnosisDistribution = useMemo(() => {
     const map = new Map<string, number>();
     patients.forEach((p) => {
       if (p.sessionCount === 0) return;
-      const key = p.diagnostico || 'Sin diagnóstico';
+      const key = p.diagnostico || t('patientDetail.noDiagnosisRecorded');
       map.set(key, (map.get(key) || 0) + p.sessionCount);
     });
     return Array.from(map.entries())
@@ -558,7 +560,7 @@ export function StatsPage() {
       .map((s, i) => ({
         sesion: `S${i + 1}`,
         calidad: s.calidad_ejecucion || 0,
-        ejercicio: s.ejercicio_nombre || 'Ejercicio',
+        ejercicio: s.ejercicio_nombre || t('ex.defaultName'),
       }));
   }, [sessions]);
 
@@ -566,7 +568,7 @@ export function StatsPage() {
   const exerciseDistribution = useMemo(() => {
     const map = new Map<string, number>();
     sessions.forEach((s) => {
-      const key = s.ejercicio_nombre || 'Sin nombre';
+      const key = s.ejercicio_nombre || t('patientDetail.noName');
       map.set(key, (map.get(key) || 0) + 1);
     });
     return Array.from(map.entries())
@@ -596,7 +598,7 @@ export function StatsPage() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
         <div>
           <h1 className="fm-title gradient-text-living mb-2">
-            {isFisio ? 'Métricas de Práctica Clínica' : 'Progreso de Recuperación'}
+            {isFisio ? t('st.clinicalMetrics') : t('st.recoveryProgress')}
           </h1>
           {!isFisio && (
             <div className="flex flex-wrap items-center gap-3 mt-2">
@@ -615,7 +617,7 @@ export function StatsPage() {
         <div className="space-y-3">
           <div className="flex gap-3 items-center">
             <label htmlFor="patient-filter" className="text-sm font-bold text-on-surface-variant flex items-center gap-1">
-              <Icon name="filter_list" size={18} /> Filtrar:
+              <Icon name="filter_list" size={18} /> {t('common.filter')}:
             </label>
             <select
               id="patient-filter"
@@ -623,25 +625,25 @@ export function StatsPage() {
               onChange={(e) => onPatientFilter(e.target.value)}
               className="px-4 py-3 rounded-xl bg-surface-variant/20 border border-outline-variant/30 outline-none focus:ring-2 focus:ring-primary/20 text-on-surface w-full sm:min-w-[200px] sm:w-auto"
             >
-              <option value="">Todos los pacientes</option>
+              <option value="">{t('st.allPatients')}</option>
               {patients.map(p => (
                 <option key={p.id} value={p.id}>{p.full_name}</option>
               ))}
             </select>
             {selectedPatient && (
               <button onClick={() => onPatientFilter('')} className="text-outline hover:text-primary transition-colors flex items-center gap-1 text-sm">
-                <Icon name="close" size={16} /> Limpiar filtro
+                <Icon name="close" size={16} /> {t('patients.resetFilter')}
               </button>
             )}
           </div>
           <QuickPatientSwitcherBar
             patients={[
-              { id: 'all', name: 'Todos los pacientes' },
+              { id: 'all', name: t('st.allPatients') },
               ...patients.map(p => ({ id: p.id, name: p.full_name }))
             ]}
-            activePatient={selectedPatient ? (patients.find(p => p.id === selectedPatient)?.full_name || 'Todos los pacientes') : 'Todos los pacientes'}
+            activePatient={selectedPatient ? (patients.find(p => p.id === selectedPatient)?.full_name || t('st.allPatients')) : t('st.allPatients')}
             onSelect={(name) => {
-              if (name === 'Todos los pacientes' || name === 'all') onPatientFilter('');
+              if (name === t('st.allPatients') || name === 'all') onPatientFilter('');
               else {
                 const found = patients.find(p => p.full_name === name || p.id === name);
                 if (found) onPatientFilter(found.id);
@@ -677,7 +679,7 @@ export function StatsPage() {
 
               return (
                 <motion.div
-                  key={card.label}
+                  key={card.labelKey}
                   variants={staggerItem}
                   whileHover={{ y: -4, scale: 1.02, transition: springTactile }}
                   whileTap={{ scale: 0.98 }}
@@ -687,10 +689,10 @@ export function StatsPage() {
                       <div className={`size-11 sm:size-12 ${card.bg} rounded-2xl flex items-center justify-center font-bold`}>
                         <Icon name={card.icon} size={22} className={card.color} />
                       </div>
-                      <span className="text-xs sm:text-xs font-bold text-teal-600 dark:text-teal-400 bg-teal-500/10 px-2 py-0.5 rounded-full">{card.trend}</span>
+                      <span className="text-xs sm:text-xs font-bold text-teal-600 dark:text-teal-400 bg-teal-500/10 px-2 py-0.5 rounded-full">{t(card.trendKey)}</span>
                     </div>
                     <div>
-                      <p className="text-on-surface-variant text-xs font-semibold uppercase tracking-wider mb-1 line-clamp-1">{card.label}</p>
+                      <p className="text-on-surface-variant text-xs font-semibold uppercase tracking-wider mb-1 line-clamp-1">{t(card.labelKey)}</p>
                       <h3 className="text-2xl sm:text-3xl lg:text-4xl font-black text-on-surface tabular-nums tracking-tight">
                         {hasNumeric ? (
                           <NumberTicker
@@ -1206,11 +1208,11 @@ export function StatsPage() {
               <div className="flex flex-col gap-4 mb-4">
                 <div className="flex items-center gap-3">
                   <div className="mascot-container w-12 h-12 rounded-full overflow-hidden bg-primary/10 flex items-center justify-center shrink-0">
-                    <img src="/animations/mascot/consejo.webp" alt="Physi aconsejando" className="w-full h-full object-contain animate-breathe" onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }} />
+                    <img src="/animations/mascot/consejo.webp" alt={t('st.physiAdvising')} className="w-full h-full object-contain animate-breathe" onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }} />
                   </div>
                   <div>
-                    <p className="font-bold text-primary text-base">Asesoramiento Clínico de Physi</p>
-                    <p className="text-xs text-on-surface-variant">Análisis biomecánico y recomendaciones personalizadas</p>
+                    <p className="font-bold text-primary text-base">{t('st.physiAdvice')}</p>
+                    <p className="text-xs text-on-surface-variant">{t('st.bioAnalysis')}</p>
                   </div>
                 </div>
 
@@ -1218,7 +1220,7 @@ export function StatsPage() {
                   {aiLoading ? (
                     <div className="flex items-center gap-2 text-sm text-on-surface-variant py-4">
                       <Icon name="progress_activity" size={18} className="text-primary animate-spin" />
-                      <span>Analizando métricas biomecánicas y adherencia...</span>
+                      <span>{t('st.analyzing')}</span>
                     </div>
                   ) : aiInsight ? (
                     <div className="p-4 rounded-2xl bg-surface/80 dark:bg-surface-container-low/70 border border-outline/15 shadow-inner">
@@ -1226,7 +1228,7 @@ export function StatsPage() {
                     </div>
                   ) : (
                     <p className="text-sm text-on-surface-variant">
-                      Genera un análisis clínico automatizado basado en tus datos reales de ejecución y regularidad.
+                      {t('st.generateAnalysisHint')}
                     </p>
                   )}
                 </div>
@@ -1238,21 +1240,21 @@ export function StatsPage() {
                   className="px-5 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-on-primary font-bold text-xs flex items-center gap-2 shadow-sm transition-all disabled:opacity-50"
                 >
                   <Icon name="psychology" size={16} />
-                  <span>{aiLoading ? 'Generando...' : 'Generar Análisis Clínico'}</span>
+                  <span>{aiLoading ? t('common.generating') : t('st.generateAnalysis')}</span>
                 </button>
               </div>
             </GlassPanel>
             <GlassPanel className="p-8 rounded-3xl border-2 border-dashed border-outline-variant/30">
               <div className="flex flex-col items-center text-center gap-3">
                 <Icon name="add_chart" size={40} className="text-outline" />
-                <p className="text-on-surface-variant">Genera un reporte clínico en PDF de tu progreso.</p>
+                <p className="text-on-surface-variant">{t('st.pdfReportHint')}</p>
                 <button
                   onClick={handleGeneratePDF}
                   disabled={pdfLoading}
                   className="premium-btn px-6 py-3 bg-surface-container-highest text-on-surface font-bold rounded-full text-xs hover:bg-surface-container-high transition-all disabled:opacity-50 flex items-center gap-2"
                 >
                   {pdfLoading ? <Icon name="progress_activity" size={18} className="animate-spin" /> : <Icon name="download" size={18} />}
-                  {pdfLoading ? 'Generando…' : 'Generar Reporte'}
+                  {pdfLoading ? t('common.generating') : t('st.generateReport')}
                 </button>
               </div>
             </GlassPanel>
