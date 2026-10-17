@@ -665,11 +665,11 @@ export function UIShowcasePage() {
 
   const tabs: { id: FilterTab; label: string; icon: React.ReactNode; count?: number }[] = [
     { id: 'todos', label: 'Todos los Componentes', icon: <Layers className="w-4 h-4" /> },
-    { id: 'megasuite', label: '🚀 Macro Suite (50 Nuevos)', icon: <Sparkles className="w-4 h-4 text-cyan-400" />, count: 50 },
-    { id: 'mobile', label: '📱 PWA Móvil & Motion', icon: <Smartphone className="w-4 h-4 text-emerald-400" />, count: 6 },
-    { id: 'armonizacion', label: '🎨 Armonización Pastel', icon: <Sparkles className="w-4 h-4 text-sky-400" />, count: 12 },
-    { id: 'estelar', label: '🌟 Suite Estelar FM', icon: <Activity className="w-4 h-4 text-emerald-400" />, count: 8 },
-    { id: 'solicitados', label: '✨ Suite Previa FM', icon: <Sparkles className="w-4 h-4" />, count: 30 },
+    { id: 'megasuite', label: 'Macro Suite (50)', icon: <Sparkles className="w-4 h-4 text-cyan-400" />, count: 50 },
+    { id: 'mobile', label: 'PWA Móvil & Motion', icon: <Smartphone className="w-4 h-4 text-emerald-400" />, count: 6 },
+    { id: 'armonizacion', label: 'Armonización Pastel', icon: <Sparkles className="w-4 h-4 text-sky-400" />, count: 12 },
+    { id: 'estelar', label: 'Suite Estelar', icon: <Activity className="w-4 h-4 text-emerald-400" />, count: 8 },
+    { id: 'solicitados', label: 'Suite Previa', icon: <Sparkles className="w-4 h-4" />, count: 30 },
     { id: 'comparativa', label: 'Inventario & Mapeo', icon: <Search className="w-4 h-4" />, count: INVENTORY_COMPARISONS.length },
     { id: 'botones', label: 'Botones Evolved', icon: <Zap className="w-4 h-4" /> },
     { id: 'tarjetas', label: 'Tarjetas & Bento', icon: <MousePointer className="w-4 h-4" /> },

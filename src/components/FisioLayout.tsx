@@ -646,11 +646,11 @@ export function FisioLayout({ children }: FisioLayoutProps) {
           </div>
         </header>
 
-        {/* Main scrollable content with clean spacing */}
-        <div className="p-4 sm:p-6 lg:p-8 pb-8 flex-1 bg-teal-50/20 dark:bg-slate-950/20">{children}</div>
+        {/* Main scrollable content with clean spacing (bottom padding leaves room for the FAB on mobile) */}
+        <div className="p-4 sm:p-6 lg:p-8 pb-28 lg:pb-10 flex-1 bg-teal-50/20 dark:bg-slate-950/20">{children}</div>
 
         <footer className="pt-6 pb-6 px-4 sm:px-8 flex flex-col md:flex-row justify-between text-outline text-xs gap-4 border-t border-white/10">
-          <span>&copy; 2025 FisioMirror S.A. | Edición Clínica Premium v2.0.42</span>
+          <span>&copy; 2026 FisioMirror S.A. · Edición Clínica</span>
           <div className="flex gap-4">
             <button onClick={() => setLegalModal('consent')} className="text-outline hover:text-primary transition-colors">Consentimiento Informado</button>
             <button onClick={() => setLegalModal('terms')} className="text-outline hover:text-primary transition-colors">Términos de Servicio</button>
@@ -663,7 +663,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
       <FloatingMenu
         items={quickActionItems}
         ariaLabel="Acciones del fisioterapeuta"
-        className="fixed bottom-6 right-6 z-40"
+        className="fixed right-4 sm:right-6 z-40 bottom-[calc(1.25rem+env(safe-area-inset-bottom))]"
       />
 
       {/* Modal: selector de paciente para iniciar videollamada */}
