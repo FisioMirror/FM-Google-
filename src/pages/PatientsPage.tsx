@@ -1,4 +1,5 @@
 import { useEffect, useState, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { SkeletonList } from '../components/ui/Skeleton';
@@ -72,12 +73,13 @@ const defaultDemoTokens: TokenRow[] = [
 
 const filterOptions = [
   { id: 'todos', label: 'Todos' },
-  { id: 'activos', label: 'Activos' },
-  { id: 'revision', label: 'Requieren Revisión' },
-  { id: 'recuperacion', label: 'En Recuperación' },
+  { id: 'activos', labelKey: 'patients.filterActive' },
+  { id: 'revision', labelKey: 'patients.filterReview' },
+  { id: 'recuperacion', labelKey: 'patients.filterRecovery' },
 ];
 
 export function PatientsPage() {
+  const { t } = useTranslation();
   const user = useAuthStore((s) => s.user);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -120,12 +122,12 @@ export function PatientsPage() {
       fmId: p.fmId,
       status:
         p.status === 'Alta próxima'
-          ? 'Alta próxima'
+          ? t('dashboard.statusDischarge')
           : p.status === 'Requiere Revisión'
           ? 'Requiere Revisión'
           : p.progress >= 75
-          ? 'Mejorando'
-          : 'Estable',
+          ? t('patients.improving')
+          : t('patients.stable'),
       statusColor: p.status === 'Requiere Revisión' ? 'red' : p.progress >= 75 ? 'green' : 'blue',
       recoveryProgress: p.progress,
       lastSession: p.lastActive,
@@ -175,13 +177,13 @@ export function PatientsPage() {
 
       const realCards: PatientCard[] = profiles.map((p) => ({
         id: p.id,
-        name: p.full_name || 'Paciente',
+        name: p.full_name || t('common.patientDefault'),
         fmId: `FM-${p.id.slice(0, 4).toUpperCase()}`,
-        status: 'En tratamiento',
+        status: t('patients.onTreatment'),
         statusColor: 'blue',
         recoveryProgress: 50,
-        lastSession: 'Reciente',
-        condition: p.diagnostico || p.patologia || 'En evaluación',
+        lastSession: t('patients.recent'),
+        condition: p.diagnostico || p.patologia || t('patients.inEvaluation'),
         sessionCount: 1,
         patologia: p.patologia,
         medico_remitente: p.medico_remitente,
@@ -253,7 +255,7 @@ export function PatientsPage() {
       const realTokens: TokenRow[] = data.map((t) => ({
         id: t.id,
         token: t.token,
-        patientName: t.paciente_id ? (patientMap[t.paciente_id]?.name ?? 'Paciente Vinculado') : null,
+        patientName: t.paciente_id ? (patientMap[t.paciente_id]?.name ?? t('patients.linkedPatient')) : null,
         patientEmail: t.paciente_id ? patientMap[t.paciente_id]?.email : null,
         patientPhone: t.paciente_id ? patientMap[t.paciente_id]?.phone : null,
         status: (t.paciente_id ? 'activado' : 'pendiente') as TokenRow['status'],
@@ -300,21 +302,21 @@ export function PatientsPage() {
         description: 'Compártelo con tu paciente para que vincule su cuenta.',
       });
     } catch {
-      toast.error('Error al generar el token.');
+      toast.error(t('patients.tokenGenError'));
     }
   };
 
   const handleCopyCode = (tok: string) => {
     navigator.clipboard.writeText(tok);
     setCopiedToken(tok);
-    toast.success(`Código copiado: ${tok}`);
+    toast.success(t('patients.codeCopied', { code: tok }));
     setTimeout(() => setCopiedToken(null), 2000);
   };
 
   const handleCopyLink = (tok: string) => {
     const link = `${window.location.origin}/registro-paciente?token=${encodeURIComponent(tok)}`;
     navigator.clipboard.writeText(link);
-    toast.success('Enlace de activación copiado al portapapeles');
+    toast.success(t('patients.linkCopied'));
   };
 
   const filteredPatients = useMemo(() => {
@@ -369,13 +371,13 @@ export function PatientsPage() {
         <div>
           <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-teal-600 dark:text-teal-400 mb-1">
             <Users className="size-4" />
-            <span>Gestión Clínica y Acceso</span>
+            <span>{t('patients.headerChip')}</span>
           </div>
           <h1 className="fm-title text-on-surface">
-            Pacientes y Llaves de Acceso
+            {t('patients.pageTitle')}
           </h1>
           <p className="text-sm text-on-surface-variant mt-1">
-            Supervisa expedientes, rehabilitación remota y emite tokens seguros para tus pacientes.
+            {t('patients.pageSubtitle')}
           </p>
         </div>
 
@@ -387,7 +389,7 @@ export function PatientsPage() {
             className="px-4 py-2.5 rounded-2xl bg-surface/80 dark:bg-surface-container-low/70 border border-outline/15 text-on-surface hover:border-teal-500/40 text-xs font-bold transition-all flex items-center gap-2 shadow-sm"
           >
             <Key className="size-4 text-teal-600 dark:text-teal-400" />
-            <span>Emitir Token Rápido</span>
+            <span>{t('patients.quickToken')}</span>
           </button>
           <button
             onClick={() => navigate('/ocr-scanner')}
@@ -415,7 +417,7 @@ export function PatientsPage() {
             <div className="size-9 sm:size-11 rounded-xl sm:rounded-2xl bg-teal-500/15 text-teal-700 dark:text-teal-300 flex items-center justify-center font-bold border border-teal-500/25">
               <Users className="size-4 sm:size-5" />
             </div>
-            <span className="text-xs sm:text-xs text-teal-800 dark:text-teal-200 font-bold">Total Pacientes</span>
+            <span className="text-xs sm:text-xs text-teal-800 dark:text-teal-200 font-bold">{t('patients.totalPatients')}</span>
           </div>
           <div className="flex items-end justify-between gap-2">
             <p className="text-2xl sm:text-3xl font-black text-on-surface tabular-nums tracking-tight">{stats.total}</p>
@@ -438,7 +440,7 @@ export function PatientsPage() {
             <div className="size-9 sm:size-11 rounded-xl sm:rounded-2xl bg-sky-500/15 text-sky-700 dark:text-sky-300 flex items-center justify-center font-bold border border-sky-500/25">
               <CheckCircle2 className="size-4 sm:size-5" />
             </div>
-            <span className="text-xs sm:text-xs text-sky-800 dark:text-sky-200 font-bold">Tratamiento Activo</span>
+            <span className="text-xs sm:text-xs text-sky-800 dark:text-sky-200 font-bold">{t('patients.activeTreatment')}</span>
           </div>
           <div className="flex items-end gap-2">
             <p className="text-2xl sm:text-3xl font-black text-sky-700 dark:text-sky-300 tabular-nums tracking-tight">{stats.active}</p>
@@ -454,7 +456,7 @@ export function PatientsPage() {
             <div className="size-9 sm:size-11 rounded-xl sm:rounded-2xl bg-amber-500/15 text-amber-700 dark:text-amber-300 flex items-center justify-center font-bold border border-amber-500/25">
               <AlertTriangle className="size-4 sm:size-5" />
             </div>
-            <span className="text-xs sm:text-xs text-amber-800 dark:text-amber-200 font-bold">Requieren Atención</span>
+            <span className="text-xs sm:text-xs text-amber-800 dark:text-amber-200 font-bold">{t('patients.needAttention')}</span>
           </div>
           <div className="flex items-end gap-2">
             <p className="text-2xl sm:text-3xl font-black text-amber-600 dark:text-amber-400 tabular-nums tracking-tight">{stats.needReview}</p>
@@ -470,7 +472,7 @@ export function PatientsPage() {
             <div className="size-9 sm:size-11 rounded-xl sm:rounded-2xl bg-indigo-500/15 text-indigo-700 dark:text-indigo-300 flex items-center justify-center font-bold border border-indigo-500/25">
               <Key className="size-4 sm:size-5" />
             </div>
-            <span className="text-xs sm:text-xs text-indigo-800 dark:text-indigo-200 font-bold">Tokens Pendientes</span>
+            <span className="text-xs sm:text-xs text-indigo-800 dark:text-indigo-200 font-bold">{t('dashboard.pendingReports')}</span>
           </div>
           <div className="flex items-end gap-2">
             <p className="text-2xl sm:text-3xl font-black text-indigo-700 dark:text-indigo-300 tabular-nums tracking-tight">{stats.pendingTokCount}</p>
@@ -490,7 +492,7 @@ export function PatientsPage() {
           )}
         >
           <Users className="size-4" />
-          <span>Directorio Clínico ({patients.length})</span>
+          <span>{t('patients.clinicalDirectory', { n: patients.length })}</span>
         </button>
         <button
           onClick={() => setActiveTab('tokens')}
@@ -502,7 +504,7 @@ export function PatientsPage() {
           )}
         >
           <Key className="size-4" />
-          <span>Tokens y Llaves de Acceso ({tokens.length})</span>
+          <span>{t('patients.tokensTab', { n: tokens.length })}</span>
         </button>
       </div>
 
@@ -516,7 +518,7 @@ export function PatientsPage() {
               <input
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Buscar por nombre, diagnóstico, cédula o patología..."
+                placeholder={t('patients.searchNew')}
                 className="w-full pl-11 pr-4 py-2.5 rounded-2xl bg-surface-container/60 border border-transparent focus:border-teal-500/40 focus:bg-surface text-xs sm:text-sm text-on-surface placeholder:text-outline/70 outline-none transition-all"
               />
             </div>
@@ -546,7 +548,7 @@ export function PatientsPage() {
                         : 'bg-surface-container/70 border-outline/15 text-on-surface-variant hover:bg-surface-container-high'
                     )}
                   >
-                    <span>{f.label}</span>
+                    <span>{t(f.label)}</span>
                     <span
                       className={cn(
                         'text-2xs px-1.5 py-0.2 rounded-full font-bold',
@@ -565,7 +567,7 @@ export function PatientsPage() {
               <div className="flex items-center gap-1 p-1 rounded-xl bg-surface-container/80 shrink-0">
                 <button
                   onClick={() => setViewMode('cards')}
-                  aria-label="Vista cuadrícula"
+                  aria-label={t('patients.viewGrid')}
                   className={cn(
                     'p-1.5 rounded-lg transition-all',
                     viewMode === 'cards' ? 'bg-surface text-teal-600 shadow-xs font-bold' : 'text-outline hover:text-on-surface'
@@ -575,7 +577,7 @@ export function PatientsPage() {
                 </button>
                 <button
                   onClick={() => setViewMode('list')}
-                  aria-label="Vista lista"
+                  aria-label={t('patients.viewList')}
                   className={cn(
                     'p-1.5 rounded-lg transition-all',
                     viewMode === 'list' ? 'bg-surface text-teal-600 shadow-xs font-bold' : 'text-outline hover:text-on-surface'
@@ -606,8 +608,8 @@ export function PatientsPage() {
               type="patients"
               icon="person_search"
               title="No se encontraron pacientes"
-              description="Intenta modificar tu búsqueda o carga un nuevo paciente con el escáner OCR."
-              actionLabel="Cargar Nuevo Paciente"
+              description={t('patients.emptyPatientsDesc')}
+              actionLabel={t('patients.loadNewPatient')}
               onAction={() => navigate('/ocr-scanner')}
             />
           ) : viewMode === 'cards' ? (
@@ -700,7 +702,7 @@ export function PatientsPage() {
                       {/* Recovery Progress Bar with Shimmer */}
                       <div className="space-y-2 mb-5">
                         <div className="flex justify-between items-end text-xs">
-                          <span className="text-on-surface-variant font-semibold">Progreso de Recuperación</span>
+                          <span className="text-on-surface-variant font-semibold">{t('patients.recoveryProgress')}</span>
                           <span className={cn(
                             "font-extrabold text-sm",
                             isAlert ? "text-rose-600 dark:text-rose-400" : "text-teal-700 dark:text-teal-300"
@@ -721,21 +723,21 @@ export function PatientsPage() {
                         </div>
                         <div className="flex justify-between text-xs text-outline font-medium">
                           <span>{p.sessionCount || 1} sesiones completadas</span>
-                          <span>Plan prescrito</span>
+                          <span>{t('dashboard.prescribedPlan')}</span>
                         </div>
                       </div>
 
                       {/* 2-Column Clinical Metadata Grid */}
                       <div className="grid grid-cols-2 gap-3 py-3.5 border-y border-outline-variant/15 text-xs mb-4">
                         <div>
-                          <p className="text-2xs uppercase font-bold text-outline tracking-wider mb-1">Última Sesión</p>
+                          <p className="text-2xs uppercase font-bold text-outline tracking-wider mb-1">{t('patients.lastSession')}</p>
                           <p className="font-semibold text-on-surface flex items-center gap-1.5 truncate">
                             <Calendar className="size-3.5 text-teal-600 dark:text-teal-400 shrink-0" />
                             <span>{p.lastSession || 'Reciente'}</span>
                           </p>
                         </div>
                         <div>
-                          <p className="text-2xs uppercase font-bold text-outline tracking-wider mb-1">Diagnóstico</p>
+                          <p className="text-2xs uppercase font-bold text-outline tracking-wider mb-1">{t('common.diagnosis')}</p>
                           <p className="font-semibold text-on-surface line-clamp-1">
                             {p.condition || 'En evaluación'}
                           </p>
@@ -755,14 +757,14 @@ export function PatientsPage() {
                         title="Abrir vista previa rápida en modal o bottom sheet"
                       >
                         <Eye className="size-3.5 text-teal-600 dark:text-teal-400" />
-                        <span>Ficha Rápida</span>
+                        <span>{t('patients.quickCard')}</span>
                       </button>
                       <button
                         type="button"
                         onClick={() => navigate(`/paciente/${p.id}`)}
                         className="flex-1 py-2.5 px-3 rounded-xl bg-primary hover:bg-primary/90 text-on-primary font-bold transition-all text-xs flex items-center justify-center gap-1.5 shadow-xs"
                       >
-                        <span>Expediente</span>
+                        <span>{t('patients.record')}</span>
                         <ArrowRight className="size-3.5" />
                       </button>
                     </div>
@@ -776,11 +778,11 @@ export function PatientsPage() {
               <table className="w-full text-left text-xs">
                 <thead className="bg-surface-container-high/60 text-outline font-bold uppercase tracking-wider border-b border-outline/15">
                   <tr>
-                    <th className="p-4">Paciente</th>
-                    <th className="p-4">Diagnóstico</th>
-                    <th className="p-4">Progreso</th>
-                    <th className="p-4">Estado</th>
-                    <th className="p-4 text-right">Acción</th>
+                    <th className="p-4">{t('common.patientDefault')}</th>
+                    <th className="p-4">{t('common.diagnosis')}</th>
+                    <th className="p-4">{t('patients.progress')}</th>
+                    <th className="p-4">{t('common.status')}</th>
+                    <th className="p-4 text-right">{t('common.actions')}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-outline/15">
@@ -829,7 +831,7 @@ export function PatientsPage() {
                         </span>
                       </td>
                       <td className="p-4 text-right">
-                        <span className="text-teal-600 font-bold hover:underline">Ver Expediente</span>
+                        <span className="text-teal-600 font-bold hover:underline">{t('dashboard.viewRecord')}</span>
                       </td>
                     </tr>
                   );
@@ -850,7 +852,7 @@ export function PatientsPage() {
                 <Key className="size-5" />
               </div>
               <div>
-                <h3 className="fm-section-title text-on-surface">Llaves de Activación para Pacientes</h3>
+                <h3 className="fm-section-title text-on-surface">{t('patients.activationKeys')}</h3>
                 <p className="text-xs text-on-surface-variant">
                   Permiten a un paciente activar su cuenta y vincular su expediente clínico directamente a tu consulta.
                 </p>
@@ -862,7 +864,7 @@ export function PatientsPage() {
               className="px-4 py-2 rounded-xl bg-primary hover:bg-primary/90 text-on-primary text-xs font-bold transition-all shadow-sm flex items-center gap-1.5 shrink-0"
             >
               <Plus className="size-4" />
-              <span>Emitir Nueva Llave</span>
+              <span>{t('patients.emitNewKey')}</span>
             </button>
           </div>
 
@@ -891,9 +893,9 @@ export function PatientsPage() {
             <EmptyState
               type="tokens"
               icon="key"
-              title="No hay tokens en este estado"
-              description="Puedes emitir un nuevo token de acceso en cualquier momento."
-              actionLabel="Generar Token"
+              title={t('patients.noTokensState')}
+              description={t('patients.emptyTokensDesc')}
+              actionLabel={t('patients.genToken')}
               onAction={createQuickToken}
             />
           ) : (
@@ -905,14 +907,14 @@ export function PatientsPage() {
                 >
                   <div className="flex items-start justify-between gap-2">
                     <div>
-                      <span className="text-2xs text-outline uppercase font-bold tracking-wider">Código de Activación</span>
+                      <span className="text-2xs text-outline uppercase font-bold tracking-wider">{t('patients.activationCode')}</span>
                       <div className="flex items-center gap-2 mt-1">
                         <span className="text-2xl font-mono font-extrabold tracking-widest text-teal-700 dark:text-teal-300">
                           {tok.token}
                         </span>
                         <button
                           onClick={() => handleCopyCode(tok.token)}
-                          aria-label="Copiar código" title="Copiar código"
+                          aria-label={t('patients.copyCode')} title={t('patients.copyCode')}
                           className="p-1.5 rounded-lg hover:bg-teal-500/10 text-teal-700 dark:text-teal-300 transition-colors"
                         >
                           {copiedToken === tok.token ? <Check className="size-4 text-emerald-500" /> : <Copy className="size-4" />}
@@ -936,13 +938,13 @@ export function PatientsPage() {
                     {tok.patientName ? (
                       <p className="flex items-center gap-1.5 text-on-surface font-semibold">
                         <UserCheck className="size-3.5 text-emerald-600" />
-                        Vinculado: {tok.patientName}
+                        {t('patients.linked')} {tok.patientName}
                       </p>
                     ) : (
-                      <p className="text-amber-600 dark:text-amber-400">Disponible para ser asignado</p>
+                      <p className="text-amber-600 dark:text-amber-400">{t('patients.availableToAssign')}</p>
                     )}
                     <p className="text-xs text-outline mt-0.5">
-                      Emitido el: {new Date(tok.createdAt).toLocaleDateString('es-ES')}
+                      {t('patients.issuedOn')} {new Date(tok.createdAt).toLocaleDateString()}
                     </p>
                   </div>
 
@@ -952,7 +954,7 @@ export function PatientsPage() {
                       className="px-3 py-1.5 rounded-xl bg-surface-container hover:bg-surface-container-high text-xs font-bold text-on-surface flex items-center gap-1.5 transition-colors"
                     >
                       <ExternalLink className="size-3 text-teal-600" />
-                      <span>Copiar Enlace</span>
+                      <span>{t('patients.copyLink')}</span>
                     </button>
 
                     <button
@@ -960,7 +962,7 @@ export function PatientsPage() {
                       className="px-3 py-1.5 rounded-xl bg-teal-500/10 hover:bg-teal-500/20 text-xs font-bold text-teal-700 dark:text-teal-300 flex items-center gap-1.5 transition-colors"
                     >
                       <Mail className="size-3" />
-                      <span>Enviar</span>
+                      <span>{t('common.send')}</span>
                     </button>
                   </div>
                 </div>
@@ -1003,7 +1005,7 @@ export function PatientsPage() {
                 }}
                 className="flex-1 py-3 px-4 rounded-xl bg-primary hover:bg-primary/90 text-on-primary font-bold text-sm shadow-sm transition-all flex items-center justify-center gap-2"
               >
-                <span>Abrir Expediente Completo</span>
+                <span>{t('patients.openFullRecord')}</span>
                 <ArrowRight className="size-4" />
               </button>
             </div>
@@ -1014,34 +1016,34 @@ export function PatientsPage() {
           <div className="space-y-4 text-xs sm:text-sm">
             <div className="grid grid-cols-2 gap-3 p-3.5 rounded-2xl bg-teal-50/70 dark:bg-slate-800/80 border border-teal-100/60 dark:border-slate-700">
               <div>
-                <span className="text-2xs uppercase font-bold text-outline">Estado Clínico</span>
+                <span className="text-2xs uppercase font-bold text-outline">{t('patients.clinicalStatus')}</span>
                 <p className="font-bold text-teal-700 dark:text-teal-300 mt-0.5">{previewPatient.status}</p>
               </div>
               <div>
-                <span className="text-2xs uppercase font-bold text-outline">Progreso Global</span>
+                <span className="text-2xs uppercase font-bold text-outline">{t('patients.globalProgress')}</span>
                 <p className="font-bold text-on-surface dark:text-white mt-0.5">{previewPatient.recoveryProgress}%</p>
               </div>
               <div>
-                <span className="text-2xs uppercase font-bold text-outline">Sesiones Realizadas</span>
+                <span className="text-2xs uppercase font-bold text-outline">{t('patients.sessionsDone')}</span>
                 <p className="font-semibold text-on-surface mt-0.5">{previewPatient.sessionCount} sesiones</p>
               </div>
               <div>
-                <span className="text-2xs uppercase font-bold text-outline">Última Actividad</span>
+                <span className="text-2xs uppercase font-bold text-outline">{t('patients.lastActivity')}</span>
                 <p className="font-semibold text-on-surface mt-0.5">{previewPatient.lastSession}</p>
               </div>
             </div>
 
             <div className="p-3.5 rounded-2xl bg-surface dark:bg-slate-800/50 border border-outline-variant/30 space-y-2">
-              <span className="text-2xs uppercase font-bold text-outline block">Diagnóstico y Patología</span>
+              <span className="text-2xs uppercase font-bold text-outline block">{t('patients.diagnosisPathology')}</span>
               <p className="font-semibold text-on-surface">{previewPatient.condition}</p>
               {previewPatient.patologia && (
-                <p className="text-xs text-on-surface-variant font-medium">Patología: {previewPatient.patologia}</p>
+                <p className="text-xs text-on-surface-variant font-medium">{t('patients.pathology')}: {previewPatient.patologia}</p>
               )}
             </div>
 
             {/* Inspección biomecánica rápida */}
             <div className="p-3.5 rounded-2xl bg-sky-50/50 dark:bg-sky-950/20 border border-sky-100 dark:border-sky-900/30">
-              <span className="text-2xs uppercase font-bold text-sky-700 dark:text-sky-300 block mb-2">Inspección Biomecánica Rápida</span>
+              <span className="text-2xs uppercase font-bold text-sky-700 dark:text-sky-300 block mb-2">{t('patients.quickBiomech')}</span>
               <JointDetailPopover
                 metrics={{
                   jointName: previewPatient.condition.includes('Rodilla') ? 'Rodilla Afectada (Extensión)' : 'Articulación en Tratamiento',
@@ -1060,4 +1062,4 @@ export function PatientsPage() {
     </div>
   );
 }
-export default PatientsPage;
+ PatientsPage;
