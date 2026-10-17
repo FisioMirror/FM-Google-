@@ -120,6 +120,21 @@ export function PatientLayout({ children }: PatientLayoutProps) {
     };
   }, []);
 
+  // Close the mobile drawer with Escape and lock body scroll while it is open
+  useEffect(() => {
+    if (!sidebarOpen) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setSidebarOpen(false);
+    };
+    window.addEventListener('keydown', onKeyDown);
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      window.removeEventListener('keydown', onKeyDown);
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [sidebarOpen]);
+
   const loadTherapistPhone = async () => {
     if (!user?.id) return;
     try {
@@ -403,6 +418,9 @@ export function PatientLayout({ children }: PatientLayoutProps) {
               exit={{ x: '-100%' }}
               transition={{ type: 'spring', damping: 28, stiffness: 320 }}
               onClick={(e) => e.stopPropagation()}
+              role="dialog"
+              aria-modal="true"
+              aria-label="Menú de navegación"
               className="h-full w-72 max-w-[85vw] flex flex-col bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl border-r border-teal-200/50 dark:border-slate-800 text-slate-900 dark:text-slate-100 rounded-r-3xl shadow-2xl overflow-hidden"
             >
               <div className="p-4 flex items-center justify-between border-b border-teal-100/60 dark:border-slate-800">
@@ -522,12 +540,12 @@ export function PatientLayout({ children }: PatientLayoutProps) {
             </button>
           </div>
         </header>
-        {/* Scrollable content with clean spacing */}
-        <div className="flex-1 overflow-y-auto px-4 sm:px-6 pt-8 pb-10 space-y-8 max-w-md mx-auto lg:px-0 lg:max-w-none lg:mx-0 lg:p-10 bg-teal-50/20 dark:bg-slate-950/20">{children}</div>
+        {/* Scrollable content with clean spacing (bottom padding clears the mobile dock / FAB) */}
+        <div className="flex-1 overflow-y-auto px-4 sm:px-6 pt-8 pb-28 md:pb-24 space-y-8 max-w-md mx-auto lg:px-0 lg:max-w-none lg:mx-0 lg:p-10 bg-teal-50/20 dark:bg-slate-950/20">{children}</div>
 
         {/* Desktop footer */}
         <footer className="hidden lg:flex pt-6 pb-6 px-8 justify-between text-outline text-xs border-t divider-teal shrink-0">
-          <span>&copy; 2025 FisioMirror</span>
+          <span>&copy; 2026 FisioMirror</span>
           <div className="flex gap-4">
             <button onClick={() => setLegalModal('consent')} className="transition-colors hover:text-primary">Consentimiento Informado</button>
             <button onClick={() => setLegalModal('terms')} className="transition-colors hover:text-primary">Términos de Servicio</button>
@@ -557,7 +575,7 @@ export function PatientLayout({ children }: PatientLayoutProps) {
           <FloatingMenu
             items={quickActionItems}
             ariaLabel="Acciones del paciente"
-            className="fixed bottom-6 right-6 z-40"
+            className="fixed right-4 sm:right-6 z-40 bottom-[calc(1.25rem+env(safe-area-inset-bottom))]"
           />
         </div>
       )}
