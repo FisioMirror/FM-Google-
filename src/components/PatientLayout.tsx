@@ -608,7 +608,7 @@ export function PatientLayout({ children }: PatientLayoutProps) {
               className="glass-panel rounded-3xl p-8 max-w-sm w-full mx-4 text-center max-h-[90dvh] overflow-y-auto"
             >
               <MascotAnimation type="goodbye" size="md" className="mx-auto mb-4" />
-              <h3 className="font-headline-lg text-headline-lg gradient-text-editorial mb-2">{t('navigation.logoutConfirm', '¿Cerrar sesión?')}</h3>
+              <h3 className="fm-section-title gradient-text-editorial mb-2">{t('navigation.logoutConfirm', '¿Cerrar sesión?')}</h3>
               <p className="text-on-surface-variant text-sm mb-6">{t('navigation.logoutConfirmDesc', 'Tendrás que volver a ingresar tu token para acceder.')}</p>
               <div className="flex gap-3">
                 <button

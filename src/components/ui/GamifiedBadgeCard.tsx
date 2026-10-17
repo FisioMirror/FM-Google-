@@ -112,7 +112,7 @@ export const GamifiedBadgeCard: React.FC<GamifiedBadgeCardProps> = ({
 
           {/* Level Badge */}
           {unlocked && (
-            <span className="absolute -bottom-2 px-2 py-0.5 rounded-full text-2xs font-black uppercase bg-primary text-white shadow-md">
+            <span className="absolute -bottom-2 px-2 py-0.5 rounded-full text-2xs font-black uppercase bg-primary text-on-primary shadow-md">
               Nivel {level}
             </span>
           )}
@@ -148,7 +148,7 @@ export const GamifiedBadgeCard: React.FC<GamifiedBadgeCardProps> = ({
               'px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all duration-200',
               claimed
                 ? 'bg-emerald-500/15 text-emerald-500 border border-emerald-500/30'
-                : 'bg-primary text-white hover:bg-primary/90 shadow-sm active:scale-95'
+                : 'bg-primary text-on-primary hover:bg-primary/90 shadow-sm active:scale-95'
             )}
           >
             {claimed ? (

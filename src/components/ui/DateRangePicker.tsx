@@ -597,7 +597,7 @@ export function RangeCalendarCell({
         className={cn(
           "size-8 rounded-lg text-xs font-semibold transition-all duration-150 flex items-center justify-center",
           "hover:bg-primary/20",
-          (isStart || isEnd) && "bg-primary text-white font-bold shadow-xs hover:bg-primary",
+          (isStart || isEnd) && "bg-primary text-on-primary font-bold shadow-xs hover:bg-primary",
           !isStart && !isEnd && inRange && "text-teal-700 dark:text-teal-300 font-bold",
           !isStart && !isEnd && !inRange && "text-on-surface",
           isToday && !isStart && !isEnd && "border border-primary/40 font-bold",

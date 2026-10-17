@@ -703,7 +703,7 @@ export function DashboardFisio() {
                 <ShimmerText text="Edición Clínica IA" className="text-2xs font-bold uppercase" />
               </span>
             </div>
-            <h2 className="font-display font-headline-lg text-headline-lg-mobile lg:text-headline-lg gradient-text-living">
+            <h2 className="font-display fm-title gradient-text-living">
               {greeting}, <AuroraText>{user?.full_name?.split(' ')[0] || 'Doctor'}</AuroraText>
             </h2>
             <TextAnimate
@@ -1077,7 +1077,7 @@ export function DashboardFisio() {
           <div className="relative z-10 space-y-4">
             <div className="flex justify-between items-start">
               <div>
-                <h3 className="font-headline-lg text-headline-lg-mobile lg:text-headline-lg text-on-surface mb-2">Monitoreo Remoto</h3>
+                <h3 className="fm-section-title text-on-surface mb-2">Monitoreo Remoto</h3>
                 <p className="text-on-surface-variant text-sm">Sesiones activas y sincronización clínica</p>
               </div>
               <div className="flex items-center gap-2">
@@ -1188,7 +1188,7 @@ export function DashboardFisio() {
             <div className="flex gap-2.5 mt-2">
               <button
                 onClick={() => setSelectedJointFilter('todos')}
-                className="px-4 py-2 rounded-xl bg-primary text-white text-xs font-bold shadow-xs hover:bg-primary/90 transition-all"
+                className="px-4 py-2 rounded-xl bg-primary text-on-primary text-xs font-bold shadow-xs hover:bg-primary/90 transition-all"
               >
                 Restablecer Filtro
               </button>

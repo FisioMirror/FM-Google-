@@ -287,7 +287,7 @@ function DocHeader({ doc }: { doc: LegalDoc }) {
       >
         <Icon size={32} className="text-primary animate-breathe-icon" />
       </motion.div>
-      <h2 className="font-headline-lg text-headline-lg-mobile lg:text-headline-lg gradient-text-living font-bold">
+      <h2 className="fm-title gradient-text-living font-bold">
         {doc.title}
       </h2>
       <p className="text-sm text-on-surface-variant mt-1">{doc.subtitle}</p>

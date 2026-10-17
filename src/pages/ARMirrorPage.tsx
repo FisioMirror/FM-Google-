@@ -1059,7 +1059,7 @@ export function ARMirrorPage() {
               )}
 
               <div className="flex gap-3">
-                <button onClick={() => navigate('/stats')} className="premium-btn flex-1 py-4 bg-primary text-white rounded-2xl font-bold hover:scale-[1.02] active:scale-95 transition-all">
+                <button onClick={() => navigate('/stats')} className="premium-btn flex-1 py-4 bg-primary text-on-primary rounded-2xl font-bold hover:scale-[1.02] active:scale-95 transition-all">
                   Ver Progreso
                 </button>
                 <button onClick={() => navigate('/dashboard-paciente')} className="flex-1 py-4 bg-white/10 text-white rounded-2xl font-bold hover:bg-white/20 transition-all">

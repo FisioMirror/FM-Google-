@@ -244,7 +244,7 @@ export function PopoverMetricDemo() {
             className={cn(
               "px-3 py-1.5 rounded-lg capitalize font-medium transition-all duration-200",
               selectedJoint === joint
-                ? "bg-primary text-white shadow-xs"
+                ? "bg-primary text-on-primary shadow-xs"
                 : "text-muted hover:text-foreground hover:bg-slate-200/50 dark:hover:bg-slate-700/50"
             )}
           >

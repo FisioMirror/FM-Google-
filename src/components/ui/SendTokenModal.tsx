@@ -581,7 +581,7 @@ Equipo FisioMirror`;
                     type="button"
                     onClick={handleSendUnifiedEmail}
                     disabled={sendingEmail}
-                    className="w-full py-2.5 px-4 rounded-xl bg-primary hover:bg-primary/90 active:scale-98 text-white font-bold text-xs transition-all flex items-center justify-center gap-1.5 shadow-md shadow-teal-600/20 disabled:opacity-60"
+                    className="w-full py-2.5 px-4 rounded-xl bg-primary hover:bg-primary/90 active:scale-98 text-on-primary font-bold text-xs transition-all flex items-center justify-center gap-1.5 shadow-md shadow-teal-600/20 disabled:opacity-60"
                   >
                     {sendingEmail ? (
                       <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />

@@ -82,7 +82,7 @@ export function HelpGuideButton({ onStartTour }: HelpGuideButtonProps) {
                 setOpen(false);
                 onStartTour();
               }}
-              className="w-full mb-4 flex items-center justify-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-xs font-bold text-white transition-transform hover:scale-[1.01]"
+              className="w-full mb-4 flex items-center justify-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-xs font-bold text-on-primary transition-transform hover:scale-[1.01]"
             >
               <Icon name="tour" size={16} />
               Iniciar Recorrido Guiado

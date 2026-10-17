@@ -314,7 +314,7 @@ export function PatientDashboard() {
     : t('dashboard.greetingEvening', 'Buenas noches');
 
   return (
-    <div className="space-y-8 max-w-7xl mx-auto w-full pb-12">
+    <div className="fm-page pb-12">
       <OnboardingGuide />
 
       {/* Achievement Unlock Modal */}
@@ -333,7 +333,7 @@ export function PatientDashboard() {
             <SparklesText
               sparklesCount={4}
               colors={{ first: '#0d9488', second: '#c1ff72' }}
-              className="font-display font-headline-lg text-headline-lg-mobile lg:text-headline-lg gradient-text-living"
+              className="font-display fm-title gradient-text-living"
             >
               {greeting}, {user?.full_name?.split(' ')[0] || 'Paciente'}
             </SparklesText>
@@ -561,7 +561,7 @@ export function PatientDashboard() {
                         <p className="text-xs text-on-surface-variant">{ex.subtitle}</p>
                       </div>
                     </div>
-                    <div className="size-8 rounded-full bg-surface-container flex items-center justify-center text-outline group-hover:bg-primary group-hover:text-white transition-colors shrink-0">
+                    <div className="size-8 rounded-full bg-surface-container flex items-center justify-center text-outline group-hover:bg-primary group-hover:text-on-primary transition-colors shrink-0">
                       <Play className="size-3.5 fill-current" />
                     </div>
                   </motion.div>

@@ -196,7 +196,7 @@ export function ClinicalActivityFeed({
           <button
             type="button"
             onClick={handleAddLiveEvent}
-            className="flex items-center gap-1 text-xs font-semibold px-2.5 py-1.5 rounded-xl bg-primary text-white hover:bg-primary/90 transition-all shadow-xs"
+            className="flex items-center gap-1 text-xs font-semibold px-2.5 py-1.5 rounded-xl bg-primary text-on-primary hover:bg-primary/90 transition-all shadow-xs"
           >
             <Plus className="size-3.5" />
             Simular Evento

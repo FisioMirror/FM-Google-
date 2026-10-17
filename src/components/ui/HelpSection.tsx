@@ -142,7 +142,7 @@ export function HelpSection({ className }: { className?: string }) {
             onClick={() => setSelectedCategory(cat.id)}
             className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-all ${
               selectedCategory === cat.id
-                ? 'bg-primary text-white shadow-sm'
+                ? 'bg-primary text-on-primary shadow-sm'
                 : 'bg-surface-container-high text-on-surface-variant hover:text-on-surface'
             }`}
           >

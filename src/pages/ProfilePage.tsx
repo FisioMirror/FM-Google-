@@ -336,7 +336,7 @@ export function ProfilePage() {
               )}
             </AnimatePresence>
           </div>
-          <h2 className="font-display font-headline-lg text-headline-lg-mobile lg:text-headline-lg gradient-text-living mt-4 relative">{user?.full_name || 'Usuario'}</h2>
+          <h2 className="font-display fm-title gradient-text-living mt-4 relative">{user?.full_name || 'Usuario'}</h2>
           <div className="font-title-md text-primary bg-primary-container/10 px-4 py-1 rounded-full mt-2 flex items-center gap-2 breathe-badge glow-teal relative">
             <MedicalIcon name="clipboard" size={16} className="text-primary animate-breathe-icon" />
             {isFisio ? 'Fisioterapeuta' : 'Paciente'}

@@ -723,7 +723,7 @@ export function ExercisesPage() {
           {isFisio && (
             <button
               onClick={openCreate}
-              className="px-5 py-3 rounded-2xl bg-primary hover:bg-primary/90 active:scale-95 text-white font-bold text-sm transition-all shadow-sm shadow-teal-600/20 flex items-center gap-2 shrink-0 self-start lg:self-center"
+              className="px-5 py-3 rounded-2xl bg-primary hover:bg-primary/90 active:scale-95 text-on-primary font-bold text-sm transition-all shadow-sm shadow-teal-600/20 flex items-center gap-2 shrink-0 self-start lg:self-center"
             >
               <Plus className="size-4" />
               <span>Nuevo Ejercicio</span>

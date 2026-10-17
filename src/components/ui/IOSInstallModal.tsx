@@ -89,7 +89,7 @@ export function IOSInstallModal({ isOpen, onClose }: IOSInstallModalProps) {
 
             <button
               onClick={onClose}
-              className="w-full py-3 rounded-2xl bg-primary text-white font-semibold hover:bg-primary-dark transition-all active:scale-[0.98] shadow-md shadow-primary/20"
+              className="w-full py-3 rounded-2xl bg-primary text-on-primary font-semibold hover:bg-primary-dark transition-all active:scale-[0.98] shadow-md shadow-primary/20"
             >
               Entendido
             </button>

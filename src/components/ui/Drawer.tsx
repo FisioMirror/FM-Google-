@@ -338,7 +338,7 @@ export function DrawerClinicalDemo() {
                           className={cn(
                             "py-2 px-3 rounded-xl text-xs font-semibold border transition-all duration-200",
                             toleranceLevel === level
-                              ? "bg-primary text-white border-primary shadow-xs"
+                              ? "bg-primary text-on-primary border-primary shadow-xs"
                               : "bg-surface dark:bg-slate-800 border-border/60 text-muted hover:text-foreground"
                           )}
                         >

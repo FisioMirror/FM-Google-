@@ -550,7 +550,7 @@ export function OCRScannerPage() {
         <Icon name="person_add" size={18} /> Nuevo Paciente
       </div>
       <div>
-        <h2 className="font-headline-lg text-headline-lg-mobile lg:text-headline-lg gradient-text-living">Cargar Prescripción</h2>
+        <h2 className="fm-title gradient-text-living">Cargar Prescripción</h2>
         <p className="font-body-lg text-body-lg text-on-surface-variant">Inicie el alta del paciente procesando su historial clínico con nuestra IA.</p>
       </div>
 
@@ -559,7 +559,7 @@ export function OCRScannerPage() {
           <div key={s.num} className="flex items-center flex-1 last:flex-none min-w-0">
             <div className="flex items-center gap-2 sm:gap-3 min-w-0">
               <div className={`w-7 h-7 sm:w-8 sm:h-8 shrink-0 rounded-full flex items-center justify-center text-xs sm:text-sm font-bold ${
-                step === s.num ? 'bg-primary text-white ring-4 ring-primary/10' :
+                step === s.num ? 'bg-primary text-on-primary ring-4 ring-primary/10' :
                 step > s.num ? 'bg-primary-fixed-dim text-on-primary-fixed' :
                 'bg-surface-container-highest text-outline'
               }`}>
@@ -583,7 +583,7 @@ export function OCRScannerPage() {
                   className={`p-6 rounded-3xl border-2 transition-all text-left ${entryMode === 'ia' ? 'border-primary bg-primary/5' : 'border-outline-variant/30 hover:border-primary/40'}`}
                 >
                   <div className="flex items-center gap-3 mb-3">
-                    <div className={`p-3 rounded-2xl ${entryMode === 'ia' ? 'bg-primary text-white' : 'bg-primary/10 text-primary'}`}>
+                    <div className={`p-3 rounded-2xl ${entryMode === 'ia' ? 'bg-primary text-on-primary' : 'bg-primary/10 text-primary'}`}>
                       <Icon name="psychology" size={24} />
                     </div>
                     <div>
@@ -598,7 +598,7 @@ export function OCRScannerPage() {
                   className={`p-6 rounded-3xl border-2 transition-all text-left ${entryMode === 'manual' ? 'border-primary bg-primary/5' : 'border-outline-variant/30 hover:border-primary/40'}`}
                 >
                   <div className="flex items-center gap-3 mb-3">
-                    <div className={`p-3 rounded-2xl ${entryMode === 'manual' ? 'bg-primary text-white' : 'bg-primary/10 text-primary'}`}>
+                    <div className={`p-3 rounded-2xl ${entryMode === 'manual' ? 'bg-primary text-on-primary' : 'bg-primary/10 text-primary'}`}>
                       <Icon name="edit_note" size={24} />
                     </div>
                     <div>
@@ -619,7 +619,7 @@ export function OCRScannerPage() {
                     onClick={() => fileInputRef.current?.click()}
                     className={`relative group cursor-pointer border-2 border-dashed rounded-3xl p-12 transition-all duration-300 hover:border-primary/50 flex flex-col items-center text-center gap-4 bg-white/10 hover:bg-white/30 ${dragOver ? 'border-primary bg-primary/5 scale-[1.02]' : 'border-outline-variant/40'}`}>
                     {files.length > 0 && (
-                      <div className="absolute top-4 right-4 bg-primary text-white text-xs font-bold px-3 py-1 rounded-full">{files.length}/10</div>
+                      <div className="absolute top-4 right-4 bg-primary text-on-primary text-xs font-bold px-3 py-1 rounded-full">{files.length}/10</div>
                     )}
                     <div className="w-20 h-20 rounded-2xl bg-primary-fixed flex items-center justify-center text-primary mb-2 shadow-sm group-hover:scale-110 transition-transform animate-breathe-icon">
                       <Icon name="cloud_upload" size={40} />
@@ -654,7 +654,7 @@ export function OCRScannerPage() {
                         <button
                           onClick={isRecording ? stopRecording : startRecording}
                           aria-label={isRecording ? 'Detener grabación' : 'Iniciar grabación'}
-                          className={`w-14 h-14 ${isRecording ? 'bg-red-500' : 'bg-primary'} text-white rounded-full flex items-center justify-center shadow-card active:scale-90 transition-transform`}
+                          className={`w-14 h-14 ${isRecording ? 'bg-red-500' : 'bg-primary'} text-on-primary rounded-full flex items-center justify-center shadow-card active:scale-90 transition-transform`}
                         >
                           <Icon name={isRecording ? 'stop' : 'mic'} size={28} />
                         </button>
@@ -742,7 +742,7 @@ export function OCRScannerPage() {
                     <button
                       onClick={processWithAI}
                       disabled={processing || files.length === 0}
-                      className="premium-btn relative overflow-hidden px-10 py-4 bg-primary text-white rounded-xl font-bold font-label-sm text-label-sm shadow-elevated shadow-primary/20 hover:shadow-primary/40 hover:-translate-y-0.5 active:scale-95 flex items-center gap-3 disabled:opacity-50 transition-all"
+                      className="premium-btn relative overflow-hidden px-10 py-4 bg-primary text-on-primary rounded-xl font-bold font-label-sm text-label-sm shadow-elevated shadow-primary/20 hover:shadow-primary/40 hover:-translate-y-0.5 active:scale-95 flex items-center gap-3 disabled:opacity-50 transition-all"
                     >
                       {processing ? <><Spinner size={20} className="text-white" /> <LoadingText context="ocr" /></> : <><Icon name="psychology" size={20} /> Procesar con IA</>}
                     </button>
@@ -763,7 +763,7 @@ export function OCRScannerPage() {
                     <button onClick={() => navigate('/patients')} className="px-8 py-3 text-on-surface-variant font-bold font-label-sm text-label-sm hover:bg-surface-variant/30 rounded-xl transition-all">Cancelar</button>
                     <button
                       onClick={startManualEntry}
-                      className="premium-btn px-10 py-4 bg-primary text-white rounded-xl font-bold font-label-sm text-label-sm shadow-elevated shadow-primary/20 hover:shadow-primary/40 hover:-translate-y-0.5 active:scale-95 flex items-center gap-3 transition-all"
+                      className="premium-btn px-10 py-4 bg-primary text-on-primary rounded-xl font-bold font-label-sm text-label-sm shadow-elevated shadow-primary/20 hover:shadow-primary/40 hover:-translate-y-0.5 active:scale-95 flex items-center gap-3 transition-all"
                     >
                       <Icon name="arrow_forward" size={20} /> Ir al Formulario
                     </button>
@@ -777,7 +777,7 @@ export function OCRScannerPage() {
         {step === 2 && (
           <motion.div key="step2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6">
             <div>
-              <h2 className="font-headline-lg text-headline-lg-mobile lg:text-headline-lg gradient-text-living">Validar Datos del Paciente</h2>
+              <h2 className="fm-title gradient-text-living">Validar Datos del Paciente</h2>
               <p className="font-body-lg text-body-lg text-on-surface-variant mt-2 max-w-2xl">
                 {entryMode === 'ia' ? 'Hemos analizado la documentación. Por favor, confirma o corrige la información extraída por la IA.' : 'Completa todos los campos del formulario. Los campos marcados con * son obligatorios.'}
               </p>

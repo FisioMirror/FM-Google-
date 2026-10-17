@@ -48,7 +48,7 @@ export function ExportCalendarButton({
   };
 
   const variantClasses = {
-    primary: 'bg-primary text-white hover:bg-primary-dark shadow-sm hover:shadow active:scale-95',
+    primary: 'bg-primary text-on-primary hover:bg-primary-dark shadow-sm hover:shadow active:scale-95',
     secondary: 'bg-primary/10 text-primary hover:bg-primary/20 active:scale-95 border border-primary/20',
     outline: 'border border-outline/30 text-on-surface hover:bg-surface-container-high active:scale-95',
     ghost: 'text-on-surface-variant hover:text-primary hover:bg-primary/10 active:scale-95',

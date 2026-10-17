@@ -1235,7 +1235,7 @@ export function StatsPage() {
                 <button
                   onClick={generateInsight}
                   disabled={aiLoading}
-                  className="px-5 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-white font-bold text-xs flex items-center gap-2 shadow-sm transition-all disabled:opacity-50"
+                  className="px-5 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-on-primary font-bold text-xs flex items-center gap-2 shadow-sm transition-all disabled:opacity-50"
                 >
                   <Icon name="psychology" size={16} />
                   <span>{aiLoading ? 'Generando...' : 'Generar Análisis Clínico'}</span>

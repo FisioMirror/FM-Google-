@@ -173,7 +173,7 @@ export function PatientExercisesPage() {
   };
 
   return (
-    <div className="space-y-6 overflow-x-hidden pb-12">
+    <div className="fm-page pb-12">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
@@ -393,7 +393,7 @@ export function PatientExercisesPage() {
                     onClick={() =>
                       navigate(`/ar-mirror?ejercicio=${encodeURIComponent(ex.ejercicio_nombre || 'Ejercicio')}`)
                     }
-                    className="w-full py-3 rounded-2xl bg-primary hover:bg-primary/90 text-white font-bold text-xs transition-all shadow-md shadow-teal-700/20 flex items-center justify-center gap-2 active:scale-[0.98]"
+                    className="w-full py-3 rounded-2xl bg-primary hover:bg-primary/90 text-on-primary font-bold text-xs transition-all shadow-md shadow-teal-700/20 flex items-center justify-center gap-2 active:scale-[0.98]"
                   >
                     <Play size={16} fill="currentColor" />
                     <span>Iniciar en Espejo AR</span>
@@ -465,7 +465,7 @@ export function PatientExercisesPage() {
             <div className="flex justify-end pt-2">
               <button
                 onClick={() => setDescriptionExercise(null)}
-                className="px-5 py-2 rounded-xl bg-primary text-white text-xs font-bold hover:opacity-90 transition-opacity"
+                className="px-5 py-2 rounded-xl bg-primary text-on-primary text-xs font-bold hover:opacity-90 transition-opacity"
               >
                 Entendido
               </button>
@@ -514,7 +514,7 @@ export function PatientExercisesPage() {
               </span>
               <button
                 onClick={() => setDemo3DExercise(null)}
-                className="px-5 py-2 rounded-xl bg-primary text-white text-xs font-bold hover:opacity-90 transition-opacity"
+                className="px-5 py-2 rounded-xl bg-primary text-on-primary text-xs font-bold hover:opacity-90 transition-opacity"
               >
                 Cerrar Visor 3D
               </button>

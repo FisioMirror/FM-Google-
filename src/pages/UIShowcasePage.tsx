@@ -684,7 +684,7 @@ export function UIShowcasePage() {
       {/* 26. Barra de Progreso de Desplazamiento Global */}
       <ScrollProgress />
 
-      <div className="max-w-6xl mx-auto space-y-8">
+      <div className="fm-page max-w-6xl">
         
         {/* Navigation & Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-200 dark:border-slate-800">
@@ -1068,7 +1068,7 @@ export function UIShowcasePage() {
                             className={cn(
                               "px-2 py-1 rounded-lg text-2xs font-semibold border transition-all",
                               gaugeJoint === j
-                                ? "bg-primary text-white border-primary"
+                                ? "bg-primary text-on-primary border-primary"
                                 : "bg-white/60 dark:bg-slate-800 text-on-surface-variant border-slate-200 dark:border-slate-700"
                             )}
                           >
@@ -1206,7 +1206,7 @@ export function UIShowcasePage() {
                         onClick={() => setAlertSeverity(s)}
                         className={cn(
                           "px-2 py-0.5 rounded text-2xs font-bold capitalize transition-all",
-                          alertSeverity === s ? "bg-primary text-white" : "bg-slate-200 dark:bg-slate-800 text-on-surface-variant"
+                          alertSeverity === s ? "bg-primary text-on-primary" : "bg-slate-200 dark:bg-slate-800 text-on-surface-variant"
                         )}
                       >
                         {s}
@@ -2408,7 +2408,7 @@ export function UIShowcasePage() {
                           className={cn(
                             "px-2.5 py-1 rounded-lg text-xs font-medium transition-all capitalize",
                             highlighterAction === act
-                              ? "bg-primary text-white shadow-xs"
+                              ? "bg-primary text-on-primary shadow-xs"
                               : "bg-surface-container-high/60 text-on-surface-variant hover:bg-surface-container-highest"
                           )}
                         >
@@ -2618,7 +2618,7 @@ export function UIShowcasePage() {
                       <button
                         type="button"
                         onClick={() => setTickerRomValue(140)}
-                        className="px-3 py-1.5 text-xs font-bold rounded-xl bg-primary text-white hover:bg-primary/90 transition-all"
+                        className="px-3 py-1.5 text-xs font-bold rounded-xl bg-primary text-on-primary hover:bg-primary/90 transition-all"
                       >
                         Reset (140°)
                       </button>
@@ -2652,7 +2652,7 @@ export function UIShowcasePage() {
                           onClick={() => setMagicCardMode('gradient')}
                           className={cn(
                             "px-2.5 py-1 text-xs font-semibold rounded-lg transition-all",
-                            magicCardMode === 'gradient' ? "bg-primary text-white shadow-xs" : "text-on-surface-variant hover:text-on-surface"
+                            magicCardMode === 'gradient' ? "bg-primary text-on-primary shadow-xs" : "text-on-surface-variant hover:text-on-surface"
                           )}
                         >
                           Modo Gradient
@@ -2662,7 +2662,7 @@ export function UIShowcasePage() {
                           onClick={() => setMagicCardMode('orb')}
                           className={cn(
                             "px-2.5 py-1 text-xs font-semibold rounded-lg transition-all",
-                            magicCardMode === 'orb' ? "bg-primary text-white shadow-xs" : "text-on-surface-variant hover:text-on-surface"
+                            magicCardMode === 'orb' ? "bg-primary text-on-primary shadow-xs" : "text-on-surface-variant hover:text-on-surface"
                           )}
                         >
                           Modo Orb
@@ -2724,7 +2724,7 @@ export function UIShowcasePage() {
                         className={cn(
                           "px-2.5 py-1 text-xs font-semibold rounded-lg transition-all",
                           pixelGridKey === g
-                            ? "bg-primary text-white shadow-xs"
+                            ? "bg-primary text-on-primary shadow-xs"
                             : "bg-surface-container-high/60 text-on-surface-variant hover:bg-surface-container-highest"
                         )}
                       >
@@ -2797,7 +2797,7 @@ export function UIShowcasePage() {
                         onClick={() => setPulsatingVariant('pulse')}
                         className={cn(
                           "px-2.5 py-1 text-xs font-semibold rounded-lg transition-all",
-                          pulsatingVariant === 'pulse' ? "bg-primary text-white shadow-xs" : "text-on-surface-variant hover:text-on-surface"
+                          pulsatingVariant === 'pulse' ? "bg-primary text-on-primary shadow-xs" : "text-on-surface-variant hover:text-on-surface"
                         )}
                       >
                         Pulse
@@ -2807,7 +2807,7 @@ export function UIShowcasePage() {
                         onClick={() => setPulsatingVariant('ripple')}
                         className={cn(
                           "px-2.5 py-1 text-xs font-semibold rounded-lg transition-all",
-                          pulsatingVariant === 'ripple' ? "bg-primary text-white shadow-xs" : "text-on-surface-variant hover:text-on-surface"
+                          pulsatingVariant === 'ripple' ? "bg-primary text-on-primary shadow-xs" : "text-on-surface-variant hover:text-on-surface"
                         )}
                       >
                         Ripple
@@ -3076,7 +3076,7 @@ export function UIShowcasePage() {
                           className={cn(
                             "px-2 py-0.5 text-2xs font-bold rounded-md transition-all",
                             textAnimateVariant === anim
-                              ? "bg-primary text-white shadow-xs"
+                              ? "bg-primary text-on-primary shadow-xs"
                               : "bg-surface-container-high/60 text-on-surface-variant hover:bg-surface-container-highest"
                           )}
                         >

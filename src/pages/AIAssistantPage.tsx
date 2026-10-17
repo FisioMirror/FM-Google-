@@ -636,7 +636,7 @@ Pregunta del paciente: ${messageText}`;
           onClick={() => sendMessage()}
           disabled={loading || (!input.trim() && images.length === 0)}
           aria-label="Enviar mensaje a Physi"
-          className="size-11 rounded-2xl bg-primary hover:bg-primary/90 text-white flex items-center justify-center hover:scale-105 active:scale-95 transition-all disabled:opacity-40 disabled:hover:scale-100 shrink-0 shadow-sm"
+          className="size-11 rounded-2xl bg-primary hover:bg-primary/90 text-on-primary flex items-center justify-center hover:scale-105 active:scale-95 transition-all disabled:opacity-40 disabled:hover:scale-100 shrink-0 shadow-sm"
         >
           <Send className="size-4" />
         </button>

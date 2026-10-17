@@ -39,7 +39,7 @@ export function SplashScreen() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.5 }}
           >
-            <h1 className="font-display font-headline-lg text-headline-lg md:text-display-lg tracking-tight mb-3">
+            <h1 className="font-display fm-title md:text-display-lg tracking-tight mb-3">
               <span className="gradient-text-editorial">FisioMirror</span>
             </h1>
             <div className="flex items-center justify-center gap-1.5">

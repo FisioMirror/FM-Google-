@@ -217,7 +217,7 @@ export function ChatMessages({
                   className={cn(
                     'max-w-[78%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed shadow-sm',
                     isUser
-                      ? 'rounded-br-md bg-primary text-white'
+                      ? 'rounded-br-md bg-primary text-on-primary'
                       : 'rounded-bl-md bg-surface-variant/60 text-on-surface',
                   )}
                 >
@@ -272,7 +272,7 @@ export function ChatMessages({
             type="button"
             onClick={handleSend}
             disabled={!input.trim()}
-            className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-white transition-colors hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-40"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-on-primary transition-colors hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-40"
             aria-label="Enviar mensaje"
           >
             <Send className="h-4 w-4" />

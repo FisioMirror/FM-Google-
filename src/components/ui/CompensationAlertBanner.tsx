@@ -151,7 +151,7 @@ export const CompensationAlertBanner: React.FC<CompensationAlertBannerProps> = (
                   setCorrected(true);
                   onApplyCorrection?.();
                 }}
-                className="px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-primary text-white hover:bg-primary/90 flex items-center gap-1.5 shadow-sm active:scale-95"
+                className="px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-primary text-on-primary hover:bg-primary/90 flex items-center gap-1.5 shadow-sm active:scale-95"
               >
                 <span>Confirmar Corrección</span>
                 <ArrowRight className="w-3.5 h-3.5" />

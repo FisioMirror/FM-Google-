@@ -281,7 +281,7 @@ export function ResetPassword() {
 
               <Link
                 to="/login"
-                className="w-full py-3.5 px-4 rounded-2xl bg-primary hover:bg-primary/90 active:scale-98 text-white font-bold text-xs transition-all flex items-center justify-center gap-2 shadow-md shadow-teal-600/20"
+                className="w-full py-3.5 px-4 rounded-2xl bg-primary hover:bg-primary/90 active:scale-98 text-on-primary font-bold text-xs transition-all flex items-center justify-center gap-2 shadow-md shadow-teal-600/20"
               >
                 <span>Iniciar Sesión Ahora</span>
                 <ArrowRight size={14} />
@@ -316,7 +316,7 @@ export function ResetPassword() {
                     <button
                       type="button"
                       onClick={() => setMode('reset')}
-                      className="w-full py-3 rounded-xl bg-primary hover:bg-primary/90 text-white text-xs font-bold transition-all flex items-center justify-center gap-1.5 shadow-sm"
+                      className="w-full py-3 rounded-xl bg-primary hover:bg-primary/90 text-on-primary text-xs font-bold transition-all flex items-center justify-center gap-1.5 shadow-sm"
                     >
                       <KeyRound size={14} />
                       <span>Ingresar Código PIN Recibido</span>
@@ -355,7 +355,7 @@ export function ResetPassword() {
                   <button
                     type="submit"
                     disabled={loading || !email.trim()}
-                    className="w-full py-3.5 rounded-2xl bg-primary hover:bg-primary/90 active:scale-98 text-white font-bold text-xs shadow-md shadow-teal-600/20 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                    className="w-full py-3.5 rounded-2xl bg-primary hover:bg-primary/90 active:scale-98 text-on-primary font-bold text-xs shadow-md shadow-teal-600/20 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                   >
                     {loading ? (
                       <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -500,7 +500,7 @@ export function ResetPassword() {
                 <button
                   type="submit"
                   disabled={loading || password.length < 8 || password !== confirmPassword || !tokenOrCode.trim()}
-                  className="w-full py-3 rounded-2xl bg-primary hover:bg-primary/90 active:scale-98 text-white font-bold text-xs shadow-md shadow-teal-600/20 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                  className="w-full py-3 rounded-2xl bg-primary hover:bg-primary/90 active:scale-98 text-on-primary font-bold text-xs shadow-md shadow-teal-600/20 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                 >
                   {loading ? (
                     <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
