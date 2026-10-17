@@ -30,6 +30,8 @@ if (!i18n.isInitialized) {
       lng: savedLanguage,
       fallbackLng: 'es',
       load: 'languageOnly',
+      compatibilityJSON: 'v4',
+      returnNull: false,
       interpolation: {
         escapeValue: false,
       },

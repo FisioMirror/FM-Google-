@@ -127,9 +127,11 @@ export default {
           dark: '#B84A33',
         },
 
-        success: 'var(--c-success)',
-        warning: 'var(--c-warning)',
-        danger: 'var(--c-error)',
+        success: 'rgb(var(--c-success-rgb) / <alpha-value>)',
+        warning: 'rgb(var(--c-warning-rgb) / <alpha-value>)',
+        danger: 'rgb(var(--c-error-rgb) / <alpha-value>)',
+        info: 'rgb(var(--c-info-rgb) / <alpha-value>)',
+        kinetic: 'rgb(var(--c-kinetic-rgb) / <alpha-value>)',
         glass: {
           light: 'rgba(255, 255, 255, 0.08)',
           DEFAULT: 'rgba(255, 255, 255, 0.12)',
@@ -151,9 +153,9 @@ export default {
         },
 
         bio: {
-          success: 'var(--c-success)',
-          warning: 'var(--c-warning)',
-          danger: 'var(--c-error)',
+          success: 'rgb(var(--c-success-rgb) / <alpha-value>)',
+          warning: 'rgb(var(--c-warning-rgb) / <alpha-value>)',
+          danger: 'rgb(var(--c-error-rgb) / <alpha-value>)',
           neutral: 'var(--c-outline)',
         },
 

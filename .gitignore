@@ -25,3 +25,4 @@ dist-ssr
 !.env.example
 supabase-credentials.json
 .vercel/
+package-lock.json

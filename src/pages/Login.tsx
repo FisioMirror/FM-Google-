@@ -50,6 +50,20 @@ const DEFAULT_ESPECIALIDADES = [
   'Ergonomía y Salud Laboral',
 ];
 
+// Traducción de nombres de especialidad del catálogo (DB guarda el texto es)
+const SPECIALTY_KEY_BY_NAME: Record<string, string> = {
+  'Fisioterapia Deportiva': 'specialties.sports',
+  'Rehabilitación Traumatológica': 'specialties.trauma',
+  'Fisioterapia Neurológica': 'specialties.neuro',
+  'Rehabilitación Postquirúrgica': 'specialties.postSurgical',
+  'Fisioterapia Geriátrica': 'specialties.geriatric',
+  'Terapia Manual Ortopédica': 'specialties.manualOrtho',
+  'Fisioterapia Pediátrica': 'specialties.pediatric',
+  'Fisioterapia Cardiorrespiratoria': 'specialties.cardiorespiratory',
+  'Fisioterapia en Suelo Pélvico': 'specialties.pelvicFloor',
+  'Ergonomía y Salud Laboral': 'specialties.ergonomics',
+};
+
 const LOGIN_BG_URL = '/login.png';
 
 function CharacterSpotlight({
@@ -63,6 +77,7 @@ function CharacterSpotlight({
   reduceMotion: boolean | null;
   onSelectRole: (role: LoginRole) => void;
 }) {
+  const { t } = useTranslation();
   const isPaciente = activeRole === 'paciente';
   const isFisio = activeRole === 'fisioterapeuta';
 
@@ -139,7 +154,7 @@ function CharacterSpotlight({
         onClick={() => onSelectRole('fisioterapeuta')}
         role="button"
         tabIndex={0}
-        aria-label="Seleccionar rol Fisioterapeuta"
+        aria-label={t('auth.selectRolePhysio')}
         className={cn(
           'absolute top-0 bottom-0 left-0 w-1/2 pointer-events-auto cursor-pointer group flex flex-col justify-center items-center transition-all',
           isFisio ? 'z-20' : 'z-10 hover:bg-emerald-500/[0.02]'
@@ -165,7 +180,7 @@ function CharacterSpotlight({
               {/* Glass status badge */}
               <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/95 dark:bg-slate-900/90 backdrop-blur-md shadow-card border border-emerald-500/35 text-emerald-800 dark:text-emerald-300 text-xs font-extrabold tracking-tight">
                 <Icon name="medical_services" size={13} className="text-emerald-600 dark:text-emerald-400" />
-                <span>Fisioterapeuta</span>
+                <span>{t('auth.rolePhysioBadge')}</span>
               </div>
             </motion.div>
           )}
@@ -176,7 +191,7 @@ function CharacterSpotlight({
           <div className="absolute top-[28%] left-[24%] opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none transform -translate-y-1 group-hover:translate-y-0">
             <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-md shadow-sm border border-slate-200/90 dark:border-slate-700 text-on-surface text-xs font-bold">
               <Icon name="touch_app" size={12} />
-              <span>Ver Fisioterapeuta</span>
+              <span>{t('auth.viewPhysio')}</span>
             </div>
           </div>
         )}
@@ -187,7 +202,7 @@ function CharacterSpotlight({
         onClick={() => onSelectRole('paciente')}
         role="button"
         tabIndex={0}
-        aria-label="Seleccionar rol Paciente"
+        aria-label={t('auth.selectRolePatient')}
         className={cn(
           'absolute top-0 bottom-0 right-0 w-1/2 pointer-events-auto cursor-pointer group flex flex-col justify-center items-center transition-all',
           isPaciente ? 'z-20' : 'z-10 hover:bg-sky-500/[0.02]'
@@ -213,7 +228,7 @@ function CharacterSpotlight({
               {/* Glass status badge */}
               <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/95 dark:bg-slate-900/90 backdrop-blur-md shadow-card border border-sky-500/35 text-sky-800 dark:text-sky-300 text-xs font-extrabold tracking-tight">
                 <Icon name="person" size={13} className="text-sky-600 dark:text-sky-400" />
-                <span>Paciente</span>
+                <span>{t('auth.rolePatientBadge')}</span>
               </div>
             </motion.div>
           )}
@@ -224,7 +239,7 @@ function CharacterSpotlight({
           <div className="absolute top-[32%] right-[24%] opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none transform -translate-y-1 group-hover:translate-y-0">
             <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-md shadow-sm border border-slate-200/90 dark:border-slate-700 text-on-surface text-xs font-bold">
               <Icon name="touch_app" size={12} />
-              <span>Ver Paciente</span>
+              <span>{t('auth.viewPatient')}</span>
             </div>
           </div>
         )}
@@ -262,16 +277,16 @@ function getPasswordStrength(pw: string): { score: number; label: string; color:
   if (/[A-Z]/.test(pw)) score++;
   if (/[0-9]/.test(pw)) score++;
   if (/[^A-Za-z0-9]/.test(pw)) score++;
-  const labels = ['Muy débil', 'Débil', 'Aceptable', 'Fuerte', 'Muy fuerte'];
+  const labels = ['pwVeryWeak', 'pwWeak', 'pwFair', 'pwStrong', 'pwVeryStrong'];
   const colors = ['bg-red-500', 'bg-red-500', 'bg-amber-500', 'bg-teal-600', 'bg-teal-600'];
-  return { score, label: labels[score] || 'Muy débil', color: colors[score] || 'bg-red-500' };
+  return { score, label: labels[score] || 'pwVeryWeak', color: colors[score] || 'bg-red-500' };
 }
 
-function getTimeGreeting(): string {
+function getTimeGreetingKey(): 'greetingMorning' | 'greetingAfternoon' | 'greetingEvening' {
   const h = new Date().getHours();
-  if (h < 12) return 'Buenos días';
-  if (h < 19) return 'Buenas tardes';
-  return 'Buenas noches';
+  if (h < 12) return 'greetingMorning';
+  if (h < 19) return 'greetingAfternoon';
+  return 'greetingEvening';
 }
 
 export function Login() {
@@ -342,7 +357,7 @@ export function Login() {
 
   const isTyping = email.length > 0 || password.length > 0 || token.length > 0;
   const pwStrength = useMemo(() => getPasswordStrength(password), [password]);
-  const greeting = useMemo(() => getTimeGreeting(), []);
+  const greetingKey = useMemo(() => getTimeGreetingKey(), []);
 
   useEffect(() => {
     if (user) {
@@ -402,12 +417,12 @@ export function Login() {
         .select('id, nombre')
         .order('nombre');
       if (err) {
-        toast.error('Error cargando especialidades');
+        toast.error(t('auth.specialtiesLoadError'));
         return;
       }
       if (data) setEspecialidadesOpts((data as EspecialidadRow[]).map((e) => e.nombre));
     } catch {
-      toast.error('Error cargando especialidades');
+      toast.error(t('auth.specialtiesLoadError'));
     }
   };
 
@@ -458,7 +473,7 @@ export function Login() {
         .getPublicUrl(path);
       return data.publicUrl;
     } catch {
-      toast.warning('No se pudo subir la credencial', {
+      toast.warning(t('auth.credentialUploadFail'), {
         description:
           'Puedes subirla más tarde desde tu perfil. Tu cuenta se creará igualmente.',
       });
@@ -475,15 +490,15 @@ export function Login() {
     // Physio Step 1 transition doesn't require Turnstile yet
     if (isFisio && mode === 'register' && fisioStep === 1) {
       if (password !== confirmPassword) {
-        toast.error('Las contraseñas no coinciden');
+        toast.error(t('common.passwordMismatch'));
         return;
       }
       if (!fullName.trim() || !email.trim() || !password.trim() || !cedula.trim()) {
-        toast.error('Completa los campos requeridos');
+        toast.error(t('common.requiredFields'));
         return;
       }
       if (!telefono.trim()) {
-        toast.error('El número de teléfono es obligatorio');
+        toast.error(t('common.phoneRequired'));
         return;
       }
       setFisioStep(2);
@@ -491,7 +506,7 @@ export function Login() {
     }
 
     if (!turnstileToken) {
-      toast.error('Por favor completa la verificación de seguridad Cloudflare');
+      toast.error(t('auth.securityNeedsCompletion'));
       return;
     }
 
@@ -505,7 +520,7 @@ export function Login() {
       if (!cfRes.ok || !cfData.success) {
         turnstileRef.current?.reset();
         setTurnstileToken(null);
-        toast.error('Verificación de seguridad no completada. Reintenta.');
+        toast.error(t('auth.securityNotCompleted'));
         return;
       }
     } catch {
@@ -517,21 +532,21 @@ export function Login() {
     // ─────────────────────────────────────────────
     if (isPaciente && mode === 'login') {
       if (!email.trim() || !password.trim()) {
-        toast.error('Ingresa tu correo y contraseña');
+        toast.error(t('auth.needEmailAndPassword'));
         return;
       }
       const ok = await signInPatientWithEmail(email, password);
       if (ok) {
-        toast.success('Bienvenido a FisioMirror');
+        toast.success(t('auth.welcomeTitle'));
       } else {
         const newAttempts = failedAttempts + 1;
         setFailedAttempts(newAttempts);
         if (newAttempts >= 5) {
           setCooldown(900);
-          toast.error('Cuenta bloqueada por 15 minutos.');
+          toast.error(t('auth.blocked15'));
         } else if (newAttempts >= 3) {
           setCooldown(60);
-          toast.error('Demasiados intentos. Espera 60 segundos.');
+          toast.error(t('auth.rateLimit60'));
         }
       }
       return;
@@ -543,37 +558,37 @@ export function Login() {
     if (isPaciente && mode === 'register') {
       const cleanTok = token.trim();
       if (!cleanTok || cleanTok.length < 4) {
-        toast.error('Ingresa el código de 6 dígitos asignado por tu fisioterapeuta');
+        toast.error(t('auth.tokenRequired'));
         return;
       }
       if (!email.trim() || !password.trim()) {
-        toast.error('Completa tu correo y contraseña para crear tu cuenta');
+        toast.error(t('auth.registerNeedsEmailPassword'));
         return;
       }
       if (password !== confirmPassword) {
-        toast.error('Las contraseñas no coinciden');
+        toast.error(t('common.passwordMismatch'));
         return;
       }
       if (password.length < 6) {
-        toast.error('La contraseña debe tener al menos 6 caracteres');
+        toast.error(t('common.minPassword6'));
         return;
       }
 
       // Special demo shortcut
       if (cleanTok === '123456' || email === 'paciente@demo.com') {
         const ok = await linkTokenToEmail(cleanTok, email, password, fullName || undefined);
-        if (ok) toast.success('Cuenta creada y vinculada con éxito. ¡Bienvenido!');
+        if (ok) toast.success(t('auth.accountLinkedSuccess'));
         return;
       }
 
       const ok = await linkTokenToEmail(cleanTok, email, password, fullName || undefined);
       if (ok) {
-        toast.success('¡Cuenta creada con éxito! Tu token ha sido vinculado.');
+        toast.success(t('auth.accountTokenLinked'));
       } else {
         const currentError = useAuthStore.getState().error;
         if (currentError?.includes('Demasiados intentos')) {
           setCooldown(60);
-          toast.error('Demasiados intentos. Espera un minuto.');
+          toast.error(t('auth.rateLimit1m'));
         }
       }
       return;
@@ -584,17 +599,17 @@ export function Login() {
     // ─────────────────────────────────────────────
     if (isFisio && mode === 'login') {
       if (!email.trim() || !password.trim()) {
-        toast.error('Ingresa tu correo y contraseña');
+        toast.error(t('auth.needEmailAndPassword'));
         return;
       }
       const ok = await signIn(email, password);
       if (ok) {
-        toast.success('Bienvenido a FisioMirror');
+        toast.success(t('auth.welcomeTitle'));
       } else {
         const currentError = useAuthStore.getState().error;
         if (currentError?.includes('Demasiados intentos')) {
           setCooldown(60);
-          toast.error('Demasiados intentos. Espera un minuto.');
+          toast.error(t('auth.rateLimit1m'));
         }
       }
       return;
@@ -605,16 +620,16 @@ export function Login() {
     // ─────────────────────────────────────────────
     if (isFisio && mode === 'register') {
       if (password !== confirmPassword) {
-        toast.error('Las contraseñas no coinciden');
+        toast.error(t('common.passwordMismatch'));
         return;
       }
       if (fisioStep === 1) {
         if (!fullName.trim() || !email.trim() || !password.trim() || !cedula.trim()) {
-          toast.error('Completa los campos requeridos');
+          toast.error(t('common.requiredFields'));
           return;
         }
         if (!telefono.trim()) {
-          toast.error('El número de teléfono es obligatorio');
+          toast.error(t('common.phoneRequired'));
           return;
         }
         setFisioStep(2);
@@ -634,12 +649,12 @@ export function Login() {
       });
       if (ok) {
         setShowSuccess(true);
-        toast.success('Cuenta creada. Bienvenido a FisioMirror');
+        toast.success(t('auth.accountCreatedWelcome'));
       } else {
         const currentError = useAuthStore.getState().error;
         if (currentError?.includes('Demasiados intentos')) {
           setCooldown(60);
-          toast.error('Demasiados intentos. Espera un minuto.');
+          toast.error(t('auth.rateLimit1m'));
         }
       }
     }
@@ -685,7 +700,7 @@ export function Login() {
   const handleResetPassword = async () => {
     const cleanEmail = resetEmail.trim().toLowerCase();
     if (!cleanEmail) {
-      toast.error('Ingresa tu correo electrónico');
+      toast.error(t('auth.recoveryEmailRequired'));
       return;
     }
     setResetLoading(true);
@@ -699,7 +714,7 @@ export function Login() {
       const data = await res.json();
 
       if (res.ok && data.success) {
-        toast.success('Correo de recuperación enviado', {
+        toast.success(t('auth.recoveryEmailSent'), {
           description: `Hemos enviado el enlace y código de 6 dígitos a ${cleanEmail}.`,
         });
         setShowResetModal(false);
@@ -714,13 +729,13 @@ export function Login() {
         } catch {
           // ignore
         }
-        toast.success('Si el correo está registrado, recibirás las instrucciones de recuperación.');
+        toast.success(t('auth.recoveryIfRegistered'));
         setShowResetModal(false);
         setResetEmail('');
         navigate(`/reset-password?email=${encodeURIComponent(cleanEmail)}`);
       }
     } catch {
-      toast.success('Si el correo está registrado, recibirás las instrucciones de recuperación.');
+      toast.success(t('auth.recoveryIfRegistered'));
       setShowResetModal(false);
       setResetEmail('');
       navigate(`/reset-password?email=${encodeURIComponent(cleanEmail)}`);
@@ -734,27 +749,27 @@ export function Login() {
 
   const statusMessage =
     loading
-      ? 'Preparando tu espacio...'
+      ? t('auth.statusPreparing')
       : error
-      ? 'Revisa tus credenciales'
+      ? t('auth.statusCheckCredentials')
       : isPaciente
       ? mode === 'register'
-        ? 'Vincula tu token de recuperación'
-        : 'Tu recuperación empieza aquí'
+        ? t('auth.statusLinkToken')
+        : t('auth.statusStartHere')
       : mode === 'register'
-      ? 'Evolución clínica personalizada'
-      : 'Gestión clínica de alto rendimiento';
+      ? t('auth.statusPersonalizedRecovery')
+      : t('auth.statusClinicalMgmt');
 
   // Dynamic titles and subtitles
   const getHeaderTitle = () => {
     if (isPaciente) {
       return mode === 'register'
-        ? 'Registro de Paciente'
-        : 'Comienza tu recuperación hoy';
+        ? t('auth.headerRegisterPatient')
+        : t('auth.headerStartRecovery');
     }
     return mode === 'register'
-      ? 'Registro Profesional'
-      : 'Gestión Clínica de Alto Rendimiento';
+      ? t('auth.headerRegisterPro')
+      : t('auth.headerClinicalManagement');
   };
 
   const getHeaderSubtitle = () => {
@@ -799,7 +814,7 @@ export function Login() {
             <LanguageSelector compact />
             <button
               onClick={toggleTheme}
-              aria-label="Cambiar tema"
+              aria-label={t('common.changeTheme')}
               className="p-2.5 rounded-full border border-slate-200/80 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 backdrop-blur-md hover:scale-105 transition-all text-[#00504d] dark:text-[#8ad3cf] shadow-sm hover:shadow cursor-pointer"
             >
               <Icon name={theme === 'dark' ? 'light_mode' : 'dark_mode'} size={18} />
@@ -894,7 +909,7 @@ export function Login() {
           {(!isFisio || !isRegister) && (
             <div className="text-center space-y-1.5 pt-1">
               <span className="text-xs font-bold uppercase tracking-widest text-on-surface-variant">
-                {greeting}
+                {t(`dashboard.${greetingKey}`)}
               </span>
               <h2 className="font-extrabold text-2xl sm:text-[26px] tracking-tight leading-tight">
                 <AuroraText>{getHeaderTitle()}</AuroraText>
@@ -949,8 +964,8 @@ export function Login() {
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        placeholder="Correo electrónico"
-                        aria-label="Correo electrónico del paciente"
+                        placeholder={t('auth.phEmail')}
+                        aria-label={t('auth.email')}
                         autoComplete="email"
                         required
                         className="w-full rounded-2xl border border-slate-200/80 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 pl-11 pr-4 py-3.5 text-sm text-on-surface placeholder-slate-400 outline-none transition-all focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20 dark:focus:border-teal-400 dark:focus:ring-teal-400/20 shadow-sm"
@@ -967,8 +982,8 @@ export function Login() {
                         type={showPassword ? 'text' : 'password'}
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        placeholder="Contraseña"
-                        aria-label="Contraseña del paciente"
+                        placeholder={t('auth.phPassword')}
+                        aria-label={t('auth.password')}
                         autoComplete="current-password"
                         required
                         className="w-full rounded-2xl border border-slate-200/80 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 pl-11 pr-11 py-3.5 text-sm text-on-surface placeholder-slate-400 outline-none transition-all focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20 dark:focus:border-teal-400 dark:focus:ring-teal-400/20 shadow-sm"
@@ -976,7 +991,7 @@ export function Login() {
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                        aria-label={showPassword ? t('auth.hidePassword') : t('auth.showPassword')}
                         className="absolute right-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-on-surface-variant dark:hover:text-slate-200 p-1"
                       >
                         <Icon name={showPassword ? 'visibility_off' : 'visibility'} size={19} />
@@ -1079,7 +1094,7 @@ export function Login() {
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        placeholder="Tu correo electrónico personal"
+                        placeholder={t('auth.patientEmailPlaceholder')}
                         autoComplete="email"
                         required
                         className="w-full rounded-2xl border border-slate-200/80 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 pl-11 pr-4 py-3 text-sm text-on-surface placeholder-slate-400 outline-none transition-all focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20 dark:focus:border-teal-400 dark:focus:ring-teal-400/20 shadow-sm"
@@ -1096,7 +1111,7 @@ export function Login() {
                         type={showPassword ? 'text' : 'password'}
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        placeholder="Crear contraseña"
+                        placeholder={t('auth.phCreatePassword')}
                         autoComplete="new-password"
                         required
                         className="w-full rounded-2xl border border-slate-200/80 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 pl-11 pr-11 py-3 text-sm text-on-surface placeholder-slate-400 outline-none transition-all focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20 dark:focus:border-teal-400 dark:focus:ring-teal-400/20 shadow-sm"
@@ -1120,7 +1135,7 @@ export function Login() {
                         type={showPassword ? 'text' : 'password'}
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
-                        placeholder="Confirmar contraseña"
+                        placeholder={t('auth.phConfirmPassword')}
                         autoComplete="new-password"
                         required
                         className={cn(
@@ -1143,7 +1158,7 @@ export function Login() {
                           />
                         </div>
                         <span className="text-xs font-bold text-on-surface-variant whitespace-nowrap">
-                          {pwStrength.label}
+                          {t(`auth.${pwStrength.label}`)}
                         </span>
                       </div>
                     )}
@@ -1182,7 +1197,7 @@ export function Login() {
                   </button>
 
                   <div className="text-center text-xs text-on-surface-variant pt-1">
-                    <span>¿Ya vinculaste tu cuenta? </span>
+                    <span>{t('auth.alreadyLinkedAccount')} </span>
                     <button
                       type="button"
                       onClick={() => switchMode('login')}
@@ -1218,8 +1233,8 @@ export function Login() {
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        placeholder="Correo profesional"
-                        aria-label="Correo del fisioterapeuta"
+                        placeholder={t('auth.yourEmailProfessional')}
+                        aria-label={t('auth.yourEmailProfessional')}
                         autoComplete="email"
                         required
                         className="w-full rounded-2xl border border-slate-200/80 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 pl-11 pr-4 py-3.5 text-sm text-on-surface placeholder-slate-400 outline-none transition-all focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20 dark:focus:border-teal-400 dark:focus:ring-teal-400/20 shadow-sm"
@@ -1236,8 +1251,8 @@ export function Login() {
                         type={showPassword ? 'text' : 'password'}
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        placeholder="Contraseña"
-                        aria-label="Contraseña del fisioterapeuta"
+                        placeholder={t('auth.phPassword')}
+                        aria-label={t('auth.password')}
                         autoComplete="current-password"
                         required
                         className="w-full rounded-2xl border border-slate-200/80 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 pl-11 pr-11 py-3.5 text-sm text-on-surface placeholder-slate-400 outline-none transition-all focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20 dark:focus:border-teal-400 dark:focus:ring-teal-400/20 shadow-sm"
@@ -1295,7 +1310,7 @@ export function Login() {
                   </button>
 
                   <div className="pt-2 text-center text-xs text-on-surface-variant">
-                    <span>¿Nuevo profesional en FisioMirror? </span>
+                    <span>{t('auth.newProfessional')} </span>
                     <button
                       type="button"
                       onClick={() => switchMode('register')}
@@ -1336,7 +1351,7 @@ export function Login() {
                             <input
                               value={fullName}
                               onChange={(e) => setFullName(e.target.value)}
-                              placeholder="Lic. Roberto Silva"
+                              placeholder={t('auth.phNameExample')}
                               required
                               className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 px-3.5 py-2.5 text-sm text-on-surface outline-none focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20"
                             />
@@ -1349,7 +1364,7 @@ export function Login() {
                               type="email"
                               value={email}
                               onChange={(e) => setEmail(e.target.value)}
-                              placeholder="roberto.fisio@ejemplo.com"
+                              placeholder={t('auth.phEmailExample')}
                               required
                               className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 px-3.5 py-2.5 text-sm text-on-surface outline-none focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20"
                             />
@@ -1398,7 +1413,7 @@ export function Login() {
                               />
                             </div>
                             <span className="text-xs font-bold text-on-surface-variant">
-                              {pwStrength.label}
+                              {t(`auth.${pwStrength.label}`)}
                             </span>
                           </div>
                         )}
@@ -1438,7 +1453,7 @@ export function Login() {
                             <input
                               value={universidad}
                               onChange={(e) => setUniversidad(e.target.value)}
-                              placeholder="Nombre de la Institución"
+                              placeholder={t('auth.phInstitution')}
                               className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 px-3.5 py-2.5 text-sm text-on-surface outline-none focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20"
                             />
                           </div>
@@ -1462,20 +1477,20 @@ export function Login() {
                               onChange={(e) => setAnioEgreso(e.target.value)}
                               className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 px-3.5 py-2.5 text-sm text-on-surface outline-none focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20 cursor-pointer"
                             >
-                              <option value="">Selecciona un año</option>
+                              <option value="">{t('auth.selectYear')}</option>
                               {[2026, 2025, 2024, 2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016, 2015].map((y) => (
                                 <option key={y} value={y}>
                                   {y}
                                 </option>
                               ))}
-                              <option value="anterior">Anterior a 2015</option>
+                              <option value="anterior">{t('auth.yearBefore2015')}</option>
                             </select>
                           </div>
                         </div>
 
                         <div>
                           <label className="block text-xs font-bold text-on-surface mb-1">
-                            Especialidades Clínicas
+                            {t('auth.clinicalSpecialties')}
                           </label>
                           <div className="flex flex-wrap gap-2 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 min-h-[46px] items-center">
                             {especialidadesSel.map((esp) => (
@@ -1483,7 +1498,7 @@ export function Login() {
                                 key={esp}
                                 className="bg-[#00504d] text-white flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold"
                               >
-                                {esp}
+                                {t(SPECIALTY_KEY_BY_NAME[esp] || esp)}
                                 <button
                                   type="button"
                                   onClick={() => removeEspecialidad(esp)}
@@ -1503,12 +1518,12 @@ export function Login() {
                                 }}
                                 className="bg-transparent text-xs text-on-surface outline-none cursor-pointer"
                               >
-                                <option value="">+ Añadir...</option>
+                                <option value="">{t('common.addMore')}</option>
                                 {especialidadesOpts
                                   .filter((o) => !especialidadesSel.includes(o))
                                   .map((o) => (
                                     <option key={o} value={o}>
-                                      {o}
+                                      {t(SPECIALTY_KEY_BY_NAME[o] || o)}
                                     </option>
                                   ))}
                               </select>
@@ -1522,7 +1537,7 @@ export function Login() {
                                   addEspecialidad();
                                 }
                               }}
-                              placeholder="O escribe una..."
+                              placeholder={t('auth.orWriteYourOwn')}
                               className="bg-transparent text-xs text-on-surface flex-grow min-w-[100px] outline-none"
                             />
                           </div>
@@ -1617,7 +1632,7 @@ export function Login() {
                               });
                               if (ok) {
                                 setShowSuccess(true);
-                                toast.success('Cuenta creada exitosamente');
+                                toast.success(t('auth.accountCreatedOk'));
                               }
                             }}
                             className="text-xs font-semibold text-[#00504d] dark:text-[#8ad3cf] hover:underline"
@@ -1669,7 +1684,7 @@ export function Login() {
                   </button>
 
                   <div className="text-center text-xs text-on-surface-variant pt-1">
-                    <span>¿Ya tienes cuenta profesional? </span>
+                    <span>{t('auth.haveProAccount')} </span>
                     <button
                       type="button"
                       onClick={() => switchMode('login')}
@@ -1855,7 +1870,7 @@ export function Login() {
               exit={{ scale: 0.92, opacity: 0 }}
               role="dialog"
               aria-modal="true"
-              aria-label="Recuperar contraseña"
+              aria-label={t('auth.ariaResetPassword')}
               className="bg-white dark:bg-slate-900 rounded-3xl p-7 max-w-sm w-full shadow-elevated border border-slate-200 dark:border-slate-800 max-h-[90dvh] overflow-y-auto"
               onClick={(e) => e.stopPropagation()}
             >
@@ -1879,7 +1894,7 @@ export function Login() {
                   type="email"
                   value={resetEmail}
                   onChange={(e) => setResetEmail(e.target.value)}
-                  placeholder="Correo electrónico"
+                  placeholder={t('auth.phEmail')}
                   className="w-full pl-10 pr-4 py-2.5 rounded-xl text-sm border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-on-surface outline-none focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20"
                 />
               </div>
@@ -1899,7 +1914,7 @@ export function Login() {
                   className="flex-1 py-2.5 rounded-xl bg-[#00504d] dark:bg-primary text-on-primary font-bold text-xs hover:bg-[#0c403d] dark:hover:bg-teal-500 transition-all disabled:opacity-50 flex items-center justify-center gap-1.5"
                 >
                   {resetLoading ? <Spinner size={16} className="text-white" /> : <Icon name="send" size={16} />}
-                  {resetLoading ? 'Enviando...' : 'Enviar enlace'}
+                  {resetLoading ? t('common.sending') : t('auth.resetSendLink')}
                 </button>
               </div>
 
@@ -1936,7 +1951,7 @@ export function Login() {
               animate={{ scale: 1, opacity: 1 }}
               role="dialog"
               aria-modal="true"
-              aria-label="Cuenta creada"
+              aria-label={t('auth.ariaAccountCreated')}
               className="max-w-md w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-8 rounded-5xl text-center space-y-5 shadow-elevated max-h-[90dvh] overflow-y-auto"
             >
               <div className="w-16 h-16 bg-teal-50 dark:bg-teal-950/60 rounded-full flex items-center justify-center mx-auto text-[#00504d] dark:text-teal-400 shadow-inner">

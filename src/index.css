@@ -117,6 +117,13 @@
   --c-success: #15803d;
   --c-warning: #c2410c;
 
+  /* ── Channel triplets (permite paréntesis de opacidad en Tailwind) ── */
+  --c-success-rgb: 21 128 61;
+  --c-warning-rgb: 194 65 12;
+  --c-error-rgb: 186 26 26;
+  --c-info-rgb: 8 145 178;
+  --c-kinetic-rgb: 77 124 15;
+
   /* ── Inverse ── */
   --c-inverse-surface: #1e293b;
   --c-inverse-on-surface: #f8fafc;
@@ -259,6 +266,13 @@
   /* ── Success / Warning ── */
   --c-success: #34d399;
   --c-warning: #fbbf24;
+
+  /* ── Channel triplets (dark) ── */
+  --c-success-rgb: 52 211 153;
+  --c-warning-rgb: 251 191 36;
+  --c-error-rgb: 252 165 165;
+  --c-info-rgb: 103 232 249;
+  --c-kinetic-rgb: 193 255 114;
 
   /* ── Inverse ── */
   --c-inverse-surface: #f8fafc;
