@@ -807,7 +807,7 @@ export function DashboardFisio() {
       {/* Insight banner */}
       <InsightBanner
         title={t('dashboard.welcomeBack')}
-        description={loadingKpis ? t('dashboard.loadingSummary') : realIsEmpty ? t('dashboard.emptySummary') : t('dashboard.summaryDesc', { p: kpi.activePatients, s: kpi.sessionsToday })}}
+        description={loadingKpis ? t('dashboard.loadingSummary') : realIsEmpty ? t('dashboard.emptySummary') : t('dashboard.summaryDesc', { p: kpi.activePatients, s: kpi.sessionsToday })}
       />
 
       {/* KPI cards en MagicCard con NumberTicker y tonos pastel clínicos */}
