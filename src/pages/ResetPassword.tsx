@@ -58,7 +58,7 @@ export function ResetPassword() {
     async function checkExistingSession() {
       try {
         const hash = window.location.hash;
-        if (hash.includes('access_token') || hash.includes('type=recovery) {
+        if (hash.includes('access_token') || hash.includes('type=recovery')) {
           if (isMounted) setMode('reset');
         }
         const { data } = await supabase.auth.getSession();
