@@ -1443,7 +1443,7 @@ export function ExercisesPage() {
                   <div className="pt-2">
                     <p className="text-xs font-bold uppercase tracking-wide text-on-surface-variant mb-2 flex items-center gap-1.5">
                       <Gauge className="size-4 text-teal-600" />
-                      <span>{t('exs.preview3d')}
+                      <span>{t('exs.preview3d')}</span>
                     </p>
                     <div className="flex justify-center">
                       <SkeletonDemo
