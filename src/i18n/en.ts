@@ -920,6 +920,7 @@ export const en: typeof es = {
     updateProtocol: "Update Protocol",
     createProtocol: "Create Protocol",
     deleteExercise: "Delete exercise",
+    mdRom: 'ROM',
   },
 
 
@@ -1442,6 +1443,37 @@ export const en: typeof es = {
     successDesc: 'Your camera is optimized for AR mode with real-time bio-feedback.',
     continueAR: 'Continue to AR Mode',
     retry: 'Retry',
+  },
+
+
+  cat: {
+    fAll: 'All Components',
+    fMega: 'Macro Suite (50 Components)',
+    fStar: 'Stellar Biomechanics Suite',
+    fHero: 'HeroUI (28 Suite)',
+    fMagic: 'Magic UI',
+    fAceternity: 'Aceternity UI',
+    fShadcn: 'Shadcn UI',
+    f21: '21st.dev',
+    activeMirror: 'Active Mirror',
+    activeEncrypted: 'Active & Encrypted',
+    ex1: 'Knee Flexion',
+    ex1m: '135° reached',
+    ex2: 'Weekly Adherence',
+    ex2m: '100% compliance',
+    ex3: 'Postural Correction',
+    ex3m: 'Spine alignment 98%',
+    ex4: 'Lumbar Extension',
+    ex4m: '5 reps without compensation',
+    nextGenTitle: 'FisioMirror Next-Gen Component Suite',
+    designSystem: 'Design System &',
+    btnPrimary: 'Primary Button',
+    btnShimmer: 'Shimmer Button',
+    btnSecondary: 'Secondary Button',
+    btnOutline: ' Outline Button',
+    btnDanger: 'Danger Button',
+    btnGhost: 'Ghost Button',
+    openSheet: 'Open Bottom Sheet Demo',
   },
 
 } as const;

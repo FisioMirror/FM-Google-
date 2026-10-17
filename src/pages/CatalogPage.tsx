@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Sparkles,
   LayoutGrid,
@@ -75,6 +76,7 @@ import {
 import { cn } from '../lib/utils';
 
 export function CatalogPage() {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<'all' | 'megasuite' | 'estelar' | 'magic' | 'aceternity' | 'heroui' | 'shadcn' | '21st'>('all');
   const [sliderAngle, setSliderAngle] = useState(120);
   const [toggleState, setToggleState] = useState(true);
@@ -93,10 +95,10 @@ export function CatalogPage() {
           <div className="space-y-2 max-w-2xl">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-500/10 border border-teal-500/25 text-teal-600 dark:text-teal-400 text-xs font-bold">
               <Sparkles className="size-3.5" />
-              <span>Suite de Componentes Next-Gen FisioMirror</span>
+              <span>{t('cat.nextGenTitle')}</span>
             </div>
             <h1 className="fm-title text-on-surface">
-              Design System &amp; <AuroraText>FisioMirror UI</AuroraText>
+              {t('cat.designSystem')} <AuroraText>FisioMirror UI</AuroraText>
             </h1>
             <p className="text-xs sm:text-sm text-on-surface-variant leading-relaxed">
               Catálogo maestro y de alto rendimiento que integra los componentes más votados y utilizados de{' '}
@@ -125,14 +127,14 @@ export function CatalogPage() {
         {/* Filter Tabs */}
         <div className="mt-8 pt-6 border-t border-outline/15 flex flex-wrap gap-2">
           {[
-            { id: 'all', label: 'Todos los Componentes' },
-            { id: 'megasuite', label: 'Macro Suite (50 Componentes)' },
-            { id: 'estelar', label: 'Suite Estelar Biomecánica' },
-            { id: 'heroui', label: 'HeroUI (28 Suite)' },
-            { id: 'magic', label: 'Magic UI' },
-            { id: 'aceternity', label: 'Aceternity UI' },
-            { id: 'shadcn', label: 'Shadcn UI' },
-            { id: '21st', label: '21st.dev' },
+            { id: 'all', labelKey: 'cat.fAll' },
+            { id: 'megasuite', labelKey: 'cat.fMega' },
+            { id: 'estelar', labelKey: 'cat.fStar' },
+            { id: 'heroui', labelKey: 'cat.fHero' },
+            { id: 'magic', labelKey: 'cat.fMagic' },
+            { id: 'aceternity', labelKey: 'cat.fAceternity' },
+            { id: 'shadcn', labelKey: 'cat.fShadcn' },
+            { id: '21st', labelKey: 'cat.f21' },
           ].map((tab) => (
             <button
               key={tab.id}
@@ -144,7 +146,7 @@ export function CatalogPage() {
                   : 'bg-surface-container hover:bg-surface-container-high text-on-surface-variant'
               )}
             >
-              {tab.label}
+              {t(tab.labelKey)}
             </button>
           ))}
         </div>
@@ -174,7 +176,7 @@ export function CatalogPage() {
                 Pasa el mouse sobre esta tarjeta para ver cómo el halo de luz radial sigue de forma interactiva la posición de tu cursor.
               </p>
               <div className="pt-2 flex items-center justify-between text-xs font-bold text-teal-600 dark:text-teal-400">
-                <span>Reflejo Activo</span>
+                <span>{t('cat.activeMirror')}</span>
                 <ArrowRight className="size-4" />
               </div>
             </SpotlightCard>
@@ -189,7 +191,7 @@ export function CatalogPage() {
                 Ángulo objetivo de flexión evaluado en 165° con compensación escapular mitigada mediante IA.
               </p>
               <div className="pt-2 flex items-center justify-between text-xs font-mono font-bold text-cyan-600 dark:text-cyan-400">
-                <span>ROM: 165°</span>
+                <span>{t('exs.mdRom')}: 165°</span>
                 <span className="text-2xs bg-cyan-500/10 px-2 py-0.5 rounded-full">Óptimo</span>
               </div>
             </SpotlightCard>
@@ -204,7 +206,7 @@ export function CatalogPage() {
                 Tokens de activación de un solo uso vinculados a registros de pacientes en Supabase y cumplimiento de privacidad médica.
               </p>
               <div className="pt-2 flex items-center justify-between text-xs font-bold text-emerald-600 dark:text-emerald-400">
-                <span>Activo y Encriptado</span>
+                <span>{t('cat.activeEncrypted')}</span>
                 <CheckCircle className="size-4" />
               </div>
             </SpotlightCard>
@@ -233,10 +235,10 @@ export function CatalogPage() {
             </div>
             <Marquee speed={30} pauseOnHover={true} className="py-2">
               {[
-                { title: 'Flexión de Rodilla', metric: '135° alcanzados', badge: 'Carlos M.' },
-                { title: 'Adherencia Semanal', metric: '100% de cumplimiento', badge: 'María F.' },
-                { title: 'Corrección Postural', metric: 'Alineación de columna 98%', badge: 'Lucía R.' },
-                { title: 'Extensión Lumbar', metric: '5 reps sin compensación', badge: 'Jorge T.' },
+                { title: t('cat.ex1'), metric: t('cat.ex1m'), badge: 'Carlos M.' },
+                { title: t('cat.ex2'), metric: t('cat.ex2m'), badge: 'María F.' },
+                { title: t('cat.ex3'), metric: t('cat.ex3m'), badge: 'Lucía R.' },
+                { title: t('cat.ex4'), metric: t('cat.ex4m'), badge: 'Jorge T.' },
               ].map((item, i) => (
                 <div key={i} className="flex items-center gap-3 rounded-2xl border border-outline/15 bg-surface-container p-3.5 shadow-sm min-w-[240px]">
                   <div className="size-9 rounded-xl bg-teal-500/10 text-teal-600 flex items-center justify-center font-bold">
@@ -395,12 +397,12 @@ export function CatalogPage() {
           <div className="rounded-3xl border border-outline/15 bg-surface/80 p-6 space-y-4 shadow-sm">
             <h3 className="text-base font-bold text-on-surface">3. Variantes de ActionButton (Táctil con Shimmer)</h3>
             <div className="flex flex-wrap gap-3">
-              <ActionButton variant="primary">Botón Primario</ActionButton>
-              <ActionButton variant="shimmer">Botón Shimmer</ActionButton>
-              <ActionButton variant="secondary">Botón Secundario</ActionButton>
-              <ActionButton variant="outline">Botón Outline</ActionButton>
-              <ActionButton variant="danger">Botón Peligro</ActionButton>
-              <ActionButton variant="ghost">Botón Ghost</ActionButton>
+              <ActionButton variant="primary">{t('cat.btnPrimary')}</ActionButton>
+              <ActionButton variant="shimmer">{t('cat.btnShimmer')}</ActionButton>
+              <ActionButton variant="secondary">{t('cat.btnSecondary')}</ActionButton>
+              <ActionButton variant="outline">{t('cat.btnOutline')}</ActionButton>
+              <ActionButton variant="danger">{t('cat.btnDanger')}</ActionButton>
+              <ActionButton variant="ghost">{t('cat.btnGhost')}</ActionButton>
             </div>
           </div>
         </section>
@@ -795,7 +797,7 @@ export function CatalogPage() {
               className="px-4 py-2 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-bold text-xs flex items-center gap-2 shadow-sm transition-all self-start sm:self-auto"
             >
               <Sliders className="size-4" />
-              <span>Abrir Bottom Sheet Demo</span>
+              <span>{t('cat.openSheet')}</span>
             </button>
           </div>
 

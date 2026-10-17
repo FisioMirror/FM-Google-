@@ -920,6 +920,7 @@ export const pt: typeof es = {
     updateProtocol: "Atualizar Protocolo",
     createProtocol: "Criar Protocolo",
     deleteExercise: "Excluir exercício",
+    mdRom: 'ROM',
   },
 
 
@@ -1442,6 +1443,37 @@ export const pt: typeof es = {
     successDesc: 'Sua câmera está otimizada para o modo AR com bio-feedback em tempo real.',
     continueAR: 'Continuar para o Modo AR',
     retry: 'Tentar novamente',
+  },
+
+
+  cat: {
+    fAll: 'Todos os Componentes',
+    fMega: 'Macro Suite (50 Componentes)',
+    fStar: 'Suite Estelar Biomecânica',
+    fHero: 'HeroUI (28 Suite)',
+    fMagic: 'Magic UI',
+    fAceternity: 'Aceternity UI',
+    fShadcn: 'Shadcn UI',
+    f21: '21st.dev',
+    activeMirror: 'Espelho Ativo',
+    activeEncrypted: 'Ativo e Criptografado',
+    ex1: 'Flexão de Joelho',
+    ex1m: '135° alcançados',
+    ex2: 'Adesão Semanal',
+    ex2m: '100% de adesão',
+    ex3: 'Correção Postural',
+    ex3m: 'Alinhamento da coluna 98%',
+    ex4: 'Extensão Lombar',
+    ex4m: '5 reps sem compensação',
+    nextGenTitle: 'Suite de Componentes Next-Gen FisioMirror',
+    designSystem: 'Design System e',
+    btnPrimary: 'Botão Primário',
+    btnShimmer: 'Botão Shimmer',
+    btnSecondary: 'Botão Secundário',
+    btnOutline: 'Botão Outline',
+    btnDanger: 'Botão de Perigo',
+    btnGhost: 'Botão Ghost',
+    openSheet: 'Abrir Bottom Sheet Demo',
   },
 
 } as const;
