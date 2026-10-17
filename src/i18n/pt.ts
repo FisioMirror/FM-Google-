@@ -520,7 +520,6 @@ export const pt: typeof es = {
     updateSuccess: 'Perfil atualizado com sucesso',
     avatarChange: 'Trocar Foto de Perfil',
   },
-,
 
   specialties: {
     sports: 'Fisioterapia Desportiva',

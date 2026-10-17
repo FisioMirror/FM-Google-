@@ -523,7 +523,6 @@ export const es = {
     updateSuccess: 'Perfil actualizado correctamente',
     avatarChange: 'Cambiar Imagen de Perfil',
   },
-,
 
   specialties: {
     sports: 'Fisioterapia Deportiva',

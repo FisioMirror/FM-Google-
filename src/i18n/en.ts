@@ -520,7 +520,6 @@ export const en: typeof es = {
     updateSuccess: 'Profile updated successfully',
     avatarChange: 'Change Profile Picture',
   },
-,
 
   specialties: {
     sports: 'Sports Physiotherapy',
