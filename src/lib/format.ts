@@ -43,6 +43,13 @@ export function formatDayMonth(value: Date | string | number): string {
   return new Intl.DateTimeFormat(currentLocale(), { day: '2-digit', month: 'short' }).format(d);
 }
 
+/** Fecha larga: "miércoles 5 de octubre de 2026" / "Wednesday, October 5, 2026". */
+export function formatLongDate(value: Date | string | number): string {
+  const d = new Date(value);
+  if (isNaN(d.getTime())) return '';
+  return new Intl.DateTimeFormat(currentLocale(), { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(d);
+}
+
 /** Etiquetas de los 7 días con lunes como primer día (Lun..Dom / Mon..Sun / Seg..Dom). */
 export function weekdayShortLabels(): string[] {
   const fmt = new Intl.DateTimeFormat(currentLocale(), { weekday: 'short' });

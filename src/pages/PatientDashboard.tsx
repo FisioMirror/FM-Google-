@@ -52,6 +52,7 @@ import {
 import { humanVoice, isHumanVoiceSpeaking, stopHumanVoice } from '../lib/humanVoice';
 import { staggerContainer, staggerItem, springTactile } from '../lib/motionVariants';
 import { useTranslation } from 'react-i18next';
+import { formatLongDate } from '../lib/format';
 
 interface PatientKpi {
   streak: number;
@@ -92,10 +93,10 @@ export function PatientDashboard() {
   const [allSessionDates, setAllSessionDates] = useState<Date[]>([]);
   const [loading, setLoading] = useState(true);
   const [evolution] = useState<EvolutionWeek[] | null>([
-    { label: 'Semana 1', pct: 45 },
-    { label: 'Semana 2', pct: 58 },
-    { label: 'Semana 3', pct: 67 },
-    { label: 'Semana 4', pct: 78 },
+    { label: '1', pct: 45 },
+    { label: '2', pct: 58 },
+    { label: '3', pct: 67 },
+    { label: '4', pct: 78 },
   ]);
   const [recommendation, setRecommendation] = useState<string | null>(null);
   const [recLoading, setRecLoading] = useState(false);
@@ -240,7 +241,7 @@ export function PatientDashboard() {
         setExercises(
           patientExercises.map((ex) => ({
             id: ex.id,
-            name: ex.ejercicio_nombre || 'Ejercicio de Rehabilitación',
+            name: ex.ejercicio_nombre || t('patientDashboard.exerciseDefault'),
             subtitle: `${ex.series || 3} series · ${ex.repeticiones || 10} reps`,
             icon: 'self_improvement',
           }))
@@ -335,10 +336,10 @@ export function PatientDashboard() {
               colors={{ first: '#0d9488', second: '#c1ff72' }}
               className="font-display fm-title gradient-text-living"
             >
-              {greeting}, {user?.full_name?.split(' ')[0] || 'Paciente'}
+              {greeting}, {user?.full_name?.split(' ')[0] || t('common.patientDefault')}
             </SparklesText>
             <p className="text-outline fm-section-title">
-              {new Date().toLocaleDateString(i18n.language === 'en' ? 'en-US' : i18n.language === 'pt' ? 'pt-BR' : 'es-ES', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
+              {formatLongDate(new Date())}
             </p>
           </div>
           <div className="ml-auto flex items-center gap-3">
@@ -350,7 +351,7 @@ export function PatientDashboard() {
         {/* Telehealth Status Bar */}
         <HarmonizedSurface variant="mint" className="mt-4 p-1 rounded-2xl">
           <CompactTelehealthBar
-            therapistName={therapist || 'Dra. Ramos'}
+            therapistName={therapist || t('demo.physiName2')}
             status="En línea · Fisioterapeuta asignada"
             onQuickCall={() => {
               window.location.href = 'tel:+34900123456';
@@ -463,7 +464,7 @@ export function PatientDashboard() {
           </div>
           <div>
             <MobilityQuestCard
-              questTitle="Alineación Postural y Estabilidad"
+              questTitle={t('gamification.mobilityQuest')}
               targetExercises={2}
               completedExercises={1}
               xpReward={120}
@@ -489,13 +490,13 @@ export function PatientDashboard() {
               <div className="space-y-2 max-w-md">
                 <span className="inline-flex items-center gap-1.5 text-2xs font-black uppercase tracking-wider px-3 py-1 rounded-full bg-teal-500/15 text-teal-700 dark:text-teal-300 border border-teal-500/30">
                   <span className="w-1.5 h-1.5 rounded-full bg-teal-500 animate-pulse" />
-                  Sesión Guiada AR
+                  {t('dashboard.sessionGuidedAR')}
                 </span>
                 <h3 className="text-xl font-black text-on-surface">{t('dashboard.todaySession', 'Rutina de Hoy')}</h3>
                 <p className="text-xs text-on-surface-variant leading-relaxed font-medium">
                   {exercises.length > 0
-                    ? `${exercises[0].name} con corrección de postura en tiempo real por visión computacional.`
-                    : 'Inicia el seguimiento guiado con tu cámara para registrar ángulos articulares.'}
+                    ? t('dashboard.routineTitleDesc', { name: exercises[0].name })
+                    : t('dashboard.routineEmptyDesc')}
                 </p>
               </div>
 
@@ -506,7 +507,7 @@ export function PatientDashboard() {
                 className="px-6 py-3.5 rounded-2xl text-white font-bold text-sm flex items-center justify-center gap-2 shadow-card shadow-teal-700/25 shrink-0 bg-teal-600 hover:bg-teal-500"
               >
                 <Play className="size-4 fill-current" />
-                <span>{t('dashboard.startSession', 'Comenzar Sesión')}</span>
+                <span>{t('patientDashboard.startSessionAR')}</span>
               </PulsatingButton>
             </div>
           </div>
@@ -514,7 +515,7 @@ export function PatientDashboard() {
           {/* Assigned Exercises List */}
           <CollapsibleSection title={t('patientDashboard.todayExercises', 'Mis Ejercicios Asignados')} icon="assignment" defaultOpen>
             <div className="flex justify-between items-center mb-3">
-              <p className="text-xs text-on-surface-variant">Rutina prescrita por tu fisioterapeuta</p>
+              <p className="text-xs text-on-surface-variant">{t('patientDashboard.routinePrescribed')}</p>
               <button
                 onClick={() => navigate('/exercises')}
                 className="text-xs font-bold text-teal-600 dark:text-teal-400 hover:underline"
@@ -581,13 +582,13 @@ export function PatientDashboard() {
         {/* Right Col: Weekly Progress & Physi Assistant */}
         <div className="space-y-6">
           {/* Activity Graph */}
-          <CollapsibleSection title="Actividad Semanal" icon="trending_up" defaultOpen>
+          <CollapsibleSection title={t('patientDashboard.weeklyActivity')} icon="trending_up" defaultOpen>
             <SimpleCalendar markedDates={allSessionDates} />
 
             <div className="p-5 rounded-2xl bg-surface/80 dark:bg-surface-container-low/60 border border-outline/15 mt-4">
               <div className="flex justify-between items-center text-xs mb-3 text-on-surface-variant">
-                <span className="font-semibold">Minutos diarios</span>
-                <span>Objetivo: 15 min/día</span>
+                <span className="font-semibold">{t('patientDashboard.dailyMinutes')}</span>
+                <span>{t('patientDashboard.dailyGoal')}</span>
               </div>
               <div className="h-32 flex items-end justify-between gap-2 pt-4">
                 {weekActivity.map((d, i) => (
@@ -611,7 +612,7 @@ export function PatientDashboard() {
             {evolution && (
               <div className="p-4 rounded-2xl bg-surface/80 dark:bg-surface-container-low/60 border border-outline/15 mt-4 space-y-2">
                 <div className="flex justify-between items-center text-xs text-on-surface-variant mb-1">
-                  <span className="font-semibold">Evolución de Rango Articular</span>
+                  <span className="font-semibold">{t('patientDashboard.romEvolution')}</span>
                   <span className="font-bold text-teal-600 dark:text-teal-400">
                     +{evolution[evolution.length - 1].pct - evolution[0].pct}% global
                   </span>
@@ -636,7 +637,7 @@ export function PatientDashboard() {
                   <User className="size-5" />
                 </div>
                 <div>
-                  <p className="text-2xs uppercase font-bold text-outline">Fisioterapeuta Asignado</p>
+                  <p className="text-2xs uppercase font-bold text-outline">{t('patientDashboard.assignedTherapist')}</p>
                   <p className="text-xs font-bold text-on-surface">{therapist}</p>
                 </div>
               </div>
@@ -653,22 +654,22 @@ export function PatientDashboard() {
                 <Bot className="size-4" />
               </div>
               <div>
-                <h4 className="text-xs font-bold uppercase tracking-wider text-on-surface">Copiloto Physi</h4>
-                <p className="text-xs text-outline">Consejo kinesiológico personalizado</p>
+                <h4 className="text-xs font-bold uppercase tracking-wider text-on-surface">{t('patientDashboard.physiCopilot')}</h4>
+                <p className="text-xs text-outline">{t('patientDashboard.kinesiologyTip')}</p>
               </div>
             </div>
 
             <div className="p-3.5 rounded-2xl bg-surface-container/50 text-xs text-on-surface-variant leading-relaxed italic border border-outline/5">
               {recLoading ? (
                 <span className="flex items-center gap-2">
-                  <Activity className="size-3.5 animate-spin text-primary" /> Analizando tu progreso biomecánico...
+                  <Activity className="size-3.5 animate-spin text-primary" /> {t('patientDashboard.analyzingProgress')}
                 </span>
               ) : recommendation ? (
                 recommendation
               ) : (
                 kpi.streak >= 3
-                  ? `¡Excelente trabajo! Llevas ${kpi.streak} días consecutivos. Tu adherencia al tratamiento reduce el tiempo de recuperación.`
-                  : 'Completa al menos una sesión hoy para mantener la movilidad articular y evitar rigidez.'
+                  ? t('patientDashboard.tipStreak', { d: kpi.streak })
+                  : t('patientDashboard.tipRest')
               )}
             </div>
 
@@ -682,8 +683,8 @@ export function PatientDashboard() {
                     const textToSpeak =
                       recommendation ||
                       (kpi.streak >= 3
-                        ? `¡Excelente trabajo! Llevas ${kpi.streak} días consecutivos. Tu adherencia al tratamiento reduce el tiempo de recuperación.`
-                        : 'Completa al menos una sesión hoy para mantener la movilidad articular y evitar rigidez.');
+                        ? t('patientDashboard.tipStreak', { d: kpi.streak })
+                        : t('patientDashboard.tipRest'));
                     setIsSpeakingCopilot(true);
                     humanVoice.speak(textToSpeak, {
                       onEnd: () => setIsSpeakingCopilot(false),
@@ -696,10 +697,10 @@ export function PatientDashboard() {
                     ? 'bg-teal-500 text-white shadow-xs animate-pulse border-teal-400'
                     : 'bg-teal-500/10 hover:bg-teal-500/20 text-teal-700 dark:text-teal-300 border-teal-500/20'
                 }`}
-                title="Escuchar consejo con voz humana de Physi"
+                title={t('patientDashboard.listenTipHuman')}
               >
                 {isSpeakingCopilot ? <VolumeX className="size-3.5" /> : <Volume2 className="size-3.5" />}
-                <span>{isSpeakingCopilot ? 'Detener voz' : 'Escuchar consejo'}</span>
+                <span>{isSpeakingCopilot ? t('patientDashboard.stopVoice') : t('patientDashboard.listenTip')}</span>
               </button>
 
               <button
@@ -708,14 +709,14 @@ export function PatientDashboard() {
                     setRecLoading(true);
                     try {
                       const result = await runAIJob('insights', {
-                        userPrompt: `Genera un consejo clínico breve y motivador para un paciente con ${kpi.totalSessions} sesiones y ${kpi.streak} días de racha. Máximo 2 frases. Responde en español.`,
+                        userPrompt: `Genera un consejo clínico breve y motivador para un paciente con ${kpi.totalSessions} sesiones y ${kpi.streak} días de racha. Máximo 2 frases. Responde en el idioma del usuario (${i18n.language}).`,
                       });
                       if (result.success && result.result) {
                         setRecommendation(result.result);
-                        toast.success('Consejo clínico actualizado');
+                        toast.success(t('patientDashboard.tipUpdated'));
                       }
                     } catch {
-                      toast.error('No se pudo conectar con Physi');
+                      toast.error(t('patientDashboard.physiConnectFail'));
                     } finally {
                       setRecLoading(false);
                     }
@@ -727,7 +728,7 @@ export function PatientDashboard() {
                 className="flex-1 py-2 rounded-xl bg-primary/10 hover:bg-primary/20 text-primary text-xs font-bold transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
               >
                 <Sparkles className="size-3.5" />
-                <span>{recommendation ? 'Iniciar sesión' : 'Consultar'}</span>
+                <span>{recommendation ? t('patientDashboard.startSessionShort') : t('common.consult')}</span>
               </button>
             </div>
           </div>
@@ -735,27 +736,27 @@ export function PatientDashboard() {
       </div>
 
       {/* Gamification Achievements Section */}
-      <CollapsibleSection title="Logros y Metas de Recuperación" icon="emoji_events">
+      <CollapsibleSection title={t('patientDashboard.recoveryGoals')} icon="emoji_events">
         <div className="space-y-6">
           <div className="p-6 rounded-3xl bg-surface/80 dark:bg-surface-container-low/60 border border-outline/15">
             <div className="flex justify-between items-center text-xs mb-4">
-              <span className="text-on-surface-variant">{gamification.unlockedCount} de {gamification.achievements.length} medallas</span>
-              <span className="font-bold text-teal-600 dark:text-teal-400">{Math.round(gamification.totalProgress * 100)}% desbloqueado</span>
+              <span className="text-on-surface-variant">{t('patientDashboard.medalsFraction', { a: gamification.unlockedCount, b: gamification.achievements.length })}</span>
+              <span className="font-bold text-teal-600 dark:text-teal-400">{t('patientDashboard.progressUnlocked', { v: Math.round(gamification.totalProgress * 100) })}</span>
             </div>
             <AchievementShowcase achievements={gamification.achievements} compact={false} />
 
             {/* Medallas 3D Gamificadas de FisioMirror */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6 pt-6 border-t border-outline/15">
               <GamifiedBadgeCard
-                title="Constancia Inquebrantable"
-                description="5 días seguidos completando rutina prescrita"
+                title={t('gamification.badgeStreakTitle')}
+                description={t('gamification.badgeStreakDesc')}
                 tier="gold"
                 xpPoints={250}
                 progressPct={Math.min(100, Math.round(((kpi.streak || 4) / 5) * 100))}
               />
               <GamifiedBadgeCard
-                title="Precisión Articular"
-                description="ROM > 90° con simetría biomecánica óptima"
+                title={t('gamification.badgePrecisionTitle')}
+                description={t('gamification.badgePrecisionDesc')}
                 tier="diamond"
                 xpPoints={500}
                 progressPct={88}
