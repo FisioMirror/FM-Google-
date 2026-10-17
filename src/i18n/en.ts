@@ -732,8 +732,7 @@ export const en: typeof es = {
     ps4: "Progress 78% — excellent evolution",
     ps5: "Last session: 3 hours ago — 81% quality",
     physiName2: "Dr. Ramos",
-  }
-
+  },
 
   reset: {
     invalidEmail: "Please enter a valid email address",

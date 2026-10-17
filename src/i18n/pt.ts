@@ -732,8 +732,7 @@ export const pt: typeof es = {
     ps4: "Progresso 78% — excelente evolução",
     ps5: "Última sessão: há 3 horas — 81% de qualidade",
     physiName2: "Dra. Ramos",
-  }
-
+  },
 
   reset: {
     invalidEmail: "Por favor, insira um e-mail válido",

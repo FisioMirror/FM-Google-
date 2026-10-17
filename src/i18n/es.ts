@@ -735,8 +735,7 @@ export const es = {
     ps4: "Progreso 78% — excelente evolución",
     ps5: "Última sesión: 3 horas atrás — 81% calidad",
     physiName2: "Dra. Ramos",
-  }
-
+  },
 
   reset: {
     invalidEmail: "Por favor ingresa un correo electrónico válido",
