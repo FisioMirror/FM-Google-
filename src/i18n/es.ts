@@ -776,6 +776,7 @@ export const es = {
     saveNew: "Guardar Nueva Contraseña",
     returnRequest: "Volver a solicitar enlace por correo",
     backToLogin: "Volver a Iniciar Sesión",
+    pwLow: "Baja",
     strength: "Fortaleza: ",
     pwMed: "Media",
     pwHigh: "Alta",

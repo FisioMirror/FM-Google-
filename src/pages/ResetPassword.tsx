@@ -467,7 +467,7 @@ export function ResetPassword() {
                         />
                       </div>
                       <div className="flex justify-between text-2xs text-on-surface-variant font-medium">
-                        <span>{t('reset.strength')}{strengthScore <= 1 ? strengthScore <= 3 ? t('reset.pwMed') : t('reset.pwHigh')}</span>
+                        <span>{t('reset.strength')}{strengthScore <= 1 ? t('reset.pwLow') : strengthScore <= 3 ? t('reset.pwMed') : t('reset.pwHigh')}</span>
                         <span>{hasMinLength ? t('reset.meets8') : t('reset.min8')}</span>
                       </div>
                     </div>

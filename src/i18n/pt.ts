@@ -773,6 +773,7 @@ export const pt: typeof es = {
     saveNew: "Salvar Nova Senha",
     returnRequest: "Solicitar link por e-mail novamente",
     backToLogin: "Voltar para Entrar",
+    pwLow: "Baixa",
     strength: "Força: ",
     pwMed: "Média",
     pwHigh: "Alta",

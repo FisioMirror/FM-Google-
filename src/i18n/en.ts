@@ -773,6 +773,7 @@ export const en: typeof es = {
     saveNew: "Save New Password",
     returnRequest: "Request link via email again",
     backToLogin: "Back to Sign In",
+    pwLow: "Low",
     strength: "Strength: ",
     pwMed: "Medium",
     pwHigh: "High",
