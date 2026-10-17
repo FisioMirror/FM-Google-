@@ -1265,12 +1265,12 @@ export function ExercisesPage() {
               {assigning ? (
                 <>
                   <Spinner size={16} />
-                  <span>{t('common.saving')}
+                  <span>{t('common.saving')}</span>
                 </>
               ) : (
                 <>
                   <CheckCircle2 className="size-4" />
-                  <span>{t('exs.confirmAssign')}
+                  <span>{t('exs.confirmAssign')}</span>
                 </>
               )}
             </button>
