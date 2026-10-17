@@ -1273,6 +1273,7 @@ export const es = {
     accountInfo: 'Información de Cuenta',
     arModelSet: 'Modelo de visión configurado a {{model}}',
     arVisionEngine: 'Motor de Visión AR (MediaPipe)',
+    arModeActive: 'Modo activo',
     fpsOptimal: 'FPS óptimo',
     arAutoTitle: 'Automático',
     arAutoDesc: 'Recomendado según dispositivo',

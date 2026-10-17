@@ -390,9 +390,9 @@ export function SettingsPage() {
               <Cpu size={24} className="text-primary" />
             </div>
             <div>
-              <p className="font-semibold text-on-surface">{t('set.arVisionEngine')}<
+              <p className="font-semibold text-on-surface">{t('set.arVisionEngine')}</p>
               <p className="text-sm text-on-surface-variant">
-                Modo activo: <span className="font-bold text-primary capitalize">{currentArModel}</span> ({t('set.fpsOptimal')})
+                {t('set.arModeActive')}: <span className="font-bold text-primary capitalize">{currentArModel}</span> ({t('set.fpsOptimal')})
               </p>
             </div>
           </div>
@@ -613,7 +613,7 @@ export function SettingsPage() {
             { icon: 'notifications_active', color: 'text-secondary', bg: 'bg-secondary-container/20', titleKey: 'set.nPush', descKey: 'set.nPushDesc', value: notifPush, onChange: setNotifPush },
             { icon: 'volume_up', color: 'icon-accent-cyan', bg: 'bg-cyan-500/10', titleKey: 'set.nSound', descKey: 'set.nSoundDesc', value: notifSound, onChange: setNotifSound },
           ].map((item) => (
-            <div key={item.title} className="flex items-center justify-between">
+            <div key={item.titleKey} className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className={`w-12 h-12 rounded-xl ${item.bg} flex items-center justify-center`}>
                   <Icon name={item.icon} size={22} className={item.color} />

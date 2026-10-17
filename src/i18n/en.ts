@@ -1269,6 +1269,7 @@ export const en: typeof es = {
     accountInfo: 'Account Information',
     arModelSet: 'Vision model set to {{model}}',
     arVisionEngine: 'AR Vision Engine (MediaPipe)',
+    arModeActive: 'Active mode',
     fpsOptimal: 'optimal FPS',
     arAutoTitle: 'Automatic',
     arAutoDesc: 'Recommended per device',

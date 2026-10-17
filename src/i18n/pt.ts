@@ -1269,6 +1269,7 @@ export const pt: typeof es = {
     accountInfo: 'Informação da Conta',
     arModelSet: 'Modelo de visão configurado para {{model}}',
     arVisionEngine: 'Motor de Visão AR (MediaPipe)',
+    arModeActive: 'Modo ativo',
     fpsOptimal: 'FPS ideal',
     arAutoTitle: 'Automático',
     arAutoDesc: 'Recomendado por dispositivo',
