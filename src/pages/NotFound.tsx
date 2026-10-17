@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { Icon } from '../components/ui/Icon';
 import { useAuthStore } from '../stores/authStore';
@@ -61,7 +62,7 @@ export function NotFound() {
         className="premium-btn bg-primary text-on-primary px-8 py-4 rounded-2xl fm-section-title shadow-glow-primary flex items-center gap-2"
       >
         <Icon name="home" size={20} />
-        Volver al inicio
+        {t('nf.goHome')}
       </motion.button>
     </div>
   );

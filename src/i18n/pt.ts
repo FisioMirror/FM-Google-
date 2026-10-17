@@ -1376,6 +1376,13 @@ export const pt: typeof es = {
     flowReports: 'Geração de relatórios: PDFs estilizados com narrativa gerada por IA.',
   },
 
+
+  nf: {
+    notFound1: 'A página que você procura não existe ou foi movida.',
+    notFound2: 'Verifique o link ou volte ao seu painel principal.',
+    goHome: 'Voltar ao início',
+  },
+
 } as const;
 
 export default pt;

@@ -1380,6 +1380,13 @@ export const es = {
     flowReports: 'Generación de informes: PDFs estilizados con narrativa generada por IA.',
   },
 
+
+  nf: {
+    notFound1: 'La página que buscas no existe o fue movida.',
+    notFound2: 'Verifica el enlace o vuelve a tu panel principal.',
+    goHome: 'Volver al inicio',
+  },
+
 } as const;
 
 export default es;

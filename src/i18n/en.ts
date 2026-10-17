@@ -1376,6 +1376,13 @@ export const en: typeof es = {
     flowReports: 'Report generation: styled PDFs with AI-generated narrative.',
   },
 
+
+  nf: {
+    notFound1: 'The page you are looking for does not exist or was moved.',
+    notFound2: 'Check the link or go back to your main dashboard.',
+    goHome: 'Back to home',
+  },
+
 } as const;
 
 export default en;
