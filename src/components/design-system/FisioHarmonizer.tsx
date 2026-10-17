@@ -124,7 +124,7 @@ export const FisioButton = forwardRef<HTMLButtonElement, FisioButtonProps>(
     switch (variant) {
       case 'primary':
         variantClasses =
-          'bg-teal-600 hover:bg-teal-700 active:bg-teal-800 text-white shadow-xs hover:shadow-teal-500/20';
+          'bg-primary hover:bg-primary/90 active:bg-teal-800 text-white shadow-xs hover:shadow-teal-500/20';
         break;
       case 'secondary':
         variantClasses =

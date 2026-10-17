@@ -294,7 +294,7 @@ export function NotificationDrawer({ isOpen, onClose, userId }: NotificationDraw
                               <button
                                 type="button"
                                 onClick={() => handleOpenLink(notif)}
-                                className="px-2.5 py-1 rounded-lg bg-teal-600 hover:bg-teal-700 text-white text-2xs font-bold transition-all flex items-center gap-1 shadow-xs"
+                                className="px-2.5 py-1 rounded-lg bg-primary hover:bg-primary/90 text-white text-2xs font-bold transition-all flex items-center gap-1 shadow-xs"
                               >
                                 <span>Ver detalle</span>
                                 <ExternalLink size={11} />

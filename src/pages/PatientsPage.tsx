@@ -363,7 +363,7 @@ export function PatientsPage() {
   }, [patients, tokens]);
 
   return (
-    <div className="max-w-7xl mx-auto space-y-7 pb-12">
+    <div className="fm-page pb-12">
       {/* Header Section with Navigation Tabs */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
         <div>
@@ -391,7 +391,7 @@ export function PatientsPage() {
           </button>
           <button
             onClick={() => navigate('/ocr-scanner')}
-            className="px-5 py-2.5 rounded-2xl bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold transition-all shadow-md shadow-teal-700/20 flex items-center gap-2"
+            className="px-5 py-2.5 rounded-2xl bg-primary hover:bg-primary/90 text-on-primary text-xs font-bold transition-all shadow-sm shadow-teal-700/20 flex items-center gap-2"
           >
             <Plus className="size-4" />
             <span>Cargar Paciente (OCR)</span>
@@ -409,7 +409,7 @@ export function PatientsPage() {
         <motion.div
           variants={staggerItem}
           whileHover={{ y: -3, scale: 1.015, transition: springTactile }}
-          className="p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl flex flex-col justify-between group cursor-default transition-all shadow-sm hover:shadow-md bg-gradient-to-br from-teal-50/80 via-surface/90 to-emerald-50/40 dark:from-teal-950/25 dark:via-surface-container/80 dark:to-slate-900/90 border border-teal-200/60 dark:border-teal-500/30"
+          className="p-3.5 sm:p-5 rounded-2xl flex flex-col justify-between group cursor-default transition-all shadow-sm hover:shadow-card bg-gradient-to-br from-teal-50/80 via-surface/90 to-emerald-50/40 dark:from-teal-950/25 dark:via-surface-container/80 dark:to-slate-900/90 border border-teal-200/60 dark:border-teal-500/30"
         >
           <div className="flex items-start justify-between mb-2 sm:mb-3">
             <div className="size-9 sm:size-11 rounded-xl sm:rounded-2xl bg-teal-500/15 text-teal-700 dark:text-teal-300 flex items-center justify-center font-bold border border-teal-500/25">
@@ -432,7 +432,7 @@ export function PatientsPage() {
         <motion.div
           variants={staggerItem}
           whileHover={{ y: -3, scale: 1.015, transition: springTactile }}
-          className="p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl flex flex-col justify-between group cursor-default transition-all shadow-sm hover:shadow-md bg-gradient-to-br from-sky-50/75 via-surface/90 to-sky-50/40 dark:from-sky-950/25 dark:via-surface-container/80 dark:to-slate-900/90 border border-sky-200/60 dark:border-sky-500/30"
+          className="p-3.5 sm:p-5 rounded-2xl flex flex-col justify-between group cursor-default transition-all shadow-sm hover:shadow-card bg-gradient-to-br from-sky-50/75 via-surface/90 to-sky-50/40 dark:from-sky-950/25 dark:via-surface-container/80 dark:to-slate-900/90 border border-sky-200/60 dark:border-sky-500/30"
         >
           <div className="flex items-start justify-between mb-2 sm:mb-3">
             <div className="size-9 sm:size-11 rounded-xl sm:rounded-2xl bg-sky-500/15 text-sky-700 dark:text-sky-300 flex items-center justify-center font-bold border border-sky-500/25">
@@ -448,7 +448,7 @@ export function PatientsPage() {
         <motion.div
           variants={staggerItem}
           whileHover={{ y: -3, scale: 1.015, transition: springTactile }}
-          className="p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl flex flex-col justify-between group cursor-default transition-all shadow-sm hover:shadow-md bg-gradient-to-br from-amber-50/75 via-surface/90 to-amber-50/30 dark:from-amber-950/25 dark:via-surface-container/80 dark:to-slate-900/90 border border-amber-200/50 dark:border-amber-500/25"
+          className="p-3.5 sm:p-5 rounded-2xl flex flex-col justify-between group cursor-default transition-all shadow-sm hover:shadow-card bg-gradient-to-br from-amber-50/75 via-surface/90 to-amber-50/30 dark:from-amber-950/25 dark:via-surface-container/80 dark:to-slate-900/90 border border-amber-200/50 dark:border-amber-500/25"
         >
           <div className="flex items-start justify-between mb-2 sm:mb-3">
             <div className="size-9 sm:size-11 rounded-xl sm:rounded-2xl bg-amber-500/15 text-amber-700 dark:text-amber-300 flex items-center justify-center font-bold border border-amber-500/25">
@@ -464,7 +464,7 @@ export function PatientsPage() {
         <motion.div
           variants={staggerItem}
           whileHover={{ y: -3, scale: 1.015, transition: springTactile }}
-          className="p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl flex flex-col justify-between group cursor-default transition-all shadow-sm hover:shadow-md bg-gradient-to-br from-indigo-50/70 via-surface/90 to-purple-50/40 dark:from-indigo-950/25 dark:via-surface-container/80 dark:to-slate-900/90 border border-indigo-200/50 dark:border-indigo-500/25"
+          className="p-3.5 sm:p-5 rounded-2xl flex flex-col justify-between group cursor-default transition-all shadow-sm hover:shadow-card bg-gradient-to-br from-indigo-50/70 via-surface/90 to-purple-50/40 dark:from-indigo-950/25 dark:via-surface-container/80 dark:to-slate-900/90 border border-indigo-200/50 dark:border-indigo-500/25"
         >
           <div className="flex items-start justify-between mb-2 sm:mb-3">
             <div className="size-9 sm:size-11 rounded-xl sm:rounded-2xl bg-indigo-500/15 text-indigo-700 dark:text-indigo-300 flex items-center justify-center font-bold border border-indigo-500/25">
@@ -485,7 +485,7 @@ export function PatientsPage() {
           className={cn(
             'px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center gap-2',
             activeTab === 'patients'
-              ? 'bg-primary text-on-primary shadow-md'
+              ? 'bg-primary text-on-primary shadow-sm'
               : 'text-on-surface-variant hover:text-on-surface'
           )}
         >
@@ -497,7 +497,7 @@ export function PatientsPage() {
           className={cn(
             'px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center gap-2',
             activeTab === 'tokens'
-              ? 'bg-primary text-on-primary shadow-md'
+              ? 'bg-primary text-on-primary shadow-sm'
               : 'text-on-surface-variant hover:text-on-surface'
           )}
         >
@@ -510,7 +510,7 @@ export function PatientsPage() {
       {activeTab === 'patients' && (
         <div className="space-y-6">
           {/* Search & Filter Bar */}
-          <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 p-2.5 rounded-3xl bg-surface/60 dark:bg-surface-container-low/40 border border-outline/10">
+          <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 p-2.5 rounded-3xl bg-surface/60 dark:bg-surface-container-low/40 border border-outline/15">
             <div className="relative flex-1">
               <Search className="size-4 text-outline absolute left-4 top-1/2 -translate-y-1/2" />
               <input
@@ -543,7 +543,7 @@ export function PatientsPage() {
                       'px-3.5 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all flex items-center gap-1.5 border',
                       isSelected
                         ? 'bg-primary text-on-primary border-teal-600 shadow-sm'
-                        : 'bg-surface-container/70 border-outline/10 text-on-surface-variant hover:bg-surface-container-high'
+                        : 'bg-surface-container/70 border-outline/15 text-on-surface-variant hover:bg-surface-container-high'
                     )}
                   >
                     <span>{f.label}</span>
@@ -639,7 +639,7 @@ export function PatientsPage() {
                     onClick={() => navigate(`/paciente/${p.id}`)}
                     className="h-full"
                   >
-                    <SpotlightCard className="p-6 rounded-3xl group cursor-pointer transition-all duration-300 relative flex flex-col justify-between h-full shadow-sm hover:shadow-elevated bg-gradient-to-br from-surface/95 via-surface to-sky-50/30 dark:from-surface-container/85 dark:via-surface-container/70 dark:to-teal-950/20 border border-outline-variant/25 dark:border-white/10 hover:border-teal-500/35">
+                    <SpotlightCard className="p-6 rounded-2xl group cursor-pointer transition-all duration-300 relative flex flex-col justify-between h-full shadow-sm hover:shadow-elevated bg-gradient-to-br from-surface/95 via-surface to-sky-50/30 dark:from-surface-container/85 dark:via-surface-container/70 dark:to-teal-950/20 border border-outline-variant/25 dark:border-white/10 hover:border-teal-500/35">
                     <div>
                       {/* Top Header: Avatar/Badge + Name & ID + Status Tag */}
                       <div className="flex justify-between items-start mb-5">
@@ -760,7 +760,7 @@ export function PatientsPage() {
                       <button
                         type="button"
                         onClick={() => navigate(`/paciente/${p.id}`)}
-                        className="flex-1 py-2.5 px-3 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-bold transition-all text-xs flex items-center justify-center gap-1.5 shadow-xs"
+                        className="flex-1 py-2.5 px-3 rounded-xl bg-primary hover:bg-primary/90 text-on-primary font-bold transition-all text-xs flex items-center justify-center gap-1.5 shadow-xs"
                       >
                         <span>Expediente</span>
                         <ArrowRight className="size-3.5" />
@@ -774,7 +774,7 @@ export function PatientsPage() {
           ) : (
             <div className="rounded-3xl border border-outline/15 bg-surface/80 dark:bg-surface-container-low/70 overflow-hidden shadow-sm">
               <table className="w-full text-left text-xs">
-                <thead className="bg-surface-container-high/60 text-outline font-bold uppercase tracking-wider border-b border-outline/10">
+                <thead className="bg-surface-container-high/60 text-outline font-bold uppercase tracking-wider border-b border-outline/15">
                   <tr>
                     <th className="p-4">Paciente</th>
                     <th className="p-4">Diagnóstico</th>
@@ -783,7 +783,7 @@ export function PatientsPage() {
                     <th className="p-4 text-right">Acción</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-outline/10">
+                <tbody className="divide-y divide-outline/15">
                   {filteredPatients.map((p) => {
                     const rowPresence = getUserStatus(p.id);
                     return (
@@ -850,7 +850,7 @@ export function PatientsPage() {
                 <Key className="size-5" />
               </div>
               <div>
-                <h3 className="font-bold text-sm text-on-surface">Llaves de Activación para Pacientes</h3>
+                <h3 className="fm-section-title text-on-surface">Llaves de Activación para Pacientes</h3>
                 <p className="text-xs text-on-surface-variant">
                   Permiten a un paciente activar su cuenta y vincular su expediente clínico directamente a tu consulta.
                 </p>
@@ -859,7 +859,7 @@ export function PatientsPage() {
 
             <button
               onClick={createQuickToken}
-              className="px-4 py-2 rounded-xl bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold transition-all shadow-sm flex items-center gap-1.5 shrink-0"
+              className="px-4 py-2 rounded-xl bg-primary hover:bg-primary/90 text-on-primary text-xs font-bold transition-all shadow-sm flex items-center gap-1.5 shrink-0"
             >
               <Plus className="size-4" />
               <span>Emitir Nueva Llave</span>
@@ -876,7 +876,7 @@ export function PatientsPage() {
                   'px-3.5 py-1.5 rounded-xl text-xs font-bold capitalize transition-all border',
                   tokenFilter === filterKey
                     ? 'bg-primary text-on-primary border-teal-600 shadow-xs'
-                    : 'bg-surface/70 border-outline/10 text-on-surface-variant hover:bg-surface-container'
+                    : 'bg-surface/70 border-outline/15 text-on-surface-variant hover:bg-surface-container'
                 )}
               >
                 {filterKey === 'todos' ? 'Todas las Llaves' : filterKey === 'pendiente' ? 'Pendientes' : 'Activadas'}
@@ -901,7 +901,7 @@ export function PatientsPage() {
               {filteredTokens.map((tok) => (
                 <div
                   key={tok.id}
-                  className="p-5 rounded-3xl ios-glass-heavy refraction-border shadow-sm hover:shadow-card transition-all flex flex-col justify-between gap-4"
+                  className="p-5 rounded-2xl ios-glass-heavy refraction-border shadow-sm hover:shadow-card transition-all flex flex-col justify-between gap-4"
                 >
                   <div className="flex items-start justify-between gap-2">
                     <div>
@@ -912,7 +912,7 @@ export function PatientsPage() {
                         </span>
                         <button
                           onClick={() => handleCopyCode(tok.token)}
-                          title="Copiar código"
+                          aria-label="Copiar código" title="Copiar código"
                           className="p-1.5 rounded-lg hover:bg-teal-500/10 text-teal-700 dark:text-teal-300 transition-colors"
                         >
                           {copiedToken === tok.token ? <Check className="size-4 text-emerald-500" /> : <Copy className="size-4" />}
@@ -946,7 +946,7 @@ export function PatientsPage() {
                     </p>
                   </div>
 
-                  <div className="pt-3 border-t border-outline/10 flex items-center justify-between gap-2">
+                  <div className="pt-3 border-t border-outline/15 flex items-center justify-between gap-2">
                     <button
                       onClick={() => handleCopyLink(tok.token)}
                       className="px-3 py-1.5 rounded-xl bg-surface-container hover:bg-surface-container-high text-xs font-bold text-on-surface flex items-center gap-1.5 transition-colors"
@@ -1001,7 +1001,7 @@ export function PatientsPage() {
                   setPreviewPatient(null);
                   navigate(`/paciente/${id}`);
                 }}
-                className="flex-1 py-3 px-4 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-bold text-sm shadow-md transition-all flex items-center justify-center gap-2"
+                className="flex-1 py-3 px-4 rounded-xl bg-primary hover:bg-primary/90 text-on-primary font-bold text-sm shadow-sm transition-all flex items-center justify-center gap-2"
               >
                 <span>Abrir Expediente Completo</span>
                 <ArrowRight className="size-4" />

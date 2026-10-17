@@ -269,7 +269,7 @@ export function PDFExportModal({ open, onClose, data, filename }: PDFModalProps)
                 type="button"
                 onClick={handleGenerate}
                 disabled={loading}
-                className="px-5 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold shadow-md shadow-teal-600/30 transition-all active:scale-95 flex items-center gap-2 cursor-pointer disabled:opacity-50"
+                className="px-5 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-white text-xs font-bold shadow-md shadow-teal-600/30 transition-all active:scale-95 flex items-center gap-2 cursor-pointer disabled:opacity-50"
               >
                 {loading ? (
                   <>

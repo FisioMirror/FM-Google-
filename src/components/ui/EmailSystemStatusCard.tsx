@@ -247,7 +247,7 @@ export function EmailSystemStatusCard() {
               type="button"
               disabled={sendingTest}
               onClick={() => handleSendTest('smtp')}
-              className="flex-1 sm:flex-initial px-4 py-2 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs transition-all disabled:opacity-50 flex items-center justify-center gap-1.5 shadow-xs"
+              className="flex-1 sm:flex-initial px-4 py-2 rounded-xl bg-primary hover:bg-primary/90 text-white font-bold text-xs transition-all disabled:opacity-50 flex items-center justify-center gap-1.5 shadow-xs"
             >
               {sendingTest ? (
                 <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />

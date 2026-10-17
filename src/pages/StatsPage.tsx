@@ -595,9 +595,9 @@ export function StatsPage() {
     <div className="fm-page">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
         <div>
-          <h2 className="font-headline-lg text-headline-lg-mobile lg:text-headline-lg gradient-text-living mb-2">
+          <h1 className="fm-title gradient-text-living mb-2">
             {isFisio ? 'Métricas de Práctica Clínica' : 'Progreso de Recuperación'}
-          </h2>
+          </h1>
           {!isFisio && (
             <div className="flex flex-wrap items-center gap-3 mt-2">
               <StreakFlameCounter currentStreak={streak || 4} bestStreak={7} />
@@ -682,7 +682,7 @@ export function StatsPage() {
                   whileHover={{ y: -4, scale: 1.02, transition: springTactile }}
                   whileTap={{ scale: 0.98 }}
                 >
-                  <SpotlightCard className="p-5 sm:p-6 rounded-2xl sm:rounded-3xl flex flex-col justify-between h-full group cursor-default">
+                  <SpotlightCard className="p-5 sm:p-6 rounded-2xl flex flex-col justify-between h-full group cursor-default">
                     <div className="flex justify-between items-start mb-4">
                       <div className={`size-11 sm:size-12 ${card.bg} rounded-2xl flex items-center justify-center font-bold`}>
                         <Icon name={card.icon} size={22} className={card.color} />
@@ -1149,7 +1149,7 @@ export function StatsPage() {
               {/* Paciente: Logros e Insignias (gamification kept for patients) */}
               <div className="flex flex-col">
                 <div className="flex justify-between items-center mb-4">
-                  <h3 className="font-headline-lg text-headline-lg-mobile lg:text-headline-lg gradient-text-living">Logros e Insignias</h3>
+                  <h3 className="fm-section-title gradient-text-living">Logros e Insignias</h3>
                   <button onClick={() => setShowAllBadges(!showAllBadges)} className="text-primary font-bold text-sm flex items-center gap-1 hover:gap-2 transition-all">
                     {showAllBadges ? 'Contraer Vitrina' : 'Expandir Vitrina'}
                     <Icon name={showAllBadges ? 'keyboard_arrow_up' : 'keyboard_arrow_down'} size={18} />
@@ -1221,7 +1221,7 @@ export function StatsPage() {
                       <span>Analizando métricas biomecánicas y adherencia...</span>
                     </div>
                   ) : aiInsight ? (
-                    <div className="p-4 rounded-2xl bg-surface/80 dark:bg-surface-container-low/70 border border-outline/10 shadow-inner">
+                    <div className="p-4 rounded-2xl bg-surface/80 dark:bg-surface-container-low/70 border border-outline/15 shadow-inner">
                       {formatAIReport(aiInsight)}
                     </div>
                   ) : (
@@ -1235,7 +1235,7 @@ export function StatsPage() {
                 <button
                   onClick={generateInsight}
                   disabled={aiLoading}
-                  className="px-5 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs flex items-center gap-2 shadow-sm transition-all disabled:opacity-50"
+                  className="px-5 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-white font-bold text-xs flex items-center gap-2 shadow-sm transition-all disabled:opacity-50"
                 >
                   <Icon name="psychology" size={16} />
                   <span>{aiLoading ? 'Generando...' : 'Generar Análisis Clínico'}</span>

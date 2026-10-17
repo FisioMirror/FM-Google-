@@ -393,7 +393,7 @@ export function PatientExercisesPage() {
                     onClick={() =>
                       navigate(`/ar-mirror?ejercicio=${encodeURIComponent(ex.ejercicio_nombre || 'Ejercicio')}`)
                     }
-                    className="w-full py-3 rounded-2xl bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs transition-all shadow-md shadow-teal-700/20 flex items-center justify-center gap-2 active:scale-[0.98]"
+                    className="w-full py-3 rounded-2xl bg-primary hover:bg-primary/90 text-white font-bold text-xs transition-all shadow-md shadow-teal-700/20 flex items-center justify-center gap-2 active:scale-[0.98]"
                   >
                     <Play size={16} fill="currentColor" />
                     <span>Iniciar en Espejo AR</span>

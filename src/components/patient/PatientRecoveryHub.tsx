@@ -158,7 +158,7 @@ export function PatientRecoveryHub() {
               className={`px-4 py-2.5 rounded-2xl text-xs font-bold transition-all flex items-center gap-2 shadow-sm ${
                 isPlayingAudio
                   ? 'bg-amber-500 hover:bg-amber-600 text-white'
-                  : 'bg-teal-600 hover:bg-teal-700 text-white'
+                  : 'bg-primary hover:bg-primary/90 text-white'
               }`}
             >
               {isPlayingAudio ? (

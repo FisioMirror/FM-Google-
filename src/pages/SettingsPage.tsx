@@ -544,7 +544,7 @@ export function SettingsPage() {
                 "px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all self-start sm:self-auto",
                 testingVoice
                   ? "bg-rose-500 text-white shadow-md animate-pulse"
-                  : "bg-teal-600 hover:bg-teal-700 text-white shadow-sm hover:shadow"
+                  : "bg-primary hover:bg-primary/90 text-white shadow-sm hover:shadow"
               )}
             >
               <Icon name={testingVoice ? "stop" : "volume_up"} size={16} />

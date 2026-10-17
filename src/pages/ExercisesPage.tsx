@@ -707,7 +707,7 @@ export function ExercisesPage() {
   });
 
   return (
-    <div className="max-w-7xl mx-auto space-y-7 pb-16">
+    <div className="fm-page pb-16">
       {/* Header section with notification-like glass aesthetics */}
       <div className="relative rounded-3xl p-6 sm:p-8 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border border-white/60 dark:border-teal-500/20 shadow-[0_8px_32px_rgba(0,80,77,0.06)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.35)] border-l-4 border-l-teal-600 dark:border-l-teal-400 overflow-hidden">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 relative z-10">
@@ -723,7 +723,7 @@ export function ExercisesPage() {
           {isFisio && (
             <button
               onClick={openCreate}
-              className="px-5 py-3 rounded-2xl bg-teal-600 hover:bg-teal-700 active:scale-95 text-white font-bold text-sm transition-all shadow-md shadow-teal-600/20 flex items-center gap-2 shrink-0 self-start lg:self-center"
+              className="px-5 py-3 rounded-2xl bg-primary hover:bg-primary/90 active:scale-95 text-white font-bold text-sm transition-all shadow-sm shadow-teal-600/20 flex items-center gap-2 shrink-0 self-start lg:self-center"
             >
               <Plus className="size-4" />
               <span>Nuevo Ejercicio</span>
@@ -880,7 +880,7 @@ export function ExercisesPage() {
                 >
                 {/* Protocol Badge */}
                 {ex.featured && (
-                  <div className="absolute top-4 left-4 z-10 px-3 py-1 rounded-full bg-teal-600/90 backdrop-blur-md text-white text-2xs font-bold uppercase tracking-wider flex items-center gap-1.5 shadow-md">
+                  <div className="absolute top-4 left-4 z-10 px-3 py-1 rounded-full bg-teal-600/90 backdrop-blur-md text-white text-2xs font-bold uppercase tracking-wider flex items-center gap-1.5 shadow-sm">
                     <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
                     <span>Protocolo Clínico</span>
                   </div>
@@ -898,7 +898,7 @@ export function ExercisesPage() {
                     <button
                       onClick={() => setDescriptionExercise(ex)}
                       aria-label="Ver Guía Anatómica"
-                      className="absolute bottom-3 right-3 size-9 rounded-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-md flex items-center justify-center text-teal-700 dark:text-teal-300 hover:scale-110 active:scale-95 shadow-md transition-transform"
+                      className="absolute bottom-3 right-3 size-9 rounded-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-md flex items-center justify-center text-teal-700 dark:text-teal-300 hover:scale-110 active:scale-95 shadow-sm transition-transform"
                     >
                       <BookOpen className="size-4" />
                     </button>
@@ -999,7 +999,7 @@ export function ExercisesPage() {
                   {isFisio && (
                     <button
                       onClick={() => openAssignModal(ex)}
-                      className="w-full py-2.5 px-3 rounded-xl bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold transition-all flex items-center justify-center gap-1.5 shadow-sm shadow-teal-700/20 active:scale-98"
+                      className="w-full py-2.5 px-3 rounded-xl bg-primary hover:bg-primary/90 text-on-primary text-xs font-bold transition-all flex items-center justify-center gap-1.5 shadow-sm shadow-teal-700/20 active:scale-98"
                     >
                       <UserPlus className="size-3.5" />
                       <span>Asignar a Paciente</span>
@@ -1166,7 +1166,7 @@ export function ExercisesPage() {
                     setDescriptionExercise(null);
                     openAssignModal(ex);
                   }}
-                  className="px-4 py-2 rounded-xl bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold transition-all flex items-center gap-2 shadow-xs"
+                  className="px-4 py-2 rounded-xl bg-primary hover:bg-primary/90 text-on-primary text-xs font-bold transition-all flex items-center gap-2 shadow-xs"
                 >
                   <UserPlus className="size-3.5" />
                   <span>Asignar este Ejercicio</span>
@@ -1258,7 +1258,7 @@ export function ExercisesPage() {
             <button
               onClick={handleAssignExercise}
               disabled={!selectedPatientId || assigning}
-              className="flex-1 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold disabled:opacity-40 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2 shadow-xs"
+              className="flex-1 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-on-primary text-xs font-bold disabled:opacity-40 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2 shadow-xs"
             >
               {assigning ? (
                 <>
@@ -1470,7 +1470,7 @@ export function ExercisesPage() {
                   </button>
                   <button
                     onClick={saveExercise}
-                    className="flex-1 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs shadow-xs"
+                    className="flex-1 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-on-primary font-bold text-xs shadow-xs"
                   >
                     {editing ? 'Actualizar Protocolo' : 'Crear Protocolo'}
                   </button>

@@ -425,7 +425,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
                   <MedicalIcon name="clipboard" size={24} className="animate-breathe-icon" />
                 </div>
                 <div>
-                  <h3 className="font-title-md text-xl font-bold text-teal-900 dark:text-teal-100">OCR Clínico Rápido</h3>
+                  <h3 className="fm-section-title text-xl text-teal-900 dark:text-teal-100">OCR Clínico Rápido</h3>
                   <p className="text-xs text-on-surface-variant mt-0.5">Convierte recetas e informes médicos en datos estructurados</p>
                 </div>
               </div>
@@ -443,7 +443,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
                 <p className="font-bold text-base text-on-surface">{scanProcessing ? <LoadingText context="ocr" /> : scanComplete ? 'Análisis Completado' : 'Arrastra o selecciona un documento clínico'}</p>
                 <p className="text-xs text-on-surface-variant mt-1">Soporta PDF, JPG, PNG (Máx 15MB)</p>
               </div>
-              <button onClick={(e) => { e.stopPropagation(); fileInputRef.current?.click(); }} className="bg-teal-600 hover:bg-teal-700 text-white px-6 py-2.5 rounded-full font-bold text-xs shadow-md shadow-teal-700/20 hover:scale-105 active:scale-95 transition-all">
+              <button onClick={(e) => { e.stopPropagation(); fileInputRef.current?.click(); }} className="bg-primary hover:bg-primary/90 text-on-primary px-6 py-2.5 rounded-full font-bold text-xs shadow-sm shadow-teal-700/20 hover:scale-105 active:scale-95 transition-all">
                 Seleccionar Archivo
               </button>
               <input ref={fileInputRef} type="file" accept=".pdf,image/*" className="hidden" onChange={onFileSelected} />
@@ -469,7 +469,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
                     </button>
                     <button
                       onClick={() => { setShowUpdatePatientModal(true); setUpdatePreview({}); setUpdatePatientId(''); }}
-                      className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-teal-700 text-white font-bold text-xs hover:bg-teal-800 transition-colors min-h-[36px] shadow-md"
+                      className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-teal-700 text-white font-bold text-xs hover:bg-teal-800 transition-colors min-h-[36px] shadow-sm"
                     >
                       <Icon name="person_update" size={16} /> Actualizar paciente
                     </button>
@@ -537,7 +537,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
                   <Icon name="calculate" size={24} className="animate-breathe-icon" />
                 </div>
                 <div>
-                  <h3 className="font-title-md text-xl font-bold text-teal-900 dark:text-teal-100">Calculadora IMC</h3>
+                  <h3 className="fm-section-title text-xl text-teal-900 dark:text-teal-100">Calculadora IMC</h3>
                   <p className="text-xs text-on-surface-variant mt-0.5">Clasificación clínica en tiempo real</p>
                 </div>
               </div>
@@ -595,7 +595,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
                 <Icon name="auto_awesome" size={24} className="animate-breathe-icon" />
               </div>
               <div>
-                <h3 className="font-title-md text-xl font-bold text-teal-900 dark:text-teal-100">Resumen de Sesión IA</h3>
+                <h3 className="fm-section-title text-xl text-teal-900 dark:text-teal-100">Resumen de Sesión IA</h3>
                 <p className="text-xs text-on-surface-variant mt-0.5">Genera un resumen narrativo a partir de las últimas sesiones reales</p>
               </div>
             </div>
@@ -607,7 +607,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
                   <option key={p.id} value={p.id}>{p.full_name}</option>
                 ))}
               </select>
-              <button onClick={generateSessionSummary} disabled={summaryLoading || !selectedPatient} className="bg-teal-600 hover:bg-teal-700 text-white shadow-md shadow-teal-700/20 px-6 py-3 rounded-xl font-bold text-xs flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50 whitespace-nowrap">
+              <button onClick={generateSessionSummary} disabled={summaryLoading || !selectedPatient} className="bg-primary hover:bg-primary/90 text-on-primary shadow-sm shadow-teal-700/20 px-6 py-3 rounded-xl font-bold text-xs flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50 whitespace-nowrap">
                 {summaryLoading ? <Spinner size={16} className="text-white" /> : <Icon name="auto_awesome" size={16} />}
                 {summaryLoading ? <LoadingText context="ai" /> : 'Generar Resumen'}
               </button>
@@ -803,7 +803,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 lg:px-6 py-6 overflow-x-hidden">
+    <div className="fm-page">
       <div className="flex flex-col xl:flex-row gap-6">
         <div className="flex-1 flex flex-col gap-6 min-w-0">
           <div>
