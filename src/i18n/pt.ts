@@ -1413,6 +1413,37 @@ export const pt: typeof es = {
     send: 'Enviar mensagem para Physi',
   },
 
+
+  cal: {
+    done: 'Calibração concluída com sucesso!',
+    title: 'Calibração Postural',
+    camAlign: 'Alinhamento da Câmera',
+    notDetected: 'Sua postura não foi detectada',
+    raiseHand: 'Levante a mão direita ou esquerda para iniciar a calibração automática.',
+    liveSim: 'Simulação ao vivo',
+    bodyInFrame: 'Corpo no quadro',
+    searching: 'Procurando postura...',
+    step1: 'Passo 1: Enquadramento Inicial',
+    step2: 'Passo 2: Calibração Ativa',
+    expand: 'Expandir',
+    minimize: 'Minimizar',
+    standFront: 'Posicione-se em frente à câmera',
+    standFrontDesc: 'Certifique-se de que seu tronco e ambos os braços fiquem visíveis dentro do quadro.',
+    time: 'Tempo:',
+    skipStep: 'Pular',
+    handDetected: 'Mão detectada! Mantenha a posição...',
+    raiseOverShoulder: 'Levante a mão acima do ombro!',
+    holdHand: 'Mantenha a mão erguida por {{s}}s para calibrar os ângulos.',
+    countdown: 'Contagem regressiva:',
+    continueWithout: 'Continuar sem calibrar',
+    holdPose: 'Mantenha a postura ({{s}}s)',
+    getInFrame: 'Posicione-se dentro do quadro',
+    successTitle: 'Calibração bem-sucedida!',
+    successDesc: 'Sua câmera está otimizada para o modo AR com bio-feedback em tempo real.',
+    continueAR: 'Continuar para o Modo AR',
+    retry: 'Tentar novamente',
+  },
+
 } as const;
 
 export default pt;

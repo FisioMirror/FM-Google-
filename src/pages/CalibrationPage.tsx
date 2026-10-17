@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Icon } from '../components/ui/Icon';
@@ -128,7 +129,7 @@ export function CalibrationPage() {
               localStorage.setItem(STORAGE_KEY, 'true');
               localStorage.removeItem(SKIP_KEY);
             } catch { /* storage fallback */ }
-            toast.success('¡Calibración completada con éxito!');
+            toast.success(t('cal.done'));
             setState('success');
           }
         }, 1000);
@@ -188,13 +189,13 @@ export function CalibrationPage() {
         <button
           onClick={() => navigate('/dashboard-paciente')}
           className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors"
-          aria-label="Volver"
+          aria-label={t('common.back')}
         >
           <Icon name="arrow_back" size={20} className="text-white" />
         </button>
         <div className="flex flex-col items-center">
-          <h1 className="font-bold text-sm sm:text-base tracking-wide">Calibración Postural</h1>
-          <span className="text-2xs text-teal-300 font-semibold uppercase tracking-wider">Alineación de Cámara</span>
+          <h1 className="font-bold text-sm sm:text-base tracking-wide">{t('cal.title')}</h1>
+          <span className="text-2xs text-teal-300 font-semibold uppercase tracking-wider">{t('cal.camAlign')}</span>
         </div>
         <div className="flex items-center gap-2">
           <PoseConfidenceLiveIndicator
@@ -205,7 +206,7 @@ export function CalibrationPage() {
             onClick={() => setShowSkipConfirm(true)}
             className="text-xs font-bold text-white/70 hover:text-white px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/15 transition-colors sm:hidden"
           >
-            Omitir
+            {t('cal.skipStep')}
           </button>
         </div>
       </header>
@@ -229,7 +230,7 @@ export function CalibrationPage() {
         <div className="absolute top-14 sm:top-16 left-3 sm:left-6 z-20 flex items-center gap-2 bg-slate-900/80 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/15 shadow-card">
           <span className={`w-2 h-2 rounded-full ${poseData?.isTracking ? 'bg-teal-400 animate-pulse' : 'bg-amber-400'}`} />
           <span className="text-white text-2xs sm:text-xs font-bold uppercase tracking-wider">
-            {poseData?.isTracking ? (isSimulated ? 'Simulación en vivo' : 'Cuerpo en cuadro') : 'Buscando postura...'}
+            {poseData?.isTracking ? (isSimulated ? t('cal.liveSim') : t('cal.bodyInFrame')) : t('cal.searching')}
           </span>
         </div>
       )}
@@ -317,16 +318,16 @@ export function CalibrationPage() {
               <div className="flex items-center gap-2.5">
                 <div className={`w-3 h-3 rounded-full ${poseData?.isTracking ? 'bg-teal-400 shadow-[0_0_8px_rgba(45,212,191,0.6)]' : 'bg-amber-400'}`} />
                 <span className="font-bold text-xs sm:text-sm text-white tracking-wide">
-                  {state === 'calibrating' ? 'Paso 2: Calibración Activa' : 'Paso 1: Encuadre Inicial'}
+                  {state === 'calibrating' ? t('cal.step2') : t('cal.step1')}
                 </span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-2xs text-white/50 hidden xs:inline">
-                  {isPanelCollapsed ? 'Expandir' : 'Minimizar'}
+                  {isPanelCollapsed ? t('cal.expand') : t('cal.minimize')}
                 </span>
                 <button
                   type="button"
-                  aria-label={isPanelCollapsed ? 'Expandir guía de calibración' : 'Minimizar guía de calibración'}
+                  aria-label={isPanelCollapsed ? t('cal.expand') : t('cal.minimize')}
                   className="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center text-white/80 hover:bg-white/20 transition-all"
                 >
                   <Icon name={isPanelCollapsed ? 'expand_less' : 'expand_more'} size={18} />
@@ -352,21 +353,21 @@ export function CalibrationPage() {
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className="text-white text-xs sm:text-sm font-semibold leading-snug">
-                            Colócate frente a la cámara
+                            t('cal.standFront')
                           </p>
                           <p className="text-white/60 text-xs sm:text-xs mt-0.5 leading-relaxed">
-                            Asegúrate de que tu torso y ambos brazos queden visibles dentro del encuadre.
+                            t('cal.standFrontDesc')
                           </p>
                         </div>
                       </div>
 
                       <div className="flex items-center justify-between pt-1 border-t border-white/10 text-xs">
-                        <span className="text-white/50">Tiempo: {detectElapsed}s / {DETECT_TIMEOUT}s</span>
+                        <span className="text-white/50">{t('cal.time')} {detectElapsed}s / {DETECT_TIMEOUT}s</span>
                         <button
                           onClick={() => setShowSkipConfirm(true)}
                           className="text-teal-300 hover:text-teal-200 font-semibold transition-colors"
                         >
-                          Omitir paso
+                          t('cal.skipStep')
                         </button>
                       </div>
                     </>
@@ -382,18 +383,18 @@ export function CalibrationPage() {
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className={`text-xs sm:text-sm font-bold leading-snug ${handRaisedDetected ? 'text-teal-300' : 'text-white'}`}>
-                            {handRaisedDetected ? '¡Mano detectada! Mantén la posición...' : '¡Levanta tu mano por encima del hombro!'}
+                            {handRaisedDetected ? t('cal.handDetected') : t('cal.raiseOverShoulder')}
                           </p>
                           <p className="text-white/60 text-xs sm:text-xs mt-0.5 leading-relaxed">
                             {handRaisedDetected
-                              ? `Sostén la mano elevada durante ${countdown}s para calibrar los ángulos.`
-                              : 'Alza la mano derecha o izquierda para iniciar la calibración automática.'}
+                              ? t('cal.holdHand', { s: countdown })
+                              : t('cal.raiseHand')}
                           </p>
                         </div>
                       </div>
 
                       <div className="flex items-center justify-between pt-1 border-t border-white/10 text-xs">
-                        <span className="text-teal-300/80 font-medium">Cuenta regresiva: {countdown}s</span>
+                        <span className="text-teal-300/80 font-medium">{t('cal.countdown')} {countdown}s</span>
                         <button
                           onClick={() => setShowSkipConfirm(true)}
                           className="text-white/50 hover:text-white transition-colors"
@@ -408,8 +409,8 @@ export function CalibrationPage() {
                 <div className="px-4 py-2 flex items-center justify-between text-xs text-white/70">
                   <span className="truncate pr-2">
                     {state === 'calibrating'
-                      ? (handRaisedDetected ? `Sostén postura (${countdown}s)` : 'Levanta tu mano sobre el hombro')
-                      : 'Ubícate dentro del marco'}
+                      ? (handRaisedDetected ? t('cal.holdPose', { s: countdown }) : t('cal.raiseOverShoulder'))
+                      : t('cal.getInFrame')}
                   </span>
                   <span className="text-teal-300 font-semibold shrink-0">
                     {state === 'calibrating' ? `${countdown}s` : `${detectElapsed}s`}
@@ -444,9 +445,9 @@ export function CalibrationPage() {
                 colors={{ first: '#2dd4bf', second: '#c1ff72' }}
                 className="text-2xl sm:text-3xl font-bold text-white mb-2"
               >
-                ¡Calibración exitosa!
+                t('cal.successTitle')
               </SparklesText>
-              <p className="text-white/70 text-sm max-w-sm">Tu cámara está optimizada para el modo AR con bio-feedback en tiempo real.</p>
+              <p className="text-white/70 text-sm max-w-sm">{t('cal.successDesc')}</p>
             </motion.div>
             <PulsatingButton
               variant="ripple"
@@ -454,7 +455,7 @@ export function CalibrationPage() {
               onClick={goAR}
               className="mt-3 px-7 py-3.5 bg-teal-500 hover:bg-teal-400 text-white rounded-2xl font-bold flex items-center gap-2 shadow-card shadow-teal-500/30 text-sm sm:text-base cursor-pointer"
             >
-              <Icon name="play_arrow" size={20} /> Continuar al Modo AR
+              <Icon name="play_arrow" size={20} /> {t('cal.continueAR')}
             </PulsatingButton>
           </motion.div>
         )}
@@ -472,7 +473,7 @@ export function CalibrationPage() {
             <div className="w-16 h-16 rounded-full bg-amber-500/20 flex items-center justify-center border border-amber-500/40">
               <Icon name="warning" filled size={36} className="text-amber-400" />
             </div>
-            <h2 className="text-xl sm:text-2xl font-bold text-white">No se detectó tu postura</h2>
+            <h2 className="text-xl sm:text-2xl font-bold text-white">{t('cal.notDetected')}</h2>
             <p className="text-white/70 text-sm max-w-sm">
               Verifica que haya suficiente iluminación y que tu torso y ambos brazos queden dentro del encuadre.
             </p>
@@ -481,13 +482,13 @@ export function CalibrationPage() {
                 onClick={retry}
                 className="flex-1 py-3 bg-teal-500 hover:bg-teal-400 text-white rounded-xl font-bold flex items-center gap-2 justify-center transition-all cursor-pointer text-sm shadow-card shadow-teal-500/25 active:scale-95"
               >
-                <Icon name="refresh" size={18} /> Reintentar
+                <Icon name="refresh" size={18} /> {t('cal.retry')}
               </button>
               <button
                 onClick={() => setShowSkipConfirm(true)}
                 className="flex-1 py-3 bg-white/10 hover:bg-white/15 text-white rounded-xl font-bold flex items-center gap-2 justify-center transition-all cursor-pointer text-sm"
               >
-                Omitir
+                {t('cal.skipStep')}
               </button>
             </div>
           </motion.div>
@@ -501,7 +502,7 @@ export function CalibrationPage() {
               <div className="w-16 h-16 rounded-full bg-amber-500/20 flex items-center justify-center mx-auto mb-4">
                 <Icon name="warning" filled size={32} className="text-amber-400" />
               </div>
-              <h3 className="text-white text-xl font-bold mb-2">Continuar sin calibrar?</h3>
+              <h3 className="text-white text-xl font-bold mb-2">{t('cal.continueWithout')}?</h3>
               <p className="text-white/70 text-sm mb-6">La precision del seguimiento puede verse afectada sin calibrar. Deseas continuar?</p>
               <div className="flex gap-3">
                 <button onClick={() => setShowSkipConfirm(false)} className="flex-1 py-3 bg-white/10 text-white rounded-xl font-bold hover:bg-white/20 transition-colors">Cancelar</button>
