@@ -93,10 +93,10 @@ export function SettingsPage() {
     setLocalVoiceMode(mode);
     setVoiceMode(mode);
     show({
-      title: mode === 'humanized' ? 'Voz Humanizada Activada' : 'Voz del Dispositivo Activada',
+      title: mode === 'humanized' ? t('set.voiceHumaTitle') : t('set.voiceDevTitle'),
       message: mode === 'humanized'
-        ? 'La retroalimentación usará voz natural Fish Audio / Neural con respaldo offline.'
-        : 'La retroalimentación usará el sintetizador local offline.',
+        ? t('set.voiceHumaMsg')
+        : t('set.voiceDevMsg'),
       variant: 'success',
     });
   };
@@ -108,7 +108,7 @@ export function SettingsPage() {
       return;
     }
     setTestingVoice(true);
-    speakHumanVoice('Hola, soy Physi, tu asistente en FisioMirror. Tu postura y progreso están en excelentes manos.', {
+    speakHumanVoice(t('set.testVoiceHello'), {
       onEnd: () => setTestingVoice(false),
       onError: () => setTestingVoice(false),
     });
@@ -170,28 +170,28 @@ export function SettingsPage() {
 
   /* ── Handlers ───────────────────────────────────────────────── */
   const handlePasswordChange = async () => {
-    if (!pwCurrent || !pwNew || !pwConfirm) { show('Completa todos los campos', 'warning'); return; }
-    if (pwNew !== pwConfirm) { show('Las contraseñas nuevas no coinciden', 'error'); return; }
-    if (pwNew.length < 6) { show('La nueva contraseña debe tener al menos 6 caracteres', 'warning'); return; }
+    if (!pwCurrent || !pwNew || !pwConfirm) { show(t('common.requiredFields'), 'warning'); return; }
+    if (pwNew !== pwConfirm) { show(t('reg.pwMismatch'), 'error'); return; }
+    if (pwNew.length < 6) { show(t('auth.minPassword6Ref'), 'warning'); return; }
     setPwLoading(true);
     try {
       const result = await useAuthStore.getState().updatePassword(pwCurrent, pwNew);
       if (!result.success) {
-        show(result.error || 'Error al cambiar la contraseña', 'error');
+        show(result.error || t('set.pwChangeError'), 'error');
         return;
       }
-      show('Contraseña actualizada correctamente', 'success');
+      show(t('set.pwChangedOk'), 'success');
       setPwCurrent(''); setPwNew(''); setPwConfirm('');
       setShowPasswordModal(false);
     } catch {
-      show('Error de conexión al actualizar contraseña', 'error');
+      show(t('set.pwChangeConn'), 'error');
     } finally {
       setPwLoading(false);
     }
   };
 
   const handleDeleteAccount = async () => {
-    if (!deletePassword) { show('Ingresa tu contraseña para confirmar', 'warning'); return; }
+    if (!deletePassword) { show(t('set.delPwRequired'), 'warning'); return; }
     setDeleteLoading(true);
     try {
       const fnUrl = `${supabaseUrl}/functions/v1`;
@@ -200,10 +200,10 @@ export function SettingsPage() {
         body: JSON.stringify({ userId: user?.id, password: deletePassword }),
       });
       const data = await res.json().catch(() => ({}));
-      if (!res.ok || !data.success) { show(data.error || 'Error al eliminar la cuenta', 'error'); return; }
-      show('Cuenta eliminada correctamente', 'success');
+      if (!res.ok || !data.success) { show(data.error || t('set.delAccountError'), 'error'); return; }
+      show(t('set.delAccountOk'), 'success');
       signOut();
-    } catch { show('Error de conexión', 'error'); } finally { setDeleteLoading(false); }
+    } catch { show(t('common.connError'), 'error'); } finally { setDeleteLoading(false); }
   };
 
   /* ══════════════════════════════════════════════════════════════
@@ -220,11 +220,11 @@ export function SettingsPage() {
               <Icon name={theme === 'light' ? 'light_mode' : 'dark_mode'} size={24} className={theme === 'light' ? 'text-amber-600' : 'text-slate-300'} />
             </div>
             <div>
-              <p className="font-semibold text-on-surface">{theme === 'light' ? 'Modo Claro' : 'Modo Oscuro'}</p>
-              <p className="text-sm text-on-surface-variant">Cambia entre tema claro y oscuro</p>
+              <p className="font-semibold text-on-surface">{theme === 'light' ? t('pf.lightMode') : t('pf.darkMode')}</p>
+              <p className="text-sm text-on-surface-variant">{t('pf.themeToggleDesc')}</p>
             </div>
           </div>
-          <Toggle value={theme === 'dark'} onChange={toggleTheme} label="Cambiar tema" />
+          <Toggle value={theme === 'dark'} onChange={toggleTheme} label={t('pf.changeTheme')} />
         </div>
       </GlassPanel>
 
@@ -233,7 +233,7 @@ export function SettingsPage() {
         <div className="blob-blue absolute -top-12 -right-12 w-32 h-32 opacity-20 pointer-events-none" />
         <div className="relative">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="font-semibold text-on-surface gradient-text-blue">Tamaño de Tipografía</h3>
+            <h3 className="font-semibold text-on-surface gradient-text-blue">{t('st.fontTypography')}</h3>
             <span className="font-bold text-primary">{fontSize}px</span>
           </div>
           <div className="flex gap-2 flex-wrap mb-4">
@@ -248,7 +248,7 @@ export function SettingsPage() {
                     : 'bg-surface-container-low text-on-surface-variant hover:bg-surface-container-high'
                 )}
               >
-                {size === 14 ? 'Pequeña' : size === 16 ? 'Normal' : size === 18 ? 'Grande' : 'Extra Grande'}
+                {size === 14 ? t('set.fsSmall') : size === 16 ? t('pf.fsNormal') : size === 18 ? t('pf.fsLarge') : t('set.fsXL')}
               </button>
             ))}
           </div>
@@ -264,8 +264,8 @@ export function SettingsPage() {
       <GlassPanel className="p-6 rounded-2xl relative overflow-hidden">
         <div className="blob-cyan absolute -top-12 -right-12 w-32 h-32 opacity-20 pointer-events-none" />
         <div className="relative">
-          <h3 className="font-semibold text-on-surface gradient-text-cyan mb-2">Zoom de Interfaz</h3>
-          <p className="text-sm text-on-surface-variant mb-4">Amplía o reduce el tamaño de toda la interfaz</p>
+          <h3 className="font-semibold text-on-surface gradient-text-cyan mb-2">{t('set.uiZoom')}</h3>
+          <p className="text-sm text-on-surface-variant mb-4">{t('set.uiZoomDesc')}</p>
           <div className="flex gap-2 flex-wrap">
             {zoomOptions.map((z) => (
               <button
@@ -286,7 +286,7 @@ export function SettingsPage() {
             onClick={resetDefaults}
             className="mt-4 w-full py-2.5 rounded-xl bg-surface-container-low text-on-surface-variant font-semibold text-sm hover:bg-surface-container-high transition-colors border border-outline-variant/20 flex items-center justify-center gap-2"
           >
-            <Icon name="restart_alt" size={18} /> Restablecer predeterminados (100% / 16px)
+            <Icon name="restart_alt" size={18} /> {t('set.resetDefaults')}
           </button>
         </div>
       </GlassPanel>
@@ -300,11 +300,11 @@ export function SettingsPage() {
               <Icon name="gradient" size={24} className="icon-accent-emerald" />
             </div>
             <div>
-              <p className="font-semibold text-on-surface">Glassmorfismo</p>
-              <p className="text-sm text-on-surface-variant">Efectos de vidrio esmerilado en las superficies</p>
+              <p className="font-semibold text-on-surface">{t('set.glassmorphism')}<
+              <p className="text-sm text-on-surface-variant">{t('set.glassDesc')}</p>
             </div>
           </div>
-          <Toggle value={glassmorphism} onChange={setGlassmorphism} label="Glassmorfismo" />
+          <Toggle value={glassmorphism} onChange={setGlassmorphism} label={t('set.glassmorphism')} />
         </div>
       </GlassPanel>
 
@@ -317,7 +317,7 @@ export function SettingsPage() {
               <BookOpen size={24} className="text-teal-600 dark:text-teal-400" />
             </div>
             <div>
-              <p className="font-semibold text-on-surface">Palabra de Fortaleza & Fe</p>
+              <p className="font-semibold text-on-surface">{t('set.faithWord')}<
               <p className="text-sm text-on-surface-variant">
                 Muestra versículos de sanidad, constancia y perseverancia en tu recuperación
               </p>
@@ -328,9 +328,9 @@ export function SettingsPage() {
             onChange={(v) => {
               setSpiritualMode(v);
               setSpiritualModeEnabled(v);
-              show(v ? 'Inspiración de Fe activada' : 'Inspiración de Fe desactivada', 'success');
+              show(v ? t('set.faithOn') : t('set.faithOff'), 'success');
             }}
-            label="Palabra de Fortaleza & Fe"
+            label={t('set.faithWord')}
           />
         </div>
       </GlassPanel>
@@ -359,14 +359,7 @@ export function SettingsPage() {
                 onClick={() => {
                   changeAppLanguage(lang.code as 'es' | 'en' | 'pt');
                   setCurrentLang(lang.code);
-                  show(
-                    lang.code === 'en'
-                      ? 'Language changed to English'
-                      : lang.code === 'pt'
-                      ? 'Idioma alterado para Português'
-                      : 'Idioma cambiado a Español',
-                    'success'
-                  );
+                  show(t('settings.languageChanged'), 'success');
                 }}
                 className={cn(
                   'flex items-center justify-center gap-2 py-3 rounded-xl font-semibold text-sm transition-all duration-200 border cursor-pointer',
@@ -397,23 +390,23 @@ export function SettingsPage() {
               <Cpu size={24} className="text-primary" />
             </div>
             <div>
-              <p className="font-semibold text-on-surface">Motor de Visión AR (MediaPipe)</p>
+              <p className="font-semibold text-on-surface">{t('set.arVisionEngine')}<
               <p className="text-sm text-on-surface-variant">
-                Modo activo: <span className="font-bold text-primary capitalize">{currentArModel}</span> (FPS óptimo)
+                Modo activo: <span className="font-bold text-primary capitalize">{currentArModel}</span> ({t('set.fpsOptimal')})
               </p>
             </div>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
             {[
-              { id: 'auto', title: 'Automático', desc: 'Recomendado según dispositivo' },
-              { id: 'pose', title: 'Pose (Rápido)', desc: '33 puntos corporales (60 FPS)' },
-              { id: 'holistic', title: 'Holistic (Preciso)', desc: 'Cuerpo + Manos + Rostro' },
+              { id: 'auto', titleKey: 'set.arAutoTitle', descKey: 'set.arAutoDesc' },
+              { id: 'pose', titleKey: 'set.arPoseTitle', descKey: 'set.arPoseDesc' },
+              { id: 'holistic', titleKey: 'set.arHolTitle', descKey: 'set.arHolDesc' },
             ].map((m) => (
               <button
                 key={m.id}
                 onClick={() => {
                   setArPreference(m.id as ModelPreference);
-                  show(`Modelo de visión configurado a ${m.title}`, 'success');
+                  show(t('set.arModelSet', { model: t(m.titleKey) }), 'success');
                 }}
                 className={cn(
                   'flex flex-col items-start p-3.5 rounded-xl text-left transition-all border',
@@ -422,9 +415,9 @@ export function SettingsPage() {
                     : 'bg-surface-container-low text-on-surface border-outline-variant/30 hover:bg-surface-container-high'
                 )}
               >
-                <span className="font-semibold text-sm">{m.title}</span>
+                <span className="font-semibold text-sm">{t(m.titleKey)}</span>
                 <span className={cn('text-xs mt-0.5', arPreference === m.id ? 'text-on-primary/80' : 'text-on-surface-variant')}>
-                  {m.desc}
+                  {t(m.descKey)}
                 </span>
               </button>
             ))}
@@ -445,8 +438,8 @@ export function SettingsPage() {
           icon: 'animation',
           color: 'text-primary',
           bg: 'bg-primary/10',
-          title: 'Reducir Movimiento',
-          desc: 'Minimiza animaciones y efectos visuales para mayor comodidad',
+          titleKey: 'set.a11yMotion',
+          descKey: 'set.a11yMotionDesc',
           value: reduceMotion,
           onChange: setReduceMotion,
           blob: 'blob-teal',
@@ -456,8 +449,8 @@ export function SettingsPage() {
           icon: 'contrast',
           color: 'text-secondary',
           bg: 'bg-secondary-container/20',
-          title: 'Alto Contraste',
-          desc: 'Aumenta el contraste de textos y bordes para mejor legibilidad',
+          titleKey: 'set.a11yContrast',
+          descKey: 'set.a11yContrastDesc',
           value: highContrast,
           onChange: setHighContrast,
           blob: 'blob-blue',
@@ -467,8 +460,8 @@ export function SettingsPage() {
           icon: 'record_voice_over',
           color: 'icon-accent-cyan',
           bg: 'bg-cyan-500/10',
-          title: 'Lectura en Voz Alta (Talkback)',
-          desc: 'Lee en voz alta los mensajes de Physi y textos importantes',
+          titleKey: 'set.a11yTalkback',
+          descKey: 'set.a11yTalkbackDesc',
           value: talkback,
           onChange: setTalkback,
           blob: 'blob-cyan',
@@ -478,8 +471,8 @@ export function SettingsPage() {
           icon: 'menu_book',
           color: 'icon-accent-emerald',
           bg: 'bg-emerald-500/10',
-          title: 'Lectura Fácil',
-          desc: 'Aumenta el tamaño de texto y espaciado en secciones clave',
+          titleKey: 'set.a11yEasyRead',
+          descKey: 'set.a11yEasyReadDesc',
           value: easyReading,
           onChange: setEasyReading,
           blob: 'blob-emerald',
@@ -489,8 +482,8 @@ export function SettingsPage() {
           icon: 'touch_app',
           color: 'text-primary',
           bg: 'bg-primary/10',
-          title: 'Botones Táctiles Grandes',
-          desc: 'Asegura que los botones tengan al menos 48px para fácil toque',
+          titleKey: 'set.a11yLargeTouch',
+          descKey: 'set.a11yLargeTouchDesc',
           value: largeTouch,
           onChange: setLargeTouch,
           blob: 'blob-teal',
@@ -504,11 +497,11 @@ export function SettingsPage() {
                 <Icon name={item.icon} size={24} className={item.color} />
               </div>
               <div>
-                <p className="font-semibold text-on-surface">{item.title}</p>
-                <p className="text-sm text-on-surface-variant">{item.desc}</p>
+                <p className="font-semibold text-on-surface">{t(item.titleKey)}</p>
+                <p className="text-sm text-on-surface-variant">{t(item.descKey)}</p>
               </div>
             </div>
-            <Toggle value={item.value} onChange={item.onChange} label={item.title} />
+            <Toggle value={item.value} onChange={item.onChange} label={t(item.titleKey)} />
           </div>
         </GlassPanel>
       ))}
@@ -524,15 +517,15 @@ export function SettingsPage() {
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <p className="font-semibold text-on-surface">Motor de Voz en Vivo (TTS)</p>
+                  <p className="font-semibold text-on-surface">{t('set.ttsEngine')}</p>
                   <span className="px-2 py-0.5 text-xs font-medium rounded-full bg-teal-500/15 text-teal-700 dark:text-teal-300">
-                    {voiceMode === 'humanized' ? 'Fish Audio IA' : 'Modo Dispositivo'}
+                    {voiceMode === 'humanized' ? t('set.fishBadge') : t('set.deviceBadge')}
                   </span>
                 </div>
                 <p className="text-sm text-on-surface-variant">
                   {voiceMode === 'humanized'
-                    ? 'Voz cálida y articulada con fallback automático a síntesis offline si se pierde conexión.'
-                    : 'Síntesis local sin consumo de datos y respuesta offline inmediata.'}
+                    ? t('set.ttsHumaDesc')
+                    : t('set.ttsDevDesc')}
                 </p>
               </div>
             </div>
@@ -548,7 +541,7 @@ export function SettingsPage() {
               )}
             >
               <Icon name={testingVoice ? "stop" : "volume_up"} size={16} />
-              <span>{testingVoice ? "Detener prueba" : "Probar voz"}</span>
+              <span>{testingVoice ? t('set.stopTest') : t('set.testVoice')}</span>
             </button>
           </div>
 
@@ -570,9 +563,9 @@ export function SettingsPage() {
                 {voiceMode === 'humanized' && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
               </div>
               <div>
-                <p className="text-xs font-bold text-on-surface">Voz Humanizada Clínica (Recomendada)</p>
+                <p className="text-xs font-bold text-on-surface">{t('set.voiceHumaClinic')}<
                 <p className="text-xs text-on-surface-variant leading-relaxed">
-                  Fish Audio S2.1 Pro / Neural en vivo. Máxima empatía y articulación médica fluida.
+                  {t('set.voiceHumaClinicDesc')}
                 </p>
               </div>
             </button>
@@ -594,9 +587,9 @@ export function SettingsPage() {
                 {voiceMode === 'device' && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
               </div>
               <div>
-                <p className="text-xs font-bold text-on-surface">Voz del Dispositivo (Offline)</p>
+                <p className="text-xs font-bold text-on-surface">{t('set.voiceDevOffline')}<
                 <p className="text-xs text-on-surface-variant leading-relaxed">
-                  Sintetizador Web Speech del sistema operativo. Sin consumo de red, ideal para baja señal.
+                  {t('set.voiceDevOfflineDesc')}
                 </p>
               </div>
             </button>
@@ -614,11 +607,11 @@ export function SettingsPage() {
       <GlassPanel className="p-6 rounded-2xl relative overflow-hidden">
         <div className="blob-cyan absolute -top-12 -right-12 w-32 h-32 opacity-20 pointer-events-none" />
         <div className="relative space-y-5">
-          <h3 className="font-semibold text-on-surface gradient-text-cyan">Preferencias de Notificaciones</h3>
+          <h3 className="font-semibold text-on-surface gradient-text-cyan">{t('set.notifPrefs')}</h3>
           {[
-            { icon: 'mail', color: 'text-primary', bg: 'bg-primary/10', title: 'Notificaciones por Email', desc: 'Recibe actualizaciones y recordatorios en tu correo', value: notifEmail, onChange: setNotifEmail },
-            { icon: 'notifications_active', color: 'text-secondary', bg: 'bg-secondary-container/20', title: 'Notificaciones Push', desc: 'Recibe alertas en tiempo real en tu dispositivo', value: notifPush, onChange: setNotifPush },
-            { icon: 'volume_up', color: 'icon-accent-cyan', bg: 'bg-cyan-500/10', title: 'Sonido', desc: 'Reproduce un sonido al recibir notificaciones', value: notifSound, onChange: setNotifSound },
+            { icon: 'mail', color: 'text-primary', bg: 'bg-primary/10', titleKey: 'set.nEmail', descKey: 'set.nEmailDesc', value: notifEmail, onChange: setNotifEmail },
+            { icon: 'notifications_active', color: 'text-secondary', bg: 'bg-secondary-container/20', titleKey: 'set.nPush', descKey: 'set.nPushDesc', value: notifPush, onChange: setNotifPush },
+            { icon: 'volume_up', color: 'icon-accent-cyan', bg: 'bg-cyan-500/10', titleKey: 'set.nSound', descKey: 'set.nSoundDesc', value: notifSound, onChange: setNotifSound },
           ].map((item) => (
             <div key={item.title} className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -626,11 +619,11 @@ export function SettingsPage() {
                   <Icon name={item.icon} size={22} className={item.color} />
                 </div>
                 <div>
-                  <p className="font-medium text-on-surface">{item.title}</p>
-                  <p className="text-sm text-on-surface-variant">{item.desc}</p>
+                  <p className="font-medium text-on-surface">{t(item.titleKey)}</p>
+                  <p className="text-sm text-on-surface-variant">{t(item.descKey)}</p>
                 </div>
               </div>
-              <Toggle value={item.value} onChange={item.onChange} label={item.title} />
+              <Toggle value={item.value} onChange={item.onChange} label={t(item.titleKey)} />
             </div>
           ))}
         </div>
@@ -649,14 +642,14 @@ export function SettingsPage() {
       <GlassPanel className="p-6 rounded-2xl relative overflow-hidden">
         <div className="blob-teal absolute -top-12 -right-12 w-32 h-32 opacity-20 pointer-events-none" />
         <div className="relative">
-          <h3 className="font-semibold text-on-surface gradient-text-teal mb-4">Información de Cuenta</h3>
+          <h3 className="font-semibold text-on-surface gradient-text-teal mb-4">{t('set.accountInfo')}</h3>
           <div className="space-y-3">
             <div className="flex items-center justify-between p-3 rounded-xl bg-surface-container-low/60">
               <div className="flex items-center gap-2 text-on-surface-variant"><Icon name="alternate_email" size={18} /><span className="text-sm">Email</span></div>
               <span className="font-medium text-on-surface text-sm">{user?.email || '—'}</span>
             </div>
             <div className="flex items-center justify-between p-3 rounded-xl bg-surface-container-low/60">
-              <div className="flex items-center gap-2 text-on-surface-variant"><Icon name="badge" size={18} /><span className="text-sm">Rol</span></div>
+              <div className="flex items-center gap-2 text-on-surface-variant"><Icon name="badge" size={18} /><span className="text-sm">{t('common.role')}</span></div>
               <span className="font-medium text-on-surface text-sm capitalize">{user?.role || '—'}</span>
             </div>
           </div>
@@ -667,12 +660,12 @@ export function SettingsPage() {
       <GlassPanel className="p-6 rounded-2xl relative overflow-hidden">
         <div className="blob-blue absolute -top-12 -right-12 w-32 h-32 opacity-20 pointer-events-none" />
         <div className="relative">
-          <h3 className="font-semibold text-on-surface gradient-text-blue mb-4">Seguridad</h3>
+          <h3 className="font-semibold text-on-surface gradient-text-blue mb-4">{t('set.security')}</h3>
           <button
             onClick={() => setShowPasswordModal(true)}
             className="premium-btn w-full bg-primary text-on-primary py-3 rounded-xl font-semibold flex items-center justify-center gap-2"
           >
-            <Icon name="lock_reset" size={20} />Cambiar Contraseña
+            <Icon name="lock_reset" size={20} /> {t('profile.changePassword')}
           </button>
         </div>
       </GlassPanel>
@@ -681,20 +674,20 @@ export function SettingsPage() {
       <GlassPanel className="p-6 rounded-2xl relative overflow-hidden border border-error/20">
         <div className="blob-warm absolute -top-12 -right-12 w-32 h-32 opacity-15 pointer-events-none" />
         <div className="relative">
-          <h3 className="font-semibold text-error mb-2">Zona de Peligro</h3>
-          <p className="text-sm text-on-surface-variant mb-4">Estas acciones son permanentes y no se pueden deshacer</p>
+          <h3 className="font-semibold text-error mb-2">{t('set.dangerZone')}</h3>
+          <p className="text-sm text-on-surface-variant mb-4">{t('set.dangerDesc')}</p>
           <div className="space-y-3">
             <button
               onClick={() => setShowDeleteModal(true)}
               className="premium-btn w-full bg-error/10 text-error py-3 rounded-xl font-semibold flex items-center justify-center gap-2 hover:bg-error/20 transition-colors border border-error/20"
             >
-              <Icon name="delete_forever" size={20} />Eliminar Cuenta
+              <Icon name="delete_forever" size={20} /> {t('set.deleteAccount')}
             </button>
             <button
               onClick={() => signOut()}
               className="premium-btn w-full bg-surface-container-low text-on-surface-variant py-3 rounded-xl font-semibold flex items-center justify-center gap-2 hover:bg-surface-container-high transition-colors"
             >
-              <Icon name="logout" size={20} />Cerrar Sesión
+              <Icon name="logout" size={20} /> {t('common.logout')}
             </button>
           </div>
         </div>
@@ -716,7 +709,7 @@ export function SettingsPage() {
           </div>
           <div>
             <h3 className="text-xl font-bold text-on-surface">FisioMirror</h3>
-            <p className="text-sm text-on-surface-variant">Versión: <span className="font-semibold text-primary">1.0</span></p>
+            <p className="text-sm text-on-surface-variant">{t('set.version')}: <span className="font-semibold text-primary">1.0</span></p>
           </div>
         </div>
       </GlassPanel>
@@ -725,20 +718,20 @@ export function SettingsPage() {
       <GlassPanel className="p-6 rounded-2xl relative overflow-hidden">
         <div className="blob-cyan absolute -top-12 -right-12 w-32 h-32 opacity-20 pointer-events-none" />
         <div className="relative">
-          <h3 className="font-semibold text-on-surface gradient-text-cyan mb-4">Créditos del Equipo</h3>
+          <h3 className="font-semibold text-on-surface gradient-text-cyan mb-4">{t('set.credits')}</h3>
           <div className="space-y-3">
             {[
-              { icon: Code2, color: 'text-primary', bg: 'bg-primary/10', label: 'Equipo Desarrollador', value: '4 tazas de café y 2 horas de sueño durante un mes.' },
-              { icon: Palette, color: 'text-cyan-600', bg: 'bg-cyan-500/10', label: 'Equipo de Diseño', value: 'Dios y yo.' },
-              { icon: Heart, color: 'text-emerald-600', bg: 'bg-emerald-500/10', label: 'Equipo Clínico', value: 'Todas y cada una de las personas que nos han apoyado con su conocimiento profesional hasta este punto, y Dios.' },
+              { icon: Code2, color: 'text-primary', bg: 'bg-primary/10', labelKey: 'set.devTeam', valueKey: 'set.devTeamVal' },
+              { icon: Palette, color: 'text-cyan-600', bg: 'bg-cyan-500/10', labelKey: 'set.designTeam', valueKey: 'set.designTeamVal' },
+              { icon: Heart, color: 'text-emerald-600', bg: 'bg-emerald-500/10', labelKey: 'set.clinicTeam', valueKey: 'set.clinicTeamVal' },
             ].map((item) => (
               <div key={item.label} className="flex items-start gap-3 p-3 rounded-xl bg-surface-container-low/60">
                 <div className={`w-10 h-10 rounded-xl ${item.bg} flex items-center justify-center shrink-0`}>
                   <item.icon size={20} className={item.color} />
                 </div>
                 <div className="min-w-0">
-                  <p className="font-medium text-on-surface text-sm">{item.label}</p>
-                  <p className="text-xs text-on-surface-variant mt-0.5">{item.value}</p>
+                  <p className="font-medium text-on-surface text-sm">{t(item.labelKey)}</p>
+                  <p className="text-xs text-on-surface-variant mt-0.5">{t(item.valueKey)}</p>
                 </div>
               </div>
             ))}
@@ -750,7 +743,7 @@ export function SettingsPage() {
       <GlassPanel className="p-6 rounded-2xl relative overflow-hidden">
         <div className="blob-emerald absolute -top-12 -right-12 w-32 h-32 opacity-20 pointer-events-none" />
         <div className="relative space-y-3">
-          <h3 className="font-semibold text-on-surface gradient-text-emerald mb-2">Recursos</h3>
+          <h3 className="font-semibold text-on-surface gradient-text-emerald mb-2">{t('set.resources')}</h3>
           <button
             onClick={() => setShowDocModal(true)}
             className="w-full flex items-center justify-between p-3 rounded-xl bg-surface-container-low/60 hover:bg-surface-container-high transition-colors group"
@@ -760,8 +753,8 @@ export function SettingsPage() {
                 <FileText size={20} className="text-primary" />
               </div>
               <div className="text-left">
-                <p className="font-medium text-on-surface text-sm">Documentación Técnica</p>
-                <p className="text-xs text-on-surface-variant">Arquitectura y tecnologías del sistema</p>
+                <p className="font-medium text-on-surface text-sm">{t('set.techDoc')}</p>
+                <p className="text-xs text-on-surface-variant">{t('set.techDocDesc')}</p>
               </div>
             </div>
             <Icon name="chevron_right" size={20} className="text-on-surface-variant group-hover:text-primary transition-colors" />
@@ -775,8 +768,8 @@ export function SettingsPage() {
                 <Shield size={20} className="text-cyan-600" />
               </div>
               <div className="text-left">
-                <p className="font-medium text-on-surface text-sm">Licencias de Código Abierto</p>
-                <p className="text-xs text-on-surface-variant">Librerías utilizadas y sus licencias</p>
+                <p className="font-medium text-on-surface text-sm">{t('set.ossLicenses')}</p>
+                <p className="text-xs text-on-surface-variant">{t('set.ossLicensesDesc')}</p>
               </div>
             </div>
             <Icon name="chevron_right" size={20} className="text-on-surface-variant group-hover:text-primary transition-colors" />
@@ -797,8 +790,8 @@ export function SettingsPage() {
             <Smartphone size={24} />
           </div>
           <div>
-            <h4 className="font-semibold text-on-surface">Instalar App en iPhone / iPad</h4>
-            <p className="text-xs text-on-surface-variant">Guía interactiva para añadir FisioMirror a tu pantalla de inicio en iOS.</p>
+            <h4 className="font-semibold text-on-surface">{t('set.installIOS')}</h4>
+            <p className="text-xs text-on-surface-variant">{t('set.installIOSDesc')}</p>
           </div>
         </div>
         <button
@@ -825,7 +818,7 @@ export function SettingsPage() {
     <GlassPanel className="p-6 rounded-2xl relative overflow-hidden">
       <div className="blob-teal absolute -top-12 -right-12 w-32 h-32 opacity-20 pointer-events-none" />
       <div className="relative">
-        <h3 className="font-semibold text-on-surface gradient-text-teal mb-2">Canales de Contacto Directo</h3>
+        <h3 className="font-semibold text-on-surface gradient-text-teal mb-2">{t('set.contactChannels')}</h3>
         <p className="text-sm text-on-surface-variant mb-6">
           Comunícate con soporte clínico o con tu fisioterapeuta a través de cualquiera de nuestros canales oficiales:
         </p>
@@ -841,7 +834,7 @@ export function SettingsPage() {
               <MessageCircle size={20} />
             </div>
             <div>
-              <p className="font-bold text-sm">WhatsApp Directo</p>
+              <p className="font-bold text-sm">{t('set.whatsappDirect')}</p>
               <p className="text-xs opacity-80">+58 412 4081077</p>
             </div>
           </a>
@@ -854,7 +847,7 @@ export function SettingsPage() {
               <Phone size={20} />
             </div>
             <div>
-              <p className="font-bold text-sm">Llamada Telefónica</p>
+              <p className="font-bold text-sm">{t('set.phoneCall')}</p>
               <p className="text-xs opacity-80">+58 412 4081077</p>
             </div>
           </a>
@@ -878,13 +871,13 @@ export function SettingsPage() {
   );
 
   const tabs = [
-    { id: 'apariencia', label: 'Apariencia', content: AparienciaTab },
-    { id: 'accesibilidad', label: 'Accesibilidad', content: AccesibilidadTab },
-    { id: 'ayuda', label: 'Ayuda & FAQ', content: AyudaTab },
-    { id: 'notificaciones', label: 'Notificaciones', content: NotificacionesTab },
-    { id: 'cuenta', label: 'Cuenta', content: CuentaTab },
-    { id: 'acerca-de', label: 'Acerca de', content: AcercaDeTab },
-    { id: 'contacto', label: 'Contacto', content: ContactoTab },
+    { id: 'apariencia', label: t('set.tabAppearance'), content: AparienciaTab },
+    { id: 'accesibilidad', label: t('pf.tabAccessibility'), content: AccesibilidadTab },
+    { id: 'ayuda', label: t('set.tabHelp'), content: AyudaTab },
+    { id: 'notificaciones', label: t('st.pushNotifs'), content: NotificacionesTab },
+    { id: 'cuenta', label: t('set.tabAccount'), content: CuentaTab },
+    { id: 'acerca-de', label: t('set.tabAbout'), content: AcercaDeTab },
+    { id: 'contacto', label: t('set.tabContact'), content: ContactoTab },
   ];
 
   return (
@@ -894,8 +887,8 @@ export function SettingsPage() {
           <Icon name="settings" size={28} className="text-primary animate-breathe-icon" />
         </div>
         <div>
-          <h1 className="fm-title gradient-text-editorial">Configuración</h1>
-          <p className="text-on-surface-variant text-sm">Personaliza tu experiencia en FisioMirror</p>
+          <h1 className="fm-title gradient-text-editorial">{t('st.settings')}</h1>
+          <p className="text-on-surface-variant text-sm">{t('set.tagline')}</p>
         </div>
       </motion.div>
 
@@ -915,10 +908,10 @@ export function SettingsPage() {
               className="bg-surface rounded-2xl p-6 w-full max-w-md shadow-elevated border border-outline-variant/20"
               onClick={(e) => e.stopPropagation()}
             >
-              <h3 className="text-lg font-bold text-on-surface mb-4">Cambiar Contraseña</h3>
+              <h3 className="text-lg font-bold text-on-surface mb-4">{t('profile.changePassword')}</h3>
               <div className="space-y-4">
                 <div>
-                  <label className="text-sm font-medium text-on-surface-variant mb-1 block">Contraseña actual</label>
+                  <label className="text-sm font-medium text-on-surface-variant mb-1 block">{t('set.pwCurrent')}</label>
                   <input
                     type="password" value={pwCurrent} onChange={(e) => setPwCurrent(e.target.value)}
                     className="w-full px-4 py-3 rounded-xl bg-surface-container-low border border-outline-variant/30 text-on-surface focus:outline-none focus:border-primary transition-colors"
@@ -926,15 +919,15 @@ export function SettingsPage() {
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-on-surface-variant mb-1 block">Nueva contraseña</label>
+                  <label className="text-sm font-medium text-on-surface-variant mb-1 block">{t('reset.newPw')}</label>
                   <input
                     type="password" value={pwNew} onChange={(e) => setPwNew(e.target.value)}
                     className="w-full px-4 py-3 rounded-xl bg-surface-container-low border border-outline-variant/30 text-on-surface focus:outline-none focus:border-primary transition-colors"
-                    placeholder="Mínimo 6 caracteres"
+                    placeholder={t('common.minPassword6')}
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-on-surface-variant mb-1 block">Confirmar nueva contraseña</label>
+                  <label className="text-sm font-medium text-on-surface-variant mb-1 block">{t('reset.confirmNewPw')}</label>
                   <input
                     type="password" value={pwConfirm} onChange={(e) => setPwConfirm(e.target.value)}
                     className="w-full px-4 py-3 rounded-xl bg-surface-container-low border border-outline-variant/30 text-on-surface focus:outline-none focus:border-primary transition-colors"
@@ -943,8 +936,8 @@ export function SettingsPage() {
                 </div>
               </div>
               <div className="flex gap-3 mt-6">
-                <button onClick={() => setShowPasswordModal(false)} className="flex-1 py-3 rounded-xl bg-surface-container-low text-on-surface-variant font-semibold hover:bg-surface-container-high transition-colors">Cancelar</button>
-                <button onClick={handlePasswordChange} disabled={pwLoading} className="flex-1 py-3 rounded-xl bg-primary text-on-primary font-semibold hover:bg-primary/90 transition-colors disabled:opacity-50">{pwLoading ? 'Guardando...' : 'Guardar'}</button>
+                <button onClick={() => setShowPasswordModal(false)} className="flex-1 py-3 rounded-xl bg-surface-container-low text-on-surface-variant font-semibold hover:bg-surface-container-high transition-colors">{t('common.cancel')}</button>
+                <button onClick={handlePasswordChange} disabled={pwLoading} className="flex-1 py-3 rounded-xl bg-primary text-on-primary font-semibold hover:bg-primary/90 transition-colors disabled:opacity-50">{pwLoading ? t('st.generating') : t('common.save')}</button>
               </div>
             </motion.div>
           </motion.div>
@@ -969,13 +962,13 @@ export function SettingsPage() {
                   <Icon name="warning" size={24} className="text-error" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-error">Eliminar Cuenta</h3>
-                  <p className="text-sm text-on-surface-variant">Esta acción no se puede deshacer</p>
+                  <h3 className="text-lg font-bold text-error">{t('set.deleteAccount')}</h3>
+                  <p className="text-sm text-on-surface-variant">{t('set.cannotUndo')}</p>
                 </div>
               </div>
-              <p className="text-sm text-on-surface-variant mb-4">Se desactivará tu cuenta y se eliminarán todos tus datos, historial de sesiones y configuraciones.</p>
+              <p className="text-sm text-on-surface-variant mb-4">{t('set.delWarn')}</p>
               <div>
-                <label className="text-sm font-medium text-on-surface-variant mb-1 block">Confirma con tu contraseña</label>
+                <label className="text-sm font-medium text-on-surface-variant mb-1 block">{t('set.confirmWithPw')}</label>
                 <input
                   type="password" value={deletePassword} onChange={(e) => setDeletePassword(e.target.value)}
                   className="w-full px-4 py-3 rounded-xl bg-surface-container-low border border-outline-variant/30 text-on-surface focus:outline-none focus:border-error transition-colors"
@@ -983,8 +976,8 @@ export function SettingsPage() {
                 />
               </div>
               <div className="flex gap-3 mt-6">
-                <button onClick={() => setShowDeleteModal(false)} className="flex-1 py-3 rounded-xl bg-surface-container-low text-on-surface-variant font-semibold hover:bg-surface-container-high transition-colors">Cancelar</button>
-                <button onClick={handleDeleteAccount} disabled={deleteLoading} className="flex-1 py-3 rounded-xl bg-error text-white font-semibold hover:bg-error/90 transition-colors disabled:opacity-50">{deleteLoading ? 'Eliminando...' : 'Eliminar definitivamente'}</button>
+                <button onClick={() => setShowDeleteModal(false)} className="flex-1 py-3 rounded-xl bg-surface-container-low text-on-surface-variant font-semibold hover:bg-surface-container-high transition-colors">{t('common.cancel')}</button>
+                <button onClick={handleDeleteAccount} disabled={deleteLoading} className="flex-1 py-3 rounded-xl bg-error text-white font-semibold hover:bg-error/90 transition-colors disabled:opacity-50">{deleteLoading ? t('common.deleting') : t('set.deleteForever')}</button>
               </div>
             </motion.div>
           </motion.div>
@@ -1008,35 +1001,35 @@ export function SettingsPage() {
                 <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
                   <BookOpen size={24} className="text-primary" />
                 </div>
-                <h3 className="text-lg font-bold text-on-surface">Documentación Técnica</h3>
+                <h3 className="text-lg font-bold text-on-surface">{t('set.techDoc')}</h3>
               </div>
               <div className="space-y-4 text-sm text-on-surface-variant leading-relaxed">
                 <div>
-                  <h4 className="font-semibold text-on-surface mb-1">Arquitectura del Sistema</h4>
-                  <p>FisioMirror es una aplicación web progresiva (PWA) construida con una arquitectura cliente-servidor. El frontend utiliza React 18 con TypeScript, renderizado con Vite. El backend utiliza Supabase (PostgreSQL) para persistencia de datos, autenticación y funciones serverless (Edge Functions en Deno).</p>
+                  <h4 className="font-semibold text-on-surface mb-1">{t('set.sysArch')}</h4>
+                  <p>{t('set.sysArchBody')}</p>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-on-surface mb-1">Tecnologías Principales</h4>
+                  <h4 className="font-semibold text-on-surface mb-1">{t('set.coreTech')}</h4>
                   <ul className="list-disc list-inside space-y-1">
-                    <li>React 18 + TypeScript + Vite</li>
-                    <li>Tailwind CSS para estilos</li>
-                    <li>Supabase (PostgreSQL, Auth, Edge Functions, Storage)</li>
-                    <li>MediaPipe Pose Detection para análisis de movimiento</li>
-                    <li>Framer Motion para animaciones</li>
-                    <li>HTML2Canvas + jsPDF para generación de PDFs</li>
+                    <li>{t('set.techReact')}</li>
+                    <li>{t('set.techTailwind')}</li>
+                    <li>{t('set.techSupabase')}</li>
+                    <li>{t('set.techMediaPipe')}</li>
+                    <li>{t('set.techFramer')}</li>
+                    <li>{t('set.techHtml2')}</li>
                   </ul>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-on-surface mb-1">Flujos Principales</h4>
+                  <h4 className="font-semibold text-on-surface mb-1">{t('set.mainFlows')}</h4>
                   <ul className="list-disc list-inside space-y-1">
-                    <li>Autenticación: Email/contraseña y tokens de activación para pacientes.</li>
-                    <li>Calibración biométrica: Detección de pose con MediaPipe para ángulos articulares.</li>
-                    <li>Espejo AR: Realidad aumentada con feedback en tiempo real.</li>
-                    <li>Generación de informes: PDFs estilizados con narrativa generada por IA.</li>
+                    <li>{t('set.flowAuth')}</li>
+                    <li>{t('set.flowCalibration')}</li>
+                    <li>{t('set.flowArMirror')}</li>
+                    <li>{t('set.flowReports')}</li>
                   </ul>
                 </div>
               </div>
-              <button onClick={() => setShowDocModal(false)} className="w-full mt-6 py-3 rounded-xl bg-primary text-on-primary font-semibold hover:bg-primary/90 transition-colors">Cerrar</button>
+              <button onClick={() => setShowDocModal(false)} className="w-full mt-6 py-3 rounded-xl bg-primary text-on-primary font-semibold hover:bg-primary/90 transition-colors">{t('common.close')}</button>
             </motion.div>
           </motion.div>
         )}
@@ -1059,7 +1052,7 @@ export function SettingsPage() {
                 <div className="w-12 h-12 rounded-xl bg-cyan-500/10 flex items-center justify-center">
                   <Shield size={24} className="text-cyan-600" />
                 </div>
-                <h3 className="text-lg font-bold text-on-surface">Licencias de Código Abierto</h3>
+                <h3 className="text-lg font-bold text-on-surface">{t('set.ossLicenses')}</h3>
               </div>
               <div className="space-y-2">
                 {[
@@ -1089,7 +1082,7 @@ export function SettingsPage() {
                   </div>
                 ))}
               </div>
-              <button onClick={() => setShowLicModal(false)} className="w-full mt-6 py-3 rounded-xl bg-primary text-on-primary font-semibold hover:bg-primary/90 transition-colors">Cerrar</button>
+              <button onClick={() => setShowLicModal(false)} className="w-full mt-6 py-3 rounded-xl bg-primary text-on-primary font-semibold hover:bg-primary/90 transition-colors">{t('common.close')}</button>
             </motion.div>
           </motion.div>
         )}
