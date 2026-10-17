@@ -300,7 +300,7 @@ export function SettingsPage() {
               <Icon name="gradient" size={24} className="icon-accent-emerald" />
             </div>
             <div>
-              <p className="font-semibold text-on-surface">{t('set.glassmorphism')}<
+              <p className="font-semibold text-on-surface">{t('set.glassmorphism')}</p>
               <p className="text-sm text-on-surface-variant">{t('set.glassDesc')}</p>
             </div>
           </div>
