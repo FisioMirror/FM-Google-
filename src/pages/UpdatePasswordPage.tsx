@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { Lock, Eye, EyeOff, AlertCircle, ArrowRight, KeyRound } from 'lucide-react';
 import { supabase } from '../lib/supabase';
@@ -17,6 +18,7 @@ export function UpdatePasswordPage() {
   const [loading, setLoading] = useState(false);
   const [statusMsg, setStatusMsg] = useState<string | null>(null);
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const { t } = useTranslation();
   const turnstileRef = useRef<TurnstileWidgetRef>(null);
 
   useEffect(() => {
@@ -25,7 +27,7 @@ export function UpdatePasswordPage() {
     if (code) {
       supabase.auth.exchangeCodeForSession(code).then(({ data, error }) => {
         if (!error && data?.session) {
-          toast.info('Sesión de recuperación verificada');
+          toast.info(t('reset.sessionVerified'));
         }
       });
     }
@@ -40,8 +42,8 @@ export function UpdatePasswordPage() {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'PASSWORD_RECOVERY' || session) {
-        toast.info('Sesión de recuperación detectada', {
-          description: 'Puedes definir tu nueva contraseña ahora.',
+        toast.info(t('reset.sessionDetected'), {
+          description: t('reset.defineNow'),
         });
       }
     });
@@ -55,17 +57,17 @@ export function UpdatePasswordPage() {
     e.preventDefault();
 
     if (password.length < 6) {
-      toast.error('La contraseña debe tener al menos 6 caracteres');
+      toast.error(t('auth.minPassword6'));
       return;
     }
 
     if (password !== confirmPassword) {
-      toast.error('Las contraseñas no coinciden');
+      toast.error(t('auth.passwordMismatch'));
       return;
     }
 
     if (!turnstileToken) {
-      toast.error('Por favor completa la verificación de seguridad Cloudflare');
+      toast.error(t('reset.captchaRequired'));
       return;
     }
 
@@ -83,7 +85,7 @@ export function UpdatePasswordPage() {
       if (!cfRes.ok || !cfData.success) {
         turnstileRef.current?.reset();
         setTurnstileToken(null);
-        toast.error('Verificación de seguridad fallida. Reintenta.');
+        toast.error(t('reset.captchaFailed'));
         setLoading(false);
         return;
       }
@@ -109,7 +111,7 @@ export function UpdatePasswordPage() {
           if (prof?.id) {
             await supabase.from('notifications').insert({
               user_id: prof.id,
-              title: 'Contraseña actualizada',
+              title: t('reset.titleComplete2'),
               message: `Tu contraseña ha sido restablecida el ${new Date().toLocaleString()}. Si no fuiste tú, contacta inmediatamente a soporte.`,
               type: 'seguridad',
               read: false,
@@ -127,8 +129,8 @@ export function UpdatePasswordPage() {
         }
       }
 
-      toast.success('¡Contraseña actualizada exitosamente!', {
-        description: 'Ya puedes acceder con tu nueva contraseña.',
+      toast.success(t('reset.updatedOk2'), {
+        description: t('reset.accessNewPw'),
       });
 
       setTimeout(() => {
@@ -136,7 +138,7 @@ export function UpdatePasswordPage() {
       }, 1500);
     } catch (err: any) {
       console.error('Password update error:', err);
-      toast.error('No se pudo actualizar la contraseña: ' + (err.message || 'Error desconocido'));
+      toast.error(t('reset.updatePwFailed') + ': ' + (err.message || t('common.unknownError')));
       setStatusMsg(err.message || 'Error al actualizar');
     } finally {
       setLoading(false);
@@ -151,10 +153,10 @@ export function UpdatePasswordPage() {
             <KeyRound size={28} />
           </div>
           <h1 className="fm-title text-on-surface">
-            Restablecer Contraseña
+            {t('reset.titleReset')}
           </h1>
           <p className="text-xs text-on-surface-variant mt-1">
-            Ingresa tu nueva contraseña para acceder a FisioMirror
+            {t('reset.updSubtitle')}
           </p>
         </div>
 
@@ -168,7 +170,7 @@ export function UpdatePasswordPage() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-xs font-bold text-on-surface mb-1">
-              Nueva Contraseña
+              {t('reset.newPassword')}
             </label>
             <div className="relative">
               <Lock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant" />
@@ -177,13 +179,13 @@ export function UpdatePasswordPage() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Mínimo 6 caracteres"
+                placeholder={t('reset.min6Chars')}
                 className="w-full pl-10 pr-10 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs text-on-surface outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                aria-label={showPassword ? 't('common.hide')' : 't('common.show')'}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-on-surface-variant p-1"
               >
                 {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
@@ -193,7 +195,7 @@ export function UpdatePasswordPage() {
 
           <div>
             <label className="block text-xs font-bold text-on-surface mb-1">
-              Confirmar Nueva Contraseña
+              {t('reset.confirmNewPassword')}
             </label>
             <div className="relative">
               <Lock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant" />
@@ -202,7 +204,7 @@ export function UpdatePasswordPage() {
                 required
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="Repite la contraseña"
+                placeholder={t('reset.repeatPassword')}
                 className="w-full pl-10 pr-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs text-on-surface outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500"
               />
             </div>
@@ -224,7 +226,7 @@ export function UpdatePasswordPage() {
               <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
             ) : (
               <>
-                <span>Guardar Nueva Contraseña</span>
+                <span>{t('reset.saveNew')}</span>
                 <ArrowRight size={17} />
               </>
             )}
@@ -232,9 +234,9 @@ export function UpdatePasswordPage() {
         </form>
 
         <div className="mt-5 text-center text-xs text-on-surface-variant">
-          ¿Recordaste tu clave?{' '}
+          {t('reset.rememberPassword')}{' '}
           <Link to="/login" className="text-teal-600 dark:text-teal-400 font-bold hover:underline">
-            Volver a Iniciar Sesión
+            {t('reset.backToLogin')}
           </Link>
         </div>
       </div>

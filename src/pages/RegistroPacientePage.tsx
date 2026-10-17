@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
   UserCheck,
   Lock,
@@ -41,13 +42,14 @@ export function RegistroPacientePage() {
   const [therapistEmail, setTherapistEmail] = useState('');
 
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const { t } = useTranslation();
   const turnstileRef = useRef<TurnstileWidgetRef>(null);
 
   // Validate Token against Supabase activation_tokens table
   const validateToken = useCallback(async (tokenToTest: string) => {
     const clean = tokenToTest.trim().toUpperCase();
     if (!clean || clean.length < 4) {
-      setTokenError('El código debe contener al menos 4 caracteres');
+      setTokenError('t('reg.tokenTooShort')');
       return;
     }
 
@@ -72,16 +74,16 @@ export function RegistroPacientePage() {
           setEmail('carlos.mendoza@paciente.fisiomirror.app');
           setDiagnostico('Rehabilitación de hombro manguito rotador');
           setTherapistName('Dra. Elena Ramos');
-          toast.success('Token de prueba validado correctamente');
+          toast.success(t('reg.demoTokenOk'));
           return;
         }
-        setTokenError('El código de acceso no existe o es inválido');
+        setTokenError('t('reg.tokenInvalid')');
         setTokenValidated(false);
         return;
       }
 
       if (tokenData.used) {
-        setTokenError('Este código de acceso ya fue utilizado anteriormente');
+        setTokenError('t('reg.tokenUsed')');
         setTokenValidated(false);
         return;
       }
@@ -113,17 +115,17 @@ export function RegistroPacientePage() {
           .maybeSingle();
 
         if (tProfile) {
-          setTherapistName(tProfile.full_name || 'Tu Fisioterapeuta');
+          setTherapistName(tProfile.full_name || t('reg.defaultTherapist'));
           if (tProfile.email) setTherapistEmail(tProfile.email);
         }
       }
 
       setTokenValidated(true);
-      toast.success('¡Código de invitación verificado!');
+      toast.success(t('reg.tokenVerified'));
     } catch (err: any) {
       console.warn('Error validating token:', err);
       // If table missing or offline, offer fallback
-      setTokenError('No se pudo verificar el código en el servidor. Intenta de nuevo.');
+      setTokenError('t('reg.tokenServerError')');
     } finally {
       setTokenValidating(false);
     }
@@ -139,22 +141,22 @@ export function RegistroPacientePage() {
     e.preventDefault();
 
     if (!tokenValidated) {
-      toast.error('Primero debes validar un código de acceso válido');
+      toast.error('t('reg.validateFirst')');
       return;
     }
 
     if (password.length < 6) {
-      toast.error('La contraseña debe tener al menos 6 caracteres');
+      toast.error(t('auth.minPassword6'));
       return;
     }
 
     if (password !== confirmPassword) {
-      toast.error('Las contraseñas no coinciden');
+      toast.error(t('auth.passwordMismatch'));
       return;
     }
 
     if (!turnstileToken) {
-      toast.error('Por favor completa la verificación de seguridad Cloudflare');
+      toast.error(t('reg.captchaRequired'));
       return;
     }
 
@@ -169,7 +171,7 @@ export function RegistroPacientePage() {
       if (!res.ok || !data.success) {
         turnstileRef.current?.reset();
         setTurnstileToken(null);
-        toast.error('Validación CAPTCHA fallida. Intenta nuevamente.');
+        toast.error(t('reg.captchaFailed'));
         return;
       }
     } catch {
@@ -180,7 +182,7 @@ export function RegistroPacientePage() {
     const ok = await signUpPaciente(email.trim(), password, fullName.trim(), cleanToken);
 
     if (ok) {
-      toast.success('¡Registro completado con éxito! Bienvenido a tu plan.');
+      toast.success(t('reg.registeredOk'));
       navigate('/dashboard-paciente');
     }
   };
@@ -198,10 +200,10 @@ export function RegistroPacientePage() {
             <UserCheck size={28} />
           </div>
           <h1 className="fm-title text-on-surface">
-            Activar Cuenta de Paciente
+            {t('reg.title')}
           </h1>
           <p className="text-xs text-on-surface-variant mt-1">
-            Ingresa el código proporcionado por tu fisioterapeuta para vincular tu expediente
+            {t('reg.subtitle')}
           </p>
         </div>
 
@@ -209,11 +211,11 @@ export function RegistroPacientePage() {
         <div className="mb-6 p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80">
           <div className="flex items-center justify-between mb-2">
             <label className="block text-xs font-bold text-on-surface uppercase tracking-wider">
-              Código de Acceso (Token de 6 dígitos)
+              {t('reg.accessCode')}
             </label>
             {tokenValidated && (
               <span className="text-xs font-bold text-teal-600 dark:text-teal-400 bg-teal-500/10 px-2 py-0.5 rounded-full border border-teal-500/20 flex items-center gap-1">
-                <CheckCircle2 size={12} /> Validado
+                <CheckCircle2 size={12} /> {t('reg.validated')}
               </span>
             )}
           </div>
@@ -279,17 +281,17 @@ export function RegistroPacientePage() {
             <div className="mt-3 p-3 rounded-xl bg-teal-50 dark:bg-teal-950/40 border border-teal-200 dark:border-teal-800 text-xs text-teal-800 dark:text-teal-200 space-y-1">
               <div className="flex items-center gap-1.5 font-bold">
                 <CheckCircle2 size={15} className="text-teal-600 dark:text-teal-400" />
-                <span>Expediente clínico vinculado correctamente</span>
+                <span>{t('reg.linkedOk')}</span>
               </div>
               {therapistName && (
                 <p className="text-xs text-teal-700 dark:text-teal-300 pl-5">
-                  Prescrito por: <strong>{therapistName}</strong>
+                  {t('reg.prescribedBy')} <strong>{therapistName}</strong>
                   {therapistEmail ? ` (${therapistEmail})` : ''}
                 </p>
               )}
               {diagnostico && (
                 <p className="text-xs text-teal-700 dark:text-teal-300 pl-5">
-                  Plan: <strong>{diagnostico}</strong>
+                  {t('reg.plan')} <strong>{diagnostico}</strong>
                 </p>
               )}
             </div>
@@ -300,21 +302,21 @@ export function RegistroPacientePage() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-xs font-bold text-on-surface mb-1">
-              Nombre Completo
+              {t('reg.fullName')}
             </label>
             <input
               type="text"
               required
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
-              placeholder="Tu nombre y apellido"
+              placeholder={t('reg.namePlaceholder')}
               className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs text-on-surface outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500"
             />
           </div>
 
           <div>
             <label className="block text-xs font-bold text-on-surface mb-1">
-              Correo Electrónico (para tu cuenta)
+              {t('reg.emailLabel')}
             </label>
             <div className="relative">
               <Mail size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant" />
@@ -323,7 +325,7 @@ export function RegistroPacientePage() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="paciente@correo.com"
+                placeholder={t('reg.emailPlaceholder')}
                 className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs text-on-surface outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500"
               />
             </div>
@@ -332,7 +334,7 @@ export function RegistroPacientePage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-bold text-on-surface mb-1">
-                Contraseña
+                {t('auth.password')}
               </label>
               <div className="relative">
                 <Lock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant" />
@@ -341,7 +343,7 @@ export function RegistroPacientePage() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Mínimo 6 caracteres"
+                  placeholder={t('reset.min6Chars')}
                   className="w-full pl-10 pr-9 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs text-on-surface outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500"
                 />
                 <button
@@ -356,7 +358,7 @@ export function RegistroPacientePage() {
 
             <div>
               <label className="block text-xs font-bold text-on-surface mb-1">
-                Confirmar Contraseña
+                {t('reg.confirmPassword')}
               </label>
               <div className="relative">
                 <Lock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant" />
@@ -365,7 +367,7 @@ export function RegistroPacientePage() {
                   required
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  placeholder="Repite tu clave"
+                  placeholder={t('reg.repeatPassword')}
                   className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs text-on-surface outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500"
                 />
               </div>
@@ -391,14 +393,14 @@ export function RegistroPacientePage() {
             icon={<ArrowRight size={17} />}
             iconPosition="right"
           >
-            Completar Registro y Empezar Terapia
+            {t('reg.submitBtn')}
           </Button>
         </form>
 
         <div className="mt-5 text-center text-xs text-on-surface-variant">
-          ¿Ya tienes cuenta activa?{' '}
+          {t('reg.haveAccount')}{' '}
           <Link to="/login" className="text-teal-600 dark:text-teal-400 font-bold hover:underline">
-            Iniciar Sesión
+            {t('auth.login')}
           </Link>
         </div>
       </div>

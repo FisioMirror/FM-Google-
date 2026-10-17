@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -21,6 +22,7 @@ import { useToast } from '../components/ui/ToastProvider';
 export function ResetPassword() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const { t } = useTranslation();
   const toast = useToast();
 
   const tokenParam = searchParams.get('token') || searchParams.get('code') || searchParams.get('pin') || '';
@@ -56,13 +58,13 @@ export function ResetPassword() {
     async function checkExistingSession() {
       try {
         const hash = window.location.hash;
-        if (hash.includes('access_token') || hash.includes('type=recovery')) {
+        if (hash.includes('access_token') || hash.includes('type=recovery) {
           if (isMounted) setMode('reset');
         }
         const { data } = await supabase.auth.getSession();
         if (data?.session?.user?.email && isMounted) {
           setEmail((prev) => prev || data.session.user.email || '');
-          if (hash.includes('recovery')) {
+          if (hash.includes('recovery) {
             setMode('reset');
           }
         }
@@ -98,8 +100,8 @@ export function ResetPassword() {
     setErrorMessage(null);
 
     const cleanEmail = email.trim().toLowerCase();
-    if (!cleanEmail || !cleanEmail.includes('@')) {
-      toast.error('Por favor ingresa un correo electrónico válido');
+    if (!cleanEmail || !cleanEmail.includes('@) {
+      toast.error(t('reset.invalidEmail'));
       return;
     }
 
@@ -115,17 +117,17 @@ export function ResetPassword() {
       const data = await res.json();
 
       if (!res.ok || !data.success) {
-        throw new Error(data.error || 'No se pudo enviar el correo de recuperación');
+        throw new Error(data.error || t('reset.sendMailFailed'));
       }
 
       setRequestSent(true);
       startCooldown(60);
-      toast.success('Correo de recuperación enviado', {
-        description: `Revisa la bandeja de entrada o spam de ${cleanEmail}. Recibirás un enlace y código de 6 dígitos.`,
+      toast.success(t('reset.emailSentTitle'), {
+        description: t('reset.emailSentDesc', { email: cleanEmail }),
       });
     } catch (err: any) {
-      setErrorMessage(err.message || 'Error al procesar la solicitud');
-      toast.error('Error al solicitar recuperación: ' + err.message);
+      setErrorMessage(err.message || t('reset.processError'));
+      toast.error(t('reset.requestError') + ': ' + err.message);
     } finally {
       setLoading(false);
     }
@@ -139,23 +141,23 @@ export function ResetPassword() {
     const cleanEmail = email.trim().toLowerCase();
     const cleanToken = tokenOrCode.trim();
 
-    if (!cleanEmail || !cleanEmail.includes('@')) {
-      toast.error('Por favor especifica tu correo electrónico');
+    if (!cleanEmail || !cleanEmail.includes('@) {
+      toast.error(t('reset.specifyEmail'));
       return;
     }
 
     if (!cleanToken) {
-      toast.error('Por favor ingresa el código PIN de 6 dígitos o el token de recuperación');
+      toast.error(t('reset.missingCode'));
       return;
     }
 
     if (password.length < 8) {
-      toast.error('La contraseña debe tener al menos 8 caracteres');
+      toast.error(t('auth.minPassword8'));
       return;
     }
 
     if (password !== confirmPassword) {
-      toast.error('Las contraseñas no coinciden');
+      toast.error(t('auth.passwordMismatch'));
       return;
     }
 
@@ -175,7 +177,7 @@ export function ResetPassword() {
       const data = await res.json();
 
       if (!res.ok || !data.success) {
-        throw new Error(data.error || 'No se pudo verificar el código o restablecer la contraseña');
+        throw new Error(data.error || t('reset.verifyFailed'));
       }
 
       // 2. Si hay sesión Supabase activa en el navegador, sincronizar updateUser
@@ -186,8 +188,8 @@ export function ResetPassword() {
       }
 
       setIsCompleted(true);
-      toast.success('Contraseña actualizada exitosamente', {
-        description: 'Ya puedes ingresar con tus nuevas credenciales de acceso.',
+      toast.success(t('reset.updatedOk'), {
+        description: t('reset.newCredsOk'),
       });
 
       // Redirigir al login después de 2.5 segundos
@@ -195,8 +197,8 @@ export function ResetPassword() {
         navigate('/login', { replace: true });
       }, 2500);
     } catch (err: any) {
-      setErrorMessage(err.message || 'Error al actualizar la contraseña');
-      toast.error(err.message || 'Error al restablecer la contraseña');
+      setErrorMessage(err.message || t('reset.updateError2'));
+      toast.error(err.message || t('reset.genericError'));
     } finally {
       setLoading(false);
     }
@@ -234,17 +236,17 @@ export function ResetPassword() {
           </div>
           <h1 className="fm-title text-on-surface">
             {isCompleted
-              ? 'Contraseña Actualizada'
+              ? t('reset.titleComplete')
               : mode === 'reset'
-              ? 'Restablecer Contraseña'
-              : 'Recuperar Cuenta'}
+              ? t('reset.titleReset')
+              : t('reset.titleRequest')}
           </h1>
           <p className="text-xs text-on-surface-variant mt-1">
             {isCompleted
-              ? 'Tu cuenta ha sido protegida con la nueva clave'
+              ? t('reset.subComplete')
               : mode === 'reset'
-              ? 'Ingresa tu código de verificación y define tu nueva contraseña'
-              : 'Ingresa tu correo para recibir un enlace de acceso y código PIN seguro'}
+              ? t('reset.subReset')
+              : t('reset.subRequest')}
           </p>
         </div>
 
@@ -271,10 +273,10 @@ export function ResetPassword() {
                   <Check size={26} />
                 </div>
                 <h3 className="text-sm font-bold text-teal-950 dark:text-teal-200">
-                  ¡Cambio Completado con Éxito!
+                  t('reset.completedBanner')
                 </h3>
                 <p className="text-xs text-teal-800 dark:text-teal-300 leading-relaxed">
-                  Tu contraseña ha sido actualizada. Te enviamos un comprobante de seguridad a{' '}
+                  {t('reset.comprobante')}{' '}
                   <strong>{email}</strong>.
                 </p>
               </div>
@@ -283,7 +285,7 @@ export function ResetPassword() {
                 to="/login"
                 className="w-full py-3.5 px-4 rounded-2xl bg-primary hover:bg-primary/90 active:scale-98 text-on-primary font-bold text-xs transition-all flex items-center justify-center gap-2 shadow-sm shadow-teal-600/20"
               >
-                <span>Iniciar Sesión Ahora</span>
+                <span>{t('reset.loginNow')}</span>
                 <ArrowRight size={14} />
               </Link>
             </motion.div>
@@ -304,11 +306,11 @@ export function ResetPassword() {
                       <CheckCircle2 size={22} />
                     </div>
                     <h3 className="text-sm font-bold text-teal-900 dark:text-teal-200">
-                      Correo de Recuperación Enviado
+                      {t('reset.sentBanner')}
                     </h3>
                     <p className="text-xs text-teal-800 dark:text-teal-300 leading-relaxed">
-                      Hemos enviado un enlace directo y un código PIN de 6 dígitos a{' '}
-                      <strong className="underline">{email}</strong>. Válido por 15 minutos.
+                      {t('reset.directLink')}{' '}
+                      <strong className="underline">{email}</strong>. {t('reset.valid15')}
                     </p>
                   </div>
 
@@ -319,7 +321,7 @@ export function ResetPassword() {
                       className="w-full py-3 rounded-xl bg-primary hover:bg-primary/90 text-on-primary text-xs font-bold transition-all flex items-center justify-center gap-1.5 shadow-sm"
                     >
                       <KeyRound size={14} />
-                      <span>Ingresar Código PIN Recibido</span>
+                      <span>{t('reset.enterPin')}</span>
                     </button>
 
                     <button
@@ -329,7 +331,7 @@ export function ResetPassword() {
                       className="w-full py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-on-surface text-xs font-semibold transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                     >
                       <RefreshCw size={13} className={loading ? 'animate-spin' : ''} />
-                      {cooldown > 0 ? `Reenviar en ${cooldown}s` : 'Reenviar Correo'}
+                      {cooldown > 0 ? `{t('reset.resendIn', { s: cooldown })}` : t('reset.resendEmail')}
                     </button>
                   </div>
                 </div>
@@ -337,7 +339,7 @@ export function ResetPassword() {
                 <form onSubmit={handleRequestReset} className="space-y-4">
                   <div>
                     <label className="block text-xs font-bold text-on-surface mb-1.5">
-                      Correo Electrónico de tu Cuenta
+                      {t('reset.accountEmail')}
                     </label>
                     <div className="relative">
                       <Mail size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant" />
@@ -346,7 +348,7 @@ export function ResetPassword() {
                         required
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        placeholder="tu@correo.com"
+                        placeholder={t('auth.emailPlaceholder')}
                         className="w-full pl-10 pr-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs text-on-surface outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all"
                       />
                     </div>
@@ -361,7 +363,7 @@ export function ResetPassword() {
                       <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                     ) : (
                       <>
-                        <span>Enviar Enlace y Código de Recuperación</span>
+                        <span>{t('reset.sendLink')}</span>
                         <ArrowRight size={14} />
                       </>
                     )}
@@ -373,7 +375,7 @@ export function ResetPassword() {
                       onClick={() => setMode('reset')}
                       className="text-xs text-teal-600 dark:text-teal-400 font-bold hover:underline"
                     >
-                      ¿Ya tienes un código PIN o enlace? Haz clic aquí
+                      {t('reset.havePin')}
                     </button>
                   </div>
                 </form>
@@ -392,7 +394,7 @@ export function ResetPassword() {
               <form onSubmit={handleUpdatePassword} className="space-y-3.5">
                 <div>
                   <label className="block text-xs font-bold text-on-surface mb-1">
-                    Correo Electrónico
+                    {t('auth.email')}
                   </label>
                   <div className="relative">
                     <Mail size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant" />
@@ -401,7 +403,7 @@ export function ResetPassword() {
                       required
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      placeholder="tu@correo.com"
+                      placeholder={t('auth.emailPlaceholder')}
                       className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs text-on-surface outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500"
                     />
                   </div>
@@ -409,7 +411,7 @@ export function ResetPassword() {
 
                 <div>
                   <label className="block text-xs font-bold text-on-surface mb-1">
-                    Código PIN (6 dígitos) o Token del Correo
+                    {t('reset.pinOrToken')}
                   </label>
                   <div className="relative">
                     <KeyRound size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant" />
@@ -418,7 +420,7 @@ export function ResetPassword() {
                       required
                       value={tokenOrCode}
                       onChange={(e) => setTokenOrCode(e.target.value)}
-                      placeholder="Ej: 123456 o RST-..."
+                      placeholder={t('reset.pinPlaceholder')}
                       className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs text-on-surface font-mono outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500"
                     />
                   </div>
@@ -426,7 +428,7 @@ export function ResetPassword() {
 
                 <div>
                   <label className="block text-xs font-bold text-on-surface mb-1">
-                    Nueva Contraseña
+                    {t('reset.newPassword')}
                   </label>
                   <div className="relative">
                     <Lock size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant" />
@@ -435,14 +437,14 @@ export function ResetPassword() {
                       required
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      placeholder="Mínimo 8 caracteres"
+                      placeholder={t('reset.min8Chars')}
                       className="w-full pl-10 pr-10 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs text-on-surface outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
                       className="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-on-surface-variant dark:hover:text-slate-200 p-1"
-                      aria-label={showPassword ? 'Ocultar' : 'Mostrar'}
+                      aria-label={showPassword ? t('common.hide') : t('common.show')}
                     >
                       {showPassword ? <EyeOff size={14} /> : <Eye size={14} />}
                     </button>
@@ -465,8 +467,8 @@ export function ResetPassword() {
                         />
                       </div>
                       <div className="flex justify-between text-2xs text-on-surface-variant font-medium">
-                        <span>Fortaleza: {strengthScore <= 1 ? 'Baja' : strengthScore <= 3 ? 'Media' : 'Alta'}</span>
-                        <span>{hasMinLength ? 'Cumple 8+ car.' : 'Mínimo 8 car.'}</span>
+                        <span>{t('reset.strength')}{strengthScore <= 1 ? strengthScore <= 3 ? t('reset.pwMed') : t('reset.pwHigh')}</span>
+                        <span>{hasMinLength ? t('reset.meets8') : t('reset.min8')}</span>
                       </div>
                     </div>
                   )}
@@ -474,7 +476,7 @@ export function ResetPassword() {
 
                 <div>
                   <label className="block text-xs font-bold text-on-surface mb-1">
-                    Confirmar Nueva Contraseña
+                    {t('reset.confirmNewPassword')}
                   </label>
                   <div className="relative">
                     <Lock size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant" />
@@ -483,16 +485,16 @@ export function ResetPassword() {
                       required
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
-                      placeholder="Repite la contraseña"
+                      placeholder={t('reset.repeatPassword')}
                       className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs text-on-surface outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500"
                     />
                   </div>
                   {confirmPassword && password !== confirmPassword && (
-                    <p className="text-2xs text-red-500 mt-1">Las contraseñas no coinciden</p>
+                    <p className="text-2xs text-red-500 mt-1">{t('auth.passwordMismatch')}</p>
                   )}
                   {confirmPassword && password === confirmPassword && (
                     <p className="text-2xs text-teal-600 dark:text-teal-400 mt-1 flex items-center gap-1">
-                      <ShieldCheck size={11} /> Las contraseñas coinciden
+                      <ShieldCheck size={11} /> {t('reset.matching')}
                     </p>
                   )}
                 </div>
@@ -506,7 +508,7 @@ export function ResetPassword() {
                     <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                   ) : (
                     <>
-                      <span>Guardar Nueva Contraseña</span>
+                      <span>{t('reset.saveNew')}</span>
                       <ArrowRight size={14} />
                     </>
                   )}
@@ -518,7 +520,7 @@ export function ResetPassword() {
                     onClick={() => setMode('request')}
                     className="text-xs text-on-surface-variant hover:text-on-surface dark:hover:text-slate-300 font-semibold"
                   >
-                    Volver a solicitar enlace por correo
+                    {t('reset.returnRequest')}
                   </button>
                 </div>
               </form>
@@ -533,7 +535,7 @@ export function ResetPassword() {
             className="inline-flex items-center gap-1.5 text-xs text-on-surface-variant hover:text-teal-600 dark:hover:text-teal-400 font-bold transition-colors"
           >
             <ArrowLeft size={14} />
-            <span>Volver a Iniciar Sesión</span>
+            <span>{t('reset.backToLogin')}</span>
           </Link>
         </div>
       </motion.div>
