@@ -17,7 +17,7 @@ export const InteractiveHoverButton = forwardRef<
       type="button"
       className={cn(
         "group relative w-auto cursor-pointer overflow-hidden rounded-full border border-primary/30 p-2.5 px-6 text-center font-semibold text-sm",
-        "bg-surface dark:bg-slate-900 text-on-surface shadow-xs transition-all duration-300 hover:shadow-md",
+        "bg-surface dark:bg-slate-900 text-on-surface shadow-xs transition-all duration-300 hover:shadow-card",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50",
         className
       )}

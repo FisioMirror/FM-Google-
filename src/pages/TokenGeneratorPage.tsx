@@ -216,7 +216,7 @@ export function TokenGeneratorPage() {
               'px-4 py-2 rounded-2xl text-xs font-bold whitespace-nowrap transition-all',
               i === activeFilter
                 ? 'bg-primary text-on-primary shadow-sm'
-                : 'bg-surface-container/70 hover:bg-surface-container text-on-surface-variant border border-outline/10',
+                : 'bg-surface-container/70 hover:bg-surface-container text-on-surface-variant border border-outline/15',
             )}
           >
             {f}
@@ -250,7 +250,7 @@ export function TokenGeneratorPage() {
               transition={{ delay: i * 0.05 }}
               whileHover={{ y: -3, scale: 1.01 }}
             >
-              <GlassPanel className="card-glow-hover p-5 sm:p-6 rounded-3xl border border-outline/10 flex flex-col justify-between h-full">
+              <GlassPanel className="card-glow-hover p-5 sm:p-6 rounded-3xl border border-outline/15 flex flex-col justify-between h-full">
                 <div>
                   <div className="flex justify-between items-start mb-4">
                     <div>
@@ -294,7 +294,7 @@ export function TokenGeneratorPage() {
                   </div>
                 </div>
 
-                <div className="flex gap-2 mt-4 pt-4 border-t border-outline/10">
+                <div className="flex gap-2 mt-4 pt-4 border-t border-outline/15">
                   <Tooltip content="Generar un nuevo código aleatorio" side="top">
                     <button
                       onClick={() => regenerateToken(t.id)}

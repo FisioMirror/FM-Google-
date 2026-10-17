@@ -41,7 +41,7 @@ export const JointDetailPopover: React.FC<JointDetailPopoverProps> = ({
         className={cn(
           'flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold transition-all duration-200 select-none border',
           isOpen
-            ? 'bg-primary text-on-primary border-primary shadow-md'
+            ? 'bg-primary text-on-primary border-primary shadow-sm'
             : 'bg-surface/90 dark:bg-slate-800/90 text-on-surface dark:text-slate-200 border-outline-variant/30 dark:border-white/10 hover:border-primary/50'
         )}
         aria-expanded={isOpen}

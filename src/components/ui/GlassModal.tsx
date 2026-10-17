@@ -72,7 +72,7 @@ export function GlassModal({
             role="dialog"
             aria-modal="true"
             className={cn(
-              'relative w-full max-h-[90vh] overflow-y-auto overflow-x-hidden rounded-3xl border border-outline/20 bg-surface/95 p-6 sm:p-8 shadow-elevated backdrop-blur-2xl z-10 dark:border-outline/10',
+              'relative w-full max-h-[90vh] overflow-y-auto overflow-x-hidden rounded-3xl border border-outline/20 bg-surface/95 p-6 sm:p-8 shadow-elevated backdrop-blur-2xl z-10 dark:border-outline/15',
               sizeClasses[size]
             )}
           >

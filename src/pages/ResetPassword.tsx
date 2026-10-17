@@ -267,7 +267,7 @@ export function ResetPassword() {
               className="space-y-5 text-center py-2"
             >
               <div className="p-4 rounded-2xl bg-teal-50 dark:bg-teal-950/40 border border-teal-200 dark:border-teal-800 space-y-2">
-                <div className="w-12 h-12 rounded-full bg-primary text-on-primary flex items-center justify-center mx-auto shadow-md shadow-teal-600/20">
+                <div className="w-12 h-12 rounded-full bg-primary text-on-primary flex items-center justify-center mx-auto shadow-sm shadow-teal-600/20">
                   <Check size={26} />
                 </div>
                 <h3 className="text-sm font-bold text-teal-950 dark:text-teal-200">
@@ -281,7 +281,7 @@ export function ResetPassword() {
 
               <Link
                 to="/login"
-                className="w-full py-3.5 px-4 rounded-2xl bg-primary hover:bg-primary/90 active:scale-98 text-on-primary font-bold text-xs transition-all flex items-center justify-center gap-2 shadow-md shadow-teal-600/20"
+                className="w-full py-3.5 px-4 rounded-2xl bg-primary hover:bg-primary/90 active:scale-98 text-on-primary font-bold text-xs transition-all flex items-center justify-center gap-2 shadow-sm shadow-teal-600/20"
               >
                 <span>Iniciar Sesión Ahora</span>
                 <ArrowRight size={14} />
@@ -300,7 +300,7 @@ export function ResetPassword() {
               {requestSent ? (
                 <div className="space-y-4">
                   <div className="p-4 rounded-2xl bg-teal-50 dark:bg-teal-950/40 border border-teal-200 dark:border-teal-800 text-center space-y-2">
-                    <div className="w-10 h-10 rounded-full bg-primary text-on-primary flex items-center justify-center mx-auto shadow-md shadow-teal-600/20">
+                    <div className="w-10 h-10 rounded-full bg-primary text-on-primary flex items-center justify-center mx-auto shadow-sm shadow-teal-600/20">
                       <CheckCircle2 size={22} />
                     </div>
                     <h3 className="text-sm font-bold text-teal-900 dark:text-teal-200">
@@ -355,7 +355,7 @@ export function ResetPassword() {
                   <button
                     type="submit"
                     disabled={loading || !email.trim()}
-                    className="w-full py-3.5 rounded-2xl bg-primary hover:bg-primary/90 active:scale-98 text-on-primary font-bold text-xs shadow-md shadow-teal-600/20 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                    className="w-full py-3.5 rounded-2xl bg-primary hover:bg-primary/90 active:scale-98 text-on-primary font-bold text-xs shadow-sm shadow-teal-600/20 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                   >
                     {loading ? (
                       <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -500,7 +500,7 @@ export function ResetPassword() {
                 <button
                   type="submit"
                   disabled={loading || password.length < 8 || password !== confirmPassword || !tokenOrCode.trim()}
-                  className="w-full py-3 rounded-2xl bg-primary hover:bg-primary/90 active:scale-98 text-on-primary font-bold text-xs shadow-md shadow-teal-600/20 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                  className="w-full py-3 rounded-2xl bg-primary hover:bg-primary/90 active:scale-98 text-on-primary font-bold text-xs shadow-sm shadow-teal-600/20 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                 >
                   {loading ? (
                     <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />

@@ -454,7 +454,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
           <button
             onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
             aria-label={sidebarCollapsed ? 'Expandir menú' : 'Colapsar menú'}
-            className="hidden lg:flex absolute top-1/2 -translate-y-1/2 right-2 w-6 h-6 rounded-full bg-sky-500 text-white items-center justify-center text-xs shadow-md hover:scale-110 transition-transform z-10"
+            className="hidden lg:flex absolute top-1/2 -translate-y-1/2 right-2 w-6 h-6 rounded-full bg-sky-500 text-white items-center justify-center text-xs shadow-sm hover:scale-110 transition-transform z-10"
           >
             {sidebarCollapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
           </button>

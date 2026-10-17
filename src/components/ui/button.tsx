@@ -7,8 +7,8 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-primary text-on-primary hover:bg-primary/90 shadow-sm hover:shadow-md",
-        primary: "bg-primary text-on-primary hover:bg-primary/90 shadow-sm hover:shadow-md",
+        default: "bg-primary text-on-primary hover:bg-primary/90 shadow-sm hover:shadow-card",
+        primary: "bg-primary text-on-primary hover:bg-primary/90 shadow-sm hover:shadow-card",
         outline:
           "border-outline-variant/40 dark:border-white/15 bg-transparent hover:bg-surface-container text-on-surface hover:text-on-surface",
         secondary:
@@ -18,9 +18,9 @@ const buttonVariants = cva(
         destructive:
           "bg-error text-white hover:bg-error/90 shadow-sm",
         link: "text-primary underline-offset-4 hover:underline",
-        glow: "relative overflow-hidden bg-primary text-on-primary shadow-md shadow-primary/20 hover:shadow-card hover:shadow-primary/35 hover:-translate-y-0.5",
+        glow: "relative overflow-hidden bg-primary text-on-primary shadow-sm shadow-primary/20 hover:shadow-card hover:shadow-primary/35 hover:-translate-y-0.5",
         glass: "bg-surface/70 dark:bg-white/10 backdrop-blur-xl border border-outline-variant/30 dark:border-white/20 text-on-surface hover:bg-surface/90 dark:hover:bg-white/20 shadow-sm",
-        kinetic: "bg-kinetic text-on-surface font-bold hover:bg-kinetic-light shadow-md shadow-kinetic/20 hover:shadow-kinetic/40",
+        kinetic: "bg-kinetic text-on-surface font-bold hover:bg-kinetic-light shadow-sm shadow-kinetic/20 hover:shadow-kinetic/40",
       },
       size: {
         default: "h-10 gap-2 px-4 text-sm rounded-xl",

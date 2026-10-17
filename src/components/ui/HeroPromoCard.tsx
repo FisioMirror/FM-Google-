@@ -31,7 +31,7 @@ export function PromoCardDemo({
   return (
     <div
       className={cn(
-        'relative flex flex-col sm:flex-row h-auto min-h-[152px] p-4.5 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-md group overflow-hidden transition-all duration-300 hover:shadow-elevated',
+        'relative flex flex-col sm:flex-row h-auto min-h-[152px] p-4.5 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm group overflow-hidden transition-all duration-300 hover:shadow-elevated',
         className
       )}
     >

@@ -292,7 +292,7 @@ export function formatAIReport(text: string): ReactNode {
               {block.items.map((item, i) => (
                 <div
                   key={i}
-                  className="flex items-start gap-2.5 p-3 rounded-2xl bg-surface-container-low/80 dark:bg-surface-container-low/50 border border-outline/10 text-xs text-on-surface leading-relaxed transition-all hover:border-teal-500/30"
+                  className="flex items-start gap-2.5 p-3 rounded-2xl bg-surface-container-low/80 dark:bg-surface-container-low/50 border border-outline/15 text-xs text-on-surface leading-relaxed transition-all hover:border-teal-500/30"
                 >
                   <CheckCircle2 className="size-4 text-teal-600 dark:text-teal-400 shrink-0 mt-0.5" />
                   <span className="flex-1 font-normal">{renderInline(item)}</span>

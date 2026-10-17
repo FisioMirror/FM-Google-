@@ -236,7 +236,7 @@ export function CalibrationPage() {
 
       {/* Banner de Modo Simulación cuando la cámara física no está accesible */}
       {isSimulated && isReady && (
-        <div className="absolute top-14 sm:top-16 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 bg-amber-500/20 border border-amber-400/40 backdrop-blur-md px-3 py-1.5 rounded-full text-amber-200 text-xs sm:text-xs font-medium shadow-md">
+        <div className="absolute top-14 sm:top-16 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 bg-amber-500/20 border border-amber-400/40 backdrop-blur-md px-3 py-1.5 rounded-full text-amber-200 text-xs sm:text-xs font-medium shadow-sm">
           <Icon name="sensors" size={14} className="text-amber-400 shrink-0" />
           <span>Modo Simulación Biomecánica</span>
           <button
@@ -308,7 +308,7 @@ export function CalibrationPage() {
           transition={{ type: 'spring', damping: 25, stiffness: 200 }}
           className="fixed bottom-3 sm:bottom-6 left-3 right-3 sm:left-auto sm:right-6 sm:w-[420px] z-30 pointer-events-auto"
         >
-          <div className="bg-slate-900/85 backdrop-blur-2xl border border-white/15 rounded-2xl sm:rounded-3xl shadow-elevated overflow-hidden transition-all duration-300">
+          <div className="bg-slate-900/85 backdrop-blur-2xl border border-white/15 rounded-2xl shadow-elevated overflow-hidden transition-all duration-300">
             {/* Cabecera de la tarjeta con botón colapsar */}
             <div
               onClick={() => setIsPanelCollapsed((prev) => !prev)}

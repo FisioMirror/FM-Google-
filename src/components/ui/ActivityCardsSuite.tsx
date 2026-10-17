@@ -299,7 +299,7 @@ export const PainScaleInteractiveCard: React.FC<PainScaleInteractiveCardProps> =
           initial={{ scale: 0.7, rotate: -10 }}
           animate={{ scale: 1, rotate: 0 }}
           transition={{ type: 'spring', stiffness: 400, damping: 20 }}
-          className="p-3.5 rounded-2xl bg-surface/90 dark:bg-slate-800/90 shadow-md border border-black/5 dark:border-white/10 shrink-0"
+          className="p-3.5 rounded-2xl bg-surface/90 dark:bg-slate-800/90 shadow-sm border border-black/5 dark:border-white/10 shrink-0"
         >
           {getFace()}
         </motion.div>
@@ -920,7 +920,7 @@ export const PatientAdherenceHeatmapCard: React.FC<PatientAdherenceHeatmapCardPr
                 whileTap={{ scale: 0.95 }}
                 className={cn(
                   "h-9 rounded-xl transition-all flex items-center justify-center font-mono text-2xs font-bold",
-                  val === 3 && "bg-teal-500 text-white shadow-md shadow-teal-500/30",
+                  val === 3 && "bg-teal-500 text-white shadow-sm shadow-teal-500/30",
                   val === 2 && "bg-teal-500/70 text-white",
                   val === 1 && "bg-teal-500/30 text-teal-900 dark:text-teal-200",
                   val === 0 && "bg-slate-200 dark:bg-slate-800 text-on-surface-variant",

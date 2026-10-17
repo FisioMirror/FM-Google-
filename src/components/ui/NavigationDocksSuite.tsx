@@ -137,7 +137,7 @@ export const TherapistSidebarMini: React.FC<TherapistSidebarMiniProps> = ({
             className={cn(
               "p-2.5 rounded-xl transition-all relative group cursor-pointer",
               isCurrent
-                ? "bg-primary text-on-primary shadow-md shadow-teal-600/30"
+                ? "bg-primary text-on-primary shadow-sm shadow-teal-600/30"
                 : "text-on-surface-variant hover:text-on-surface dark:text-on-surface-variant dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5"
             )}
             title={item.label}
@@ -194,7 +194,7 @@ export const QuickPatientSwitcherBar: React.FC<QuickPatientSwitcherBarProps> = (
             className={cn(
               "px-3.5 py-1.5 rounded-2xl text-xs font-bold whitespace-nowrap transition-all border flex items-center gap-1.5 cursor-pointer",
               isCurrent
-                ? "bg-primary text-on-primary border-teal-600 shadow-md shadow-teal-600/30"
+                ? "bg-primary text-on-primary border-teal-600 shadow-sm shadow-teal-600/30"
                 : "bg-white/80 dark:bg-slate-800/80 border-slate-200 dark:border-white/10 text-on-surface-variant hover:text-on-surface dark:hover:text-white hover:border-teal-500/40"
             )}
           >
@@ -229,7 +229,7 @@ export const SessionStateBreadcrumb: React.FC<SessionStateBreadcrumbProps> = ({
   return (
     <div
       className={cn(
-        "inline-flex items-center gap-2 p-2 px-3 rounded-2xl bg-white/95 dark:bg-slate-800/90 border border-teal-500/25 text-xs font-bold shadow-md transition-colors",
+        "inline-flex items-center gap-2 p-2 px-3 rounded-2xl bg-white/95 dark:bg-slate-800/90 border border-teal-500/25 text-xs font-bold shadow-sm transition-colors",
         className
       )}
     >
@@ -285,7 +285,7 @@ export const SplitViewPerspectiveToggle: React.FC<SplitViewPerspectiveToggleProp
   return (
     <div
       className={cn(
-        "inline-flex p-1.5 rounded-2xl bg-slate-100 dark:bg-slate-900 border border-teal-500/20 dark:border-teal-500/30 text-xs font-bold shadow-md transition-colors",
+        "inline-flex p-1.5 rounded-2xl bg-slate-100 dark:bg-slate-900 border border-teal-500/20 dark:border-teal-500/30 text-xs font-bold shadow-sm transition-colors",
         className
       )}
     >
@@ -303,7 +303,7 @@ export const SplitViewPerspectiveToggle: React.FC<SplitViewPerspectiveToggleProp
             className={cn(
               "px-3 py-1.5 rounded-xl transition-all capitalize cursor-pointer",
               isSelected
-                ? "bg-primary text-on-primary shadow-md shadow-teal-600/30 font-extrabold"
+                ? "bg-primary text-on-primary shadow-sm shadow-teal-600/30 font-extrabold"
                 : "text-on-surface-variant hover:text-on-surface dark:text-on-surface-variant dark:hover:text-white"
             )}
           >
@@ -329,7 +329,7 @@ export const FloatingHelpBeacon: React.FC<FloatingHelpBeaconProps> = ({ classNam
       whileTap={{ scale: 0.95 }}
       onClick={onClick}
       className={cn(
-        "inline-flex items-center gap-2.5 p-2.5 px-4 rounded-2xl bg-teal-500/15 text-teal-800 dark:text-teal-300 border border-teal-500/35 text-xs font-bold hover:bg-teal-500/25 transition-all shadow-md cursor-pointer",
+        "inline-flex items-center gap-2.5 p-2.5 px-4 rounded-2xl bg-teal-500/15 text-teal-800 dark:text-teal-300 border border-teal-500/35 text-xs font-bold hover:bg-teal-500/25 transition-all shadow-sm cursor-pointer",
         className
       )}
     >
@@ -370,7 +370,7 @@ export const ErgonomicHandModeSwitcher: React.FC<ErgonomicHandModeSwitcherProps>
       whileTap={{ scale: 0.95 }}
       onClick={toggleHand}
       className={cn(
-        "inline-flex items-center gap-2.5 p-2 px-3.5 rounded-2xl bg-white/90 dark:bg-slate-800/90 border border-teal-500/30 text-xs font-bold text-on-surface shadow-md cursor-pointer transition-colors",
+        "inline-flex items-center gap-2.5 p-2 px-3.5 rounded-2xl bg-white/90 dark:bg-slate-800/90 border border-teal-500/30 text-xs font-bold text-on-surface shadow-sm cursor-pointer transition-colors",
         className
       )}
       title="Alternar mano dominante para la rutina"

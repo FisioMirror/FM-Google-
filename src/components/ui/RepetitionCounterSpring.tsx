@@ -114,7 +114,7 @@ export const RepetitionCounterSpring: React.FC<RepetitionCounterSpringProps> = (
           whileTap={{ scale: 0.94 }}
           onClick={handleIncrement}
           className={cn(
-            'flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl text-xs font-bold text-white shadow-md transition-all',
+            'flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl text-xs font-bold text-white shadow-sm transition-all',
             isGoalReached
               ? 'bg-emerald-600 hover:bg-emerald-500'
               : 'bg-primary hover:bg-primary/90'

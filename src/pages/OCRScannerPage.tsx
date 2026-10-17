@@ -1068,7 +1068,7 @@ export function OCRScannerPage() {
                   <span className="block font-label-sm text-label-sm text-secondary uppercase tracking-widest mb-3">Token de Activación</span>
                   <div className="flex items-center justify-center gap-3 sm:gap-6">
                     <span className="font-display-lg text-2xl sm:text-display-lg text-primary tracking-[0.15em] sm:tracking-[0.2em] break-all">{generatedToken}</span>
-                    <button onClick={copyToken} aria-label="Copiar token" className={`flex items-center justify-center w-12 h-12 rounded-xl ${copied ? 'bg-tertiary-container' : 'bg-primary'} text-on-primary hover:bg-primary-container active:scale-95 shadow-md transition-all`}>
+                    <button onClick={copyToken} aria-label="Copiar token" className={`flex items-center justify-center w-12 h-12 rounded-xl ${copied ? 'bg-tertiary-container' : 'bg-primary'} text-on-primary hover:bg-primary-container active:scale-95 shadow-sm transition-all`}>
                       <Icon name={copied ? 'check' : 'content_copy'} size={24} />
                     </button>
                   </div>
@@ -1092,7 +1092,7 @@ export function OCRScannerPage() {
                 </div>
 
                 <div className="flex flex-wrap justify-center gap-4 mb-10">
-                  <button onClick={() => setShowEmailModal(true)} className="bg-primary text-on-primary font-bold hover:bg-teal-700 shadow-md shadow-teal-600/20 rounded-full px-7 py-3 flex items-center gap-2 transition-all">
+                  <button onClick={() => setShowEmailModal(true)} className="bg-primary text-on-primary font-bold hover:bg-teal-700 shadow-sm shadow-teal-600/20 rounded-full px-7 py-3 flex items-center gap-2 transition-all">
                     <Icon name="send" size={20} /> Enviar Token (Email / SMS / WhatsApp)
                   </button>
                   <button onClick={() => { try { window.print(); } catch { toast.error('No se pudo imprimir'); } }} className="bg-secondary-container/50 text-secondary font-semibold hover:bg-secondary-container border border-white/20 rounded-full px-6 py-3 flex items-center gap-2">

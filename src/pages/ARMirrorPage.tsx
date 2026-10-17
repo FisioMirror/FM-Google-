@@ -458,13 +458,13 @@ export function ARMirrorPage() {
               onClick={() => navigate('/dashboard-paciente')}
               title="Volver al panel"
               aria-label="Volver al panel de paciente"
-              className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-slate-900/80 hover:bg-slate-900 text-white/80 hover:text-white flex items-center justify-center border border-white/15 backdrop-blur-xl transition-all shadow-md active:scale-95"
+              className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-slate-900/80 hover:bg-slate-900 text-white/80 hover:text-white flex items-center justify-center border border-white/15 backdrop-blur-xl transition-all shadow-sm active:scale-95"
             >
               <Icon name="arrow_back" size={18} />
             </button>
 
             <div
-              className="rounded-full px-2 sm:px-2.5 py-1 flex items-center gap-1.5 bg-slate-900/80 backdrop-blur-xl border border-white/15 shadow-md"
+              className="rounded-full px-2 sm:px-2.5 py-1 flex items-center gap-1.5 bg-slate-900/80 backdrop-blur-xl border border-white/15 shadow-sm"
               title={poseData?.isTracking ? 'Seguimiento corporal activo' : 'Buscando postura corporal'}
             >
               <span className={`w-2 h-2 rounded-full ${poseData?.isTracking ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'}`} />
@@ -527,7 +527,7 @@ export function ARMirrorPage() {
               onClick={toggleFacingMode}
               title={facingMode === 'user' ? 'Cámara trasera' : 'Cámara frontal'}
               aria-label="Alternar cámara"
-              className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-slate-900/80 hover:bg-slate-900 text-white/80 hover:text-white flex items-center justify-center border border-white/15 backdrop-blur-xl transition-all shadow-md active:scale-95"
+              className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-slate-900/80 hover:bg-slate-900 text-white/80 hover:text-white flex items-center justify-center border border-white/15 backdrop-blur-xl transition-all shadow-sm active:scale-95"
             >
               <Icon name="flip_camera_ios" size={17} />
             </button>
@@ -536,7 +536,7 @@ export function ARMirrorPage() {
               title={isMirrored ? 'Desactivar efecto espejo' : 'Activar efecto espejo'}
               aria-label="Modo espejo"
               className={cn(
-                'w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-slate-900/80 hover:bg-slate-900 flex items-center justify-center border backdrop-blur-xl transition-all shadow-md active:scale-95',
+                'w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-slate-900/80 hover:bg-slate-900 flex items-center justify-center border backdrop-blur-xl transition-all shadow-sm active:scale-95',
                 isMirrored ? 'text-teal-300 border-teal-500/50' : 'text-white/60 border-white/15'
               )}
             >
@@ -547,7 +547,7 @@ export function ARMirrorPage() {
               title={hudMode === 'minimal' ? 'Modo Esencial Activo. Toca para Modo Completo.' : 'Modo Completo. Toca para Modo Esencial.'}
               aria-label={hudMode === 'minimal' ? 'Cambiar a modo completo' : 'Cambiar a modo esencial'}
               className={cn(
-                'px-2.5 sm:px-3 h-8 sm:h-9 rounded-full flex items-center gap-1 border backdrop-blur-xl transition-all shadow-md active:scale-95 text-2xs sm:text-xs font-bold uppercase tracking-wider',
+                'px-2.5 sm:px-3 h-8 sm:h-9 rounded-full flex items-center gap-1 border backdrop-blur-xl transition-all shadow-sm active:scale-95 text-2xs sm:text-xs font-bold uppercase tracking-wider',
                 hudMode === 'minimal'
                   ? 'bg-amber-500/30 text-amber-300 border-amber-400/50 shadow-amber-500/20'
                   : 'bg-slate-900/80 text-white/80 border-white/15 hover:text-white'
@@ -755,7 +755,7 @@ export function ARMirrorPage() {
           )}
 
           {/* Dock de Controles Inferior Unificado (Mobile First, Touch Targets >= 44px) */}
-          <div className="bg-slate-900/85 backdrop-blur-2xl border border-white/15 rounded-2xl sm:rounded-3xl p-1.5 sm:p-2 shadow-elevated flex items-center justify-center gap-1.5 sm:gap-2.5 max-w-full overflow-x-auto">
+          <div className="bg-slate-900/85 backdrop-blur-2xl border border-white/15 rounded-2xl p-1.5 sm:p-2 shadow-elevated flex items-center justify-center gap-1.5 sm:gap-2.5 max-w-full overflow-x-auto">
             {state === 'active' && (
               <>
                 {/* Pausar */}
@@ -787,7 +787,7 @@ export function ARMirrorPage() {
                   className={cn(
                     "rounded-xl px-2.5 sm:px-3 py-2 sm:py-2.5 flex items-center gap-1.5 hover:scale-105 active:scale-95 transition-all cursor-pointer min-h-[40px] sm:min-h-[44px]",
                     showModel3D
-                      ? "bg-teal-500/30 text-teal-300 border border-teal-400/50 shadow-md shadow-teal-500/20"
+                      ? "bg-teal-500/30 text-teal-300 border border-teal-400/50 shadow-sm shadow-teal-500/20"
                       : "bg-white/5 text-white/70 hover:text-white"
                   )}
                   title={showModel3D ? 'Guía 3D Activa (Toca para ocultar)' : 'Mostrar Guía 3D de ejercicio'}

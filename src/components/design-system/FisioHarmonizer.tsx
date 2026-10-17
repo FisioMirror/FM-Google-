@@ -36,7 +36,7 @@ export const FisioCard = forwardRef<HTMLDivElement, FisioCardProps>(
     }
 
     const interactiveClass = interactive
-      ? 'cursor-pointer hover:-translate-y-0.5 hover:shadow-md active:scale-[0.99] transition-all duration-300'
+      ? 'cursor-pointer hover:-translate-y-0.5 hover:shadow-card active:scale-[0.99] transition-all duration-300'
       : '';
 
     const paddingClass = padded ? 'p-5 sm:p-6' : '';
@@ -73,7 +73,7 @@ export const FisioPanel = forwardRef<HTMLDivElement, FisioPanelProps>(
         {...props}
       >
         {(header || action) && (
-          <div className="flex items-center justify-between gap-4 mb-6 pb-4 border-b border-outline/10">
+          <div className="flex items-center justify-between gap-4 mb-6 pb-4 border-b border-outline/15">
             {header && (
               <div className="text-lg font-bold text-on-surface tracking-tight">
                 {header}

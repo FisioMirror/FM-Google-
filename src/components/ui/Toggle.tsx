@@ -48,12 +48,12 @@ export function Toggle({ checked, onChange, label, description, icon, disabled }
         className={cn(
           'relative shrink-0 w-12 h-7 rounded-full transition-colors duration-300 p-0.5',
           checked
-            ? 'bg-teal-600 shadow-md shadow-teal-600/30 ring-2 ring-teal-500/20'
+            ? 'bg-teal-600 shadow-sm shadow-teal-600/30 ring-2 ring-teal-500/20'
             : 'bg-surface-container-highest border border-outline/20'
         )}
       >
         <motion.div
-          className="w-6 h-6 rounded-full bg-white shadow-md flex items-center justify-center"
+          className="w-6 h-6 rounded-full bg-white shadow-sm flex items-center justify-center"
           animate={{ x: checked ? 20 : 0 }}
           transition={{ type: 'spring', damping: 20, stiffness: 350 }}
         >

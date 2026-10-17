@@ -179,7 +179,7 @@ export const MilestoneCelebrationModal: React.FC<MilestoneCelebrationModalProps>
           type="button"
           whileTap={{ scale: 0.95 }}
           onClick={() => setCelebrated(!celebrated)}
-          className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-xl bg-emerald-600 text-white text-xs font-bold shadow-md shadow-emerald-600/30 hover:bg-emerald-500 transition-colors"
+          className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-xl bg-emerald-600 text-white text-xs font-bold shadow-sm shadow-emerald-600/30 hover:bg-emerald-500 transition-colors"
         >
           <Sparkles className="w-3.5 h-3.5" />
           <span>{celebrated ? '¡XP Reclamada!' : 'Reclamar +250 XP'}</span>
@@ -222,7 +222,7 @@ export const MobilityQuestCard: React.FC<MobilityQuestCardProps> = ({
           className={cn(
             "p-2.5 rounded-2xl border transition-all shrink-0",
             completed
-              ? "bg-emerald-500 text-white border-emerald-500 shadow-md shadow-emerald-500/30"
+              ? "bg-emerald-500 text-white border-emerald-500 shadow-sm shadow-emerald-500/30"
               : "bg-teal-500/15 text-teal-600 dark:text-teal-400 border-teal-500/30"
           )}
         >
@@ -350,7 +350,7 @@ export const RehabHeroAvatarCard: React.FC<RehabHeroAvatarCardProps> = ({
         className
       )}
     >
-      <div className="relative size-12 rounded-2xl bg-gradient-to-br from-teal-500 to-cyan-500 text-white flex items-center justify-center font-black text-base shadow-md shadow-teal-500/30 shrink-0">
+      <div className="relative size-12 rounded-2xl bg-gradient-to-br from-teal-500 to-cyan-500 text-white flex items-center justify-center font-black text-base shadow-sm shadow-teal-500/30 shrink-0">
         CR
         <span className="absolute -bottom-1 -right-1 size-3.5 rounded-full bg-emerald-500 border-2 border-white dark:border-slate-900" />
       </div>
@@ -387,7 +387,7 @@ export const CheerReactionButton: React.FC<CheerReactionButtonProps> = ({ classN
         whileTap={{ scale: 0.92 }}
         onClick={handleCheer}
         className={cn(
-          "inline-flex items-center gap-2 p-2.5 px-4 rounded-2xl bg-teal-500/15 hover:bg-teal-500/25 text-teal-700 dark:text-teal-300 border border-teal-500/35 text-xs font-bold transition-all shadow-md select-none",
+          "inline-flex items-center gap-2 p-2.5 px-4 rounded-2xl bg-teal-500/15 hover:bg-teal-500/25 text-teal-700 dark:text-teal-300 border border-teal-500/35 text-xs font-bold transition-all shadow-sm select-none",
           className
         )}
       >
@@ -425,7 +425,7 @@ export const RecoveryRankBadge: React.FC<RecoveryRankBadgeProps> = ({
     <motion.div
       whileHover={{ y: -2 }}
       className={cn(
-        "inline-flex items-center gap-2 p-2.5 px-4 rounded-2xl bg-gradient-to-r from-teal-500/20 via-cyan-500/20 to-teal-500/20 border border-teal-500/40 text-xs font-bold text-teal-900 dark:text-teal-100 shadow-md",
+        "inline-flex items-center gap-2 p-2.5 px-4 rounded-2xl bg-gradient-to-r from-teal-500/20 via-cyan-500/20 to-teal-500/20 border border-teal-500/40 text-xs font-bold text-teal-900 dark:text-teal-100 shadow-sm",
         className
       )}
     >

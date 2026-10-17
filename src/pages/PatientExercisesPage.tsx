@@ -280,7 +280,7 @@ export function PatientExercisesPage() {
             completedExercises={exercises.length > 0 ? 1 : 0}
             xpReward={150}
           />
-          <div className="flex items-center justify-between p-4 rounded-3xl bg-surface/80 dark:bg-slate-900/60 border border-outline/10">
+          <div className="flex items-center justify-between p-4 rounded-3xl bg-surface/80 dark:bg-slate-900/60 border border-outline/15">
             <span className="text-xs font-bold text-on-surface">¿Sesión completada?</span>
             <CheerReactionButton />
           </div>
@@ -393,7 +393,7 @@ export function PatientExercisesPage() {
                     onClick={() =>
                       navigate(`/ar-mirror?ejercicio=${encodeURIComponent(ex.ejercicio_nombre || 'Ejercicio')}`)
                     }
-                    className="w-full py-3 rounded-2xl bg-primary hover:bg-primary/90 text-on-primary font-bold text-xs transition-all shadow-md shadow-teal-700/20 flex items-center justify-center gap-2 active:scale-[0.98]"
+                    className="w-full py-3 rounded-2xl bg-primary hover:bg-primary/90 text-on-primary font-bold text-xs transition-all shadow-sm shadow-teal-700/20 flex items-center justify-center gap-2 active:scale-[0.98]"
                   >
                     <Play size={16} fill="currentColor" />
                     <span>Iniciar en Espejo AR</span>

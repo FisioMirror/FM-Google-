@@ -406,7 +406,7 @@ export function PatientDetailPage() {
       {/* Patient Header Section */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 p-6 rounded-3xl bg-surface/85 dark:bg-surface-container-low/70 border border-outline/15 shadow-sm">
         <div className="flex items-center gap-4">
-          <div className="size-16 rounded-2xl bg-gradient-to-br from-teal-500 to-emerald-600 text-white flex items-center justify-center text-2xl font-black shadow-md shadow-teal-500/20">
+          <div className="size-16 rounded-2xl bg-gradient-to-br from-teal-500 to-emerald-600 text-white flex items-center justify-center text-2xl font-black shadow-sm shadow-teal-500/20">
             {patient.full_name.charAt(0)}
           </div>
           <div>
@@ -445,7 +445,7 @@ export function PatientDetailPage() {
 
           <button
             onClick={() => setShowOcrUpdateModal(true)}
-            className="px-4 py-2.5 rounded-2xl bg-surface-container hover:bg-surface-container-high border border-outline/10 text-on-surface text-xs font-bold transition-all flex items-center gap-2"
+            className="px-4 py-2.5 rounded-2xl bg-surface-container hover:bg-surface-container-high border border-outline/15 text-on-surface text-xs font-bold transition-all flex items-center gap-2"
           >
             <Icon name="upload_file" size={16} className="text-primary" />
             <span>Actualizar con OCR</span>
@@ -453,7 +453,7 @@ export function PatientDetailPage() {
 
           <button
             onClick={() => setShowPDFModal(true)}
-            className="px-4 py-2.5 rounded-2xl bg-surface-container hover:bg-surface-container-high border border-outline/10 text-on-surface text-xs font-bold transition-all flex items-center gap-2"
+            className="px-4 py-2.5 rounded-2xl bg-surface-container hover:bg-surface-container-high border border-outline/15 text-on-surface text-xs font-bold transition-all flex items-center gap-2"
           >
             <Icon name="picture_as_pdf" size={16} />
             <span>Exportar PDF</span>
@@ -461,7 +461,7 @@ export function PatientDetailPage() {
 
           <button
             onClick={() => navigate(`/ar-mirror?patientId=${patient.id}`)}
-            className="px-5 py-2.5 rounded-2xl bg-primary text-on-primary hover:bg-primary/90 text-xs font-bold transition-all shadow-md shadow-primary/20 flex items-center gap-2"
+            className="px-5 py-2.5 rounded-2xl bg-primary text-on-primary hover:bg-primary/90 text-xs font-bold transition-all shadow-sm shadow-primary/20 flex items-center gap-2"
           >
             <Icon name="videocam" size={16} />
             <span>Iniciar Sesión AR</span>
@@ -488,7 +488,7 @@ export function PatientDetailPage() {
       </div>
 
       {/* Navigation Tabs */}
-      <div className="flex gap-2 p-1.5 rounded-2xl bg-surface-container/60 border border-outline/10 overflow-x-auto hide-scrollbar">
+      <div className="flex gap-2 p-1.5 rounded-2xl bg-surface-container/60 border border-outline/15 overflow-x-auto hide-scrollbar">
         {tabs.map((tab) => (
           <button
             key={tab.id}
@@ -587,7 +587,7 @@ export function PatientDetailPage() {
                     className={cn(
                       "w-full rounded-t-xl relative group cursor-pointer transition-all",
                       i === 7
-                        ? "bg-gradient-to-t from-teal-600 to-teal-400 shadow-md shadow-teal-500/30"
+                        ? "bg-gradient-to-t from-teal-600 to-teal-400 shadow-sm shadow-teal-500/30"
                         : "bg-teal-500/20 hover:bg-teal-500/35 dark:bg-teal-400/20 dark:hover:bg-teal-400/35"
                     )}
                     style={{ height: `${Math.max((v / maxWeekVal) * 100, 8)}%` }}
@@ -601,7 +601,7 @@ export function PatientDetailPage() {
               ))}
             </div>
 
-            <div className="flex items-center justify-between pt-4 border-t border-outline/10 mt-4">
+            <div className="flex items-center justify-between pt-4 border-t border-outline/15 mt-4">
               <JointDetailPopover
                 triggerLabel="Inspección Detallada de Articulación"
                 metrics={{

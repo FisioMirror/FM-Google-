@@ -183,7 +183,7 @@ export function HelpSection({ className }: { className?: string }) {
                     transition={{ duration: 0.25 }}
                     className="overflow-hidden"
                   >
-                    <div className="px-4 pb-4 pt-1 text-sm text-on-surface-variant leading-relaxed border-t border-outline/10 bg-surface-container-lowest/50">
+                    <div className="px-4 pb-4 pt-1 text-sm text-on-surface-variant leading-relaxed border-t border-outline/15 bg-surface-container-lowest/50">
                       {item.answer}
                     </div>
                   </motion.div>

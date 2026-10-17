@@ -25,9 +25,9 @@ export function IOSInstallModal({ isOpen, onClose }: IOSInstallModalProps) {
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             className="relative w-full max-w-md bg-surface border border-primary/20 rounded-3xl p-6 shadow-elevated z-10 max-h-[90vh] overflow-y-auto"
           >
-            <div className="flex items-center justify-between pb-4 border-b border-outline/10">
+            <div className="flex items-center justify-between pb-4 border-b border-outline/15">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-teal-500 to-cyan-600 flex items-center justify-center text-white shadow-md">
+                <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-teal-500 to-cyan-600 flex items-center justify-center text-white shadow-sm">
                   <Smartphone className="size-5" />
                 </div>
                 <div>
@@ -89,7 +89,7 @@ export function IOSInstallModal({ isOpen, onClose }: IOSInstallModalProps) {
 
             <button
               onClick={onClose}
-              className="w-full py-3 rounded-2xl bg-primary text-on-primary font-semibold hover:bg-primary-dark transition-all active:scale-[0.98] shadow-md shadow-primary/20"
+              className="w-full py-3 rounded-2xl bg-primary text-on-primary font-semibold hover:bg-primary-dark transition-all active:scale-[0.98] shadow-sm shadow-primary/20"
             >
               Entendido
             </button>

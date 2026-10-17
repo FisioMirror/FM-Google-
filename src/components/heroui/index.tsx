@@ -44,7 +44,7 @@ export const CustomAccordion = ({
   const [openIdx, setOpenIdx] = useState<number | null>(0);
 
   return (
-    <div className={cn('w-full max-w-md rounded-3xl border border-outline/15 bg-surface/80 backdrop-blur-md overflow-hidden divide-y divide-outline/10 shadow-sm', className)}>
+    <div className={cn('w-full max-w-md rounded-3xl border border-outline/15 bg-surface/80 backdrop-blur-md overflow-hidden divide-y divide-outline/15 shadow-sm', className)}>
       {items.map((item, idx) => {
         const isOpen = openIdx === idx;
         return (
@@ -185,7 +185,7 @@ export const DeleteDialog = ({
                 </div>
               </div>
 
-              <div className="flex items-center justify-end gap-2.5 pt-4 border-t border-outline/10">
+              <div className="flex items-center justify-end gap-2.5 pt-4 border-t border-outline/15">
                 <button
                   onClick={() => setIsOpen(false)}
                   className="px-4 py-2 rounded-xl text-xs font-bold text-on-surface-variant hover:bg-surface-container-high transition-colors"
@@ -197,7 +197,7 @@ export const DeleteDialog = ({
                     onConfirm?.();
                     setIsOpen(false);
                   }}
-                  className="px-4 py-2 rounded-xl text-xs font-bold bg-rose-600 text-white hover:bg-rose-700 shadow-md shadow-rose-600/20 transition-all active:scale-95 cursor-pointer"
+                  className="px-4 py-2 rounded-xl text-xs font-bold bg-rose-600 text-white hover:bg-rose-700 shadow-sm shadow-rose-600/20 transition-all active:scale-95 cursor-pointer"
                 >
                   Confirmar eliminación
                 </button>
@@ -328,7 +328,7 @@ export const CustomBreadcrumbs = ({
 export const IconButtons = () => {
   return (
     <div className="flex flex-wrap gap-2.5">
-      <button className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-primary text-on-primary text-xs font-bold hover:bg-teal-500 transition-all active:scale-95 shadow-md shadow-teal-600/20 cursor-pointer">
+      <button className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-primary text-on-primary text-xs font-bold hover:bg-teal-500 transition-all active:scale-95 shadow-sm shadow-teal-600/20 cursor-pointer">
         <Globe className="size-3.5" /> Buscar
       </button>
       <button className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-teal-500/10 text-teal-600 dark:text-teal-400 border border-teal-500/20 text-xs font-bold hover:bg-teal-500/20 transition-all active:scale-95 cursor-pointer">
@@ -445,7 +445,7 @@ export const CardWithAvatar = ({
           <p className="text-xs text-on-surface-variant truncate mt-0.5">{subtitle}</p>
         </div>
       </div>
-      <div className="pt-3 border-t border-outline/10 flex items-center justify-between text-xs">
+      <div className="pt-3 border-t border-outline/15 flex items-center justify-between text-xs">
         <span className="text-outline">Fisio: {therapist}</span>
         <span className="font-extrabold text-teal-600 dark:text-teal-400 bg-teal-500/10 px-2 py-0.5 rounded-full">
           85% Adh.
@@ -519,7 +519,7 @@ export const PremiumCard = ({
         </div>
       </div>
 
-      <ul className="space-y-3 py-4 border-y border-outline/10 my-4">
+      <ul className="space-y-3 py-4 border-y border-outline/15 my-4">
         {features.map((f, i) => (
           <li key={i} className="flex items-center gap-2.5 text-xs font-medium text-on-surface">
             <div className="size-5 rounded-full bg-teal-500/15 text-teal-600 flex items-center justify-center shrink-0">
@@ -570,7 +570,7 @@ export const DisclosureConfig = () => {
 
   return (
     <div className="w-full max-w-md rounded-3xl border border-outline/15 bg-surface p-4 space-y-2 shadow-sm">
-      <div className="border-b border-outline/10 pb-2">
+      <div className="border-b border-outline/15 pb-2">
         <button
           onClick={() => setExpanded(expanded === 'profile' ? null : 'profile')}
           className="w-full flex items-center justify-between p-3 rounded-2xl text-xs font-bold text-on-surface hover:bg-surface-container-high transition-colors cursor-pointer"
@@ -644,7 +644,7 @@ export const NavigationDrawer = ({
               className="relative w-72 max-w-[80vw] h-full bg-surface border-r border-outline/15 p-6 shadow-elevated flex flex-col justify-between z-10"
             >
               <div>
-                <div className="flex items-center justify-between pb-4 border-b border-outline/10">
+                <div className="flex items-center justify-between pb-4 border-b border-outline/15">
                   <span className="font-extrabold text-sm text-teal-600 dark:text-teal-400">FisioMirror Suite</span>
                   <button onClick={setOpen} className="p-1 rounded-lg text-outline hover:text-on-surface">
                     <X className="size-4" />
@@ -687,7 +687,7 @@ export const ActionDropdown = () => {
     <div className="relative inline-block">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="px-4 py-2.5 rounded-2xl bg-primary text-on-primary text-xs font-bold hover:bg-teal-500 transition-all flex items-center gap-2 shadow-md shadow-teal-600/20 cursor-pointer active:scale-95"
+        className="px-4 py-2.5 rounded-2xl bg-primary text-on-primary text-xs font-bold hover:bg-teal-500 transition-all flex items-center gap-2 shadow-sm shadow-teal-600/20 cursor-pointer active:scale-95"
       >
         <span>Acciones Rápidas</span>
         <ChevronDown className="size-3.5" />
@@ -819,7 +819,7 @@ export const DateRange = ({
 }) => {
   return (
     <div className="p-5 rounded-3xl bg-surface border border-outline/15 max-w-sm shadow-sm space-y-3">
-      <div className="flex items-center justify-between pb-3 border-b border-outline/10 text-xs font-bold text-on-surface">
+      <div className="flex items-center justify-between pb-3 border-b border-outline/15 text-xs font-bold text-on-surface">
         <span className="flex items-center gap-2">
           <Calendar className="size-4 text-teal-600" /> Marzo 2026
         </span>
@@ -932,7 +932,7 @@ export const PatientsTable = ({
   return (
     <div className="w-full overflow-x-auto rounded-3xl border border-outline/15 bg-surface shadow-sm">
       <table className="w-full text-left text-xs">
-        <thead className="border-b border-outline/10 bg-surface-container-low text-on-surface-variant font-extrabold uppercase tracking-wider text-2xs">
+        <thead className="border-b border-outline/15 bg-surface-container-low text-on-surface-variant font-extrabold uppercase tracking-wider text-2xs">
           <tr>
             <th className="p-4">Paciente</th>
             <th className="p-4">Adherencia</th>
@@ -940,7 +940,7 @@ export const PatientsTable = ({
             <th className="p-4 text-right">Acción</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-outline/10">
+        <tbody className="divide-y divide-outline/15">
           {users.map((u) => (
             <tr key={u.id} className="hover:bg-teal-500/5 transition-colors">
               <td className="p-4">
@@ -1100,7 +1100,7 @@ export const PopoverInteractive = ({
               </button>
             </div>
             <p className="text-xs text-on-surface-variant leading-relaxed">{bio}</p>
-            <div className="pt-3 border-t border-outline/10 flex items-center justify-between text-xs font-semibold">
+            <div className="pt-3 border-t border-outline/15 flex items-center justify-between text-xs font-semibold">
               <span className="text-on-surface">12 Sesiones Realizadas</span>
               <span className="text-teal-600 dark:text-teal-400 font-bold bg-teal-500/10 px-2 py-0.5 rounded-full">
                 88% Adherencia

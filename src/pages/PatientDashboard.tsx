@@ -374,7 +374,7 @@ export function PatientDashboard() {
         >
           <CardSpotlight
             color="rgba(245, 158, 11, 0.16)"
-            className="p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl flex flex-col justify-between cursor-default shadow-sm hover:shadow-md transition-all h-full bg-gradient-to-br from-amber-50/75 via-surface/90 to-amber-50/30 dark:from-amber-950/25 dark:via-surface-container/80 dark:to-slate-900/90 border border-amber-200/50 dark:border-amber-500/25"
+            className="p-3.5 sm:p-5 rounded-2xl flex flex-col justify-between cursor-default shadow-sm hover:shadow-card transition-all h-full bg-gradient-to-br from-amber-50/75 via-surface/90 to-amber-50/30 dark:from-amber-950/25 dark:via-surface-container/80 dark:to-slate-900/90 border border-amber-200/50 dark:border-amber-500/25"
           >
             <div className="flex items-start justify-between mb-2">
               <div className="size-9 sm:size-11 rounded-xl sm:rounded-2xl bg-amber-500/15 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0 border border-amber-500/20">
@@ -398,7 +398,7 @@ export function PatientDashboard() {
         >
           <CardSpotlight
             color="rgba(20, 184, 166, 0.16)"
-            className="p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl flex flex-col justify-between cursor-default shadow-sm hover:shadow-md transition-all h-full bg-gradient-to-br from-teal-50/80 via-surface/90 to-emerald-50/40 dark:from-teal-950/30 dark:via-surface-container/80 dark:to-slate-900/90 border border-teal-200/60 dark:border-teal-500/30"
+            className="p-3.5 sm:p-5 rounded-2xl flex flex-col justify-between cursor-default shadow-sm hover:shadow-card transition-all h-full bg-gradient-to-br from-teal-50/80 via-surface/90 to-emerald-50/40 dark:from-teal-950/30 dark:via-surface-container/80 dark:to-slate-900/90 border border-teal-200/60 dark:border-teal-500/30"
           >
             <div className="flex items-start justify-between mb-2">
               <div className="size-9 sm:size-11 rounded-xl sm:rounded-2xl bg-teal-500/15 text-teal-600 dark:text-teal-400 flex items-center justify-center shrink-0 border border-teal-500/25">
@@ -422,7 +422,7 @@ export function PatientDashboard() {
         >
           <CardSpotlight
             color="rgba(14, 165, 233, 0.16)"
-            className="p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl flex flex-col justify-between cursor-default shadow-sm hover:shadow-md transition-all h-full bg-gradient-to-br from-sky-50/75 via-surface/90 to-sky-50/40 dark:from-sky-950/25 dark:via-surface-container/80 dark:to-slate-900/90 border border-sky-200/60 dark:border-sky-500/30"
+            className="p-3.5 sm:p-5 rounded-2xl flex flex-col justify-between cursor-default shadow-sm hover:shadow-card transition-all h-full bg-gradient-to-br from-sky-50/75 via-surface/90 to-sky-50/40 dark:from-sky-950/25 dark:via-surface-container/80 dark:to-slate-900/90 border border-sky-200/60 dark:border-sky-500/30"
           >
             <div className="flex items-start justify-between mb-2">
               <div className="size-9 sm:size-11 rounded-xl sm:rounded-2xl bg-sky-500/15 text-sky-700 dark:text-sky-300 flex items-center justify-center shrink-0 border border-sky-500/25">
@@ -450,7 +450,7 @@ export function PatientDashboard() {
 
       {/* Gamificación Interactiva & Registro del Umbral de Dolor */}
       <div className="space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-3xl bg-surface/80 dark:bg-surface-container/60 border border-outline/10 shadow-sm">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-3xl bg-surface/80 dark:bg-surface-container/60 border border-outline/15 shadow-sm">
           <LevelProgressRibbon currentLevel={3} currentXp={380} nextLevelXp={500} className="w-full sm:w-auto" />
           <span className="text-xs font-bold text-teal-600 dark:text-teal-400">
             Fase de Recuperación Articular • Nivel 3
@@ -548,7 +548,7 @@ export function PatientDashboard() {
                     whileHover={{ y: -3, scale: 1.015, transition: springTactile }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => navigate('/calibration')}
-                    className="p-4 rounded-2xl bg-surface/80 dark:bg-surface-container-low/60 border border-outline/10 hover:border-teal-500/40 transition-all cursor-pointer flex items-center justify-between gap-3 group"
+                    className="p-4 rounded-2xl bg-surface/80 dark:bg-surface-container-low/60 border border-outline/15 hover:border-teal-500/40 transition-all cursor-pointer flex items-center justify-between gap-3 group"
                   >
                     <div className="flex items-center gap-3">
                       <div className="size-10 rounded-xl bg-teal-500/10 text-teal-600 dark:text-teal-400 flex items-center justify-center">
@@ -584,7 +584,7 @@ export function PatientDashboard() {
           <CollapsibleSection title="Actividad Semanal" icon="trending_up" defaultOpen>
             <SimpleCalendar markedDates={allSessionDates} />
 
-            <div className="p-5 rounded-2xl bg-surface/80 dark:bg-surface-container-low/60 border border-outline/10 mt-4">
+            <div className="p-5 rounded-2xl bg-surface/80 dark:bg-surface-container-low/60 border border-outline/15 mt-4">
               <div className="flex justify-between items-center text-xs mb-3 text-on-surface-variant">
                 <span className="font-semibold">Minutos diarios</span>
                 <span>Objetivo: 15 min/día</span>
@@ -609,7 +609,7 @@ export function PatientDashboard() {
             </div>
 
             {evolution && (
-              <div className="p-4 rounded-2xl bg-surface/80 dark:bg-surface-container-low/60 border border-outline/10 mt-4 space-y-2">
+              <div className="p-4 rounded-2xl bg-surface/80 dark:bg-surface-container-low/60 border border-outline/15 mt-4 space-y-2">
                 <div className="flex justify-between items-center text-xs text-on-surface-variant mb-1">
                   <span className="font-semibold">Evolución de Rango Articular</span>
                   <span className="font-bold text-teal-600 dark:text-teal-400">
@@ -647,7 +647,7 @@ export function PatientDashboard() {
           <PainScaleInteractiveCard initialPain={2} />
 
           {/* AI Physi Recommendation Card */}
-          <div className="p-6 rounded-3xl bg-surface/80 dark:bg-surface-container-low/60 border border-outline/10 space-y-4">
+          <div className="p-6 rounded-3xl bg-surface/80 dark:bg-surface-container-low/60 border border-outline/15 space-y-4">
             <div className="flex items-center gap-2.5">
               <div className="size-8 rounded-xl bg-teal-500/10 text-teal-600 flex items-center justify-center">
                 <Bot className="size-4" />
@@ -737,7 +737,7 @@ export function PatientDashboard() {
       {/* Gamification Achievements Section */}
       <CollapsibleSection title="Logros y Metas de Recuperación" icon="emoji_events">
         <div className="space-y-6">
-          <div className="p-6 rounded-3xl bg-surface/80 dark:bg-surface-container-low/60 border border-outline/10">
+          <div className="p-6 rounded-3xl bg-surface/80 dark:bg-surface-container-low/60 border border-outline/15">
             <div className="flex justify-between items-center text-xs mb-4">
               <span className="text-on-surface-variant">{gamification.unlockedCount} de {gamification.achievements.length} medallas</span>
               <span className="font-bold text-teal-600 dark:text-teal-400">{Math.round(gamification.totalProgress * 100)}% desbloqueado</span>
@@ -745,7 +745,7 @@ export function PatientDashboard() {
             <AchievementShowcase achievements={gamification.achievements} compact={false} />
 
             {/* Medallas 3D Gamificadas de FisioMirror */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6 pt-6 border-t border-outline/10">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6 pt-6 border-t border-outline/15">
               <GamifiedBadgeCard
                 title="Constancia Inquebrantable"
                 description="5 días seguidos completando rutina prescrita"

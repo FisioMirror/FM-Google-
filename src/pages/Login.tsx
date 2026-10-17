@@ -174,7 +174,7 @@ function CharacterSpotlight({
         {/* Discreet hover indicator when inactive */}
         {!isFisio && (
           <div className="absolute top-[28%] left-[24%] opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none transform -translate-y-1 group-hover:translate-y-0">
-            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-md shadow-md border border-slate-200/90 dark:border-slate-700 text-on-surface text-xs font-bold">
+            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-md shadow-sm border border-slate-200/90 dark:border-slate-700 text-on-surface text-xs font-bold">
               <Icon name="touch_app" size={12} />
               <span>Ver Fisioterapeuta</span>
             </div>
@@ -222,7 +222,7 @@ function CharacterSpotlight({
         {/* Discreet hover indicator when inactive */}
         {!isPaciente && (
           <div className="absolute top-[32%] right-[24%] opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none transform -translate-y-1 group-hover:translate-y-0">
-            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-md shadow-md border border-slate-200/90 dark:border-slate-700 text-on-surface text-xs font-bold">
+            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-md shadow-sm border border-slate-200/90 dark:border-slate-700 text-on-surface text-xs font-bold">
               <Icon name="touch_app" size={12} />
               <span>Ver Paciente</span>
             </div>
@@ -1169,7 +1169,7 @@ export function Login() {
                   <button
                     type="submit"
                     disabled={loading || cooldown > 0 || token.length < 4 || !email.trim() || !password.trim()}
-                    className="w-full rounded-2xl bg-[#00504d] dark:bg-teal-600 py-3.5 text-sm font-bold text-white shadow-md shadow-teal-900/20 hover:bg-[#0c403d] dark:hover:bg-teal-500 active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                    className="w-full rounded-2xl bg-[#00504d] dark:bg-teal-600 py-3.5 text-sm font-bold text-white shadow-sm shadow-teal-900/20 hover:bg-[#0c403d] dark:hover:bg-teal-500 active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                   >
                     {loading ? (
                       <Spinner size={18} className="text-white" />
@@ -1282,7 +1282,7 @@ export function Login() {
                   <button
                     type="submit"
                     disabled={loading || cooldown > 0}
-                    className="w-full rounded-2xl bg-[#00504d] dark:bg-teal-600 py-3.5 text-sm font-bold text-white shadow-md shadow-teal-900/20 hover:bg-[#0c403d] dark:hover:bg-teal-500 active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                    className="w-full rounded-2xl bg-[#00504d] dark:bg-teal-600 py-3.5 text-sm font-bold text-white shadow-sm shadow-teal-900/20 hover:bg-[#0c403d] dark:hover:bg-teal-500 active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                   >
                     {loading ? (
                       <Spinner size={18} className="text-white" />
@@ -1651,7 +1651,7 @@ export function Login() {
                   <button
                     type="submit"
                     disabled={loading || uploading || cooldown > 0 || (fisioStep === 1 && !canSubmitFisioStep1)}
-                    className="w-full rounded-2xl bg-[#00504d] dark:bg-teal-600 py-3.5 text-sm font-bold text-white shadow-md shadow-teal-900/20 hover:bg-[#0c403d] dark:hover:bg-teal-500 active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                    className="w-full rounded-2xl bg-[#00504d] dark:bg-teal-600 py-3.5 text-sm font-bold text-white shadow-sm shadow-teal-900/20 hover:bg-[#0c403d] dark:hover:bg-teal-500 active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                   >
                     {loading || uploading ? (
                       <Spinner size={18} className="text-white" />
@@ -1955,7 +1955,7 @@ export function Login() {
                   setMode('login');
                   setFisioStep(1);
                 }}
-                className="w-full py-3.5 bg-[#00504d] dark:bg-primary text-on-primary rounded-2xl font-bold text-sm hover:bg-[#0c403d] dark:hover:bg-teal-500 active:scale-95 transition-all shadow-md"
+                className="w-full py-3.5 bg-[#00504d] dark:bg-primary text-on-primary rounded-2xl font-bold text-sm hover:bg-[#0c403d] dark:hover:bg-teal-500 active:scale-95 transition-all shadow-sm"
               >
                 Ir a Iniciar Sesión
               </button>

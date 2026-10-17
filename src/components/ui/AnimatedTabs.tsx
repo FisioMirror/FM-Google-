@@ -43,7 +43,7 @@ export function AnimatedTabs({
           isVertical
             ? 'flex flex-col space-y-1.5 border-r border-outline/15 pr-4'
             : isPills
-              ? 'flex items-center gap-1.5 p-1.5 rounded-2xl bg-surface-container-high/60 border border-outline/10 w-fit overflow-x-auto max-w-full'
+              ? 'flex items-center gap-1.5 p-1.5 rounded-2xl bg-surface-container-high/60 border border-outline/15 w-fit overflow-x-auto max-w-full'
               : 'flex border-b border-outline/15 overflow-x-auto overflow-y-hidden flex-nowrap scrollbar-thin [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden',
         )}
       >
@@ -72,7 +72,7 @@ export function AnimatedTabs({
               {isPills && isActive && (
                 <motion.div
                   layoutId="activeTabPill"
-                  className="absolute inset-0 rounded-xl bg-gradient-to-r from-teal-600 to-teal-500 shadow-md shadow-teal-600/25 -z-10"
+                  className="absolute inset-0 rounded-xl bg-gradient-to-r from-teal-600 to-teal-500 shadow-sm shadow-teal-600/25 -z-10"
                   transition={{ type: 'spring', stiffness: 400, damping: 30 }}
                 />
               )}

@@ -376,7 +376,7 @@ export function ReassignRoutineModal({
                         className={cn(
                           'text-left p-4 rounded-2xl border transition-all relative overflow-hidden',
                           isSelected
-                            ? 'bg-primary/10 border-primary shadow-md'
+                            ? 'bg-primary/10 border-primary shadow-sm'
                             : 'bg-surface-container border-outline-variant/20 hover:border-primary/40',
                         )}
                       >

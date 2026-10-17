@@ -1511,7 +1511,7 @@ export function UIShowcasePage() {
                     <Users className="size-4 mx-auto mb-0.5" />
                     <span>Pacientes</span>
                   </div>
-                  <div className="size-10 rounded-xl bg-gradient-to-tr from-teal-600 to-sky-400 text-white flex flex-col items-center justify-center -mt-3 shadow-md">
+                  <div className="size-10 rounded-xl bg-gradient-to-tr from-teal-600 to-sky-400 text-white flex flex-col items-center justify-center -mt-3 shadow-sm">
                     <Camera className="size-4" />
                     <span className="text-2xs">AR</span>
                   </div>
@@ -1555,7 +1555,7 @@ export function UIShowcasePage() {
                     setIsBottomSheetOpen(false);
                     navigate('/ar-mirror');
                   }}
-                  className="px-5 py-2 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-bold text-xs shadow-md shadow-teal-600/30"
+                  className="px-5 py-2 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-bold text-xs shadow-sm shadow-teal-600/30"
                 >
                   Iniciar AR Mirror
                 </button>
@@ -1815,7 +1815,7 @@ export function UIShowcasePage() {
                 <HarmonizedSurface
                   variant="pastel-gradient"
                   interactive
-                  className="p-5 rounded-2xl relative shadow-md"
+                  className="p-5 rounded-2xl relative shadow-sm"
                 >
                   <div className="flex items-center justify-between mb-3">
                     <span className="text-2xs font-bold px-2.5 py-0.5 rounded-full bg-teal-500/20 text-teal-800 dark:text-teal-200 border border-teal-500/30 flex items-center gap-1">

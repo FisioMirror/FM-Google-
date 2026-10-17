@@ -581,7 +581,7 @@ Equipo FisioMirror`;
                     type="button"
                     onClick={handleSendUnifiedEmail}
                     disabled={sendingEmail}
-                    className="w-full py-2.5 px-4 rounded-xl bg-primary hover:bg-primary/90 active:scale-98 text-on-primary font-bold text-xs transition-all flex items-center justify-center gap-1.5 shadow-md shadow-teal-600/20 disabled:opacity-60"
+                    className="w-full py-2.5 px-4 rounded-xl bg-primary hover:bg-primary/90 active:scale-98 text-on-primary font-bold text-xs transition-all flex items-center justify-center gap-1.5 shadow-sm shadow-teal-600/20 disabled:opacity-60"
                   >
                     {sendingEmail ? (
                       <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -606,7 +606,7 @@ Equipo FisioMirror`;
                 <button
                   type="button"
                   onClick={handleSendWhatsApp}
-                  className="w-full py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 active:scale-98 text-white font-bold text-xs transition-all flex items-center justify-center gap-1.5 shadow-md shadow-emerald-600/20"
+                  className="w-full py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 active:scale-98 text-white font-bold text-xs transition-all flex items-center justify-center gap-1.5 shadow-sm shadow-emerald-600/20"
                 >
                   <ExternalLink size={14} />
                   <span>Abrir en WhatsApp</span>
@@ -617,7 +617,7 @@ Equipo FisioMirror`;
                 <button
                   type="button"
                   onClick={handleSendSMS}
-                  className="w-full py-2.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 active:scale-98 text-white font-bold text-xs transition-all flex items-center justify-center gap-1.5 shadow-md shadow-blue-600/20"
+                  className="w-full py-2.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 active:scale-98 text-white font-bold text-xs transition-all flex items-center justify-center gap-1.5 shadow-sm shadow-blue-600/20"
                 >
                   <Send size={14} />
                   <span>Enviar por SMS</span>

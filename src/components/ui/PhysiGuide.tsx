@@ -378,7 +378,7 @@ export function PhysiGuide({
             animate={{ scale: open ? 0.95 : 1 }}
           />
           {!open && (
-            <span className="absolute -top-1 -right-1 bg-kinetic text-on-surface text-2xs font-black px-1.5 py-0.5 rounded-full shadow-md z-10">
+            <span className="absolute -top-1 -right-1 bg-kinetic text-on-surface text-2xs font-black px-1.5 py-0.5 rounded-full shadow-sm z-10">
               IA
             </span>
           )}
@@ -623,7 +623,7 @@ export function PhysiGuide({
                 <button
                   onClick={handleSend}
                   disabled={!input.trim() || loading}
-                  className="size-10 rounded-xl bg-primary text-on-primary flex items-center justify-center shrink-0 hover:bg-teal-500 disabled:opacity-40 disabled:cursor-not-allowed transition-all active:scale-95 shadow-md shadow-teal-900/15 cursor-pointer"
+                  className="size-10 rounded-xl bg-primary text-on-primary flex items-center justify-center shrink-0 hover:bg-teal-500 disabled:opacity-40 disabled:cursor-not-allowed transition-all active:scale-95 shadow-sm shadow-teal-900/15 cursor-pointer"
                   aria-label="Enviar mensaje"
                 >
                   <Send size={16} />

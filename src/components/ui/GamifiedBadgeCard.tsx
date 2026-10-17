@@ -112,7 +112,7 @@ export const GamifiedBadgeCard: React.FC<GamifiedBadgeCardProps> = ({
 
           {/* Level Badge */}
           {unlocked && (
-            <span className="absolute -bottom-2 px-2 py-0.5 rounded-full text-2xs font-black uppercase bg-primary text-on-primary shadow-md">
+            <span className="absolute -bottom-2 px-2 py-0.5 rounded-full text-2xs font-black uppercase bg-primary text-on-primary shadow-sm">
               Nivel {level}
             </span>
           )}

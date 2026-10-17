@@ -46,7 +46,7 @@ export const JointAnatomyTooltip: React.FC<JointAnatomyTooltipProps> = ({
         whileTap={{ scale: 0.97 }}
         onClick={() => setVisible(!visible)}
         onMouseEnter={() => setVisible(true)}
-        className="flex items-center gap-2 px-3.5 py-2 rounded-2xl bg-gradient-to-r from-surface/90 via-surface-container/90 to-surface/90 dark:from-slate-800/90 dark:to-slate-900/90 border border-teal-500/30 text-xs font-bold text-on-surface shadow-md hover:border-teal-500/50 transition-all cursor-pointer"
+        className="flex items-center gap-2 px-3.5 py-2 rounded-2xl bg-gradient-to-r from-surface/90 via-surface-container/90 to-surface/90 dark:from-slate-800/90 dark:to-slate-900/90 border border-teal-500/30 text-xs font-bold text-on-surface shadow-sm hover:border-teal-500/50 transition-all cursor-pointer"
       >
         <span className="p-1 rounded-lg bg-teal-500/20 text-teal-600 dark:text-teal-400">
           <HelpCircle className="w-3.5 h-3.5" />
@@ -117,7 +117,7 @@ export const ARCameraFilterDropdown: React.FC<ARCameraFilterDropdownProps> = ({
         type="button"
         whileTap={{ scale: 0.97 }}
         onClick={() => setOpen(!open)}
-        className="flex items-center gap-2.5 px-4 py-2 rounded-2xl bg-gradient-to-r from-surface/90 via-surface-container/90 to-surface/90 dark:from-slate-800/90 dark:to-slate-900/90 border border-cyan-500/30 text-xs font-bold text-on-surface shadow-md hover:border-cyan-500/50 transition-all"
+        className="flex items-center gap-2.5 px-4 py-2 rounded-2xl bg-gradient-to-r from-surface/90 via-surface-container/90 to-surface/90 dark:from-slate-800/90 dark:to-slate-900/90 border border-cyan-500/30 text-xs font-bold text-on-surface shadow-sm hover:border-cyan-500/50 transition-all"
       >
         <span className="p-1 rounded-lg bg-cyan-500/20 text-cyan-600 dark:text-cyan-400">
           <Eye className="w-3.5 h-3.5" />
@@ -195,7 +195,7 @@ export const RapidToleranceAdjuster: React.FC<RapidToleranceAdjusterProps> = ({
   return (
     <div
       className={cn(
-        "inline-flex items-center gap-2.5 p-2 px-3 rounded-2xl bg-gradient-to-r from-surface/90 via-surface-container/90 to-surface/90 dark:from-slate-800/90 dark:to-slate-900/90 border border-teal-500/30 text-xs shadow-md",
+        "inline-flex items-center gap-2.5 p-2 px-3 rounded-2xl bg-gradient-to-r from-surface/90 via-surface-container/90 to-surface/90 dark:from-slate-800/90 dark:to-slate-900/90 border border-teal-500/30 text-xs shadow-sm",
         className
       )}
     >
@@ -266,7 +266,7 @@ export const AudioMuteFloatingPill: React.FC<AudioMuteFloatingPillProps> = ({
         onToggle?.(next);
       }}
       className={cn(
-        "inline-flex items-center gap-2.5 px-4 py-2 rounded-2xl border text-xs font-bold transition-all shadow-md select-none",
+        "inline-flex items-center gap-2.5 px-4 py-2 rounded-2xl border text-xs font-bold transition-all shadow-sm select-none",
         muted
           ? "bg-rose-500/15 text-rose-500 border-rose-500/30"
           : "bg-teal-500/15 text-teal-600 dark:text-teal-400 border-teal-500/30",
@@ -303,7 +303,7 @@ export const ExerciseSwitchFloatingMenu: React.FC<ExerciseSwitchFloatingMenuProp
   return (
     <div
       className={cn(
-        "flex items-center gap-1.5 p-1.5 rounded-2xl bg-gradient-to-r from-surface/90 via-surface-container/90 to-surface/90 dark:from-slate-800/90 dark:to-slate-900/90 border border-teal-500/30 shadow-md",
+        "flex items-center gap-1.5 p-1.5 rounded-2xl bg-gradient-to-r from-surface/90 via-surface-container/90 to-surface/90 dark:from-slate-800/90 dark:to-slate-900/90 border border-teal-500/30 shadow-sm",
         className
       )}
     >
@@ -321,7 +321,7 @@ export const ExerciseSwitchFloatingMenu: React.FC<ExerciseSwitchFloatingMenuProp
             className={cn(
               "px-3 py-1.5 rounded-xl text-xs font-bold transition-all",
               isCurrent
-                ? "bg-primary text-on-primary shadow-md shadow-teal-600/30"
+                ? "bg-primary text-on-primary shadow-sm shadow-teal-600/30"
                 : "text-on-surface-variant hover:text-on-surface dark:hover:text-white"
             )}
           >
@@ -349,7 +349,7 @@ export const PhysioNoteAnnotationBubble: React.FC<PhysioNoteAnnotationBubbleProp
     <motion.div
       whileHover={{ y: -2 }}
       className={cn(
-        "inline-flex items-center gap-2.5 p-2.5 px-4 rounded-2xl bg-amber-500/15 border border-amber-500/35 text-amber-900 dark:text-amber-100 text-xs shadow-md",
+        "inline-flex items-center gap-2.5 p-2.5 px-4 rounded-2xl bg-amber-500/15 border border-amber-500/35 text-amber-900 dark:text-amber-100 text-xs shadow-sm",
         className
       )}
     >
@@ -376,7 +376,7 @@ export const QuickPrescriptionModalButton: React.FC<QuickPrescriptionModalButton
   return (
     <div
       className={cn(
-        "inline-flex items-center gap-3 p-2 px-3.5 rounded-2xl bg-gradient-to-r from-surface/90 via-surface-container/90 to-surface/90 dark:from-slate-800/90 dark:to-slate-900/90 border border-teal-500/30 text-xs shadow-md",
+        "inline-flex items-center gap-3 p-2 px-3.5 rounded-2xl bg-gradient-to-r from-surface/90 via-surface-container/90 to-surface/90 dark:from-slate-800/90 dark:to-slate-900/90 border border-teal-500/30 text-xs shadow-sm",
         className
       )}
     >
@@ -458,7 +458,7 @@ export const CalibrationCompass: React.FC<CalibrationCompassProps> = ({
     <motion.div
       whileHover={{ y: -2 }}
       className={cn(
-        "inline-flex items-center gap-3 p-2.5 px-4 rounded-2xl bg-gradient-to-r from-surface/90 via-surface-container/90 to-surface/90 dark:from-slate-800/90 dark:to-slate-900/90 border border-teal-500/30 text-xs shadow-md",
+        "inline-flex items-center gap-3 p-2.5 px-4 rounded-2xl bg-gradient-to-r from-surface/90 via-surface-container/90 to-surface/90 dark:from-slate-800/90 dark:to-slate-900/90 border border-teal-500/30 text-xs shadow-sm",
         className
       )}
     >
@@ -487,7 +487,7 @@ export const FloatingMiniStopwatch: React.FC<FloatingMiniStopwatchProps> = ({ cl
   return (
     <div
       className={cn(
-        "inline-flex items-center gap-3 p-2.5 px-4 rounded-2xl bg-gradient-to-r from-surface/90 via-surface-container/90 to-surface/90 dark:from-slate-800/90 dark:to-slate-900/90 border border-teal-500/30 text-xs shadow-md",
+        "inline-flex items-center gap-3 p-2.5 px-4 rounded-2xl bg-gradient-to-r from-surface/90 via-surface-container/90 to-surface/90 dark:from-slate-800/90 dark:to-slate-900/90 border border-teal-500/30 text-xs shadow-sm",
         className
       )}
     >

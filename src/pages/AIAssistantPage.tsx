@@ -492,7 +492,7 @@ Pregunta del paciente: ${messageText}`;
 
                   {/* Actions for assistant message */}
                   {msg.role === 'assistant' && (
-                    <div className="mt-3 pt-3 border-t border-outline/10 flex items-center justify-between text-outline text-xs">
+                    <div className="mt-3 pt-3 border-t border-outline/15 flex items-center justify-between text-outline text-xs">
                       <span className="italic">{msg.timestamp || 'Hoy'}</span>
                       <div className="flex items-center gap-2">
                         <button

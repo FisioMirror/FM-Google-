@@ -22,7 +22,7 @@ export function Dock({
       onMouseMove={(e) => mouseX.set(e.pageX)}
       onMouseLeave={() => mouseX.set(Infinity)}
       className={cn(
-        'mx-auto flex h-16 items-center gap-3 rounded-3xl border border-outline/15 bg-surface/80 px-4 backdrop-blur-xl shadow-elevated dark:border-outline/10',
+        'mx-auto flex h-16 items-center gap-3 rounded-3xl border border-outline/15 bg-surface/80 px-4 backdrop-blur-xl shadow-elevated dark:border-outline/15',
         className
       )}
     >

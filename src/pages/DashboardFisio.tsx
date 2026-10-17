@@ -783,13 +783,13 @@ export function DashboardFisio() {
             variants={staggerItem}
             whileHover={{ y: -4, scale: 1.015, transition: springTactile }}
             whileTap={{ scale: 0.98 }}
-            className="rounded-2xl sm:rounded-3xl overflow-hidden shadow-xs hover:shadow-elevated transition-all h-full"
+            className="rounded-2xl overflow-hidden shadow-xs hover:shadow-elevated transition-all h-full"
           >
             <MagicCard
               mode="gradient"
               gradientColor={card.colorHex}
               gradientOpacity={0.15}
-              className={`p-4 sm:p-6 rounded-2xl sm:rounded-3xl group cursor-default relative flex flex-col justify-between h-full transition-all duration-300 border ${card.bgClass}`}
+              className={`p-4 sm:p-6 rounded-2xl group cursor-default relative flex flex-col justify-between h-full transition-all duration-300 border ${card.bgClass}`}
             >
               <div className="flex justify-between items-start mb-3 sm:mb-4 relative z-10">
                 <div className={`size-10 sm:size-12 rounded-xl sm:rounded-2xl ${card.iconClass} flex items-center justify-center font-bold shadow-xs`}>
@@ -846,11 +846,11 @@ export function DashboardFisio() {
             whileHover={{ scale: 1.02, y: -3, transition: springTactile }}
             whileTap={{ scale: 0.98 }}
             onClick={() => navigate(action.route)}
-            className={`relative overflow-hidden group border ${action.pastelBg} p-6 sm:p-7 rounded-3xl text-left transition-all hover-lift flex flex-col justify-between shadow-sm hover:shadow-md`}
+            className={`relative overflow-hidden group border ${action.pastelBg} p-6 sm:p-7 rounded-3xl text-left transition-all hover-lift flex flex-col justify-between shadow-sm hover:shadow-card`}
           >
             <div className={`absolute -right-8 -bottom-8 w-40 h-40 ${action.color} opacity-10 blur-3xl group-hover:scale-150 transition-transform duration-300`} />
             <div>
-              <div className={`w-12 h-12 ${action.color} rounded-2xl shadow-md flex items-center justify-center mb-4 text-white`}>
+              <div className={`w-12 h-12 ${action.color} rounded-2xl shadow-sm flex items-center justify-center mb-4 text-white`}>
                 <Icon name={action.icon} filled size={24} />
               </div>
               <h3 className="fm-section-title font-bold mb-1.5">{action.title}</h3>

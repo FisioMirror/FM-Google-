@@ -23,11 +23,11 @@ export const FISIO_DESIGN_CONTRACT = {
     /** Fondo estándar para tarjetas interactivas con glassmorphism sutil */
     glassCard: 'bg-surface/85 dark:bg-surface-container-low/80 backdrop-blur-md border border-outline/15 dark:border-white/10 shadow-xs hover:border-teal-500/30',
     /** Paneles contenedores profundos */
-    panel: 'bg-surface-container-lowest/90 dark:bg-surface-container-low/60 border border-outline/10 shadow-2xs',
+    panel: 'bg-surface-container-lowest/90 dark:bg-surface-container-low/60 border border-outline/15 shadow-2xs',
     /** Superficie elevada para modales y dropdowns flotantes */
     modal: 'bg-surface/95 dark:bg-surface-container/95 backdrop-blur-xl border border-outline/20 dark:border-white/15 shadow-elevated',
     /** Superficie interna anidada (inputs, áreas de mensaje secundarias) */
-    subtle: 'bg-surface-container/50 dark:bg-surface-container-high/40 border border-outline/10',
+    subtle: 'bg-surface-container/50 dark:bg-surface-container-high/40 border border-outline/15',
   },
 
   // 3. Paleta Semántica & Contraste Accesible (WCAG AAA)
@@ -52,7 +52,7 @@ export const FISIO_DESIGN_CONTRACT = {
 
   // 4. Sombras Estandarizadas
   shadows: {
-    card: 'shadow-xs hover:shadow-md transition-shadow duration-300',
+    card: 'shadow-xs hover:shadow-card transition-shadow duration-300',
     floating: 'shadow-card dark:shadow-elevated dark:shadow-black/40',
     subtle: 'shadow-2xs',
   },
@@ -94,7 +94,7 @@ export const TAILWIND_HARMONIZATION_MAP: Record<string, string> = {
   'border-slate-200': 'border-outline/15 dark:border-white/10',
 
   // Discrepancias de Sombras Excesivas
-  'shadow-elevated': 'shadow-md dark:shadow-black/30',
+  'shadow-elevated': 'shadow-sm dark:shadow-black/30',
   'shadow-elevated': 'shadow-sm dark:shadow-black/20',
 
   // Discrepancias de Transición

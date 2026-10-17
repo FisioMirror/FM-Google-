@@ -167,7 +167,7 @@ export function PatientStatisticsView({
       {/* ── KPI Clinical Metrics (Solid bold numbers, zero gradients on text) ── */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4">
         {/* Metric 1: Sessions */}
-        <div className="ios-glass-heavy refraction-border p-4 sm:p-5 rounded-2xl sm:rounded-3xl flex flex-col justify-between">
+        <div className="ios-glass-heavy refraction-border p-4 sm:p-5 rounded-2xl flex flex-col justify-between">
           <div className="flex items-center justify-between mb-3">
             <div className="size-10 sm:size-11 bg-teal-500/10 text-teal-700 dark:text-teal-300 rounded-xl sm:rounded-2xl flex items-center justify-center">
               <Icon name="check_circle" size={22} />
@@ -188,7 +188,7 @@ export function PatientStatisticsView({
         </div>
 
         {/* Metric 2: Therapeutic Time */}
-        <div className="ios-glass-heavy refraction-border p-4 sm:p-5 rounded-2xl sm:rounded-3xl flex flex-col justify-between">
+        <div className="ios-glass-heavy refraction-border p-4 sm:p-5 rounded-2xl flex flex-col justify-between">
           <div className="flex items-center justify-between mb-3">
             <div className="size-10 sm:size-11 bg-blue-500/10 text-blue-700 dark:text-blue-300 rounded-xl sm:rounded-2xl flex items-center justify-center">
               <Icon name="timer" size={22} />
@@ -209,7 +209,7 @@ export function PatientStatisticsView({
         </div>
 
         {/* Metric 3: Quality Score */}
-        <div className="ios-glass-heavy refraction-border p-4 sm:p-5 rounded-2xl sm:rounded-3xl flex flex-col justify-between">
+        <div className="ios-glass-heavy refraction-border p-4 sm:p-5 rounded-2xl flex flex-col justify-between">
           <div className="flex items-center justify-between mb-3">
             <div className="size-10 sm:size-11 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 rounded-xl sm:rounded-2xl flex items-center justify-center">
               <Icon name="target" size={22} />
@@ -232,7 +232,7 @@ export function PatientStatisticsView({
         </div>
 
         {/* Metric 4: Peak ROM */}
-        <div className="ios-glass-heavy refraction-border p-4 sm:p-5 rounded-2xl sm:rounded-3xl flex flex-col justify-between">
+        <div className="ios-glass-heavy refraction-border p-4 sm:p-5 rounded-2xl flex flex-col justify-between">
           <div className="flex items-center justify-between mb-3">
             <div className="size-10 sm:size-11 bg-cyan-500/10 text-cyan-700 dark:text-cyan-300 rounded-xl sm:rounded-2xl flex items-center justify-center">
               <Icon name="straighten" size={22} />
@@ -429,7 +429,7 @@ export function PatientStatisticsView({
             {compensationsSummary.map((comp) => (
               <div
                 key={comp.title}
-                className="p-3.5 sm:p-4 rounded-2xl bg-surface-container/40 border border-outline/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+                className="p-3.5 sm:p-4 rounded-2xl bg-surface-container/40 border border-outline/15 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
               >
                 <div className="flex items-start gap-3">
                   <div className="size-8 rounded-xl bg-teal-500/10 text-teal-700 dark:text-teal-300 flex items-center justify-center shrink-0 mt-0.5">
@@ -508,7 +508,7 @@ export function PatientStatisticsView({
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs border-collapse">
               <thead>
-                <tr className="border-b border-outline/10 text-on-surface-variant font-semibold">
+                <tr className="border-b border-outline/15 text-on-surface-variant font-semibold">
                   <th className="py-3 px-3">Fecha & Hora</th>
                   <th className="py-3 px-3">Ejercicio Prescrito</th>
                   <th className="py-3 px-3">Duración</th>

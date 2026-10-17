@@ -48,7 +48,7 @@ export function BentoCard({
       key={name}
       onClick={onClick}
       className={cn(
-        'group relative col-span-1 flex flex-col justify-between overflow-hidden rounded-3xl border border-outline/15 bg-surface p-6 shadow-sm transition-all duration-300 hover:shadow-elevated hover:-translate-y-1 dark:border-outline/10 cursor-pointer',
+        'group relative col-span-1 flex flex-col justify-between overflow-hidden rounded-3xl border border-outline/15 bg-surface p-6 shadow-sm transition-all duration-300 hover:shadow-elevated hover:-translate-y-1 dark:border-outline/15 cursor-pointer',
         className
       )}
     >

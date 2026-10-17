@@ -21,9 +21,9 @@ interface ActionButtonProps extends Omit<HTMLMotionProps<'button'>, 'children' |
 
 const variantClasses: Record<Variant, string> = {
   primary:
-    'bg-gradient-to-r from-teal-600 to-teal-500 hover:from-teal-500 hover:to-teal-400 text-white shadow-md shadow-teal-700/20 border border-teal-400/20',
+    'bg-gradient-to-r from-teal-600 to-teal-500 hover:from-teal-500 hover:to-teal-400 text-white shadow-sm shadow-teal-700/20 border border-teal-400/20',
   secondary:
-    'bg-surface-container-high text-on-surface hover:bg-surface-container-highest border border-outline/10',
+    'bg-surface-container-high text-on-surface hover:bg-surface-container-highest border border-outline/15',
   outline:
     'border border-teal-500/30 text-teal-600 dark:text-teal-400 hover:bg-teal-500/10',
   ghost:

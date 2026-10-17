@@ -9,18 +9,18 @@ export const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-primary text-on-primary hover:bg-primary/90 shadow-sm hover:shadow-md",
-        primary: "bg-primary text-on-primary hover:bg-primary/90 shadow-sm hover:shadow-md",
+        default: "bg-primary text-on-primary hover:bg-primary/90 shadow-sm hover:shadow-card",
+        primary: "bg-primary text-on-primary hover:bg-primary/90 shadow-sm hover:shadow-card",
         destructive: "bg-error text-white hover:bg-error/90 shadow-sm",
         outline: "border border-outline-variant/40 dark:border-white/15 bg-transparent hover:bg-surface-container text-on-surface hover:text-on-surface",
         secondary: "bg-secondary text-white hover:bg-secondary/90 shadow-sm",
         ghost: "hover:bg-surface-container text-on-surface-variant hover:text-on-surface",
         link: "underline-offset-4 hover:underline text-primary dark:text-primary-300",
         // VARIANTES DE FISIOMIRROR
-        glow: "relative overflow-hidden bg-primary text-on-primary shadow-md shadow-primary/20 hover:shadow-card hover:shadow-primary/35 hover:-translate-y-0.5",
+        glow: "relative overflow-hidden bg-primary text-on-primary shadow-sm shadow-primary/20 hover:shadow-card hover:shadow-primary/35 hover:-translate-y-0.5",
         glass: "bg-surface/70 dark:bg-white/10 backdrop-blur-xl border border-outline-variant/30 dark:border-white/20 text-on-surface hover:bg-surface/90 dark:hover:bg-white/20 shadow-sm",
-        gradient: "bg-gradient-to-r from-teal-700 via-teal-600 to-secondary text-white hover:from-teal-600 hover:to-secondary/90 shadow-md shadow-teal-900/15",
-        kinetic: "bg-kinetic text-on-surface font-bold hover:bg-kinetic-light shadow-md shadow-kinetic/20 hover:shadow-kinetic/40",
+        gradient: "bg-gradient-to-r from-teal-700 via-teal-600 to-secondary text-white hover:from-teal-600 hover:to-secondary/90 shadow-sm shadow-teal-900/15",
+        kinetic: "bg-kinetic text-on-surface font-bold hover:bg-kinetic-light shadow-sm shadow-kinetic/20 hover:shadow-kinetic/40",
       },
       size: {
         default: "h-10 py-2 px-4",

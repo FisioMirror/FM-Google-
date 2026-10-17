@@ -49,7 +49,7 @@ function Toggle({ value, onChange, label }: { value: boolean; onChange: (v: bool
       <motion.div
         layout
         transition={{ type: 'spring', stiffness: 500, damping: 30 }}
-        className={cn('absolute top-1 w-6 h-6 rounded-full bg-white shadow-md', value ? 'left-7' : 'left-1')}
+        className={cn('absolute top-1 w-6 h-6 rounded-full bg-white shadow-sm', value ? 'left-7' : 'left-1')}
       />
     </button>
   );
@@ -543,7 +543,7 @@ export function SettingsPage() {
               className={cn(
                 "px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all self-start sm:self-auto",
                 testingVoice
-                  ? "bg-rose-500 text-white shadow-md animate-pulse"
+                  ? "bg-rose-500 text-white shadow-sm animate-pulse"
                   : "bg-primary hover:bg-primary/90 text-on-primary shadow-sm hover:shadow"
               )}
             >

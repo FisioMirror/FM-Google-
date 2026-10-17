@@ -428,7 +428,7 @@ export const RepCadenceMetronome: React.FC<RepCadenceMetronomeProps> = ({
         initial={{ scale: 0.95 }}
         animate={{ scale: 1 }}
         className={cn(
-          "p-2.5 rounded-2xl bg-gradient-to-r text-white text-xs font-bold text-center shadow-md",
+          "p-2.5 rounded-2xl bg-gradient-to-r text-white text-xs font-bold text-center shadow-sm",
           data.color
         )}
       >
@@ -531,7 +531,7 @@ export const SkeletonJointSelectorHUD: React.FC<SkeletonJointSelectorHUDProps> =
               className={cn(
                 "px-2.5 py-1.5 rounded-xl text-xs font-bold transition-all border flex items-center gap-1.5",
                 isSelected
-                  ? "bg-primary text-on-primary border-teal-600 shadow-md shadow-teal-600/30"
+                  ? "bg-primary text-on-primary border-teal-600 shadow-sm shadow-teal-600/30"
                   : "bg-surface/60 dark:bg-slate-800/60 border-outline-variant/30 text-on-surface-variant hover:text-on-surface dark:hover:text-white"
               )}
             >

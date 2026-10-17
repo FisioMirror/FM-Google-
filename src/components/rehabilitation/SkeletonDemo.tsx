@@ -116,7 +116,7 @@ export const SkeletonDemo: React.FC<SkeletonDemoProps> = ({ exercise, userRole =
         </button>
       </div>
 
-      <div className="w-full h-[min(60vw,20rem)] min-h-[16rem] sm:h-80 relative bg-slate-50 dark:bg-slate-950/60 rounded-xl p-2 sm:p-3 border border-outline/10 flex items-center justify-center overflow-hidden">
+      <div className="w-full h-[min(60vw,20rem)] min-h-[16rem] sm:h-80 relative bg-slate-50 dark:bg-slate-950/60 rounded-xl p-2 sm:p-3 border border-outline/15 flex items-center justify-center overflow-hidden">
         {selectedRole === 'patient' ? (
           <KidModel3D
             key={`${exercise.id}-niño-3d`}
@@ -139,7 +139,7 @@ export const SkeletonDemo: React.FC<SkeletonDemoProps> = ({ exercise, userRole =
       </div>
 
       <div className="w-full mt-3 space-y-2">
-        <div className="grid grid-cols-2 gap-2 text-xs bg-slate-100/70 dark:bg-slate-800/70 p-2.5 rounded-xl border border-outline/10">
+        <div className="grid grid-cols-2 gap-2 text-xs bg-slate-100/70 dark:bg-slate-800/70 p-2.5 rounded-xl border border-outline/15">
           {exercise.targetJoints.map((j) => (
             <div key={j.joint} className="flex justify-between items-center">
               <span className="text-on-surface-variant capitalize text-xs truncate pr-1">
@@ -151,7 +151,7 @@ export const SkeletonDemo: React.FC<SkeletonDemoProps> = ({ exercise, userRole =
             </div>
           ))}
         </div>
-        <div className="flex justify-between text-xs text-on-surface-variant px-1 pt-1 border-t border-outline/10">
+        <div className="flex justify-between text-xs text-on-surface-variant px-1 pt-1 border-t border-outline/15">
           <span>
             Series: <strong className="text-on-surface">{exercise.sets}</strong>
           </span>

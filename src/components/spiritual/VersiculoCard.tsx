@@ -221,7 +221,7 @@ export function VersiculoCard({
 
       {/* Category Pills (Optional switch) */}
       {allowCategoryChange && (
-        <div className="relative z-10 flex items-center gap-1.5 flex-wrap mb-4 pb-1 border-b border-outline/10">
+        <div className="relative z-10 flex items-center gap-1.5 flex-wrap mb-4 pb-1 border-b border-outline/15">
           {categoriasList.map((cat) => {
             const isSelected = categoria === cat;
             const meta = CATEGORIAS_METADATA[cat];
@@ -286,7 +286,7 @@ export function VersiculoCard({
       </div>
 
       {/* Footer bar */}
-      <div className="relative z-10 mt-4 pt-3 border-t border-outline/10 flex items-center justify-between">
+      <div className="relative z-10 mt-4 pt-3 border-t border-outline/15 flex items-center justify-between">
         <p className="text-xs text-on-surface-variant">
           Persevera con fe: cada repetición y cada esfuerzo renuevan tu salud.
         </p>

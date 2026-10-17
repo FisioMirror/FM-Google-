@@ -113,7 +113,7 @@ export function CatalogPage() {
             <ShimmerButton className="text-xs px-4 py-2.5">
               Botón Shimmer Pro
             </ShimmerButton>
-            <ConfettiButton className="rounded-2xl px-4 py-2.5 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white font-bold shadow-md shadow-teal-500/20 text-xs">
+            <ConfettiButton className="rounded-2xl px-4 py-2.5 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white font-bold shadow-sm shadow-teal-500/20 text-xs">
               Probar Confeti
             </ConfettiButton>
             <div className="p-1 rounded-2xl bg-surface-container-high border border-outline/15 flex items-center">
@@ -123,7 +123,7 @@ export function CatalogPage() {
         </div>
 
         {/* Filter Tabs */}
-        <div className="mt-8 pt-6 border-t border-outline/10 flex flex-wrap gap-2">
+        <div className="mt-8 pt-6 border-t border-outline/15 flex flex-wrap gap-2">
           {[
             { id: 'all', label: 'Todos los Componentes' },
             { id: 'megasuite', label: 'Macro Suite (50 Componentes)' },
@@ -140,7 +140,7 @@ export function CatalogPage() {
               className={cn(
                 'px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer',
                 activeTab === tab.id
-                  ? 'bg-primary text-on-primary shadow-md shadow-teal-600/20'
+                  ? 'bg-primary text-on-primary shadow-sm shadow-teal-600/20'
                   : 'bg-surface-container hover:bg-surface-container-high text-on-surface-variant'
               )}
             >
@@ -246,7 +246,7 @@ export function CatalogPage() {
                     <p className="text-xs font-bold text-on-surface">{item.title}</p>
                     <p className="text-xs text-teal-600 dark:text-teal-400 font-semibold">{item.metric}</p>
                   </div>
-                  <span className="ml-auto text-2xs text-outline font-mono bg-surface px-2 py-0.5 rounded-lg border border-outline/10">
+                  <span className="ml-auto text-2xs text-outline font-mono bg-surface px-2 py-0.5 rounded-lg border border-outline/15">
                     {item.badge}
                   </span>
                 </div>
@@ -612,7 +612,7 @@ export function CatalogPage() {
                     <span className="text-xs font-medium text-on-surface-variant">Hover sobre el texto:</span>
                     <HyperText className="text-lg font-bold text-teal-600 dark:text-teal-400">FISIOMIRROR</HyperText>
                   </div>
-                  <div className="flex items-center justify-between pt-2 border-t border-outline/10">
+                  <div className="flex items-center justify-between pt-2 border-t border-outline/15">
                     <span className="text-xs font-medium text-on-surface-variant">Barrido de gradiente:</span>
                     <DiaTextReveal text="Rehabilitación Inteligente" className="text-lg font-bold" repeat={true} />
                   </div>
@@ -792,7 +792,7 @@ export function CatalogPage() {
             </div>
             <button
               onClick={() => setIsBottomSheetOpen(true)}
-              className="px-4 py-2 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-bold text-xs flex items-center gap-2 shadow-md transition-all self-start sm:self-auto"
+              className="px-4 py-2 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-bold text-xs flex items-center gap-2 shadow-sm transition-all self-start sm:self-auto"
             >
               <Sliders className="size-4" />
               <span>Abrir Bottom Sheet Demo</span>

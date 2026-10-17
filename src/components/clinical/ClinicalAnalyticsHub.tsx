@@ -272,12 +272,12 @@ export function ClinicalAnalyticsHub() {
         </div>
 
         {/* Tab Selector */}
-        <div className="flex items-center p-1 rounded-2xl bg-surface-container-highest/60 border border-outline/10 self-stretch sm:self-auto">
+        <div className="flex items-center p-1 rounded-2xl bg-surface-container-highest/60 border border-outline/15 self-stretch sm:self-auto">
           <button
             onClick={() => setActiveTab('rom')}
             className={`flex-1 sm:flex-initial px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
               activeTab === 'rom'
-                ? 'bg-primary text-on-primary shadow-md'
+                ? 'bg-primary text-on-primary shadow-sm'
                 : 'text-on-surface-variant hover:text-on-surface'
             }`}
           >
@@ -288,7 +288,7 @@ export function ClinicalAnalyticsHub() {
             onClick={() => setActiveTab('vas')}
             className={`flex-1 sm:flex-initial px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
               activeTab === 'vas'
-                ? 'bg-primary text-on-primary shadow-md'
+                ? 'bg-primary text-on-primary shadow-sm'
                 : 'text-on-surface-variant hover:text-on-surface'
             }`}
           >
@@ -299,7 +299,7 @@ export function ClinicalAnalyticsHub() {
             onClick={() => setActiveTab('cohorts')}
             className={`flex-1 sm:flex-initial px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
               activeTab === 'cohorts'
-                ? 'bg-primary text-on-primary shadow-md'
+                ? 'bg-primary text-on-primary shadow-sm'
                 : 'text-on-surface-variant hover:text-on-surface'
             }`}
           >
@@ -396,7 +396,7 @@ export function ClinicalAnalyticsHub() {
             </div>
 
             {/* Quick selector chips */}
-            <div className="flex flex-wrap gap-2 pt-4 border-t border-outline/10">
+            <div className="flex flex-wrap gap-2 pt-4 border-t border-outline/15">
               {ROM_DATA.map((j) => (
                 <button
                   key={j.joint}
@@ -457,7 +457,7 @@ export function ClinicalAnalyticsHub() {
                   </p>
                 </div>
 
-                <div className="p-4 rounded-2xl bg-surface-container-low border border-outline/10">
+                <div className="p-4 rounded-2xl bg-surface-container-low border border-outline/15">
                   <p className="text-2xs font-bold uppercase tracking-wider text-on-surface-variant">
                     Déficit Residual
                   </p>
@@ -487,7 +487,7 @@ export function ClinicalAnalyticsHub() {
               </div>
             </div>
 
-            <div className="mt-6 pt-4 border-t border-outline/10 flex items-center justify-between text-xs">
+            <div className="mt-6 pt-4 border-t border-outline/15 flex items-center justify-between text-xs">
               <span className="text-on-surface-variant flex items-center gap-1">
                 <Info className="size-3.5 text-teal-600" /> Escala Goniométrica
               </span>
@@ -588,7 +588,7 @@ export function ClinicalAnalyticsHub() {
               </ResponsiveContainer>
             </div>
 
-            <div className="mt-4 pt-3 border-t border-outline/10 flex items-center justify-between text-xs text-on-surface-variant">
+            <div className="mt-4 pt-3 border-t border-outline/15 flex items-center justify-between text-xs text-on-surface-variant">
               <span className="flex items-center gap-1.5">
                 <span className="size-2 rounded-full bg-emerald-500" />
                 Zona Óptima: Precisión &gt;80% con EVA &lt; 3.0
@@ -627,7 +627,7 @@ export function ClinicalAnalyticsHub() {
               </div>
             </div>
 
-            <div className="mt-5 pt-4 border-t border-outline/10">
+            <div className="mt-5 pt-4 border-t border-outline/15">
               <button
                 onClick={() => navigate('/tools')}
                 className="w-full py-2.5 px-4 rounded-xl bg-primary/10 hover:bg-primary/20 text-primary font-bold text-xs transition-colors flex items-center justify-center gap-1.5"
@@ -663,7 +663,7 @@ export function ClinicalAnalyticsHub() {
               {CLINICAL_COHORTS.map((cohort) => (
                 <div
                   key={cohort.name}
-                  className="p-4 rounded-2xl bg-surface-container-low/70 border border-outline/10 hover:border-teal-500/30 transition-all"
+                  className="p-4 rounded-2xl bg-surface-container-low/70 border border-outline/15 hover:border-teal-500/30 transition-all"
                 >
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
                     <div>
@@ -707,14 +707,14 @@ export function ClinicalAnalyticsHub() {
               </div>
 
               <div className="space-y-3.5 text-xs text-on-surface-variant">
-                <div className="p-3 rounded-2xl bg-surface-container-low border border-outline/10">
+                <div className="p-3 rounded-2xl bg-surface-container-low border border-outline/15">
                   <p className="font-bold text-on-surface mb-0.5">Postquirúrgicos (LCA)</p>
                   <p className="text-xs leading-relaxed">
                     Mayor disciplina de sesiones matutinas (94%). La visualización del ángulo en tiempo real reduce el miedo al movimiento (kinesiofobia).
                   </p>
                 </div>
 
-                <div className="p-3 rounded-2xl bg-surface-container-low border border-outline/10">
+                <div className="p-3 rounded-2xl bg-surface-container-low border border-outline/15">
                   <p className="font-bold text-on-surface mb-0.5">Manguito Rotador</p>
                   <p className="text-xs leading-relaxed">
                     Requieren recordatorios vespertinos para alcanzar la meta del 85% de adherencia.
@@ -723,7 +723,7 @@ export function ClinicalAnalyticsHub() {
               </div>
             </div>
 
-            <div className="mt-5 pt-4 border-t border-outline/10">
+            <div className="mt-5 pt-4 border-t border-outline/15">
               <button
                 onClick={() => navigate('/patients')}
                 className="w-full py-2.5 rounded-xl bg-primary text-on-primary font-bold text-xs hover:bg-teal-700 transition-colors flex items-center justify-center gap-1.5"
@@ -789,7 +789,7 @@ export function ClinicalAnalyticsHub() {
                   </p>
                 </div>
 
-                <div className="pt-3 border-t border-outline/10 flex items-center justify-between">
+                <div className="pt-3 border-t border-outline/15 flex items-center justify-between">
                   <span className="text-xs font-bold font-mono px-2 py-0.5 rounded-md bg-surface-container-highest text-on-surface">
                     {alert.metric}
                   </span>

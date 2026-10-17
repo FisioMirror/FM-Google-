@@ -124,7 +124,7 @@ export function EmptyState({
           whileHover={{ scale: 1.03 }}
           whileTap={{ scale: 0.97 }}
           onClick={onAction}
-          className="z-10 mt-2 inline-flex items-center gap-2 rounded-2xl bg-teal-600 hover:bg-teal-500 px-5 py-2.5 text-xs font-bold text-white shadow-md shadow-teal-600/20 transition-all cursor-pointer"
+          className="z-10 mt-2 inline-flex items-center gap-2 rounded-2xl bg-teal-600 hover:bg-teal-500 px-5 py-2.5 text-xs font-bold text-white shadow-sm shadow-teal-600/20 transition-all cursor-pointer"
         >
           <span>{actionLabel}</span>
           <ArrowRight className="size-3.5" />

@@ -35,7 +35,7 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
           "rounded-2xl shadow-sm transition-all duration-300",
           variants[variant],
           paddings[padding],
-          hoverEffect && "hover:shadow-md hover:-translate-y-0.5 hover:border-primary/30 dark:hover:border-white/20",
+          hoverEffect && "hover:shadow-card hover:-translate-y-0.5 hover:border-primary/30 dark:hover:border-white/20",
           glassEffect && "backdrop-blur-xl",
           className
         )}
