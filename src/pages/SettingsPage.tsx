@@ -563,7 +563,7 @@ export function SettingsPage() {
                 {voiceMode === 'humanized' && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
               </div>
               <div>
-                <p className="text-xs font-bold text-on-surface">{t('set.voiceHumaClinic')}<
+                <p className="text-xs font-bold text-on-surface">{t('set.voiceHumaClinic')}</p>
                 <p className="text-xs text-on-surface-variant leading-relaxed">
                   {t('set.voiceHumaClinicDesc')}
                 </p>
@@ -587,7 +587,7 @@ export function SettingsPage() {
                 {voiceMode === 'device' && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
               </div>
               <div>
-                <p className="text-xs font-bold text-on-surface">{t('set.voiceDevOffline')}<
+                <p className="text-xs font-bold text-on-surface">{t('set.voiceDevOffline')}</p>
                 <p className="text-xs text-on-surface-variant leading-relaxed">
                   {t('set.voiceDevOfflineDesc')}
                 </p>
