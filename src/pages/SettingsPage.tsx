@@ -317,7 +317,7 @@ export function SettingsPage() {
               <BookOpen size={24} className="text-teal-600 dark:text-teal-400" />
             </div>
             <div>
-              <p className="font-semibold text-on-surface">{t('set.faithWord')}<
+              <p className="font-semibold text-on-surface">{t('set.faithWord')}</p>
               <p className="text-sm text-on-surface-variant">
                 Muestra versículos de sanidad, constancia y perseverancia en tu recuperación
               </p>
