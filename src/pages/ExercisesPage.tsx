@@ -1108,7 +1108,7 @@ export function ExercisesPage() {
                 <div className="rounded-2xl p-4 bg-white/90 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 space-y-3">
                   <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-teal-600 dark:text-teal-400">
                     <Brain className="size-4" />
-                    <span>{t('exs.stepByStep')}
+                    <span>{t('exs.stepByStep')}</span>
                   </div>
 
                   <div className="text-xs sm:text-sm text-on-surface whitespace-pre-wrap leading-relaxed space-y-2">
@@ -1137,7 +1137,7 @@ export function ExercisesPage() {
                 <div className="w-full flex items-center justify-between mb-2">
                   <span className="text-xs font-bold uppercase tracking-wider text-on-surface-variant flex items-center gap-1.5">
                     <Activity className="size-3.5 text-teal-600" />
-                    <span>{t('exs.sync3d')}
+                    <span>{t('exs.sync3d')}</span>
                   </span>
                 </div>
 
@@ -1171,7 +1171,7 @@ export function ExercisesPage() {
                   className="px-4 py-2 rounded-xl bg-primary hover:bg-primary/90 text-on-primary text-xs font-bold transition-all flex items-center gap-2 shadow-xs"
                 >
                   <UserPlus className="size-3.5" />
-                  <span>{t('exs.assignThis')}
+                  <span>{t('exs.assignThis')}</span>
                 </button>
               ) : <div />}
 
