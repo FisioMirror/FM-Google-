@@ -139,7 +139,7 @@ export function OnboardingGuide() {
 
           {/* Glass panel */}
           <motion.div
-            className="relative z-10 w-full max-w-[min(32rem,calc(100vw-2rem))] glass-panel rounded-3xl p-6 sm:p-8 shadow-glass-lg overflow-hidden overflow-y-auto overflow-x-hidden max-h-[calc(100vh-2rem)] break-words"
+            className="relative z-10 w-full max-w-[min(32rem,calc(100vw-2rem))] glass-panel rounded-3xl p-6 sm:p-8 shadow-glass-lg overflow-hidden overflow-y-auto overflow-x-hidden max-h-[calc(100dvh-2rem)] break-words"
             initial={{ scale: 0.95, opacity: 0, y: 20 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.95, opacity: 0, y: 20 }}

@@ -70,7 +70,7 @@ export function OnboardingTour({ role, onComplete }: OnboardingTourProps) {
         animate={{ scale: 1, opacity: 1, y: 0 }}
         exit={{ scale: 0.9, opacity: 0, y: 20 }}
         transition={{ type: 'spring', stiffness: 260, damping: 24 }}
-        className="glass-panel rounded-[2rem] w-full max-w-[min(42rem,calc(100vw-2rem))] overflow-hidden overflow-y-auto overflow-x-hidden max-h-[calc(100vh-2rem)] shadow-2xl break-words"
+        className="glass-panel rounded-[2rem] w-full max-w-[min(42rem,calc(100vw-2rem))] overflow-hidden overflow-y-auto overflow-x-hidden max-h-[calc(100dvh-2rem)] shadow-2xl break-words"
       >
         {showWelcome ? (
           <div className="flex flex-col items-center p-8 md:p-12 text-center">
