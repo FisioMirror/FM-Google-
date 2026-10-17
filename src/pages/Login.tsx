@@ -769,7 +769,7 @@ export function Login() {
   };
 
   return (
-    <div className="min-h-screen w-full flex font-sans text-slate-900 dark:text-slate-100 relative overflow-hidden bg-[#f9f9fc] dark:bg-slate-950">
+    <div className="min-h-[100dvh] w-full flex font-sans text-slate-900 dark:text-slate-100 relative overflow-hidden bg-[#f9f9fc] dark:bg-slate-950">
       {/* ── MESH BACKGROUND GRADIENT ── */}
       <div
         className="pointer-events-none absolute inset-0 z-0"

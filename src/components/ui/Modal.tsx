@@ -106,7 +106,7 @@ export function ModalContainer({ children, className }: { children: React.ReactN
   const { close } = useContext(ModalContext);
 
   return (
-    <div className={cn("min-h-screen px-4 flex items-center justify-center relative", className)}>
+    <div className={cn("min-h-[100dvh] px-4 flex items-center justify-center relative", className)}>
       {/* Backdrop overlay */}
       <motion.div
         initial={{ opacity: 0 }}

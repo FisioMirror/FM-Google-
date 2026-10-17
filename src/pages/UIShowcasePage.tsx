@@ -680,7 +680,7 @@ export function UIShowcasePage() {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#090d12] text-slate-900 dark:text-slate-100 p-4 sm:p-6 lg:p-10 transition-colors">
+    <div className="min-h-[100dvh] bg-slate-50 dark:bg-[#090d12] text-slate-900 dark:text-slate-100 p-4 sm:p-6 lg:p-10 transition-colors">
       {/* 26. Barra de Progreso de Desplazamiento Global */}
       <ScrollProgress />
 

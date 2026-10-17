@@ -240,7 +240,7 @@ function Router() {
   return (
     <>
       <BrowserRouter>
-        <div id="app-root" className="min-h-screen">
+        <div id="app-root" className="min-h-[100dvh]">
           <AppRoutes />
           <ScrollToTop />
           <OfflineIndicator />

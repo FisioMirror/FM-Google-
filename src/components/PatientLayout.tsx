@@ -383,7 +383,7 @@ export function PatientLayout({ children }: PatientLayoutProps) {
 
   const desktopSidebar = (
     <aside
-      className="fixed left-0 top-0 h-screen z-40 flex flex-col bg-gradient-to-b from-white/90 via-teal-50/30 to-surface/90 dark:from-slate-900 dark:via-slate-900/95 dark:to-slate-950 border-r border-teal-200/50 dark:border-slate-800 text-slate-900 dark:text-slate-200 transition-all duration-300 overflow-hidden backdrop-blur-xl"
+      className="fixed left-0 top-0 h-[100dvh] z-40 flex flex-col bg-gradient-to-b from-white/90 via-teal-50/30 to-surface/90 dark:from-slate-900 dark:via-slate-900/95 dark:to-slate-950 border-r border-teal-200/50 dark:border-slate-800 text-slate-900 dark:text-slate-200 transition-all duration-300 overflow-hidden backdrop-blur-xl"
       style={{ width: `${sidebarWidth}px` }}
     >
       {sidebarContent(sidebarCollapsed, { showToggle: true })}
@@ -391,7 +391,7 @@ export function PatientLayout({ children }: PatientLayoutProps) {
   );
 
   return (
-    <div className="flex flex-col lg:flex-row h-screen overflow-hidden bg-background text-on-surface relative" style={{ ['--patient-sidebar-w' as string]: `${sidebarWidth}px` }}>
+    <div className="flex flex-col lg:flex-row h-[100dvh] overflow-hidden bg-background text-on-surface relative" style={{ ['--patient-sidebar-w' as string]: `${sidebarWidth}px` }}>
       {/* Ambient Clinical Pastel Mesh Glow (Celeste, Menta y Lavanda suave) */}
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
         <div className="absolute -top-32 left-1/4 w-96 h-96 rounded-full bg-teal-400/10 dark:bg-teal-500/10 blur-[110px]" />

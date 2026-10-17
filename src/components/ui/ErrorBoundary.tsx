@@ -23,7 +23,7 @@ export class ErrorBoundary extends Component<Props, State> {
   render() {
     if (this.state.hasError) {
       return (
-        <div className="min-h-screen flex items-center justify-center p-6">
+        <div className="min-h-[100dvh] flex items-center justify-center p-6">
           <div className="glass-card max-w-md w-full p-8 text-center">
             <MascotAnimation type="error" size="md" className="mx-auto mb-4" />
             <h2 className="text-xl font-semibold text-primary-800 mb-2">Algo salió mal</h2>
