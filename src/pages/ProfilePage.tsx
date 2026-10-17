@@ -356,7 +356,7 @@ export function ProfilePage() {
             )}
           </div>
           <div className="w-full mt-4 space-y-3">
-            <RecoveryRankBadge rank={isFisio ? 'Rango: Clínico Experto' : 'Rango: Constante de Élite'} className="w-full justify-center" />
+            <RecoveryRankBadge rank={isFisio ? 'Rango: Clínico Experto' : 'Rango: Constante'} className="w-full justify-center" />
             <RehabHeroAvatarCard
               name={user?.full_name?.split(' ')[0] || 'Usuario'}
               roleTitle={isFisio ? 'Especialista en Kinesiología' : 'Paciente en Rehabilitación'}

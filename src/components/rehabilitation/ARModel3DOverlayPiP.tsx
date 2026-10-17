@@ -355,7 +355,7 @@ export const ARModel3DOverlayPiP: React.FC<ARModel3DOverlayPiPProps> = ({
 
         {/* Guía rápida de postura */}
         <div className="text-[9px] text-white/60 flex items-center justify-between px-1">
-          <span className="truncate">🎯 Sigue el movimiento</span>
+          <span className="truncate">Sigue el movimiento</span>
           <span className="text-teal-400 font-bold shrink-0">En vivo</span>
         </div>
       </div>

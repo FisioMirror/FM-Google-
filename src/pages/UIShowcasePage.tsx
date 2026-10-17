@@ -696,7 +696,7 @@ export function UIShowcasePage() {
             <div>
               <div className="flex flex-wrap items-center gap-2">
                 <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-teal-500/10 text-teal-700 dark:text-teal-300 border border-teal-500/20">
-                  FisioMirror UI Lab v2.0
+                  FisioMirror UI Lab
                 </span>
                 <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-lime-500/10 text-lime-600 dark:text-lime-400 border border-lime-500/20">
                   Ecosistema CLI / MCP Activo
@@ -796,7 +796,7 @@ export function UIShowcasePage() {
                     <Sparkles className="w-5 h-5" />
                   </span>
                   <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
-                    Macro Suite FisioMirror (50 Componentes de Élite)
+                    Macro Suite FisioMirror (50 Componentes)
                   </h2>
                 </div>
                 <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 max-w-2xl">
@@ -2356,13 +2356,13 @@ export function UIShowcasePage() {
                         className="w-full sm:w-auto"
                         onClick={() => toast.success("¡Objetivo Semanal Superado!", { description: "Celebrando progreso biomecánico del paciente." })}
                       >
-                        🎉 Disparar Celebración (Cañones)
+                        Disparar Celebración (Cañones)
                       </ConfettiSideCannons>
                       <ConfettiStars
                         className="w-full sm:w-auto text-xs"
                         onClick={() => toast.info("¡Estrellas de Logro!", { description: "Recompensa gamificada asignada." })}
                       >
-                        ⭐ Estrellas de Logro
+                        Estrellas de Logro
                       </ConfettiStars>
                     </div>
                   </div>

@@ -1136,7 +1136,7 @@ export function DashboardFisio() {
               className="px-4 py-2.5 rounded-xl text-xs font-bold"
               onClick={() => toast.success('¡Celebración disparada!', { description: 'Ráfaga festiva de objetivos clínicos cumplidos.' })}
             >
-              🎉 Disparar Celebración
+              Disparar Celebración
             </ConfettiSideCannons>
           </div>
         </GlassPanel>

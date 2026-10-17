@@ -716,7 +716,7 @@ export function SettingsPage() {
           </div>
           <div>
             <h3 className="text-xl font-bold text-on-surface">FisioMirror</h3>
-            <p className="text-sm text-on-surface-variant">Versión: <span className="font-semibold text-primary">v2.0 – Prototipo</span></p>
+            <p className="text-sm text-on-surface-variant">Versión: <span className="font-semibold text-primary">1.0</span></p>
           </div>
         </div>
       </GlassPanel>

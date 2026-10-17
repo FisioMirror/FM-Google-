@@ -126,7 +126,7 @@ export function QuickVoiceSelector({
             {gender === 'male' ? 'Dr. Physi (Masc.)' : 'Dra. Physi (Fem.)'}
           </span>
           <span className="hidden sm:inline-block text-[10px] px-1.5 py-0.5 rounded-full font-mono bg-teal-500/10 text-teal-700 dark:text-teal-300 border border-teal-500/20">
-            {provider === 'auto' ? '⚡ Voz Neural' : provider === 'fish_audio' ? '🐟 Fish Audio' : '📱 Offline'}
+            {provider === 'auto' ? 'Voz Neural' : provider === 'fish_audio' ? 'Fish Audio' : 'Offline'}
           </span>
         </div>
 

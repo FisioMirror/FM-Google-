@@ -81,7 +81,7 @@ const DEFAULT_CLINICAL_EXERCISES: Exercise[] = [
       'Fase 2 (Ejecución): Eleva el brazo en el plano sagital hasta alcanzar los 90° (paralelo al suelo) manteniendo el codo completamente extendido.\n' +
       'Fase 3 (Sostenimiento): Mantén la posición isométrica durante 3 segundos verificando la alineación cervicodorsal.\n' +
       'Fase 4 (Retorno): Desciende de manera excéntrica y controlada en 3 segundos sin dejar caer el brazo.\n\n' +
-      '⚠️ Compensaciones a evitar: No elevar la clavícula hacia la oreja ni arquear la columna lumbar al subir.',
+      'Compensaciones a evitar: No elevar la clavícula hacia la oreja ni arquear la columna lumbar al subir.',
     articulacion: 'hombro',
     grupo_muscular: 'Deltoides anterior, coracobraquial, supraespinoso',
     series: 3,
@@ -103,7 +103,7 @@ const DEFAULT_CLINICAL_EXERCISES: Exercise[] = [
       'Fase 2 (Ejecución): Rota el antebrazo hacia afuera en el plano transversal hasta alcanzar 45° de rotación externa.\n' +
       'Fase 3 (Sostenimiento): Sostén 2 segundos sintiendo la activación en la parte posterior del hombro.\n' +
       'Fase 4 (Retorno): Regresa lentamente a la posición neutra resistiendo el movimiento.\n\n' +
-      '⚠️ Compensaciones a evitar: No despegar el codo del costado ni rotar el tronco para ganar rango falso.',
+      'Compensaciones a evitar: No despegar el codo del costado ni rotar el tronco para ganar rango falso.',
     articulacion: 'hombro',
     grupo_muscular: 'Infraespinoso, redondo menor',
     series: 3,
@@ -125,7 +125,7 @@ const DEFAULT_CLINICAL_EXERCISES: Exercise[] = [
       'Fase 2 (Ejecución): Extiende la rodilla hacia el frente hasta alcanzar la extensión completa horizontal (0°).\n' +
       'Fase 3 (Sostenimiento): Contrae el cuádriceps intensamente durante 3 segundos en el punto más alto.\n' +
       'Fase 4 (Retorno): Desciende el pie con control en 2 segundos sin golpear el suelo.\n\n' +
-      '⚠️ Compensaciones a evitar: Mantener el muslo en contacto con el asiento sin inclinar la pelvis hacia atrás.',
+      'Compensaciones a evitar: Mantener el muslo en contacto con el asiento sin inclinar la pelvis hacia atrás.',
     articulacion: 'rodilla',
     grupo_muscular: 'Cuádriceps femoral (recto femoral, vastos)',
     series: 3,
@@ -147,7 +147,7 @@ const DEFAULT_CLINICAL_EXERCISES: Exercise[] = [
       'Fase 2 (Ejecución): Separa la pierna hacia el lado en el plano frontal alcanzando 40° de abducción.\n' +
       'Fase 3 (Sostenimiento): Sostén 2 segundos manteniendo la pelvis completamente horizontal.\n' +
       'Fase 4 (Retorno): Desciende lentamente sin tocar el suelo bruscamente.\n\n' +
-      '⚠️ Compensaciones a evitar: No inclinar el tronco en dirección opuesta ni rotar la punta del pie hacia afuera.',
+      'Compensaciones a evitar: No inclinar el tronco en dirección opuesta ni rotar la punta del pie hacia afuera.',
     articulacion: 'cadera',
     grupo_muscular: 'Glúteo medio, glúteo menor, tensor de fascia lata',
     series: 3,
@@ -169,7 +169,7 @@ const DEFAULT_CLINICAL_EXERCISES: Exercise[] = [
       'Fase 2 (Ejecución): Realiza un gesto suave de doble mentón llevando la cabeza hacia adelante hasta 30°.\n' +
       'Fase 3 (Sostenimiento): Mantén 3 segundos respirando con calma sintiendo la descompresión suboccipital.\n' +
       'Fase 4 (Retorno): Retorna despacio a la posición neutra sin hiperextender el cuello.\n\n' +
-      '⚠️ Compensaciones a evitar: No encoger los hombros ni forzar el rango si produce mareos o dolor.',
+      'Compensaciones a evitar: No encoger los hombros ni forzar el rango si produce mareos o dolor.',
     articulacion: 'cervical',
     grupo_muscular: 'Largo del cuello, recto anterior, escalenos',
     series: 2,
@@ -190,7 +190,7 @@ const DEFAULT_CLINICAL_EXERCISES: Exercise[] = [
       'Fase 2 (Ejecución): Flexiona los codos llevando las manos hacia los hombros hasta alcanzar los 130°.\n' +
       'Fase 3 (Sostenimiento): Pausa 1 segundo en la contracción máxima sin separar los codos del cuerpo.\n' +
       'Fase 4 (Retorno): Extiende los brazos suavemente hasta llegar a 0° de extensión.\n\n' +
-      '⚠️ Compensaciones a evitar: Evitar impulsarse con el cuerpo o balancear los hombros hacia adelante.',
+      'Compensaciones a evitar: Evitar impulsarse con el cuerpo o balancear los hombros hacia adelante.',
     articulacion: 'codo',
     grupo_muscular: 'Bíceps braquial, braquial anterior, tríceps',
     series: 3,
@@ -211,7 +211,7 @@ const DEFAULT_CLINICAL_EXERCISES: Exercise[] = [
       'Fase 2 (Ejecución): Lleva la punta del pie hacia la espinilla (dorsiflexión 20°) y luego apunta hacia adelante (flexión plantar 40°).\n' +
       'Fase 3 (Sostenimiento): Pausa 2 segundos en cada extremo del recorrido articular.\n' +
       'Fase 4 (Retorno): Movimiento rítmico, continuo y libre de dolor.\n\n' +
-      '⚠️ Compensaciones a evitar: Mantener la rodilla fija evitando rotar toda la extremidad inferior.',
+      'Compensaciones a evitar: Mantener la rodilla fija evitando rotar toda la extremidad inferior.',
     articulacion: 'tobillo',
     grupo_muscular: 'Tibial anterior, gemelos, sóleo, peroneos',
     series: 3,
@@ -232,7 +232,7 @@ const DEFAULT_CLINICAL_EXERCISES: Exercise[] = [
       'Fase 2 (Ejecución): Eleva la pelvis hasta alinear rodillas, caderas y hombros en una línea recta.\n' +
       'Fase 3 (Sostenimiento): Mantén la contracción glútea 3 segundos sin arquear en exceso la zona lumbar.\n' +
       'Fase 4 (Retorno): Desciende vértebra a vértebra con control abdominal.\n\n' +
-      '⚠️ Compensaciones a evitar: No empujar con los hombros ni hiperlordotizar la columna lumbar.',
+      'Compensaciones a evitar: No empujar con los hombros ni hiperlordotizar la columna lumbar.',
     articulacion: 'columna',
     grupo_muscular: 'Glúteo mayor, isquiotibiales, transverso abdominal, multífidos',
     series: 3,
@@ -254,7 +254,7 @@ const DEFAULT_CLINICAL_EXERCISES: Exercise[] = [
       'Fase 2 (Ejecución): Junta las escápulas hacia el centro de la espalda aproximándolas entre sí.\n' +
       'Fase 3 (Sostenimiento): Sostén 3 segundos manteniendo el cuello relajado y hombros alejados de orejas.\n' +
       'Fase 4 (Retorno): Vuelve a la posición neutra con control gradual.\n\n' +
-      '⚠️ Compensaciones a evitar: Evitar proyectar la cabeza hacia adelante al juntar las escápulas.',
+      'Compensaciones a evitar: Evitar proyectar la cabeza hacia adelante al juntar las escápulas.',
     articulacion: 'escapula',
     grupo_muscular: 'Romboides mayor/menor, trapecio medio e inferior, serrato anterior',
     series: 3,
