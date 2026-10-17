@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Icon } from '../components/ui/Icon';
 import { GlassPanel } from '../components/ui/Glass';
@@ -108,9 +109,9 @@ export function ProfilePage() {
         .eq('id', user.id);
       if (error) throw error;
       useAuthStore.setState({ user: { ...user, clinic_name: trimmed } });
-      toast.success('Nombre de clínica actualizado');
+      toast.success(t('pf.clinicUpdated'));
     } catch {
-      toast.error('Error al guardar el nombre de la clínica');
+      toast.error(t('pf.clinicSaveError'));
     } finally {
       setClinicNameSaving(false);
       setClinicNameEditing(false);
@@ -183,10 +184,10 @@ export function ProfilePage() {
       }).eq('id', user.id);
       if (error) throw error;
       useAuthStore.setState({ user: { ...user, full_name: form.full_name, especialidad: form.especialidad || null, universidad: form.universidad || null, cedula: form.cedula || null, colegiado_id: form.colegiado_id || null, anio_egreso: form.anio_egreso ? parseInt(form.anio_egreso, 10) : null } });
-      toast.success('Perfil actualizado');
+      toast.success(t('pf.profileUpdated'));
       setEditing(false);
     } catch {
-      toast.error('Error actualizando perfil');
+      toast.error(t('pf.profileUpdateError'));
     }
   };
 
@@ -199,13 +200,13 @@ export function ProfilePage() {
 
     // 1. Validar formato
     if (!file.type.startsWith('image/')) {
-      toast.error('Formato no válido', { description: 'Selecciona un archivo de imagen (JPG, PNG, WebP…).' });
+      toast.error(t('pf.invalidFormat'), { description: t('pf.invalidFormatDesc') });
       return;
     }
     // 2. Validar tamaño en disco (rechazar archivos absurdamente grandes antes de procesar).
     const MAX_INPUT_BYTES = 10 * 1024 * 1024; // 10MB tope absoluto de entrada
     if (file.size > MAX_INPUT_BYTES) {
-      toast.error('Imagen demasiado grande', { description: 'El archivo supera los 10MB. Usa una imagen más pequeña.' });
+      toast.error(t('pf.imageTooLarge'), { description: t('pf.imageTooLargeDesc') });
       return;
     }
 
@@ -222,11 +223,11 @@ export function ProfilePage() {
     } catch (err) {
       const msg = (err as Error)?.message || '';
       if (/corrupta|no se puede cargar/i.test(msg)) {
-        toast.error('Imagen corrupta', { description: 'No se pudo leer la imagen. Vuelve a intentarlo.' });
+        toast.error(t('pf.imageCorrupt'), { description: t('pf.imageCorruptDesc') });
       } else if (/No se pudo leer|FileReader/i.test(msg)) {
-        toast.error('Error de lectura', { description: 'No se pudo acceder al archivo seleccionado.' });
+        toast.error(t('pf.readError'), { description: t('pf.readErrorDesc') });
       } else {
-        toast.error('Error al procesar la imagen', { description: msg || 'Inténtalo de nuevo.' });
+        toast.error(t('pf.processError'), { description: msg || t('common.tryAgain') });
       }
     }
   };
@@ -259,18 +260,18 @@ export function ProfilePage() {
 
       setAvatarUrl(publicUrl);
       useAuthStore.setState({ user: { ...user, avatar_url: publicUrl } });
-      toast.success('Foto de perfil actualizada', { description: 'Tu nueva foto se ha guardado correctamente.' });
+      toast.success(t('pf.avatarUpdated'), { description: t('pf.avatarUpdatedDesc') });
       cancelAvatarPreview();
     } catch (err) {
       const msg = (err as Error)?.message || '';
       if (/Failed to fetch|NetworkError|network/i.test(msg)) {
-        toast.error('Error de conexión', { description: 'No se pudo conectar con el servidor. Revisa tu red e inténtalo de nuevo.' });
+        toast.error(t('pf.connError'), { description: t('pf.connErrorDesc') });
       } else if (/policy|row-level security|RLS|403|unauthorized|401/i.test(msg)) {
-        toast.error('Permiso denegado', { description: 'No tienes permiso para subir esta imagen. Vuelve a iniciar sesión.' });
+        toast.error(t('pf.permDenied'), { description: t('pf.permDeniedDesc') });
       } else if (/bucket|not found|404/i.test(msg)) {
-        toast.error('Almacén no disponible', { description: 'El espacio de almacenamiento no está configurado. Contacta con soporte.' });
+        toast.error(t('pf.storageUnavailable'), { description: t('pf.storageUnavailableDesc') });
       } else {
-        toast.error('Error al subir la foto', { description: msg || 'Inténtalo de nuevo en unos segundos.' });
+        toast.error(t('pf.uploadError'), { description: msg || t('pf.uploadErrorDesc') });
       }
     } finally {
       setAvatarUploading(false);
@@ -308,7 +309,7 @@ export function ProfilePage() {
                   exit={{ opacity: 0, y: 10 }}
                   className="absolute inset-0 -bottom-2 flex flex-col items-center justify-center gap-2 bg-surface/95 backdrop-blur-sm rounded-[inherit] p-3 z-20"
                 >
-                  <img src={avatarPreview} alt="Vista previa" className="w-24 h-24 rounded-full object-cover ring-4 ring-cyan-400/60" />
+                  <img src={avatarPreview} alt={t('pf.preview')} className="w-24 h-24 rounded-full object-cover ring-4 ring-cyan-400/60" />
                   <div className="flex items-center gap-2 mt-1">
                     <button
                       type="button"
@@ -329,17 +330,17 @@ export function ProfilePage() {
                       ) : (
                         <Icon name="check" size={14} />
                       )}
-                      Guardar
+                      {t('common.save')}
                     </button>
                   </div>
                 </motion.div>
               )}
             </AnimatePresence>
           </div>
-          <h2 className="font-display fm-title gradient-text-living mt-4 relative">{user?.full_name || 'Usuario'}</h2>
+          <h2 className="font-display fm-title gradient-text-living mt-4 relative">{user?.full_name || t('st.user')}</h2>
           <div className="font-title-md text-primary bg-primary-container/10 px-4 py-1 rounded-full mt-2 flex items-center gap-2 breathe-badge glow-teal relative">
             <MedicalIcon name="clipboard" size={16} className="text-primary animate-breathe-icon" />
-            {isFisio ? 'Fisioterapeuta' : 'Paciente'}
+            {isFisio ? t('common.therapist') : t('common.patient')}
           </div>
           <div className="w-full space-y-2 mt-6">
             {user?.email && (
@@ -356,10 +357,10 @@ export function ProfilePage() {
             )}
           </div>
           <div className="w-full mt-4 space-y-3">
-            <RecoveryRankBadge rank={isFisio ? 'Rango: Clínico Experto' : 'Rango: Constante'} className="w-full justify-center" />
+            <RecoveryRankBadge rank={isFisio ? t('pf.rankClinicExpert') : t('pf.rankSteady')} className="w-full justify-center" />
             <RehabHeroAvatarCard
-              name={user?.full_name?.split(' ')[0] || 'Usuario'}
-              roleTitle={isFisio ? 'Especialista en Kinesiología' : 'Paciente en Rehabilitación'}
+              name={user?.full_name?.split(' ')[0] || t('st.user')}
+              roleTitle={isFisio ? t('pf.kinesiologist') : t('pf.patientInRehab')}
               level={isFisio ? 12 : 4}
               powerScore={88}
             />
@@ -370,22 +371,22 @@ export function ProfilePage() {
         <div className="lg:col-span-8 space-y-6 w-full min-w-0">
           <AnimatedTabs
             tabs={[
-              { id: 'personal', label: 'Datos Personales', content: (
+              { id: 'personal', label: t('pf.tabPersonal'), content: (
                 <GlassPanel className="p-6 rounded-3xl card-glow-hover shimmer-border hover-lift accent-teal">
                   <div className="flex justify-between items-center mb-6">
-                    <h3 className="font-headline-lg-mobile gradient-text-living font-bold">Información Personal</h3>
+                    <h3 className="font-headline-lg-mobile gradient-text-living font-bold">{t('pf.personalInfo')}</h3>
                     <button onClick={() => setEditing(!editing)} className="flex items-center gap-2 text-primary font-bold text-sm hover-lift badge-teal px-3 py-1 rounded-full breathe-badge">
-                      <Icon name="edit" size={16} /> {editing ? 'Cancelar' : 'Editar'}
+                      <Icon name="edit" size={16} /> {editing ? t('common.cancel') : t('common.edit')}
                     </button>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {[
-                      { label: 'Nombre Completo', key: 'full_name', type: 'text' },
-                      { label: isFisio ? 'Especialidad' : 'Condición / Diagnóstico', key: 'especialidad', type: 'text' },
-                      ...(isFisio ? [{ label: 'Universidad', key: 'universidad', type: 'text' }] : []),
-                      { label: 'Cédula', key: 'cedula', type: 'text' },
-                      { label: 'Colegiado ID', key: 'colegiado_id', type: 'text' },
-                      { label: 'Año de Egreso', key: 'anio_egreso', type: 'number' },
+                      { label: t('st.userName'), key: 'full_name', type: 'text' },
+                      { label: isFisio ? t('pd.specialties') : t('pf.conditionDx'), key: 'especialidad', type: 'text' },
+                      ...(isFisio ? [{ label: t('pf.university'), key: 'universidad', type: 'text' }] : []),
+                      { label: t('pf.license'), key: 'cedula', type: 'text' },
+                      { label: t('pf.billId'), key: 'colegiado_id', type: 'text' },
+                      { label: t('pf.gradYear'), key: 'anio_egreso', type: 'number' },
                     ].map((field) => (
                       <div key={field.key} className="p-4 rounded-2xl bg-surface-container-low/60 border divider-teal">
                         <label className="text-2xs uppercase text-outline font-bold block mb-1">{field.label}</label>
@@ -404,33 +405,33 @@ export function ProfilePage() {
                   </div>
                   {editing && (
                     <button onClick={saveProfile} className="premium-btn mt-4 px-6 py-3 bg-primary text-on-primary rounded-xl font-bold hover:scale-[1.02] active:scale-95 transition-all glow-teal breathe-teal">
-                      Guardar Cambios
+                      {t('common.saveChanges')}
                     </button>
                   )}
                 </GlassPanel>
               ) },
-              { id: 'preferences', label: 'Preferencias', content: (
+              { id: 'preferences', label: t('pf.tabPreferences'), content: (
                 <>
                 <GlassPanel className="p-6 rounded-3xl card-glow-hover hover-lift">
-                  <h3 className="font-headline-lg-mobile gradient-text-living font-bold mb-6">Preferencias del Sistema</h3>
+                  <h3 className="font-headline-lg-mobile gradient-text-living font-bold mb-6">{t('pf.systemPrefs')}</h3>
                   <div className="space-y-2">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 hover:bg-surface-variant/20 rounded-2xl gap-3">
                       <div className="flex items-center gap-3">
                         <Icon name="format_size" size={24} className="text-outline animate-breathe-icon" />
-                        <div><p className="font-medium">Tamaño de fuente</p><p className="text-xs text-outline">Ajusta el tamaño del texto en toda la app</p></div>
+                        <div><p className="font-medium">{t('pf.fontSize')}</p><p className="text-xs text-outline">{t('pf.fontSizeDesc')}</p></div>
                       </div>
                       <div className="flex gap-2">
                         {([
-                          { key: 'normal', label: 'Normal' },
-                          { key: 'large', label: 'Grande' },
-                          { key: 'xlarge', label: 'Muy grande' },
+                          { key: 'normal', labelKey: 'pf.fsNormal' },
+                          { key: 'large', labelKey: 'pf.fsLarge' },
+                          { key: 'xlarge', labelKey: 'pf.fsXL' },
                         ] as const).map((opt) => (
                           <button
                             key={opt.key}
                             onClick={() => handleFontSizeChange(opt.key)}
                             className={`px-4 py-2 rounded-xl font-bold text-sm transition-all ${fontSize === opt.key ? 'bg-primary text-on-primary' : 'bg-surface-variant/30 border border-outline-variant/30 text-on-surface hover:bg-surface-variant/50'}`}
                           >
-                            {opt.label}
+                            {t(opt.labelKey)}
                           </button>
                         ))}
                       </div>
@@ -438,7 +439,7 @@ export function ProfilePage() {
                     <div className="flex items-center justify-between p-4 hover:bg-surface-variant/20 rounded-2xl">
                       <div className="flex items-center gap-3">
                         <Icon name="dark_mode" size={24} className="text-outline animate-breathe-icon" />
-                        <div><p className="font-medium">Modo Oscuro</p><p className="text-xs text-outline">Cambio automático soportado</p></div>
+                        <div><p className="font-medium">{t('st.darkMode')}</p><p className="text-xs text-outline">{t('st.darkModeDesc')}</p></div>
                       </div>
                       <button
                         onClick={toggleTheme}
@@ -450,7 +451,7 @@ export function ProfilePage() {
                     <div className="flex items-center justify-between p-4 hover:bg-surface-variant/20 rounded-2xl">
                       <div className="flex items-center gap-3">
                         <Icon name="notifications_active" size={24} className="text-outline animate-breathe-icon" />
-                        <div><p className="font-medium">Notificaciones Push</p><p className="text-xs text-outline">Alertas de pacientes y actualizaciones de rutina</p></div>
+                        <div><p className="font-medium">{t('st.pushNotifs')}</p><p className="text-xs text-outline">{t('st.pushNotifsDesc')}</p></div>
                       </div>
                       <button
                         onClick={() => setPushNotifications(!pushNotifications)}
@@ -462,7 +463,7 @@ export function ProfilePage() {
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 hover:bg-surface-variant/20 rounded-2xl gap-3">
                       <div className="flex items-center gap-3">
                         <Icon name="pan_tool" size={24} className="text-outline animate-breathe-icon" />
-                        <div><p className="font-medium">Modo Ergonómico de Agarre</p><p className="text-xs text-outline">Optimiza la posición de controles para diestros o zurdos</p></div>
+                        <div><p className="font-medium">{t('pf.ergonomicGrip')}</p><p className="text-xs text-outline">{t('pf.ergonomicGripDesc')}</p></div>
                       </div>
                       <ErgonomicHandModeSwitcher />
                     </div>
@@ -471,9 +472,9 @@ export function ProfilePage() {
                 {isFisio && (
                   <GlassPanel className="p-6 rounded-3xl card-glow-hover hover-lift mt-6 shimmer-border relative overflow-hidden">
                     <div className="absolute -top-10 -right-10 w-32 h-32 rounded-full bg-gradient-to-br from-cyan-400/15 to-teal-500/10 blur-2xl pointer-events-none" />
-                    <h3 className="font-headline-lg-mobile gradient-text-living font-bold mb-6 relative">Configuración de Clínica</h3>
+                    <h3 className="font-headline-lg-mobile gradient-text-living font-bold mb-6 relative">{t('pf.clinicSettings')}</h3>
                     <div className="relative">
-                      <label className="text-2xs uppercase text-outline font-bold block mb-2">Nombre de la Clínica</label>
+                      <label className="text-2xs uppercase text-outline font-bold block mb-2">{t('pf.clinicName')}</label>
                       <div
                         className="flex items-center gap-3 p-4 rounded-2xl bg-surface-container-low/60 border divider-teal transition-all"
                         onMouseEnter={() => setClinicNameHover(true)}
@@ -494,7 +495,7 @@ export function ProfilePage() {
                               if (e.key === 'Escape') { e.preventDefault(); cancelClinicEdit(); }
                             }}
                             onBlur={saveClinicName}
-                            placeholder="Escribe el nombre de tu clínica…"
+                            placeholder={t('pf.clinicPh')}
                             className="flex-1 bg-transparent border-b-2 border-cyan-500/40 focus:border-cyan-500 outline-none text-on-surface font-medium text-lg py-1"
                           />
                         ) : (
@@ -503,7 +504,7 @@ export function ProfilePage() {
                             className="flex-1 flex items-center justify-between text-left group"
                           >
                             <span className="font-medium text-on-surface text-lg">
-                              {user?.clinic_name || 'Sin nombre · Pulsa para editar'}
+                              {user?.clinic_name || t('pf.clinicNoName')}
                             </span>
                             <AnimatePresence>
                               {(clinicNameHover || !user?.clinic_name) && (
@@ -514,7 +515,7 @@ export function ProfilePage() {
                                   className="flex items-center gap-1 text-xs font-bold text-cyan-600 bg-cyan-500/10 px-3 py-1.5 rounded-full ring-1 ring-cyan-500/20"
                                 >
                                   <Icon name="edit" size={14} />
-                                  {user?.clinic_name ? 'Editar' : 'Añadir'}
+                                  {user?.clinic_name ? t('common.edit') : t('common.add')}
                                 </motion.span>
                               )}
                             </AnimatePresence>
@@ -523,15 +524,15 @@ export function ProfilePage() {
                       </div>
                       <p className="text-xs text-outline mt-2 ml-1">
                         {clinicNameEditing
-                          ? 'Pulsa Enter para guardar · Esc para cancelar'
-                          : 'Pulsa sobre el nombre para editarlo'}
+                          ? t('pf.enterToSave')
+                          : t('pf.clickToEdit')}
                       </p>
                     </div>
                   </GlassPanel>
                 )}
                 </>
               ) },
-              { id: 'activity', label: isFisio ? 'Actividad' : 'Sesiones', content: (
+              { id: 'activity', label: isFisio ? t('pf.tabActivity') : t('pf.tabSessions'), content: (
                 <>
                 <GlassPanel className="p-6 rounded-3xl card-glow-hover hover-lift shimmer-border relative overflow-hidden">
                   <div className="absolute -top-10 -right-10 w-32 h-32 rounded-full bg-gradient-to-br from-cyan-400/15 to-teal-500/10 blur-2xl pointer-events-none" />
@@ -542,9 +543,9 @@ export function ProfilePage() {
                           <Icon name="groups" size={24} className="icon-accent-cyan animate-breathe-icon" />
                         </div>
                         <div>
-                          <h3 className="font-headline-lg-mobile gradient-text-living font-bold">{isFisio ? 'Pacientes Activos Hoy' : 'Sesiones Programadas'}</h3>
+                          <h3 className="font-headline-lg-mobile gradient-text-living font-bold">{isFisio ? t('pf.activeToday') : t('pf.sessionsScheduled')}</h3>
                           <p className="text-xs text-outline mt-0.5">
-                            {isFisio ? `${activeToday.length} paciente(s) con actividad` : 'Tus próximas sesiones de rehabilitación'}
+                            {isFisio ? t('pf.activeCount', { n: activeToday.length }) : t('pf.nextSessions')}
                           </p>
                         </div>
                       </div>
@@ -563,7 +564,7 @@ export function ProfilePage() {
                       </div>
                     ) : isFisio ? (
                       activeToday.length === 0 ? (
-                        <p className="text-sm text-on-surface-variant text-center py-8">No hay pacientes activos hoy. Asigna pacientes para ver su actividad.</p>
+                        <p className="text-sm text-on-surface-variant text-center py-8">{t('pf.noActiveToday')}</p>
                       ) : (
                         <div className="space-y-3">
                           {activeToday.map((p, i) => (
@@ -594,24 +595,24 @@ export function ProfilePage() {
                         <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-teal-500/15 to-cyan-400/10 flex items-center justify-center ring-1 ring-cyan-500/20 mx-auto mb-3 breathe-teal">
                           <Icon name="event_available" size={28} className="icon-accent-cyan animate-breathe-icon" />
                         </div>
-                        <p className="text-sm text-on-surface-variant">Revisa tus ejercicios asignados en el panel principal para ver tus sesiones programadas.</p>
+                        <p className="text-sm text-on-surface-variant">{t('pf.checkExercises')}</p>
                       </div>
                     )}
                   </div>
                 </GlassPanel>
                 <div className="flex flex-wrap justify-between items-center gap-4 pt-6">
                   <div className="flex gap-4 text-sm">
-                    <AnimatedLink onClick={() => setLegalModal('privacy')} className="text-on-surface-variant">Política de Privacidad</AnimatedLink>
-                    <AnimatedLink onClick={() => setLegalModal('terms')} className="text-on-surface-variant">Términos</AnimatedLink>
-                    <AnimatedLink onClick={() => setLegalModal('consent')} className="text-on-surface-variant">Consentimiento</AnimatedLink>
+                    <AnimatedLink onClick={() => setLegalModal('privacy')} className="text-on-surface-variant">{t('st.privacy')}</AnimatedLink>
+                    <AnimatedLink onClick={() => setLegalModal('terms')} className="text-on-surface-variant">{t('st.terms')}</AnimatedLink>
+                    <AnimatedLink onClick={() => setLegalModal('consent')} className="text-on-surface-variant">{t('pf.consent')}</AnimatedLink>
                   </div>
                   <button onClick={() => setShowLogoutModal(true)} className="flex items-center gap-2 px-6 py-3 rounded-xl bg-error/10 text-error font-bold hover:bg-error/20 transition-all breathe-badge hover-lift-warm">
-                    <Icon name="logout" size={20} /> Cerrar Sesión
+                    <Icon name="logout" size={20} /> {t('common.logout')}
                   </button>
                 </div>
                 </>
               ) },
-              { id: 'trophies', label: 'Logros y Trofeos', content: (
+              { id: 'trophies', label: t('pf.tabTrophies'), content: (
                 <div className="space-y-4">
                   <VirtualTrophyCabinet />
                 </div>
@@ -626,8 +627,8 @@ export function ProfilePage() {
           <div className="w-14 h-14 rounded-full bg-error/10 flex items-center justify-center mx-auto breathe-warm">
             <Icon name="logout" size={28} className="text-error animate-breathe-icon" />
           </div>
-          <h3 className="font-headline-lg-mobile text-on-surface font-bold">¿Cerrar Sesión?</h3>
-          <p className="text-sm text-on-surface-variant">Tu sesión se cerrará y tendrás que volver a iniciar sesión para acceder a FisioMirror.</p>
+          <h3 className="font-headline-lg-mobile text-on-surface font-bold">{t('pf.logoutTitle')}</h3>
+          <p className="text-sm text-on-surface-variant">{t('pf.logoutDesc')}</p>
           <div className="flex gap-3 pt-2">
             <button onClick={() => setShowLogoutModal(false)} className="flex-1 px-6 py-3 rounded-xl bg-surface-variant/30 text-on-surface-variant font-bold hover:bg-surface-variant/50 transition-all">
               Cancelar
