@@ -46,7 +46,7 @@ export function StatCard({
         )}
 
         {badge && (
-          <span className="inline-flex items-center gap-1.5 text-[10px] font-bold text-teal-700 dark:text-teal-300 bg-teal-500/10 border border-teal-500/20 px-2.5 py-1 rounded-full">
+          <span className="inline-flex items-center gap-1.5 text-2xs font-bold text-teal-700 dark:text-teal-300 bg-teal-500/10 border border-teal-500/20 px-2.5 py-1 rounded-full">
             <span className="size-1.5 rounded-full bg-teal-500 animate-pulse" />
             <span>{badge}</span>
           </span>
@@ -54,7 +54,7 @@ export function StatCard({
       </div>
 
       <div className="space-y-1">
-        <p className="text-[11px] sm:text-xs font-semibold uppercase tracking-wider text-on-surface-variant truncate">
+        <p className="text-xs sm:text-xs font-semibold uppercase tracking-wider text-on-surface-variant truncate">
           {label}
         </p>
 
@@ -69,7 +69,7 @@ export function StatCard({
         )}
 
         {trend && (
-          <div className="flex items-center gap-1 pt-2 text-[11px] font-semibold">
+          <div className="flex items-center gap-1 pt-2 text-xs font-semibold">
             {trend.positive ? (
               <span className="inline-flex items-center text-emerald-600 dark:text-emerald-400">
                 <ArrowUpRight className="size-3.5" /> +{trend.value}%

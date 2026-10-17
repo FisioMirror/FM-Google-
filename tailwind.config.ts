@@ -218,6 +218,7 @@ export default {
         'headline-lg-mobile': ['28px', { lineHeight: '36px', letterSpacing: '-0.01em', fontWeight: '700' }],
         'display-editorial': ['56px', { lineHeight: '64px', letterSpacing: '-0.01em', fontWeight: '700' }],
         'display-lg': ['48px', { lineHeight: '56px', letterSpacing: '-0.02em', fontWeight: '700' }],
+        '2xs': ['0.625rem', { lineHeight: '0.875rem', fontWeight: '400' }],
         'xs': ['0.75rem', { lineHeight: '1rem', fontWeight: '400' }],
         'sm': ['0.875rem', { lineHeight: '1.25rem', fontWeight: '400' }],
         'base': ['1rem', { lineHeight: '1.5rem', fontWeight: '400' }],

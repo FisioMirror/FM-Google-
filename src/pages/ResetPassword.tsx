@@ -219,7 +219,7 @@ export function ResetPassword() {
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
-        className="w-full max-w-md bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-200 dark:border-slate-800 relative z-10"
+        className="w-full max-w-md bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 shadow-elevated border border-slate-200 dark:border-slate-800 relative z-10"
       >
         {/* Encabezado */}
         <div className="text-center mb-6">
@@ -464,7 +464,7 @@ export function ResetPassword() {
                           }`}
                         />
                       </div>
-                      <div className="flex justify-between text-[10px] text-slate-500 font-medium">
+                      <div className="flex justify-between text-2xs text-slate-500 font-medium">
                         <span>Fortaleza: {strengthScore <= 1 ? 'Baja' : strengthScore <= 3 ? 'Media' : 'Alta'}</span>
                         <span>{hasMinLength ? 'Cumple 8+ car.' : 'Mínimo 8 car.'}</span>
                       </div>
@@ -488,10 +488,10 @@ export function ResetPassword() {
                     />
                   </div>
                   {confirmPassword && password !== confirmPassword && (
-                    <p className="text-[10px] text-red-500 mt-1">Las contraseñas no coinciden</p>
+                    <p className="text-2xs text-red-500 mt-1">Las contraseñas no coinciden</p>
                   )}
                   {confirmPassword && password === confirmPassword && (
-                    <p className="text-[10px] text-teal-600 dark:text-teal-400 mt-1 flex items-center gap-1">
+                    <p className="text-2xs text-teal-600 dark:text-teal-400 mt-1 flex items-center gap-1">
                       <ShieldCheck size={11} /> Las contraseñas coinciden
                     </p>
                   )}

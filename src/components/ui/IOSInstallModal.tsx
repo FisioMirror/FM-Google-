@@ -23,7 +23,7 @@ export function IOSInstallModal({ isOpen, onClose }: IOSInstallModalProps) {
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="relative w-full max-w-md bg-surface border border-primary/20 rounded-3xl p-6 shadow-2xl z-10 max-h-[90vh] overflow-y-auto"
+            className="relative w-full max-w-md bg-surface border border-primary/20 rounded-3xl p-6 shadow-elevated z-10 max-h-[90vh] overflow-y-auto"
           >
             <div className="flex items-center justify-between pb-4 border-b border-outline/10">
               <div className="flex items-center gap-3">

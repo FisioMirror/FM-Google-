@@ -47,7 +47,7 @@ export const TherapistQuickToolbar: React.FC<TherapistQuickToolbarProps> = ({
     <aside
       aria-label="Barra de herramientas de control para el fisioterapeuta"
       className={cn(
-        'relative inline-flex items-center rounded-2xl border transition-all duration-300 backdrop-blur-2xl shadow-xl',
+        'relative inline-flex items-center rounded-2xl border transition-all duration-300 backdrop-blur-2xl shadow-elevated',
         'bg-surface/90 dark:bg-slate-900/90 border-outline-variant/30 dark:border-white/10 p-1.5',
         className
       )}

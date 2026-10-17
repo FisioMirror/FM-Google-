@@ -116,7 +116,7 @@ export const ARFloatingDock: React.FC<ARFloatingDockProps> = ({
                   animate={{ opacity: 1, y: -36, scale: 1 }}
                   exit={{ opacity: 0, y: 8, scale: 0.9 }}
                   transition={{ duration: 0.15 }}
-                  className="absolute pointer-events-none z-50 px-2.5 py-1 rounded-lg bg-slate-900 border border-white/20 text-white text-xs font-medium whitespace-nowrap shadow-xl"
+                  className="absolute pointer-events-none z-50 px-2.5 py-1 rounded-lg bg-slate-900 border border-white/20 text-white text-xs font-medium whitespace-nowrap shadow-elevated"
                 >
                   {item.label}
                   <div className="absolute left-1/2 -bottom-1 -translate-x-1/2 w-2 h-2 bg-slate-900 rotate-45 border-b border-r border-white/20" />

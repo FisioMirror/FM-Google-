@@ -104,7 +104,7 @@ export function EmptyState({
         transition={{ repeat: Infinity, duration: 4, ease: 'easeInOut' }}
         className="relative"
       >
-        <div className="size-16 rounded-3xl bg-teal-500/10 border border-teal-500/20 flex items-center justify-center shadow-lg shadow-teal-500/10">
+        <div className="size-16 rounded-3xl bg-teal-500/10 border border-teal-500/20 flex items-center justify-center shadow-card shadow-teal-500/10">
           <Icon name={finalIcon} size={32} className={finalColor} />
         </div>
         <div className="absolute -inset-2 rounded-3xl bg-teal-500/10 blur-xl -z-10" />

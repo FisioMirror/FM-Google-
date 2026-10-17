@@ -291,7 +291,7 @@ function DocHeader({ doc }: { doc: LegalDoc }) {
         {doc.title}
       </h2>
       <p className="text-sm text-on-surface-variant mt-1">{doc.subtitle}</p>
-      <div className="flex items-center gap-2 mt-3 text-[11px] text-outline">
+      <div className="flex items-center gap-2 mt-3 text-xs text-outline">
         <ScrollText size={14} />
         <span>Última actualización: {doc.lastUpdated}</span>
       </div>
@@ -315,7 +315,7 @@ function ConsentLegend() {
           className="flex items-center gap-2 px-3 py-2 rounded-xl bg-surface-container-low/60 border divider-teal"
         >
           <it.icon size={16} className="text-primary shrink-0" />
-          <span className="text-[11px] font-medium text-on-surface-variant">{it.label}</span>
+          <span className="text-xs font-medium text-on-surface-variant">{it.label}</span>
         </div>
       ))}
     </div>
@@ -362,7 +362,7 @@ export function LegalModal({ isOpen, onClose, type }: LegalModalProps) {
         {/* Footer note */}
         <div className="mt-6 pt-4 border-t divider-teal flex items-start gap-2">
           <XCircle size={16} className="text-outline shrink-0 mt-0.5" />
-          <p className="text-[11px] text-outline leading-relaxed">
+          <p className="text-xs text-outline leading-relaxed">
             Este documento tiene carácter informativo y no constituye asesoramiento legal. En caso de
             duda sobre el alcance de estas condiciones, consultá a tu profesional de confianza o
             escríbenos a privacidad@fisiomirror.com.ve.

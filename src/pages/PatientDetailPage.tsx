@@ -508,7 +508,7 @@ export function PatientDetailPage() {
       {activeTab === 'overview' && (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Clinical data card */}
-          <GlassPanel className="card-glow-hover lg:col-span-3 p-8 rounded-[2rem]">
+          <GlassPanel className="card-glow-hover lg:col-span-3 p-8 rounded-3xl">
             <div className="flex items-center gap-3 mb-6">
               <div className="p-3 bg-primary/10 rounded-2xl text-primary"><MedicalIcon name="activity" size={24} /></div>
               <div>
@@ -540,7 +540,7 @@ export function PatientDetailPage() {
                 <div key={field.label} className="p-4 rounded-xl bg-surface-variant/10 border border-outline-variant/10">
                   <div className="flex items-center gap-2 mb-1">
                     <Icon name={field.icon} size={14} className="text-outline" />
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-outline">{field.label}</span>
+                    <span className="text-2xs font-bold uppercase tracking-wider text-outline">{field.label}</span>
                   </div>
                   <p className="text-sm text-on-surface font-medium">{field.value || 'No registrado'}</p>
                 </div>
@@ -569,7 +569,7 @@ export function PatientDetailPage() {
               </div>
             )}
           </GlassPanel>
-          <GlassPanel className="card-glow-hover lg:col-span-2 p-8 rounded-[2rem]">
+          <GlassPanel className="card-glow-hover lg:col-span-2 p-8 rounded-3xl">
             <h3 className="font-title-md text-title-md text-on-surface mb-2 flex items-center gap-2">
               <MedicalIcon name="activity" size={20} className="text-primary" /> Progreso Biomecánico
             </h3>
@@ -593,10 +593,10 @@ export function PatientDetailPage() {
                     style={{ height: `${Math.max((v / maxWeekVal) * 100, 8)}%` }}
                   >
                     {i === 7 && recoveryProgress > 0 && (
-                      <div className="absolute -top-8 left-1/2 -translate-x-1/2 text-[10px] font-bold bg-primary text-on-primary px-2 py-1 rounded-full shadow-lg whitespace-nowrap">ACT: {recoveryProgress}%</div>
+                      <div className="absolute -top-8 left-1/2 -translate-x-1/2 text-2xs font-bold bg-primary text-on-primary px-2 py-1 rounded-full shadow-card whitespace-nowrap">ACT: {recoveryProgress}%</div>
                     )}
                   </div>
-                  <span className="text-[10px] text-outline font-medium">{weekLabels[i]}</span>
+                  <span className="text-2xs text-outline font-medium">{weekLabels[i]}</span>
                 </div>
               ))}
             </div>
@@ -641,7 +641,7 @@ export function PatientDetailPage() {
             <EdemaAssessmentCard grade={recoveryProgress > 75 ? 1 : 2} circumDeltaMm={recoveryProgress > 75 ? 3 : 8} />
           </div>
 
-          <GlassPanel className="card-glow-hover lg:col-span-3 p-8 rounded-[2rem] bg-primary-container border-primary/20">
+          <GlassPanel className="card-glow-hover lg:col-span-3 p-8 rounded-3xl bg-primary-container border-primary/20">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center">
                 <Icon name="psychology" filled size={24} className="text-on-primary-container" />
@@ -664,7 +664,7 @@ export function PatientDetailPage() {
             <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/10">
               <div className="flex items-center gap-2 mb-2">
                 <Icon name="auto_awesome" size={14} className="text-on-primary-container" />
-                <p className="text-[10px] font-bold uppercase tracking-widest text-on-primary-container/80">Sugerencia de Physi</p>
+                <p className="text-2xs font-bold uppercase tracking-widest text-on-primary-container/80">Sugerencia de Physi</p>
               </div>
               <div className="flex gap-2">
                 <button onClick={generateInsight} disabled={aiLoading} className="flex-1 py-2.5 bg-on-primary-container text-primary font-bold text-xs rounded-xl transition-all hover:bg-on-primary-container/90 active:scale-95 shadow-sm disabled:opacity-50">
@@ -683,7 +683,7 @@ export function PatientDetailPage() {
 
       {activeTab === 'history' && (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-          <GlassPanel className="card-glow-hover p-8 rounded-[2rem]">
+          <GlassPanel className="card-glow-hover p-8 rounded-3xl">
             <h3 className="font-title-md text-title-md text-on-surface mb-6">Historial Clínico</h3>
             {sessions.length === 0 ? (
               <div className="empty-state-premium text-center py-12">
@@ -735,7 +735,7 @@ export function PatientDetailPage() {
 
       {activeTab === 'routine' && (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
-          <GlassPanel className="card-glow-hover p-8 rounded-[2rem]">
+          <GlassPanel className="card-glow-hover p-8 rounded-3xl">
             <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
               <h3 className="font-title-md text-title-md text-on-surface">Rutina Asignada</h3>
               <div className="flex gap-2 flex-wrap">
@@ -748,7 +748,7 @@ export function PatientDetailPage() {
                 </button>
                 <button
                   onClick={() => setShowReassignModal(true)}
-                  className="flex items-center gap-2 px-4 py-2 rounded-xl bg-primary text-on-primary hover:scale-[1.02] active:scale-95 transition-all text-sm font-bold shadow-lg shadow-primary/20"
+                  className="flex items-center gap-2 px-4 py-2 rounded-xl bg-primary text-on-primary hover:scale-[1.02] active:scale-95 transition-all text-sm font-bold shadow-card shadow-primary/20"
                   aria-label="Asignar nueva rutina"
                 >
                   <Icon name="autorenew" size={18} /> Reasignar Rutina
@@ -1054,7 +1054,7 @@ export function PatientDetailPage() {
                   <div key={r.id} className={`p-4 rounded-2xl border ${r.activa ? 'bg-primary/5 border-primary/20' : 'bg-surface-container border-outline-variant/20'}`}>
                     <div className="flex items-center justify-between mb-2">
                       <p className="font-bold text-on-surface text-sm">{r.nombre}</p>
-                      <span className={`text-[10px] font-bold uppercase px-2 py-1 rounded-full ${r.activa ? 'bg-primary text-on-primary' : r.status === 'archivada' ? 'bg-surface-container-highest text-on-surface-variant' : 'bg-secondary-container text-on-surface'}`}>
+                      <span className={`text-2xs font-bold uppercase px-2 py-1 rounded-full ${r.activa ? 'bg-primary text-on-primary' : r.status === 'archivada' ? 'bg-surface-container-highest text-on-surface-variant' : 'bg-secondary-container text-on-surface'}`}>
                         {r.activa ? 'Activa' : r.status === 'archivada' ? 'Archivada' : r.status || 'Inactiva'}
                       </span>
                     </div>

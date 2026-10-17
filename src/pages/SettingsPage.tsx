@@ -571,7 +571,7 @@ export function SettingsPage() {
               </div>
               <div>
                 <p className="text-xs font-bold text-on-surface">Voz Humanizada Clínica (Recomendada)</p>
-                <p className="text-[11px] text-on-surface-variant leading-relaxed">
+                <p className="text-xs text-on-surface-variant leading-relaxed">
                   Fish Audio S2.1 Pro / Neural en vivo. Máxima empatía y articulación médica fluida.
                 </p>
               </div>
@@ -595,7 +595,7 @@ export function SettingsPage() {
               </div>
               <div>
                 <p className="text-xs font-bold text-on-surface">Voz del Dispositivo (Offline)</p>
-                <p className="text-[11px] text-on-surface-variant leading-relaxed">
+                <p className="text-xs text-on-surface-variant leading-relaxed">
                   Sintetizador Web Speech del sistema operativo. Sin consumo de red, ideal para baja señal.
                 </p>
               </div>
@@ -912,7 +912,7 @@ export function SettingsPage() {
           >
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-surface rounded-2xl p-6 w-full max-w-md shadow-2xl border border-outline-variant/20"
+              className="bg-surface rounded-2xl p-6 w-full max-w-md shadow-elevated border border-outline-variant/20"
               onClick={(e) => e.stopPropagation()}
             >
               <h3 className="text-lg font-bold text-on-surface mb-4">Cambiar Contraseña</h3>
@@ -961,7 +961,7 @@ export function SettingsPage() {
           >
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-surface rounded-2xl p-6 w-full max-w-md shadow-2xl border border-error/20"
+              className="bg-surface rounded-2xl p-6 w-full max-w-md shadow-elevated border border-error/20"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center gap-3 mb-4">
@@ -1001,7 +1001,7 @@ export function SettingsPage() {
           >
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-surface rounded-2xl p-6 w-full max-w-2xl shadow-2xl border border-outline-variant/20 max-h-[80vh] overflow-y-auto"
+              className="bg-surface rounded-2xl p-6 w-full max-w-2xl shadow-elevated border border-outline-variant/20 max-h-[80vh] overflow-y-auto"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center gap-3 mb-4">
@@ -1052,7 +1052,7 @@ export function SettingsPage() {
           >
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-surface rounded-2xl p-6 w-full max-w-2xl shadow-2xl border border-outline-variant/20 max-h-[80vh] overflow-y-auto"
+              className="bg-surface rounded-2xl p-6 w-full max-w-2xl shadow-elevated border border-outline-variant/20 max-h-[80vh] overflow-y-auto"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center gap-3 mb-4">

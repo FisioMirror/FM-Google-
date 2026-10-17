@@ -40,13 +40,13 @@ export const AssignmentProgressCard: React.FC<AssignmentProgressCardProps> = ({ 
 
   return (
     <div
-      className={`card ${colorClass} p-5 rounded-3xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 ${className}`}
+      className={`card ${colorClass} p-5 rounded-3xl shadow-sm hover:shadow-elevated hover:-translate-y-1 transition-all duration-300 bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 ${className}`}
     >
       <div className="flex justify-between items-center mb-2.5">
         <div className="flex items-center gap-2">
-          <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">{date}</span>
+          <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">{date}</span>
           {badge && (
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-700 dark:text-teal-300 border border-teal-500/20">
+            <span className="text-2xs font-bold px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-700 dark:text-teal-300 border border-teal-500/20">
               {badge}
             </span>
           )}
@@ -70,10 +70,10 @@ export const AssignmentProgressCard: React.FC<AssignmentProgressCardProps> = ({ 
 
         {/* Progress Bar */}
         <div className="flex items-center gap-2.5 mt-3.5">
-          <span className="text-[11px] font-semibold text-slate-400">Progreso</span>
+          <span className="text-xs font-semibold text-slate-400">Progreso</span>
           <div className="flex-1 h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
             <div
-              className="h-full bg-gradient-to-r from-teal-500 to-emerald-500 rounded-full transition-all duration-500"
+              className="h-full bg-gradient-to-r from-teal-500 to-emerald-500 rounded-full transition-all duration-300"
               style={{ width: progressValue }}
             />
           </div>

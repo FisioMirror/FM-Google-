@@ -161,7 +161,7 @@ export function MobileBottomSheet({
             dragElastic={0.2}
             onDragEnd={handleDragEnd}
             className={cn(
-              'relative z-10 w-full max-w-2xl mx-auto rounded-t-[2.5rem] border-t border-x shadow-2xl backdrop-blur-2xl flex flex-col overflow-hidden transition-[max-height] duration-300 ease-out pb-safe',
+              'relative z-10 w-full max-w-2xl mx-auto rounded-t-[2.5rem] border-t border-x shadow-elevated backdrop-blur-2xl flex flex-col overflow-hidden transition-[max-height] duration-300 ease-out pb-safe',
               snapHeights[activeSnap],
               variantStyles[variant],
               className

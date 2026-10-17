@@ -163,7 +163,7 @@ function CharacterSpotlight({
                 <span className="w-3.5 h-3.5 rounded-full bg-emerald-500 shadow-[0_0_12px_#10b981] border-2 border-white dark:border-slate-900" />
               </div>
               {/* Glass status badge */}
-              <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/95 dark:bg-slate-900/90 backdrop-blur-md shadow-lg border border-emerald-500/35 text-emerald-800 dark:text-emerald-300 text-xs font-extrabold tracking-tight">
+              <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/95 dark:bg-slate-900/90 backdrop-blur-md shadow-card border border-emerald-500/35 text-emerald-800 dark:text-emerald-300 text-xs font-extrabold tracking-tight">
                 <Icon name="medical_services" size={13} className="text-emerald-600 dark:text-emerald-400" />
                 <span>Fisioterapeuta</span>
               </div>
@@ -174,7 +174,7 @@ function CharacterSpotlight({
         {/* Discreet hover indicator when inactive */}
         {!isFisio && (
           <div className="absolute top-[28%] left-[24%] opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none transform -translate-y-1 group-hover:translate-y-0">
-            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-md shadow-md border border-slate-200/90 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-[11px] font-bold">
+            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-md shadow-md border border-slate-200/90 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold">
               <Icon name="touch_app" size={12} />
               <span>Ver Fisioterapeuta</span>
             </div>
@@ -211,7 +211,7 @@ function CharacterSpotlight({
                 <span className="w-3.5 h-3.5 rounded-full bg-sky-500 shadow-[0_0_12px_#0ea5e9] border-2 border-white dark:border-slate-900" />
               </div>
               {/* Glass status badge */}
-              <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/95 dark:bg-slate-900/90 backdrop-blur-md shadow-lg border border-sky-500/35 text-sky-800 dark:text-sky-300 text-xs font-extrabold tracking-tight">
+              <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/95 dark:bg-slate-900/90 backdrop-blur-md shadow-card border border-sky-500/35 text-sky-800 dark:text-sky-300 text-xs font-extrabold tracking-tight">
                 <Icon name="person" size={13} className="text-sky-600 dark:text-sky-400" />
                 <span>Paciente</span>
               </div>
@@ -222,7 +222,7 @@ function CharacterSpotlight({
         {/* Discreet hover indicator when inactive */}
         {!isPaciente && (
           <div className="absolute top-[32%] right-[24%] opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none transform -translate-y-1 group-hover:translate-y-0">
-            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-md shadow-md border border-slate-200/90 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-[11px] font-bold">
+            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-md shadow-md border border-slate-200/90 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold">
               <Icon name="touch_app" size={12} />
               <span>Ver Paciente</span>
             </div>
@@ -245,7 +245,7 @@ function CharacterSpotlight({
 
       {/* Ambient framing perimeter halo */}
       <motion.div
-        className="absolute inset-0 pointer-events-none z-10 transition-colors duration-700"
+        className="absolute inset-0 pointer-events-none z-10 transition-colors duration-300"
         style={{
           boxShadow: isPaciente
             ? 'inset 0 0 60px 8px rgba(14, 165, 233, 0.07)'
@@ -813,7 +813,7 @@ export function Login() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
           className={cn(
-            'w-full rounded-[2.5rem] border border-white/60 dark:border-slate-800/80 bg-white/45 dark:bg-slate-900/50 backdrop-blur-2xl shadow-[0_12px_40px_rgba(0,0,0,0.06)] dark:shadow-[0_12px_40px_rgba(0,0,0,0.3)] p-6 sm:p-9 flex flex-col relative overflow-hidden',
+            'w-full rounded-5xl border border-white/60 dark:border-slate-800/80 bg-white/45 dark:bg-slate-900/50 backdrop-blur-2xl shadow-[0_12px_40px_rgba(0,0,0,0.06)] dark:shadow-[0_12px_40px_rgba(0,0,0,0.3)] p-6 sm:p-9 flex flex-col relative overflow-hidden',
             isFisio && isRegister ? 'max-w-2xl gap-y-5' : 'max-w-[480px] gap-y-5'
           )}
         >
@@ -837,7 +837,7 @@ export function Login() {
               <div className="flex items-center gap-3">
                 <div className="h-1.5 w-24 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-[#00504d] dark:bg-[#8ad3cf] transition-all duration-500 ease-out"
+                    className="h-full bg-[#00504d] dark:bg-[#8ad3cf] transition-all duration-300 ease-out"
                     style={{ width: fisioStep === 1 ? '50%' : '100%' }}
                   />
                 </div>
@@ -893,7 +893,7 @@ export function Login() {
           {/* Header Typography matching HTML document */}
           {(!isFisio || !isRegister) && (
             <div className="text-center space-y-1.5 pt-1">
-              <span className="text-[11px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">
+              <span className="text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">
                 {greeting}
               </span>
               <h2 className="font-extrabold text-2xl sm:text-[26px] tracking-tight leading-tight">
@@ -1057,7 +1057,7 @@ export function Login() {
                 >
                   <div className="space-y-3">
                     <div>
-                      <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5 text-center">
+                      <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5 text-center">
                         Código de Acceso (6 dígitos)
                       </label>
                       <PinInput
@@ -1142,7 +1142,7 @@ export function Login() {
                             transition={{ duration: 0.3 }}
                           />
                         </div>
-                        <span className="text-[11px] font-bold text-slate-600 dark:text-slate-400 whitespace-nowrap">
+                        <span className="text-xs font-bold text-slate-600 dark:text-slate-400 whitespace-nowrap">
                           {pwStrength.label}
                         </span>
                       </div>
@@ -1558,7 +1558,7 @@ export function Login() {
                                     <span className="text-xs font-bold">{credencialFile?.name}</span>
                                   </div>
                                 )}
-                                <span className="text-[11px] text-slate-500">
+                                <span className="text-xs text-slate-500">
                                   Click para cambiar de archivo
                                 </span>
                               </div>
@@ -1686,7 +1686,7 @@ export function Login() {
 
         {/* Demo Fast Access Buttons */}
         <div className="w-full max-w-[480px] flex flex-col items-center gap-y-2 mt-5">
-          <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">
+          <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">
             Acceso Rápido de Prueba & Galería
           </span>
           <div className="flex flex-wrap justify-center gap-2.5">
@@ -1769,7 +1769,7 @@ export function Login() {
               >
                 <div
                   className={cn(
-                    'rounded-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border px-6 py-2.5 shadow-xl transition-all duration-300 flex items-center gap-2.5',
+                    'rounded-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border px-6 py-2.5 shadow-elevated transition-all duration-300 flex items-center gap-2.5',
                     isPaciente
                       ? 'border-blue-200/90 dark:border-blue-800/60 shadow-blue-500/10'
                       : 'border-teal-200/90 dark:border-teal-800/60 shadow-teal-500/10'
@@ -1823,7 +1823,7 @@ export function Login() {
                 exit={{ opacity: 0 }}
                 className="absolute inset-0 flex items-center justify-center pointer-events-none z-30"
               >
-                <div className="rounded-2xl bg-red-900/60 backdrop-blur-md px-8 py-4 border border-red-500/40 shadow-2xl">
+                <div className="rounded-2xl bg-red-900/60 backdrop-blur-md px-8 py-4 border border-red-500/40 shadow-elevated">
                   <div className="flex items-center gap-3 text-red-200">
                     <Icon name="error" filled size={24} />
                     <span className="text-sm font-bold">
@@ -1856,7 +1856,7 @@ export function Login() {
               role="dialog"
               aria-modal="true"
               aria-label="Recuperar contraseña"
-              className="bg-white dark:bg-slate-900 rounded-3xl p-7 max-w-sm w-full shadow-2xl border border-slate-200 dark:border-slate-800 max-h-[90dvh] overflow-y-auto"
+              className="bg-white dark:bg-slate-900 rounded-3xl p-7 max-w-sm w-full shadow-elevated border border-slate-200 dark:border-slate-800 max-h-[90dvh] overflow-y-auto"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="w-12 h-12 bg-teal-50 dark:bg-teal-950/60 rounded-full flex items-center justify-center mx-auto mb-3 text-[#00504d] dark:text-teal-400">
@@ -1937,7 +1937,7 @@ export function Login() {
               role="dialog"
               aria-modal="true"
               aria-label="Cuenta creada"
-              className="max-w-md w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-8 rounded-[2.5rem] text-center space-y-5 shadow-2xl max-h-[90dvh] overflow-y-auto"
+              className="max-w-md w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-8 rounded-5xl text-center space-y-5 shadow-elevated max-h-[90dvh] overflow-y-auto"
             >
               <div className="w-16 h-16 bg-teal-50 dark:bg-teal-950/60 rounded-full flex items-center justify-center mx-auto text-[#00504d] dark:text-teal-400 shadow-inner">
                 <Icon name="check_circle" filled size={38} />

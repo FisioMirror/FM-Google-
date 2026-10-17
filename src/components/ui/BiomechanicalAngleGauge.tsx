@@ -76,7 +76,7 @@ export const BiomechanicalAngleGauge: React.FC<BiomechanicalAngleGaugeProps> = (
         </div>
         <span
           className={cn(
-            'text-[10px] font-medium px-2 py-0.5 rounded-full border',
+            'text-2xs font-medium px-2 py-0.5 rounded-full border',
             status.color === 'emerald' && 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20',
             status.color === 'amber' && 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20',
             status.color === 'rose' && 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20'
@@ -153,7 +153,7 @@ export const BiomechanicalAngleGauge: React.FC<BiomechanicalAngleGaugeProps> = (
               <span>{Math.round(currentAngle)}</span>
               <span className="text-xl font-normal text-slate-400 ml-0.5">{unit}</span>
             </div>
-            <div className="text-[11px] font-medium text-slate-500 dark:text-slate-400 mt-0.5">
+            <div className="text-xs font-medium text-slate-500 dark:text-slate-400 mt-0.5">
               Objetivo: <span className="font-mono font-bold text-primary dark:text-teal-400">{targetAngle}{unit}</span>
             </div>
           </motion.div>
@@ -161,9 +161,9 @@ export const BiomechanicalAngleGauge: React.FC<BiomechanicalAngleGaugeProps> = (
       </div>
 
       {/* Target Marker & Min/Max Footnote */}
-      <div className="w-full flex items-center justify-between text-[11px] font-mono text-slate-400 px-3 mt-1">
+      <div className="w-full flex items-center justify-between text-xs font-mono text-slate-400 px-3 mt-1">
         <span>{minAngle}{unit}</span>
-        <div className="flex items-center gap-1 text-[11px]">
+        <div className="flex items-center gap-1 text-xs">
           {status.color === 'emerald' ? (
             <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
           ) : (

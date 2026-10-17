@@ -94,7 +94,7 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
         <span className="text-sm leading-none shrink-0" role="img" aria-label={currentLang.label}>
           {currentLang.flag}
         </span>
-        <span className="uppercase tracking-wider font-bold text-[11px] text-teal-700 dark:text-teal-300">
+        <span className="uppercase tracking-wider font-bold text-xs text-teal-700 dark:text-teal-300">
           {currentLang.code}
         </span>
         <ChevronDown
@@ -114,13 +114,13 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
             exit={{ opacity: 0, y: 4, scale: 0.95 }}
             transition={{ duration: 0.15, ease: 'easeOut' }}
             className={cn(
-              'absolute top-full mt-1.5 z-50 w-44 rounded-2xl p-1.5 shadow-2xl',
+              'absolute top-full mt-1.5 z-50 w-44 rounded-2xl p-1.5 shadow-elevated',
               'bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl border border-teal-500/20 dark:border-white/10 text-slate-800 dark:text-slate-100',
               dropdownAlign === 'right' ? 'right-0' : 'left-0'
             )}
             role="menu"
           >
-            <div className="px-2.5 py-1.5 border-b border-slate-100 dark:border-slate-800/80 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+            <div className="px-2.5 py-1.5 border-b border-slate-100 dark:border-slate-800/80 flex items-center gap-1.5 text-2xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
               <Globe size={11} className="text-teal-500" />
               <span>Idioma / Language</span>
             </div>

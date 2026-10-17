@@ -85,7 +85,7 @@ export function ClinicalSlider({
         >
           <motion.div
             animate={{ scale: isDragging ? 1.25 : 1 }}
-            className="size-6 rounded-full bg-white border-2 border-teal-600 shadow-lg shadow-teal-900/30 flex items-center justify-center ring-4 ring-teal-500/20"
+            className="size-6 rounded-full bg-white border-2 border-teal-600 shadow-card shadow-teal-900/30 flex items-center justify-center ring-4 ring-teal-500/20"
           >
             <div className="size-2 rounded-full bg-teal-600" />
           </motion.div>
@@ -94,7 +94,7 @@ export function ClinicalSlider({
 
       {/* Tick Marks & Scale */}
       {ticks && ticks.length > 0 && (
-        <div className="flex justify-between px-1 text-[10px] font-semibold text-outline">
+        <div className="flex justify-between px-1 text-2xs font-semibold text-outline">
           {ticks.map((t) => (
             <button
               key={t}
@@ -112,7 +112,7 @@ export function ClinicalSlider({
       )}
 
       {helperText && (
-        <p className="text-[11px] text-on-surface-variant leading-relaxed">
+        <p className="text-xs text-on-surface-variant leading-relaxed">
           {helperText}
         </p>
       )}

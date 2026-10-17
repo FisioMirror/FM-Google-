@@ -66,12 +66,12 @@ export const MuscleTargetRadarCard: React.FC<MuscleTargetRadarCardProps> = ({
       whileHover={{ y: -3, scale: 1.01 }}
       transition={{ duration: 0.2 }}
       className={cn(
-        "relative p-5 rounded-3xl bg-gradient-to-br from-surface/95 via-surface-container/85 to-surface/95 dark:from-surface-container/80 dark:via-slate-900/90 dark:to-surface-container/80 backdrop-blur-2xl border border-teal-500/20 dark:border-teal-500/30 shadow-lg hover:shadow-teal-500/10 transition-all overflow-hidden group",
+        "relative p-5 rounded-3xl bg-gradient-to-br from-surface/95 via-surface-container/85 to-surface/95 dark:from-surface-container/80 dark:via-slate-900/90 dark:to-surface-container/80 backdrop-blur-2xl border border-teal-500/20 dark:border-teal-500/30 shadow-card hover:shadow-teal-500/10 transition-all overflow-hidden group",
         className
       )}
     >
       {/* Glow ambiental de fondo */}
-      <div className="absolute -top-12 -right-12 size-36 rounded-full bg-teal-500/10 blur-3xl pointer-events-none group-hover:bg-teal-500/20 transition-all duration-500" />
+      <div className="absolute -top-12 -right-12 size-36 rounded-full bg-teal-500/10 blur-3xl pointer-events-none group-hover:bg-teal-500/20 transition-all duration-300" />
       <div className="absolute -bottom-10 -left-10 size-32 rounded-full bg-cyan-500/10 blur-3xl pointer-events-none" />
 
       <div className="relative flex items-center justify-between mb-2">
@@ -83,10 +83,10 @@ export const MuscleTargetRadarCard: React.FC<MuscleTargetRadarCardProps> = ({
             <h4 className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200">
               Activación Muscular
             </h4>
-            <span className="text-[10px] text-slate-500 dark:text-slate-400">Mapa de esfuerzo EMG</span>
+            <span className="text-2xs text-slate-500 dark:text-slate-400">Mapa de esfuerzo EMG</span>
           </div>
         </div>
-        <span className="text-[10px] font-mono font-bold text-teal-700 dark:text-teal-300 bg-teal-500/15 border border-teal-500/30 px-2.5 py-0.5 rounded-full shadow-xs flex items-center gap-1">
+        <span className="text-2xs font-mono font-bold text-teal-700 dark:text-teal-300 bg-teal-500/15 border border-teal-500/30 px-2.5 py-0.5 rounded-full shadow-xs flex items-center gap-1">
           <span className="size-1.5 rounded-full bg-teal-500 animate-ping" />
           EMG Estimado
         </span>
@@ -269,7 +269,7 @@ export const PainScaleInteractiveCard: React.FC<PainScaleInteractiveCardProps> =
       whileHover={{ y: -3, scale: 1.01 }}
       transition={{ duration: 0.2 }}
       className={cn(
-        "relative p-5 rounded-3xl bg-gradient-to-br backdrop-blur-2xl border border-outline-variant/30 dark:border-white/10 shadow-lg overflow-hidden transition-all",
+        "relative p-5 rounded-3xl bg-gradient-to-br backdrop-blur-2xl border border-outline-variant/30 dark:border-white/10 shadow-card overflow-hidden transition-all",
         getAccentGradient(),
         className
       )}
@@ -305,7 +305,7 @@ export const PainScaleInteractiveCard: React.FC<PainScaleInteractiveCardProps> =
         </motion.div>
         <div className="flex-1 min-w-0">
           <div className="text-sm font-black text-slate-900 dark:text-white mb-0.5 truncate">{getLabel()}</div>
-          <p className="text-[11px] text-slate-500 dark:text-slate-400">
+          <p className="text-xs text-slate-500 dark:text-slate-400">
             Ajusta el slider táctil según la sensación percibida al final del rango de movimiento.
           </p>
         </div>
@@ -326,7 +326,7 @@ export const PainScaleInteractiveCard: React.FC<PainScaleInteractiveCardProps> =
             className="w-full accent-teal-600 cursor-pointer h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none"
           />
         </div>
-        <div className="flex justify-between text-[10px] font-mono font-bold text-slate-400">
+        <div className="flex justify-between text-2xs font-mono font-bold text-slate-400">
           <span className="text-emerald-500">0 (Confort)</span>
           <span className="text-amber-500">5 (Moderado)</span>
           <span className="text-rose-500">10 (Crítico)</span>
@@ -371,7 +371,7 @@ export const GaitSymmetryCard: React.FC<GaitSymmetryCardProps> = ({
       whileHover={{ y: -3, scale: 1.01 }}
       transition={{ duration: 0.2 }}
       className={cn(
-        "relative p-5 rounded-3xl bg-gradient-to-br from-surface/95 via-surface-container/85 to-surface/95 dark:from-surface-container/80 dark:via-slate-900/90 dark:to-surface-container/80 backdrop-blur-2xl border border-cyan-500/20 dark:border-cyan-500/30 shadow-lg overflow-hidden group",
+        "relative p-5 rounded-3xl bg-gradient-to-br from-surface/95 via-surface-container/85 to-surface/95 dark:from-surface-container/80 dark:via-slate-900/90 dark:to-surface-container/80 backdrop-blur-2xl border border-cyan-500/20 dark:border-cyan-500/30 shadow-card overflow-hidden group",
         className
       )}
     >
@@ -386,7 +386,7 @@ export const GaitSymmetryCard: React.FC<GaitSymmetryCardProps> = ({
         </div>
         <span
           className={cn(
-            "text-[10px] font-bold px-2.5 py-0.5 rounded-full border shadow-xs flex items-center gap-1",
+            "text-2xs font-bold px-2.5 py-0.5 rounded-full border shadow-xs flex items-center gap-1",
             isSymmetric
               ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border-emerald-500/30"
               : "bg-amber-500/15 text-amber-600 dark:text-amber-400 border-amber-500/30"
@@ -399,11 +399,11 @@ export const GaitSymmetryCard: React.FC<GaitSymmetryCardProps> = ({
 
       <div className="grid grid-cols-2 gap-3 my-2">
         <div className="p-3 rounded-2xl bg-teal-500/10 dark:bg-teal-500/15 border border-teal-500/20 text-center">
-          <span className="text-[10px] uppercase font-bold text-teal-600 dark:text-teal-400 block mb-0.5">Pie Izquierdo</span>
+          <span className="text-2xs uppercase font-bold text-teal-600 dark:text-teal-400 block mb-0.5">Pie Izquierdo</span>
           <span className="text-2xl font-black font-mono text-slate-900 dark:text-white tabular-nums">{left}%</span>
         </div>
         <div className="p-3 rounded-2xl bg-cyan-500/10 dark:bg-cyan-500/15 border border-cyan-500/20 text-center">
-          <span className="text-[10px] uppercase font-bold text-cyan-600 dark:text-cyan-400 block mb-0.5">Pie Derecho</span>
+          <span className="text-2xs uppercase font-bold text-cyan-600 dark:text-cyan-400 block mb-0.5">Pie Derecho</span>
           <span className="text-2xl font-black font-mono text-slate-900 dark:text-white tabular-nums">{right}%</span>
         </div>
       </div>
@@ -430,7 +430,7 @@ export const GaitSymmetryCard: React.FC<GaitSymmetryCardProps> = ({
         <button
           type="button"
           onClick={toggleSimulation}
-          className="text-[10px] font-bold text-cyan-600 dark:text-cyan-400 hover:underline flex items-center gap-1"
+          className="text-2xs font-bold text-cyan-600 dark:text-cyan-400 hover:underline flex items-center gap-1"
         >
           <RotateCcw className="w-3 h-3" />
           {isSimulating ? 'Restaurar' : 'Simular Carga'}
@@ -457,7 +457,7 @@ export const TremorFrequencyCard: React.FC<TremorFrequencyCardProps> = ({
       whileHover={{ y: -3, scale: 1.01 }}
       transition={{ duration: 0.2 }}
       className={cn(
-        "relative p-5 rounded-3xl bg-gradient-to-br from-surface/95 via-surface-container/85 to-surface/95 dark:from-surface-container/80 dark:via-slate-900/90 dark:to-surface-container/80 backdrop-blur-2xl border border-cyan-500/20 dark:border-cyan-500/30 shadow-lg overflow-hidden group",
+        "relative p-5 rounded-3xl bg-gradient-to-br from-surface/95 via-surface-container/85 to-surface/95 dark:from-surface-container/80 dark:via-slate-900/90 dark:to-surface-container/80 backdrop-blur-2xl border border-cyan-500/20 dark:border-cyan-500/30 shadow-card overflow-hidden group",
         className
       )}
     >
@@ -470,7 +470,7 @@ export const TremorFrequencyCard: React.FC<TremorFrequencyCardProps> = ({
             Estabilidad Isométrica
           </h4>
         </div>
-        <span className="text-[10px] font-mono font-bold text-cyan-600 dark:text-cyan-400 bg-cyan-500/15 border border-cyan-500/30 px-2.5 py-0.5 rounded-full">
+        <span className="text-2xs font-mono font-bold text-cyan-600 dark:text-cyan-400 bg-cyan-500/15 border border-cyan-500/30 px-2.5 py-0.5 rounded-full">
           Frecuencia: {frequencyHz} Hz
         </span>
       </div>
@@ -529,7 +529,7 @@ export const PostureStabilityCard: React.FC<PostureStabilityCardProps> = ({
       whileHover={{ y: -3, scale: 1.01 }}
       transition={{ duration: 0.2 }}
       className={cn(
-        "relative p-5 rounded-3xl bg-gradient-to-br from-surface/95 via-surface-container/85 to-surface/95 dark:from-surface-container/80 dark:via-slate-900/90 dark:to-surface-container/80 backdrop-blur-2xl border border-emerald-500/20 dark:border-emerald-500/30 shadow-lg overflow-hidden group",
+        "relative p-5 rounded-3xl bg-gradient-to-br from-surface/95 via-surface-container/85 to-surface/95 dark:from-surface-container/80 dark:via-slate-900/90 dark:to-surface-container/80 backdrop-blur-2xl border border-emerald-500/20 dark:border-emerald-500/30 shadow-card overflow-hidden group",
         className
       )}
     >
@@ -579,14 +579,14 @@ export const PostureStabilityCard: React.FC<PostureStabilityCardProps> = ({
           <motion.div
             animate={{ x: shiftX * 2.2, y: shiftY * 2.2 }}
             transition={{ type: 'spring', stiffness: 350, damping: 22 }}
-            className="absolute size-4 rounded-full bg-gradient-to-r from-teal-400 to-lime-300 ring-4 ring-emerald-500/40 shadow-lg shadow-teal-500/50 flex items-center justify-center"
+            className="absolute size-4 rounded-full bg-gradient-to-r from-teal-400 to-lime-300 ring-4 ring-emerald-500/40 shadow-card shadow-teal-500/50 flex items-center justify-center"
           >
             <span className="size-1 rounded-full bg-slate-900" />
           </motion.div>
         </div>
       </div>
 
-      <p className="text-[11px] text-center text-slate-500 dark:text-slate-400">
+      <p className="text-xs text-center text-slate-500 dark:text-slate-400">
         Desviación coronal: <strong className="font-mono text-emerald-500">{shiftX}°</strong> | Sagital:{' '}
         <strong className="font-mono text-emerald-500">{shiftY}°</strong>
       </p>
@@ -613,7 +613,7 @@ export const CardioEffortPillCard: React.FC<CardioEffortPillCardProps> = ({
       whileHover={{ y: -3, scale: 1.01 }}
       transition={{ duration: 0.2 }}
       className={cn(
-        "relative p-5 rounded-3xl bg-gradient-to-br from-surface/95 via-surface-container/85 to-surface/95 dark:from-surface-container/80 dark:via-slate-900/90 dark:to-surface-container/80 backdrop-blur-2xl border border-rose-500/20 dark:border-rose-500/30 shadow-lg overflow-hidden group",
+        "relative p-5 rounded-3xl bg-gradient-to-br from-surface/95 via-surface-container/85 to-surface/95 dark:from-surface-container/80 dark:via-slate-900/90 dark:to-surface-container/80 backdrop-blur-2xl border border-rose-500/20 dark:border-rose-500/30 shadow-card overflow-hidden group",
         className
       )}
     >
@@ -630,7 +630,7 @@ export const CardioEffortPillCard: React.FC<CardioEffortPillCardProps> = ({
             Esfuerzo Cardiovascular (Borg)
           </h4>
         </div>
-        <span className="text-[10px] font-mono font-bold text-rose-600 dark:text-rose-400 bg-rose-500/15 border border-rose-500/30 px-2.5 py-0.5 rounded-full">
+        <span className="text-2xs font-mono font-bold text-rose-600 dark:text-rose-400 bg-rose-500/15 border border-rose-500/30 px-2.5 py-0.5 rounded-full">
           RPE {borgLevel} / 20
         </span>
       </div>
@@ -655,7 +655,7 @@ export const CardioEffortPillCard: React.FC<CardioEffortPillCardProps> = ({
         />
       </div>
 
-      <div className="flex justify-between text-[10px] font-mono text-slate-400">
+      <div className="flex justify-between text-2xs font-mono text-slate-400">
         <span>6 (Reposo)</span>
         <span>12 (Moderado)</span>
         <span>20 (Máximo)</span>
@@ -686,7 +686,7 @@ export const RehabPhaseStepCard: React.FC<RehabPhaseStepCardProps> = ({
       whileHover={{ y: -3, scale: 1.01 }}
       transition={{ duration: 0.2 }}
       className={cn(
-        "relative p-5 rounded-3xl bg-gradient-to-br from-surface/95 via-surface-container/85 to-surface/95 dark:from-surface-container/80 dark:via-slate-900/90 dark:to-surface-container/80 backdrop-blur-2xl border border-primary/20 dark:border-primary/30 shadow-lg overflow-hidden group",
+        "relative p-5 rounded-3xl bg-gradient-to-br from-surface/95 via-surface-container/85 to-surface/95 dark:from-surface-container/80 dark:via-slate-900/90 dark:to-surface-container/80 backdrop-blur-2xl border border-primary/20 dark:border-primary/30 shadow-card overflow-hidden group",
         className
       )}
     >
@@ -699,7 +699,7 @@ export const RehabPhaseStepCard: React.FC<RehabPhaseStepCardProps> = ({
             Fase de Recuperación Clínica
           </h4>
         </div>
-        <span className="text-[10px] font-mono font-bold text-primary bg-primary/10 border border-primary/20 px-2 py-0.5 rounded-full">
+        <span className="text-2xs font-mono font-bold text-primary bg-primary/10 border border-primary/20 px-2 py-0.5 rounded-full">
           Paso {activeStep + 1} de 3
         </span>
       </div>
@@ -727,12 +727,12 @@ export const RehabPhaseStepCard: React.FC<RehabPhaseStepCardProps> = ({
                 <div className="font-bold flex items-center gap-2">
                   <span>{p.title}</span>
                   {isCurrent && (
-                    <span className="text-[9px] uppercase font-black tracking-wider bg-teal-500 text-white px-1.5 py-0.2 rounded-full">
+                    <span className="text-2xs uppercase font-black tracking-wider bg-teal-500 text-white px-1.5 py-0.2 rounded-full">
                       En Curso
                     </span>
                   )}
                 </div>
-                <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">{p.detail}</p>
+                <p className="text-2xs text-slate-500 dark:text-slate-400 mt-0.5">{p.detail}</p>
               </div>
 
               {isDone && <Check className="w-4 h-4 text-emerald-500 shrink-0" />}
@@ -770,7 +770,7 @@ export const EdemaAssessmentCard: React.FC<EdemaAssessmentCardProps> = ({
       whileHover={{ y: -3, scale: 1.01 }}
       transition={{ duration: 0.2 }}
       className={cn(
-        "relative p-5 rounded-3xl bg-gradient-to-br from-surface/95 via-surface-container/85 to-surface/95 dark:from-surface-container/80 dark:via-slate-900/90 dark:to-surface-container/80 backdrop-blur-2xl border border-teal-500/20 dark:border-teal-500/30 shadow-lg overflow-hidden group",
+        "relative p-5 rounded-3xl bg-gradient-to-br from-surface/95 via-surface-container/85 to-surface/95 dark:from-surface-container/80 dark:via-slate-900/90 dark:to-surface-container/80 backdrop-blur-2xl border border-teal-500/20 dark:border-teal-500/30 shadow-card overflow-hidden group",
         className
       )}
     >
@@ -804,7 +804,7 @@ export const EdemaAssessmentCard: React.FC<EdemaAssessmentCardProps> = ({
         </button>
       </div>
 
-      <p className="text-[11px] text-slate-500 dark:text-slate-400">
+      <p className="text-xs text-slate-500 dark:text-slate-400">
         Recuperación elástica rápida. Inflamación periarticular en resolución progresiva.
       </p>
     </motion.div>
@@ -828,7 +828,7 @@ export const StrengthProgressionCard: React.FC<StrengthProgressionCardProps> = (
       whileHover={{ y: -3, scale: 1.01 }}
       transition={{ duration: 0.2 }}
       className={cn(
-        "relative p-5 rounded-3xl bg-gradient-to-br from-surface/95 via-surface-container/85 to-surface/95 dark:from-surface-container/80 dark:via-slate-900/90 dark:to-surface-container/80 backdrop-blur-2xl border border-primary/20 dark:border-primary/30 shadow-lg overflow-hidden group",
+        "relative p-5 rounded-3xl bg-gradient-to-br from-surface/95 via-surface-container/85 to-surface/95 dark:from-surface-container/80 dark:via-slate-900/90 dark:to-surface-container/80 backdrop-blur-2xl border border-primary/20 dark:border-primary/30 shadow-card overflow-hidden group",
         className
       )}
     >
@@ -841,7 +841,7 @@ export const StrengthProgressionCard: React.FC<StrengthProgressionCardProps> = (
             Fuerza en Velocidad (VBT)
           </h4>
         </div>
-        <span className="text-[10px] font-mono text-primary bg-primary/15 border border-primary/30 px-2.5 py-0.5 rounded-full font-bold">
+        <span className="text-2xs font-mono text-primary bg-primary/15 border border-primary/30 px-2.5 py-0.5 rounded-full font-bold">
           {velocityMs} m/s
         </span>
       </div>
@@ -853,12 +853,12 @@ export const StrengthProgressionCard: React.FC<StrengthProgressionCardProps> = (
           </span>
           <span className="text-xs text-slate-400 ml-1 font-bold">kg 1RM Est.</span>
         </div>
-        <span className="text-[11px] font-bold text-teal-600 dark:text-teal-400 bg-teal-500/10 px-2 py-0.5 rounded-full">
+        <span className="text-xs font-bold text-teal-600 dark:text-teal-400 bg-teal-500/10 px-2 py-0.5 rounded-full">
           Velocidad de ejecución óptima
         </span>
       </div>
 
-      <div className="flex items-center gap-1.5 text-[11px] font-bold text-emerald-600 dark:text-emerald-400 mt-2 p-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
+      <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-600 dark:text-emerald-400 mt-2 p-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
         <Sparkles className="w-3.5 h-3.5 shrink-0" />
         <span>+4.2% de fuerza útil respecto a la semana anterior</span>
       </div>
@@ -884,7 +884,7 @@ export const PatientAdherenceHeatmapCard: React.FC<PatientAdherenceHeatmapCardPr
       whileHover={{ y: -3, scale: 1.01 }}
       transition={{ duration: 0.2 }}
       className={cn(
-        "relative p-5 rounded-3xl bg-gradient-to-br from-surface/95 via-surface-container/85 to-surface/95 dark:from-surface-container/80 dark:via-slate-900/90 dark:to-surface-container/80 backdrop-blur-2xl border border-teal-500/20 dark:border-teal-500/30 shadow-lg overflow-hidden group",
+        "relative p-5 rounded-3xl bg-gradient-to-br from-surface/95 via-surface-container/85 to-surface/95 dark:from-surface-container/80 dark:via-slate-900/90 dark:to-surface-container/80 backdrop-blur-2xl border border-teal-500/20 dark:border-teal-500/30 shadow-card overflow-hidden group",
         className
       )}
     >
@@ -897,7 +897,7 @@ export const PatientAdherenceHeatmapCard: React.FC<PatientAdherenceHeatmapCardPr
             Adherencia Semanal
           </h4>
         </div>
-        <div className="flex items-center gap-1 text-[11px] font-bold text-teal-600 dark:text-teal-400 bg-teal-500/15 border border-teal-500/30 px-2.5 py-0.5 rounded-full">
+        <div className="flex items-center gap-1 text-xs font-bold text-teal-600 dark:text-teal-400 bg-teal-500/15 border border-teal-500/30 px-2.5 py-0.5 rounded-full">
           <Flame className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
           <span>86% Cumplimiento</span>
         </div>
@@ -914,12 +914,12 @@ export const PatientAdherenceHeatmapCard: React.FC<PatientAdherenceHeatmapCardPr
               onClick={() => setSelectedDay(isSelected ? null : i)}
               className="space-y-1.5 group/day"
             >
-              <span className="text-[10px] text-slate-400 font-bold block">{d}</span>
+              <span className="text-2xs text-slate-400 font-bold block">{d}</span>
               <motion.div
                 whileHover={{ scale: 1.08 }}
                 whileTap={{ scale: 0.95 }}
                 className={cn(
-                  "h-9 rounded-xl transition-all flex items-center justify-center font-mono text-[10px] font-bold",
+                  "h-9 rounded-xl transition-all flex items-center justify-center font-mono text-2xs font-bold",
                   val === 3 && "bg-teal-500 text-white shadow-md shadow-teal-500/30",
                   val === 2 && "bg-teal-500/70 text-white",
                   val === 1 && "bg-teal-500/30 text-teal-900 dark:text-teal-200",

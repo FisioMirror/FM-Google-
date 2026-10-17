@@ -104,7 +104,7 @@ export function ClinicalNotificationCard({ item }: { item: ClinicalFeedItem }) {
             <figcaption className="text-sm font-semibold tracking-tight text-on-surface truncate">
               {item.name}
             </figcaption>
-            <span className="text-[11px] font-medium text-on-surface-variant/70 shrink-0">
+            <span className="text-xs font-medium text-on-surface-variant/70 shrink-0">
               {item.time}
             </span>
           </div>
@@ -113,7 +113,7 @@ export function ClinicalNotificationCard({ item }: { item: ClinicalFeedItem }) {
           </p>
           <div className="mt-1.5 flex items-center gap-2">
             <span
-              className="inline-flex items-center text-[10px] font-semibold px-2 py-0.5 rounded-full"
+              className="inline-flex items-center text-2xs font-semibold px-2 py-0.5 rounded-full"
               style={{
                 backgroundColor: `${item.color}15`,
                 color: item.color,
@@ -177,7 +177,7 @@ export function ClinicalActivityFeed({
               Feed de Actividad en Vivo
               <Radio className="size-3.5 text-primary animate-pulse" />
             </h4>
-            <p className="text-[11px] text-on-surface-variant font-medium">
+            <p className="text-xs text-on-surface-variant font-medium">
               Sincronización en tiempo real de sesiones y MediaPipe
             </p>
           </div>
@@ -196,7 +196,7 @@ export function ClinicalActivityFeed({
           <button
             type="button"
             onClick={handleAddLiveEvent}
-            className="flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1.5 rounded-xl bg-primary text-white hover:bg-primary/90 transition-all shadow-xs"
+            className="flex items-center gap-1 text-xs font-semibold px-2.5 py-1.5 rounded-xl bg-primary text-white hover:bg-primary/90 transition-all shadow-xs"
           >
             <Plus className="size-3.5" />
             Simular Evento

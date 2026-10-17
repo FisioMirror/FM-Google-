@@ -402,7 +402,7 @@ Pregunta del paciente: ${messageText}`;
           <div>
             <div className="flex items-center gap-2">
               <h1 className="font-bold text-base text-on-surface">Physi Asistente IA</h1>
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-teal-500/10 text-teal-600 border border-teal-500/20">
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-2xs font-bold bg-teal-500/10 text-teal-600 border border-teal-500/20">
                 <span className="size-1.5 rounded-full bg-teal-500 animate-pulse" />
                 Guía de Rehabilitación
               </span>
@@ -492,7 +492,7 @@ Pregunta del paciente: ${messageText}`;
 
                   {/* Actions for assistant message */}
                   {msg.role === 'assistant' && (
-                    <div className="mt-3 pt-3 border-t border-outline/10 flex items-center justify-between text-outline text-[11px]">
+                    <div className="mt-3 pt-3 border-t border-outline/10 flex items-center justify-between text-outline text-xs">
                       <span className="italic">{msg.timestamp || 'Hoy'}</span>
                       <div className="flex items-center gap-2">
                         <button

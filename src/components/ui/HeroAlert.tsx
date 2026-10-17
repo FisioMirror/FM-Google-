@@ -91,7 +91,7 @@ export function AlertTitle({ children, className }: { children: React.ReactNode;
 }
 
 export function AlertDescription({ children, className }: { children: React.ReactNode; className?: string }) {
-  return <p className={cn('text-[11px] sm:text-xs opacity-85 mt-0.5 leading-relaxed', className)}>{children}</p>;
+  return <p className={cn('text-xs sm:text-xs opacity-85 mt-0.5 leading-relaxed', className)}>{children}</p>;
 }
 
 export function AlertCloseButton({ className, onClick }: { className?: string; onClick?: () => void }) {

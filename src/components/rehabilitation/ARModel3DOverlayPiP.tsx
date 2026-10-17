@@ -164,7 +164,7 @@ export const ARModel3DOverlayPiP: React.FC<ARModel3DOverlayPiPProps> = ({
       >
         <button
           onClick={() => setIsMinimized(false)}
-          className="group flex items-center gap-2.5 px-4 py-2.5 rounded-2xl bg-slate-900/90 dark:bg-slate-900/90 backdrop-blur-xl border border-teal-500/40 text-white shadow-xl hover:bg-slate-800 transition-all active:scale-95 cursor-pointer"
+          className="group flex items-center gap-2.5 px-4 py-2.5 rounded-2xl bg-slate-900/90 dark:bg-slate-900/90 backdrop-blur-xl border border-teal-500/40 text-white shadow-elevated hover:bg-slate-800 transition-all active:scale-95 cursor-pointer"
           title="Restaurar visualizador 3D"
         >
           <div className="relative flex items-center justify-center">
@@ -174,9 +174,9 @@ export const ARModel3DOverlayPiP: React.FC<ARModel3DOverlayPiPProps> = ({
           <div className="text-left">
             <div className="flex items-center gap-1.5">
               <span className="text-xs font-black tracking-wide text-teal-300">GUÍA 3D</span>
-              <span className="text-[10px] text-white/60 font-mono">{primaryJointAngle}°</span>
+              <span className="text-2xs text-white/60 font-mono">{primaryJointAngle}°</span>
             </div>
-            <p className="text-[10px] text-white/70 max-w-[120px] truncate">{exerciseName}</p>
+            <p className="text-2xs text-white/70 max-w-[120px] truncate">{exerciseName}</p>
           </div>
           <Maximize2 className="size-3.5 text-white/60 group-hover:text-white transition-colors ml-1" />
         </button>
@@ -194,7 +194,7 @@ export const ARModel3DOverlayPiP: React.FC<ARModel3DOverlayPiPProps> = ({
       animate={{ opacity: 1, scale: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.85 }}
       transition={{ type: 'spring', stiffness: 320, damping: 28 }}
-      className={`pointer-events-auto z-40 flex flex-col ${pipWidth} ${pipHeight} rounded-2xl overflow-hidden bg-slate-900/95 dark:bg-slate-900/95 backdrop-blur-2xl border border-white/20 dark:border-teal-500/35 shadow-2xl transition-all duration-300 select-none ${className}`}
+      className={`pointer-events-auto z-40 flex flex-col ${pipWidth} ${pipHeight} rounded-2xl overflow-hidden bg-slate-900/95 dark:bg-slate-900/95 backdrop-blur-2xl border border-white/20 dark:border-teal-500/35 shadow-elevated transition-all duration-300 select-none ${className}`}
     >
       {/* Encabezado del PiP */}
       <div className="px-2.5 sm:px-3.5 py-1.5 sm:py-2 bg-slate-950/70 border-b border-white/10 flex items-center justify-between gap-1.5">
@@ -204,12 +204,12 @@ export const ARModel3DOverlayPiP: React.FC<ARModel3DOverlayPiPProps> = ({
           </div>
           <div className="min-w-0">
             <div className="flex items-center gap-1">
-              <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-teal-400">Guía 3D</span>
-              <span className="text-[8px] sm:text-[9px] px-1 py-0.1 rounded-full bg-white/10 text-white/80 font-mono">
+              <span className="text-2xs sm:text-2xs font-black uppercase tracking-wider text-teal-400">Guía 3D</span>
+              <span className="text-2xs sm:text-2xs px-1 py-0.1 rounded-full bg-white/10 text-white/80 font-mono">
                 {phaseText}
               </span>
             </div>
-            <h4 className="text-[11px] sm:text-xs font-bold text-white truncate leading-tight" title={exerciseName}>
+            <h4 className="text-xs sm:text-xs font-bold text-white truncate leading-tight" title={exerciseName}>
               {exerciseName}
             </h4>
           </div>
@@ -271,17 +271,17 @@ export const ARModel3DOverlayPiP: React.FC<ARModel3DOverlayPiPProps> = ({
         <div className="absolute top-1.5 left-1.5 flex flex-col gap-0.5 sm:gap-1 pointer-events-none">
           <div className="flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-black/60 backdrop-blur-md border border-white/10 text-white">
             <Gauge className="size-2.5 sm:size-3 text-teal-400" />
-            <span className="text-[10px] sm:text-[11px] font-mono font-bold">{primaryJointAngle}°</span>
-            <span className="text-[8px] sm:text-[9px] text-white/50">/{targetAngle}°</span>
+            <span className="text-2xs sm:text-xs font-mono font-bold">{primaryJointAngle}°</span>
+            <span className="text-2xs sm:text-2xs text-white/50">/{targetAngle}°</span>
           </div>
-          <div className="px-1.5 py-0.5 rounded bg-teal-500/20 backdrop-blur-md text-[8px] sm:text-[9px] font-bold text-teal-300 w-fit">
+          <div className="px-1.5 py-0.5 rounded bg-teal-500/20 backdrop-blur-md text-2xs sm:text-2xs font-bold text-teal-300 w-fit">
             {Math.round(progress * 100)}% ROM
           </div>
         </div>
 
         {/* Indicador de arrastre táctil / 3D orbit */}
         <div className="absolute top-1.5 right-1.5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-          <span className="text-[8px] px-1.5 py-0.5 rounded bg-black/70 text-white/70 backdrop-blur-sm border border-white/10 flex items-center gap-1">
+          <span className="text-2xs px-1.5 py-0.5 rounded bg-black/70 text-white/70 backdrop-blur-sm border border-white/10 flex items-center gap-1">
             <Compass className="size-2 sm:size-2.5" /> 360°
           </span>
         </div>
@@ -302,7 +302,7 @@ export const ARModel3DOverlayPiP: React.FC<ARModel3DOverlayPiPProps> = ({
           {/* Play/Pause */}
           <button
             onClick={() => setIsPlaying(!isPlaying)}
-            className="flex items-center gap-1 px-1.5 py-0.5 rounded-lg bg-teal-500/20 hover:bg-teal-500/30 text-teal-300 border border-teal-500/40 text-[9px] font-bold transition-all active:scale-95 cursor-pointer shrink-0"
+            className="flex items-center gap-1 px-1.5 py-0.5 rounded-lg bg-teal-500/20 hover:bg-teal-500/30 text-teal-300 border border-teal-500/40 text-2xs font-bold transition-all active:scale-95 cursor-pointer shrink-0"
             title={isPlaying ? 'Pausar demostración' : 'Reanudar'}
           >
             {isPlaying ? <Pause className="size-2.5 sm:size-3" /> : <Play className="size-2.5 sm:size-3" />}
@@ -315,7 +315,7 @@ export const ARModel3DOverlayPiP: React.FC<ARModel3DOverlayPiPProps> = ({
               <button
                 key={speed}
                 onClick={() => setPlaybackSpeed(speed)}
-                className={`px-1.5 py-0.5 rounded text-[8px] sm:text-[9px] font-bold transition-all cursor-pointer ${
+                className={`px-1.5 py-0.5 rounded text-2xs sm:text-2xs font-bold transition-all cursor-pointer ${
                   playbackSpeed === speed
                     ? 'bg-teal-600 text-white shadow-xs'
                     : 'text-white/60 hover:text-white'
@@ -354,7 +354,7 @@ export const ARModel3DOverlayPiP: React.FC<ARModel3DOverlayPiPProps> = ({
         </div>
 
         {/* Guía rápida de postura */}
-        <div className="text-[9px] text-white/60 flex items-center justify-between px-1">
+        <div className="text-2xs text-white/60 flex items-center justify-between px-1">
           <span className="truncate">Sigue el movimiento</span>
           <span className="text-teal-400 font-bold shrink-0">En vivo</span>
         </div>

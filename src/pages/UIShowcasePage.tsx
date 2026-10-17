@@ -695,13 +695,13 @@ export function UIShowcasePage() {
             </BackButton>
             <div>
               <div className="flex flex-wrap items-center gap-2">
-                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-teal-500/10 text-teal-700 dark:text-teal-300 border border-teal-500/20">
+                <span className="px-2.5 py-0.5 rounded-full text-2xs font-bold bg-teal-500/10 text-teal-700 dark:text-teal-300 border border-teal-500/20">
                   FisioMirror UI Lab
                 </span>
-                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-lime-500/10 text-lime-600 dark:text-lime-400 border border-lime-500/20">
+                <span className="px-2.5 py-0.5 rounded-full text-2xs font-bold bg-lime-500/10 text-lime-600 dark:text-lime-400 border border-lime-500/20">
                   Ecosistema CLI / MCP Activo
                 </span>
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
+                <span className="px-2 py-0.5 rounded-full text-2xs font-bold bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
                   Reaviz · HeroUI · Magic UI · Aceternity
                 </span>
               </div>
@@ -731,31 +731,31 @@ export function UIShowcasePage() {
         {/* System KPIs Bar */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 p-4 rounded-2xl bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 backdrop-blur-md shadow-xs">
           <div>
-            <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400">Componentes Usados</span>
+            <span className="text-2xs uppercase font-bold tracking-wider text-slate-400">Componentes Usados</span>
             <div className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tabular-nums flex items-baseline gap-1">
               <span>72</span>
-              <span className="text-[10px] font-medium text-slate-400">en FisioMirror</span>
+              <span className="text-2xs font-medium text-slate-400">en FisioMirror</span>
             </div>
           </div>
           <div>
-            <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400">Nuevos Solicitados</span>
+            <span className="text-2xs uppercase font-bold tracking-wider text-slate-400">Nuevos Solicitados</span>
             <div className="text-xl sm:text-2xl font-black text-teal-600 dark:text-teal-400 tabular-nums flex items-baseline gap-1">
               <span>12</span>
-              <span className="text-[10px] font-medium text-teal-500/80">integrados 100%</span>
+              <span className="text-2xs font-medium text-teal-500/80">integrados 100%</span>
             </div>
           </div>
           <div>
-            <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400">Gráficos Vectoriales</span>
+            <span className="text-2xs uppercase font-bold tracking-wider text-slate-400">Gráficos Vectoriales</span>
             <div className="text-xl sm:text-2xl font-black text-lime-600 dark:text-lime-400 tabular-nums flex items-baseline gap-1">
               <span>Reaviz</span>
-              <span className="text-[10px] font-medium text-slate-400">Áreas Suaves</span>
+              <span className="text-2xs font-medium text-slate-400">Áreas Suaves</span>
             </div>
           </div>
           <div>
-            <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400">Micro-interacción</span>
+            <span className="text-2xs uppercase font-bold tracking-wider text-slate-400">Micro-interacción</span>
             <div className="text-xl sm:text-2xl font-black text-blue-600 dark:text-blue-400 tabular-nums flex items-baseline gap-1">
               <span>&lt; 300ms</span>
-              <span className="text-[10px] font-medium text-slate-400">Regla Oro</span>
+              <span className="text-2xs font-medium text-slate-400">Regla Oro</span>
             </div>
           </div>
         </div>
@@ -775,7 +775,7 @@ export function UIShowcasePage() {
               {tab.icon}
               <span>{tab.label}</span>
               {tab.count !== undefined && (
-                <span className="px-1.5 py-0.2 rounded-full text-[9px] bg-white/20 text-white font-mono">
+                <span className="px-1.5 py-0.2 rounded-full text-2xs bg-white/20 text-white font-mono">
                   {tab.count}
                 </span>
               )}
@@ -787,7 +787,7 @@ export function UIShowcasePage() {
             MACRO SUITE: 50 NUEVOS COMPONENTES EN 5 CATEGORÍAS MODULARES
             ───────────────────────────────────────────────────────────── */}
         {(activeTab === 'todos' || activeTab === 'megasuite') && (
-          <section className="space-y-8 p-6 sm:p-8 rounded-3xl bg-gradient-to-b from-cyan-500/10 via-surface/70 to-surface border border-cyan-500/30 shadow-xl">
+          <section className="space-y-8 p-6 sm:p-8 rounded-3xl bg-gradient-to-b from-cyan-500/10 via-surface/70 to-surface border border-cyan-500/30 shadow-elevated">
             {/* Header de la Macro Suite */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-cyan-500/20">
               <div className="space-y-1">
@@ -973,7 +973,7 @@ export function UIShowcasePage() {
             NUEVA SECCIÓN ESTELAR: 8 COMPONENTES BIOMECÁNICOS, AR & GAMIFICACIÓN
             ───────────────────────────────────────────────────────────── */}
         {(activeTab === 'todos' || activeTab === 'estelar') && (
-          <section className="space-y-8 p-6 sm:p-8 rounded-3xl bg-gradient-to-b from-teal-500/10 via-surface/60 to-surface border border-teal-500/30 shadow-lg">
+          <section className="space-y-8 p-6 sm:p-8 rounded-3xl bg-gradient-to-b from-teal-500/10 via-surface/60 to-surface border border-teal-500/30 shadow-card">
             {/* Header de la Suite Estelar */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-teal-500/20">
               <div className="space-y-1">
@@ -1025,7 +1025,7 @@ export function UIShowcasePage() {
 
                     {/* Interactive Simulator Controls */}
                     <div className="flex-1 w-full space-y-3 p-4 rounded-2xl bg-surface-container-low/60 dark:bg-slate-900/60 border border-outline-variant/20">
-                      <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">
+                      <span className="text-xs font-bold uppercase tracking-wider text-slate-400 block">
                         Simulador de Ángulo en Vivo:
                       </span>
                       
@@ -1066,7 +1066,7 @@ export function UIShowcasePage() {
                             type="button"
                             onClick={() => setGaugeJoint(j)}
                             className={cn(
-                              "px-2 py-1 rounded-lg text-[10px] font-semibold border transition-all",
+                              "px-2 py-1 rounded-lg text-2xs font-semibold border transition-all",
                               gaugeJoint === j
                                 ? "bg-primary text-white border-primary"
                                 : "bg-white/60 dark:bg-slate-800 text-slate-500 border-slate-200 dark:border-slate-700"
@@ -1161,7 +1161,7 @@ export function UIShowcasePage() {
                   {/* Energy simulator sliders */}
                   <div className="grid grid-cols-2 gap-3 pt-2">
                     <div>
-                      <span className="text-[10px] uppercase font-bold text-slate-400 block mb-1">
+                      <span className="text-2xs uppercase font-bold text-slate-400 block mb-1">
                         Energía: {energyLevel}%
                       </span>
                       <input
@@ -1174,7 +1174,7 @@ export function UIShowcasePage() {
                       />
                     </div>
                     <div>
-                      <span className="text-[10px] uppercase font-bold text-slate-400 block mb-1">
+                      <span className="text-2xs uppercase font-bold text-slate-400 block mb-1">
                         Fatiga: {fatigueLevel.toFixed(1)}/10
                       </span>
                       <input
@@ -1205,7 +1205,7 @@ export function UIShowcasePage() {
                         type="button"
                         onClick={() => setAlertSeverity(s)}
                         className={cn(
-                          "px-2 py-0.5 rounded text-[10px] font-bold capitalize transition-all",
+                          "px-2 py-0.5 rounded text-2xs font-bold capitalize transition-all",
                           alertSeverity === s ? "bg-primary text-white" : "bg-slate-200 dark:bg-slate-800 text-slate-500"
                         )}
                       >
@@ -1313,7 +1313,7 @@ export function UIShowcasePage() {
             PWA MÓVIL DE ALTA DENSIDAD & MOTOR DE MOTION PRÉMIUM
             ───────────────────────────────────────────────────────────── */}
         {(activeTab === 'todos' || activeTab === 'mobile') && (
-          <section className="space-y-8 p-6 sm:p-8 rounded-3xl bg-gradient-to-b from-emerald-500/10 via-teal-500/5 to-surface border border-emerald-500/25 shadow-xl">
+          <section className="space-y-8 p-6 sm:p-8 rounded-3xl bg-gradient-to-b from-emerald-500/10 via-teal-500/5 to-surface border border-emerald-500/25 shadow-elevated">
             {/* Header de la Suite Móvil */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-emerald-500/20">
               <div className="space-y-1">
@@ -1336,7 +1336,7 @@ export function UIShowcasePage() {
                   <button
                     type="button"
                     onClick={() => setIsBottomSheetOpen(true)}
-                    className="px-4 py-2.5 rounded-2xl bg-teal-600 hover:bg-teal-500 text-white font-bold text-xs flex items-center gap-2 shadow-lg shadow-teal-600/25 border border-teal-400/40"
+                    className="px-4 py-2.5 rounded-2xl bg-teal-600 hover:bg-teal-500 text-white font-bold text-xs flex items-center gap-2 shadow-card shadow-teal-600/25 border border-teal-400/40"
                   >
                     <Sliders className="size-4" />
                     <span>Abrir Bottom Sheet Móvil</span>
@@ -1366,7 +1366,7 @@ export function UIShowcasePage() {
                     selectedJoint={compactJoint}
                     onSelectJoint={(j) => setCompactJoint(j)}
                   />
-                  <div className="mt-3 pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[11px]">
+                  <div className="mt-3 pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs">
                     <span className="text-slate-500">Seleccionada:</span>
                     <span className="font-bold text-teal-600 dark:text-teal-400 uppercase">{compactJoint}</span>
                   </div>
@@ -1382,7 +1382,7 @@ export function UIShowcasePage() {
                     step={5}
                     label="Meta ROM Articular"
                   />
-                  <div className="mt-3 pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[11px]">
+                  <div className="mt-3 pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs">
                     <span className="text-slate-500">Estado Clínico:</span>
                     <span className="font-bold text-emerald-600 dark:text-emerald-400">Rango Seguro (+12%)</span>
                   </div>
@@ -1391,7 +1391,7 @@ export function UIShowcasePage() {
                 {/* Dropdown Popover de Tolerancia IA */}
                 <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
                   <div className="space-y-1.5">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 block px-1">
+                    <span className="text-2xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 block px-1">
                       Calibración MediaPipe
                     </span>
                     <CompactToleranceDropdown
@@ -1399,7 +1399,7 @@ export function UIShowcasePage() {
                       onChange={(t) => setCompactTolerance(t)}
                     />
                   </div>
-                  <div className="mt-3 pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[11px]">
+                  <div className="mt-3 pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs">
                     <span className="text-slate-500">Sensibilidad:</span>
                     <span className="font-mono text-sky-600 dark:text-sky-400 font-bold">
                       {compactTolerance === 'strict' ? '±3° Exacta' : compactTolerance === 'standard' ? '±7° Estándar' : '±12° Asistida'}
@@ -1420,7 +1420,7 @@ export function UIShowcasePage() {
                 {/* Blur-Fade InView Demo */}
                 <MotionBlurFade delay={0.1} className="p-5 rounded-2xl bg-gradient-to-br from-teal-50/70 via-surface/90 to-sky-50/40 dark:from-teal-950/25 dark:via-surface-container/80 dark:to-slate-900/90 border border-teal-200/50 dark:border-teal-500/25 shadow-sm space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-teal-500/15 text-teal-700 dark:text-teal-300 border border-teal-500/30">
+                    <span className="text-2xs font-bold px-2 py-0.5 rounded-full bg-teal-500/15 text-teal-700 dark:text-teal-300 border border-teal-500/30">
                       MotionBlurFade Wrapper
                     </span>
                     <span className="text-xs font-mono text-slate-400">ease: [0.16, 1, 0.3, 1]</span>
@@ -1435,14 +1435,14 @@ export function UIShowcasePage() {
                     <div className="h-1.5 flex-1 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden">
                       <div className="h-full w-4/5 bg-gradient-to-r from-teal-500 to-sky-400 rounded-full" />
                     </div>
-                    <span className="text-[11px] font-mono font-bold text-teal-600 dark:text-teal-400">80%</span>
+                    <span className="text-xs font-mono font-bold text-teal-600 dark:text-teal-400">80%</span>
                   </div>
                 </MotionBlurFade>
 
                 {/* TactileFeedback Interactive Demo */}
                 <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30">
+                    <span className="text-2xs font-bold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30">
                       TactileFeedback Wrapper
                     </span>
                     <span className="text-xs font-mono text-slate-400">stiffness: 420 · damping: 18</span>
@@ -1502,7 +1502,7 @@ export function UIShowcasePage() {
                 <p className="text-xs text-slate-600 dark:text-slate-400">
                   Ubicada rígidamente en la base de la pantalla móvil (debajo de esta vista). Permite cambiar de módulo instantáneamente con el pulgar e iniciar la sesión de Espejo AR con un toque central prominente.
                 </p>
-                <div className="max-w-md mx-auto p-2 rounded-2xl bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700 flex items-center justify-around text-center text-[10px] font-bold text-slate-500">
+                <div className="max-w-md mx-auto p-2 rounded-2xl bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700 flex items-center justify-around text-center text-2xs font-bold text-slate-500">
                   <div className="py-1 px-3 rounded-xl bg-teal-500/20 text-teal-700 dark:text-teal-300">
                     <Home className="size-4 mx-auto mb-0.5" />
                     <span>Inicio</span>
@@ -1513,7 +1513,7 @@ export function UIShowcasePage() {
                   </div>
                   <div className="size-10 rounded-xl bg-gradient-to-tr from-teal-600 to-sky-400 text-white flex flex-col items-center justify-center -mt-3 shadow-md">
                     <Camera className="size-4" />
-                    <span className="text-[7px]">AR</span>
+                    <span className="text-2xs">AR</span>
                   </div>
                   <div className="py-1 px-3">
                     <Dumbbell className="size-4 mx-auto mb-0.5" />
@@ -1608,10 +1608,10 @@ export function UIShowcasePage() {
             {/* Resumen clínico en sheet */}
             <div className="p-3.5 rounded-2xl bg-teal-50/70 dark:bg-teal-950/30 border border-teal-200/50 dark:border-teal-500/25 space-y-1.5">
               <div className="flex items-center justify-between">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-teal-700 dark:text-teal-300">
+                <span className="text-2xs font-bold uppercase tracking-wider text-teal-700 dark:text-teal-300">
                   Informe Biomecánico
                 </span>
-                <span className="text-[10px] font-mono font-bold text-teal-600 dark:text-teal-400">
+                <span className="text-2xs font-mono font-bold text-teal-600 dark:text-teal-400">
                   IA Activa
                 </span>
               </div>
@@ -1626,7 +1626,7 @@ export function UIShowcasePage() {
             ARMONIZACIÓN CROMÁTICA PASTEL CLÍNICA: SOFT SKY, MINT & LAVENDER
             ───────────────────────────────────────────────────────────── */}
         {(activeTab === 'todos' || activeTab === 'armonizacion') && (
-          <section className="space-y-8 p-6 sm:p-8 rounded-3xl bg-gradient-to-b from-sky-500/10 via-teal-500/5 to-surface border border-sky-500/25 shadow-xl">
+          <section className="space-y-8 p-6 sm:p-8 rounded-3xl bg-gradient-to-b from-sky-500/10 via-teal-500/5 to-surface border border-sky-500/25 shadow-elevated">
             {/* Header de la Armonización */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-sky-500/20">
               <div className="space-y-1">
@@ -1700,7 +1700,7 @@ export function UIShowcasePage() {
                 className={cn(
                   "p-5 rounded-2xl relative overflow-hidden transition-all duration-300",
                   pastelFinish === 'solid' && CLINICAL_PASTELS.sky.solid,
-                  activePastelDemo === 'sky' && "ring-2 ring-sky-400/60 shadow-lg"
+                  activePastelDemo === 'sky' && "ring-2 ring-sky-400/60 shadow-card"
                 )}
                 interactive
               >
@@ -1708,7 +1708,7 @@ export function UIShowcasePage() {
                   <div className="size-11 rounded-xl bg-sky-500/20 text-sky-700 dark:text-sky-300 flex items-center justify-center font-bold ring-2 ring-sky-400/30">
                     <Activity className="size-5" />
                   </div>
-                  <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-sky-500/15 border border-sky-500/30 text-sky-700 dark:text-sky-300">
+                  <span className="text-2xs font-bold px-2.5 py-0.5 rounded-full bg-sky-500/15 border border-sky-500/30 text-sky-700 dark:text-sky-300">
                     Soft Sky
                   </span>
                 </div>
@@ -1730,7 +1730,7 @@ export function UIShowcasePage() {
                 className={cn(
                   "p-5 rounded-2xl relative overflow-hidden transition-all duration-300",
                   pastelFinish === 'solid' && CLINICAL_PASTELS.mint.solid,
-                  activePastelDemo === 'mint' && "ring-2 ring-teal-400/60 shadow-lg"
+                  activePastelDemo === 'mint' && "ring-2 ring-teal-400/60 shadow-card"
                 )}
                 interactive
               >
@@ -1738,7 +1738,7 @@ export function UIShowcasePage() {
                   <div className="size-11 rounded-xl bg-teal-500/20 text-teal-700 dark:text-teal-300 flex items-center justify-center font-bold ring-2 ring-teal-400/30">
                     <Heart className="size-5" />
                   </div>
-                  <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-teal-500/15 border border-teal-500/30 text-teal-700 dark:text-teal-300">
+                  <span className="text-2xs font-bold px-2.5 py-0.5 rounded-full bg-teal-500/15 border border-teal-500/30 text-teal-700 dark:text-teal-300">
                     Mint / Teal
                   </span>
                 </div>
@@ -1760,7 +1760,7 @@ export function UIShowcasePage() {
                 className={cn(
                   "p-5 rounded-2xl relative overflow-hidden transition-all duration-300",
                   pastelFinish === 'solid' && CLINICAL_PASTELS.lavender.solid,
-                  activePastelDemo === 'lavender' && "ring-2 ring-indigo-400/60 shadow-lg"
+                  activePastelDemo === 'lavender' && "ring-2 ring-indigo-400/60 shadow-card"
                 )}
                 interactive
               >
@@ -1768,7 +1768,7 @@ export function UIShowcasePage() {
                   <div className="size-11 rounded-xl bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 flex items-center justify-center font-bold ring-2 ring-indigo-400/30">
                     <Sparkles className="size-5" />
                   </div>
-                  <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-indigo-500/15 border border-indigo-500/30 text-indigo-700 dark:text-indigo-300">
+                  <span className="text-2xs font-bold px-2.5 py-0.5 rounded-full bg-indigo-500/15 border border-indigo-500/30 text-indigo-700 dark:text-indigo-300">
                     Lavender Blue
                   </span>
                 </div>
@@ -1794,7 +1794,7 @@ export function UIShowcasePage() {
                 {/* Antes: Blanco plano / gris aburrido */}
                 <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 relative">
                   <div className="flex items-center justify-between mb-3">
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-300 dark:border-slate-700">
+                    <span className="text-2xs font-bold px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-300 dark:border-slate-700">
                       Estilo Previo (Blanco / Gris Plano)
                     </span>
                     <span className="text-xs text-slate-400">Sin matiz</span>
@@ -1818,7 +1818,7 @@ export function UIShowcasePage() {
                   className="p-5 rounded-2xl relative shadow-md"
                 >
                   <div className="flex items-center justify-between mb-3">
-                    <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-teal-500/20 text-teal-800 dark:text-teal-200 border border-teal-500/30 flex items-center gap-1">
+                    <span className="text-2xs font-bold px-2.5 py-0.5 rounded-full bg-teal-500/20 text-teal-800 dark:text-teal-200 border border-teal-500/30 flex items-center gap-1">
                       <span className="size-1.5 rounded-full bg-teal-500 animate-pulse" />
                       Evolved (Pastel Trilateral + Glass)
                     </span>
@@ -1852,7 +1852,7 @@ export function UIShowcasePage() {
                     <CheckCircle2 className="size-4" />
                   </div>
                   <div>
-                    <span className="text-[10px] font-bold text-teal-600 dark:text-teal-400 uppercase tracking-wider block">Biomecánica</span>
+                    <span className="text-2xs font-bold text-teal-600 dark:text-teal-400 uppercase tracking-wider block">Biomecánica</span>
                     <p className="text-xs font-bold text-teal-950 dark:text-teal-100">Rango Seguro</p>
                   </div>
                 </div>
@@ -1862,7 +1862,7 @@ export function UIShowcasePage() {
                     <Activity className="size-4" />
                   </div>
                   <div>
-                    <span className="text-[10px] font-bold text-sky-600 dark:text-sky-400 uppercase tracking-wider block">Telemetría</span>
+                    <span className="text-2xs font-bold text-sky-600 dark:text-sky-400 uppercase tracking-wider block">Telemetría</span>
                     <p className="text-xs font-bold text-sky-950 dark:text-sky-100">Tracking 60 FPS</p>
                   </div>
                 </div>
@@ -1872,7 +1872,7 @@ export function UIShowcasePage() {
                     <AlertTriangle className="size-4" />
                   </div>
                   <div>
-                    <span className="text-[10px] font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider block">Compensación</span>
+                    <span className="text-2xs font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider block">Compensación</span>
                     <p className="text-xs font-bold text-amber-950 dark:text-amber-100">Elevación Hombro</p>
                   </div>
                 </div>
@@ -1882,7 +1882,7 @@ export function UIShowcasePage() {
                     <Sparkles className="size-4" />
                   </div>
                   <div>
-                    <span className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider block">Inteligencia IA</span>
+                    <span className="text-2xs font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider block">Inteligencia IA</span>
                     <p className="text-xs font-bold text-indigo-950 dark:text-indigo-100">Physi Predictivo</p>
                   </div>
                 </div>
@@ -1898,7 +1898,7 @@ export function UIShowcasePage() {
           <section className="space-y-8 p-6 sm:p-8 rounded-3xl bg-teal-500/5 border border-teal-500/20">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-teal-500/15">
               <div>
-                <span className="text-[10px] font-extrabold uppercase tracking-widest text-teal-600 dark:text-teal-400 bg-teal-500/10 px-2.5 py-0.5 rounded-full border border-teal-500/20">
+                <span className="text-2xs font-extrabold uppercase tracking-widest text-teal-600 dark:text-teal-400 bg-teal-500/10 px-2.5 py-0.5 rounded-full border border-teal-500/20">
                   Suite Integrada
                 </span>
                 <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white mt-1 flex items-center gap-2">
@@ -2137,7 +2137,7 @@ export function UIShowcasePage() {
                   {/* Vista Básica */}
                   <div className="p-5 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col justify-between">
                     <div>
-                      <span className="text-[10px] font-bold text-teal-600 dark:text-teal-400 uppercase tracking-wider bg-teal-500/10 px-2 py-0.5 rounded-md">
+                      <span className="text-2xs font-bold text-teal-600 dark:text-teal-400 uppercase tracking-wider bg-teal-500/10 px-2 py-0.5 rounded-md">
                         1. Vista Básica
                       </span>
                       <h4 className="text-sm font-bold text-slate-900 dark:text-white mt-1 mb-1">
@@ -2155,7 +2155,7 @@ export function UIShowcasePage() {
                   {/* Vista Dinámica por Semanas */}
                   <div className="p-5 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col justify-between">
                     <div>
-                      <span className="text-[10px] font-bold text-teal-600 dark:text-teal-400 uppercase tracking-wider bg-teal-500/10 px-2 py-0.5 rounded-md">
+                      <span className="text-2xs font-bold text-teal-600 dark:text-teal-400 uppercase tracking-wider bg-teal-500/10 px-2 py-0.5 rounded-md">
                         2. Vista por Semanas (WeekView)
                       </span>
                       <h4 className="text-sm font-bold text-slate-900 dark:text-white mt-1 mb-1">
@@ -2173,7 +2173,7 @@ export function UIShowcasePage() {
                   {/* Vista Predeterminada */}
                   <div className="p-5 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col justify-between">
                     <div>
-                      <span className="text-[10px] font-bold text-teal-600 dark:text-teal-400 uppercase tracking-wider bg-teal-500/10 px-2 py-0.5 rounded-md">
+                      <span className="text-2xs font-bold text-teal-600 dark:text-teal-400 uppercase tracking-wider bg-teal-500/10 px-2 py-0.5 rounded-md">
                         3. Rango Inicial (DefaultValue)
                       </span>
                       <h4 className="text-sm font-bold text-slate-900 dark:text-white mt-1 mb-1">
@@ -2223,9 +2223,9 @@ export function UIShowcasePage() {
                           <div key={i} className="p-3 rounded-xl bg-white dark:bg-slate-800/80 border border-slate-200/60 dark:border-slate-700/60 flex items-center justify-between shadow-xs">
                             <div>
                               <p className="text-xs font-bold text-slate-900 dark:text-white">{ex.name}</p>
-                              <p className="text-[11px] text-slate-500 dark:text-slate-400">{ex.target} • {ex.reps}</p>
+                              <p className="text-xs text-slate-500 dark:text-slate-400">{ex.target} • {ex.reps}</p>
                             </div>
-                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-600 dark:text-teal-400 border border-teal-500/20">
+                            <span className="text-2xs font-bold px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-600 dark:text-teal-400 border border-teal-500/20">
                               {ex.status}
                             </span>
                           </div>
@@ -2389,7 +2389,7 @@ export function UIShowcasePage() {
                       <button
                         type="button"
                         onClick={() => setHighlighterKey((k) => k + 1)}
-                        className="text-[11px] font-semibold text-primary hover:underline flex items-center gap-1"
+                        className="text-xs font-semibold text-primary hover:underline flex items-center gap-1"
                       >
                         <RefreshCw className="size-3" /> Reanimar trazo
                       </button>
@@ -2406,7 +2406,7 @@ export function UIShowcasePage() {
                             setHighlighterKey((k) => k + 1);
                           }}
                           className={cn(
-                            "px-2.5 py-1 rounded-lg text-[11px] font-medium transition-all capitalize",
+                            "px-2.5 py-1 rounded-lg text-xs font-medium transition-all capitalize",
                             highlighterAction === act
                               ? "bg-primary text-white shadow-xs"
                               : "bg-surface-container-high/60 text-on-surface-variant hover:bg-surface-container-highest"
@@ -2518,7 +2518,7 @@ export function UIShowcasePage() {
                       <button
                         type="button"
                         onClick={() => setKineticInputText('FisioMirror Biomecánica')}
-                        className="text-[11px] font-semibold text-primary hover:underline px-2"
+                        className="text-xs font-semibold text-primary hover:underline px-2"
                       >
                         Reset
                       </button>
@@ -2534,7 +2534,7 @@ export function UIShowcasePage() {
                       21. Rayos de Luz Atmosféricos (LightRays)
                     </h3>
                   </div>
-                  <div className="relative h-64 rounded-3xl overflow-hidden bg-gradient-to-b from-slate-950 via-slate-900 to-[#002724] border border-slate-800 shadow-lg p-6 flex flex-col justify-between">
+                  <div className="relative h-64 rounded-3xl overflow-hidden bg-gradient-to-b from-slate-950 via-slate-900 to-[#002724] border border-slate-800 shadow-card p-6 flex flex-col justify-between">
                     <LightRays
                       count={8}
                       color="rgba(76, 218, 210, 0.35)"
@@ -2543,7 +2543,7 @@ export function UIShowcasePage() {
                       length="80%"
                     />
                     <div className="relative z-10">
-                      <span className="text-[10px] font-bold uppercase tracking-widest text-teal-400 bg-teal-500/15 px-2 py-0.5 rounded-md border border-teal-500/30">
+                      <span className="text-2xs font-bold uppercase tracking-widest text-teal-400 bg-teal-500/15 px-2 py-0.5 rounded-md border border-teal-500/30">
                         Ambiente Dinámico
                       </span>
                       <h4 className="text-base font-bold text-white mt-2">
@@ -2553,7 +2553,7 @@ export function UIShowcasePage() {
                         Haces de luz oscilantes con balanceo angular continuo, diseñados para pantallas de inicio o vistas de calibración AR.
                       </p>
                     </div>
-                    <div className="relative z-10 flex items-center justify-between text-[11px] text-teal-200/80">
+                    <div className="relative z-10 flex items-center justify-between text-xs text-teal-200/80">
                       <span>Ciclo: 10s • Desenfoque: 32px</span>
                       <span className="flex items-center gap-1">
                         <span className="size-2 rounded-full bg-teal-400 animate-ping" />
@@ -2588,19 +2588,19 @@ export function UIShowcasePage() {
 
                     <div className="grid grid-cols-3 gap-3 text-center">
                       <div className="p-3.5 rounded-2xl bg-surface-container-low/60 border border-outline-variant/20">
-                        <p className="text-[10px] uppercase font-semibold text-on-surface-variant">Ángulo ROM</p>
+                        <p className="text-2xs uppercase font-semibold text-on-surface-variant">Ángulo ROM</p>
                         <p className="text-2xl font-bold text-primary mt-1">
                           <NumberTicker value={tickerRomValue} suffix="°" />
                         </p>
                       </div>
                       <div className="p-3.5 rounded-2xl bg-surface-container-low/60 border border-outline-variant/20">
-                        <p className="text-[10px] uppercase font-semibold text-on-surface-variant">Adherencia</p>
+                        <p className="text-2xs uppercase font-semibold text-on-surface-variant">Adherencia</p>
                         <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400 mt-1">
                           <NumberTicker value={Math.min(100, Math.round(tickerRomValue * 0.72))} suffix="%" />
                         </p>
                       </div>
                       <div className="p-3.5 rounded-2xl bg-surface-container-low/60 border border-outline-variant/20">
-                        <p className="text-[10px] uppercase font-semibold text-on-surface-variant">Pacientes</p>
+                        <p className="text-2xs uppercase font-semibold text-on-surface-variant">Pacientes</p>
                         <p className="text-2xl font-bold text-teal-600 dark:text-teal-400 mt-1">
                           <NumberTicker value={Math.round(tickerRomValue / 5)} />
                         </p>
@@ -2651,7 +2651,7 @@ export function UIShowcasePage() {
                           type="button"
                           onClick={() => setMagicCardMode('gradient')}
                           className={cn(
-                            "px-2.5 py-1 text-[11px] font-semibold rounded-lg transition-all",
+                            "px-2.5 py-1 text-xs font-semibold rounded-lg transition-all",
                             magicCardMode === 'gradient' ? "bg-primary text-white shadow-xs" : "text-on-surface-variant hover:text-on-surface"
                           )}
                         >
@@ -2661,7 +2661,7 @@ export function UIShowcasePage() {
                           type="button"
                           onClick={() => setMagicCardMode('orb')}
                           className={cn(
-                            "px-2.5 py-1 text-[11px] font-semibold rounded-lg transition-all",
+                            "px-2.5 py-1 text-xs font-semibold rounded-lg transition-all",
                             magicCardMode === 'orb' ? "bg-primary text-white shadow-xs" : "text-on-surface-variant hover:text-on-surface"
                           )}
                         >
@@ -2680,7 +2680,7 @@ export function UIShowcasePage() {
                     >
                       <div className="space-y-3">
                         <div className="flex items-center justify-between">
-                          <span className="text-[10px] font-bold uppercase tracking-wider text-teal-600 dark:text-teal-400 bg-teal-500/10 px-2 py-0.5 rounded-md">
+                          <span className="text-2xs font-bold uppercase tracking-wider text-teal-600 dark:text-teal-400 bg-teal-500/10 px-2 py-0.5 rounded-md">
                             Sensor Biomecánico
                           </span>
                           <span className="text-xs font-bold text-emerald-500">Conectado</span>
@@ -2722,7 +2722,7 @@ export function UIShowcasePage() {
                           setPixelReplayKey((k) => k + 1);
                         }}
                         className={cn(
-                          "px-2.5 py-1 text-[11px] font-semibold rounded-lg transition-all",
+                          "px-2.5 py-1 text-xs font-semibold rounded-lg transition-all",
                           pixelGridKey === g
                             ? "bg-primary text-white shadow-xs"
                             : "bg-surface-container-high/60 text-on-surface-variant hover:bg-surface-container-highest"
@@ -2754,7 +2754,7 @@ export function UIShowcasePage() {
                     className="h-60 w-60 md:h-72 md:w-72 bg-gradient-to-br from-teal-500/10 to-cyan-500/10 flex items-center justify-center p-4"
                   />
                   <div className="max-w-md space-y-3">
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-teal-600 dark:text-teal-400 bg-teal-500/10 px-2 py-0.5 rounded-md">
+                    <span className="text-2xs font-bold uppercase tracking-widest text-teal-600 dark:text-teal-400 bg-teal-500/10 px-2 py-0.5 rounded-md">
                       Efecto de Entrada Digital
                     </span>
                     <h4 className="text-lg font-bold text-on-surface">
@@ -2763,7 +2763,7 @@ export function UIShowcasePage() {
                     <p className="text-xs text-on-surface-variant leading-relaxed">
                       Divide la imagen en una cuadrícula poligonal matemática ({pixelGridKey}) con retardo pseudoaleatorio por pieza y transición fluida de escala de grises a color completo.
                     </p>
-                    <div className="pt-2 flex flex-wrap gap-2 text-[11px] text-on-surface-variant">
+                    <div className="pt-2 flex flex-wrap gap-2 text-xs text-on-surface-variant">
                       <span className="px-2.5 py-1 rounded-lg bg-surface-container-low border border-outline-variant/20">
                         Cuadrícula: {pixelGridKey}
                       </span>
@@ -2796,7 +2796,7 @@ export function UIShowcasePage() {
                         type="button"
                         onClick={() => setPulsatingVariant('pulse')}
                         className={cn(
-                          "px-2.5 py-1 text-[11px] font-semibold rounded-lg transition-all",
+                          "px-2.5 py-1 text-xs font-semibold rounded-lg transition-all",
                           pulsatingVariant === 'pulse' ? "bg-primary text-white shadow-xs" : "text-on-surface-variant hover:text-on-surface"
                         )}
                       >
@@ -2806,7 +2806,7 @@ export function UIShowcasePage() {
                         type="button"
                         onClick={() => setPulsatingVariant('ripple')}
                         className={cn(
-                          "px-2.5 py-1 text-[11px] font-semibold rounded-lg transition-all",
+                          "px-2.5 py-1 text-xs font-semibold rounded-lg transition-all",
                           pulsatingVariant === 'ripple' ? "bg-primary text-white shadow-xs" : "text-on-surface-variant hover:text-on-surface"
                         )}
                       >
@@ -2847,7 +2847,7 @@ export function UIShowcasePage() {
                       </PulsatingButton>
                     </div>
 
-                    <div className="flex items-center gap-2 pt-2 text-[11px] text-slate-400">
+                    <div className="flex items-center gap-2 pt-2 text-xs text-slate-400">
                       <span>Color de Pulso:</span>
                       <button
                         type="button"
@@ -2895,12 +2895,12 @@ export function UIShowcasePage() {
                     <div className="p-4 rounded-2xl bg-slate-100/70 dark:bg-slate-900/60 border border-slate-200/60 dark:border-slate-800/80 space-y-3">
                       <div className="flex items-center justify-between text-xs font-semibold text-slate-600 dark:text-slate-300">
                         <span>Gradiente:</span>
-                        <code className="text-[11px] text-teal-600 dark:text-teal-400 font-mono">
+                        <code className="text-xs text-teal-600 dark:text-teal-400 font-mono">
                           from-teal-600 via-cyan-400 to-[#c1ff72]
                         </code>
                       </div>
                       <div className="h-2 w-full rounded-full bg-gradient-to-r from-teal-600 via-cyan-400 to-[#c1ff72] shadow-sm shadow-teal-500/20" />
-                      <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-normal">
+                      <p className="text-xs text-slate-500 dark:text-slate-400 leading-normal">
                         Activa en todas las pantallas clínicas para que el paciente o terapeuta conozca su progreso en la lectura de expedientes y guías biomecánicas.
                       </p>
                     </div>
@@ -2973,7 +2973,7 @@ export function UIShowcasePage() {
                         <h4 className="text-sm font-bold text-slate-900 dark:text-white">
                           Tarjeta Clínica con Borde Órbita Multicromático
                         </h4>
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                        <span className="text-2xs font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
                           Prioridad Alta
                         </span>
                       </div>
@@ -2985,7 +2985,7 @@ export function UIShowcasePage() {
                     <div className="p-3.5 rounded-2xl bg-teal-500/5 dark:bg-teal-950/20 border border-teal-500/20 flex items-center justify-between">
                       <div>
                         <p className="text-xs font-bold text-slate-800 dark:text-slate-200">Paciente: Roberto Santana</p>
-                        <p className="text-[11px] text-teal-600 dark:text-teal-400 font-semibold">Tendinopatía Rotuliana • Sesión 6 de 12</p>
+                        <p className="text-xs text-teal-600 dark:text-teal-400 font-semibold">Tendinopatía Rotuliana • Sesión 6 de 12</p>
                       </div>
                       <span className="text-xs font-black text-slate-900 dark:text-white">125° Flexión</span>
                     </div>
@@ -3056,7 +3056,7 @@ export function UIShowcasePage() {
                     <button
                       type="button"
                       onClick={() => setTextAnimateKey((k) => k + 1)}
-                      className="text-[11px] font-semibold text-primary hover:underline flex items-center gap-1"
+                      className="text-xs font-semibold text-primary hover:underline flex items-center gap-1"
                     >
                       <RefreshCw className="size-3" /> Reanimar
                     </button>
@@ -3064,7 +3064,7 @@ export function UIShowcasePage() {
 
                   <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
                     <div className="flex flex-wrap items-center gap-2">
-                      <span className="text-[11px] text-slate-400">Variante:</span>
+                      <span className="text-xs text-slate-400">Variante:</span>
                       {(['blurInUp', 'fadeIn', 'slideUp', 'scaleUp', 'blurIn'] as AnimationVariant[]).map((anim) => (
                         <button
                           key={anim}
@@ -3074,7 +3074,7 @@ export function UIShowcasePage() {
                             setTextAnimateKey((k) => k + 1);
                           }}
                           className={cn(
-                            "px-2 py-0.5 text-[10px] font-bold rounded-md transition-all",
+                            "px-2 py-0.5 text-2xs font-bold rounded-md transition-all",
                             textAnimateVariant === anim
                               ? "bg-primary text-white shadow-xs"
                               : "bg-surface-container-high/60 text-on-surface-variant hover:bg-surface-container-highest"
@@ -3085,7 +3085,7 @@ export function UIShowcasePage() {
                       ))}
                     </div>
 
-                    <div className="flex items-center gap-2 text-[11px] text-slate-400">
+                    <div className="flex items-center gap-2 text-xs text-slate-400">
                       <span>Segmentación:</span>
                       {(['word', 'character', 'line'] as AnimationType[]).map((type) => (
                         <button
@@ -3096,7 +3096,7 @@ export function UIShowcasePage() {
                             setTextAnimateKey((k) => k + 1);
                           }}
                           className={cn(
-                            "px-2 py-0.5 text-[10px] font-bold rounded-md transition-all",
+                            "px-2 py-0.5 text-2xs font-bold rounded-md transition-all",
                             textAnimateType === type
                               ? "bg-teal-600 text-white"
                               : "bg-surface-container-low text-on-surface-variant"
@@ -3145,29 +3145,29 @@ export function UIShowcasePage() {
               {INVENTORY_COMPARISONS.map((item, index) => (
                 <Card key={index} variant="glass" hoverEffect animated className="relative overflow-hidden">
                   <div className="flex items-start justify-between gap-3 mb-3">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-teal-600 dark:text-teal-400 bg-teal-500/10 px-2 py-0.5 rounded-md border border-teal-500/20">
+                    <span className="text-2xs font-bold uppercase tracking-wider text-teal-600 dark:text-teal-400 bg-teal-500/10 px-2 py-0.5 rounded-md border border-teal-500/20">
                       {item.category}
                     </span>
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
+                    <span className="text-2xs font-bold px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
                       Fuente: {item.librarySource}
                     </span>
                   </div>
 
                   <div className="space-y-2 mb-3">
                     <div className="p-2 rounded-lg bg-slate-100/60 dark:bg-slate-800/40 border border-slate-200/50 dark:border-slate-700/50">
-                      <p className="text-[10px] uppercase font-bold text-slate-400">Componente Original en FisioMirror:</p>
+                      <p className="text-2xs uppercase font-bold text-slate-400">Componente Original en FisioMirror:</p>
                       <p className="text-xs font-semibold text-slate-700 dark:text-slate-300">{item.originalComponent}</p>
-                      <code className="text-[10px] text-slate-400 font-mono">{item.originalFile}</code>
+                      <code className="text-2xs text-slate-400 font-mono">{item.originalFile}</code>
                     </div>
 
                     <div className="p-2 rounded-lg bg-teal-50/50 dark:bg-teal-950/20 border border-teal-500/20">
-                      <p className="text-[10px] uppercase font-bold text-teal-600 dark:text-teal-400">Versión Evolved Integrada:</p>
+                      <p className="text-2xs uppercase font-bold text-teal-600 dark:text-teal-400">Versión Evolved Integrada:</p>
                       <p className="text-xs font-bold text-slate-900 dark:text-slate-100">{item.evolvedComponent}</p>
                     </div>
                   </div>
 
                   <div>
-                    <p className="text-[11px] font-bold text-slate-600 dark:text-slate-300 mb-1.5">Ventajas y Características Superiores:</p>
+                    <p className="text-xs font-bold text-slate-600 dark:text-slate-300 mb-1.5">Ventajas y Características Superiores:</p>
                     <ul className="space-y-1">
                       {item.keyImprovements.map((improvement, i) => (
                         <li key={i} className="text-xs text-slate-500 dark:text-slate-400 flex items-start gap-1.5">
@@ -3212,7 +3212,7 @@ export function UIShowcasePage() {
               <div>
                 <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3 flex items-center gap-2">
                   <span>Variantes Premium Evolved</span>
-                  <span className="text-[10px] text-teal-500 lowercase">(framer-motion + cva + magic-ui)</span>
+                  <span className="text-2xs text-teal-500 lowercase">(framer-motion + cva + magic-ui)</span>
                 </h3>
                 <div className="flex flex-wrap gap-3 items-center">
                   <ShimmerButton>
@@ -3276,7 +3276,7 @@ export function UIShowcasePage() {
                   <div className="p-3 rounded-2xl bg-teal-500/10 text-teal-600 dark:text-teal-400">
                     <MousePointer className="w-6 h-6 animate-pulse" />
                   </div>
-                  <span className="text-[10px] font-bold text-teal-600 bg-teal-500/10 px-2.5 py-1 rounded-full border border-teal-500/20">
+                  <span className="text-2xs font-bold text-teal-600 bg-teal-500/10 px-2.5 py-1 rounded-full border border-teal-500/20">
                     Aceternity Spotlight
                   </span>
                 </div>
@@ -3299,7 +3299,7 @@ export function UIShowcasePage() {
                     <div className="p-3 rounded-2xl bg-lime-500/10 text-lime-600 dark:text-lime-400">
                       <Sparkles className="w-6 h-6" />
                     </div>
-                    <span className="text-[10px] font-bold text-lime-600 bg-lime-500/10 px-2.5 py-1 rounded-full border border-lime-500/20">
+                    <span className="text-2xs font-bold text-lime-600 bg-lime-500/10 px-2.5 py-1 rounded-full border border-lime-500/20">
                       Magic UI BorderBeam
                     </span>
                   </div>
@@ -3445,7 +3445,7 @@ export function UIShowcasePage() {
                         setOtpValue('492815');
                         setOtpCompletedCode('492815');
                       }}
-                      className="text-[11px]"
+                      className="text-xs"
                     >
                       Probar Pegado Demo
                     </Button>
@@ -3453,7 +3453,7 @@ export function UIShowcasePage() {
                       size="sm" 
                       variant="ghost" 
                       onClick={() => setOtpError(!otpError)}
-                      className="text-[11px]"
+                      className="text-xs"
                     >
                       Error: {otpError ? 'Sí' : 'No'}
                     </Button>
@@ -3545,7 +3545,7 @@ export function UIShowcasePage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
-                <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400">Tipografía Dinámica</span>
+                <span className="text-2xs uppercase font-bold tracking-wider text-slate-400">Tipografía Dinámica</span>
                 <div>
                   <p className="text-xs text-slate-400 mb-1">Efecto Aurora Text:</p>
                   <h3 className="text-2xl font-black">
@@ -3560,7 +3560,7 @@ export function UIShowcasePage() {
 
               <div className="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
                 <div>
-                  <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400 block mb-2">
+                  <span className="text-2xs uppercase font-bold tracking-wider text-slate-400 block mb-2">
                     Tooltips con Flecha Geométrica
                   </span>
                   <p className="text-xs text-slate-500 dark:text-slate-400 mb-4">

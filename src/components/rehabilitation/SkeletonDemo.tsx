@@ -75,7 +75,7 @@ export const SkeletonDemo: React.FC<SkeletonDemoProps> = ({ exercise, userRole =
 
       {/* Dynamic movement indicator bar */}
       <div className="w-full mb-3">
-        <div className="flex justify-between items-center text-[10px] font-bold text-on-surface-variant mb-1">
+        <div className="flex justify-between items-center text-2xs font-bold text-on-surface-variant mb-1">
           <span>Ciclo Biomecánico</span>
           <span className="text-teal-600 dark:text-teal-400 font-mono">{Math.round(progress * 100)}% ROM</span>
         </div>
@@ -142,7 +142,7 @@ export const SkeletonDemo: React.FC<SkeletonDemoProps> = ({ exercise, userRole =
         <div className="grid grid-cols-2 gap-2 text-xs bg-slate-100/70 dark:bg-slate-800/70 p-2.5 rounded-xl border border-outline/10">
           {exercise.targetJoints.map((j) => (
             <div key={j.joint} className="flex justify-between items-center">
-              <span className="text-on-surface-variant capitalize text-[11px] truncate pr-1">
+              <span className="text-on-surface-variant capitalize text-xs truncate pr-1">
                 {j.joint.replace('_', ' ')}:
               </span>
               <span className="font-mono font-bold text-teal-600 dark:text-teal-400 text-xs shrink-0">
@@ -151,7 +151,7 @@ export const SkeletonDemo: React.FC<SkeletonDemoProps> = ({ exercise, userRole =
             </div>
           ))}
         </div>
-        <div className="flex justify-between text-[11px] text-on-surface-variant px-1 pt-1 border-t border-outline/10">
+        <div className="flex justify-between text-xs text-on-surface-variant px-1 pt-1 border-t border-outline/10">
           <span>
             Series: <strong className="text-on-surface">{exercise.sets}</strong>
           </span>

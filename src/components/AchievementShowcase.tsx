@@ -28,7 +28,7 @@ export function AchievementUnlockModal({ achievement, role, onClose }: Achieveme
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.8, opacity: 0, y: 30 }}
             transition={{ type: 'spring', stiffness: 260, damping: 22 }}
-            className="glass-panel rounded-[2rem] max-w-sm w-full p-6 sm:p-8 text-center relative max-h-[90vh] overflow-y-auto"
+            className="glass-panel rounded-3xl max-w-sm w-full p-6 sm:p-8 text-center relative max-h-[90vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="absolute inset-0 pointer-events-none">
@@ -67,14 +67,14 @@ export function AchievementUnlockModal({ achievement, role, onClose }: Achieveme
 
               {isSpiritualModeEnabled() && (
                 <div className="mb-6 p-4 rounded-2xl bg-teal-500/10 border border-teal-500/20 text-left">
-                  <div className="flex items-center gap-1.5 mb-1.5 text-[11px] font-bold uppercase tracking-wider text-teal-700 dark:text-teal-300">
+                  <div className="flex items-center gap-1.5 mb-1.5 text-xs font-bold uppercase tracking-wider text-teal-700 dark:text-teal-300">
                     <BookOpen size={14} />
                     <span>Palabra de Victoria & Fortaleza</span>
                   </div>
                   <p className="text-xs text-on-surface italic font-medium leading-relaxed">
                     «{getVersiculoForLogro(achievement.id).texto}»
                   </p>
-                  <p className="text-[11px] font-bold text-teal-700 dark:text-teal-300 text-right mt-1.5 font-mono">
+                  <p className="text-xs font-bold text-teal-700 dark:text-teal-300 text-right mt-1.5 font-mono">
                     — {getVersiculoForLogro(achievement.id).cita}
                   </p>
                 </div>
@@ -186,7 +186,7 @@ export function AchievementShowcase({ achievements, compact = false }: Achieveme
                   <p className="text-label-sm text-label-sm text-on-surface-variant line-clamp-2 mb-2">{ach.description}</p>
                   <div className="h-1.5 rounded-full bg-on-surface/10 overflow-hidden">
                     <div
-                      className="h-full rounded-full transition-all duration-500"
+                      className="h-full rounded-full transition-all duration-300"
                       style={{ width: `${pct}%`, backgroundColor: meta.color }}
                     />
                   </div>

@@ -88,7 +88,7 @@ export function AvatarDemo() {
         </Avatar>
         <div>
           <p className="text-xs font-bold text-slate-900 dark:text-white">Dra. Elena Ramos</p>
-          <p className="text-[11px] text-teal-600 dark:text-teal-400">Fisioterapeuta Titular</p>
+          <p className="text-xs text-teal-600 dark:text-teal-400">Fisioterapeuta Titular</p>
         </div>
       </div>
 
@@ -99,7 +99,7 @@ export function AvatarDemo() {
         </Avatar>
         <div>
           <p className="text-xs font-bold text-slate-900 dark:text-white">Carlos Romero</p>
-          <p className="text-[11px] text-slate-400">Paciente Activo • Rodilla</p>
+          <p className="text-xs text-slate-400">Paciente Activo • Rodilla</p>
         </div>
       </div>
 
@@ -109,7 +109,7 @@ export function AvatarDemo() {
         </Avatar>
         <div>
           <p className="text-xs font-bold text-slate-900 dark:text-white">Jorge Ramírez</p>
-          <p className="text-[11px] text-slate-400">Token Pendiente (Sin foto)</p>
+          <p className="text-xs text-slate-400">Token Pendiente (Sin foto)</p>
         </div>
       </div>
     </div>

@@ -48,7 +48,7 @@ export const PoseConfidenceLiveIndicator: React.FC<PoseConfidenceLiveIndicatorPr
       whileHover={{ y: -3, scale: 1.01 }}
       transition={{ duration: 0.2 }}
       className={cn(
-        "relative p-4 rounded-3xl bg-gradient-to-br from-surface/95 via-surface-container/85 to-surface/95 dark:from-surface-container/80 dark:via-slate-900/90 dark:to-surface-container/80 backdrop-blur-2xl border border-teal-500/25 dark:border-teal-500/35 shadow-lg overflow-hidden flex items-center justify-between gap-3 group",
+        "relative p-4 rounded-3xl bg-gradient-to-br from-surface/95 via-surface-container/85 to-surface/95 dark:from-surface-container/80 dark:via-slate-900/90 dark:to-surface-container/80 backdrop-blur-2xl border border-teal-500/25 dark:border-teal-500/35 shadow-card overflow-hidden flex items-center justify-between gap-3 group",
         className
       )}
     >
@@ -68,7 +68,7 @@ export const PoseConfidenceLiveIndicator: React.FC<PoseConfidenceLiveIndicatorPr
             Certidumbre MediaPipe AR
             <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />
           </span>
-          <span className="text-[10px] text-slate-500 dark:text-slate-400 font-mono">
+          <span className="text-2xs text-slate-500 dark:text-slate-400 font-mono">
             {visibleLandmarksCount}/33 puntos anatómicos rastreados a 60 FPS
           </span>
         </div>
@@ -83,7 +83,7 @@ export const PoseConfidenceLiveIndicator: React.FC<PoseConfidenceLiveIndicatorPr
         >
           {displayConfidence}%
         </motion.span>
-        <span className="text-[9px] uppercase font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full">
+        <span className="text-2xs uppercase font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full">
           Lock Cinemático
         </span>
       </div>
@@ -117,7 +117,7 @@ export const AngularVelocityStreamGauge: React.FC<AngularVelocityStreamGaugeProp
       whileHover={{ y: -3, scale: 1.01 }}
       transition={{ duration: 0.2 }}
       className={cn(
-        "relative p-4 rounded-3xl bg-gradient-to-br from-surface/95 via-surface-container/85 to-surface/95 dark:from-surface-container/80 dark:via-slate-900/90 dark:to-surface-container/80 backdrop-blur-2xl border border-cyan-500/25 dark:border-cyan-500/35 shadow-lg overflow-hidden space-y-2.5 group",
+        "relative p-4 rounded-3xl bg-gradient-to-br from-surface/95 via-surface-container/85 to-surface/95 dark:from-surface-container/80 dark:via-slate-900/90 dark:to-surface-container/80 backdrop-blur-2xl border border-cyan-500/25 dark:border-cyan-500/35 shadow-card overflow-hidden space-y-2.5 group",
         className
       )}
     >
@@ -130,7 +130,7 @@ export const AngularVelocityStreamGauge: React.FC<AngularVelocityStreamGaugeProp
             <span className="text-xs font-bold text-slate-800 dark:text-slate-100 block">
               Velocidad Angular en Vivo
             </span>
-            <span className="text-[10px] text-slate-500 dark:text-slate-400">
+            <span className="text-2xs text-slate-500 dark:text-slate-400">
               Control motriz articular
             </span>
           </div>
@@ -152,7 +152,7 @@ export const AngularVelocityStreamGauge: React.FC<AngularVelocityStreamGaugeProp
         />
       </div>
 
-      <div className="flex justify-between text-[10px] text-slate-400 font-mono font-semibold">
+      <div className="flex justify-between text-2xs text-slate-400 font-mono font-semibold">
         <span>0 °/s</span>
         <span className="text-teal-600 dark:text-teal-400">Zona de Control Óptimo</span>
         <span>{maxSafeVelocity} °/s</span>
@@ -174,7 +174,7 @@ export const ROMDeviationLiveChart: React.FC<ROMDeviationLiveChartProps> = ({ cl
       whileHover={{ y: -3, scale: 1.01 }}
       transition={{ duration: 0.2 }}
       className={cn(
-        "relative p-4 rounded-3xl bg-gradient-to-br from-surface/95 via-surface-container/85 to-surface/95 dark:from-surface-container/80 dark:via-slate-900/90 dark:to-surface-container/80 backdrop-blur-2xl border border-teal-500/25 dark:border-teal-500/35 shadow-lg overflow-hidden space-y-2 group",
+        "relative p-4 rounded-3xl bg-gradient-to-br from-surface/95 via-surface-container/85 to-surface/95 dark:from-surface-container/80 dark:via-slate-900/90 dark:to-surface-container/80 backdrop-blur-2xl border border-teal-500/25 dark:border-teal-500/35 shadow-card overflow-hidden space-y-2 group",
         className
       )}
     >
@@ -187,10 +187,10 @@ export const ROMDeviationLiveChart: React.FC<ROMDeviationLiveChartProps> = ({ cl
             <span className="text-xs font-bold text-slate-800 dark:text-slate-100 block">
               Trayectoria Real vs. Ideal
             </span>
-            <span className="text-[10px] text-slate-500 dark:text-slate-400">Osciloscopio ROM</span>
+            <span className="text-2xs text-slate-500 dark:text-slate-400">Osciloscopio ROM</span>
           </div>
         </div>
-        <span className="text-[10px] font-mono font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/15 border border-emerald-500/30 px-2.5 py-0.5 rounded-full flex items-center gap-1">
+        <span className="text-2xs font-mono font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/15 border border-emerald-500/30 px-2.5 py-0.5 rounded-full flex items-center gap-1">
           <span className="size-1.5 rounded-full bg-emerald-500 animate-ping" />
           Δ 2.4° (98% Match)
         </span>
@@ -235,7 +235,7 @@ export const ROMDeviationLiveChart: React.FC<ROMDeviationLiveChartProps> = ({ cl
         </svg>
       </div>
 
-      <div className="flex items-center justify-between text-[10px] text-slate-500 dark:text-slate-400">
+      <div className="flex items-center justify-between text-2xs text-slate-500 dark:text-slate-400">
         <span className="flex items-center gap-1">
           <span className="size-2 rounded-full bg-teal-400" /> Paciente Real
         </span>
@@ -266,7 +266,7 @@ export const VoiceFeedbackWaveHUD: React.FC<VoiceFeedbackWaveHUDProps> = ({
       whileHover={{ y: -3, scale: 1.01 }}
       transition={{ duration: 0.2 }}
       className={cn(
-        "relative p-4 rounded-3xl bg-gradient-to-br from-surface/95 via-surface-container/85 to-surface/95 dark:from-surface-container/80 dark:via-slate-900/90 dark:to-surface-container/80 backdrop-blur-2xl border border-teal-500/25 dark:border-teal-500/35 shadow-lg overflow-hidden flex items-center gap-3.5 group",
+        "relative p-4 rounded-3xl bg-gradient-to-br from-surface/95 via-surface-container/85 to-surface/95 dark:from-surface-container/80 dark:via-slate-900/90 dark:to-surface-container/80 backdrop-blur-2xl border border-teal-500/25 dark:border-teal-500/35 shadow-card overflow-hidden flex items-center gap-3.5 group",
         className
       )}
     >
@@ -280,7 +280,7 @@ export const VoiceFeedbackWaveHUD: React.FC<VoiceFeedbackWaveHUDProps> = ({
 
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-between gap-2 mb-0.5">
-          <span className="text-[10px] uppercase font-bold text-teal-600 dark:text-teal-400 tracking-wider">
+          <span className="text-2xs uppercase font-bold text-teal-600 dark:text-teal-400 tracking-wider">
             Biofeedback Auditivo Physi IA
           </span>
           {/* Ondas sonoras animadas */}
@@ -326,7 +326,7 @@ export const CameraFramingGuideHUD: React.FC<CameraFramingGuideHUDProps> = ({
       whileHover={{ y: -3, scale: 1.01 }}
       transition={{ duration: 0.2 }}
       className={cn(
-        "relative p-4 rounded-3xl bg-gradient-to-br from-surface/95 via-surface-container/85 to-surface/95 dark:from-surface-container/80 dark:via-slate-900/90 dark:to-surface-container/80 backdrop-blur-2xl border border-cyan-500/25 dark:border-cyan-500/35 shadow-lg overflow-hidden flex items-center justify-between gap-3 group cursor-pointer",
+        "relative p-4 rounded-3xl bg-gradient-to-br from-surface/95 via-surface-container/85 to-surface/95 dark:from-surface-container/80 dark:via-slate-900/90 dark:to-surface-container/80 backdrop-blur-2xl border border-cyan-500/25 dark:border-cyan-500/35 shadow-card overflow-hidden flex items-center justify-between gap-3 group cursor-pointer",
         className
       )}
       onClick={cycleStatus}
@@ -339,7 +339,7 @@ export const CameraFramingGuideHUD: React.FC<CameraFramingGuideHUDProps> = ({
           <span className="text-xs font-bold text-slate-800 dark:text-slate-100 block">
             Encuadre Óptimo AR
           </span>
-          <span className="text-[10px] text-slate-500 dark:text-slate-400">
+          <span className="text-2xs text-slate-500 dark:text-slate-400">
             Distancia ideal: 2.1 metros
           </span>
         </div>
@@ -398,7 +398,7 @@ export const RepCadenceMetronome: React.FC<RepCadenceMetronomeProps> = ({
       whileHover={{ y: -3, scale: 1.01 }}
       transition={{ duration: 0.2 }}
       className={cn(
-        "relative p-4 rounded-3xl bg-gradient-to-br from-surface/95 via-surface-container/85 to-surface/95 dark:from-surface-container/80 dark:via-slate-900/90 dark:to-surface-container/80 backdrop-blur-2xl border border-teal-500/25 dark:border-teal-500/35 shadow-lg overflow-hidden space-y-2.5 group",
+        "relative p-4 rounded-3xl bg-gradient-to-br from-surface/95 via-surface-container/85 to-surface/95 dark:from-surface-container/80 dark:via-slate-900/90 dark:to-surface-container/80 backdrop-blur-2xl border border-teal-500/25 dark:border-teal-500/35 shadow-card overflow-hidden space-y-2.5 group",
         className
       )}
     >
@@ -411,7 +411,7 @@ export const RepCadenceMetronome: React.FC<RepCadenceMetronomeProps> = ({
             <span className="text-xs font-bold text-slate-800 dark:text-slate-100 block">
               Metrónomo de Cadencia
             </span>
-            <span className="text-[10px] text-slate-500 dark:text-slate-400">Ritmo 2-1-3</span>
+            <span className="text-2xs text-slate-500 dark:text-slate-400">Ritmo 2-1-3</span>
           </div>
         </div>
         <button
@@ -455,7 +455,7 @@ export const AIBiomechanicalSummaryBadge: React.FC<AIBiomechanicalSummaryBadgePr
       whileHover={{ y: -3, scale: 1.01 }}
       transition={{ duration: 0.2 }}
       className={cn(
-        "relative p-4 rounded-3xl bg-gradient-to-br from-teal-500/15 via-surface to-cyan-500/10 border border-teal-500/30 shadow-lg space-y-2 group overflow-hidden",
+        "relative p-4 rounded-3xl bg-gradient-to-br from-teal-500/15 via-surface to-cyan-500/10 border border-teal-500/30 shadow-card space-y-2 group overflow-hidden",
         className
       )}
     >
@@ -468,7 +468,7 @@ export const AIBiomechanicalSummaryBadge: React.FC<AIBiomechanicalSummaryBadgePr
             <span className="text-xs font-bold text-primary block">
               Evaluación Rápida Physi IA
             </span>
-            <span className="text-[10px] text-slate-400">Análisis cinemático automático</span>
+            <span className="text-2xs text-slate-400">Análisis cinemático automático</span>
           </div>
         </div>
         <span className="text-xs font-mono font-black text-teal-600 dark:text-teal-400 bg-teal-500/15 border border-teal-500/30 px-3 py-1 rounded-full">
@@ -508,7 +508,7 @@ export const SkeletonJointSelectorHUD: React.FC<SkeletonJointSelectorHUDProps> =
       whileHover={{ y: -3, scale: 1.01 }}
       transition={{ duration: 0.2 }}
       className={cn(
-        "relative p-4 rounded-3xl bg-gradient-to-br from-surface/95 via-surface-container/85 to-surface/95 dark:from-surface-container/80 dark:via-slate-900/90 dark:to-surface-container/80 backdrop-blur-2xl border border-teal-500/25 dark:border-teal-500/35 shadow-lg overflow-hidden space-y-2 group",
+        "relative p-4 rounded-3xl bg-gradient-to-br from-surface/95 via-surface-container/85 to-surface/95 dark:from-surface-container/80 dark:via-slate-900/90 dark:to-surface-container/80 backdrop-blur-2xl border border-teal-500/25 dark:border-teal-500/35 shadow-card overflow-hidden space-y-2 group",
         className
       )}
     >
@@ -536,7 +536,7 @@ export const SkeletonJointSelectorHUD: React.FC<SkeletonJointSelectorHUDProps> =
               )}
             >
               <span>{j.name}</span>
-              <span className={cn("text-[9px] font-mono", isSelected ? "text-teal-200" : "text-slate-400")}>
+              <span className={cn("text-2xs font-mono", isSelected ? "text-teal-200" : "text-slate-400")}>
                 {j.rom}
               </span>
             </motion.button>
@@ -581,7 +581,7 @@ export const HoldDurationTimerRing: React.FC<HoldDurationTimerRingProps> = ({
       whileHover={{ y: -3, scale: 1.01 }}
       transition={{ duration: 0.2 }}
       className={cn(
-        "relative p-4 rounded-3xl bg-gradient-to-br from-surface/95 via-surface-container/85 to-surface/95 dark:from-surface-container/80 dark:via-slate-900/90 dark:to-surface-container/80 backdrop-blur-2xl border border-amber-500/25 dark:border-amber-500/35 shadow-lg overflow-hidden flex items-center justify-between gap-3 group",
+        "relative p-4 rounded-3xl bg-gradient-to-br from-surface/95 via-surface-container/85 to-surface/95 dark:from-surface-container/80 dark:via-slate-900/90 dark:to-surface-container/80 backdrop-blur-2xl border border-amber-500/25 dark:border-amber-500/35 shadow-card overflow-hidden flex items-center justify-between gap-3 group",
         className
       )}
     >
@@ -597,7 +597,7 @@ export const HoldDurationTimerRing: React.FC<HoldDurationTimerRingProps> = ({
           <span className="text-xs font-bold text-slate-800 dark:text-white block">
             Sostenimiento Isométrico
           </span>
-          <span className="text-[10px] text-slate-500 dark:text-slate-400">
+          <span className="text-2xs text-slate-500 dark:text-slate-400">
             {running ? 'Contando contracción fija...' : 'Toca para iniciar cuenta'}
           </span>
         </div>
@@ -624,7 +624,7 @@ export const SessionQualityScoreTile: React.FC<SessionQualityScoreTileProps> = (
       whileHover={{ y: -3, scale: 1.01 }}
       transition={{ duration: 0.2 }}
       className={cn(
-        "relative p-4 rounded-3xl bg-gradient-to-br from-surface/95 via-surface-container/85 to-surface/95 dark:from-surface-container/80 dark:via-slate-900/90 dark:to-surface-container/80 backdrop-blur-2xl border border-teal-500/25 dark:border-teal-500/35 shadow-lg overflow-hidden flex items-center justify-between gap-3 group",
+        "relative p-4 rounded-3xl bg-gradient-to-br from-surface/95 via-surface-container/85 to-surface/95 dark:from-surface-container/80 dark:via-slate-900/90 dark:to-surface-container/80 backdrop-blur-2xl border border-teal-500/25 dark:border-teal-500/35 shadow-card overflow-hidden flex items-center justify-between gap-3 group",
         className
       )}
     >
@@ -636,7 +636,7 @@ export const SessionQualityScoreTile: React.FC<SessionQualityScoreTileProps> = (
           <span className="text-xs font-bold text-slate-800 dark:text-white block">
             Índice de Calidad Biomecánica
           </span>
-          <span className="text-[10px] text-slate-500 dark:text-slate-400">
+          <span className="text-2xs text-slate-500 dark:text-slate-400">
             Simetría 94% • Cadencia 92% • Rango 90%
           </span>
         </div>

@@ -316,7 +316,7 @@ export function PatientExercisesPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.08 }}
             >
-              <div className="ios-glass-heavy refraction-border p-5 sm:p-6 rounded-3xl flex flex-col justify-between h-full group hover:shadow-xl transition-all">
+              <div className="ios-glass-heavy refraction-border p-5 sm:p-6 rounded-3xl flex flex-col justify-between h-full group hover:shadow-elevated transition-all">
                 <div>
                   <div className="rounded-2xl overflow-hidden mb-3.5 bg-slate-100 dark:bg-slate-800">
                     <ExerciseImage
@@ -343,21 +343,21 @@ export function PatientExercisesPage() {
                   {/* Prescription Parameters Tile (Instrument Style) */}
                   <div className="grid grid-cols-3 gap-2 py-3.5 px-3 my-3 rounded-2xl bg-slate-100/70 dark:bg-slate-800/60 border border-slate-200/50 dark:border-slate-700/50 text-center divide-x divide-slate-200/60 dark:divide-slate-700/60">
                     <div className="flex flex-col items-center">
-                      <p className="text-[10px] uppercase font-bold text-slate-400 dark:text-slate-500 flex items-center justify-center gap-1">
+                      <p className="text-2xs uppercase font-bold text-slate-400 dark:text-slate-500 flex items-center justify-center gap-1">
                         <Repeat size={11} className="text-teal-600 dark:text-teal-400" />
                         <span>Series</span>
                       </p>
                       <span className="font-extrabold text-base text-slate-800 dark:text-slate-100 mt-0.5">{ex.series ?? 3}</span>
                     </div>
                     <div className="flex flex-col items-center pl-2">
-                      <p className="text-[10px] uppercase font-bold text-slate-400 dark:text-slate-500 flex items-center justify-center gap-1">
+                      <p className="text-2xs uppercase font-bold text-slate-400 dark:text-slate-500 flex items-center justify-center gap-1">
                         <Flame size={11} className="text-amber-500" />
                         <span>Reps</span>
                       </p>
                       <span className="font-extrabold text-base text-slate-800 dark:text-slate-100 mt-0.5">{ex.repeticiones ?? 12}</span>
                     </div>
                     <div className="flex flex-col items-center pl-2">
-                      <p className="text-[10px] uppercase font-bold text-slate-400 dark:text-slate-500 flex items-center justify-center gap-1">
+                      <p className="text-2xs uppercase font-bold text-slate-400 dark:text-slate-500 flex items-center justify-center gap-1">
                         <Calendar size={11} className="text-teal-600 dark:text-teal-400" />
                         <span>Frecuencia</span>
                       </p>
@@ -443,7 +443,7 @@ export function PatientExercisesPage() {
 
             <div className="space-y-3">
               <div>
-                <p className="text-[11px] font-bold uppercase tracking-wider text-on-surface-variant mb-1">
+                <p className="text-xs font-bold uppercase tracking-wider text-on-surface-variant mb-1">
                   Instrucciones de Ejecución
                 </p>
                 <p className="text-xs text-on-surface leading-relaxed whitespace-pre-wrap">
@@ -454,7 +454,7 @@ export function PatientExercisesPage() {
 
               {descriptionExercise.notas && (
                 <div className="p-3 rounded-xl bg-teal-500/10 border border-teal-500/20">
-                  <p className="text-[11px] font-bold text-teal-700 dark:text-teal-300">
+                  <p className="text-xs font-bold text-teal-700 dark:text-teal-300">
                     Nota del Terapeuta:
                   </p>
                   <p className="text-xs text-on-surface mt-0.5">{descriptionExercise.notas}</p>
@@ -486,7 +486,7 @@ export function PatientExercisesPage() {
                 <h3 className="font-bold text-base text-on-surface">
                   Demostración Biomecánica 3D
                 </h3>
-                <p className="text-[11px] text-on-surface-variant">
+                <p className="text-xs text-on-surface-variant">
                   {demo3DExercise.ejercicio_nombre}
                 </p>
               </div>
@@ -509,7 +509,7 @@ export function PatientExercisesPage() {
             </div>
 
             <div className="flex items-center justify-between pt-2">
-              <span className="text-[11px] text-on-surface-variant">
+              <span className="text-xs text-on-surface-variant">
                 Observa los ángulos articulares y la postura corporal recomendada.
               </span>
               <button

@@ -468,7 +468,7 @@ export function ARMirrorPage() {
               title={poseData?.isTracking ? 'Seguimiento corporal activo' : 'Buscando postura corporal'}
             >
               <span className={`w-2 h-2 rounded-full ${poseData?.isTracking ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'}`} />
-              <span className="text-white/80 text-[10px] font-bold uppercase tracking-wider hidden xs:inline">
+              <span className="text-white/80 text-2xs font-bold uppercase tracking-wider hidden xs:inline">
                 {poseData?.isTracking ? 'AR' : 'Buscando'}
               </span>
             </div>
@@ -477,12 +477,12 @@ export function ARMirrorPage() {
           {/* Centro: Cápsula de Micro-Métricas Unificadas (Ejercicio, Reps, Series, Ángulo y Tiempo) */}
           <div className="pointer-events-auto min-w-0 max-w-full">
             <div
-              className="rounded-2xl px-2.5 sm:px-3.5 py-1 sm:py-1.5 flex items-center gap-1.5 sm:gap-2.5 bg-slate-900/90 backdrop-blur-2xl border border-teal-500/35 shadow-xl text-white"
+              className="rounded-2xl px-2.5 sm:px-3.5 py-1 sm:py-1.5 flex items-center gap-1.5 sm:gap-2.5 bg-slate-900/90 backdrop-blur-2xl border border-teal-500/35 shadow-elevated text-white"
             >
               {/* Nombre de Ejercicio con truncado inteligente */}
               <div className="flex items-center gap-1 min-w-0">
                 <span className="w-1.5 h-1.5 rounded-full bg-teal-400 shrink-0 hidden sm:inline-block" />
-                <span className="text-[11px] sm:text-xs md:text-sm font-bold text-white truncate max-w-[80px] xs:max-w-[110px] sm:max-w-[170px]">
+                <span className="text-xs sm:text-xs md:text-sm font-bold text-white truncate max-w-[80px] xs:max-w-[110px] sm:max-w-[170px]">
                   {exerciseName}
                 </span>
               </div>
@@ -492,13 +492,13 @@ export function ARMirrorPage() {
               {/* Repeticiones */}
               <div className="flex items-baseline gap-0.5 shrink-0" title={`Repeticiones: ${repCount} de ${TARGET_REPS}`}>
                 <span className="text-teal-300 font-black text-xs sm:text-sm md:text-base leading-none">{repCount}</span>
-                <span className="text-white/40 text-[9px] sm:text-[10px]">/{TARGET_REPS}</span>
+                <span className="text-white/40 text-2xs sm:text-2xs">/{TARGET_REPS}</span>
               </div>
 
               <div className="w-px h-3.5 bg-white/20 shrink-0" />
 
               {/* Serie Actual */}
-              <span className="text-white/80 font-bold text-[10px] sm:text-xs shrink-0" title={`Serie ${currentSet} de ${TOTAL_SETS}`}>
+              <span className="text-white/80 font-bold text-2xs sm:text-xs shrink-0" title={`Serie ${currentSet} de ${TOTAL_SETS}`}>
                 S{currentSet}/{TOTAL_SETS}
               </span>
 
@@ -506,7 +506,7 @@ export function ARMirrorPage() {
 
               {/* Ángulo Biomecánico en Tiempo Real */}
               <div
-                className="font-mono text-[10px] sm:text-xs font-bold text-teal-300 bg-teal-500/20 px-1.5 py-0.5 rounded flex items-center shrink-0 border border-teal-500/30"
+                className="font-mono text-2xs sm:text-xs font-bold text-teal-300 bg-teal-500/20 px-1.5 py-0.5 rounded flex items-center shrink-0 border border-teal-500/30"
                 title={`Ángulo articular actual: ${currentAngle}°`}
               >
                 <span>{currentAngle}°</span>
@@ -515,7 +515,7 @@ export function ARMirrorPage() {
               <div className="w-px h-3.5 bg-white/20 shrink-0 hidden xs:block" />
 
               {/* Cronómetro de Sesión */}
-              <span className="font-mono text-[10px] sm:text-xs text-white/90 font-medium shrink-0 hidden xs:inline" title="Tiempo transcurrido">
+              <span className="font-mono text-2xs sm:text-xs text-white/90 font-medium shrink-0 hidden xs:inline" title="Tiempo transcurrido">
                 {formatTime(timer)}
               </span>
             </div>
@@ -547,7 +547,7 @@ export function ARMirrorPage() {
               title={hudMode === 'minimal' ? 'Modo Esencial Activo. Toca para Modo Completo.' : 'Modo Completo. Toca para Modo Esencial.'}
               aria-label={hudMode === 'minimal' ? 'Cambiar a modo completo' : 'Cambiar a modo esencial'}
               className={cn(
-                'px-2.5 sm:px-3 h-8 sm:h-9 rounded-full flex items-center gap-1 border backdrop-blur-xl transition-all shadow-md active:scale-95 text-[10px] sm:text-xs font-bold uppercase tracking-wider',
+                'px-2.5 sm:px-3 h-8 sm:h-9 rounded-full flex items-center gap-1 border backdrop-blur-xl transition-all shadow-md active:scale-95 text-2xs sm:text-xs font-bold uppercase tracking-wider',
                 hudMode === 'minimal'
                   ? 'bg-amber-500/30 text-amber-300 border-amber-400/50 shadow-amber-500/20'
                   : 'bg-slate-900/80 text-white/80 border-white/15 hover:text-white'
@@ -562,12 +562,12 @@ export function ARMirrorPage() {
 
       {/* Badge discreto si el modo simulación biomecánica está activo */}
       {isSimulated && isReady && (
-        <div className="fixed top-12 sm:top-14 left-1/2 -translate-x-1/2 z-[34] flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/20 border border-amber-400/40 backdrop-blur-xl text-amber-200 text-[10px] sm:text-xs font-semibold shadow-lg">
+        <div className="fixed top-12 sm:top-14 left-1/2 -translate-x-1/2 z-[34] flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/20 border border-amber-400/40 backdrop-blur-xl text-amber-200 text-2xs sm:text-xs font-semibold shadow-card">
           <Icon name="sensors" size={13} className="text-amber-400 shrink-0" />
           <span>Simulación Biomecánica</span>
           <button
             onClick={reconnectCamera}
-            className="ml-1 px-1.5 py-0.5 rounded bg-amber-400/30 hover:bg-amber-400/50 text-white font-bold uppercase tracking-wider text-[9px] transition-colors cursor-pointer"
+            className="ml-1 px-1.5 py-0.5 rounded bg-amber-400/30 hover:bg-amber-400/50 text-white font-bold uppercase tracking-wider text-2xs transition-colors cursor-pointer"
           >
             Reconectar
           </button>
@@ -588,7 +588,7 @@ export function ARMirrorPage() {
           <div className="flex items-center gap-3 mt-2">
             <button
               onClick={reconnectCamera}
-              className="px-5 py-2.5 bg-teal-500 hover:bg-teal-400 text-white rounded-xl font-bold transition-all text-sm cursor-pointer shadow-lg shadow-teal-500/25 active:scale-95"
+              className="px-5 py-2.5 bg-teal-500 hover:bg-teal-400 text-white rounded-xl font-bold transition-all text-sm cursor-pointer shadow-card shadow-teal-500/25 active:scale-95"
             >
               Reintentar Cámara
             </button>
@@ -676,9 +676,9 @@ export function ARMirrorPage() {
                 <motion.div
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
-                  className="rounded-2xl p-3.5 w-48 bg-slate-900/80 backdrop-blur-xl border border-white/15 text-white shadow-xl"
+                  className="rounded-2xl p-3.5 w-48 bg-slate-900/80 backdrop-blur-xl border border-white/15 text-white shadow-elevated"
                 >
-                  <p className="text-white/60 text-[10px] uppercase font-bold tracking-wider mb-1">Series del Ejercicio</p>
+                  <p className="text-white/60 text-2xs uppercase font-bold tracking-wider mb-1">Series del Ejercicio</p>
                   <div className="flex items-baseline gap-2">
                     <span className="text-white text-3xl font-black">{currentSet}</span>
                     <span className="text-white/40 text-base">/ {TOTAL_SETS}</span>
@@ -710,7 +710,7 @@ export function ARMirrorPage() {
                       jointName={exerciseName}
                       safeTolerance={10}
                       size={140}
-                      className="bg-slate-900/80 backdrop-blur-xl border-white/15 text-white shadow-2xl"
+                      className="bg-slate-900/80 backdrop-blur-xl border-white/15 text-white shadow-elevated"
                     />
                   </motion.div>
                 )}
@@ -755,7 +755,7 @@ export function ARMirrorPage() {
           )}
 
           {/* Dock de Controles Inferior Unificado (Mobile First, Touch Targets >= 44px) */}
-          <div className="bg-slate-900/85 backdrop-blur-2xl border border-white/15 rounded-2xl sm:rounded-3xl p-1.5 sm:p-2 shadow-2xl flex items-center justify-center gap-1.5 sm:gap-2.5 max-w-full overflow-x-auto">
+          <div className="bg-slate-900/85 backdrop-blur-2xl border border-white/15 rounded-2xl sm:rounded-3xl p-1.5 sm:p-2 shadow-elevated flex items-center justify-center gap-1.5 sm:gap-2.5 max-w-full overflow-x-auto">
             {state === 'active' && (
               <>
                 {/* Pausar */}
@@ -882,7 +882,7 @@ export function ARMirrorPage() {
       <Modal open={showSettings} onOpenChange={setShowSettings}>
         <Modal.Backdrop>
           <Modal.Container>
-            <Modal.Dialog className="sm:max-w-[360px] bg-slate-900/95 border border-white/20 text-white shadow-2xl backdrop-blur-2xl">
+            <Modal.Dialog className="sm:max-w-[360px] bg-slate-900/95 border border-white/20 text-white shadow-elevated backdrop-blur-2xl">
               <Modal.CloseTrigger />
               <Modal.Header>
                 <Modal.Icon className="bg-teal-500/20 text-teal-300">
@@ -1045,14 +1045,14 @@ export function ARMirrorPage() {
 
               {isSpiritualModeEnabled() && finishVerse && (
                 <div className="mb-6 p-4 rounded-2xl bg-white/10 border border-white/15 text-left">
-                  <div className="flex items-center gap-1.5 mb-1.5 text-[11px] font-bold uppercase tracking-wider text-teal-300">
+                  <div className="flex items-center gap-1.5 mb-1.5 text-xs font-bold uppercase tracking-wider text-teal-300">
                     <BookOpen className="size-3.5" />
                     <span>Palabra de Sanidad & Fortaleza</span>
                   </div>
                   <p className="text-xs text-white/95 italic font-medium leading-relaxed">
                     «{finishVerse.texto}»
                   </p>
-                  <p className="text-[10px] font-bold text-teal-300 text-right mt-1.5 font-mono">
+                  <p className="text-2xs font-bold text-teal-300 text-right mt-1.5 font-mono">
                     — {finishVerse.cita}
                   </p>
                 </div>

@@ -31,7 +31,7 @@ const variantClasses: Record<Variant, string> = {
   danger:
     'bg-error/10 text-error hover:bg-error/20 border border-error/20',
   shimmer:
-    'bg-gradient-to-r from-teal-700 via-teal-500 to-emerald-600 text-white shadow-lg shadow-teal-900/20 relative overflow-hidden',
+    'bg-gradient-to-r from-teal-700 via-teal-500 to-emerald-600 text-white shadow-card shadow-teal-900/20 relative overflow-hidden',
 };
 
 /**

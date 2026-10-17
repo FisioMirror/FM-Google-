@@ -121,7 +121,7 @@ export function MobileFixedDock({
               </div>
               <span
                 className={cn(
-                  'text-[10px] font-bold tracking-tight leading-none',
+                  'text-2xs font-bold tracking-tight leading-none',
                   active
                     ? 'text-teal-700 dark:text-teal-300 font-extrabold'
                     : 'text-slate-500 dark:text-slate-400'
@@ -142,10 +142,10 @@ export function MobileFixedDock({
             whileTap={{ scale: 0.92 }}
             transition={springBouncy}
             aria-label={defaultActionText}
-            className="size-12 -mt-5 rounded-2xl bg-gradient-to-tr from-teal-600 via-teal-500 to-sky-400 text-white shadow-lg shadow-teal-600/35 border-2 border-white dark:border-slate-900 flex flex-col items-center justify-center gap-0.5"
+            className="size-12 -mt-5 rounded-2xl bg-gradient-to-tr from-teal-600 via-teal-500 to-sky-400 text-white shadow-card shadow-teal-600/35 border-2 border-white dark:border-slate-900 flex flex-col items-center justify-center gap-0.5"
           >
             <Camera className="size-5" />
-            <span className="text-[8px] font-black uppercase tracking-wider leading-none">
+            <span className="text-2xs font-black uppercase tracking-wider leading-none">
               AR
             </span>
           </motion.button>
@@ -180,7 +180,7 @@ export function MobileFixedDock({
               </div>
               <span
                 className={cn(
-                  'text-[10px] font-bold tracking-tight leading-none',
+                  'text-2xs font-bold tracking-tight leading-none',
                   active
                     ? 'text-teal-700 dark:text-teal-300 font-extrabold'
                     : 'text-slate-500 dark:text-slate-400'

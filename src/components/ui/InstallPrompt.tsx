@@ -14,7 +14,7 @@ function Toast({ message, onDone }: { message: string; onDone: () => void }) {
       }}
       className="fixed bottom-24 left-1/2 -translate-x-1/2 z-[200] max-w-xs w-full mx-4"
     >
-      <div className="bg-slate-800 dark:bg-slate-700 text-white text-sm rounded-2xl px-4 py-3 shadow-xl text-center leading-snug">
+      <div className="bg-slate-800 dark:bg-slate-700 text-white text-sm rounded-2xl px-4 py-3 shadow-elevated text-center leading-snug">
         {message}
       </div>
     </motion.div>
@@ -59,7 +59,7 @@ export function InstallModal() {
               exit={{ opacity: 0, y: 40, scale: 0.95 }}
               transition={{ type: 'spring', damping: 22, stiffness: 280 }}
               onClick={(e) => e.stopPropagation()}
-              className="w-full max-w-sm rounded-3xl overflow-y-auto max-h-[90vh] shadow-2xl bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border border-slate-200/80 dark:border-slate-800"
+              className="w-full max-w-sm rounded-3xl overflow-y-auto max-h-[90vh] shadow-elevated bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border border-slate-200/80 dark:border-slate-800"
             >
               {/* Header */}
               <div className="relative px-6 pt-6 pb-4 text-center">
@@ -71,7 +71,7 @@ export function InstallModal() {
                 </button>
 
                 {/* App icon */}
-                <div className="mx-auto mb-4 w-20 h-20 rounded-2xl overflow-hidden shadow-lg ring-2 ring-white/40">
+                <div className="mx-auto mb-4 w-20 h-20 rounded-2xl overflow-hidden shadow-card ring-2 ring-white/40">
                   <img
                     src="/192x192.png"
                     alt="FisioMirror"
@@ -110,7 +110,7 @@ export function InstallModal() {
               <div className="px-6 py-5 flex flex-col gap-2">
                 <button
                   onClick={handleInstall}
-                  className="w-full py-3 px-4 rounded-2xl bg-gradient-to-r from-primary-600 to-accent text-white font-semibold text-sm shadow-lg hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+                  className="w-full py-3 px-4 rounded-2xl bg-gradient-to-r from-primary-600 to-accent text-white font-semibold text-sm shadow-card hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
                 >
                   <Download className="w-4 h-4" />
                   Instalar ahora

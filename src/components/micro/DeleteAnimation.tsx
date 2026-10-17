@@ -12,7 +12,7 @@ const DeleteAnimation = () => {
   return (
     <div className="flex justify-between items-center gap-4">
       {itemState !== 'gone' && (
-        <span className={`flex items-center gap-2 bg-slate-100 dark:bg-slate-700 px-6 py-3 rounded-full border transition-all duration-500 text-sm font-medium ${itemState === 'deleting' ? 'scale-20 rotate-120 opacity-0' : ''}`}>
+        <span className={`flex items-center gap-2 bg-slate-100 dark:bg-slate-700 px-6 py-3 rounded-full border transition-all duration-300 text-sm font-medium ${itemState === 'deleting' ? 'scale-20 rotate-120 opacity-0' : ''}`}>
           <FileText size={16} className="text-primary" />
           <span>Documento_importante.pdf</span>
         </span>

@@ -48,7 +48,7 @@ export function BentoCard({
       key={name}
       onClick={onClick}
       className={cn(
-        'group relative col-span-1 flex flex-col justify-between overflow-hidden rounded-3xl border border-outline/15 bg-surface p-6 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1 dark:border-outline/10 cursor-pointer',
+        'group relative col-span-1 flex flex-col justify-between overflow-hidden rounded-3xl border border-outline/15 bg-surface p-6 shadow-sm transition-all duration-300 hover:shadow-elevated hover:-translate-y-1 dark:border-outline/10 cursor-pointer',
         className
       )}
     >
@@ -60,13 +60,13 @@ export function BentoCard({
       {/* Top Header */}
       <div className="relative z-10 flex items-start justify-between">
         {Icon ? (
-          <div className="flex size-12 items-center justify-center rounded-2xl bg-teal-500/10 text-teal-600 ring-1 ring-teal-500/20 transition-all duration-300 group-hover:bg-teal-500 group-hover:text-white group-hover:shadow-lg group-hover:shadow-teal-500/30 dark:text-teal-400">
+          <div className="flex size-12 items-center justify-center rounded-2xl bg-teal-500/10 text-teal-600 ring-1 ring-teal-500/20 transition-all duration-300 group-hover:bg-teal-500 group-hover:text-white group-hover:shadow-card group-hover:shadow-teal-500/30 dark:text-teal-400">
             <Icon className="size-6 transition-transform duration-300 group-hover:scale-110" />
           </div>
         ) : null}
 
         {badge && (
-          <span className="text-[10px] font-bold uppercase tracking-wider text-teal-700 dark:text-teal-300 bg-teal-500/10 border border-teal-500/20 px-2.5 py-1 rounded-full">
+          <span className="text-2xs font-bold uppercase tracking-wider text-teal-700 dark:text-teal-300 bg-teal-500/10 border border-teal-500/20 px-2.5 py-1 rounded-full">
             {badge}
           </span>
         )}
@@ -88,7 +88,7 @@ export function BentoCard({
       </div>
 
       {/* Ambient gradient corner */}
-      <div className="pointer-events-none absolute -bottom-10 -right-10 size-32 rounded-full bg-teal-500/10 blur-3xl transition-all duration-500 group-hover:scale-150 group-hover:bg-teal-500/20" />
+      <div className="pointer-events-none absolute -bottom-10 -right-10 size-32 rounded-full bg-teal-500/10 blur-3xl transition-all duration-300 group-hover:scale-150 group-hover:bg-teal-500/20" />
     </div>
   );
 }

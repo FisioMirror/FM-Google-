@@ -94,7 +94,7 @@ export const CompensationAlertBanner: React.FC<CompensationAlertBannerProps> = (
 
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <span className={cn('text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full', style.badge)}>
+              <span className={cn('text-2xs font-bold uppercase tracking-wider px-2 py-0.5 rounded-full', style.badge)}>
                 {style.label}
               </span>
               <span className="text-xs font-semibold text-on-surface dark:text-white">

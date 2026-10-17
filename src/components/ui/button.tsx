@@ -18,7 +18,7 @@ const buttonVariants = cva(
         destructive:
           "bg-error text-white hover:bg-error/90 shadow-sm",
         link: "text-primary underline-offset-4 hover:underline",
-        glow: "relative overflow-hidden bg-primary text-white shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/35 hover:-translate-y-0.5",
+        glow: "relative overflow-hidden bg-primary text-white shadow-md shadow-primary/20 hover:shadow-card hover:shadow-primary/35 hover:-translate-y-0.5",
         glass: "bg-surface/70 dark:bg-white/10 backdrop-blur-xl border border-outline-variant/30 dark:border-white/20 text-on-surface hover:bg-surface/90 dark:hover:bg-white/20 shadow-sm",
         kinetic: "bg-kinetic text-slate-950 font-bold hover:bg-kinetic-light shadow-md shadow-kinetic/20 hover:shadow-kinetic/40",
       },

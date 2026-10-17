@@ -25,7 +25,7 @@ export const FISIO_DESIGN_CONTRACT = {
     /** Paneles contenedores profundos */
     panel: 'bg-surface-container-lowest/90 dark:bg-surface-container-low/60 border border-outline/10 shadow-2xs',
     /** Superficie elevada para modales y dropdowns flotantes */
-    modal: 'bg-surface/95 dark:bg-surface-container/95 backdrop-blur-xl border border-outline/20 dark:border-white/15 shadow-xl',
+    modal: 'bg-surface/95 dark:bg-surface-container/95 backdrop-blur-xl border border-outline/20 dark:border-white/15 shadow-elevated',
     /** Superficie interna anidada (inputs, áreas de mensaje secundarias) */
     subtle: 'bg-surface-container/50 dark:bg-surface-container-high/40 border border-outline/10',
   },
@@ -53,7 +53,7 @@ export const FISIO_DESIGN_CONTRACT = {
   // 4. Sombras Estandarizadas
   shadows: {
     card: 'shadow-xs hover:shadow-md transition-shadow duration-300',
-    floating: 'shadow-lg dark:shadow-2xl dark:shadow-black/40',
+    floating: 'shadow-card dark:shadow-elevated dark:shadow-black/40',
     subtle: 'shadow-2xs',
   },
 
@@ -94,10 +94,10 @@ export const TAILWIND_HARMONIZATION_MAP: Record<string, string> = {
   'border-slate-200': 'border-outline/15 dark:border-white/10',
 
   // Discrepancias de Sombras Excesivas
-  'shadow-2xl': 'shadow-md dark:shadow-black/30',
-  'shadow-xl': 'shadow-sm dark:shadow-black/20',
+  'shadow-elevated': 'shadow-md dark:shadow-black/30',
+  'shadow-elevated': 'shadow-sm dark:shadow-black/20',
 
   // Discrepancias de Transición
   'duration-100': 'duration-300',
-  'duration-500': 'duration-300',
+  'duration-300': 'duration-300',
 };

@@ -87,7 +87,7 @@ export function CatalogPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 lg:px-8 py-8 space-y-12">
       {/* Header Banner */}
-      <div className="relative rounded-3xl p-8 overflow-hidden border border-outline/15 bg-gradient-to-br from-surface-container-low via-surface to-surface-container shadow-2xl">
+      <div className="relative rounded-3xl p-8 overflow-hidden border border-outline/15 bg-gradient-to-br from-surface-container-low via-surface to-surface-container shadow-elevated">
         <BorderBeam size={130} duration={8} colorFrom="#14b8a6" colorTo="#0ea5e9" />
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-2 max-w-2xl">
@@ -190,7 +190,7 @@ export function CatalogPage() {
               </p>
               <div className="pt-2 flex items-center justify-between text-xs font-mono font-bold text-cyan-600 dark:text-cyan-400">
                 <span>ROM: 165°</span>
-                <span className="text-[10px] bg-cyan-500/10 px-2 py-0.5 rounded-full">Óptimo</span>
+                <span className="text-2xs bg-cyan-500/10 px-2 py-0.5 rounded-full">Óptimo</span>
               </div>
             </SpotlightCard>
 
@@ -229,7 +229,7 @@ export function CatalogPage() {
           <div className="rounded-3xl border border-outline/15 bg-surface/80 p-6 space-y-3 shadow-sm">
             <div className="flex items-center justify-between">
               <h3 className="text-sm font-bold text-on-surface">Marquee de Recomendaciones Clínicas y Logros</h3>
-              <span className="text-[10px] font-bold text-outline uppercase tracking-wider">Auto-Scroll Infinito</span>
+              <span className="text-2xs font-bold text-outline uppercase tracking-wider">Auto-Scroll Infinito</span>
             </div>
             <Marquee speed={30} pauseOnHover={true} className="py-2">
               {[
@@ -244,9 +244,9 @@ export function CatalogPage() {
                   </div>
                   <div>
                     <p className="text-xs font-bold text-on-surface">{item.title}</p>
-                    <p className="text-[11px] text-teal-600 dark:text-teal-400 font-semibold">{item.metric}</p>
+                    <p className="text-xs text-teal-600 dark:text-teal-400 font-semibold">{item.metric}</p>
                   </div>
-                  <span className="ml-auto text-[10px] text-outline font-mono bg-surface px-2 py-0.5 rounded-lg border border-outline/10">
+                  <span className="ml-auto text-2xs text-outline font-mono bg-surface px-2 py-0.5 rounded-lg border border-outline/10">
                     {item.badge}
                   </span>
                 </div>
@@ -582,7 +582,7 @@ export function CatalogPage() {
                   <h3 className="text-base font-bold text-on-surface">ChatMessages (21st.dev)</h3>
                   <p className="text-xs text-on-surface-variant">Chat clínico animado con respuestas automáticas.</p>
                 </div>
-                <span className="px-2.5 py-1 rounded-full bg-teal-500/10 text-teal-600 text-[10px] font-bold uppercase">
+                <span className="px-2.5 py-1 rounded-full bg-teal-500/10 text-teal-600 text-2xs font-bold uppercase">
                   Interactivo
                 </span>
               </div>
@@ -625,7 +625,7 @@ export function CatalogPage() {
 
       {/* BLOQUE MACRO SUITE (50 COMPONENTES DE ÉLITE) */}
       {(activeTab === 'all' || activeTab === 'megasuite') && (
-        <section className="space-y-8 p-6 sm:p-8 rounded-3xl bg-gradient-to-b from-cyan-500/10 via-surface/60 to-surface border border-cyan-500/25 shadow-xl">
+        <section className="space-y-8 p-6 sm:p-8 rounded-3xl bg-gradient-to-b from-cyan-500/10 via-surface/60 to-surface border border-cyan-500/25 shadow-elevated">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-cyan-500/20">
             <div className="space-y-1">
               <div className="flex items-center gap-2">
@@ -775,7 +775,7 @@ export function CatalogPage() {
 
       {/* BLOQUE SUITE ESTELAR BIOMECÁNICA & HERRAMIENTAS CLÍNICAS */}
       {(activeTab === 'all' || activeTab === 'estelar') && (
-        <section className="space-y-8 p-6 sm:p-8 rounded-3xl bg-gradient-to-b from-teal-500/10 via-surface/60 to-surface border border-teal-500/30 shadow-xl">
+        <section className="space-y-8 p-6 sm:p-8 rounded-3xl bg-gradient-to-b from-teal-500/10 via-surface/60 to-surface border border-teal-500/30 shadow-elevated">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-teal-500/20">
             <div className="space-y-1">
               <div className="flex items-center gap-2">

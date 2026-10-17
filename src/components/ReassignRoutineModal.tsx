@@ -319,7 +319,7 @@ export function ReassignRoutineModal({
                     >
                       <span
                         className={cn(
-                          'w-5 h-5 rounded-full flex items-center justify-center text-[10px]',
+                          'w-5 h-5 rounded-full flex items-center justify-center text-2xs',
                           step === s.num ? 'bg-on-primary text-primary' : step > s.num ? 'bg-primary text-on-primary' : 'bg-surface-container-high text-on-surface-variant',
                         )}
                       >
@@ -386,12 +386,12 @@ export function ReassignRoutineModal({
                           </div>
                           <div className="flex-1 min-w-0">
                             <p className="font-bold text-on-surface text-sm leading-tight">{ex.nombre}</p>
-                            <p className="text-[11px] text-on-surface-variant mt-0.5 line-clamp-2">{ex.descripcion}</p>
+                            <p className="text-xs text-on-surface-variant mt-0.5 line-clamp-2">{ex.descripcion}</p>
                             <div className="flex flex-wrap gap-1 mt-2">
-                              <span className="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-surface-container-high text-on-surface-variant">
+                              <span className="text-2xs font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-surface-container-high text-on-surface-variant">
                                 {ARTICULACION_LABELS[ex.articulacion]}
                               </span>
-                              <span className="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-surface-container-high text-on-surface-variant">
+                              <span className="text-2xs font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-surface-container-high text-on-surface-variant">
                                 {LADO_LABELS[ex.lado]}
                               </span>
                             </div>
@@ -441,7 +441,7 @@ export function ReassignRoutineModal({
                             </div>
                             <div className="min-w-0">
                               <p className="font-bold text-on-surface text-sm truncate">{ex.nombre}</p>
-                              <p className="text-[11px] text-on-surface-variant">
+                              <p className="text-xs text-on-surface-variant">
                                 {ARTICULACION_LABELS[ex.articulacion]} · {LADO_LABELS[ex.lado]}
                               </p>
                             </div>
@@ -456,7 +456,7 @@ export function ReassignRoutineModal({
                         </div>
                         <div className="grid grid-cols-2 gap-3">
                           <label className="block">
-                            <span className="text-[11px] font-bold uppercase tracking-wider text-on-surface-variant">Series</span>
+                            <span className="text-xs font-bold uppercase tracking-wider text-on-surface-variant">Series</span>
                             <div className="flex items-center gap-2 mt-1">
                               <button
                                 type="button"
@@ -485,7 +485,7 @@ export function ReassignRoutineModal({
                             </div>
                           </label>
                           <label className="block">
-                            <span className="text-[11px] font-bold uppercase tracking-wider text-on-surface-variant">Repeticiones</span>
+                            <span className="text-xs font-bold uppercase tracking-wider text-on-surface-variant">Repeticiones</span>
                             <div className="flex items-center gap-2 mt-1">
                               <button
                                 type="button"
@@ -548,7 +548,7 @@ export function ReassignRoutineModal({
                           </div>
                           <div className="min-w-0">
                             <p className="font-semibold text-on-surface text-sm truncate">{ex.nombre}</p>
-                            <p className="text-[11px] text-on-surface-variant">
+                            <p className="text-xs text-on-surface-variant">
                               {ARTICULACION_LABELS[ex.articulacion]} · {LADO_LABELS[ex.lado]}
                             </p>
                           </div>
@@ -592,7 +592,7 @@ export function ReassignRoutineModal({
                 <button
                   onClick={() => setStep((s) => (s + 1) as Step)}
                   disabled={(step === 0 && !canNextFromStep0) || saving}
-                  className="flex items-center gap-2 px-6 py-3 rounded-xl bg-primary text-on-primary font-bold hover:scale-[1.02] active:scale-95 transition-all shadow-lg shadow-primary/20 disabled:opacity-50 disabled:hover:scale-100"
+                  className="flex items-center gap-2 px-6 py-3 rounded-xl bg-primary text-on-primary font-bold hover:scale-[1.02] active:scale-95 transition-all shadow-card shadow-primary/20 disabled:opacity-50 disabled:hover:scale-100"
                 >
                   Continuar
                   <Icon name="arrow_forward" size={18} />
@@ -601,7 +601,7 @@ export function ReassignRoutineModal({
                 <button
                   onClick={handleConfirm}
                   disabled={!canConfirm}
-                  className="flex items-center gap-2 px-6 py-3 rounded-xl bg-primary text-on-primary font-bold hover:scale-[1.02] active:scale-95 transition-all shadow-lg shadow-primary/20 disabled:opacity-50 disabled:hover:scale-100"
+                  className="flex items-center gap-2 px-6 py-3 rounded-xl bg-primary text-on-primary font-bold hover:scale-[1.02] active:scale-95 transition-all shadow-card shadow-primary/20 disabled:opacity-50 disabled:hover:scale-100"
                 >
                   {saving ? (
                     <>

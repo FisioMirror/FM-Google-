@@ -21,7 +21,7 @@ export function NotFound() {
         transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
         className="relative"
       >
-        <div className="w-24 h-24 rounded-3xl bg-primary/10 flex items-center justify-center mx-auto mb-6 shadow-lg shadow-primary/10">
+        <div className="w-24 h-24 rounded-3xl bg-primary/10 flex items-center justify-center mx-auto mb-6 shadow-card shadow-primary/10">
           <Icon name="explore_off" filled size={56} className="text-primary" />
         </div>
       </motion.div>

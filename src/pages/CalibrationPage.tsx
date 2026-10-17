@@ -194,16 +194,16 @@ export function CalibrationPage() {
         </button>
         <div className="flex flex-col items-center">
           <h1 className="font-bold text-sm sm:text-base tracking-wide">Calibración Postural</h1>
-          <span className="text-[10px] text-teal-300 font-semibold uppercase tracking-wider">Alineación de Cámara</span>
+          <span className="text-2xs text-teal-300 font-semibold uppercase tracking-wider">Alineación de Cámara</span>
         </div>
         <div className="flex items-center gap-2">
           <PoseConfidenceLiveIndicator
             confidence={isReady && poseData?.isTracking ? 95 : 30}
-            className="bg-slate-900/70 border-white/20 text-white text-[10px] sm:text-[11px] py-1 px-2.5"
+            className="bg-slate-900/70 border-white/20 text-white text-2xs sm:text-xs py-1 px-2.5"
           />
           <button
             onClick={() => setShowSkipConfirm(true)}
-            className="text-[11px] font-bold text-white/70 hover:text-white px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/15 transition-colors sm:hidden"
+            className="text-xs font-bold text-white/70 hover:text-white px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/15 transition-colors sm:hidden"
           >
             Omitir
           </button>
@@ -226,9 +226,9 @@ export function CalibrationPage() {
 
       {/* Indicador Flotante Superior de Detección */}
       {isReady && !error && state !== 'idle' && state !== 'success' && (
-        <div className="absolute top-14 sm:top-16 left-3 sm:left-6 z-20 flex items-center gap-2 bg-slate-900/80 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/15 shadow-lg">
+        <div className="absolute top-14 sm:top-16 left-3 sm:left-6 z-20 flex items-center gap-2 bg-slate-900/80 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/15 shadow-card">
           <span className={`w-2 h-2 rounded-full ${poseData?.isTracking ? 'bg-teal-400 animate-pulse' : 'bg-amber-400'}`} />
-          <span className="text-white text-[10px] sm:text-xs font-bold uppercase tracking-wider">
+          <span className="text-white text-2xs sm:text-xs font-bold uppercase tracking-wider">
             {poseData?.isTracking ? (isSimulated ? 'Simulación en vivo' : 'Cuerpo en cuadro') : 'Buscando postura...'}
           </span>
         </div>
@@ -236,12 +236,12 @@ export function CalibrationPage() {
 
       {/* Banner de Modo Simulación cuando la cámara física no está accesible */}
       {isSimulated && isReady && (
-        <div className="absolute top-14 sm:top-16 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 bg-amber-500/20 border border-amber-400/40 backdrop-blur-md px-3 py-1.5 rounded-full text-amber-200 text-[11px] sm:text-xs font-medium shadow-md">
+        <div className="absolute top-14 sm:top-16 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 bg-amber-500/20 border border-amber-400/40 backdrop-blur-md px-3 py-1.5 rounded-full text-amber-200 text-xs sm:text-xs font-medium shadow-md">
           <Icon name="sensors" size={14} className="text-amber-400 shrink-0" />
           <span>Modo Simulación Biomecánica</span>
           <button
             onClick={reconnectCamera}
-            className="ml-1 px-2 py-0.5 rounded-full bg-amber-400/30 hover:bg-amber-400/50 text-white text-[10px] font-bold uppercase tracking-wider transition-colors cursor-pointer"
+            className="ml-1 px-2 py-0.5 rounded-full bg-amber-400/30 hover:bg-amber-400/50 text-white text-2xs font-bold uppercase tracking-wider transition-colors cursor-pointer"
           >
             Reconectar
           </button>
@@ -261,7 +261,7 @@ export function CalibrationPage() {
             initial={{ scale: 1.4, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.8, opacity: 0 }}
-            className="w-11 h-11 sm:w-14 sm:h-14 rounded-full bg-teal-500/90 text-slate-950 font-black text-xl sm:text-2xl flex items-center justify-center shadow-lg shadow-teal-500/30 border-2 border-white/40"
+            className="w-11 h-11 sm:w-14 sm:h-14 rounded-full bg-teal-500/90 text-slate-950 font-black text-xl sm:text-2xl flex items-center justify-center shadow-card shadow-teal-500/30 border-2 border-white/40"
           >
             {countdown}
           </motion.div>
@@ -286,7 +286,7 @@ export function CalibrationPage() {
           <div className="flex flex-col sm:flex-row gap-3 mt-2">
             <button
               onClick={reconnectCamera}
-              className="px-5 py-2.5 bg-teal-500 hover:bg-teal-400 text-white rounded-xl font-bold transition-all text-sm cursor-pointer shadow-lg shadow-teal-500/25 active:scale-95"
+              className="px-5 py-2.5 bg-teal-500 hover:bg-teal-400 text-white rounded-xl font-bold transition-all text-sm cursor-pointer shadow-card shadow-teal-500/25 active:scale-95"
             >
               Reintentar Cámara
             </button>
@@ -308,7 +308,7 @@ export function CalibrationPage() {
           transition={{ type: 'spring', damping: 25, stiffness: 200 }}
           className="fixed bottom-3 sm:bottom-6 left-3 right-3 sm:left-auto sm:right-6 sm:w-[420px] z-30 pointer-events-auto"
         >
-          <div className="bg-slate-900/85 backdrop-blur-2xl border border-white/15 rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden transition-all duration-300">
+          <div className="bg-slate-900/85 backdrop-blur-2xl border border-white/15 rounded-2xl sm:rounded-3xl shadow-elevated overflow-hidden transition-all duration-300">
             {/* Cabecera de la tarjeta con botón colapsar */}
             <div
               onClick={() => setIsPanelCollapsed((prev) => !prev)}
@@ -321,7 +321,7 @@ export function CalibrationPage() {
                 </span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-[10px] text-white/50 hidden xs:inline">
+                <span className="text-2xs text-white/50 hidden xs:inline">
                   {isPanelCollapsed ? 'Expandir' : 'Minimizar'}
                 </span>
                 <button
@@ -354,13 +354,13 @@ export function CalibrationPage() {
                           <p className="text-white text-xs sm:text-sm font-semibold leading-snug">
                             Colócate frente a la cámara
                           </p>
-                          <p className="text-white/60 text-[11px] sm:text-xs mt-0.5 leading-relaxed">
+                          <p className="text-white/60 text-xs sm:text-xs mt-0.5 leading-relaxed">
                             Asegúrate de que tu torso y ambos brazos queden visibles dentro del encuadre.
                           </p>
                         </div>
                       </div>
 
-                      <div className="flex items-center justify-between pt-1 border-t border-white/10 text-[11px]">
+                      <div className="flex items-center justify-between pt-1 border-t border-white/10 text-xs">
                         <span className="text-white/50">Tiempo: {detectElapsed}s / {DETECT_TIMEOUT}s</span>
                         <button
                           onClick={() => setShowSkipConfirm(true)}
@@ -384,7 +384,7 @@ export function CalibrationPage() {
                           <p className={`text-xs sm:text-sm font-bold leading-snug ${handRaisedDetected ? 'text-teal-300' : 'text-white'}`}>
                             {handRaisedDetected ? '¡Mano detectada! Mantén la posición...' : '¡Levanta tu mano por encima del hombro!'}
                           </p>
-                          <p className="text-white/60 text-[11px] sm:text-xs mt-0.5 leading-relaxed">
+                          <p className="text-white/60 text-xs sm:text-xs mt-0.5 leading-relaxed">
                             {handRaisedDetected
                               ? `Sostén la mano elevada durante ${countdown}s para calibrar los ángulos.`
                               : 'Alza la mano derecha o izquierda para iniciar la calibración automática.'}
@@ -392,7 +392,7 @@ export function CalibrationPage() {
                         </div>
                       </div>
 
-                      <div className="flex items-center justify-between pt-1 border-t border-white/10 text-[11px]">
+                      <div className="flex items-center justify-between pt-1 border-t border-white/10 text-xs">
                         <span className="text-teal-300/80 font-medium">Cuenta regresiva: {countdown}s</span>
                         <button
                           onClick={() => setShowSkipConfirm(true)}
@@ -405,7 +405,7 @@ export function CalibrationPage() {
                   )}
                 </motion.div>
               ) : (
-                <div className="px-4 py-2 flex items-center justify-between text-[11px] text-white/70">
+                <div className="px-4 py-2 flex items-center justify-between text-xs text-white/70">
                   <span className="truncate pr-2">
                     {state === 'calibrating'
                       ? (handRaisedDetected ? `Sostén postura (${countdown}s)` : 'Levanta tu mano sobre el hombro')
@@ -434,7 +434,7 @@ export function CalibrationPage() {
               initial={{ scale: 0, rotate: -30 }}
               animate={{ scale: 1, rotate: 0 }}
               transition={{ type: 'spring', stiffness: 200, damping: 15 }}
-              className="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-teal-500 flex items-center justify-center shadow-xl shadow-teal-500/40"
+              className="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-teal-500 flex items-center justify-center shadow-elevated shadow-teal-500/40"
             >
               <Icon name="check" size={56} className="text-white" />
             </motion.div>
@@ -452,7 +452,7 @@ export function CalibrationPage() {
               variant="ripple"
               pulseColor="rgba(45, 212, 191, 0.6)"
               onClick={goAR}
-              className="mt-3 px-7 py-3.5 bg-teal-500 hover:bg-teal-400 text-white rounded-2xl font-bold flex items-center gap-2 shadow-lg shadow-teal-500/30 text-sm sm:text-base cursor-pointer"
+              className="mt-3 px-7 py-3.5 bg-teal-500 hover:bg-teal-400 text-white rounded-2xl font-bold flex items-center gap-2 shadow-card shadow-teal-500/30 text-sm sm:text-base cursor-pointer"
             >
               <Icon name="play_arrow" size={20} /> Continuar al Modo AR
             </PulsatingButton>
@@ -479,7 +479,7 @@ export function CalibrationPage() {
             <div className="flex flex-col sm:flex-row gap-3 mt-3 w-full max-w-xs">
               <button
                 onClick={retry}
-                className="flex-1 py-3 bg-teal-500 hover:bg-teal-400 text-white rounded-xl font-bold flex items-center gap-2 justify-center transition-all cursor-pointer text-sm shadow-lg shadow-teal-500/25 active:scale-95"
+                className="flex-1 py-3 bg-teal-500 hover:bg-teal-400 text-white rounded-xl font-bold flex items-center gap-2 justify-center transition-all cursor-pointer text-sm shadow-card shadow-teal-500/25 active:scale-95"
               >
                 <Icon name="refresh" size={18} /> Reintentar
               </button>

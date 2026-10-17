@@ -258,7 +258,7 @@ export function ClinicalAnalyticsHub() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-teal-500/10 text-teal-700 dark:text-teal-300 border border-teal-500/20">
+            <span className="px-2.5 py-0.5 rounded-full text-2xs font-bold uppercase tracking-wider bg-teal-500/10 text-teal-700 dark:text-teal-300 border border-teal-500/20">
               Módulo de Alta Precisión
             </span>
             <span className="text-xs text-on-surface-variant font-medium">· Biomecánica & Tele-rehabilitación</span>
@@ -313,7 +313,7 @@ export function ClinicalAnalyticsHub() {
       {activeTab === 'rom' && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Main Chart */}
-          <GlassPanel className="lg:col-span-2 p-6 sm:p-8 rounded-[32px] border border-outline/15 shadow-sm relative overflow-hidden flex flex-col justify-between">
+          <GlassPanel className="lg:col-span-2 p-6 sm:p-8 rounded-3xl border border-outline/15 shadow-sm relative overflow-hidden flex flex-col justify-between">
             <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-6">
               <div>
                 <h4 className="font-bold text-sm text-on-surface flex items-center gap-2">
@@ -326,7 +326,7 @@ export function ClinicalAnalyticsHub() {
               </div>
 
               {/* Legend Badges */}
-              <div className="flex items-center gap-3 text-[11px] font-semibold">
+              <div className="flex items-center gap-3 text-xs font-semibold">
                 <span className="flex items-center gap-1.5 text-teal-700 dark:text-teal-300">
                   <span className="size-2.5 rounded-full bg-teal-500" /> Ángulo Actual
                 </span>
@@ -408,17 +408,17 @@ export function ClinicalAnalyticsHub() {
                   }`}
                 >
                   <span>{j.joint}</span>
-                  <span className="font-bold text-[10px] opacity-80">{j.percent}%</span>
+                  <span className="font-bold text-2xs opacity-80">{j.percent}%</span>
                 </button>
               ))}
             </div>
           </GlassPanel>
 
           {/* Joint Detail Card */}
-          <GlassPanel className="p-6 sm:p-8 rounded-[32px] border border-outline/15 flex flex-col justify-between shadow-sm">
+          <GlassPanel className="p-6 sm:p-8 rounded-3xl border border-outline/15 flex flex-col justify-between shadow-sm">
             <div>
               <div className="flex items-center justify-between gap-2 mb-4">
-                <span className="text-[10px] font-black uppercase px-2.5 py-1 rounded-full bg-teal-500/10 text-teal-600 dark:text-teal-300 border border-teal-500/20">
+                <span className="text-2xs font-black uppercase px-2.5 py-1 rounded-full bg-teal-500/10 text-teal-600 dark:text-teal-300 border border-teal-500/20">
                   Evaluación Articular
                 </span>
                 <span
@@ -446,25 +446,25 @@ export function ClinicalAnalyticsHub() {
               {/* Metrics visual */}
               <div className="grid grid-cols-2 gap-3 my-5">
                 <div className="p-4 rounded-2xl bg-teal-500/5 dark:bg-teal-900/10 border border-teal-500/20">
-                  <p className="text-[10px] font-bold uppercase tracking-wider text-teal-700 dark:text-teal-300">
+                  <p className="text-2xs font-bold uppercase tracking-wider text-teal-700 dark:text-teal-300">
                     Ángulo Logrado
                   </p>
                   <p className="text-2xl font-black text-teal-900 dark:text-teal-100 mt-0.5">
                     {currentJointData.actual}°
                   </p>
-                  <p className="text-[10px] text-on-surface-variant mt-1">
+                  <p className="text-2xs text-on-surface-variant mt-1">
                     Meta: {currentJointData.ideal}°
                   </p>
                 </div>
 
                 <div className="p-4 rounded-2xl bg-surface-container-low border border-outline/10">
-                  <p className="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">
+                  <p className="text-2xs font-bold uppercase tracking-wider text-on-surface-variant">
                     Déficit Residual
                   </p>
                   <p className="text-2xl font-black text-on-surface mt-0.5">
                     -{currentJointData.deficit}°
                   </p>
-                  <p className="text-[10px] text-on-surface-variant mt-1">
+                  <p className="text-2xs text-on-surface-variant mt-1">
                     {currentJointData.percent}% alcanzado
                   </p>
                 </div>
@@ -505,7 +505,7 @@ export function ClinicalAnalyticsHub() {
       {/* Tab 2: Correlación Precisión vs. Dolor (VAS / EVA) */}
       {activeTab === 'vas' && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <GlassPanel className="lg:col-span-2 p-6 sm:p-8 rounded-[32px] border border-outline/15 shadow-sm">
+          <GlassPanel className="lg:col-span-2 p-6 sm:p-8 rounded-3xl border border-outline/15 shadow-sm">
             <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-6">
               <div>
                 <h4 className="font-bold text-sm text-on-surface flex items-center gap-2">
@@ -517,7 +517,7 @@ export function ClinicalAnalyticsHub() {
                 </p>
               </div>
 
-              <div className="flex items-center gap-3 text-[11px] font-semibold">
+              <div className="flex items-center gap-3 text-xs font-semibold">
                 <span className="flex items-center gap-1.5 text-teal-600 dark:text-teal-400">
                   <span className="size-2.5 rounded-full bg-teal-500" /> Precisión %
                 </span>
@@ -600,7 +600,7 @@ export function ClinicalAnalyticsHub() {
           </GlassPanel>
 
           {/* Clinical Interpretation */}
-          <GlassPanel className="p-6 sm:p-8 rounded-[32px] border border-outline/15 flex flex-col justify-between shadow-sm">
+          <GlassPanel className="p-6 sm:p-8 rounded-3xl border border-outline/15 flex flex-col justify-between shadow-sm">
             <div>
               <div className="flex items-center gap-2 mb-3">
                 <div className="p-2 rounded-xl bg-cyan-500/10 text-cyan-600 dark:text-cyan-400">
@@ -621,7 +621,7 @@ export function ClinicalAnalyticsHub() {
                     A partir de la <strong>Sesión 4</strong>, la inhibición muscular artrogénica disminuye, permitiendo patrones de movimiento simétricos.
                   </p>
                 </div>
-                <p className="text-[11px] italic text-outline">
+                <p className="text-xs italic text-outline">
                   * Algoritmo de visión computacional calibrado según la escala goniométrica internacional ISOM.
                 </p>
               </div>
@@ -643,7 +643,7 @@ export function ClinicalAnalyticsHub() {
       {/* Tab 3: Cohortes Clínicos */}
       {activeTab === 'cohorts' && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <GlassPanel className="lg:col-span-2 p-6 sm:p-8 rounded-[32px] border border-outline/15 shadow-sm">
+          <GlassPanel className="lg:col-span-2 p-6 sm:p-8 rounded-3xl border border-outline/15 shadow-sm">
             <div className="flex justify-between items-center mb-6">
               <div>
                 <h4 className="font-bold text-sm text-on-surface flex items-center gap-2">
@@ -697,7 +697,7 @@ export function ClinicalAnalyticsHub() {
           </GlassPanel>
 
           {/* Cohort Insights */}
-          <GlassPanel className="p-6 sm:p-8 rounded-[32px] border border-outline/15 flex flex-col justify-between shadow-sm">
+          <GlassPanel className="p-6 sm:p-8 rounded-3xl border border-outline/15 flex flex-col justify-between shadow-sm">
             <div>
               <div className="flex items-center gap-2 mb-4">
                 <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
@@ -709,14 +709,14 @@ export function ClinicalAnalyticsHub() {
               <div className="space-y-3.5 text-xs text-on-surface-variant">
                 <div className="p-3 rounded-2xl bg-surface-container-low border border-outline/10">
                   <p className="font-bold text-on-surface mb-0.5">Postquirúrgicos (LCA)</p>
-                  <p className="text-[11px] leading-relaxed">
+                  <p className="text-xs leading-relaxed">
                     Mayor disciplina de sesiones matutinas (94%). La visualización del ángulo en tiempo real reduce el miedo al movimiento (kinesiofobia).
                   </p>
                 </div>
 
                 <div className="p-3 rounded-2xl bg-surface-container-low border border-outline/10">
                   <p className="font-bold text-on-surface mb-0.5">Manguito Rotador</p>
-                  <p className="text-[11px] leading-relaxed">
+                  <p className="text-xs leading-relaxed">
                     Requieren recordatorios vespertinos para alcanzar la meta del 85% de adherencia.
                   </p>
                 </div>
@@ -771,7 +771,7 @@ export function ClinicalAnalyticsHub() {
                     <span className="text-xs font-black text-on-surface truncate">
                       {alert.patientName}
                     </span>
-                    <span className="text-[10px] text-outline shrink-0">{alert.timeAgo}</span>
+                    <span className="text-2xs text-outline shrink-0">{alert.timeAgo}</span>
                   </div>
 
                   <p className={`text-xs font-bold mb-1.5 ${
@@ -790,7 +790,7 @@ export function ClinicalAnalyticsHub() {
                 </div>
 
                 <div className="pt-3 border-t border-outline/10 flex items-center justify-between">
-                  <span className="text-[11px] font-bold font-mono px-2 py-0.5 rounded-md bg-surface-container-highest text-on-surface">
+                  <span className="text-xs font-bold font-mono px-2 py-0.5 rounded-md bg-surface-container-highest text-on-surface">
                     {alert.metric}
                   </span>
                   <span className="text-xs font-bold text-teal-600 dark:text-teal-400 flex items-center gap-0.5">

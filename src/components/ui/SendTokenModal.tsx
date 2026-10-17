@@ -353,7 +353,7 @@ Equipo FisioMirror`;
             initial={{ scale: 0.94, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.94, opacity: 0 }}
-            className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-7 max-w-lg w-full shadow-2xl border border-slate-200 dark:border-slate-800 flex flex-col gap-4 text-slate-800 dark:text-slate-100 max-h-[90vh] overflow-y-auto"
+            className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-7 max-w-lg w-full shadow-elevated border border-slate-200 dark:border-slate-800 flex flex-col gap-4 text-slate-800 dark:text-slate-100 max-h-[90vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
@@ -386,12 +386,12 @@ Equipo FisioMirror`;
             {/* Remitente y Destinatario Summary */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
               <div className="p-3 rounded-2xl bg-teal-50/70 dark:bg-teal-950/30 border border-teal-200/60 dark:border-teal-800/40">
-                <div className="flex items-center gap-1.5 text-teal-700 dark:text-teal-300 font-bold uppercase tracking-wider text-[10px] mb-1">
+                <div className="flex items-center gap-1.5 text-teal-700 dark:text-teal-300 font-bold uppercase tracking-wider text-2xs mb-1">
                   <Stethoscope size={13} />
                   <span>Fisio Remitente</span>
                 </div>
                 <p className="font-bold text-slate-800 dark:text-white truncate">{senderName}</p>
-                <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate">
+                <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
                   {senderEmail || 'Email registrado'}
                 </p>
                 <div className="mt-1 flex items-center gap-1">
@@ -401,13 +401,13 @@ Equipo FisioMirror`;
                     value={therapistPhone}
                     onChange={(e) => setTherapistPhone(e.target.value)}
                     placeholder="Teléfono del fisio"
-                    className="w-full text-[10px] bg-transparent border-b border-teal-300 dark:border-teal-700 font-mono text-teal-700 dark:text-teal-300 outline-none placeholder:text-teal-400"
+                    className="w-full text-2xs bg-transparent border-b border-teal-300 dark:border-teal-700 font-mono text-teal-700 dark:text-teal-300 outline-none placeholder:text-teal-400"
                   />
                 </div>
               </div>
 
               <div className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/80 dark:border-slate-700/60">
-                <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-400 font-bold uppercase tracking-wider text-[10px] mb-1">
+                <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-400 font-bold uppercase tracking-wider text-2xs mb-1">
                   <UserCheck size={13} />
                   <span>Paciente Destinatario</span>
                 </div>
@@ -418,10 +418,10 @@ Equipo FisioMirror`;
                   placeholder="Nombre del paciente"
                   className="font-bold text-slate-800 dark:text-white bg-transparent border-b border-transparent hover:border-slate-300 focus:border-teal-500 outline-none w-full truncate"
                 />
-                <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate">
+                <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
                   {channel === 'email' ? email || 'Ingresa el correo' : phone || 'Ingresa el teléfono'}
                 </p>
-                <span className="inline-block mt-0.5 text-[10px] px-1.5 py-0.2 bg-teal-500/10 text-teal-600 dark:text-teal-400 rounded font-semibold">
+                <span className="inline-block mt-0.5 text-2xs px-1.5 py-0.2 bg-teal-500/10 text-teal-600 dark:text-teal-400 rounded font-semibold">
                   Vinculación directa
                 </span>
               </div>
@@ -494,10 +494,10 @@ Equipo FisioMirror`;
                     <Sparkles size={14} className="text-teal-600 dark:text-teal-400" />
                     <span>Envío Oficial FisioMirror</span>
                   </div>
-                  <p className="text-[11px] text-teal-800/90 dark:text-teal-300/90 leading-relaxed">
+                  <p className="text-xs text-teal-800/90 dark:text-teal-300/90 leading-relaxed">
                     El paciente recibirá una plantilla profesional con su token de acceso rápido y botón de activación directa.
                   </p>
-                  <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-snug pt-1 border-t border-teal-200/50 dark:border-teal-800/40">
+                  <p className="text-2xs text-slate-500 dark:text-slate-400 leading-snug pt-1 border-t border-teal-200/50 dark:border-teal-800/40">
                     Incluye recordatorio automático para revisar la carpeta de <em>Spam / Correo no deseado</em>.
                   </p>
                 </div>
@@ -506,7 +506,7 @@ Equipo FisioMirror`;
                   <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                     Vista previa del mensaje
                   </label>
-                  <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700 text-[11px] font-mono leading-relaxed text-slate-700 dark:text-slate-300 max-h-24 overflow-y-auto whitespace-pre-wrap">
+                  <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700 text-xs font-mono leading-relaxed text-slate-700 dark:text-slate-300 max-h-24 overflow-y-auto whitespace-pre-wrap">
                     {messageBody}
                   </div>
                 </div>
@@ -536,7 +536,7 @@ Equipo FisioMirror`;
                   <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                     Vista previa de mensaje estructurado
                   </label>
-                  <div className="p-3 rounded-xl bg-emerald-50/50 dark:bg-emerald-950/20 border border-emerald-200/60 dark:border-emerald-800/40 text-[11px] font-mono leading-relaxed text-emerald-950 dark:text-emerald-200 max-h-28 overflow-y-auto whitespace-pre-wrap">
+                  <div className="p-3 rounded-xl bg-emerald-50/50 dark:bg-emerald-950/20 border border-emerald-200/60 dark:border-emerald-800/40 text-xs font-mono leading-relaxed text-emerald-950 dark:text-emerald-200 max-h-28 overflow-y-auto whitespace-pre-wrap">
                     {messageBody}
                   </div>
                 </div>
@@ -566,7 +566,7 @@ Equipo FisioMirror`;
                   <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                     Texto del SMS (conciso)
                   </label>
-                  <div className="p-3 rounded-xl bg-blue-50/50 dark:bg-blue-950/20 border border-blue-200/60 dark:border-blue-800/40 text-[11px] font-mono leading-relaxed text-blue-950 dark:text-blue-200 max-h-28 overflow-y-auto whitespace-pre-wrap">
+                  <div className="p-3 rounded-xl bg-blue-50/50 dark:bg-blue-950/20 border border-blue-200/60 dark:border-blue-800/40 text-xs font-mono leading-relaxed text-blue-950 dark:text-blue-200 max-h-28 overflow-y-auto whitespace-pre-wrap">
                     {smsText}
                   </div>
                 </div>

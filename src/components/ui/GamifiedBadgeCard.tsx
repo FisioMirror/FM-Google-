@@ -76,7 +76,7 @@ export const GamifiedBadgeCard: React.FC<GamifiedBadgeCardProps> = ({
       className={cn(
         'relative flex flex-col p-6 rounded-3xl transition-all duration-300 cursor-pointer select-none',
         'bg-surface/85 dark:bg-surface-container/65 backdrop-blur-xl',
-        'border border-outline-variant/30 dark:border-white/10 shadow-lg',
+        'border border-outline-variant/30 dark:border-white/10 shadow-card',
         unlocked
           ? 'hover:shadow-[0_16px_40px_rgba(0,80,77,0.2)] hover:border-primary/50'
           : 'opacity-65 filter grayscale-[40%]',
@@ -90,7 +90,7 @@ export const GamifiedBadgeCard: React.FC<GamifiedBadgeCardProps> = ({
 
       {/* Top Tag and XP */}
       <div className="flex items-center justify-between mb-4">
-        <span className="text-[11px] font-semibold uppercase tracking-wider text-primary dark:text-teal-400 bg-primary/10 dark:bg-teal-400/10 px-2.5 py-1 rounded-full border border-primary/20">
+        <span className="text-xs font-semibold uppercase tracking-wider text-primary dark:text-teal-400 bg-primary/10 dark:bg-teal-400/10 px-2.5 py-1 rounded-full border border-primary/20">
           {category}
         </span>
         <div className="flex items-center gap-1 text-xs font-mono font-bold text-amber-500 dark:text-amber-400">
@@ -112,7 +112,7 @@ export const GamifiedBadgeCard: React.FC<GamifiedBadgeCardProps> = ({
 
           {/* Level Badge */}
           {unlocked && (
-            <span className="absolute -bottom-2 px-2 py-0.5 rounded-full text-[10px] font-black uppercase bg-primary text-white shadow-md">
+            <span className="absolute -bottom-2 px-2 py-0.5 rounded-full text-2xs font-black uppercase bg-primary text-white shadow-md">
               Nivel {level}
             </span>
           )}
@@ -131,7 +131,7 @@ export const GamifiedBadgeCard: React.FC<GamifiedBadgeCardProps> = ({
 
       {/* Action / Status Footer */}
       <div className="mt-5 pt-3 border-t border-outline-variant/15 dark:border-white/5 flex items-center justify-between">
-        <span className="text-[11px] text-slate-400">
+        <span className="text-xs text-slate-400">
           {unlocked ? `Desbloqueado: ${unlockedDate}` : 'Bloqueado'}
         </span>
 

@@ -34,20 +34,20 @@ export const StreakFlameCounter: React.FC<StreakFlameCounterProps> = ({
       whileHover={{ y: -3, scale: 1.01 }}
       transition={{ duration: 0.2 }}
       className={cn(
-        "relative p-5 rounded-3xl bg-gradient-to-br from-amber-500/20 via-surface/90 to-orange-500/10 dark:from-amber-500/20 dark:via-slate-900/90 dark:to-orange-500/10 border border-amber-500/40 shadow-xl overflow-hidden flex items-center gap-4 group",
+        "relative p-5 rounded-3xl bg-gradient-to-br from-amber-500/20 via-surface/90 to-orange-500/10 dark:from-amber-500/20 dark:via-slate-900/90 dark:to-orange-500/10 border border-amber-500/40 shadow-elevated overflow-hidden flex items-center gap-4 group",
         className
       )}
     >
       <div className="absolute -top-12 -right-12 size-36 rounded-full bg-amber-500/15 blur-3xl pointer-events-none group-hover:bg-amber-500/25 transition-all" />
 
-      <div className="relative p-4 rounded-2xl bg-gradient-to-br from-amber-500/30 to-orange-500/20 text-amber-500 border border-amber-500/40 shadow-lg flex items-center justify-center shrink-0">
+      <div className="relative p-4 rounded-2xl bg-gradient-to-br from-amber-500/30 to-orange-500/20 text-amber-500 border border-amber-500/40 shadow-card flex items-center justify-center shrink-0">
         <motion.div
           animate={{ scale: [1, 1.15, 1], rotate: [-2, 2, -2] }}
           transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }}
         >
           <Flame className="w-8 h-8 fill-amber-500" />
         </motion.div>
-        <span className="absolute -bottom-1.5 text-[9px] font-black uppercase tracking-wider bg-gradient-to-r from-amber-500 to-orange-500 text-white px-2 py-0.5 rounded-full shadow-sm">
+        <span className="absolute -bottom-1.5 text-2xs font-black uppercase tracking-wider bg-gradient-to-r from-amber-500 to-orange-500 text-white px-2 py-0.5 rounded-full shadow-sm">
           Racha
         </span>
       </div>
@@ -61,7 +61,7 @@ export const StreakFlameCounter: React.FC<StreakFlameCounterProps> = ({
             Días Consecutivos
           </span>
         </div>
-        <p className="text-[11px] text-slate-600 dark:text-slate-300 font-medium">
+        <p className="text-xs text-slate-600 dark:text-slate-300 font-medium">
           ¡Constancia clínica ejemplar! Multiplicador de XP <strong className="text-amber-500">x1.5 activo</strong>.
         </p>
       </div>
@@ -95,7 +95,7 @@ export const LevelProgressRibbon: React.FC<LevelProgressRibbonProps> = ({
       whileHover={{ y: -3, scale: 1.01 }}
       transition={{ duration: 0.2 }}
       className={cn(
-        "relative p-5 rounded-3xl bg-gradient-to-br from-surface/95 via-surface-container/85 to-surface/95 dark:from-surface-container/80 dark:via-slate-900/90 dark:to-surface-container/80 backdrop-blur-2xl border border-teal-500/25 dark:border-teal-500/35 shadow-lg overflow-hidden space-y-3 group",
+        "relative p-5 rounded-3xl bg-gradient-to-br from-surface/95 via-surface-container/85 to-surface/95 dark:from-surface-container/80 dark:via-slate-900/90 dark:to-surface-container/80 backdrop-blur-2xl border border-teal-500/25 dark:border-teal-500/35 shadow-card overflow-hidden space-y-3 group",
         className
       )}
     >
@@ -108,7 +108,7 @@ export const LevelProgressRibbon: React.FC<LevelProgressRibbonProps> = ({
             <span className="text-xs font-bold text-slate-800 dark:text-white block">
               Nivel Terapéutico
             </span>
-            <span className="text-[10px] text-slate-400">Rango de rehabilitación</span>
+            <span className="text-2xs text-slate-400">Rango de rehabilitación</span>
           </div>
         </div>
         <button
@@ -154,11 +154,11 @@ export const MilestoneCelebrationModal: React.FC<MilestoneCelebrationModalProps>
       whileHover={{ y: -3, scale: 1.01 }}
       transition={{ duration: 0.2 }}
       className={cn(
-        "relative p-5 rounded-3xl bg-gradient-to-br from-emerald-500/20 via-surface/90 to-teal-500/10 dark:from-emerald-500/20 dark:via-slate-900/90 dark:to-teal-500/10 border border-emerald-500/40 shadow-xl text-center space-y-2.5 overflow-hidden group",
+        "relative p-5 rounded-3xl bg-gradient-to-br from-emerald-500/20 via-surface/90 to-teal-500/10 dark:from-emerald-500/20 dark:via-slate-900/90 dark:to-teal-500/10 border border-emerald-500/40 shadow-elevated text-center space-y-2.5 overflow-hidden group",
         className
       )}
     >
-      <div className="relative size-14 mx-auto rounded-2xl bg-gradient-to-br from-emerald-500/30 to-teal-500/20 text-emerald-500 border border-emerald-500/40 flex items-center justify-center shadow-lg">
+      <div className="relative size-14 mx-auto rounded-2xl bg-gradient-to-br from-emerald-500/30 to-teal-500/20 text-emerald-500 border border-emerald-500/40 flex items-center justify-center shadow-card">
         <motion.div
           animate={{ rotate: [0, -10, 10, -10, 0], scale: [1, 1.1, 1] }}
           transition={{ repeat: Infinity, duration: 3, ease: 'easeInOut' }}
@@ -210,7 +210,7 @@ export const MobilityQuestCard: React.FC<MobilityQuestCardProps> = ({
       whileHover={{ y: -3, scale: 1.01 }}
       transition={{ duration: 0.2 }}
       className={cn(
-        "relative p-5 rounded-3xl bg-gradient-to-br from-surface/95 via-surface-container/85 to-surface/95 dark:from-surface-container/80 dark:via-slate-900/90 dark:to-surface-container/80 backdrop-blur-2xl border border-teal-500/25 dark:border-teal-500/35 shadow-lg overflow-hidden flex items-center justify-between gap-3 group",
+        "relative p-5 rounded-3xl bg-gradient-to-br from-surface/95 via-surface-container/85 to-surface/95 dark:from-surface-container/80 dark:via-slate-900/90 dark:to-surface-container/80 backdrop-blur-2xl border border-teal-500/25 dark:border-teal-500/35 shadow-card overflow-hidden flex items-center justify-between gap-3 group",
         className
       )}
     >
@@ -232,7 +232,7 @@ export const MobilityQuestCard: React.FC<MobilityQuestCardProps> = ({
           <h4 className={cn("text-xs font-bold text-slate-800 dark:text-white", completed && "line-through text-slate-400")}>
             {questTitle}
           </h4>
-          <span className="text-[11px] text-slate-400 font-mono">
+          <span className="text-xs text-slate-400 font-mono">
             {completed ? '3 / 3 Completada' : progressText}
           </span>
         </div>
@@ -259,7 +259,7 @@ export const VirtualTrophyCabinet: React.FC<VirtualTrophyCabinetProps> = ({
       whileHover={{ y: -3, scale: 1.01 }}
       transition={{ duration: 0.2 }}
       className={cn(
-        "relative p-5 rounded-3xl bg-gradient-to-br from-amber-500/15 via-surface/90 to-surface dark:from-amber-500/15 dark:via-slate-900/90 dark:to-surface-container/80 border border-amber-500/35 shadow-lg overflow-hidden flex items-center justify-between group",
+        "relative p-5 rounded-3xl bg-gradient-to-br from-amber-500/15 via-surface/90 to-surface dark:from-amber-500/15 dark:via-slate-900/90 dark:to-surface-container/80 border border-amber-500/35 shadow-card overflow-hidden flex items-center justify-between group",
         className
       )}
     >
@@ -269,7 +269,7 @@ export const VirtualTrophyCabinet: React.FC<VirtualTrophyCabinetProps> = ({
         </div>
         <div>
           <h4 className="text-xs font-bold text-slate-800 dark:text-white">Vitrina de Trofeos Clínicos</h4>
-          <span className="text-[11px] text-slate-400 font-medium">
+          <span className="text-xs text-slate-400 font-medium">
             {trophiesCount} medallas biomecánicas desbloqueadas
           </span>
         </div>
@@ -301,7 +301,7 @@ export const DailyHealthPointsWidget: React.FC<DailyHealthPointsWidgetProps> = (
       whileHover={{ y: -3, scale: 1.01 }}
       transition={{ duration: 0.2 }}
       className={cn(
-        "relative p-5 rounded-3xl bg-gradient-to-br from-amber-500/15 via-surface/90 to-surface dark:from-amber-500/15 dark:via-slate-900/90 dark:to-surface-container/80 border border-amber-500/35 shadow-lg overflow-hidden flex items-center justify-between group",
+        "relative p-5 rounded-3xl bg-gradient-to-br from-amber-500/15 via-surface/90 to-surface dark:from-amber-500/15 dark:via-slate-900/90 dark:to-surface-container/80 border border-amber-500/35 shadow-card overflow-hidden flex items-center justify-between group",
         className
       )}
     >
@@ -315,7 +315,7 @@ export const DailyHealthPointsWidget: React.FC<DailyHealthPointsWidgetProps> = (
         </motion.div>
         <div>
           <h4 className="text-xs font-bold text-slate-800 dark:text-white">Puntos de Salud</h4>
-          <span className="text-[11px] text-slate-400">Canjeables por consultas prioritarias</span>
+          <span className="text-xs text-slate-400">Canjeables por consultas prioritarias</span>
         </div>
       </div>
       <button
@@ -346,7 +346,7 @@ export const RehabHeroAvatarCard: React.FC<RehabHeroAvatarCardProps> = ({
       whileHover={{ y: -3, scale: 1.01 }}
       transition={{ duration: 0.2 }}
       className={cn(
-        "relative p-5 rounded-3xl bg-gradient-to-br from-teal-500/15 via-surface/90 to-surface dark:from-teal-500/15 dark:via-slate-900/90 dark:to-surface-container/80 border border-teal-500/30 shadow-lg overflow-hidden flex items-center gap-3.5 group",
+        "relative p-5 rounded-3xl bg-gradient-to-br from-teal-500/15 via-surface/90 to-surface dark:from-teal-500/15 dark:via-slate-900/90 dark:to-surface-container/80 border border-teal-500/30 shadow-card overflow-hidden flex items-center gap-3.5 group",
         className
       )}
     >
@@ -357,7 +357,7 @@ export const RehabHeroAvatarCard: React.FC<RehabHeroAvatarCardProps> = ({
       <div>
         <h4 className="text-sm font-black text-slate-900 dark:text-white">{patientName}</h4>
         <span className="text-xs text-primary font-bold">{rankTitle}</span>
-        <span className="text-[10px] text-slate-400 block">Nivel 5 • 86% Adherencia</span>
+        <span className="text-2xs text-slate-400 block">Nivel 5 • 86% Adherencia</span>
       </div>
     </motion.div>
   );
@@ -472,10 +472,10 @@ export const UnlockableExerciseLocker: React.FC<UnlockableExerciseLockerProps> =
         </motion.div>
         <div>
           <h4 className="text-xs font-bold text-slate-800 dark:text-slate-200">{exerciseTitle}</h4>
-          <span className="text-[10px] text-slate-400">{requirement}</span>
+          <span className="text-2xs text-slate-400">{requirement}</span>
         </div>
       </div>
-      <span className="text-[10px] uppercase font-bold text-slate-400 bg-black/5 dark:bg-white/5 px-2.5 py-1 rounded-full">
+      <span className="text-2xs uppercase font-bold text-slate-400 bg-black/5 dark:bg-white/5 px-2.5 py-1 rounded-full">
         85% Bloqueado
       </span>
     </motion.div>

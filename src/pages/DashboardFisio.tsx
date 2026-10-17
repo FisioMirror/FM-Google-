@@ -699,8 +699,8 @@ export function DashboardFisio() {
           <div>
             <div className="flex items-center gap-2 mb-1">
               <KineticText text="FisioMirror" as="span" className="text-xs font-bold uppercase tracking-widest text-primary/80" />
-              <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-600 dark:text-teal-400 border border-teal-500/20">
-                <ShimmerText text="Edición Clínica IA" className="text-[10px] font-bold uppercase" />
+              <span className="text-2xs font-semibold px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-600 dark:text-teal-400 border border-teal-500/20">
+                <ShimmerText text="Edición Clínica IA" className="text-2xs font-bold uppercase" />
               </span>
             </div>
             <h2 className="font-display font-headline-lg text-headline-lg-mobile lg:text-headline-lg gradient-text-living">
@@ -783,7 +783,7 @@ export function DashboardFisio() {
             variants={staggerItem}
             whileHover={{ y: -4, scale: 1.015, transition: springTactile }}
             whileTap={{ scale: 0.98 }}
-            className="rounded-2xl sm:rounded-3xl overflow-hidden shadow-xs hover:shadow-xl transition-all h-full"
+            className="rounded-2xl sm:rounded-3xl overflow-hidden shadow-xs hover:shadow-elevated transition-all h-full"
           >
             <MagicCard
               mode="gradient"
@@ -796,11 +796,11 @@ export function DashboardFisio() {
                   <Icon name={card.icon} size={22} className="animate-breathe-icon" />
                 </div>
                 {loadingKpis ? (
-                  <span className="text-[9px] sm:text-[10px] font-bold text-outline px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full bg-slate-100 dark:bg-slate-800">Cargando...</span>
+                  <span className="text-2xs sm:text-2xs font-bold text-outline px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full bg-slate-100 dark:bg-slate-800">Cargando...</span>
                 ) : realIsEmpty ? (
-                  <span className="text-[9px] sm:text-[10px] font-bold text-amber-700 dark:text-amber-300 bg-amber-500/10 border border-amber-500/20 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full">Sin datos</span>
+                  <span className="text-2xs sm:text-2xs font-bold text-amber-700 dark:text-amber-300 bg-amber-500/10 border border-amber-500/20 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full">Sin datos</span>
                 ) : (
-                  <span className={`inline-flex items-center gap-1 sm:gap-1.5 text-[9px] sm:text-[10px] font-bold ${card.badgeClass} border px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full`}>
+                  <span className={`inline-flex items-center gap-1 sm:gap-1.5 text-2xs sm:text-2xs font-bold ${card.badgeClass} border px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full`}>
                     <span className="w-1.5 h-1.5 rounded-full bg-current animate-pulse" />
                     <span className="hidden xs:inline">En vivo</span>
                   </span>
@@ -808,7 +808,7 @@ export function DashboardFisio() {
               </div>
               
               <div className="relative z-10">
-                <p className="text-[11px] sm:text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-0.5 sm:mb-1 line-clamp-1">{card.label}</p>
+                <p className="text-xs sm:text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-0.5 sm:mb-1 line-clamp-1">{card.label}</p>
                 {loadingKpis ? (
                   <Skeleton variant="text" width="60%" height={36} className="mt-1" />
                 ) : (
@@ -846,9 +846,9 @@ export function DashboardFisio() {
             whileHover={{ scale: 1.02, y: -3, transition: springTactile }}
             whileTap={{ scale: 0.98 }}
             onClick={() => navigate(action.route)}
-            className={`relative overflow-hidden group border ${action.pastelBg} p-6 sm:p-7 rounded-[2rem] text-left transition-all hover-lift flex flex-col justify-between shadow-sm hover:shadow-md`}
+            className={`relative overflow-hidden group border ${action.pastelBg} p-6 sm:p-7 rounded-3xl text-left transition-all hover-lift flex flex-col justify-between shadow-sm hover:shadow-md`}
           >
-            <div className={`absolute -right-8 -bottom-8 w-40 h-40 ${action.color} opacity-10 blur-3xl group-hover:scale-150 transition-transform duration-500`} />
+            <div className={`absolute -right-8 -bottom-8 w-40 h-40 ${action.color} opacity-10 blur-3xl group-hover:scale-150 transition-transform duration-300`} />
             <div>
               <div className={`w-12 h-12 ${action.color} rounded-2xl shadow-md flex items-center justify-center mb-4 text-white`}>
                 <Icon name={action.icon} filled size={24} />
@@ -870,7 +870,7 @@ export function DashboardFisio() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
         >
-          <GlassPanel className="rounded-[32px] overflow-hidden shadow-[0_12px_40px_rgba(13,148,136,0.12)] hover-lift border-l-4 border-l-teal-400/60 dark:border-l-teal-600/40 relative">
+          <GlassPanel className="rounded-3xl overflow-hidden shadow-[0_12px_40px_rgba(13,148,136,0.12)] hover-lift border-l-4 border-l-teal-400/60 dark:border-l-teal-600/40 relative">
             <ShineBorder borderWidth={1.5} duration={12} shineColor={["#00504d", "#14b8a6", "#c1ff72"]} />
             {/* Header */}
             <div className="flex items-center justify-between px-8 py-6 bg-gradient-to-r from-primary/15 via-primary/5 to-transparent border-b border-primary/15">
@@ -883,7 +883,7 @@ export function DashboardFisio() {
                   <p className="text-xs text-on-surface-variant font-semibold uppercase tracking-wider mt-0.5">Physi Clínico</p>
                 </div>
               </div>
-              <span className="hidden sm:inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-primary bg-primary/10 px-3 py-1.5 rounded-full ring-1 ring-primary/20">
+              <span className="hidden sm:inline-flex items-center gap-1.5 text-2xs font-bold uppercase tracking-wider text-primary bg-primary/10 px-3 py-1.5 rounded-full ring-1 ring-primary/20">
                 <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" /> IA Activa
               </span>
             </div>
@@ -936,7 +936,7 @@ export function DashboardFisio() {
                 <Icon name="schedule" size={14} className="opacity-60" />
                 <span>{new Date().toLocaleString('es-ES', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}</span>
               </div>
-              <span className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">
+              <span className="flex items-center gap-1.5 text-2xs font-bold uppercase tracking-wider text-on-surface-variant">
                 <Icon name="auto_awesome" size={12} className="text-primary" />
                 Generado por IA
               </span>
@@ -958,7 +958,7 @@ export function DashboardFisio() {
           </GlassPanel>
         </motion.div>
 
-        <GlassPanel className="p-8 rounded-[32px] hover-lift relative overflow-hidden border-l-4 border-l-teal-400/60 dark:border-l-teal-600/40 shadow-[0_8px_30px_rgba(13,148,136,0.10)]">
+        <GlassPanel className="p-8 rounded-3xl hover-lift relative overflow-hidden border-l-4 border-l-teal-400/60 dark:border-l-teal-600/40 shadow-[0_8px_30px_rgba(13,148,136,0.10)]">
           <div className="absolute -top-10 -right-10 w-32 h-32 rounded-full bg-gradient-to-br from-cyan-400/15 to-teal-500/10 blur-2xl pointer-events-none" />
           <div className="flex justify-between items-center mb-5 relative">
             <div className="flex items-center gap-3">
@@ -967,7 +967,7 @@ export function DashboardFisio() {
               </div>
               <div>
                 <h3 className="font-headline-md text-headline-sm lg:text-headline-md text-on-surface">Prioridades del Día</h3>
-                <p className="text-[10px] text-on-surface-variant font-semibold uppercase tracking-wider mt-0.5">
+                <p className="text-2xs text-on-surface-variant font-semibold uppercase tracking-wider mt-0.5">
                   {checkedPriorities.filter(Boolean).length} de {priorities.length} completadas
                 </p>
               </div>
@@ -1031,7 +1031,7 @@ export function DashboardFisio() {
                         />
                         <div className={`w-7 h-7 rounded-xl border-2 flex items-center justify-center transition-all duration-300 ${
                           checked
-                            ? 'bg-gradient-to-br from-cyan-400 to-teal-500 border-transparent shadow-lg shadow-cyan-500/30'
+                            ? 'bg-gradient-to-br from-cyan-400 to-teal-500 border-transparent shadow-card shadow-cyan-500/30'
                             : 'border-outline-variant/40 bg-surface-container-low/60'
                         }`}>
                           <motion.div
@@ -1057,7 +1057,7 @@ export function DashboardFisio() {
                         <p className="text-xs text-outline mt-0.5">{p.subtitle}</p>
                       </div>
 
-                      <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full ring-1 ${priorityColor}`}>
+                      <span className={`text-2xs font-bold px-2.5 py-1 rounded-full ring-1 ${priorityColor}`}>
                         {p.priority}
                       </span>
                     </motion.label>
@@ -1082,7 +1082,7 @@ export function DashboardFisio() {
               </div>
               <div className="flex items-center gap-2">
                 <span className="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-ping" />
-                <span className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 tracking-wider">EN VIVO</span>
+                <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 tracking-wider">EN VIVO</span>
               </div>
             </div>
 
@@ -1215,7 +1215,7 @@ export function DashboardFisio() {
                   whileHover={{ y: -4, scale: 1.015, transition: springTactile }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => navigate(`/paciente/${p.id}`)}
-                  className="ios-glass-heavy refraction-border p-6 rounded-3xl group cursor-pointer transition-all duration-300 relative flex flex-col justify-between shadow-sm hover:shadow-xl"
+                  className="ios-glass-heavy refraction-border p-6 rounded-3xl group cursor-pointer transition-all duration-300 relative flex flex-col justify-between shadow-sm hover:shadow-elevated"
                 >
                   <div>
                     {/* Header: Avatar, Name, Status Pill */}
@@ -1233,7 +1233,7 @@ export function DashboardFisio() {
                             <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-500 border-2 border-white dark:border-slate-800 rounded-full animate-pulse" />
                           )}
                           {isWarning && (
-                            <div className="absolute -top-1 -right-1 w-5 h-5 bg-amber-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white dark:border-slate-800 shadow-xs">
+                            <div className="absolute -top-1 -right-1 w-5 h-5 bg-amber-500 text-white text-2xs font-bold rounded-full flex items-center justify-center border-2 border-white dark:border-slate-800 shadow-xs">
                               !
                             </div>
                           )}
@@ -1248,7 +1248,7 @@ export function DashboardFisio() {
                         </div>
                       </div>
 
-                      <span className={`px-2.5 py-1 text-[11px] font-bold rounded-full border uppercase tracking-wider flex items-center gap-1.5 shrink-0 ${
+                      <span className={`px-2.5 py-1 text-xs font-bold rounded-full border uppercase tracking-wider flex items-center gap-1.5 shrink-0 ${
                         p.status === 'Activo'
                           ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300 border-emerald-200'
                           : p.status === 'Requiere Revisión'
@@ -1270,13 +1270,13 @@ export function DashboardFisio() {
                       </div>
                       <div className="h-2.5 w-full rounded-full bg-slate-200/80 dark:bg-slate-700/60 overflow-hidden relative">
                         <div
-                          className="h-full rounded-full bg-teal-600 relative overflow-hidden transition-all duration-700"
+                          className="h-full rounded-full bg-teal-600 relative overflow-hidden transition-all duration-300"
                           style={{ width: `${Math.max(6, adherenceVal)}%` }}
                         >
                           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full animate-shimmer-bar" />
                         </div>
                       </div>
-                      <div className="flex justify-between items-center text-[11px] text-outline font-medium pt-0.5">
+                      <div className="flex justify-between items-center text-xs text-outline font-medium pt-0.5">
                         <span>{p.sessionsCompleted || 1}/{p.sessionsTotal || 10} sesiones</span>
                         <span>{p.routine || 'Plan activo'}</span>
                       </div>
@@ -1308,7 +1308,7 @@ export function DashboardFisio() {
             </div>
           </div>
         </div>
-        <div className="glass-card p-6 rounded-[32px] accent-emerald hover-lift relative overflow-hidden z-10">
+        <div className="glass-card p-6 rounded-3xl accent-emerald hover-lift relative overflow-hidden z-10">
           {evolution.length === 0 ? (
             <div className="flex flex-col items-center justify-center text-center py-8 gap-3">
               <Icon name="trending_up" size={32} className="text-primary/40" />

@@ -61,7 +61,7 @@ export function GlassToastProvider({ children }: { children: ReactNode }) {
               }}
               className={cn(
                 'flex items-center gap-3 p-3.5 sm:p-4 rounded-2xl backdrop-blur-2xl',
-                'shadow-2xl shadow-black/40 min-w-[280px] max-w-[380px] w-full pointer-events-auto',
+                'shadow-elevated shadow-black/40 min-w-[280px] max-w-[380px] w-full pointer-events-auto',
                 'bg-slate-900/95 dark:bg-slate-950/95 text-white border border-white/10',
               )}
             >

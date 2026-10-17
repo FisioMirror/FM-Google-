@@ -174,7 +174,7 @@ export function DateRangePickerPopover({
           transition={{ duration: 0.18, ease: "easeOut" }}
           className={cn(
             "absolute z-50 mt-2 left-0 sm:left-auto right-0 sm:right-auto min-w-[320px] max-w-sm",
-            "p-4 rounded-2xl md:rounded-3xl shadow-2xl shadow-slate-950/20",
+            "p-4 rounded-2xl md:rounded-3xl shadow-elevated shadow-slate-950/20",
             "bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl",
             "border border-slate-200/90 dark:border-slate-800/90 text-foreground",
             className
@@ -440,7 +440,7 @@ export function RangeCalendarGridHeader({
 
 export function RangeCalendarHeaderCell({ children, className }: { children: React.ReactNode; className?: string }) {
   return (
-    <div className={cn("text-[11px] font-bold text-muted py-1", className)}>
+    <div className={cn("text-xs font-bold text-muted py-1", className)}>
       {children}
     </div>
   );
@@ -690,7 +690,7 @@ export function SelectPopover({ children, className }: { children: React.ReactNo
   return (
     <div
       className={cn(
-        "absolute z-50 mt-1.5 w-full min-w-[140px] rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl p-1",
+        "absolute z-50 mt-1.5 w-full min-w-[140px] rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-elevated p-1",
         className
       )}
     >
@@ -916,28 +916,28 @@ export function DateRangePickerDemo() {
                 <button
                   type="button"
                   onClick={() => setPreset(7)}
-                  className="px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-surface dark:bg-slate-800 hover:bg-primary/10 border border-border/50 text-muted hover:text-primary transition-colors"
+                  className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-surface dark:bg-slate-800 hover:bg-primary/10 border border-border/50 text-muted hover:text-primary transition-colors"
                 >
                   7 días
                 </button>
                 <button
                   type="button"
                   onClick={() => setPreset(14)}
-                  className="px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-surface dark:bg-slate-800 hover:bg-primary/10 border border-border/50 text-muted hover:text-primary transition-colors"
+                  className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-surface dark:bg-slate-800 hover:bg-primary/10 border border-border/50 text-muted hover:text-primary transition-colors"
                 >
                   14 días
                 </button>
                 <button
                   type="button"
                   onClick={() => setPreset(30)}
-                  className="px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-surface dark:bg-slate-800 hover:bg-primary/10 border border-border/50 text-muted hover:text-primary transition-colors"
+                  className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-surface dark:bg-slate-800 hover:bg-primary/10 border border-border/50 text-muted hover:text-primary transition-colors"
                 >
                   30 días
                 </button>
                 <button
                   type="button"
                   onClick={() => setRange({ start: null, end: null })}
-                  className="px-2.5 py-1 rounded-lg text-[11px] font-semibold text-rose-500 hover:bg-rose-500/10 border border-rose-500/20 ml-auto transition-colors"
+                  className="px-2.5 py-1 rounded-lg text-xs font-semibold text-rose-500 hover:bg-rose-500/10 border border-rose-500/20 ml-auto transition-colors"
                 >
                   Limpiar
                 </button>
@@ -952,7 +952,7 @@ export function DateRangePickerDemo() {
               </RangeCalendar>
 
               {range.start && range.end && (
-                <div className="pt-2 border-t border-border/40 flex items-center justify-between text-[11px]">
+                <div className="pt-2 border-t border-border/40 flex items-center justify-between text-xs">
                   <span className="text-muted">Total sesiones seleccionadas:</span>
                   <span className="font-bold text-primary">
                     {Math.round((range.end.getTime() - range.start.getTime()) / (1000 * 60 * 60 * 24))} días de evolución

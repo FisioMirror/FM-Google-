@@ -183,14 +183,14 @@ export const IncidentReportCard: React.FC<{ className?: string }> = ({ className
 
   return (
     <div
-      className={`flex flex-col pt-5 pb-5 bg-white dark:bg-[#0e141d] rounded-3xl shadow-xl border border-slate-200/80 dark:border-slate-800 w-full max-w-md min-h-[560px] overflow-hidden transition-colors duration-300 ${className}`}
+      className={`flex flex-col pt-5 pb-5 bg-white dark:bg-[#0e141d] rounded-3xl shadow-elevated border border-slate-200/80 dark:border-slate-800 w-full max-w-md min-h-[560px] overflow-hidden transition-colors duration-300 ${className}`}
     >
       <div className="px-6 sm:px-7 pt-2 pb-4">
         <div className="flex items-center justify-between mb-1">
-          <span className="text-[10px] font-extrabold uppercase tracking-widest text-teal-600 dark:text-teal-400 bg-teal-500/10 px-2.5 py-0.5 rounded-full border border-teal-500/20">
+          <span className="text-2xs font-extrabold uppercase tracking-widest text-teal-600 dark:text-teal-400 bg-teal-500/10 px-2.5 py-0.5 rounded-full border border-teal-500/20">
             Reaviz Analytics 2.0
           </span>
-          <span className="text-[10px] text-slate-400">Últimos 7 días</span>
+          <span className="text-2xs text-slate-400">Últimos 7 días</span>
         </div>
         <h3 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
           Evolución Biomecánica
@@ -205,7 +205,7 @@ export const IncidentReportCard: React.FC<{ className?: string }> = ({ className
         {LEGEND_ITEMS.map((item) => (
           <div key={item.name} className="flex gap-1.5 items-center">
             <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} />
-            <span className="text-slate-600 dark:text-slate-300 text-[11px] font-semibold">{item.name}</span>
+            <span className="text-slate-600 dark:text-slate-300 text-xs font-semibold">{item.name}</span>
           </div>
         ))}
       </div>

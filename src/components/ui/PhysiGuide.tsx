@@ -374,11 +374,11 @@ export function PhysiGuide({
             />
           )}
           <motion.span
-            className="absolute inset-0 rounded-full bg-gradient-to-br from-teal-600 via-teal-700 to-slate-900 shadow-xl shadow-teal-900/30 border border-teal-400/30"
+            className="absolute inset-0 rounded-full bg-gradient-to-br from-teal-600 via-teal-700 to-slate-900 shadow-elevated shadow-teal-900/30 border border-teal-400/30"
             animate={{ scale: open ? 0.95 : 1 }}
           />
           {!open && (
-            <span className="absolute -top-1 -right-1 bg-kinetic text-slate-950 text-[10px] font-black px-1.5 py-0.5 rounded-full shadow-md z-10">
+            <span className="absolute -top-1 -right-1 bg-kinetic text-slate-950 text-2xs font-black px-1.5 py-0.5 rounded-full shadow-md z-10">
               IA
             </span>
           )}
@@ -400,7 +400,7 @@ export function PhysiGuide({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 16, scale: 0.96 }}
             transition={{ type: 'spring', damping: 26, stiffness: 320 }}
-            className="fixed bottom-24 left-4 right-4 sm:right-auto sm:left-4 sm:w-96 lg:left-8 lg:bottom-28 z-[120] w-[calc(100vw-2rem)] max-h-[62vh] flex flex-col rounded-3xl border border-teal-500/25 bg-surface/95 dark:bg-surface-container/95 backdrop-blur-2xl shadow-2xl overflow-hidden text-on-surface"
+            className="fixed bottom-24 left-4 right-4 sm:right-auto sm:left-4 sm:w-96 lg:left-8 lg:bottom-28 z-[120] w-[calc(100vw-2rem)] max-h-[62vh] flex flex-col rounded-3xl border border-teal-500/25 bg-surface/95 dark:bg-surface-container/95 backdrop-blur-2xl shadow-elevated overflow-hidden text-on-surface"
           >
             {/* Cabecera */}
             <div className="flex items-center justify-between px-4 py-3 border-b border-outline-variant/20 dark:border-white/10 shrink-0 bg-teal-500/5">
@@ -413,11 +413,11 @@ export function PhysiGuide({
                     <h3 className="font-bold text-sm text-on-surface truncate">
                       Physi IA
                     </h3>
-                    <span className="text-[10px] px-1.5 py-0.2 rounded-full font-bold bg-teal-500/15 text-teal-700 dark:text-teal-300">
+                    <span className="text-2xs px-1.5 py-0.2 rounded-full font-bold bg-teal-500/15 text-teal-700 dark:text-teal-300">
                       {voiceGender === 'male' ? 'Voz Masculina' : 'Voz Femenina'}
                     </span>
                   </div>
-                  <p className="text-[11px] text-on-surface-variant truncate">
+                  <p className="text-xs text-on-surface-variant truncate">
                     Asistente clínico y bio-feedback
                   </p>
                 </div>
@@ -498,7 +498,7 @@ export function PhysiGuide({
                         }`}
                       >
                         {msg.role === 'user' ? (
-                          <span className="text-[10px] font-bold">Tú</span>
+                          <span className="text-2xs font-bold">Tú</span>
                         ) : (
                           <Bot size={15} />
                         )}
@@ -516,11 +516,11 @@ export function PhysiGuide({
 
                         {/* Botón de reproducción de voz para respuestas de Physi */}
                         {msg.role === 'assistant' && (
-                          <div className="mt-2.5 pt-2 border-t border-outline-variant/15 dark:border-white/5 flex items-center justify-between text-[11px] text-on-surface-variant">
-                            <span className="text-[10px] opacity-75">{msg.timestamp || 'Ahora'}</span>
+                          <div className="mt-2.5 pt-2 border-t border-outline-variant/15 dark:border-white/5 flex items-center justify-between text-xs text-on-surface-variant">
+                            <span className="text-2xs opacity-75">{msg.timestamp || 'Ahora'}</span>
                             <button
                               onClick={() => toggleSpeakMessage(msg.id, msg.text)}
-                              className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-lg text-[11px] font-semibold transition-all cursor-pointer ${
+                              className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                                 isSpeaking
                                   ? 'bg-teal-500/20 text-teal-700 dark:text-teal-300 ring-1 ring-teal-500/40 animate-pulse'
                                   : 'hover:bg-teal-500/10 text-teal-600 dark:text-teal-400'
@@ -581,7 +581,7 @@ export function PhysiGuide({
             {/* Sugerencias frecuentes según la ruta */}
             {showFAQs && (
               <div className="px-3.5 pb-2 shrink-0">
-                <p className="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant mb-1.5 flex items-center gap-1">
+                <p className="text-2xs font-bold uppercase tracking-wider text-on-surface-variant mb-1.5 flex items-center gap-1">
                   <Sparkles size={11} className="text-teal-500" />
                   <span>Sugerencias para empezar</span>
                 </p>

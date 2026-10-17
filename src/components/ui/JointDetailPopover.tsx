@@ -59,7 +59,7 @@ export const JointDetailPopover: React.FC<JointDetailPopoverProps> = ({
             exit={{ opacity: 0, y: 10, scale: 0.95 }}
             transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
             className={cn(
-              'absolute left-0 top-full mt-2 z-50 w-80 p-5 rounded-2xl border shadow-2xl backdrop-blur-2xl',
+              'absolute left-0 top-full mt-2 z-50 w-80 p-5 rounded-2xl border shadow-elevated backdrop-blur-2xl',
               'bg-surface/95 dark:bg-slate-900/95',
               'border-outline-variant/30 dark:border-white/10'
             )}
@@ -74,7 +74,7 @@ export const JointDetailPopover: React.FC<JointDetailPopoverProps> = ({
                   <h4 className="text-xs font-bold text-on-surface dark:text-white">
                     {metrics.jointName}
                   </h4>
-                  <span className="text-[10px] text-slate-400">Telemetría Asistida por MediaPipe</span>
+                  <span className="text-2xs text-slate-400">Telemetría Asistida por MediaPipe</span>
                 </div>
               </div>
 
@@ -90,26 +90,26 @@ export const JointDetailPopover: React.FC<JointDetailPopoverProps> = ({
             {/* Metrics Grid */}
             <div className="grid grid-cols-2 gap-3 py-3">
               <div className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800/60 border border-black/5 dark:border-white/5">
-                <span className="text-[10px] uppercase font-bold text-slate-400 block mb-0.5">
+                <span className="text-2xs uppercase font-bold text-slate-400 block mb-0.5">
                   ROM Actual
                 </span>
                 <span className="text-xl font-bold font-mono text-on-surface dark:text-white tabular-nums">
                   {metrics.currentRom}°
                 </span>
-                <span className="text-[10px] text-emerald-500 block">
+                <span className="text-2xs text-emerald-500 block">
                   Meta: {metrics.maxHistoricalRom}°
                 </span>
               </div>
 
               <div className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800/60 border border-black/5 dark:border-white/5">
-                <span className="text-[10px] uppercase font-bold text-slate-400 block mb-0.5">
+                <span className="text-2xs uppercase font-bold text-slate-400 block mb-0.5">
                   Velocidad Angular
                 </span>
                 <span className="text-xl font-bold font-mono text-on-surface dark:text-white tabular-nums">
                   {metrics.angularVelocity}
                   <span className="text-xs text-slate-400 ml-0.5 font-normal">°/s</span>
                 </span>
-                <span className="text-[10px] text-slate-400 block">Control motor suave</span>
+                <span className="text-2xs text-slate-400 block">Control motor suave</span>
               </div>
             </div>
 
@@ -130,7 +130,7 @@ export const JointDetailPopover: React.FC<JointDetailPopoverProps> = ({
                   style={{ width: `${Math.min(100, metrics.asymmetryPercentage * 3)}%` }}
                 />
               </div>
-              <span className="text-[10px] text-slate-400 mt-1 block">
+              <span className="text-2xs text-slate-400 mt-1 block">
                 {metrics.asymmetryPercentage <= 10 ? 'Balance biomecánico normal' : 'Requiere ajuste unilateral'}
               </span>
             </div>

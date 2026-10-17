@@ -40,7 +40,7 @@ export function PatientRecoveryHub() {
   return (
     <div className="space-y-6 w-full">
       {/* Recovery Meter Hero Card */}
-      <GlassPanel className="p-6 sm:p-10 rounded-[36px] border-l-4 border-l-teal-500 shadow-sm relative overflow-hidden">
+      <GlassPanel className="p-6 sm:p-10 rounded-3xl border-l-4 border-l-teal-500 shadow-sm relative overflow-hidden">
         <div className="absolute -top-16 -right-16 w-64 h-64 rounded-full bg-gradient-to-br from-teal-400/20 to-cyan-500/10 blur-3xl pointer-events-none" />
 
         <div className="flex flex-col lg:flex-row items-center justify-between gap-8 relative z-10">
@@ -116,7 +116,7 @@ export function PatientRecoveryHub() {
                 <span className="text-3xl sm:text-4xl font-black text-on-surface tracking-tight">
                   {overallRecovery}%
                 </span>
-                <span className="text-[11px] font-bold text-teal-600 dark:text-teal-400 uppercase tracking-wider">
+                <span className="text-xs font-bold text-teal-600 dark:text-teal-400 uppercase tracking-wider">
                   Recuperado
                 </span>
               </div>
@@ -130,7 +130,7 @@ export function PatientRecoveryHub() {
       </GlassPanel>
 
       {/* Warm Physi Companion Card */}
-      <GlassPanel className="p-6 sm:p-8 rounded-[32px] border border-outline/15 shadow-sm relative overflow-hidden">
+      <GlassPanel className="p-6 sm:p-8 rounded-3xl border border-outline/15 shadow-sm relative overflow-hidden">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-5">
             <div className="shrink-0">
@@ -138,7 +138,7 @@ export function PatientRecoveryHub() {
             </div>
             <div className="space-y-1 text-center md:text-left">
               <div className="flex items-center justify-center md:justify-start gap-2">
-                <span className="text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full bg-teal-500/10 text-teal-700 dark:text-teal-300 border border-teal-500/20">
+                <span className="text-2xs font-black uppercase px-2.5 py-0.5 rounded-full bg-teal-500/10 text-teal-700 dark:text-teal-300 border border-teal-500/20">
                   Consejo de Physi
                 </span>
                 <span className="text-xs font-semibold text-on-surface">Voz Calibrada</span>

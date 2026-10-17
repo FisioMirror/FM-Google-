@@ -34,7 +34,7 @@ export const RepetitionCounterSpring: React.FC<RepetitionCounterSpringProps> = (
       className={cn(
         'relative flex flex-col items-center p-6 rounded-3xl border transition-all duration-300',
         'bg-surface/85 dark:bg-surface-container/65 backdrop-blur-xl',
-        'border-outline-variant/30 dark:border-white/10 shadow-lg',
+        'border-outline-variant/30 dark:border-white/10 shadow-card',
         isGoalReached && 'ring-2 ring-emerald-500/40 border-emerald-500/50',
         className
       )}

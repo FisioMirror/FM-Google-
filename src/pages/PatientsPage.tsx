@@ -415,12 +415,12 @@ export function PatientsPage() {
             <div className="size-9 sm:size-11 rounded-xl sm:rounded-2xl bg-teal-500/15 text-teal-700 dark:text-teal-300 flex items-center justify-center font-bold border border-teal-500/25">
               <Users className="size-4 sm:size-5" />
             </div>
-            <span className="text-[11px] sm:text-xs text-teal-800 dark:text-teal-200 font-bold">Total Pacientes</span>
+            <span className="text-xs sm:text-xs text-teal-800 dark:text-teal-200 font-bold">Total Pacientes</span>
           </div>
           <div className="flex items-end justify-between gap-2">
             <p className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-slate-100 tabular-nums tracking-tight">{stats.total}</p>
             {onlineCount > 0 && (
-              <span className="inline-flex items-center gap-1 sm:gap-1.5 text-[10px] sm:text-[11px] font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-500/15 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full border border-emerald-500/30">
+              <span className="inline-flex items-center gap-1 sm:gap-1.5 text-2xs sm:text-xs font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-500/15 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full border border-emerald-500/30">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                 <span className="hidden xs:inline">{onlineCount} en vivo</span>
                 <span className="xs:hidden">{onlineCount}</span>
@@ -438,7 +438,7 @@ export function PatientsPage() {
             <div className="size-9 sm:size-11 rounded-xl sm:rounded-2xl bg-sky-500/15 text-sky-700 dark:text-sky-300 flex items-center justify-center font-bold border border-sky-500/25">
               <CheckCircle2 className="size-4 sm:size-5" />
             </div>
-            <span className="text-[11px] sm:text-xs text-sky-800 dark:text-sky-200 font-bold">Tratamiento Activo</span>
+            <span className="text-xs sm:text-xs text-sky-800 dark:text-sky-200 font-bold">Tratamiento Activo</span>
           </div>
           <div className="flex items-end gap-2">
             <p className="text-2xl sm:text-3xl font-black text-sky-700 dark:text-sky-300 tabular-nums tracking-tight">{stats.active}</p>
@@ -454,7 +454,7 @@ export function PatientsPage() {
             <div className="size-9 sm:size-11 rounded-xl sm:rounded-2xl bg-amber-500/15 text-amber-700 dark:text-amber-300 flex items-center justify-center font-bold border border-amber-500/25">
               <AlertTriangle className="size-4 sm:size-5" />
             </div>
-            <span className="text-[11px] sm:text-xs text-amber-800 dark:text-amber-200 font-bold">Requieren Atención</span>
+            <span className="text-xs sm:text-xs text-amber-800 dark:text-amber-200 font-bold">Requieren Atención</span>
           </div>
           <div className="flex items-end gap-2">
             <p className="text-2xl sm:text-3xl font-black text-amber-600 dark:text-amber-400 tabular-nums tracking-tight">{stats.needReview}</p>
@@ -470,7 +470,7 @@ export function PatientsPage() {
             <div className="size-9 sm:size-11 rounded-xl sm:rounded-2xl bg-indigo-500/15 text-indigo-700 dark:text-indigo-300 flex items-center justify-center font-bold border border-indigo-500/25">
               <Key className="size-4 sm:size-5" />
             </div>
-            <span className="text-[11px] sm:text-xs text-indigo-800 dark:text-indigo-200 font-bold">Tokens Pendientes</span>
+            <span className="text-xs sm:text-xs text-indigo-800 dark:text-indigo-200 font-bold">Tokens Pendientes</span>
           </div>
           <div className="flex items-end gap-2">
             <p className="text-2xl sm:text-3xl font-black text-indigo-700 dark:text-indigo-300 tabular-nums tracking-tight">{stats.pendingTokCount}</p>
@@ -549,7 +549,7 @@ export function PatientsPage() {
                     <span>{f.label}</span>
                     <span
                       className={cn(
-                        'text-[10px] px-1.5 py-0.2 rounded-full font-bold',
+                        'text-2xs px-1.5 py-0.2 rounded-full font-bold',
                         isSelected ? 'bg-white/20 text-white' : 'bg-surface-container-highest text-outline'
                       )}
                     >
@@ -639,7 +639,7 @@ export function PatientsPage() {
                     onClick={() => navigate(`/paciente/${p.id}`)}
                     className="h-full"
                   >
-                    <SpotlightCard className="p-6 rounded-3xl group cursor-pointer transition-all duration-300 relative flex flex-col justify-between h-full shadow-sm hover:shadow-xl bg-gradient-to-br from-surface/95 via-surface to-sky-50/30 dark:from-surface-container/85 dark:via-surface-container/70 dark:to-teal-950/20 border border-outline-variant/25 dark:border-white/10 hover:border-teal-500/35">
+                    <SpotlightCard className="p-6 rounded-3xl group cursor-pointer transition-all duration-300 relative flex flex-col justify-between h-full shadow-sm hover:shadow-elevated bg-gradient-to-br from-surface/95 via-surface to-sky-50/30 dark:from-surface-container/85 dark:via-surface-container/70 dark:to-teal-950/20 border border-outline-variant/25 dark:border-white/10 hover:border-teal-500/35">
                     <div>
                       {/* Top Header: Avatar/Badge + Name & ID + Status Tag */}
                       <div className="flex justify-between items-start mb-5">
@@ -656,7 +656,7 @@ export function PatientsPage() {
                               {initials || 'FM'}
                             </div>
                             {isAlert ? (
-                              <div className="absolute -top-1 -right-1 w-5 h-5 bg-rose-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white dark:border-slate-800 shadow-xs">
+                              <div className="absolute -top-1 -right-1 w-5 h-5 bg-rose-500 text-white text-2xs font-bold rounded-full flex items-center justify-center border-2 border-white dark:border-slate-800 shadow-xs">
                                 !
                               </div>
                             ) : presence ? (
@@ -668,11 +668,11 @@ export function PatientsPage() {
                               {p.name}
                             </h3>
                             <div className="flex items-center gap-2 mt-0.5">
-                              <p className="text-[11px] font-mono text-outline uppercase tracking-wider font-semibold">
+                              <p className="text-xs font-mono text-outline uppercase tracking-wider font-semibold">
                                 {p.fmId || `FM-${p.id.slice(0, 4).toUpperCase()}`}
                               </p>
                               {presence && (
-                                <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.2 rounded-full bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30">
+                                <span className="inline-flex items-center gap-1 text-2xs font-bold px-2 py-0.2 rounded-full bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30">
                                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                                   {presence.status === 'en_ejercicio' ? 'En ejercicio' : 'En línea'}
                                 </span>
@@ -711,7 +711,7 @@ export function PatientsPage() {
                         <div className="w-full bg-slate-200/80 dark:bg-slate-700/60 h-2.5 rounded-full overflow-hidden relative">
                           <div
                             className={cn(
-                              "h-full rounded-full transition-all duration-700 relative overflow-hidden",
+                              "h-full rounded-full transition-all duration-300 relative overflow-hidden",
                               isAlert ? "bg-rose-500" : p.recoveryProgress >= 75 ? "bg-emerald-500" : "bg-teal-600"
                             )}
                             style={{ width: `${Math.max(6, p.recoveryProgress)}%` }}
@@ -719,7 +719,7 @@ export function PatientsPage() {
                             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full animate-shimmer-bar" />
                           </div>
                         </div>
-                        <div className="flex justify-between text-[11px] text-outline font-medium">
+                        <div className="flex justify-between text-xs text-outline font-medium">
                           <span>{p.sessionCount || 1} sesiones completadas</span>
                           <span>Plan prescrito</span>
                         </div>
@@ -728,14 +728,14 @@ export function PatientsPage() {
                       {/* 2-Column Clinical Metadata Grid */}
                       <div className="grid grid-cols-2 gap-3 py-3.5 border-y border-outline-variant/15 text-xs mb-4">
                         <div>
-                          <p className="text-[10px] uppercase font-bold text-outline tracking-wider mb-1">Última Sesión</p>
+                          <p className="text-2xs uppercase font-bold text-outline tracking-wider mb-1">Última Sesión</p>
                           <p className="font-semibold text-on-surface flex items-center gap-1.5 truncate">
                             <Calendar className="size-3.5 text-teal-600 dark:text-teal-400 shrink-0" />
                             <span>{p.lastSession || 'Reciente'}</span>
                           </p>
                         </div>
                         <div>
-                          <p className="text-[10px] uppercase font-bold text-outline tracking-wider mb-1">Diagnóstico</p>
+                          <p className="text-2xs uppercase font-bold text-outline tracking-wider mb-1">Diagnóstico</p>
                           <p className="font-semibold text-on-surface line-clamp-1">
                             {p.condition || 'En evaluación'}
                           </p>
@@ -797,7 +797,7 @@ export function PatientsPage() {
                           <span>{p.name}</span>
                           {rowPresence && (
                             <span className={cn(
-                              "inline-flex items-center gap-1 text-[10px] font-bold px-1.5 py-0.2 rounded-full border",
+                              "inline-flex items-center gap-1 text-2xs font-bold px-1.5 py-0.2 rounded-full border",
                               rowPresence.status === 'en_ejercicio'
                                 ? "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border-emerald-500/30"
                                 : rowPresence.status === 'videoconsulta'
@@ -819,7 +819,7 @@ export function PatientsPage() {
                       <td className="p-4">
                         <span
                           className={cn(
-                            'text-[10px] font-bold px-2 py-0.5 rounded-full',
+                            'text-2xs font-bold px-2 py-0.5 rounded-full',
                             p.statusColor === 'red'
                               ? 'bg-red-500/10 text-red-600'
                               : 'bg-teal-500/10 text-teal-600'
@@ -901,11 +901,11 @@ export function PatientsPage() {
               {filteredTokens.map((tok) => (
                 <div
                   key={tok.id}
-                  className="p-5 rounded-3xl ios-glass-heavy refraction-border shadow-sm hover:shadow-lg transition-all flex flex-col justify-between gap-4"
+                  className="p-5 rounded-3xl ios-glass-heavy refraction-border shadow-sm hover:shadow-card transition-all flex flex-col justify-between gap-4"
                 >
                   <div className="flex items-start justify-between gap-2">
                     <div>
-                      <span className="text-[10px] text-outline uppercase font-bold tracking-wider">Código de Activación</span>
+                      <span className="text-2xs text-outline uppercase font-bold tracking-wider">Código de Activación</span>
                       <div className="flex items-center gap-2 mt-1">
                         <span className="text-2xl font-mono font-extrabold tracking-widest text-teal-700 dark:text-teal-300">
                           {tok.token}
@@ -922,7 +922,7 @@ export function PatientsPage() {
 
                     <span
                       className={cn(
-                        'text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider',
+                        'text-2xs font-bold px-2.5 py-1 rounded-full uppercase tracking-wider',
                         tok.status === 'activado'
                           ? 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20'
                           : 'bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/20'
@@ -941,7 +941,7 @@ export function PatientsPage() {
                     ) : (
                       <p className="text-amber-600 dark:text-amber-400">Disponible para ser asignado</p>
                     )}
-                    <p className="text-[11px] text-outline mt-0.5">
+                    <p className="text-xs text-outline mt-0.5">
                       Emitido el: {new Date(tok.createdAt).toLocaleDateString('es-ES')}
                     </p>
                   </div>
@@ -949,7 +949,7 @@ export function PatientsPage() {
                   <div className="pt-3 border-t border-outline/10 flex items-center justify-between gap-2">
                     <button
                       onClick={() => handleCopyLink(tok.token)}
-                      className="px-3 py-1.5 rounded-xl bg-surface-container hover:bg-surface-container-high text-[11px] font-bold text-on-surface flex items-center gap-1.5 transition-colors"
+                      className="px-3 py-1.5 rounded-xl bg-surface-container hover:bg-surface-container-high text-xs font-bold text-on-surface flex items-center gap-1.5 transition-colors"
                     >
                       <ExternalLink className="size-3 text-teal-600" />
                       <span>Copiar Enlace</span>
@@ -957,7 +957,7 @@ export function PatientsPage() {
 
                     <button
                       onClick={() => setEmailModalToken(tok)}
-                      className="px-3 py-1.5 rounded-xl bg-teal-500/10 hover:bg-teal-500/20 text-[11px] font-bold text-teal-700 dark:text-teal-300 flex items-center gap-1.5 transition-colors"
+                      className="px-3 py-1.5 rounded-xl bg-teal-500/10 hover:bg-teal-500/20 text-xs font-bold text-teal-700 dark:text-teal-300 flex items-center gap-1.5 transition-colors"
                     >
                       <Mail className="size-3" />
                       <span>Enviar</span>
@@ -1014,25 +1014,25 @@ export function PatientsPage() {
           <div className="space-y-4 text-xs sm:text-sm">
             <div className="grid grid-cols-2 gap-3 p-3.5 rounded-2xl bg-teal-50/70 dark:bg-slate-800/80 border border-teal-100/60 dark:border-slate-700">
               <div>
-                <span className="text-[10px] uppercase font-bold text-outline">Estado Clínico</span>
+                <span className="text-2xs uppercase font-bold text-outline">Estado Clínico</span>
                 <p className="font-bold text-teal-700 dark:text-teal-300 mt-0.5">{previewPatient.status}</p>
               </div>
               <div>
-                <span className="text-[10px] uppercase font-bold text-outline">Progreso Global</span>
+                <span className="text-2xs uppercase font-bold text-outline">Progreso Global</span>
                 <p className="font-bold text-slate-800 dark:text-white mt-0.5">{previewPatient.recoveryProgress}%</p>
               </div>
               <div>
-                <span className="text-[10px] uppercase font-bold text-outline">Sesiones Realizadas</span>
+                <span className="text-2xs uppercase font-bold text-outline">Sesiones Realizadas</span>
                 <p className="font-semibold text-slate-700 dark:text-slate-200 mt-0.5">{previewPatient.sessionCount} sesiones</p>
               </div>
               <div>
-                <span className="text-[10px] uppercase font-bold text-outline">Última Actividad</span>
+                <span className="text-2xs uppercase font-bold text-outline">Última Actividad</span>
                 <p className="font-semibold text-slate-700 dark:text-slate-200 mt-0.5">{previewPatient.lastSession}</p>
               </div>
             </div>
 
             <div className="p-3.5 rounded-2xl bg-surface dark:bg-slate-800/50 border border-outline-variant/30 space-y-2">
-              <span className="text-[10px] uppercase font-bold text-outline block">Diagnóstico y Patología</span>
+              <span className="text-2xs uppercase font-bold text-outline block">Diagnóstico y Patología</span>
               <p className="font-semibold text-on-surface">{previewPatient.condition}</p>
               {previewPatient.patologia && (
                 <p className="text-xs text-on-surface-variant font-medium">Patología: {previewPatient.patologia}</p>
@@ -1041,7 +1041,7 @@ export function PatientsPage() {
 
             {/* Inspección biomecánica rápida */}
             <div className="p-3.5 rounded-2xl bg-sky-50/50 dark:bg-sky-950/20 border border-sky-100 dark:border-sky-900/30">
-              <span className="text-[10px] uppercase font-bold text-sky-700 dark:text-sky-300 block mb-2">Inspección Biomecánica Rápida</span>
+              <span className="text-2xs uppercase font-bold text-sky-700 dark:text-sky-300 block mb-2">Inspección Biomecánica Rápida</span>
               <JointDetailPopover
                 metrics={{
                   jointName: previewPatient.condition.includes('Rodilla') ? 'Rodilla Afectada (Extensión)' : 'Articulación en Tratamiento',

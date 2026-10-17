@@ -418,7 +418,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
     return (
     <>
             {showTool('ocr') && (
-            <div id="tool-ocr" className="md:col-span-2 lg:col-span-3 p-6 sm:p-8 rounded-3xl relative overflow-hidden ios-glass-heavy refraction-border shadow-sm hover:shadow-xl transition-all duration-300 w-full scroll-mt-24">
+            <div id="tool-ocr" className="md:col-span-2 lg:col-span-3 p-6 sm:p-8 rounded-3xl relative overflow-hidden ios-glass-heavy refraction-border shadow-sm hover:shadow-elevated transition-all duration-300 w-full scroll-mt-24">
             <div className="flex justify-between items-start mb-6 relative">
               <div className="flex items-center gap-3">
                 <div className="size-12 rounded-2xl bg-teal-500/10 text-teal-700 dark:text-teal-300 flex items-center justify-center">
@@ -510,7 +510,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
                           if (val == null || val === '' || val === false) return null;
                           return (
                             <div key={f.key} className="flex items-start gap-2 p-2 rounded-xl bg-teal-500/5 border border-teal-500/10">
-                              <span className="text-[10px] font-bold text-on-surface-variant uppercase whitespace-nowrap min-w-[80px]">{f.label}</span>
+                              <span className="text-2xs font-bold text-on-surface-variant uppercase whitespace-nowrap min-w-[80px]">{f.label}</span>
                               <span className="text-xs font-bold text-on-surface break-words">{String(val)}</span>
                             </div>
                           );
@@ -530,7 +530,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
           {/* BMI Calculator with SpotlightCard & ClinicalSliders */}
           {showTool('bmi') && (
           <div id="tool-bmi" className="md:col-span-2 lg:col-span-1 scroll-mt-24">
-          <SpotlightCard className="p-6 sm:p-8 rounded-3xl flex flex-col justify-between relative overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 w-full">
+          <SpotlightCard className="p-6 sm:p-8 rounded-3xl flex flex-col justify-between relative overflow-hidden shadow-sm hover:shadow-elevated transition-all duration-300 w-full">
             <div>
               <div className="flex items-center gap-3 mb-6 relative">
                 <div className="size-12 rounded-2xl bg-teal-500/10 text-teal-700 dark:text-teal-300 flex items-center justify-center">
@@ -565,15 +565,15 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
               </div>
             </div>
 
-            <div className="mt-8 p-6 bg-teal-700 text-white rounded-2xl shadow-xl relative overflow-hidden">
+            <div className="mt-8 p-6 bg-teal-700 text-white rounded-2xl shadow-elevated relative overflow-hidden">
               <div className="relative z-10 flex items-center justify-between">
                 <div>
-                  <p className="text-[10px] uppercase font-bold tracking-widest text-teal-200 mb-0.5">IMC Calculado</p>
+                  <p className="text-2xs uppercase font-bold tracking-widest text-teal-200 mb-0.5">IMC Calculado</p>
                   <span className="text-4xl font-black font-mono tracking-tight">{bmi}</span>
                 </div>
                 <div className="text-right">
                   <span className={`px-3 py-1 rounded-full text-xs font-bold shadow-xs ${bmiStatus === 'Peso Saludable' ? 'bg-emerald-500 text-white' : bmiStatus === 'Bajo Peso' ? 'bg-amber-500 text-white' : bmiStatus === 'Sobrepeso' ? 'bg-orange-500 text-white' : 'bg-red-500 text-white'}`}>{bmiStatus}</span>
-                  <p className="text-[10px] text-teal-200 font-medium mt-1">Normal: 18.5 – 24.9</p>
+                  <p className="text-2xs text-teal-200 font-medium mt-1">Normal: 18.5 – 24.9</p>
                 </div>
               </div>
               <div className="mt-4 flex h-2 rounded-full overflow-hidden bg-white/20">
@@ -589,7 +589,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
 
           {/* Session Summary */}
           {showTool('summary') && (
-          <div id="tool-summary" className="md:col-span-2 lg:col-span-3 p-6 sm:p-8 rounded-3xl relative overflow-hidden ios-glass-heavy refraction-border shadow-sm hover:shadow-xl transition-all duration-300 w-full scroll-mt-24">
+          <div id="tool-summary" className="md:col-span-2 lg:col-span-3 p-6 sm:p-8 rounded-3xl relative overflow-hidden ios-glass-heavy refraction-border shadow-sm hover:shadow-elevated transition-all duration-300 w-full scroll-mt-24">
             <div className="flex items-center gap-3 mb-6 relative">
               <div className="size-12 rounded-2xl bg-teal-500/10 text-teal-700 dark:text-teal-300 flex items-center justify-center">
                 <Icon name="auto_awesome" size={24} className="animate-breathe-icon" />
@@ -616,7 +616,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
             {/* Quick Clinical Controls Bar */}
             <div className="flex flex-wrap items-center justify-between gap-3 mb-6 p-3 rounded-2xl bg-teal-500/5 border border-teal-500/15">
               <div className="space-y-1.5">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-outline block">Criterios Clínicos:</span>
+                <span className="text-2xs font-bold uppercase tracking-wider text-outline block">Criterios Clínicos:</span>
                 <BiomechanicalTagSelector tags={['Movilidad', 'Fuerza', 'Propiocepción', 'Sin Dolor', 'Post-Op']} />
               </div>
               <div className="flex flex-wrap items-center gap-2">
@@ -650,7 +650,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
                       </div>
                       <div>
                         <h4 className="font-bold text-sm text-teal-950 dark:text-teal-100">Informe de Sesión</h4>
-                        <p className="text-[10px] text-on-surface-variant font-semibold uppercase tracking-wider">Resumen Clínico IA</p>
+                        <p className="text-2xs text-on-surface-variant font-semibold uppercase tracking-wider">Resumen Clínico IA</p>
                       </div>
                     </div>
                     <div className="flex gap-1.5">
@@ -681,12 +681,12 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
                       <div className="flex items-center gap-3">
                         <button
                           onClick={() => { try { exportPremiumPDF({ patientName: 'Resumen de Sesión', sessions: [], globalMetrics: { totalSessions: 0, avgQuality: 0 } }, `FisioMirror_Informe_Sesion_${Date.now()}.pdf`, summaryText); toast.success('Descargando PDF...'); } catch { toast.error('No se pudo exportar'); } }}
-                          className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-primary hover:bg-primary/10 px-2.5 py-1.5 rounded-lg transition-colors"
+                          className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-primary hover:bg-primary/10 px-2.5 py-1.5 rounded-lg transition-colors"
                         >
                           <Icon name="download" size={14} />
                           Descargar PDF
                         </button>
-                        <span className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">
+                        <span className="flex items-center gap-1.5 text-2xs font-bold uppercase tracking-wider text-on-surface-variant">
                           <Icon name="auto_awesome" size={11} className="text-teal-600 dark:text-teal-400" />
                           Generado por IA
                         </span>
@@ -726,7 +726,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
                     </div>
                     <div>
                       <h4 className="font-title-md text-title-md text-secondary tracking-wide">Informe de Paciente</h4>
-                      <p className="text-[10px] text-on-surface-variant font-semibold uppercase tracking-wider">Progreso General IA</p>
+                      <p className="text-2xs text-on-surface-variant font-semibold uppercase tracking-wider">Progreso General IA</p>
                     </div>
                   </div>
                   <button
@@ -746,7 +746,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
                     <Icon name="schedule" size={12} className="opacity-60" />
                     {new Date().toLocaleString('es-ES', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
                   </span>
-                  <span className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">
+                  <span className="flex items-center gap-1.5 text-2xs font-bold uppercase tracking-wider text-on-surface-variant">
                     <Icon name="auto_awesome" size={11} className="text-secondary" />
                     Generado por IA
                   </span>
@@ -891,7 +891,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
         <div className="flex-1 p-6 space-y-4 overflow-y-auto">
           {chatMessages.map((msg, i) => (
             <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-              <div className={`max-w-[80%] p-3 rounded-2xl text-sm shadow-lg transition-transform hover:scale-[1.01] ${msg.role === 'user' ? 'bg-gradient-to-br from-blue-100/80 to-blue-200/60 dark:from-slate-700/80 dark:to-slate-800/60 text-on-surface rounded-tr-none shadow-blue-200/40' : 'bg-gradient-to-br from-teal-100/80 to-teal-200/50 dark:from-slate-800/80 dark:to-slate-900/60 text-on-surface rounded-tl-none shadow-teal-200/40'}`}>
+              <div className={`max-w-[80%] p-3 rounded-2xl text-sm shadow-card transition-transform hover:scale-[1.01] ${msg.role === 'user' ? 'bg-gradient-to-br from-blue-100/80 to-blue-200/60 dark:from-slate-700/80 dark:to-slate-800/60 text-on-surface rounded-tr-none shadow-blue-200/40' : 'bg-gradient-to-br from-teal-100/80 to-teal-200/50 dark:from-slate-800/80 dark:to-slate-900/60 text-on-surface rounded-tl-none shadow-teal-200/40'}`}>
                 {msg.text}
               </div>
             </div>
@@ -919,7 +919,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
               <Icon name="send" size={20} />
             </button>
           </div>
-          <p className="text-[10px] text-outline mt-2 flex items-center gap-1"><span className="w-2 h-2 bg-green-500 rounded-full" /> Cumple HIPAA</p>
+          <p className="text-2xs text-outline mt-2 flex items-center gap-1"><span className="w-2 h-2 bg-green-500 rounded-full" /> Cumple HIPAA</p>
         </div>
       </div>
 

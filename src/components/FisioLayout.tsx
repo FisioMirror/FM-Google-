@@ -352,7 +352,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
             </div>
             {!collapsed && <span className="text-sm truncate flex-1">{item.label}</span>}
             {!collapsed && item.badge && (
-              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-teal-500/15 text-teal-700 dark:text-teal-300 border border-teal-500/30">
+              <span className="text-2xs font-bold px-1.5 py-0.5 rounded-full bg-teal-500/15 text-teal-700 dark:text-teal-300 border border-teal-500/30">
                 {item.badge}
               </span>
             )}
@@ -398,7 +398,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
             <p className="font-bold text-sm text-slate-900 dark:text-slate-100 truncate">{user?.full_name || 'Fisioterapeuta'}</p>
             <div className="flex items-center gap-1.5 mt-0.5">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              <p className="text-[10px] text-sky-600 dark:text-sky-400 uppercase tracking-wider font-semibold">En consulta</p>
+              <p className="text-2xs text-sky-600 dark:text-sky-400 uppercase tracking-wider font-semibold">En consulta</p>
             </div>
           </div>
         </div>
@@ -418,7 +418,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
         >
           <Bell size={18} />
           {unreadCount > 0 && (
-            <span className="absolute top-1 right-1 min-w-[16px] h-[16px] bg-red-500 rounded-full text-white text-[9px] font-bold flex items-center justify-center px-1">
+            <span className="absolute top-1 right-1 min-w-[16px] h-[16px] bg-red-500 rounded-full text-white text-2xs font-bold flex items-center justify-center px-1">
               {unreadCount > 9 ? '9+' : unreadCount}
             </span>
           )}
@@ -442,7 +442,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
             <img src="/logo.png" alt="FisioMirror" className="h-9 w-9 min-w-[36px] min-h-[36px] object-contain shrink-0 aspect-square" />
             <div className="flex flex-col min-w-0">
               <h1 className="text-base font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight whitespace-nowrap">FisioMirror</h1>
-              <p className="text-[10px] uppercase tracking-wider text-sky-600 dark:text-sky-400 font-bold whitespace-nowrap">Edición Clínica</p>
+              <p className="text-2xs uppercase tracking-wider text-sky-600 dark:text-sky-400 font-bold whitespace-nowrap">Edición Clínica</p>
             </div>
           </div>
         ) : (
@@ -506,14 +506,14 @@ export function FisioLayout({ children }: FisioLayoutProps) {
               exit={{ x: '-100%' }}
               transition={{ type: 'spring', damping: 28, stiffness: 320 }}
               onClick={(e) => e.stopPropagation()}
-              className="h-full w-72 max-w-[85vw] flex flex-col bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl border-r border-sky-200/50 dark:border-slate-800 text-slate-900 dark:text-slate-100 rounded-r-3xl shadow-2xl overflow-hidden"
+              className="h-full w-72 max-w-[85vw] flex flex-col bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl border-r border-sky-200/50 dark:border-slate-800 text-slate-900 dark:text-slate-100 rounded-r-3xl shadow-elevated overflow-hidden"
             >
               <div className="p-4 flex items-center justify-between border-b border-sky-100/60 dark:border-slate-800">
                 <div className="flex items-center gap-3">
                   <img src="/logo.png" alt="FisioMirror" className="h-9 w-9 object-contain shrink-0" />
                   <div>
                     <h2 className="text-base font-extrabold text-slate-900 dark:text-white leading-tight">FisioMirror</h2>
-                    <p className="text-[10px] uppercase tracking-wider text-sky-600 dark:text-sky-400 font-bold">Edición Clínica</p>
+                    <p className="text-2xs uppercase tracking-wider text-sky-600 dark:text-sky-400 font-bold">Edición Clínica</p>
                   </div>
                 </div>
                 <button
@@ -573,10 +573,10 @@ export function FisioLayout({ children }: FisioLayoutProps) {
                 placeholder={t('navigation.searchPlaceholder', 'Buscar pacientes o ejercicios... (⌘K)')}
               />
               {showSearchDropdown && (searchResults.patients.length > 0 || searchResults.exercises.length > 0) && (
-                <div className="absolute top-full left-0 right-0 mt-2 glass-panel rounded-2xl shadow-2xl overflow-hidden z-50">
+                <div className="absolute top-full left-0 right-0 mt-2 glass-panel rounded-2xl shadow-elevated overflow-hidden z-50">
                   {searchResults.patients.length > 0 && (
                     <div className="p-2">
-                      <p className="text-[10px] font-bold uppercase tracking-widest text-outline px-2 py-1">{t('navigation.patients', 'Pacientes')}</p>
+                      <p className="text-2xs font-bold uppercase tracking-widest text-outline px-2 py-1">{t('navigation.patients', 'Pacientes')}</p>
                       {searchResults.patients.map((p) => (
                         <button key={p.id} type="button" onClick={() => { navigate('/paciente/' + p.id); setSearchQuery(''); setShowSearchDropdown(false); }} className="w-full text-left px-3 py-2 rounded-xl hover:bg-primary/10 transition-colors flex items-center gap-2">
                           <Icon name="person" size={16} className="text-primary" />
@@ -590,7 +590,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
                   )}
                   {searchResults.exercises.length > 0 && (
                     <div className="p-2 border-t divider-teal">
-                      <p className="text-[10px] font-bold uppercase tracking-widest text-outline px-2 py-1">{t('navigation.exercises', 'Ejercicios')}</p>
+                      <p className="text-2xs font-bold uppercase tracking-widest text-outline px-2 py-1">{t('navigation.exercises', 'Ejercicios')}</p>
                       {searchResults.exercises.map((ex) => (
                         <button key={ex.id} type="button" onClick={() => { navigate('/fisio-exercises'); setSearchQuery(''); setShowSearchDropdown(false); }} className="w-full text-left px-3 py-2 rounded-xl hover:bg-primary/10 transition-colors flex items-center gap-2">
                           <Icon name="fitness_center" size={16} className="text-primary" />
@@ -631,7 +631,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
             >
               <Icon name="notifications" size={20} />
               {unreadCount > 0 && (
-                <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-error rounded-full text-white text-[10px] font-bold flex items-center justify-center px-1 badge-pulse">
+                <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-error rounded-full text-white text-2xs font-bold flex items-center justify-center px-1 badge-pulse">
                   {unreadCount > 9 ? '9+' : unreadCount}
                 </span>
               )}
@@ -681,7 +681,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               onClick={(e) => e.stopPropagation()}
-              className="glass-panel rounded-3xl p-6 max-w-sm w-full shadow-2xl max-h-[90vh] overflow-y-auto"
+              className="glass-panel rounded-3xl p-6 max-w-sm w-full shadow-elevated max-h-[90vh] overflow-y-auto"
             >
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">

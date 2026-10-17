@@ -206,7 +206,7 @@ export function CommandPalette({
               ✕
             </button>
           ) : (
-            <kbd className="hidden sm:inline-flex items-center gap-0.5 px-2 py-0.5 text-[10px] font-semibold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-md shadow-xs">
+            <kbd className="hidden sm:inline-flex items-center gap-0.5 px-2 py-0.5 text-2xs font-semibold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-md shadow-xs">
               ⌘K
             </kbd>
           )}
@@ -219,7 +219,7 @@ export function CommandPalette({
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 8 }}
-            className="absolute top-full mt-2 w-full rounded-2xl glass-panel shadow-2xl border border-white/40 dark:border-slate-800/80 overflow-hidden z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md max-h-80 overflow-y-auto"
+            className="absolute top-full mt-2 w-full rounded-2xl glass-panel shadow-elevated border border-white/40 dark:border-slate-800/80 overflow-hidden z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md max-h-80 overflow-y-auto"
           >
             {filtered.length === 0 && !isSearchingDb ? (
               <div className="px-5 py-4 text-center">
@@ -268,7 +268,7 @@ export function CommandPalette({
                         <div className="min-w-0">
                           <p className="font-semibold text-xs sm:text-sm truncate">{item.label}</p>
                           {item.subtitle && (
-                            <p className="text-[11px] text-on-surface-variant truncate opacity-80">
+                            <p className="text-xs text-on-surface-variant truncate opacity-80">
                               {item.subtitle}
                             </p>
                           )}
@@ -277,12 +277,12 @@ export function CommandPalette({
 
                       <div className="flex items-center gap-2 shrink-0 ml-2">
                         {item.category && (
-                          <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-slate-200/50 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
+                          <span className="text-2xs uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-slate-200/50 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
                             {item.category}
                           </span>
                         )}
                         {item.badge && (
-                          <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-teal-500/15 text-teal-700 dark:text-teal-300">
+                          <span className="text-2xs font-medium px-2 py-0.5 rounded-full bg-teal-500/15 text-teal-700 dark:text-teal-300">
                             {item.badge}
                           </span>
                         )}

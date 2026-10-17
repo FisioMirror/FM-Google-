@@ -172,18 +172,18 @@ export function PatientStatisticsView({
             <div className="size-10 sm:size-11 bg-teal-500/10 text-teal-700 dark:text-teal-300 rounded-xl sm:rounded-2xl flex items-center justify-center">
               <Icon name="check_circle" size={22} />
             </div>
-            <span className="text-[10px] sm:text-xs font-bold px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-700 dark:text-teal-300">
+            <span className="text-2xs sm:text-xs font-bold px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-700 dark:text-teal-300">
               {avgAdherence}% adh.
             </span>
           </div>
           <div>
-            <p className="text-on-surface-variant text-[11px] sm:text-xs font-semibold uppercase tracking-wider mb-1 line-clamp-1">
+            <p className="text-on-surface-variant text-xs sm:text-xs font-semibold uppercase tracking-wider mb-1 line-clamp-1">
               Sesiones Totales
             </p>
             <h3 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 dark:text-slate-100 tabular-nums tracking-tight">
               {totalSessions}
             </h3>
-            <p className="text-[11px] text-on-surface-variant mt-1">Registradas con IA AR Mirror</p>
+            <p className="text-xs text-on-surface-variant mt-1">Registradas con IA AR Mirror</p>
           </div>
         </div>
 
@@ -193,18 +193,18 @@ export function PatientStatisticsView({
             <div className="size-10 sm:size-11 bg-blue-500/10 text-blue-700 dark:text-blue-300 rounded-xl sm:rounded-2xl flex items-center justify-center">
               <Icon name="timer" size={22} />
             </div>
-            <span className="text-[10px] sm:text-xs font-bold px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-700 dark:text-blue-300">
+            <span className="text-2xs sm:text-xs font-bold px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-700 dark:text-blue-300">
               ~{Math.round(totalMinutes / (totalSessions || 1))} min/ses
             </span>
           </div>
           <div>
-            <p className="text-on-surface-variant text-[11px] sm:text-xs font-semibold uppercase tracking-wider mb-1 line-clamp-1">
+            <p className="text-on-surface-variant text-xs sm:text-xs font-semibold uppercase tracking-wider mb-1 line-clamp-1">
               Minutos Acumulados
             </p>
             <h3 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 dark:text-slate-100 tabular-nums tracking-tight">
               {totalMinutes} <span className="text-sm font-bold text-on-surface-variant">min</span>
             </h3>
-            <p className="text-[11px] text-on-surface-variant mt-1">Tiempo de rehabilitación activo</p>
+            <p className="text-xs text-on-surface-variant mt-1">Tiempo de rehabilitación activo</p>
           </div>
         </div>
 
@@ -214,20 +214,20 @@ export function PatientStatisticsView({
             <div className="size-10 sm:size-11 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 rounded-xl sm:rounded-2xl flex items-center justify-center">
               <Icon name="target" size={22} />
             </div>
-            <span className={`text-[10px] sm:text-xs font-bold px-2 py-0.5 rounded-full ${
+            <span className={`text-2xs sm:text-xs font-bold px-2 py-0.5 rounded-full ${
               avgQuality >= 85 ? 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-300' : 'bg-amber-500/10 text-amber-700 dark:text-amber-300'
             }`}>
               {avgQuality >= 85 ? 'Excelente' : 'Aceptable'}
             </span>
           </div>
           <div>
-            <p className="text-on-surface-variant text-[11px] sm:text-xs font-semibold uppercase tracking-wider mb-1 line-clamp-1">
+            <p className="text-on-surface-variant text-xs sm:text-xs font-semibold uppercase tracking-wider mb-1 line-clamp-1">
               Calidad Biomecánica
             </p>
             <h3 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 dark:text-slate-100 tabular-nums tracking-tight">
               {avgQuality > 0 ? `${avgQuality}%` : '—'}
             </h3>
-            <p className="text-[11px] text-on-surface-variant mt-1">Precisión de trayectoria angular</p>
+            <p className="text-xs text-on-surface-variant mt-1">Precisión de trayectoria angular</p>
           </div>
         </div>
 
@@ -237,18 +237,18 @@ export function PatientStatisticsView({
             <div className="size-10 sm:size-11 bg-cyan-500/10 text-cyan-700 dark:text-cyan-300 rounded-xl sm:rounded-2xl flex items-center justify-center">
               <Icon name="straighten" size={22} />
             </div>
-            <span className="text-[10px] sm:text-xs font-bold px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-700 dark:text-cyan-300">
+            <span className="text-2xs sm:text-xs font-bold px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-700 dark:text-cyan-300">
               {targetRom ? `Meta ${targetRom.split(' ')[0]}` : 'Meta 160°'}
             </span>
           </div>
           <div>
-            <p className="text-on-surface-variant text-[11px] sm:text-xs font-semibold uppercase tracking-wider mb-1 line-clamp-1">
+            <p className="text-on-surface-variant text-xs sm:text-xs font-semibold uppercase tracking-wider mb-1 line-clamp-1">
               ROM Máximo Alcanzado
             </p>
             <h3 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 dark:text-slate-100 tabular-nums tracking-tight">
               {peakRom > 0 ? `${peakRom}°` : '—'}
             </h3>
-            <p className="text-[11px] text-on-surface-variant mt-1">{affectedLimb || 'Articulación principal'}</p>
+            <p className="text-xs text-on-surface-variant mt-1">{affectedLimb || 'Articulación principal'}</p>
           </div>
         </div>
       </div>
@@ -294,7 +294,7 @@ export function PatientStatisticsView({
                     if (active && payload && payload.length) {
                       const data = payload[0].payload;
                       return (
-                        <div className="bg-slate-900/95 text-white p-3 rounded-xl shadow-xl text-xs space-y-1.5 border border-slate-700">
+                        <div className="bg-slate-900/95 text-white p-3 rounded-xl shadow-elevated text-xs space-y-1.5 border border-slate-700">
                           <p className="font-bold text-teal-300">{data.ejercicio} ({data.date})</p>
                           <p className="flex justify-between gap-4">
                             <span className="text-slate-300">Calidad motora:</span>
@@ -380,7 +380,7 @@ export function PatientStatisticsView({
                     if (active && payload && payload.length) {
                       const d = payload[0].payload;
                       return (
-                        <div className="bg-slate-900/95 text-white p-3 rounded-xl shadow-xl text-xs space-y-1.5 border border-slate-700">
+                        <div className="bg-slate-900/95 text-white p-3 rounded-xl shadow-elevated text-xs space-y-1.5 border border-slate-700">
                           <p className="font-bold text-teal-300">{d.fullName}</p>
                           <p className="flex justify-between gap-4">
                             <span className="text-slate-300">Minutos invertidos:</span>
@@ -441,7 +441,7 @@ export function PatientStatisticsView({
                   </div>
                 </div>
                 <div className="flex items-center gap-2 self-end sm:self-center shrink-0">
-                  <span className={`text-[11px] font-bold px-2.5 py-1 rounded-full ${
+                  <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${
                     comp.severity === 'controlada'
                       ? 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20'
                       : comp.severity === 'moderada'

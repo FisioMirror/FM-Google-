@@ -39,7 +39,7 @@ export function Toggle({ checked, onChange, label, description, icon, disabled }
               <p className="text-xs sm:text-sm font-bold text-on-surface truncate">{label}</p>
             )}
             {description && (
-              <p className="text-[11px] sm:text-xs text-on-surface-variant line-clamp-1">{description}</p>
+              <p className="text-xs sm:text-xs text-on-surface-variant line-clamp-1">{description}</p>
             )}
           </div>
         </div>

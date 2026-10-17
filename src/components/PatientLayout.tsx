@@ -270,7 +270,7 @@ export function PatientLayout({ children }: PatientLayoutProps) {
             <p className="font-bold text-sm text-slate-900 dark:text-slate-100 truncate">{user?.full_name || 'Paciente'}</p>
             <div className="flex items-center gap-1.5 mt-0.5">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              <p className="text-[10px] text-teal-600 dark:text-teal-400 uppercase tracking-wider font-semibold">Paciente Activo</p>
+              <p className="text-2xs text-teal-600 dark:text-teal-400 uppercase tracking-wider font-semibold">Paciente Activo</p>
             </div>
           </div>
         </div>
@@ -290,7 +290,7 @@ export function PatientLayout({ children }: PatientLayoutProps) {
         >
           <Bell size={18} />
           {unreadCount > 0 && (
-            <span className="absolute top-1 right-1 min-w-[16px] h-[16px] bg-red-500 rounded-full text-white text-[9px] font-bold flex items-center justify-center px-1">
+            <span className="absolute top-1 right-1 min-w-[16px] h-[16px] bg-red-500 rounded-full text-white text-2xs font-bold flex items-center justify-center px-1">
               {unreadCount > 9 ? '9+' : unreadCount}
             </span>
           )}
@@ -314,7 +314,7 @@ export function PatientLayout({ children }: PatientLayoutProps) {
             <img src="/logo.png" alt="FisioMirror" className="h-9 w-9 min-w-[36px] min-h-[36px] object-contain shrink-0 aspect-square" />
             <div className="flex flex-col min-w-0">
               <h1 className="text-base font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight whitespace-nowrap">FisioMirror</h1>
-              <p className="text-[10px] uppercase tracking-wider text-teal-600 dark:text-teal-400 font-bold whitespace-nowrap">Portal Paciente</p>
+              <p className="text-2xs uppercase tracking-wider text-teal-600 dark:text-teal-400 font-bold whitespace-nowrap">Portal Paciente</p>
             </div>
           </div>
         ) : (
@@ -421,14 +421,14 @@ export function PatientLayout({ children }: PatientLayoutProps) {
               role="dialog"
               aria-modal="true"
               aria-label="Menú de navegación"
-              className="h-full w-72 max-w-[85vw] flex flex-col bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl border-r border-teal-200/50 dark:border-slate-800 text-slate-900 dark:text-slate-100 rounded-r-3xl shadow-2xl overflow-hidden"
+              className="h-full w-72 max-w-[85vw] flex flex-col bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl border-r border-teal-200/50 dark:border-slate-800 text-slate-900 dark:text-slate-100 rounded-r-3xl shadow-elevated overflow-hidden"
             >
               <div className="p-4 flex items-center justify-between border-b border-teal-100/60 dark:border-slate-800">
                 <div className="flex items-center gap-3">
                   <img src="/logo.png" alt="FisioMirror" className="h-9 w-9 object-contain shrink-0" />
                   <div>
                     <h2 className="text-base font-extrabold text-slate-900 dark:text-white leading-tight">FisioMirror</h2>
-                    <p className="text-[10px] uppercase tracking-wider text-teal-600 dark:text-teal-400 font-bold">Portal Paciente</p>
+                    <p className="text-2xs uppercase tracking-wider text-teal-600 dark:text-teal-400 font-bold">Portal Paciente</p>
                   </div>
                 </div>
                 <button
@@ -509,7 +509,7 @@ export function PatientLayout({ children }: PatientLayoutProps) {
             >
               <Icon name="notifications" size={20} />
               {unreadCount > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-[16px] bg-error rounded-full text-white text-[9px] font-bold flex items-center justify-center px-1">{unreadCount > 9 ? '9+' : unreadCount}</span>
+                <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-[16px] bg-error rounded-full text-white text-2xs font-bold flex items-center justify-center px-1">{unreadCount > 9 ? '9+' : unreadCount}</span>
               )}
             </button>
             <LanguageSelector compact />
@@ -558,7 +558,7 @@ export function PatientLayout({ children }: PatientLayoutProps) {
       {location.pathname !== '/ai-assistant' && (
         <div className="md:hidden fixed bottom-4 inset-x-4 z-40 flex justify-center pointer-events-auto">
           <CurvedMobileDock
-            className="w-full max-w-sm shadow-2xl"
+            className="w-full max-w-sm shadow-elevated"
             currentTab={
               location.pathname === '/exercises' ? 'ejercicios' : location.pathname === '/stats' ? 'progreso' : 'scan'
             }

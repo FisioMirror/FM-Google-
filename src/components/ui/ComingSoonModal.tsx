@@ -31,7 +31,7 @@ export function ComingSoonModal({
             animate={{ scale: 1, y: 0, opacity: 1 }}
             exit={{ scale: 0.85, y: 20, opacity: 0 }}
             transition={{ type: 'spring', stiffness: 300, damping: 26 }}
-            className="relative w-full max-w-sm rounded-2xl p-6 bg-surface/95 backdrop-blur-xl border border-outline-variant/20 shadow-2xl max-h-[90vh] overflow-y-auto"
+            className="relative w-full max-w-sm rounded-2xl p-6 bg-surface/95 backdrop-blur-xl border border-outline-variant/20 shadow-elevated max-h-[90vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             <button

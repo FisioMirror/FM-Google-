@@ -166,7 +166,7 @@ export function PopoverDialog({
     <div
       role="tooltip"
       className={cn(
-        "p-4 rounded-xl md:rounded-2xl shadow-xl shadow-slate-950/10 dark:shadow-teal-950/20",
+        "p-4 rounded-xl md:rounded-2xl shadow-elevated shadow-slate-950/10 dark:shadow-teal-950/20",
         "bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl",
         "border border-slate-200/90 dark:border-slate-800/90",
         "text-on-surface",
@@ -262,7 +262,7 @@ export function PopoverMetricDemo() {
           <Popover.Dialog>
             <div className="flex items-center justify-between pb-2 mb-2 border-b border-border/40">
               <Popover.Heading>{current.name}</Popover.Heading>
-              <span className={cn("text-[11px] font-bold px-2 py-0.5 rounded-full border", current.badgeColor)}>
+              <span className={cn("text-xs font-bold px-2 py-0.5 rounded-full border", current.badgeColor)}>
                 {current.status}
               </span>
             </div>

@@ -225,7 +225,7 @@ export const ToastItemComponent = React.forwardRef<HTMLDivElement, ToastItemComp
           "flex items-start gap-3 p-3.5 sm:p-4 rounded-2xl",
           "bg-slate-900/95 dark:bg-slate-950/95 text-white",
           "backdrop-blur-2xl border",
-          "shadow-2xl shadow-black/40",
+          "shadow-elevated shadow-black/40",
           "min-w-[280px] max-w-[390px] w-full",
           getBorderAndBg()
         )}
@@ -239,7 +239,7 @@ export const ToastItemComponent = React.forwardRef<HTMLDivElement, ToastItemComp
             {item.message}
           </p>
           {item.description && (
-            <p className="mt-1 text-[11px] sm:text-xs text-slate-300 leading-relaxed">
+            <p className="mt-1 text-xs sm:text-xs text-slate-300 leading-relaxed">
               {item.description}
             </p>
           )}

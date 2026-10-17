@@ -687,7 +687,7 @@ export function StatsPage() {
                       <div className={`size-11 sm:size-12 ${card.bg} rounded-2xl flex items-center justify-center font-bold`}>
                         <Icon name={card.icon} size={22} className={card.color} />
                       </div>
-                      <span className="text-[11px] sm:text-xs font-bold text-teal-600 dark:text-teal-400 bg-teal-500/10 px-2 py-0.5 rounded-full">{card.trend}</span>
+                      <span className="text-xs sm:text-xs font-bold text-teal-600 dark:text-teal-400 bg-teal-500/10 px-2 py-0.5 rounded-full">{card.trend}</span>
                     </div>
                     <div>
                       <p className="text-on-surface-variant text-xs font-semibold uppercase tracking-wider mb-1 line-clamp-1">{card.label}</p>
@@ -712,7 +712,7 @@ export function StatsPage() {
             <>
               {/* Sessions per day (last 7 days) + Quality distribution pie */}
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                <GlassPanel className="lg:col-span-2 p-8 rounded-[2rem] flex flex-col relative overflow-hidden">
+                <GlassPanel className="lg:col-span-2 p-8 rounded-3xl flex flex-col relative overflow-hidden">
                   <div className="blob-teal absolute -top-12 -right-12 w-40 h-40 opacity-20 pointer-events-none" />
                   <div className="flex justify-between items-center mb-6">
                     <div>
@@ -749,7 +749,7 @@ export function StatsPage() {
                   </div>
                 </GlassPanel>
 
-                <GlassPanel className="p-8 rounded-[2rem] flex flex-col card-glow-hover relative overflow-hidden">
+                <GlassPanel className="p-8 rounded-3xl flex flex-col card-glow-hover relative overflow-hidden">
                   <div className="blob-warm absolute -top-12 -right-12 w-32 h-32 opacity-20 pointer-events-none" />
                   <div className="flex justify-between items-center mb-4">
                     <h3 className="font-title-md text-title-md gradient-text-editorial">Distribución de Calidad</h3>
@@ -795,7 +795,7 @@ export function StatsPage() {
 
               {/* Top patients bar chart + Diagnosis distribution */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <GlassPanel className="p-6 sm:p-8 rounded-[2rem] flex flex-col card-glow-hover relative overflow-hidden">
+                <GlassPanel className="p-6 sm:p-8 rounded-3xl flex flex-col card-glow-hover relative overflow-hidden">
                   <div className="blob-blue absolute -top-12 -right-12 w-32 h-32 opacity-20 pointer-events-none" />
                   <div className="flex justify-between items-center mb-4">
                     <h3 className="font-title-md text-title-md gradient-text-blue">Pacientes Más Activos</h3>
@@ -829,7 +829,7 @@ export function StatsPage() {
                   </div>
                 </GlassPanel>
 
-                <GlassPanel className="p-6 sm:p-8 rounded-[2rem] flex flex-col card-glow-hover relative overflow-hidden">
+                <GlassPanel className="p-6 sm:p-8 rounded-3xl flex flex-col card-glow-hover relative overflow-hidden">
                   <div className="blob-warm absolute -top-12 -right-12 w-32 h-32 opacity-20 pointer-events-none" />
                   <div className="flex justify-between items-center mb-4">
                     <div>
@@ -857,12 +857,12 @@ export function StatsPage() {
                                   <span className="truncate max-w-[200px] sm:max-w-xs">{item.name}</span>
                                 </span>
                                 <span className="font-mono text-on-surface font-bold">
-                                  {item.value} <span className="text-[10px] text-on-surface-variant font-normal">({pct}%)</span>
+                                  {item.value} <span className="text-2xs text-on-surface-variant font-normal">({pct}%)</span>
                                 </span>
                               </div>
                               <div className="w-full h-2 bg-surface-variant/40 rounded-full overflow-hidden">
                                 <div
-                                  className="h-full rounded-full transition-all duration-500"
+                                  className="h-full rounded-full transition-all duration-300"
                                   style={{ width: `${pct}%`, backgroundColor: item.color }}
                                 />
                               </div>
@@ -877,7 +877,7 @@ export function StatsPage() {
 
               {/* Patient summary table */}
               {patients.length > 0 && (
-                <GlassPanel className="p-8 rounded-[2rem] relative overflow-hidden">
+                <GlassPanel className="p-8 rounded-3xl relative overflow-hidden">
                   <div className="blob-warm absolute -bottom-12 -right-12 w-32 h-32 opacity-15 pointer-events-none" />
                   <h3 className="font-title-md text-title-md gradient-text-editorial mb-4">Resumen por Paciente</h3>
                   <div className="overflow-x-auto">
@@ -929,7 +929,7 @@ export function StatsPage() {
 
               {/* Paciente: biomechanics evolution chart + recent sessions */}
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                <GlassPanel className="lg:col-span-2 p-8 rounded-[2rem] flex flex-col relative overflow-hidden">
+                <GlassPanel className="lg:col-span-2 p-8 rounded-3xl flex flex-col relative overflow-hidden">
                   <div className="blob-teal absolute -top-12 -right-12 w-40 h-40 opacity-20 pointer-events-none" />
                   <div className="flex justify-between items-center mb-6">
                     <div>
@@ -996,7 +996,7 @@ export function StatsPage() {
                   </div>
                 </GlassPanel>
 
-                <GlassPanel className="p-8 rounded-[2rem] flex flex-col card-glow-hover relative overflow-hidden">
+                <GlassPanel className="p-8 rounded-3xl flex flex-col card-glow-hover relative overflow-hidden">
                   <div className="blob-blue absolute -top-12 -right-12 w-32 h-32 opacity-20 pointer-events-none" />
                   <h3 className="font-title-md text-title-md gradient-text-editorial mb-4">Sesiones Recientes</h3>
                   <div className="space-y-4 flex-1 overflow-y-auto max-h-64">
@@ -1024,7 +1024,7 @@ export function StatsPage() {
 
               {/* Paciente: per-session quality line + exercise distribution pie */}
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                <GlassPanel className="lg:col-span-2 p-8 rounded-[2rem] flex flex-col relative overflow-hidden">
+                <GlassPanel className="lg:col-span-2 p-8 rounded-3xl flex flex-col relative overflow-hidden">
                   <div className="blob-blue absolute -top-12 -right-12 w-40 h-40 opacity-20 pointer-events-none" />
                   <div className="flex justify-between items-center mb-6">
                     <div>
@@ -1063,7 +1063,7 @@ export function StatsPage() {
                   </div>
                 </GlassPanel>
 
-                <GlassPanel className="p-8 rounded-[2rem] flex flex-col card-glow-hover relative overflow-hidden">
+                <GlassPanel className="p-8 rounded-3xl flex flex-col card-glow-hover relative overflow-hidden">
                   <div className="blob-warm absolute -top-12 -right-12 w-32 h-32 opacity-20 pointer-events-none" />
                   <div className="flex justify-between items-center mb-4">
                     <h3 className="font-title-md text-title-md gradient-text-editorial">Distribución de Ejercicios</h3>
@@ -1109,7 +1109,7 @@ export function StatsPage() {
 
               {/* Paciente: weekly minutes bar chart + Logros grid */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-              <GlassPanel className="p-8 rounded-[2rem] flex flex-col relative overflow-hidden">
+              <GlassPanel className="p-8 rounded-3xl flex flex-col relative overflow-hidden">
                 <div className="blob-teal absolute -top-12 -right-12 w-40 h-40 opacity-15 pointer-events-none" />
                 <div className="flex justify-between items-center mb-6">
                   <div>
@@ -1183,7 +1183,7 @@ export function StatsPage() {
                               <div className="flex-1 min-w-0">
                                 <p className="font-bold text-sm text-on-surface">{badge.name}</p>
                                 <p className="text-xs text-on-surface-variant">{badge.desc}</p>
-                                <p className="text-[10px] text-primary font-bold mt-1 flex items-center gap-1">
+                                <p className="text-2xs text-primary font-bold mt-1 flex items-center gap-1">
                                   <Icon name="event_available" size={12} />
                                   {badge.date ? new Date(badge.date).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' }) : 'Desbloqueado'}
                                 </p>
@@ -1202,7 +1202,7 @@ export function StatsPage() {
 
           {/* AI recommendation + PDF report (both roles) */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <GlassPanel className="p-8 rounded-[2rem] bg-primary/5 border-primary/10 md:col-span-2">
+            <GlassPanel className="p-8 rounded-3xl bg-primary/5 border-primary/10 md:col-span-2">
               <div className="flex flex-col gap-4 mb-4">
                 <div className="flex items-center gap-3">
                   <div className="mascot-container w-12 h-12 rounded-full overflow-hidden bg-primary/10 flex items-center justify-center shrink-0">
@@ -1242,7 +1242,7 @@ export function StatsPage() {
                 </button>
               </div>
             </GlassPanel>
-            <GlassPanel className="p-8 rounded-[2rem] border-2 border-dashed border-outline-variant/30">
+            <GlassPanel className="p-8 rounded-3xl border-2 border-dashed border-outline-variant/30">
               <div className="flex flex-col items-center text-center gap-3">
                 <Icon name="add_chart" size={40} className="text-outline" />
                 <p className="text-on-surface-variant">Genera un reporte clínico en PDF de tu progreso.</p>

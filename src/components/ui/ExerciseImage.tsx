@@ -160,7 +160,7 @@ export function ExerciseImage({ src, name, articulacion, categoria, className, h
           alt={name}
           grid="6x4"
           className="w-full h-full"
-          imageClassName="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          imageClassName="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
         />
         {/* Gradiente sutil inferior para legibilidad del nombre */}
         <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
@@ -186,7 +186,7 @@ export function ExerciseImage({ src, name, articulacion, categoria, className, h
       <div className="size-12 rounded-2xl bg-white/70 dark:bg-slate-800/80 shadow-xs flex items-center justify-center mb-2.5 backdrop-blur-md">
         <IconCmp className={cn('size-6 animate-breathe-icon', visual.iconClass)} />
       </div>
-      <span className="text-[10px] font-bold uppercase tracking-wider text-teal-700 dark:text-teal-300 bg-white/60 dark:bg-slate-900/60 px-2.5 py-0.5 rounded-full mb-1">
+      <span className="text-2xs font-bold uppercase tracking-wider text-teal-700 dark:text-teal-300 bg-white/60 dark:bg-slate-900/60 px-2.5 py-0.5 rounded-full mb-1">
         {visual.badge}
       </span>
       <span className="font-title-md text-sm sm:text-base font-bold text-on-surface text-center px-2 line-clamp-1">

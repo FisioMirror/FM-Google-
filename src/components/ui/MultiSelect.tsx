@@ -115,7 +115,7 @@ export function MultiSelect({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -4 }}
             transition={{ duration: 0.15 }}
-            className="absolute z-50 mt-1 w-full rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl max-h-56 overflow-y-auto p-1"
+            className="absolute z-50 mt-1 w-full rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-elevated max-h-56 overflow-y-auto p-1"
           >
             {options.map((opt) => {
               const selected = value.includes(opt.value);

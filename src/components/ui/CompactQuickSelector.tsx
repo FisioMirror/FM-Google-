@@ -48,10 +48,10 @@ export function CompactJointSelector({
   return (
     <div className={cn('w-full space-y-1.5', className)}>
       <div className="flex items-center justify-between px-1">
-        <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+        <span className="text-2xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
           Articulación Objetivo
         </span>
-        <span className="text-[10px] font-mono text-teal-600 dark:text-teal-400 font-bold">
+        <span className="text-2xs font-mono text-teal-600 dark:text-teal-400 font-bold">
           1-Tap
         </span>
       </div>
@@ -122,7 +122,7 @@ export function CompactRomStepper({
       )}
     >
       <div className="min-w-0">
-        <span className="text-[10px] uppercase font-bold text-slate-500 dark:text-slate-400 block leading-tight truncate">
+        <span className="text-2xs uppercase font-bold text-slate-500 dark:text-slate-400 block leading-tight truncate">
           {label}
         </span>
         <div className="flex items-baseline gap-1 mt-0.5">
@@ -215,7 +215,7 @@ export function CompactToleranceDropdown({
             <ShieldCheck className="size-4" />
           </div>
           <div className="min-w-0">
-            <span className="text-[9px] uppercase font-bold text-slate-400 block leading-none">
+            <span className="text-2xs uppercase font-bold text-slate-400 block leading-none">
               Tolerancia IA
             </span>
             <span className="text-xs font-bold text-slate-800 dark:text-slate-100 truncate block mt-0.5">
@@ -245,7 +245,7 @@ export function CompactToleranceDropdown({
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -6, scale: 0.98 }}
               transition={springSnappy}
-              className="absolute top-full left-0 right-0 mt-1.5 z-40 p-1.5 rounded-2xl bg-white/95 dark:bg-slate-900/95 border border-slate-200 dark:border-slate-800 shadow-xl backdrop-blur-xl space-y-1"
+              className="absolute top-full left-0 right-0 mt-1.5 z-40 p-1.5 rounded-2xl bg-white/95 dark:bg-slate-900/95 border border-slate-200 dark:border-slate-800 shadow-elevated backdrop-blur-xl space-y-1"
             >
               {options.map((opt) => (
                 <button
@@ -264,7 +264,7 @@ export function CompactToleranceDropdown({
                 >
                   <div className="min-w-0">
                     <p className="text-xs font-bold leading-tight">{opt.label}</p>
-                    <p className="text-[10px] text-slate-500 dark:text-slate-400 truncate">
+                    <p className="text-2xs text-slate-500 dark:text-slate-400 truncate">
                       {opt.desc}
                     </p>
                   </div>

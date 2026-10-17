@@ -144,13 +144,13 @@ export function PDFExportModal({ open, onClose, data, filename }: PDFModalProps)
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.94, opacity: 0, y: 16 }}
             transition={{ type: 'spring', damping: 25, stiffness: 350 }}
-            className="glass-panel rounded-3xl p-6 sm:p-7 max-w-lg w-full max-h-[92vh] overflow-y-auto shadow-2xl border border-white/20 dark:border-slate-800"
+            className="glass-panel rounded-3xl p-6 sm:p-7 max-w-lg w-full max-h-[92vh] overflow-y-auto shadow-elevated border border-white/20 dark:border-slate-800"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
             <div className="flex justify-between items-start mb-5 pb-4 border-b border-outline-variant/20">
               <div>
-                <span className="text-[10px] font-black uppercase tracking-wider text-teal-600 dark:text-teal-400">
+                <span className="text-2xs font-black uppercase tracking-wider text-teal-600 dark:text-teal-400">
                   Documentación Médica Oficial
                 </span>
                 <h3 className="text-lg sm:text-xl font-extrabold text-on-surface">
@@ -199,7 +199,7 @@ export function PDFExportModal({ open, onClose, data, filename }: PDFModalProps)
                             <span className="size-2 rounded-full bg-teal-500 shrink-0" />
                           )}
                         </div>
-                        <p className="text-[11px] text-on-surface-variant leading-relaxed mt-0.5">
+                        <p className="text-xs text-on-surface-variant leading-relaxed mt-0.5">
                           {cfg.description}
                         </p>
                       </div>
@@ -229,7 +229,7 @@ export function PDFExportModal({ open, onClose, data, filename }: PDFModalProps)
                     <Icon name="bolt" size={16} className="text-teal-600 dark:text-teal-400" />
                     <span className="text-xs font-bold text-on-surface">PDF Rápido</span>
                   </div>
-                  <p className="text-[10px] text-on-surface-variant leading-tight">
+                  <p className="text-2xs text-on-surface-variant leading-tight">
                     jsPDF instantáneo. Ligero e ideal para impresión médica directa.
                   </p>
                 </button>
@@ -248,7 +248,7 @@ export function PDFExportModal({ open, onClose, data, filename }: PDFModalProps)
                     <Icon name="auto_awesome" size={16} className="text-teal-600 dark:text-teal-400" />
                     <span className="text-xs font-bold text-on-surface">PDF Estilizado IA</span>
                   </div>
-                  <p className="text-[10px] text-on-surface-variant leading-tight">
+                  <p className="text-2xs text-on-surface-variant leading-tight">
                     Membretado de alta fidelidad con narrativa analítica profunda.
                   </p>
                 </button>

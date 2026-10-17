@@ -40,7 +40,7 @@ export function InsightBanner({
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, height: 0, marginBottom: 0 }}
           className={cn(
-            'relative overflow-hidden rounded-3xl p-5 sm:p-6 border border-teal-500/25 bg-gradient-to-r from-teal-950/80 via-slate-900/90 to-teal-950/80 text-white shadow-xl backdrop-blur-xl',
+            'relative overflow-hidden rounded-3xl p-5 sm:p-6 border border-teal-500/25 bg-gradient-to-r from-teal-950/80 via-slate-900/90 to-teal-950/80 text-white shadow-elevated backdrop-blur-xl',
             variant === 'secondary' && 'border-cyan-500/25 from-cyan-950/80 via-slate-900/90 to-cyan-950/80',
             className
           )}
@@ -57,7 +57,7 @@ export function InsightBanner({
                   <h4 className="text-sm sm:text-base font-extrabold text-white tracking-tight">
                     {title}
                   </h4>
-                  <span className="hidden sm:inline-flex items-center gap-1 text-[10px] font-bold text-teal-300 bg-teal-500/20 px-2 py-0.5 rounded-full border border-teal-500/30">
+                  <span className="hidden sm:inline-flex items-center gap-1 text-2xs font-bold text-teal-300 bg-teal-500/20 px-2 py-0.5 rounded-full border border-teal-500/30">
                     <span className="size-1 rounded-full bg-teal-400 animate-pulse" /> IA Clínica
                   </span>
                 </div>

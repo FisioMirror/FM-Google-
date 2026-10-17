@@ -143,7 +143,7 @@ export function ModalDialog({
         "max-h-[calc(100dvh-3rem)] overflow-y-auto",
         "bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl",
         "border border-slate-200/80 dark:border-slate-800/80",
-        "shadow-2xl shadow-primary/10 dark:shadow-teal-950/40 text-foreground",
+        "shadow-elevated shadow-primary/10 dark:shadow-teal-950/40 text-foreground",
         className
       )}
     >

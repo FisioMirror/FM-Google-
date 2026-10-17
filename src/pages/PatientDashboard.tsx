@@ -380,12 +380,12 @@ export function PatientDashboard() {
               <div className="size-9 sm:size-11 rounded-xl sm:rounded-2xl bg-amber-500/15 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0 border border-amber-500/20">
                 <Flame className="size-4 sm:size-5" />
               </div>
-              <span className="text-[10px] sm:text-xs font-bold text-amber-700 dark:text-amber-300 uppercase tracking-wider hidden xs:inline">{t('dashboard.streak', 'Racha')}</span>
+              <span className="text-2xs sm:text-xs font-bold text-amber-700 dark:text-amber-300 uppercase tracking-wider hidden xs:inline">{t('dashboard.streak', 'Racha')}</span>
             </div>
             <div>
-              <p className="text-[10px] sm:text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider line-clamp-1 xs:hidden">{t('dashboard.streak', 'Racha')}</p>
+              <p className="text-2xs sm:text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider line-clamp-1 xs:hidden">{t('dashboard.streak', 'Racha')}</p>
               <p className="text-xl sm:text-2xl lg:text-3xl font-black text-slate-900 dark:text-slate-100 tabular-nums tracking-tight">
-                {kpi.streak} <span className="text-[10px] sm:text-xs font-semibold text-slate-400">{t('common.days', 'días')}</span>
+                {kpi.streak} <span className="text-2xs sm:text-xs font-semibold text-slate-400">{t('common.days', 'días')}</span>
               </p>
             </div>
           </CardSpotlight>
@@ -404,12 +404,12 @@ export function PatientDashboard() {
               <div className="size-9 sm:size-11 rounded-xl sm:rounded-2xl bg-teal-500/15 text-teal-600 dark:text-teal-400 flex items-center justify-center shrink-0 border border-teal-500/25">
                 <CheckCircle2 className="size-4 sm:size-5" />
               </div>
-              <span className="text-[10px] sm:text-xs font-bold text-teal-700 dark:text-teal-300 uppercase tracking-wider hidden xs:inline">{t('dashboard.totalSessions', 'Sesiones')}</span>
+              <span className="text-2xs sm:text-xs font-bold text-teal-700 dark:text-teal-300 uppercase tracking-wider hidden xs:inline">{t('dashboard.totalSessions', 'Sesiones')}</span>
             </div>
             <div>
-              <p className="text-[10px] sm:text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider line-clamp-1 xs:hidden">{t('dashboard.totalSessions', 'Sesiones')}</p>
+              <p className="text-2xs sm:text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider line-clamp-1 xs:hidden">{t('dashboard.totalSessions', 'Sesiones')}</p>
               <p className="text-xl sm:text-2xl lg:text-3xl font-black text-teal-700 dark:text-teal-300 tabular-nums tracking-tight">
-                {kpi.totalSessions} <span className="text-[10px] sm:text-xs font-semibold text-slate-400">{t('common.all', 'total')}</span>
+                {kpi.totalSessions} <span className="text-2xs sm:text-xs font-semibold text-slate-400">{t('common.all', 'total')}</span>
               </p>
             </div>
           </CardSpotlight>
@@ -428,12 +428,12 @@ export function PatientDashboard() {
               <div className="size-9 sm:size-11 rounded-xl sm:rounded-2xl bg-sky-500/15 text-sky-700 dark:text-sky-300 flex items-center justify-center shrink-0 border border-sky-500/25">
                 <Clock className="size-4 sm:size-5" />
               </div>
-              <span className="text-[10px] sm:text-xs font-bold text-sky-700 dark:text-sky-300 uppercase tracking-wider hidden xs:inline">{t('dashboard.totalMinutes', 'Minutos')}</span>
+              <span className="text-2xs sm:text-xs font-bold text-sky-700 dark:text-sky-300 uppercase tracking-wider hidden xs:inline">{t('dashboard.totalMinutes', 'Minutos')}</span>
             </div>
             <div>
-              <p className="text-[10px] sm:text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider line-clamp-1 xs:hidden">{t('dashboard.totalMinutes', 'Minutos')}</p>
+              <p className="text-2xs sm:text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider line-clamp-1 xs:hidden">{t('dashboard.totalMinutes', 'Minutos')}</p>
               <p className="text-xl sm:text-2xl lg:text-3xl font-black text-slate-900 dark:text-slate-100 tabular-nums tracking-tight">
-                {kpi.weeklyMinutes} <span className="text-[10px] sm:text-xs font-semibold text-slate-400">{t('common.minutes', 'min')}</span>
+                {kpi.weeklyMinutes} <span className="text-2xs sm:text-xs font-semibold text-slate-400">{t('common.minutes', 'min')}</span>
               </p>
             </div>
           </CardSpotlight>
@@ -483,11 +483,11 @@ export function PatientDashboard() {
         {/* Left 2 Cols: Daily Routine & Primary Action */}
         <div className="lg:col-span-2 space-y-6">
           {/* Featured AR Session Card con fondo pastel menta/celeste clínico */}
-          <div className="relative overflow-hidden rounded-3xl p-6 lg:p-8 bg-gradient-to-br from-teal-50/80 via-surface/95 to-sky-50/60 dark:from-teal-950/30 dark:via-surface-container/85 dark:to-sky-950/20 border border-teal-200/60 dark:border-teal-500/30 shadow-lg">
+          <div className="relative overflow-hidden rounded-3xl p-6 lg:p-8 bg-gradient-to-br from-teal-50/80 via-surface/95 to-sky-50/60 dark:from-teal-950/30 dark:via-surface-container/85 dark:to-sky-950/20 border border-teal-200/60 dark:border-teal-500/30 shadow-card">
             <BorderBeam size={120} duration={8} colorFrom="#14b8a6" colorTo="#38bdf8" />
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 relative z-10">
               <div className="space-y-2 max-w-md">
-                <span className="inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-full bg-teal-500/15 text-teal-700 dark:text-teal-300 border border-teal-500/30">
+                <span className="inline-flex items-center gap-1.5 text-2xs font-black uppercase tracking-wider px-3 py-1 rounded-full bg-teal-500/15 text-teal-700 dark:text-teal-300 border border-teal-500/30">
                   <span className="w-1.5 h-1.5 rounded-full bg-teal-500 animate-pulse" />
                   Sesión Guiada AR
                 </span>
@@ -503,7 +503,7 @@ export function PatientDashboard() {
                 onClick={() => navigate('/calibration')}
                 variant="pulse"
                 pulseColor="rgba(13, 148, 136, 0.6)"
-                className="px-6 py-3.5 rounded-2xl text-white font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-teal-700/25 shrink-0 bg-teal-600 hover:bg-teal-500"
+                className="px-6 py-3.5 rounded-2xl text-white font-bold text-sm flex items-center justify-center gap-2 shadow-card shadow-teal-700/25 shrink-0 bg-teal-600 hover:bg-teal-500"
               >
                 <Play className="size-4 fill-current" />
                 <span>{t('dashboard.startSession', 'Comenzar Sesión')}</span>
@@ -602,7 +602,7 @@ export function PatientDashboard() {
                           : 'bg-surface-container-highest/60'
                       }`}
                     />
-                    <span className="text-[10px] font-bold text-outline uppercase">{d.day}</span>
+                    <span className="text-2xs font-bold text-outline uppercase">{d.day}</span>
                   </div>
                 ))}
               </div>
@@ -622,7 +622,7 @@ export function PatientDashboard() {
                       <div className="h-1.5 w-full bg-surface-container-highest rounded-full overflow-hidden">
                         <div className="h-full bg-teal-500 rounded-full" style={{ width: `${w.pct}%` }} />
                       </div>
-                      <span className="text-[10px] text-outline block">{w.label}</span>
+                      <span className="text-2xs text-outline block">{w.label}</span>
                       <span className="text-xs font-bold text-on-surface block">{w.pct}%</span>
                     </div>
                   ))}
@@ -636,7 +636,7 @@ export function PatientDashboard() {
                   <User className="size-5" />
                 </div>
                 <div>
-                  <p className="text-[10px] uppercase font-bold text-outline">Fisioterapeuta Asignado</p>
+                  <p className="text-2xs uppercase font-bold text-outline">Fisioterapeuta Asignado</p>
                   <p className="text-xs font-bold text-on-surface">{therapist}</p>
                 </div>
               </div>
@@ -654,7 +654,7 @@ export function PatientDashboard() {
               </div>
               <div>
                 <h4 className="text-xs font-bold uppercase tracking-wider text-on-surface">Copiloto Physi</h4>
-                <p className="text-[11px] text-outline">Consejo kinesiológico personalizado</p>
+                <p className="text-xs text-outline">Consejo kinesiológico personalizado</p>
               </div>
             </div>
 

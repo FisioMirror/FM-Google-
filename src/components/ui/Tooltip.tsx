@@ -67,7 +67,7 @@ export function Tooltip({
             transition={animated ? { duration: 0.15 } : { duration: 0 }}
             className={cn(
               "absolute z-[300] pointer-events-none",
-              "px-2.5 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap shadow-lg",
+              "px-2.5 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap shadow-card",
               glassEffect ? "glass-panel text-on-surface" : "bg-popover text-popover-foreground",
               positionClasses[side],
               className

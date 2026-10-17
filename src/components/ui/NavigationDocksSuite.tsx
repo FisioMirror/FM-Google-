@@ -36,7 +36,7 @@ export const CurvedMobileDock: React.FC<CurvedMobileDockProps> = ({
   return (
     <div
       className={cn(
-        "relative p-2 px-6 rounded-3xl bg-white/95 dark:bg-slate-950/95 text-slate-800 dark:text-white border border-teal-500/25 dark:border-teal-500/30 shadow-2xl backdrop-blur-2xl flex items-center justify-between gap-6 transition-colors",
+        "relative p-2 px-6 rounded-3xl bg-white/95 dark:bg-slate-950/95 text-slate-800 dark:text-white border border-teal-500/25 dark:border-teal-500/30 shadow-elevated backdrop-blur-2xl flex items-center justify-between gap-6 transition-colors",
         className
       )}
     >
@@ -67,7 +67,7 @@ export const CurvedMobileDock: React.FC<CurvedMobileDockProps> = ({
             setInternalTab('scan');
             onScanClick?.();
           }}
-          className="size-14 rounded-2xl bg-gradient-to-tr from-teal-600 via-teal-500 to-cyan-400 text-white flex items-center justify-center shadow-xl shadow-teal-500/40 border-2 border-white dark:border-slate-950 cursor-pointer"
+          className="size-14 rounded-2xl bg-gradient-to-tr from-teal-600 via-teal-500 to-cyan-400 text-white flex items-center justify-center shadow-elevated shadow-teal-500/40 border-2 border-white dark:border-slate-950 cursor-pointer"
           title="Iniciar Escaneo / Sesión AR"
         >
           <Sparkles className="w-6 h-6 animate-pulse" />
@@ -113,7 +113,7 @@ export const TherapistSidebarMini: React.FC<TherapistSidebarMiniProps> = ({
   return (
     <div
       className={cn(
-        "inline-flex flex-col gap-2 p-2 rounded-2xl bg-white/90 dark:bg-slate-900/90 border border-teal-500/25 dark:border-teal-500/30 shadow-lg backdrop-blur-2xl transition-colors",
+        "inline-flex flex-col gap-2 p-2 rounded-2xl bg-white/90 dark:bg-slate-900/90 border border-teal-500/25 dark:border-teal-500/30 shadow-card backdrop-blur-2xl transition-colors",
         className
       )}
     >
@@ -402,7 +402,7 @@ export const CompactTelehealthBar: React.FC<CompactTelehealthBarProps> = ({
   return (
     <div
       className={cn(
-        "p-3 px-4 rounded-2xl bg-white/90 dark:bg-slate-950/95 text-slate-800 dark:text-white border border-teal-500/25 dark:border-teal-500/30 shadow-xl flex items-center justify-between gap-4 text-xs backdrop-blur-2xl transition-colors",
+        "p-3 px-4 rounded-2xl bg-white/90 dark:bg-slate-950/95 text-slate-800 dark:text-white border border-teal-500/25 dark:border-teal-500/30 shadow-elevated flex items-center justify-between gap-4 text-xs backdrop-blur-2xl transition-colors",
         className
       )}
     >
@@ -410,12 +410,12 @@ export const CompactTelehealthBar: React.FC<CompactTelehealthBarProps> = ({
         <span className="size-2 rounded-full bg-emerald-500 shrink-0 animate-ping" />
         <div className="truncate">
           <p className="font-bold truncate text-slate-900 dark:text-slate-100">{therapistName}</p>
-          {status && <p className="text-[10px] text-slate-500 dark:text-slate-400 truncate">{status}</p>}
+          {status && <p className="text-2xs text-slate-500 dark:text-slate-400 truncate">{status}</p>}
         </div>
       </div>
 
       <div className="flex items-center gap-2 shrink-0">
-        <span className="text-[10px] font-mono font-bold text-teal-700 dark:text-teal-400 bg-teal-500/15 border border-teal-500/25 px-2 py-0.5 rounded-full">
+        <span className="text-2xs font-mono font-bold text-teal-700 dark:text-teal-400 bg-teal-500/15 border border-teal-500/25 px-2 py-0.5 rounded-full">
           {latencyMs} ms
         </span>
 
@@ -475,7 +475,7 @@ export const ExerciseTimelineScrubber: React.FC<ExerciseTimelineScrubberProps> =
 
   return (
     <div className={cn("space-y-1.5 w-full select-none", className)}>
-      <div className="flex justify-between text-[10px] font-mono font-bold text-slate-500 dark:text-slate-400">
+      <div className="flex justify-between text-2xs font-mono font-bold text-slate-500 dark:text-slate-400">
         <span className="text-teal-600 dark:text-teal-400">{formatMinSec(sec)}</span>
         <span>{formatMinSec(totalSeconds)} Total</span>
       </div>
@@ -523,7 +523,7 @@ export const ContextualActionIsland: React.FC<ContextualActionIslandProps> = ({
       layout
       onClick={() => setExpanded(!expanded)}
       className={cn(
-        "inline-flex flex-col rounded-3xl bg-white/95 dark:bg-slate-950/95 text-slate-800 dark:text-white border border-teal-500/30 dark:border-teal-500/40 shadow-2xl text-xs font-semibold cursor-pointer select-none backdrop-blur-2xl transition-all",
+        "inline-flex flex-col rounded-3xl bg-white/95 dark:bg-slate-950/95 text-slate-800 dark:text-white border border-teal-500/30 dark:border-teal-500/40 shadow-elevated text-xs font-semibold cursor-pointer select-none backdrop-blur-2xl transition-all",
         expanded ? "p-3 px-5 gap-2" : "p-2 px-4 flex-row items-center gap-2.5",
         className
       )}
@@ -539,7 +539,7 @@ export const ContextualActionIsland: React.FC<ContextualActionIslandProps> = ({
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="flex items-center gap-4 text-[10px] font-mono text-slate-500 dark:text-slate-400 border-t border-slate-200 dark:border-white/10 pt-2"
+            className="flex items-center gap-4 text-2xs font-mono text-slate-500 dark:text-slate-400 border-t border-slate-200 dark:border-white/10 pt-2"
           >
             <span>Latencia: {latencyMs}ms</span>
             <span>FPS: {fps}</span>

@@ -254,7 +254,7 @@ export function TokenGeneratorPage() {
                 <div>
                   <div className="flex justify-between items-start mb-4">
                     <div>
-                      <p className="text-[10px] uppercase text-on-surface-variant font-bold tracking-wider mb-1">Código de Activación</p>
+                      <p className="text-2xs uppercase text-on-surface-variant font-bold tracking-wider mb-1">Código de Activación</p>
                       <div className="flex items-center gap-3">
                         <span className="font-mono text-3xl sm:text-4xl font-extrabold tracking-widest text-teal-700 dark:text-teal-300 select-all">{t.token}</span>
                         <button
@@ -273,7 +273,7 @@ export function TokenGeneratorPage() {
                       </div>
                     </div>
                     <span className={cn(
-                      'px-2.5 py-1 rounded-full text-[11px] font-bold border',
+                      'px-2.5 py-1 rounded-full text-xs font-bold border',
                       t.status === 'pendiente' && 'bg-amber-500/10 border-amber-500/20 text-amber-700 dark:text-amber-300',
                       t.status === 'activado' && 'bg-emerald-500/10 border-emerald-500/20 text-emerald-700 dark:text-emerald-300',
                       t.status === 'expirado' && 'bg-slate-500/10 border-slate-500/20 text-slate-500',

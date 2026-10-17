@@ -214,7 +214,7 @@ export function OnboardingGuide() {
                   onClick={completeOnboarding}
                   disabled={completing}
                   whileTap={{ scale: 0.96 }}
-                  className="premium-btn bg-primary text-on-primary font-bold px-8 py-3 rounded-2xl shadow-lg shadow-primary/20 flex items-center gap-2 disabled:opacity-60"
+                  className="premium-btn bg-primary text-on-primary font-bold px-8 py-3 rounded-2xl shadow-card shadow-primary/20 flex items-center gap-2 disabled:opacity-60"
                 >
                   {completing ? 'Guardando…' : 'Entendido'}
                 </motion.button>
@@ -222,7 +222,7 @@ export function OnboardingGuide() {
                 <motion.button
                   onClick={handleNext}
                   whileTap={{ scale: 0.96 }}
-                  className="premium-btn bg-primary text-on-primary font-bold px-8 py-3 rounded-2xl shadow-lg shadow-primary/20 flex items-center gap-2"
+                  className="premium-btn bg-primary text-on-primary font-bold px-8 py-3 rounded-2xl shadow-card shadow-primary/20 flex items-center gap-2"
                 >
                   Siguiente
                 </motion.button>

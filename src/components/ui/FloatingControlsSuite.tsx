@@ -61,7 +61,7 @@ export const JointAnatomyTooltip: React.FC<JointAnatomyTooltipProps> = ({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 8, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            className="absolute left-0 bottom-full mb-2.5 z-50 w-72 p-4 rounded-3xl bg-white/95 dark:bg-slate-950/95 text-slate-800 dark:text-white border border-teal-500/30 dark:border-teal-500/40 shadow-2xl text-xs space-y-2 backdrop-blur-2xl transition-colors"
+            className="absolute left-0 bottom-full mb-2.5 z-50 w-72 p-4 rounded-3xl bg-white/95 dark:bg-slate-950/95 text-slate-800 dark:text-white border border-teal-500/30 dark:border-teal-500/40 shadow-elevated text-xs space-y-2 backdrop-blur-2xl transition-colors"
           >
             <div className="flex items-center justify-between pb-1 border-b border-slate-200 dark:border-white/10">
               <span className="font-black text-teal-600 dark:text-teal-400 flex items-center gap-1.5">
@@ -71,15 +71,15 @@ export const JointAnatomyTooltip: React.FC<JointAnatomyTooltipProps> = ({
               <button
                 type="button"
                 onClick={() => setVisible(false)}
-                className="text-slate-400 hover:text-slate-700 dark:hover:text-white text-[10px] cursor-pointer"
+                className="text-slate-400 hover:text-slate-700 dark:hover:text-white text-2xs cursor-pointer"
               >
                 Cerrar
               </button>
             </div>
-            <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed">
+            <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
               <strong className="text-slate-900 dark:text-white">Músculos Agonistas:</strong> {agonists}
             </p>
-            <div className="p-2 rounded-xl bg-amber-500/15 border border-amber-500/30 text-[10px] text-amber-300 flex items-start gap-1.5">
+            <div className="p-2 rounded-xl bg-amber-500/15 border border-amber-500/30 text-2xs text-amber-300 flex items-start gap-1.5">
               <ShieldAlert className="w-3.5 h-3.5 shrink-0 text-amber-400 mt-0.5" />
               <span>{precautions}</span>
             </div>
@@ -133,7 +133,7 @@ export const ARCameraFilterDropdown: React.FC<ARCameraFilterDropdownProps> = ({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 6, scale: 0.95 }}
             transition={{ duration: 0.15 }}
-            className="absolute left-0 top-full mt-2 z-50 w-60 p-2 rounded-2xl bg-surface/95 dark:bg-slate-900/95 border border-cyan-500/30 shadow-2xl backdrop-blur-2xl space-y-1"
+            className="absolute left-0 top-full mt-2 z-50 w-60 p-2 rounded-2xl bg-surface/95 dark:bg-slate-900/95 border border-cyan-500/30 shadow-elevated backdrop-blur-2xl space-y-1"
           >
             {filters.map((f) => {
               const isCurrent = selected === f.id;
@@ -155,7 +155,7 @@ export const ARCameraFilterDropdown: React.FC<ARCameraFilterDropdownProps> = ({
                 >
                   <div>
                     <span className="block font-bold">{f.id}</span>
-                    <span className={cn("text-[10px]", isCurrent ? "text-cyan-100" : "text-slate-400")}>
+                    <span className={cn("text-2xs", isCurrent ? "text-cyan-100" : "text-slate-400")}>
                       {f.desc}
                     </span>
                   </div>
@@ -203,9 +203,9 @@ export const RapidToleranceAdjuster: React.FC<RapidToleranceAdjusterProps> = ({
         <SlidersHorizontal className="w-3.5 h-3.5" />
       </div>
       <div>
-        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Tolerancia ROM</span>
+        <span className="text-2xs font-bold text-slate-400 uppercase tracking-wider block">Tolerancia ROM</span>
         <div className="flex items-center gap-2">
-          <span className={cn("text-[9px] font-bold px-1.5 py-0.2 rounded border", mode.color)}>
+          <span className={cn("text-2xs font-bold px-1.5 py-0.2 rounded border", mode.color)}>
             {mode.text}
           </span>
           <div className="flex items-center gap-1 font-mono font-bold text-slate-900 dark:text-white">
@@ -384,7 +384,7 @@ export const QuickPrescriptionModalButton: React.FC<QuickPrescriptionModalButton
         <ClipboardPen className="w-3.5 h-3.5" />
       </div>
       <div>
-        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Prescripción Rápida</span>
+        <span className="text-2xs font-bold text-slate-400 uppercase tracking-wider block">Prescripción Rápida</span>
         <span className="font-mono font-bold text-teal-600 dark:text-teal-400">
           {series} Series × {reps} Repeticiones
         </span>
@@ -392,7 +392,7 @@ export const QuickPrescriptionModalButton: React.FC<QuickPrescriptionModalButton
       <button
         type="button"
         onClick={() => setReps((r) => (r >= 20 ? 8 : r + 2))}
-        className="text-[10px] font-bold text-primary hover:underline ml-1"
+        className="text-2xs font-bold text-primary hover:underline ml-1"
       >
         Ajustar
       </button>
@@ -467,7 +467,7 @@ export const CalibrationCompass: React.FC<CalibrationCompassProps> = ({
       </div>
       <div>
         <span className="font-bold text-slate-800 dark:text-white block">Giroscopio Sagital AR</span>
-        <span className="text-[10px] text-teal-600 dark:text-teal-400 font-mono font-bold">
+        <span className="text-2xs text-teal-600 dark:text-teal-400 font-mono font-bold">
           Pitch: {pitch}° • Roll: {roll}° (Nivelado)
         </span>
       </div>
@@ -499,7 +499,7 @@ export const FloatingMiniStopwatch: React.FC<FloatingMiniStopwatchProps> = ({ cl
         {active ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
       </button>
       <div>
-        <span className="text-[10px] uppercase font-bold text-slate-400 block tracking-wider">Descanso Restante</span>
+        <span className="text-2xs uppercase font-bold text-slate-400 block tracking-wider">Descanso Restante</span>
         <span className="font-mono font-black text-slate-900 dark:text-white text-sm">
           00:{seconds < 10 ? `0${seconds}` : seconds}s
         </span>

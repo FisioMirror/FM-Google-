@@ -22,7 +22,7 @@ export function Dock({
       onMouseMove={(e) => mouseX.set(e.pageX)}
       onMouseLeave={() => mouseX.set(Infinity)}
       className={cn(
-        'mx-auto flex h-16 items-center gap-3 rounded-3xl border border-outline/15 bg-surface/80 px-4 backdrop-blur-xl shadow-xl dark:border-outline/10',
+        'mx-auto flex h-16 items-center gap-3 rounded-3xl border border-outline/15 bg-surface/80 px-4 backdrop-blur-xl shadow-elevated dark:border-outline/10',
         className
       )}
     >
@@ -97,7 +97,7 @@ export function DockIcon({
       </motion.button>
 
       {tooltip && (
-        <span className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 rounded-lg bg-zinc-900 px-2 py-1 text-[10px] font-semibold text-white opacity-0 shadow transition-opacity group-hover:opacity-100 whitespace-nowrap z-30">
+        <span className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 rounded-lg bg-zinc-900 px-2 py-1 text-2xs font-semibold text-white opacity-0 shadow transition-opacity group-hover:opacity-100 whitespace-nowrap z-30">
           {tooltip}
         </span>
       )}

@@ -31,7 +31,7 @@ export function PromoCardDemo({
   return (
     <div
       className={cn(
-        'relative flex flex-col sm:flex-row h-auto min-h-[152px] p-4.5 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-md group overflow-hidden transition-all duration-300 hover:shadow-xl',
+        'relative flex flex-col sm:flex-row h-auto min-h-[152px] p-4.5 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-md group overflow-hidden transition-all duration-300 hover:shadow-elevated',
         className
       )}
     >
@@ -42,7 +42,7 @@ export function PromoCardDemo({
       <div className="relative h-[140px] w-full shrink-0 overflow-hidden rounded-2xl sm:h-[120px] sm:w-[130px] bg-gradient-to-tr from-teal-900 to-slate-900 flex items-center justify-center border border-teal-500/20">
         <img
           alt={imageAlt}
-          className="h-full w-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
+          className="h-full w-full object-cover object-center group-hover:scale-105 transition-transform duration-300"
           src={imageSrc}
           onError={(e) => {
             (e.currentTarget as HTMLImageElement).src = '/logo.png';
@@ -74,7 +74,7 @@ export function PromoCardDemo({
         </div>
 
         <div className="mt-2 flex justify-between items-center pt-2 border-t border-slate-100 dark:border-slate-800/80">
-          <span className="text-[11px] font-semibold text-teal-600 dark:text-teal-400 bg-teal-500/10 px-2 py-0.5 rounded-full border border-teal-500/20">
+          <span className="text-xs font-semibold text-teal-600 dark:text-teal-400 bg-teal-500/10 px-2 py-0.5 rounded-full border border-teal-500/20">
             {tag}
           </span>
           <Button size="sm" variant="glow" glowEffect onClick={onCtaClick} icon={<ArrowRight className="w-3.5 h-3.5" />} iconPosition="right">

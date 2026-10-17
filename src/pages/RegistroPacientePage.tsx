@@ -191,7 +191,7 @@ export function RegistroPacientePage() {
       <div className="absolute top-0 right-1/4 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
 
-      <div className="w-full max-w-lg bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-200/80 dark:border-slate-800 relative z-10">
+      <div className="w-full max-w-lg bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 shadow-elevated border border-slate-200/80 dark:border-slate-800 relative z-10">
         {/* Header */}
         <div className="text-center mb-6">
           <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-teal-600/10 text-teal-600 dark:text-teal-400 mb-3 shadow-inner">
@@ -212,7 +212,7 @@ export function RegistroPacientePage() {
               Código de Acceso (Token de 6 dígitos)
             </label>
             {tokenValidated && (
-              <span className="text-[11px] font-bold text-teal-600 dark:text-teal-400 bg-teal-500/10 px-2 py-0.5 rounded-full border border-teal-500/20 flex items-center gap-1">
+              <span className="text-xs font-bold text-teal-600 dark:text-teal-400 bg-teal-500/10 px-2 py-0.5 rounded-full border border-teal-500/20 flex items-center gap-1">
                 <CheckCircle2 size={12} /> Validado
               </span>
             )}
@@ -282,13 +282,13 @@ export function RegistroPacientePage() {
                 <span>Expediente clínico vinculado correctamente</span>
               </div>
               {therapistName && (
-                <p className="text-[11px] text-teal-700 dark:text-teal-300 pl-5">
+                <p className="text-xs text-teal-700 dark:text-teal-300 pl-5">
                   Prescrito por: <strong>{therapistName}</strong>
                   {therapistEmail ? ` (${therapistEmail})` : ''}
                 </p>
               )}
               {diagnostico && (
-                <p className="text-[11px] text-teal-700 dark:text-teal-300 pl-5">
+                <p className="text-xs text-teal-700 dark:text-teal-300 pl-5">
                   Plan: <strong>{diagnostico}</strong>
                 </p>
               )}

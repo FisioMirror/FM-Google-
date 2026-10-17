@@ -287,7 +287,7 @@ export function ProfilePage() {
     <div className="space-y-6 overflow-x-hidden max-w-7xl mx-auto w-full">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Profile card */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="lg:col-span-4 glass-card vibrant-hover rounded-[32px] p-6 flex flex-col items-center text-center hover-lift accent-teal relative overflow-hidden">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="lg:col-span-4 glass-card vibrant-hover rounded-3xl p-6 flex flex-col items-center text-center hover-lift accent-teal relative overflow-hidden">
           <div className="blob-teal w-32 h-32 -top-6 -right-6 opacity-40" />
           <div className="relative">
             <div className="avatar-ring w-32 h-32">
@@ -371,7 +371,7 @@ export function ProfilePage() {
           <AnimatedTabs
             tabs={[
               { id: 'personal', label: 'Datos Personales', content: (
-                <GlassPanel className="p-6 rounded-[32px] card-glow-hover shimmer-border hover-lift accent-teal">
+                <GlassPanel className="p-6 rounded-3xl card-glow-hover shimmer-border hover-lift accent-teal">
                   <div className="flex justify-between items-center mb-6">
                     <h3 className="font-headline-lg-mobile gradient-text-living font-bold">Información Personal</h3>
                     <button onClick={() => setEditing(!editing)} className="flex items-center gap-2 text-primary font-bold text-sm hover-lift badge-teal px-3 py-1 rounded-full breathe-badge">
@@ -388,7 +388,7 @@ export function ProfilePage() {
                       { label: 'Año de Egreso', key: 'anio_egreso', type: 'number' },
                     ].map((field) => (
                       <div key={field.key} className="p-4 rounded-2xl bg-surface-container-low/60 border divider-teal">
-                        <label className="text-[10px] uppercase text-outline font-bold block mb-1">{field.label}</label>
+                        <label className="text-2xs uppercase text-outline font-bold block mb-1">{field.label}</label>
                         {editing ? (
                           <input
                             type={field.type}
@@ -411,7 +411,7 @@ export function ProfilePage() {
               ) },
               { id: 'preferences', label: 'Preferencias', content: (
                 <>
-                <GlassPanel className="p-6 rounded-[32px] card-glow-hover hover-lift">
+                <GlassPanel className="p-6 rounded-3xl card-glow-hover hover-lift">
                   <h3 className="font-headline-lg-mobile gradient-text-living font-bold mb-6">Preferencias del Sistema</h3>
                   <div className="space-y-2">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 hover:bg-surface-variant/20 rounded-2xl gap-3">
@@ -469,11 +469,11 @@ export function ProfilePage() {
                   </div>
                 </GlassPanel>
                 {isFisio && (
-                  <GlassPanel className="p-6 rounded-[32px] card-glow-hover hover-lift mt-6 shimmer-border relative overflow-hidden">
+                  <GlassPanel className="p-6 rounded-3xl card-glow-hover hover-lift mt-6 shimmer-border relative overflow-hidden">
                     <div className="absolute -top-10 -right-10 w-32 h-32 rounded-full bg-gradient-to-br from-cyan-400/15 to-teal-500/10 blur-2xl pointer-events-none" />
                     <h3 className="font-headline-lg-mobile gradient-text-living font-bold mb-6 relative">Configuración de Clínica</h3>
                     <div className="relative">
-                      <label className="text-[10px] uppercase text-outline font-bold block mb-2">Nombre de la Clínica</label>
+                      <label className="text-2xs uppercase text-outline font-bold block mb-2">Nombre de la Clínica</label>
                       <div
                         className="flex items-center gap-3 p-4 rounded-2xl bg-surface-container-low/60 border divider-teal transition-all"
                         onMouseEnter={() => setClinicNameHover(true)}
@@ -533,7 +533,7 @@ export function ProfilePage() {
               ) },
               { id: 'activity', label: isFisio ? 'Actividad' : 'Sesiones', content: (
                 <>
-                <GlassPanel className="p-6 rounded-[32px] card-glow-hover hover-lift shimmer-border relative overflow-hidden">
+                <GlassPanel className="p-6 rounded-3xl card-glow-hover hover-lift shimmer-border relative overflow-hidden">
                   <div className="absolute -top-10 -right-10 w-32 h-32 rounded-full bg-gradient-to-br from-cyan-400/15 to-teal-500/10 blur-2xl pointer-events-none" />
                   <div className="relative">
                     <div className="flex items-center justify-between mb-6">

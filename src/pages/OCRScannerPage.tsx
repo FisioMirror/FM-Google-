@@ -575,7 +575,7 @@ export function OCRScannerPage() {
       <AnimatePresence mode="wait">
         {step === 1 && (
           <motion.div key="step1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-            <GlassPanel className="p-8 rounded-[32px] space-y-6 border border-white/50 shadow-2xl card-glow-hover">
+            <GlassPanel className="p-8 rounded-3xl space-y-6 border border-white/50 shadow-elevated card-glow-hover">
               {/* Entry mode selector */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <button
@@ -648,13 +648,13 @@ export function OCRScannerPage() {
                       <div className="flex items-center gap-2 text-primary">
                         <Icon name="mic" size={18} />
                         <span className="font-label-sm text-label-sm font-bold">Nota de Voz Clínica</span>
-                        <span className="ml-auto text-[10px] font-bold text-outline uppercase">Voz IA</span>
+                        <span className="ml-auto text-2xs font-bold text-outline uppercase">Voz IA</span>
                       </div>
                       <div className="flex items-center gap-6 py-4">
                         <button
                           onClick={isRecording ? stopRecording : startRecording}
                           aria-label={isRecording ? 'Detener grabación' : 'Iniciar grabación'}
-                          className={`w-14 h-14 ${isRecording ? 'bg-red-500' : 'bg-primary'} text-white rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-transform`}
+                          className={`w-14 h-14 ${isRecording ? 'bg-red-500' : 'bg-primary'} text-white rounded-full flex items-center justify-center shadow-card active:scale-90 transition-transform`}
                         >
                           <Icon name={isRecording ? 'stop' : 'mic'} size={28} />
                         </button>
@@ -667,10 +667,10 @@ export function OCRScannerPage() {
                                 <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500" />
                               </span>
                             )}
-                            <span className="text-[10px] font-bold text-outline">
+                            <span className="text-2xs font-bold text-outline">
                               {audioURL ? 'Grabación lista' : isRecording ? 'Grabando...' : 'Listo para grabar'}
                             </span>
-                            <span className="ml-auto text-[10px] font-bold text-outline tabular-nums">
+                            <span className="ml-auto text-2xs font-bold text-outline tabular-nums">
                               {formatTime(recordSeconds)}
                             </span>
                           </div>
@@ -694,7 +694,7 @@ export function OCRScannerPage() {
                           </button>
                           {audioTranscription && (
                             <div className="p-3 rounded-xl bg-primary/5 border border-primary/10">
-                              <p className="text-[10px] font-bold text-primary uppercase mb-1">Transcripción</p>
+                              <p className="text-2xs font-bold text-primary uppercase mb-1">Transcripción</p>
                               <textarea
                                 value={audioTranscription}
                                 onChange={(e) => setAudioTranscription(e.target.value)}
@@ -742,7 +742,7 @@ export function OCRScannerPage() {
                     <button
                       onClick={processWithAI}
                       disabled={processing || files.length === 0}
-                      className="premium-btn relative overflow-hidden px-10 py-4 bg-primary text-white rounded-xl font-bold font-label-sm text-label-sm shadow-xl shadow-primary/20 hover:shadow-primary/40 hover:-translate-y-0.5 active:scale-95 flex items-center gap-3 disabled:opacity-50 transition-all"
+                      className="premium-btn relative overflow-hidden px-10 py-4 bg-primary text-white rounded-xl font-bold font-label-sm text-label-sm shadow-elevated shadow-primary/20 hover:shadow-primary/40 hover:-translate-y-0.5 active:scale-95 flex items-center gap-3 disabled:opacity-50 transition-all"
                     >
                       {processing ? <><Spinner size={20} className="text-white" /> <LoadingText context="ocr" /></> : <><Icon name="psychology" size={20} /> Procesar con IA</>}
                     </button>
@@ -763,7 +763,7 @@ export function OCRScannerPage() {
                     <button onClick={() => navigate('/patients')} className="px-8 py-3 text-on-surface-variant font-bold font-label-sm text-label-sm hover:bg-surface-variant/30 rounded-xl transition-all">Cancelar</button>
                     <button
                       onClick={startManualEntry}
-                      className="premium-btn px-10 py-4 bg-primary text-white rounded-xl font-bold font-label-sm text-label-sm shadow-xl shadow-primary/20 hover:shadow-primary/40 hover:-translate-y-0.5 active:scale-95 flex items-center gap-3 transition-all"
+                      className="premium-btn px-10 py-4 bg-primary text-white rounded-xl font-bold font-label-sm text-label-sm shadow-elevated shadow-primary/20 hover:shadow-primary/40 hover:-translate-y-0.5 active:scale-95 flex items-center gap-3 transition-all"
                     >
                       <Icon name="arrow_forward" size={20} /> Ir al Formulario
                     </button>
@@ -940,7 +940,7 @@ export function OCRScannerPage() {
               <button onClick={() => setStep(1)} className="flex items-center gap-2 px-8 py-4 rounded-2xl bg-surface-variant/30 text-on-surface-variant font-bold hover:bg-surface-variant/50 transition-all">
                 <Icon name="arrow_back" size={20} /> Volver
               </button>
-              <button onClick={() => setStep(3)} className="premium-btn flex items-center gap-3 px-10 py-4 rounded-2xl bg-primary text-on-primary font-bold shadow-xl shadow-primary/30 hover:scale-[1.02] active:scale-95 transition-all">
+              <button onClick={() => setStep(3)} className="premium-btn flex items-center gap-3 px-10 py-4 rounded-2xl bg-primary text-on-primary font-bold shadow-elevated shadow-primary/30 hover:scale-[1.02] active:scale-95 transition-all">
                 Confirmar y Continuar <Icon name="arrow_forward" size={20} />
               </button>
             </div>
@@ -978,11 +978,11 @@ export function OCRScannerPage() {
                       exercises
                         .filter((ex) => ex.nombre.toLowerCase().includes(prescriptionSearch.toLowerCase()))
                         .map((ex, i) => (
-                      <div key={ex.id || i} className={`glass-panel rounded-[2rem] overflow-hidden group transition-all card-glow-hover ${i < 2 ? 'border-2 border-primary/20 relative' : ''}`}>
-                        {i < 2 && <div className="absolute top-3 right-3 z-10 px-3 py-1 rounded-full bg-primary text-on-primary text-[10px] font-bold uppercase tracking-widest flex items-center gap-1 shadow-lg"><Icon name="auto_awesome" size={12} /> IA Recomendado</div>}
+                      <div key={ex.id || i} className={`glass-panel rounded-3xl overflow-hidden group transition-all card-glow-hover ${i < 2 ? 'border-2 border-primary/20 relative' : ''}`}>
+                        {i < 2 && <div className="absolute top-3 right-3 z-10 px-3 py-1 rounded-full bg-primary text-on-primary text-2xs font-bold uppercase tracking-widest flex items-center gap-1 shadow-card"><Icon name="auto_awesome" size={12} /> IA Recomendado</div>}
                         <div className="relative h-40 bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center">
                           <MedicalIcon name="gymnastics" size={48} className="text-primary/30 animate-breathe-icon" />
-                          {ex.fase_recuperacion && <div className="absolute top-3 left-3 px-3 py-1 rounded-full bg-primary text-on-primary text-[10px] font-bold uppercase tracking-widest">{ex.fase_recuperacion}</div>}
+                          {ex.fase_recuperacion && <div className="absolute top-3 left-3 px-3 py-1 rounded-full bg-primary text-on-primary text-2xs font-bold uppercase tracking-widest">{ex.fase_recuperacion}</div>}
                         </div>
                         <div className="p-4 flex flex-col gap-2">
                           <h3 className="font-title-md text-title-md text-primary">{ex.nombre}</h3>
@@ -1023,7 +1023,7 @@ export function OCRScannerPage() {
                       <div className="grid grid-cols-3 gap-2">
                         {(['sets', 'reps', 'freq'] as const).map((field) => (
                           <div key={field}>
-                            <label className="text-[10px] font-bold text-outline uppercase block">{field === 'sets' ? 'Series' : field === 'reps' ? 'Repet.' : 'Frec.'}</label>
+                            <label className="text-2xs font-bold text-outline uppercase block">{field === 'sets' ? 'Series' : field === 'reps' ? 'Repet.' : 'Frec.'}</label>
                             <div className="flex items-center justify-between glass-teal px-3 py-2 rounded-lg">
                               <button onClick={() => updatePrescription(i, field, -1)} aria-label={`Reducir ${field}`} className="text-sm text-primary">−</button>
                               <span className="font-bold text-primary">{item[field]}</span>
@@ -1047,7 +1047,7 @@ export function OCRScannerPage() {
               <button onClick={() => setStep(2)} className="flex items-center gap-2 px-6 py-3 rounded-xl hover:bg-surface-container transition-all text-secondary font-semibold">
                 <Icon name="arrow_back" size={20} /> Volver a Validación
               </button>
-              <button onClick={generateToken} className="premium-btn px-8 py-4 rounded-2xl bg-primary text-on-primary font-bold shadow-lg hover:shadow-primary/20 hover:-translate-y-0.5 active:scale-95 flex items-center gap-2 transition-all">
+              <button onClick={generateToken} className="premium-btn px-8 py-4 rounded-2xl bg-primary text-on-primary font-bold shadow-card hover:shadow-primary/20 hover:-translate-y-0.5 active:scale-95 flex items-center gap-2 transition-all">
                 Generar Token del Paciente <Icon name="bolt" filled size={20} />
               </button>
             </div>
@@ -1078,14 +1078,14 @@ export function OCRScannerPage() {
                   <div className="glass-teal rounded-2xl p-4 border border-outline-variant/30 flex items-center gap-4">
                     <div className="w-12 h-12 rounded-full bg-secondary-container border border-outline-variant flex items-center justify-center"><Icon name="person" size={24} /></div>
                     <div>
-                      <p className="text-[10px] text-secondary uppercase">Paciente</p>
+                      <p className="text-2xs text-secondary uppercase">Paciente</p>
                       <p className="font-title-md text-title-md text-on-surface">{extractedData.nombre_completo}</p>
                     </div>
                   </div>
                   <div className="glass-teal rounded-2xl p-4 border border-outline-variant/30 flex items-center gap-4">
                     <div className="w-12 h-12 rounded-full bg-tertiary-fixed flex items-center justify-center"><Icon name="document_scanner" size={24} /></div>
                     <div>
-                      <p className="text-[10px] text-secondary uppercase">Resumen Rutina</p>
+                      <p className="text-2xs text-secondary uppercase">Resumen Rutina</p>
                       <p className="font-title-md text-title-md text-on-surface">{prescription.length} Ejercicios</p>
                     </div>
                   </div>
@@ -1100,7 +1100,7 @@ export function OCRScannerPage() {
                   </button>
                 </div>
 
-                <button onClick={() => navigate('/patients')} className="premium-btn bg-primary text-on-primary py-5 px-10 rounded-2xl font-title-md text-title-md shadow-xl hover:shadow-2xl hover:-translate-y-1 flex items-center justify-center gap-3 transition-all">
+                <button onClick={() => navigate('/patients')} className="premium-btn bg-primary text-on-primary py-5 px-10 rounded-2xl font-title-md text-title-md shadow-elevated hover:shadow-elevated hover:-translate-y-1 flex items-center justify-center gap-3 transition-all">
                   Finalizar y volver al Directorio <Icon name="arrow_forward" size={20} />
                 </button>
               </div>

@@ -63,7 +63,7 @@ export function Dialog({
               exit={{ opacity: 0, scale: 0.94, y: 12 }}
               transition={{ type: "spring", damping: 25, stiffness: 350 }}
               className={cn(
-                "relative w-full rounded-2xl sm:rounded-3xl p-6 sm:p-7 shadow-2xl",
+                "relative w-full rounded-2xl sm:rounded-3xl p-6 sm:p-7 shadow-elevated",
                 "bg-surface/95 dark:bg-surface-container/95 border border-outline-variant/30 dark:border-white/10 text-on-surface",
                 glassEffect && "backdrop-blur-2xl",
                 maxWidth

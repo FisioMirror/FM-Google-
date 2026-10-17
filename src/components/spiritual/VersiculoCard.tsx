@@ -172,10 +172,10 @@ export function VersiculoCard({
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-[11px] font-black uppercase tracking-wider text-teal-700 dark:text-teal-300">
+              <span className="text-xs font-black uppercase tracking-wider text-teal-700 dark:text-teal-300">
                 {contextTitle || 'Palabra de Fortaleza & Fe'}
               </span>
-              <span className="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-700 dark:text-teal-300 border border-teal-500/20 font-bold">
+              <span className="inline-flex items-center gap-1 text-2xs px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-700 dark:text-teal-300 border border-teal-500/20 font-bold">
                 <Sparkles className="size-2.5" />
                 {CATEGORIAS_METADATA[categoria]?.label || 'Reflexión'}
               </span>
@@ -275,7 +275,7 @@ export function VersiculoCard({
                   — {versiculo.cita}
                 </p>
                 {versiculo.tema && (
-                  <span className="text-[11px] text-outline italic">
+                  <span className="text-xs text-outline italic">
                     {versiculo.tema}
                   </span>
                 )}
@@ -287,7 +287,7 @@ export function VersiculoCard({
 
       {/* Footer bar */}
       <div className="relative z-10 mt-4 pt-3 border-t border-outline/10 flex items-center justify-between">
-        <p className="text-[11px] text-on-surface-variant">
+        <p className="text-xs text-on-surface-variant">
           Persevera con fe: cada repetición y cada esfuerzo renuevan tu salud.
         </p>
         <button

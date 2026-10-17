@@ -70,7 +70,7 @@ export const RehabEnergyBar: React.FC<RehabEnergyBarProps> = ({
           <div className="text-xl font-bold font-mono tabular-nums text-on-surface dark:text-white">
             {Math.round(clampedEnergy)}%
           </div>
-          <span className="text-[10px] uppercase font-semibold tracking-wider text-slate-400">
+          <span className="text-2xs uppercase font-semibold tracking-wider text-slate-400">
             {isLowEnergy ? 'Fatiga Alta' : clampedEnergy < 60 ? 'Moderada' : 'Óptima'}
           </span>
         </div>

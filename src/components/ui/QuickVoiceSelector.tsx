@@ -125,7 +125,7 @@ export function QuickVoiceSelector({
           <span className="font-semibold text-on-surface">
             {gender === 'male' ? 'Dr. Physi (Masc.)' : 'Dra. Physi (Fem.)'}
           </span>
-          <span className="hidden sm:inline-block text-[10px] px-1.5 py-0.5 rounded-full font-mono bg-teal-500/10 text-teal-700 dark:text-teal-300 border border-teal-500/20">
+          <span className="hidden sm:inline-block text-2xs px-1.5 py-0.5 rounded-full font-mono bg-teal-500/10 text-teal-700 dark:text-teal-300 border border-teal-500/20">
             {provider === 'auto' ? 'Voz Neural' : provider === 'fish_audio' ? 'Fish Audio' : 'Offline'}
           </span>
         </div>
@@ -154,7 +154,7 @@ export function QuickVoiceSelector({
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 8, scale: 0.95 }}
               transition={{ duration: 0.2, ease: 'easeOut' }}
-              className="absolute right-0 top-full mt-2 w-80 sm:w-96 rounded-3xl bg-surface/95 dark:bg-surface-container/95 backdrop-blur-2xl border border-teal-500/30 dark:border-white/10 shadow-2xl p-4 sm:p-5 z-[150] text-on-surface"
+              className="absolute right-0 top-full mt-2 w-80 sm:w-96 rounded-3xl bg-surface/95 dark:bg-surface-container/95 backdrop-blur-2xl border border-teal-500/30 dark:border-white/10 shadow-elevated p-4 sm:p-5 z-[150] text-on-surface"
             >
               {/* Header */}
               <div className="flex items-center justify-between pb-3 border-b border-outline-variant/20 dark:border-white/10">
@@ -164,7 +164,7 @@ export function QuickVoiceSelector({
                   </div>
                   <div>
                     <h3 className="font-bold text-sm text-on-surface">Voz Humana de Physi</h3>
-                    <p className="text-[11px] text-on-surface-variant">Síntesis natural para clínica y terapia</p>
+                    <p className="text-xs text-on-surface-variant">Síntesis natural para clínica y terapia</p>
                   </div>
                 </div>
                 <button
@@ -195,7 +195,7 @@ export function QuickVoiceSelector({
                       <span className="text-xs font-bold">Dr. Physi</span>
                       {gender === 'male' && <Check className="size-3.5 text-teal-600 dark:text-teal-400" />}
                     </div>
-                    <p className="text-[10px] text-on-surface-variant leading-tight">
+                    <p className="text-2xs text-on-surface-variant leading-tight">
                       Masculino cálido, empático y profesional.
                     </p>
                   </button>
@@ -213,7 +213,7 @@ export function QuickVoiceSelector({
                       <span className="text-xs font-bold">Dra. Physi</span>
                       {gender === 'female' && <Check className="size-3.5 text-teal-600 dark:text-teal-400" />}
                     </div>
-                    <p className="text-[10px] text-on-surface-variant leading-tight">
+                    <p className="text-2xs text-on-surface-variant leading-tight">
                       Femenina suave, articulada y motivadora.
                     </p>
                   </button>
@@ -240,11 +240,11 @@ export function QuickVoiceSelector({
                     <div className="pr-2">
                       <div className="flex items-center gap-1.5">
                         <span className="text-xs font-bold">Voz Neuronal Gratuita</span>
-                        <span className="text-[9px] font-bold px-1.5 py-0.2 rounded-full bg-emerald-500/20 text-emerald-700 dark:text-emerald-300">
+                        <span className="text-2xs font-bold px-1.5 py-0.2 rounded-full bg-emerald-500/20 text-emerald-700 dark:text-emerald-300">
                           Recomendado
                         </span>
                       </div>
-                      <p className="text-[11px] text-on-surface-variant">
+                      <p className="text-xs text-on-surface-variant">
                         Alta fidelidad, sin latencia (&lt;350ms) y 100% gratuita sin claves.
                       </p>
                     </div>
@@ -266,11 +266,11 @@ export function QuickVoiceSelector({
                     <div className="pr-2">
                       <div className="flex items-center gap-1.5">
                         <span className="text-xs font-bold">Fish Audio S2.1 Pro</span>
-                        <span className="text-[9px] font-bold px-1.5 py-0.2 rounded-full bg-blue-500/20 text-blue-700 dark:text-blue-300">
+                        <span className="text-2xs font-bold px-1.5 py-0.2 rounded-full bg-blue-500/20 text-blue-700 dark:text-blue-300">
                           Clave Opcional
                         </span>
                       </div>
-                      <p className="text-[11px] text-on-surface-variant">
+                      <p className="text-xs text-on-surface-variant">
                         Voz hiperrealista de Fish Audio. Admite tu API key personalizada de fish.audio.
                       </p>
                     </div>
@@ -292,11 +292,11 @@ export function QuickVoiceSelector({
                     <div className="pr-2">
                       <div className="flex items-center gap-1.5">
                         <span className="text-xs font-bold">Síntesis Local (Offline)</span>
-                        <span className="text-[9px] font-bold px-1.5 py-0.2 rounded-full bg-amber-500/20 text-amber-700 dark:text-amber-300">
+                        <span className="text-2xs font-bold px-1.5 py-0.2 rounded-full bg-amber-500/20 text-amber-700 dark:text-amber-300">
                           Sin Internet
                         </span>
                       </div>
-                      <p className="text-[11px] text-on-surface-variant">
+                      <p className="text-xs text-on-surface-variant">
                         Motor interno del dispositivo calibrado con entonación médica.
                       </p>
                     </div>
@@ -313,7 +313,7 @@ export function QuickVoiceSelector({
                     animate={{ opacity: 1, height: 'auto' }}
                     className="p-3 rounded-2xl bg-surface-container/60 border border-teal-500/20 space-y-1.5"
                   >
-                    <label className="text-[11px] font-semibold text-on-surface flex items-center gap-1">
+                    <label className="text-xs font-semibold text-on-surface flex items-center gap-1">
                       <Key className="size-3 text-teal-600" />
                       <span>Clave API nativa de Fish Audio (opcional)</span>
                     </label>
@@ -324,7 +324,7 @@ export function QuickVoiceSelector({
                       onChange={(e) => handleKeySave(e.target.value)}
                       className="w-full px-3 py-1.5 text-xs rounded-xl bg-surface border border-outline-variant/30 focus:border-teal-500 focus:outline-hidden text-on-surface"
                     />
-                    <p className="text-[10px] text-on-surface-variant">
+                    <p className="text-2xs text-on-surface-variant">
                       Si no ingresas una clave, se usará automáticamente el motor neuronal gratuito como respaldo.
                     </p>
                   </motion.div>
@@ -338,7 +338,7 @@ export function QuickVoiceSelector({
                     <Sliders className="size-3.5 text-teal-600 dark:text-teal-400" />
                     Ritmo de Articulación
                   </span>
-                  <span className="text-[11px] font-mono text-teal-600 dark:text-teal-400 font-bold">
+                  <span className="text-xs font-mono text-teal-600 dark:text-teal-400 font-bold">
                     {speed === 0.9 ? '0.9x (Pausado)' : speed === 1.1 ? '1.1x (Ágil)' : '1.0x (Normal)'}
                   </span>
                 </label>

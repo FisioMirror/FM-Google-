@@ -139,7 +139,7 @@ export function CheckboxPreferencesDemo() {
             </Checkbox.Control>
             <div>
               <p className="font-bold text-slate-900 dark:text-white">Notificaciones por Correo</p>
-              <p className="text-[11px] font-normal text-slate-500 dark:text-slate-400">
+              <p className="text-xs font-normal text-slate-500 dark:text-slate-400">
                 Resúmenes semanales de evolución y notas de tu fisioterapeuta.
               </p>
             </div>
@@ -153,7 +153,7 @@ export function CheckboxPreferencesDemo() {
             </Checkbox.Control>
             <div>
               <p className="font-bold text-slate-900 dark:text-white">Alertas Push en Navegador</p>
-              <p className="text-[11px] font-normal text-slate-500 dark:text-slate-400">
+              <p className="text-xs font-normal text-slate-500 dark:text-slate-400">
                 Avisos instantáneos al momento de iniciar tu rutina de ejercicios.
               </p>
             </div>
@@ -167,7 +167,7 @@ export function CheckboxPreferencesDemo() {
             </Checkbox.Control>
             <div>
               <p className="font-bold text-slate-900 dark:text-white">Recordatorios SMS / WhatsApp</p>
-              <p className="text-[11px] font-normal text-slate-500 dark:text-slate-400">
+              <p className="text-xs font-normal text-slate-500 dark:text-slate-400">
                 Mensaje directo de recordatorio si tienes más de 48 horas sin entrenar.
               </p>
             </div>

@@ -132,7 +132,7 @@ export function NotificationDrawer({ isOpen, onClose, userId }: NotificationDraw
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 28, stiffness: 300 }}
-            className="w-full max-w-md h-full bg-white dark:bg-slate-900 shadow-2xl border-l border-slate-200/80 dark:border-slate-800 flex flex-col overflow-hidden"
+            className="w-full max-w-md h-full bg-white dark:bg-slate-900 shadow-elevated border-l border-slate-200/80 dark:border-slate-800 flex flex-col overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
@@ -147,12 +147,12 @@ export function NotificationDrawer({ isOpen, onClose, userId }: NotificationDraw
                       Centro de Notificaciones
                     </h2>
                     {unreadCount > 0 && (
-                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-teal-600 text-white shadow-xs">
+                      <span className="px-2 py-0.5 rounded-full text-2xs font-bold bg-teal-600 text-white shadow-xs">
                         {unreadCount} nuevas
                       </span>
                     )}
                   </div>
-                  <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
                     Sincronización clínica en tiempo real
                   </p>
                 </div>
@@ -203,7 +203,7 @@ export function NotificationDrawer({ isOpen, onClose, userId }: NotificationDraw
                     <span>{f.label}</span>
                     {f.count !== undefined && f.count > 0 && (
                       <span
-                        className={`px-1.5 py-0.2 rounded-full text-[9px] font-bold ${
+                        className={`px-1.5 py-0.2 rounded-full text-2xs font-bold ${
                           activeFilter === f.id
                             ? 'bg-white text-teal-700'
                             : 'bg-teal-600 text-white'
@@ -221,7 +221,7 @@ export function NotificationDrawer({ isOpen, onClose, userId }: NotificationDraw
                   id="btn-mark-all-read"
                   type="button"
                   onClick={markAllRead}
-                  className="text-[11px] font-bold text-teal-600 dark:text-teal-400 hover:underline flex items-center gap-1 shrink-0 px-2 py-1 rounded-lg hover:bg-teal-50 dark:hover:bg-teal-950/30 transition-colors"
+                  className="text-xs font-bold text-teal-600 dark:text-teal-400 hover:underline flex items-center gap-1 shrink-0 px-2 py-1 rounded-lg hover:bg-teal-50 dark:hover:bg-teal-950/30 transition-colors"
                 >
                   <CheckCheck size={13} />
                   <span className="hidden sm:inline">Marcar todas</span>
@@ -279,12 +279,12 @@ export function NotificationDrawer({ isOpen, onClose, userId }: NotificationDraw
                             <h4 className="text-xs font-bold text-slate-900 dark:text-slate-100 truncate">
                               {notif.title}
                             </h4>
-                            <span className="text-[10px] text-slate-400 shrink-0 font-medium">
+                            <span className="text-2xs text-slate-400 shrink-0 font-medium">
                               {timeAgo(notif.created_at)}
                             </span>
                           </div>
 
-                          <p className="text-[11px] text-slate-600 dark:text-slate-300 mt-1 leading-relaxed line-clamp-2">
+                          <p className="text-xs text-slate-600 dark:text-slate-300 mt-1 leading-relaxed line-clamp-2">
                             {notif.message}
                           </p>
 
@@ -294,7 +294,7 @@ export function NotificationDrawer({ isOpen, onClose, userId }: NotificationDraw
                               <button
                                 type="button"
                                 onClick={() => handleOpenLink(notif)}
-                                className="px-2.5 py-1 rounded-lg bg-teal-600 hover:bg-teal-700 text-white text-[10px] font-bold transition-all flex items-center gap-1 shadow-xs"
+                                className="px-2.5 py-1 rounded-lg bg-teal-600 hover:bg-teal-700 text-white text-2xs font-bold transition-all flex items-center gap-1 shadow-xs"
                               >
                                 <span>Ver detalle</span>
                                 <ExternalLink size={11} />
@@ -305,7 +305,7 @@ export function NotificationDrawer({ isOpen, onClose, userId }: NotificationDraw
                               <button
                                 type="button"
                                 onClick={() => markRead(notif.id)}
-                                className="text-[10px] font-semibold text-teal-700 dark:text-teal-300 hover:underline flex items-center gap-1"
+                                className="text-2xs font-semibold text-teal-700 dark:text-teal-300 hover:underline flex items-center gap-1"
                               >
                                 <Check size={12} />
                                 <span>Marcar leída</span>
@@ -339,7 +339,7 @@ export function NotificationDrawer({ isOpen, onClose, userId }: NotificationDraw
 
             {/* Footer */}
             <div className="p-3 border-t border-slate-100 dark:border-slate-800 text-center bg-slate-50/50 dark:bg-slate-900/50">
-              <p className="text-[10px] text-slate-400">
+              <p className="text-2xs text-slate-400">
                 FisioMirror Realtime • Avisos de sesiones, videoconsultas y seguridad
               </p>
             </div>

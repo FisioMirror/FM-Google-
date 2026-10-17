@@ -172,13 +172,13 @@ export const TurnstileWidget = forwardRef<TurnstileWidgetRef, TurnstileWidgetPro
 
     return (
       <div className={`turnstile-wrapper my-2 ${className}`}>
-        <div className="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 mb-1.5 px-0.5">
+        <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 mb-1.5 px-0.5">
           <span className="flex items-center gap-1.5 font-medium">
             <ShieldCheck size={13} className={status === 'verified' ? 'text-teal-500' : 'text-slate-400'} />
             Protección de acceso Cloudflare Turnstile
           </span>
           {status === 'verified' && (
-            <span className="text-teal-600 dark:text-teal-400 font-semibold text-[10px] bg-teal-50 dark:bg-teal-950/60 px-1.5 py-0.5 rounded-full border border-teal-200 dark:border-teal-800">
+            <span className="text-teal-600 dark:text-teal-400 font-semibold text-2xs bg-teal-50 dark:bg-teal-950/60 px-1.5 py-0.5 rounded-full border border-teal-200 dark:border-teal-800">
               Verificado
             </span>
           )}
@@ -191,7 +191,7 @@ export const TurnstileWidget = forwardRef<TurnstileWidgetRef, TurnstileWidgetPro
 
         {status === 'error' && (
           <div className="mt-1.5 flex items-center justify-between text-xs text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/40 p-2 rounded-lg border border-red-200 dark:border-red-800/50">
-            <span className="flex items-center gap-1.5 text-[11px]">
+            <span className="flex items-center gap-1.5 text-xs">
               <AlertCircle size={13} />
               {errorMsg || 'Error de verificación CAPTCHA.'}
             </span>
@@ -204,7 +204,7 @@ export const TurnstileWidget = forwardRef<TurnstileWidgetRef, TurnstileWidgetPro
                   setErrorMsg(null);
                 }
               }}
-              className="flex items-center gap-1 text-[11px] font-bold underline hover:opacity-80 ml-2"
+              className="flex items-center gap-1 text-xs font-bold underline hover:opacity-80 ml-2"
             >
               <RefreshCw size={11} /> Reintentar
             </button>

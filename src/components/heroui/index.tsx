@@ -101,7 +101,7 @@ export const BasicAlert = ({ className }: { className?: string }) => {
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-xs sm:text-sm font-bold">Paciente guardado correctamente</p>
-          <p className="text-[11px] sm:text-xs opacity-80 mt-0.5">El expediente se sincronizó y se generó el token de un solo uso.</p>
+          <p className="text-xs sm:text-xs opacity-80 mt-0.5">El expediente se sincronizó y se generó el token de un solo uso.</p>
         </div>
       </motion.div>
 
@@ -114,7 +114,7 @@ export const BasicAlert = ({ className }: { className?: string }) => {
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-xs sm:text-sm font-bold">Error al procesar documento</p>
-          <p className="text-[11px] sm:text-xs opacity-80 mt-0.5">Revisa la iluminación y el formato del archivo médico (PDF/JPG).</p>
+          <p className="text-xs sm:text-xs opacity-80 mt-0.5">Revisa la iluminación y el formato del archivo médico (PDF/JPG).</p>
         </div>
       </motion.div>
 
@@ -127,7 +127,7 @@ export const BasicAlert = ({ className }: { className?: string }) => {
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-xs sm:text-sm font-bold">Procesando prescripción con Physi IA</p>
-          <p className="text-[11px] sm:text-xs opacity-80 mt-0.5">Extrayendo ejercicios sugeridos y calibrando rangos articulares...</p>
+          <p className="text-xs sm:text-xs opacity-80 mt-0.5">Extrayendo ejercicios sugeridos y calibrando rangos articulares...</p>
         </div>
       </motion.div>
     </div>
@@ -173,7 +173,7 @@ export const DeleteDialog = ({
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.94, y: 16 }}
               transition={{ type: 'spring', damping: 25, stiffness: 350 }}
-              className="relative w-full max-w-md rounded-3xl bg-surface border border-outline/20 p-6 sm:p-7 shadow-2xl z-10 space-y-4 max-h-[90vh] overflow-y-auto"
+              className="relative w-full max-w-md rounded-3xl bg-surface border border-outline/20 p-6 sm:p-7 shadow-elevated z-10 space-y-4 max-h-[90vh] overflow-y-auto"
             >
               <div className="flex items-start gap-4">
                 <div className="p-3 rounded-2xl bg-rose-500/15 text-rose-600 border border-rose-500/20 shrink-0">
@@ -225,7 +225,7 @@ export const BasicAvatar = ({
   alt?: string;
 }) => {
   const sizeClasses = {
-    sm: 'size-8 text-[11px]',
+    sm: 'size-8 text-xs',
     md: 'size-10 text-xs',
     lg: 'size-14 text-sm',
     xl: 'size-16 text-base',
@@ -270,7 +270,7 @@ export const AvatarWithBadge = ({
     <div className="relative inline-block">
       <BasicAvatar src={src} fallback={fallback} size="md" />
       {badgeCount > 0 ? (
-        <span className="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-rose-600 px-1 text-[10px] font-black text-white shadow-sm ring-2 ring-surface">
+        <span className="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-rose-600 px-1 text-2xs font-black text-white shadow-sm ring-2 ring-surface">
           {badgeCount}
         </span>
       ) : (
@@ -398,7 +398,7 @@ export const ButtonGroupDropdown = ({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 8, scale: 0.95 }}
             transition={{ type: 'spring', damping: 20, stiffness: 350 }}
-            className="absolute top-full right-0 mt-2 w-48 rounded-2xl bg-surface border border-outline/20 p-1.5 shadow-2xl z-30 space-y-1"
+            className="absolute top-full right-0 mt-2 w-48 rounded-2xl bg-surface border border-outline/20 p-1.5 shadow-elevated z-30 space-y-1"
           >
             {options.map((opt) => (
               <button
@@ -437,15 +437,15 @@ export const CardWithAvatar = ({
   therapist?: string;
 }) => {
   return (
-    <div className="w-full max-w-[260px] rounded-3xl border border-outline/15 bg-surface p-5 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+    <div className="w-full max-w-[260px] rounded-3xl border border-outline/15 bg-surface p-5 shadow-sm hover:shadow-elevated hover:-translate-y-1 transition-all duration-300">
       <div className="flex items-center gap-3.5 mb-3.5">
         <BasicAvatar fallback={name.split(' ').map(n => n[0]).join('').slice(0, 2)} size="md" />
         <div className="min-w-0 flex-1">
           <h4 className="text-xs sm:text-sm font-bold text-on-surface truncate">{name}</h4>
-          <p className="text-[11px] text-on-surface-variant truncate mt-0.5">{subtitle}</p>
+          <p className="text-xs text-on-surface-variant truncate mt-0.5">{subtitle}</p>
         </div>
       </div>
-      <div className="pt-3 border-t border-outline/10 flex items-center justify-between text-[11px]">
+      <div className="pt-3 border-t border-outline/10 flex items-center justify-between text-xs">
         <span className="text-outline">Fisio: {therapist}</span>
         <span className="font-extrabold text-teal-600 dark:text-teal-400 bg-teal-500/10 px-2 py-0.5 rounded-full">
           85% Adh.
@@ -469,12 +469,12 @@ export const CardWithImage = ({
   className?: string;
 }) => {
   return (
-    <div className="relative min-h-[190px] w-full max-w-sm rounded-3xl overflow-hidden shadow-lg group border border-teal-500/20 bg-gradient-to-br from-teal-950 via-slate-900 to-slate-950 p-6 flex flex-col justify-between">
+    <div className="relative min-h-[190px] w-full max-w-sm rounded-3xl overflow-hidden shadow-card group border border-teal-500/20 bg-gradient-to-br from-teal-950 via-slate-900 to-slate-950 p-6 flex flex-col justify-between">
       {/* Background glow mesh */}
-      <div className="absolute top-0 right-0 size-36 bg-teal-500/20 rounded-full blur-3xl pointer-events-none group-hover:scale-150 transition-transform duration-500" />
+      <div className="absolute top-0 right-0 size-36 bg-teal-500/20 rounded-full blur-3xl pointer-events-none group-hover:scale-150 transition-transform duration-300" />
 
       <div className="relative z-10">
-        <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full bg-teal-500/20 text-teal-300 border border-teal-500/30">
+        <span className="text-2xs font-black uppercase tracking-wider px-2.5 py-1 rounded-full bg-teal-500/20 text-teal-300 border border-teal-500/30">
           {category}
         </span>
         <h4 className="text-base sm:text-lg font-extrabold text-white mt-2.5 tracking-tight">{title}</h4>
@@ -508,9 +508,9 @@ export const PremiumCard = ({
   onUpgrade?: () => void;
 }) => {
   return (
-    <div className="relative w-full max-w-md rounded-3xl overflow-hidden border border-teal-500/30 bg-gradient-to-br from-teal-500/10 via-surface to-emerald-500/5 p-7 shadow-xl">
+    <div className="relative w-full max-w-md rounded-3xl overflow-hidden border border-teal-500/30 bg-gradient-to-br from-teal-500/10 via-surface to-emerald-500/5 p-7 shadow-elevated">
       <div className="flex items-center gap-3.5 mb-5">
-        <div className="size-12 rounded-2xl bg-teal-500 text-white flex items-center justify-center shadow-lg shadow-teal-500/30">
+        <div className="size-12 rounded-2xl bg-teal-500 text-white flex items-center justify-center shadow-card shadow-teal-500/30">
           <Star className="size-6" />
         </div>
         <div>
@@ -532,7 +532,7 @@ export const PremiumCard = ({
 
       <button
         onClick={onUpgrade}
-        className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white font-bold text-xs uppercase tracking-wider shadow-lg shadow-teal-600/25 active:scale-[0.98] transition-all cursor-pointer"
+        className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white font-bold text-xs uppercase tracking-wider shadow-card shadow-teal-600/25 active:scale-[0.98] transition-all cursor-pointer"
       >
         Actualizar plan
       </button>
@@ -641,7 +641,7 @@ export const NavigationDrawer = ({
               animate={{ x: 0 }}
               exit={{ x: '-100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              className="relative w-72 max-w-[80vw] h-full bg-surface border-r border-outline/15 p-6 shadow-2xl flex flex-col justify-between z-10"
+              className="relative w-72 max-w-[80vw] h-full bg-surface border-r border-outline/15 p-6 shadow-elevated flex flex-col justify-between z-10"
             >
               <div>
                 <div className="flex items-center justify-between pb-4 border-b border-outline/10">
@@ -668,7 +668,7 @@ export const NavigationDrawer = ({
                   ))}
                 </nav>
               </div>
-              <p className="text-[10px] font-semibold text-outline text-center">FisioMirror • Tele-rehabilitación v3</p>
+              <p className="text-2xs font-semibold text-outline text-center">FisioMirror • Tele-rehabilitación v3</p>
             </motion.div>
           </div>
         )}
@@ -700,7 +700,7 @@ export const ActionDropdown = () => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 8, scale: 0.95 }}
             transition={{ type: 'spring', damping: 20, stiffness: 350 }}
-            className="absolute left-0 mt-2 w-64 rounded-3xl bg-surface border border-outline/20 p-2 shadow-2xl z-30 space-y-1"
+            className="absolute left-0 mt-2 w-64 rounded-3xl bg-surface border border-outline/20 p-2 shadow-elevated z-30 space-y-1"
           >
             <button
               onClick={() => setIsOpen(false)}
@@ -711,7 +711,7 @@ export const ActionDropdown = () => {
               </div>
               <div>
                 <p className="text-xs font-bold text-on-surface">Nuevo paciente</p>
-                <p className="text-[10px] text-on-surface-variant">Generar expediente y token de activación</p>
+                <p className="text-2xs text-on-surface-variant">Generar expediente y token de activación</p>
               </div>
             </button>
             <button
@@ -723,7 +723,7 @@ export const ActionDropdown = () => {
               </div>
               <div>
                 <p className="text-xs font-bold text-on-surface">Abrir biblioteca</p>
-                <p className="text-[10px] text-on-surface-variant">Explorar +50 ejercicios preconfigurados</p>
+                <p className="text-2xs text-on-surface-variant">Explorar +50 ejercicios preconfigurados</p>
               </div>
             </button>
           </motion.div>
@@ -755,10 +755,10 @@ export const SimplePopover = () => {
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.94 }}
             transition={{ type: 'spring', damping: 20, stiffness: 350 }}
-            className="absolute left-0 mt-2 w-56 rounded-3xl bg-surface border border-outline/20 p-4 shadow-xl z-30"
+            className="absolute left-0 mt-2 w-56 rounded-3xl bg-surface border border-outline/20 p-4 shadow-elevated z-30"
           >
             <h5 className="text-xs font-bold text-on-surface mb-1">Opciones Rápidas</h5>
-            <p className="text-[11px] text-on-surface-variant leading-relaxed">
+            <p className="text-xs text-on-surface-variant leading-relaxed">
               Exporta informes de progreso biomecánico o comparte rutinas directamente.
             </p>
           </motion.div>
@@ -775,12 +775,12 @@ export const ProgressSizes = ({ value = 75 }: { value?: number }) => {
   return (
     <div className="flex flex-col gap-4 w-full max-w-sm">
       <div>
-        <div className="flex justify-between text-[11px] font-bold text-outline mb-1">
+        <div className="flex justify-between text-xs font-bold text-outline mb-1">
           <span>Rango inicial (sm)</span>
           <span>{value}%</span>
         </div>
         <div className="h-1.5 w-full rounded-full bg-surface-container-high overflow-hidden">
-          <div className="h-full bg-teal-600 rounded-full transition-all duration-500" style={{ width: `${value}%` }} />
+          <div className="h-full bg-teal-600 rounded-full transition-all duration-300" style={{ width: `${value}%` }} />
         </div>
       </div>
 
@@ -790,7 +790,7 @@ export const ProgressSizes = ({ value = 75 }: { value?: number }) => {
           <span>{value}%</span>
         </div>
         <div className="h-2.5 w-full rounded-full bg-surface-container-high overflow-hidden">
-          <div className="h-full bg-gradient-to-r from-teal-500 to-emerald-500 rounded-full transition-all duration-500 shadow-sm" style={{ width: `${value}%` }} />
+          <div className="h-full bg-gradient-to-r from-teal-500 to-emerald-500 rounded-full transition-all duration-300 shadow-sm" style={{ width: `${value}%` }} />
         </div>
       </div>
 
@@ -800,7 +800,7 @@ export const ProgressSizes = ({ value = 75 }: { value?: number }) => {
           <span>{value}%</span>
         </div>
         <div className="h-4 w-full rounded-full bg-surface-container-high overflow-hidden p-0.5">
-          <div className="h-full bg-gradient-to-r from-teal-500 via-teal-400 to-cyan-500 rounded-full transition-all duration-500 shadow" style={{ width: `${value}%` }} />
+          <div className="h-full bg-gradient-to-r from-teal-500 via-teal-400 to-cyan-500 rounded-full transition-all duration-300 shadow" style={{ width: `${value}%` }} />
         </div>
       </div>
     </div>
@@ -823,13 +823,13 @@ export const DateRange = ({
         <span className="flex items-center gap-2">
           <Calendar className="size-4 text-teal-600" /> Marzo 2026
         </span>
-        <span className="px-2.5 py-0.5 rounded-full bg-teal-500/10 text-teal-700 dark:text-teal-300 font-extrabold text-[10px]">
+        <span className="px-2.5 py-0.5 rounded-full bg-teal-500/10 text-teal-700 dark:text-teal-300 font-extrabold text-2xs">
           {startDate} - {endDate}
         </span>
       </div>
       <div className="grid grid-cols-7 gap-1 text-center text-xs">
         {['L', 'M', 'X', 'J', 'V', 'S', 'D'].map((d) => (
-          <span key={d} className="font-extrabold text-outline text-[10px] py-1">{d}</span>
+          <span key={d} className="font-extrabold text-outline text-2xs py-1">{d}</span>
         ))}
         {Array.from({ length: 31 }).map((_, i) => {
           const day = i + 1;
@@ -867,7 +867,7 @@ export const ScrollableList = ({ itemsCount = 8 }: { itemsCount?: number }) => {
         {Array.from({ length: itemsCount }).map((_, i) => (
           <div key={i} className="p-3 rounded-2xl bg-surface-container-low text-xs text-on-surface flex items-center justify-between hover:bg-surface-container transition-colors">
             <span className="font-medium">Sesión #{i + 1} de rehabilitación</span>
-            <span className="text-[10px] text-teal-600 dark:text-teal-400 font-bold bg-teal-500/10 px-2 py-0.5 rounded-full">
+            <span className="text-2xs text-teal-600 dark:text-teal-400 font-bold bg-teal-500/10 px-2 py-0.5 rounded-full">
               92% ROM
             </span>
           </div>
@@ -906,7 +906,7 @@ export const ToastVariants = () => {
             initial={{ opacity: 0, y: 12, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 12, scale: 0.95 }}
-            className="absolute -top-14 left-0 px-4 py-2.5 rounded-2xl bg-slate-900 text-white text-xs font-bold shadow-2xl z-50 flex items-center gap-2 border border-white/10"
+            className="absolute -top-14 left-0 px-4 py-2.5 rounded-2xl bg-slate-900 text-white text-xs font-bold shadow-elevated z-50 flex items-center gap-2 border border-white/10"
           >
             <Sparkles className="size-3.5 text-teal-400" />
             <span>{toastMsg}</span>
@@ -932,7 +932,7 @@ export const PatientsTable = ({
   return (
     <div className="w-full overflow-x-auto rounded-3xl border border-outline/15 bg-surface shadow-sm">
       <table className="w-full text-left text-xs">
-        <thead className="border-b border-outline/10 bg-surface-container-low text-on-surface-variant font-extrabold uppercase tracking-wider text-[10px]">
+        <thead className="border-b border-outline/10 bg-surface-container-low text-on-surface-variant font-extrabold uppercase tracking-wider text-2xs">
           <tr>
             <th className="p-4">Paciente</th>
             <th className="p-4">Adherencia</th>
@@ -948,7 +948,7 @@ export const PatientsTable = ({
                   <BasicAvatar fallback={u.name[0]} size="sm" />
                   <div>
                     <p className="font-bold text-on-surface">{u.name}</p>
-                    <p className="text-[10px] text-outline">{u.email}</p>
+                    <p className="text-2xs text-outline">{u.email}</p>
                   </div>
                 </div>
               </td>
@@ -957,13 +957,13 @@ export const PatientsTable = ({
                   <div className="h-1.5 w-16 rounded-full bg-surface-container-high overflow-hidden">
                     <div className="h-full bg-teal-500 rounded-full" style={{ width: `${u.adherence}%` }} />
                   </div>
-                  <span className="font-mono text-[11px] font-bold text-on-surface">{u.adherence}%</span>
+                  <span className="font-mono text-xs font-bold text-on-surface">{u.adherence}%</span>
                 </div>
               </td>
               <td className="p-4">
                 <span
                   className={cn(
-                    'px-2.5 py-0.5 rounded-full text-[10px] font-bold',
+                    'px-2.5 py-0.5 rounded-full text-2xs font-bold',
                     u.status === 'Activo'
                       ? 'bg-emerald-500/10 text-emerald-600 border border-emerald-500/20'
                       : u.status === 'Pendiente'
@@ -1006,7 +1006,7 @@ export const CustomAlert = ({
         </div>
         <div className="flex-1">
           <h4 className="text-xs sm:text-sm font-bold text-on-surface">{title}</h4>
-          <p className="text-[11px] sm:text-xs text-on-surface-variant mt-0.5 leading-relaxed">{description}</p>
+          <p className="text-xs sm:text-xs text-on-surface-variant mt-0.5 leading-relaxed">{description}</p>
         </div>
         <button className="px-3.5 py-1.5 rounded-xl bg-amber-500 text-white text-xs font-bold hover:bg-amber-600 transition-colors shrink-0 shadow-sm cursor-pointer">
           Actualizar
@@ -1079,14 +1079,14 @@ export const PopoverInteractive = ({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.94, y: 8 }}
             transition={{ type: 'spring', damping: 20, stiffness: 350 }}
-            className="absolute left-0 mt-2 w-80 rounded-3xl bg-surface border border-outline/20 p-5 shadow-2xl z-30 space-y-3"
+            className="absolute left-0 mt-2 w-80 rounded-3xl bg-surface border border-outline/20 p-5 shadow-elevated z-30 space-y-3"
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <BasicAvatar fallback="SJ" size="md" />
                 <div>
                   <p className="text-sm font-bold text-on-surface">{name}</p>
-                  <p className="text-[10px] text-outline">{handle}</p>
+                  <p className="text-2xs text-outline">{handle}</p>
                 </div>
               </div>
               <button
