@@ -384,7 +384,7 @@ export function PatientDashboard() {
             </div>
             <div>
               <p className="text-2xs sm:text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider line-clamp-1 xs:hidden">{t('dashboard.streak', 'Racha')}</p>
-              <p className="text-xl sm:text-2xl lg:text-3xl font-black text-slate-900 dark:text-slate-100 tabular-nums tracking-tight">
+              <p className="text-xl sm:text-2xl lg:text-3xl font-black text-on-surface tabular-nums tracking-tight">
                 {kpi.streak} <span className="text-2xs sm:text-xs font-semibold text-slate-400">{t('common.days', 'días')}</span>
               </p>
             </div>
@@ -432,7 +432,7 @@ export function PatientDashboard() {
             </div>
             <div>
               <p className="text-2xs sm:text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider line-clamp-1 xs:hidden">{t('dashboard.totalMinutes', 'Minutos')}</p>
-              <p className="text-xl sm:text-2xl lg:text-3xl font-black text-slate-900 dark:text-slate-100 tabular-nums tracking-tight">
+              <p className="text-xl sm:text-2xl lg:text-3xl font-black text-on-surface tabular-nums tracking-tight">
                 {kpi.weeklyMinutes} <span className="text-2xs sm:text-xs font-semibold text-slate-400">{t('common.minutes', 'min')}</span>
               </p>
             </div>
@@ -491,7 +491,7 @@ export function PatientDashboard() {
                   <span className="w-1.5 h-1.5 rounded-full bg-teal-500 animate-pulse" />
                   Sesión Guiada AR
                 </span>
-                <h3 className="text-xl font-black text-slate-900 dark:text-white">{t('dashboard.todaySession', 'Rutina de Hoy')}</h3>
+                <h3 className="text-xl font-black text-on-surface">{t('dashboard.todaySession', 'Rutina de Hoy')}</h3>
                 <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-medium">
                   {exercises.length > 0
                     ? `${exercises[0].name} con corrección de postura en tiempo real por visión computacional.`

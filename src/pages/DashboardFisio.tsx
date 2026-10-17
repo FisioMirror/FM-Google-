@@ -689,7 +689,7 @@ export function DashboardFisio() {
   ];
 
   return (
-    <div className="space-y-8 overflow-x-hidden max-w-7xl mx-auto w-full">
+    <div className="fm-page">
       <OnboardingGuide />
       {/* Welcome */}
       <div className="relative">
@@ -812,7 +812,7 @@ export function DashboardFisio() {
                 {loadingKpis ? (
                   <Skeleton variant="text" width="60%" height={36} className="mt-1" />
                 ) : (
-                  <h3 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 dark:text-slate-100 tabular-nums tracking-tight">
+                  <h3 className="text-2xl sm:text-3xl lg:text-4xl font-black text-on-surface tabular-nums tracking-tight">
                     {card.isPercent ? (
                       card.numericValue > 0 ? (
                         <>

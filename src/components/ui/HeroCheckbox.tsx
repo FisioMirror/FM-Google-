@@ -27,7 +27,7 @@ export function Surface({ children, className = '' }: { children: React.ReactNod
 }
 
 export function Label({ children, className = '' }: { children: React.ReactNode; className?: string }) {
-  return <h4 className={cn('text-sm sm:text-base font-bold text-slate-900 dark:text-white', className)}>{children}</h4>;
+  return <h4 className={cn('text-sm sm:text-base font-bold text-on-surface', className)}>{children}</h4>;
 }
 
 export function Description({ children, className = '' }: { children: React.ReactNode; className?: string }) {
@@ -138,7 +138,7 @@ export function CheckboxPreferencesDemo() {
               <Checkbox.Indicator />
             </Checkbox.Control>
             <div>
-              <p className="font-bold text-slate-900 dark:text-white">Notificaciones por Correo</p>
+              <p className="font-bold text-on-surface">Notificaciones por Correo</p>
               <p className="text-xs font-normal text-slate-500 dark:text-slate-400">
                 Resúmenes semanales de evolución y notas de tu fisioterapeuta.
               </p>
@@ -152,7 +152,7 @@ export function CheckboxPreferencesDemo() {
               <Checkbox.Indicator />
             </Checkbox.Control>
             <div>
-              <p className="font-bold text-slate-900 dark:text-white">Alertas Push en Navegador</p>
+              <p className="font-bold text-on-surface">Alertas Push en Navegador</p>
               <p className="text-xs font-normal text-slate-500 dark:text-slate-400">
                 Avisos instantáneos al momento de iniciar tu rutina de ejercicios.
               </p>
@@ -166,7 +166,7 @@ export function CheckboxPreferencesDemo() {
               <Checkbox.Indicator />
             </Checkbox.Control>
             <div>
-              <p className="font-bold text-slate-900 dark:text-white">Recordatorios SMS / WhatsApp</p>
+              <p className="font-bold text-on-surface">Recordatorios SMS / WhatsApp</p>
               <p className="text-xs font-normal text-slate-500 dark:text-slate-400">
                 Mensaje directo de recordatorio si tienes más de 48 horas sin entrenar.
               </p>

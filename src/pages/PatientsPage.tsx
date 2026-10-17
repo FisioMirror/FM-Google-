@@ -371,7 +371,7 @@ export function PatientsPage() {
             <Users className="size-4" />
             <span>Gestión Clínica y Acceso</span>
           </div>
-          <h1 className="text-3xl lg:text-4xl font-extrabold tracking-tight text-on-surface">
+          <h1 className="fm-title text-on-surface">
             Pacientes y Llaves de Acceso
           </h1>
           <p className="text-sm text-on-surface-variant mt-1">
@@ -418,7 +418,7 @@ export function PatientsPage() {
             <span className="text-xs sm:text-xs text-teal-800 dark:text-teal-200 font-bold">Total Pacientes</span>
           </div>
           <div className="flex items-end justify-between gap-2">
-            <p className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-slate-100 tabular-nums tracking-tight">{stats.total}</p>
+            <p className="text-2xl sm:text-3xl font-black text-on-surface tabular-nums tracking-tight">{stats.total}</p>
             {onlineCount > 0 && (
               <span className="inline-flex items-center gap-1 sm:gap-1.5 text-2xs sm:text-xs font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-500/15 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full border border-emerald-500/30">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />

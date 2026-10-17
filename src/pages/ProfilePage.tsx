@@ -284,7 +284,7 @@ export function ProfilePage() {
   };
 
   return (
-    <div className="space-y-6 overflow-x-hidden max-w-7xl mx-auto w-full">
+    <div className="fm-page">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Profile card */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="lg:col-span-4 glass-card vibrant-hover rounded-3xl p-6 flex flex-col items-center text-center hover-lift accent-teal relative overflow-hidden">

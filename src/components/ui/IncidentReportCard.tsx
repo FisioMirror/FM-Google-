@@ -192,7 +192,7 @@ export const IncidentReportCard: React.FC<{ className?: string }> = ({ className
           </span>
           <span className="text-2xs text-slate-400">Últimos 7 días</span>
         </div>
-        <h3 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+        <h3 className="fm-title text-on-surface">
           Evolución Biomecánica
         </h3>
         <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
@@ -280,7 +280,7 @@ export const IncidentReportCard: React.FC<{ className?: string }> = ({ className
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="font-bold text-base sm:text-lg text-slate-900 dark:text-white tabular-nums">
+              <span className="font-bold text-base sm:text-lg text-on-surface tabular-nums">
                 {metric.value}
               </span>
               <metric.TrendIcon baseColor={metric.trendBaseColor} strokeColor={metric.trendStrokeColor} />

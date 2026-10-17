@@ -592,7 +592,7 @@ export function StatsPage() {
   }, [sessions]);
 
   return (
-    <div className="space-y-8 overflow-x-hidden max-w-7xl mx-auto w-full">
+    <div className="fm-page">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
         <div>
           <h2 className="font-headline-lg text-headline-lg-mobile lg:text-headline-lg gradient-text-living mb-2">

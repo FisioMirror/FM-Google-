@@ -267,7 +267,7 @@ export function PatientLayout({ children }: PatientLayoutProps) {
             <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-white dark:border-slate-900" />
           </div>
           <div className="min-w-0">
-            <p className="font-bold text-sm text-slate-900 dark:text-slate-100 truncate">{user?.full_name || 'Paciente'}</p>
+            <p className="font-bold text-sm text-on-surface truncate">{user?.full_name || 'Paciente'}</p>
             <div className="flex items-center gap-1.5 mt-0.5">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
               <p className="text-2xs text-teal-600 dark:text-teal-400 uppercase tracking-wider font-semibold">Paciente Activo</p>
@@ -313,7 +313,7 @@ export function PatientLayout({ children }: PatientLayoutProps) {
           <div className="flex items-center gap-3 min-w-0 pr-6">
             <img src="/logo.png" alt="FisioMirror" className="h-9 w-9 min-w-[36px] min-h-[36px] object-contain shrink-0 aspect-square" />
             <div className="flex flex-col min-w-0">
-              <h1 className="text-base font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight whitespace-nowrap">FisioMirror</h1>
+              <h1 className="text-base font-extrabold text-on-surface tracking-tight leading-tight whitespace-nowrap">FisioMirror</h1>
               <p className="text-2xs uppercase tracking-wider text-teal-600 dark:text-teal-400 font-bold whitespace-nowrap">Portal Paciente</p>
             </div>
           </div>
@@ -421,13 +421,13 @@ export function PatientLayout({ children }: PatientLayoutProps) {
               role="dialog"
               aria-modal="true"
               aria-label="Menú de navegación"
-              className="h-full w-72 max-w-[85vw] flex flex-col bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl border-r border-teal-200/50 dark:border-slate-800 text-slate-900 dark:text-slate-100 rounded-r-3xl shadow-elevated overflow-hidden"
+              className="h-full w-72 max-w-[85vw] flex flex-col bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl border-r border-teal-200/50 dark:border-slate-800 text-on-surface rounded-r-3xl shadow-elevated overflow-hidden"
             >
               <div className="p-4 flex items-center justify-between border-b border-teal-100/60 dark:border-slate-800">
                 <div className="flex items-center gap-3">
                   <img src="/logo.png" alt="FisioMirror" className="h-9 w-9 object-contain shrink-0" />
                   <div>
-                    <h2 className="text-base font-extrabold text-slate-900 dark:text-white leading-tight">FisioMirror</h2>
+                    <h2 className="text-base font-extrabold text-on-surface leading-tight">FisioMirror</h2>
                     <p className="text-2xs uppercase tracking-wider text-teal-600 dark:text-teal-400 font-bold">Portal Paciente</p>
                   </div>
                 </div>

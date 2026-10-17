@@ -185,7 +185,7 @@ export function MobileBottomSheet({
                     </div>
                   )}
                   <div className="min-w-0">
-                    <h3 className="font-extrabold text-base sm:text-lg text-slate-900 dark:text-white truncate">
+                    <h3 className="font-extrabold text-base sm:text-lg text-on-surface truncate">
                       {title}
                     </h3>
                     {subtitle && (

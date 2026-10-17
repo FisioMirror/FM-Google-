@@ -180,7 +180,7 @@ export function PatientStatisticsView({
             <p className="text-on-surface-variant text-xs sm:text-xs font-semibold uppercase tracking-wider mb-1 line-clamp-1">
               Sesiones Totales
             </p>
-            <h3 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 dark:text-slate-100 tabular-nums tracking-tight">
+            <h3 className="text-2xl sm:text-3xl lg:text-4xl font-black text-on-surface tabular-nums tracking-tight">
               {totalSessions}
             </h3>
             <p className="text-xs text-on-surface-variant mt-1">Registradas con IA AR Mirror</p>
@@ -201,7 +201,7 @@ export function PatientStatisticsView({
             <p className="text-on-surface-variant text-xs sm:text-xs font-semibold uppercase tracking-wider mb-1 line-clamp-1">
               Minutos Acumulados
             </p>
-            <h3 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 dark:text-slate-100 tabular-nums tracking-tight">
+            <h3 className="text-2xl sm:text-3xl lg:text-4xl font-black text-on-surface tabular-nums tracking-tight">
               {totalMinutes} <span className="text-sm font-bold text-on-surface-variant">min</span>
             </h3>
             <p className="text-xs text-on-surface-variant mt-1">Tiempo de rehabilitación activo</p>
@@ -224,7 +224,7 @@ export function PatientStatisticsView({
             <p className="text-on-surface-variant text-xs sm:text-xs font-semibold uppercase tracking-wider mb-1 line-clamp-1">
               Calidad Biomecánica
             </p>
-            <h3 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 dark:text-slate-100 tabular-nums tracking-tight">
+            <h3 className="text-2xl sm:text-3xl lg:text-4xl font-black text-on-surface tabular-nums tracking-tight">
               {avgQuality > 0 ? `${avgQuality}%` : '—'}
             </h3>
             <p className="text-xs text-on-surface-variant mt-1">Precisión de trayectoria angular</p>
@@ -245,7 +245,7 @@ export function PatientStatisticsView({
             <p className="text-on-surface-variant text-xs sm:text-xs font-semibold uppercase tracking-wider mb-1 line-clamp-1">
               ROM Máximo Alcanzado
             </p>
-            <h3 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 dark:text-slate-100 tabular-nums tracking-tight">
+            <h3 className="text-2xl sm:text-3xl lg:text-4xl font-black text-on-surface tabular-nums tracking-tight">
               {peakRom > 0 ? `${peakRom}°` : '—'}
             </h3>
             <p className="text-xs text-on-surface-variant mt-1">{affectedLimb || 'Articulación principal'}</p>
@@ -263,7 +263,7 @@ export function PatientStatisticsView({
         >
           <div className="flex items-start justify-between">
             <div>
-              <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+              <h3 className="text-base sm:text-lg font-bold text-on-surface flex items-center gap-2">
                 <Icon name="show_chart" size={20} className="text-teal-600 dark:text-teal-400" />
                 Evolución de Calidad Biomecánica y ROM
               </h3>
@@ -351,7 +351,7 @@ export function PatientStatisticsView({
         >
           <div className="flex items-start justify-between">
             <div>
-              <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+              <h3 className="text-base sm:text-lg font-bold text-on-surface flex items-center gap-2">
                 <Icon name="bar_chart" size={20} className="text-blue-600 dark:text-blue-400" />
                 Volumen y Minutos por Ejercicio
               </h3>
@@ -416,7 +416,7 @@ export function PatientStatisticsView({
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         <div className="lg:col-span-2 ios-glass-heavy refraction-border p-5 sm:p-6 rounded-3xl space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+            <h3 className="text-base sm:text-lg font-bold text-on-surface flex items-center gap-2">
               <Icon name="tune" size={20} className="text-teal-600 dark:text-teal-400" />
               Patrones de Compensación Postural Detectados
             </h3>
@@ -436,7 +436,7 @@ export function PatientStatisticsView({
                     <MedicalIcon name="skeleton" size={18} />
                   </div>
                   <div>
-                    <h4 className="font-bold text-sm text-slate-900 dark:text-slate-100">{comp.title}</h4>
+                    <h4 className="font-bold text-sm text-on-surface">{comp.title}</h4>
                     <p className="text-xs text-on-surface-variant mt-0.5">{comp.desc}</p>
                   </div>
                 </div>
@@ -463,7 +463,7 @@ export function PatientStatisticsView({
               <Icon name="assessment" size={20} />
               <h3 className="font-bold text-sm uppercase tracking-wider">Evaluación Clínica</h3>
             </div>
-            <h4 className="text-lg font-bold text-slate-900 dark:text-slate-100 mb-2">
+            <h4 className="text-lg font-bold text-on-surface mb-2">
               {avgQuality >= 85 ? 'Excelente Progresión Motora' : 'Evolución Favorable y Estable'}
             </h4>
             <p className="text-xs text-on-surface-variant leading-relaxed">
@@ -487,7 +487,7 @@ export function PatientStatisticsView({
       <div className="ios-glass-heavy refraction-border p-5 sm:p-6 rounded-3xl space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+            <h3 className="text-base sm:text-lg font-bold text-on-surface flex items-center gap-2">
               <Icon name="history" size={20} className="text-teal-600 dark:text-teal-400" />
               Historial Detallado de Sesiones & Telemetría
             </h3>
@@ -531,7 +531,7 @@ export function PatientStatisticsView({
                   return (
                     <tr key={s.id || idx} className="hover:bg-surface-container/30 transition-colors">
                       <td className="py-3 px-3 font-medium whitespace-nowrap text-on-surface-variant">{formattedDate}</td>
-                      <td className="py-3 px-3 font-bold text-slate-900 dark:text-slate-100">{s.ejercicio_nombre || 'Sesión Terapéutica'}</td>
+                      <td className="py-3 px-3 font-bold text-on-surface">{s.ejercicio_nombre || 'Sesión Terapéutica'}</td>
                       <td className="py-3 px-3 whitespace-nowrap tabular-nums">{durMin}m {durSec > 0 ? `${durSec}s` : ''}</td>
                       <td className="py-3 px-3 tabular-nums font-bold">{s.repeticiones || 0}</td>
                       <td className="py-3 px-3">

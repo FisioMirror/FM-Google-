@@ -77,7 +77,7 @@ export const JointAnatomyTooltip: React.FC<JointAnatomyTooltipProps> = ({
               </button>
             </div>
             <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-              <strong className="text-slate-900 dark:text-white">Músculos Agonistas:</strong> {agonists}
+              <strong className="text-on-surface">Músculos Agonistas:</strong> {agonists}
             </p>
             <div className="p-2 rounded-xl bg-amber-500/15 border border-amber-500/30 text-2xs text-amber-300 flex items-start gap-1.5">
               <ShieldAlert className="w-3.5 h-3.5 shrink-0 text-amber-400 mt-0.5" />
@@ -208,7 +208,7 @@ export const RapidToleranceAdjuster: React.FC<RapidToleranceAdjusterProps> = ({
           <span className={cn("text-2xs font-bold px-1.5 py-0.2 rounded border", mode.color)}>
             {mode.text}
           </span>
-          <div className="flex items-center gap-1 font-mono font-bold text-slate-900 dark:text-white">
+          <div className="flex items-center gap-1 font-mono font-bold text-on-surface">
             <motion.button
               type="button"
               whileTap={{ scale: 0.85 }}
@@ -500,7 +500,7 @@ export const FloatingMiniStopwatch: React.FC<FloatingMiniStopwatchProps> = ({ cl
       </button>
       <div>
         <span className="text-2xs uppercase font-bold text-slate-400 block tracking-wider">Descanso Restante</span>
-        <span className="font-mono font-black text-slate-900 dark:text-white text-sm">
+        <span className="font-mono font-black text-on-surface text-sm">
           00:{seconds < 10 ? `0${seconds}` : seconds}s
         </span>
       </div>

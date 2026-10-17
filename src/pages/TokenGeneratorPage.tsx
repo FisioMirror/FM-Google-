@@ -179,7 +179,7 @@ export function TokenGeneratorPage() {
   });
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6 overflow-x-hidden">
+    <div className="fm-page-narrow">
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 relative">
         {waveKey > 0 && (
           <div
@@ -189,7 +189,7 @@ export function TokenGeneratorPage() {
           />
         )}
         <div className="relative z-10">
-          <h1 className="font-display text-2xl sm:text-3xl lg:text-4xl font-extrabold gradient-text-living tracking-tight">Tokens de Acceso</h1>
+          <h1 className="font-display fm-title gradient-text-living">Tokens de Acceso</h1>
           <p className="text-on-surface-variant text-xs sm:text-sm font-medium mt-1">Genera y administra códigos seguros de vinculación para tus pacientes.</p>
         </div>
         <div className="relative z-10 shrink-0">

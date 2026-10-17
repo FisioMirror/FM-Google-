@@ -411,7 +411,7 @@ export function PatientDetailPage() {
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="text-2xl lg:text-3xl font-extrabold tracking-tight text-on-surface">
+              <h1 className="fm-title text-on-surface">
                 {patient.full_name}
               </h1>
               <span className="text-xs px-2.5 py-0.5 rounded-full font-bold bg-primary/10 text-primary border border-primary/20">

@@ -126,7 +126,7 @@ export function CompactRomStepper({
           {label}
         </span>
         <div className="flex items-baseline gap-1 mt-0.5">
-          <span className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tabular-nums tracking-tight">
+          <span className="text-xl sm:text-2xl font-black text-on-surface tabular-nums tracking-tight">
             {value}
           </span>
           <span className="text-xs font-bold text-teal-600 dark:text-teal-400 font-mono">

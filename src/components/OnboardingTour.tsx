@@ -77,7 +77,7 @@ export function OnboardingTour({ role, onComplete }: OnboardingTourProps) {
             <div className="w-40 h-56 md:w-48 md:h-64 mb-4 flex items-center justify-center">
               <MascotAnimation type="greeting" size="md" className="!w-40 !h-40 md:!w-48 md:!h-48" />
             </div>
-            <h2 className="font-headline-lg text-headline-lg-mobile lg:text-headline-lg gradient-text-editorial mb-3 break-words whitespace-normal overflow-hidden">
+            <h2 className="fm-title gradient-text-editorial mb-3 break-words whitespace-normal overflow-hidden">
               {role === 'physio' ? '¡Bienvenido, Especialista!' : '¡Bienvenido, Campeón!'}
             </h2>
             <p className="text-on-surface-variant font-body-lg max-w-md mb-8 break-words whitespace-normal overflow-hidden">

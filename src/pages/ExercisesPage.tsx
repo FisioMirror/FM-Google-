@@ -712,7 +712,7 @@ export function ExercisesPage() {
       <div className="relative rounded-3xl p-6 sm:p-8 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border border-white/60 dark:border-teal-500/20 shadow-[0_8px_32px_rgba(0,80,77,0.06)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.35)] border-l-4 border-l-teal-600 dark:border-l-teal-400 overflow-hidden">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 relative z-10">
           <div className="space-y-2">
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+            <h1 className="fm-title text-on-surface">
               Catálogo de Ejercicios & Guía Anatómica
             </h1>
             <p className="text-sm text-slate-600 dark:text-slate-300 max-w-3xl leading-relaxed">
@@ -842,7 +842,7 @@ export function ExercisesPage() {
       ) : filtered.length === 0 ? (
         <div className="p-12 text-center rounded-3xl bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl border border-dashed border-slate-300 dark:border-slate-800">
           <Activity className="size-12 mx-auto text-teal-600/40 mb-3" />
-          <h3 className="text-base font-bold text-slate-900 dark:text-white">No se encontraron ejercicios</h3>
+          <h3 className="text-base font-bold text-on-surface">No se encontraron ejercicios</h3>
           <p className="text-xs text-slate-500 max-w-sm mx-auto mt-1 mb-4">
             Intenta con otro término de búsqueda o cambia la categoría de articulación seleccionada.
           </p>
@@ -907,7 +907,7 @@ export function ExercisesPage() {
                   {/* Title and Badges */}
                   <div className="space-y-1.5 mb-2.5">
                     <div className="flex items-center justify-between gap-2">
-                      <h3 className="text-base font-bold text-slate-900 dark:text-white group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors truncate">
+                      <h3 className="text-base font-bold text-on-surface group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors truncate">
                         {ex.nombre}
                       </h3>
                     </div>
@@ -1054,7 +1054,7 @@ export function ExercisesPage() {
                     {descriptionExercise.categoria || 'Movilidad'}
                   </span>
                 </div>
-                <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white">
+                <h2 className="text-xl sm:text-2xl font-extrabold text-on-surface">
                   {descriptionExercise.nombre}
                 </h2>
                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
@@ -1189,7 +1189,7 @@ export function ExercisesPage() {
         <div className="p-6 space-y-4">
           <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800">
             <div>
-              <h3 className="text-lg font-bold text-slate-900 dark:text-white">Asignar a Paciente</h3>
+              <h3 className="text-lg font-bold text-on-surface">Asignar a Paciente</h3>
               <p className="text-xs text-slate-500">
                 Ejercicio: <strong className="text-teal-600 dark:text-teal-400">{assignExercise?.nombre}</strong>
               </p>
@@ -1297,7 +1297,7 @@ export function ExercisesPage() {
               <div className="flex justify-between items-center pb-3 border-b border-slate-200 dark:border-slate-800">
                 <div className="flex items-center gap-2">
                   <Activity className="size-5 text-teal-600" />
-                  <h3 className="text-xl font-bold text-slate-900 dark:text-white">
+                  <h3 className="text-xl font-bold text-on-surface">
                     {editing ? 'Editar Protocolo de Ejercicio' : 'Nuevo Protocolo de Ejercicio'}
                   </h3>
                 </div>
@@ -1318,7 +1318,7 @@ export function ExercisesPage() {
                   <input
                     value={form.nombre}
                     onChange={(e) => setForm({ ...form, nombre: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-teal-500 text-sm outline-none text-slate-900 dark:text-white"
+                    className="w-full px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-teal-500 text-sm outline-none text-on-surface"
                     placeholder="Ej: Flexión de Hombro Activa"
                   />
                 </div>
@@ -1330,7 +1330,7 @@ export function ExercisesPage() {
                   <textarea
                     value={form.descripcion}
                     onChange={(e) => setForm({ ...form, descripcion: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-teal-500 text-sm outline-none text-slate-900 dark:text-white"
+                    className="w-full px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-teal-500 text-sm outline-none text-on-surface"
                     rows={2}
                     placeholder="Resumen del objetivo terapéutico..."
                   />
@@ -1343,7 +1343,7 @@ export function ExercisesPage() {
                   <textarea
                     value={form.detailed_description}
                     onChange={(e) => setForm({ ...form, detailed_description: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-teal-500 text-sm outline-none font-mono text-xs text-slate-900 dark:text-white"
+                    className="w-full px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-teal-500 text-sm outline-none font-mono text-xs text-on-surface"
                     rows={4}
                     placeholder="Detalla la posición inicial, fase concéntrica, sostén isométrico y retorno excéntrico..."
                   />
@@ -1357,7 +1357,7 @@ export function ExercisesPage() {
                     <select
                       value={form.articulacion}
                       onChange={(e) => setForm({ ...form, articulacion: e.target.value })}
-                      className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-teal-500 text-xs outline-none font-bold text-slate-900 dark:text-white"
+                      className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-teal-500 text-xs outline-none font-bold text-on-surface"
                     >
                       <option value="hombro">Hombro</option>
                       <option value="codo">Codo</option>
@@ -1375,7 +1375,7 @@ export function ExercisesPage() {
                     <input
                       value={form.grupo_muscular}
                       onChange={(e) => setForm({ ...form, grupo_muscular: e.target.value })}
-                      className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-teal-500 text-xs outline-none text-slate-900 dark:text-white"
+                      className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-teal-500 text-xs outline-none text-on-surface"
                       placeholder="Ej: Deltoides, Supraespinoso"
                     />
                   </div>
@@ -1388,7 +1388,7 @@ export function ExercisesPage() {
                       type="number"
                       value={form.series}
                       onChange={(e) => setForm({ ...form, series: parseInt(e.target.value) || 1 })}
-                      className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-teal-500 text-xs outline-none text-slate-900 dark:text-white"
+                      className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-teal-500 text-xs outline-none text-on-surface"
                       min={1}
                     />
                   </div>
@@ -1401,7 +1401,7 @@ export function ExercisesPage() {
                       type="number"
                       value={form.repeticiones}
                       onChange={(e) => setForm({ ...form, repeticiones: parseInt(e.target.value) || 1 })}
-                      className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-teal-500 text-xs outline-none text-slate-900 dark:text-white"
+                      className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-teal-500 text-xs outline-none text-on-surface"
                       min={1}
                     />
                   </div>
@@ -1414,7 +1414,7 @@ export function ExercisesPage() {
                       type="number"
                       value={form.angulo_objetivo}
                       onChange={(e) => setForm({ ...form, angulo_objetivo: parseInt(e.target.value) || 0 })}
-                      className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-teal-500 text-xs outline-none text-slate-900 dark:text-white"
+                      className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-teal-500 text-xs outline-none text-on-surface"
                       min={0}
                       max={360}
                     />
@@ -1427,7 +1427,7 @@ export function ExercisesPage() {
                     <select
                       value={form.lado}
                       onChange={(e) => setForm({ ...form, lado: e.target.value })}
-                      className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-teal-500 text-xs outline-none font-bold text-slate-900 dark:text-white"
+                      className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-teal-500 text-xs outline-none font-bold text-on-surface"
                     >
                       <option value="bilateral">Bilateral</option>
                       <option value="derecho">Derecho</option>

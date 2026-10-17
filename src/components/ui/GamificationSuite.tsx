@@ -54,7 +54,7 @@ export const StreakFlameCounter: React.FC<StreakFlameCounterProps> = ({
 
       <div className="flex-1 min-w-0">
         <div className="flex items-baseline gap-2">
-          <span className="text-3xl font-black font-mono text-slate-900 dark:text-white tabular-nums">
+          <span className="text-3xl font-black font-mono text-on-surface tabular-nums">
             {streakDays}
           </span>
           <span className="text-xs font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider">
@@ -168,7 +168,7 @@ export const MilestoneCelebrationModal: React.FC<MilestoneCelebrationModalProps>
       </div>
 
       <div>
-        <h4 className="text-sm font-black text-slate-900 dark:text-white">{milestoneTitle}</h4>
+        <h4 className="text-sm font-black text-on-surface">{milestoneTitle}</h4>
         <p className="text-xs text-slate-600 dark:text-slate-300 max-w-xs mx-auto mt-0.5">
           Tu fisioterapeuta ha sido notificado del avance clínico en el portal.
         </p>
@@ -355,7 +355,7 @@ export const RehabHeroAvatarCard: React.FC<RehabHeroAvatarCardProps> = ({
         <span className="absolute -bottom-1 -right-1 size-3.5 rounded-full bg-emerald-500 border-2 border-white dark:border-slate-900" />
       </div>
       <div>
-        <h4 className="text-sm font-black text-slate-900 dark:text-white">{patientName}</h4>
+        <h4 className="text-sm font-black text-on-surface">{patientName}</h4>
         <span className="text-xs text-primary font-bold">{rankTitle}</span>
         <span className="text-2xs text-slate-400 block">Nivel 5 • 86% Adherencia</span>
       </div>

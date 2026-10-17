@@ -33,7 +33,7 @@ const OtpFold = () => {
       <div className="flex gap-3 justify-center items-center">
         {values.map((val, idx) => (
           <input key={idx} ref={(el) => (inputRefs.current[idx] = el)} type="text" maxLength={1}
-            className={`w-14 h-16 text-center text-2xl bg-slate-100 dark:bg-slate-700 border-2 border-slate-300 dark:border-slate-600 rounded-xl text-slate-900 dark:text-white outline-none focus:border-teal-500 transition-all duration-300 ${isFolded ? 'scale-0 opacity-0 w-0' : ''}`}
+            className={`w-14 h-16 text-center text-2xl bg-slate-100 dark:bg-slate-700 border-2 border-slate-300 dark:border-slate-600 rounded-xl text-on-surface outline-none focus:border-teal-500 transition-all duration-300 ${isFolded ? 'scale-0 opacity-0 w-0' : ''}`}
             value={val} onChange={(e) => handleChange(idx, e.target.value)} onKeyDown={(e) => handleKeyDown(idx, e)} disabled={isFolded} />
         ))}
         <div className={`${isFolded ? 'flex' : 'hidden'} w-14 h-16 bg-teal-500 text-white rounded-xl items-center justify-center text-2xl cursor-pointer`} onClick={resetOtp}>

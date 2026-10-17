@@ -19,6 +19,7 @@ Guía para agentes que trabajen en esta app. **Aplícala en todo cambio de UI.**
 ## Convenciones (obligatorias en todo cambio de UI)
 - **Tipografía**: usar la escala. Mínimo `text-2xs` (10px); `text-xs` (12px), `text-sm` (14px), `text-base` (16px); `title/headline/display` para jerarquía. **Prohibido** `text-[Npx]` arbitrario.
 - **Radios**: solo escala — `rounded-3xl` (paneles), `rounded-2xl` (tarjetas), `rounded-xl` (controles/inputs/botones), `rounded-full` (píldoras). **Prohibido** `rounded-[...]`.
+- **Shell de página**: usar las primitivas canónicas — `.fm-page` (ancho 7xl + `space-y-8`), `.fm-page-narrow` (4xl), `.fm-title` (H1 responsive), `.fm-subtitle`, `.fm-section-title`. Los layouts ya aplican el padding exterior: **no** volver a añadir `px/py` en la raíz de la página.
 - **Sombras**: suaves y clínicas — `shadow-sm`, `shadow-card`, `shadow-elevated` (o `FM_DESIGN_SYSTEM.shadows`). **Prohibido** `shadow-lg`/`shadow-xl`/`shadow-2xl` de Tailwind. Glows solo vía tokens/`shadow-[...]` intencional.
 - **Transiciones**: `duration-300 ease-out` estándar. Evitar `duration-500/700`.
 - **Color**: tokens semánticos (`surface*`, `on-surface*`, `primary*`, `outline*`). Pasteles médicos vía `CLINICAL_PASTELS`. Mantener coherencia claro/oscuro con `dark:`.

@@ -112,7 +112,7 @@ export function AlertDialogIcon({ status = 'danger' }: { status?: 'danger' | 'wa
 }
 
 export function AlertDialogHeading({ children, className }: { children: React.ReactNode; className?: string }) {
-  return <h3 className={cn('text-base font-bold text-slate-900 dark:text-white', className)}>{children}</h3>;
+  return <h3 className={cn('text-base font-bold text-on-surface', className)}>{children}</h3>;
 }
 
 export function AlertDialogBody({ children, className }: { children: React.ReactNode; className?: string }) {

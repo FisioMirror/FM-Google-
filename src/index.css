@@ -393,6 +393,23 @@ small, .text-muted {
    ═══════════════════════════════════════════════════════════════ */
 
 @layer components {
+  /* ─── Primitivas de página canónicas (jerarquía y ritmo unificados) ─── */
+  .fm-page {
+    @apply w-full max-w-7xl mx-auto space-y-8 overflow-x-hidden;
+  }
+  .fm-page-narrow {
+    @apply w-full max-w-4xl mx-auto space-y-8 overflow-x-hidden;
+  }
+  .fm-title {
+    @apply text-headline-lg-mobile lg:text-headline-lg font-bold tracking-tight;
+  }
+  .fm-subtitle {
+    @apply text-sm text-on-surface-variant leading-relaxed;
+  }
+  .fm-section-title {
+    @apply text-title-md font-bold tracking-tight text-on-surface;
+  }
+
   /* Premium Glass — primary surface with specular highlight */
   .ios-glass {
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.88), rgba(255, 255, 255, 0.65));

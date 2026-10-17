@@ -363,7 +363,7 @@ Equipo FisioMirror`;
                   <ShieldCheck size={22} />
                 </div>
                 <div>
-                  <h3 className="font-extrabold text-base text-slate-900 dark:text-white">
+                  <h3 className="font-extrabold text-base text-on-surface">
                     Enviar Llave de Acceso
                   </h3>
                   <p className="text-xs text-slate-500 dark:text-slate-400">
@@ -483,7 +483,7 @@ Equipo FisioMirror`;
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="paciente@correo.com"
-                      className="w-full pl-10 pr-4 py-2.5 rounded-xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 outline-none focus:border-teal-600 focus:ring-2 focus:ring-teal-600/20"
+                      className="w-full pl-10 pr-4 py-2.5 rounded-xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-on-surface outline-none focus:border-teal-600 focus:ring-2 focus:ring-teal-600/20"
                     />
                   </div>
                 </div>
@@ -527,7 +527,7 @@ Equipo FisioMirror`;
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
                       placeholder="+34 612 345 678"
-                      className="w-full pl-10 pr-4 py-2.5 rounded-xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20"
+                      className="w-full pl-10 pr-4 py-2.5 rounded-xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-on-surface outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20"
                     />
                   </div>
                 </div>
@@ -557,7 +557,7 @@ Equipo FisioMirror`;
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
                       placeholder="+34 612 345 678"
-                      className="w-full pl-10 pr-4 py-2.5 rounded-xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20"
+                      className="w-full pl-10 pr-4 py-2.5 rounded-xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-on-surface outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20"
                     />
                   </div>
                 </div>

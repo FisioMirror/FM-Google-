@@ -680,7 +680,7 @@ export function UIShowcasePage() {
   ];
 
   return (
-    <div className="min-h-[100dvh] bg-slate-50 dark:bg-[#090d12] text-slate-900 dark:text-slate-100 p-4 sm:p-6 lg:p-10 transition-colors">
+    <div className="min-h-[100dvh] bg-slate-50 dark:bg-[#090d12] text-on-surface p-4 sm:p-6 lg:p-10 transition-colors">
       {/* 26. Barra de Progreso de Desplazamiento Global */}
       <ScrollProgress />
 
@@ -705,7 +705,7 @@ export function UIShowcasePage() {
                   Reaviz · HeroUI · Magic UI · Aceternity
                 </span>
               </div>
-              <h1 className="text-2xl sm:text-3xl font-black tracking-tight mt-1 flex items-center gap-2">
+              <h1 className="fm-title mt-1 flex items-center gap-2">
                 Galería de Componentes Evolved
               </h1>
               <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
@@ -732,7 +732,7 @@ export function UIShowcasePage() {
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 p-4 rounded-2xl bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 backdrop-blur-md shadow-xs">
           <div>
             <span className="text-2xs uppercase font-bold tracking-wider text-slate-400">Componentes Usados</span>
-            <div className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tabular-nums flex items-baseline gap-1">
+            <div className="text-xl sm:text-2xl font-black text-on-surface tabular-nums flex items-baseline gap-1">
               <span>72</span>
               <span className="text-2xs font-medium text-slate-400">en FisioMirror</span>
             </div>
@@ -795,7 +795,7 @@ export function UIShowcasePage() {
                   <span className="p-1.5 rounded-lg bg-cyan-500/20 text-cyan-600 dark:text-cyan-400">
                     <Sparkles className="w-5 h-5" />
                   </span>
-                  <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+                  <h2 className="fm-title text-on-surface">
                     Macro Suite FisioMirror (50 Componentes)
                   </h2>
                 </div>
@@ -981,7 +981,7 @@ export function UIShowcasePage() {
                   <span className="p-1.5 rounded-lg bg-teal-500/20 text-teal-600 dark:text-teal-400">
                     <Activity className="w-5 h-5" />
                   </span>
-                  <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+                  <h2 className="fm-title text-on-surface">
                     Suite Estelar de Innovación FisioMirror
                   </h2>
                 </div>
@@ -1321,7 +1321,7 @@ export function UIShowcasePage() {
                   <span className="p-1.5 rounded-lg bg-emerald-500/20 text-emerald-600 dark:text-emerald-400">
                     <Smartphone className="w-5 h-5" />
                   </span>
-                  <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+                  <h2 className="fm-title text-on-surface">
                     PWA Móvil de Alta Densidad & Físicas de Resorte (Spring Motion)
                   </h2>
                 </div>
@@ -1425,7 +1425,7 @@ export function UIShowcasePage() {
                     </span>
                     <span className="text-xs font-mono text-slate-400">ease: [0.16, 1, 0.3, 1]</span>
                   </div>
-                  <h4 className="text-sm font-bold text-slate-900 dark:text-white">
+                  <h4 className="text-sm font-bold text-on-surface">
                     Revelación Progresiva con Desenfoque Dinámico
                   </h4>
                   <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
@@ -1447,7 +1447,7 @@ export function UIShowcasePage() {
                     </span>
                     <span className="text-xs font-mono text-slate-400">stiffness: 420 · damping: 18</span>
                   </div>
-                  <h4 className="text-sm font-bold text-slate-900 dark:text-white">
+                  <h4 className="text-sm font-bold text-on-surface">
                     Respuesta Táctil Visual Inmediata
                   </h4>
                   <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
@@ -1634,7 +1634,7 @@ export function UIShowcasePage() {
                   <span className="p-1.5 rounded-lg bg-sky-500/20 text-sky-600 dark:text-sky-400">
                     <Sparkles className="w-5 h-5" />
                   </span>
-                  <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+                  <h2 className="fm-title text-on-surface">
                     Armonización Cromática Pastel Clínica (FisioMirror Design System)
                   </h2>
                 </div>
@@ -1792,7 +1792,7 @@ export function UIShowcasePage() {
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 {/* Antes: Blanco plano / gris aburrido */}
-                <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 relative">
+                <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-on-surface relative">
                   <div className="flex items-center justify-between mb-3">
                     <span className="text-2xs font-bold px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-300 dark:border-slate-700">
                       Estilo Previo (Blanco / Gris Plano)
@@ -1824,7 +1824,7 @@ export function UIShowcasePage() {
                     </span>
                     <span className="text-xs font-bold text-teal-700 dark:text-teal-300">Contraste AAA</span>
                   </div>
-                  <p className="text-sm font-bold text-slate-900 dark:text-white mb-1">
+                  <p className="text-sm font-bold text-on-surface mb-1">
                     Evaluación Postural de Hombro
                   </p>
                   <p className="text-xs text-slate-700 dark:text-slate-300 mb-4 leading-relaxed">
@@ -1901,7 +1901,7 @@ export function UIShowcasePage() {
                 <span className="text-2xs font-extrabold uppercase tracking-widest text-teal-600 dark:text-teal-400 bg-teal-500/10 px-2.5 py-0.5 rounded-full border border-teal-500/20">
                   Suite Integrada
                 </span>
-                <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white mt-1 flex items-center gap-2">
+                <h2 className="text-xl sm:text-2xl font-black text-on-surface mt-1 flex items-center gap-2">
                   <Sparkles className="w-5 h-5 text-teal-500" />
                   Los 12 Componentes Solicitados con Temática FisioMirror
                 </h2>
@@ -1962,7 +1962,7 @@ export function UIShowcasePage() {
                 </div>
                 <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col justify-between h-[calc(100%-2rem)]">
                   <div>
-                    <h4 className="text-sm font-bold text-slate-900 dark:text-white mb-1">
+                    <h4 className="text-sm font-bold text-on-surface mb-1">
                       Modal de Confirmación Crítica
                     </h4>
                     <p className="text-xs text-slate-500 dark:text-slate-400 mb-6 leading-relaxed">
@@ -2045,7 +2045,7 @@ export function UIShowcasePage() {
                 </div>
                 <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
                   <div>
-                    <h4 className="text-sm font-bold text-slate-900 dark:text-white mb-1">
+                    <h4 className="text-sm font-bold text-on-surface mb-1">
                       Calibración y Configuración Modal
                     </h4>
                     <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mb-4">
@@ -2066,7 +2066,7 @@ export function UIShowcasePage() {
                 </div>
                 <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
                   <div>
-                    <h4 className="text-sm font-bold text-slate-900 dark:text-white mb-1">
+                    <h4 className="text-sm font-bold text-on-surface mb-1">
                       Detalle Biomecánico Dinámico
                     </h4>
                     <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mb-4">
@@ -2090,7 +2090,7 @@ export function UIShowcasePage() {
                 </div>
                 <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
                   <div>
-                    <h4 className="text-sm font-bold text-slate-900 dark:text-white mb-1">
+                    <h4 className="text-sm font-bold text-on-surface mb-1">
                       Panel Lateral de Ajustes de Sesión
                     </h4>
                     <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mb-4">
@@ -2111,7 +2111,7 @@ export function UIShowcasePage() {
                 </div>
                 <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
                   <div>
-                    <h4 className="text-sm font-bold text-slate-900 dark:text-white mb-1">
+                    <h4 className="text-sm font-bold text-on-surface mb-1">
                       Calendario de Intervalo Clínico
                     </h4>
                     <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mb-4">
@@ -2140,7 +2140,7 @@ export function UIShowcasePage() {
                       <span className="text-2xs font-bold text-teal-600 dark:text-teal-400 uppercase tracking-wider bg-teal-500/10 px-2 py-0.5 rounded-md">
                         1. Vista Básica
                       </span>
-                      <h4 className="text-sm font-bold text-slate-900 dark:text-white mt-1 mb-1">
+                      <h4 className="text-sm font-bold text-on-surface mt-1 mb-1">
                         firstDayOfWeek=&quot;mon&quot;
                       </h4>
                       <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">
@@ -2158,7 +2158,7 @@ export function UIShowcasePage() {
                       <span className="text-2xs font-bold text-teal-600 dark:text-teal-400 uppercase tracking-wider bg-teal-500/10 px-2 py-0.5 rounded-md">
                         2. Vista por Semanas (WeekView)
                       </span>
-                      <h4 className="text-sm font-bold text-slate-900 dark:text-white mt-1 mb-1">
+                      <h4 className="text-sm font-bold text-on-surface mt-1 mb-1">
                         visibleDuration Dinámico
                       </h4>
                       <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">
@@ -2176,7 +2176,7 @@ export function UIShowcasePage() {
                       <span className="text-2xs font-bold text-teal-600 dark:text-teal-400 uppercase tracking-wider bg-teal-500/10 px-2 py-0.5 rounded-md">
                         3. Rango Inicial (DefaultValue)
                       </span>
-                      <h4 className="text-sm font-bold text-slate-900 dark:text-white mt-1 mb-1">
+                      <h4 className="text-sm font-bold text-on-surface mt-1 mb-1">
                         parseDate(&quot;2026-02-03&quot;)
                       </h4>
                       <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">
@@ -2202,7 +2202,7 @@ export function UIShowcasePage() {
                   </div>
                   <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
                     <div>
-                      <h4 className="text-sm font-bold text-slate-900 dark:text-white mb-1">
+                      <h4 className="text-sm font-bold text-on-surface mb-1">
                         Contenedor con Gradientes Automáticos
                       </h4>
                       <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mb-3">
@@ -2222,7 +2222,7 @@ export function UIShowcasePage() {
                         ].map((ex, i) => (
                           <div key={i} className="p-3 rounded-xl bg-white dark:bg-slate-800/80 border border-slate-200/60 dark:border-slate-700/60 flex items-center justify-between shadow-xs">
                             <div>
-                              <p className="text-xs font-bold text-slate-900 dark:text-white">{ex.name}</p>
+                              <p className="text-xs font-bold text-on-surface">{ex.name}</p>
                               <p className="text-xs text-slate-500 dark:text-slate-400">{ex.target} • {ex.reps}</p>
                             </div>
                             <span className="text-2xs font-bold px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-600 dark:text-teal-400 border border-teal-500/20">
@@ -2247,7 +2247,7 @@ export function UIShowcasePage() {
                     </div>
                     <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
                       <div>
-                        <h4 className="text-sm font-bold text-slate-900 dark:text-white mb-1">
+                        <h4 className="text-sm font-bold text-on-surface mb-1">
                           Animación Shimmer / Wave sin parpadeos
                         </h4>
                         <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mb-3">
@@ -2344,7 +2344,7 @@ export function UIShowcasePage() {
                   </div>
                   <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4 flex flex-col justify-between h-[calc(100%-2rem)]">
                     <div>
-                      <h4 className="text-sm font-bold text-slate-900 dark:text-white mb-1">
+                      <h4 className="text-sm font-bold text-on-surface mb-1">
                         Efecto Festivo Bidireccional Continuo
                       </h4>
                       <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mb-4">
@@ -2447,7 +2447,7 @@ export function UIShowcasePage() {
                   </div>
                   <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4 flex flex-col justify-between h-[calc(100%-2rem)]">
                     <div>
-                      <h4 className="text-sm font-bold text-slate-900 dark:text-white mb-1">
+                      <h4 className="text-sm font-bold text-on-surface mb-1">
                         Microinteracción Radial & Slide
                       </h4>
                       <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mb-4">
@@ -2491,7 +2491,7 @@ export function UIShowcasePage() {
                   </div>
                   <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
                     <div>
-                      <h4 className="text-sm font-bold text-slate-900 dark:text-white mb-1">
+                      <h4 className="text-sm font-bold text-on-surface mb-1">
                         Deformación de Peso Tipográfico por Proximidad
                       </h4>
                       <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mb-3">
@@ -2578,7 +2578,7 @@ export function UIShowcasePage() {
                   </div>
                   <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
                     <div>
-                      <h4 className="text-sm font-bold text-slate-900 dark:text-white mb-1">
+                      <h4 className="text-sm font-bold text-on-surface mb-1">
                         Física de Resortes sin Saltos Bruscos
                       </h4>
                       <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mb-4">
@@ -2817,7 +2817,7 @@ export function UIShowcasePage() {
 
                   <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
                     <div>
-                      <h4 className="text-sm font-bold text-slate-900 dark:text-white mb-1">
+                      <h4 className="text-sm font-bold text-on-surface mb-1">
                         Llamada a la Acción Crítica con Ondas de Frecuencia
                       </h4>
                       <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mb-4">
@@ -2884,7 +2884,7 @@ export function UIShowcasePage() {
                   </div>
                   <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
                     <div>
-                      <h4 className="text-sm font-bold text-slate-900 dark:text-white mb-1">
+                      <h4 className="text-sm font-bold text-on-surface mb-1">
                         Lectura Dinámica del Scroll con Escala GPU
                       </h4>
                       <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mb-3">
@@ -2922,7 +2922,7 @@ export function UIShowcasePage() {
                   </div>
                   <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
                     <div>
-                      <h4 className="text-sm font-bold text-slate-900 dark:text-white mb-1">
+                      <h4 className="text-sm font-bold text-on-surface mb-1">
                         Rotación Cónica Continua (Conic Gradient)
                       </h4>
                       <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mb-4">
@@ -2970,7 +2970,7 @@ export function UIShowcasePage() {
                     />
                     <div>
                       <div className="flex items-center justify-between mb-1">
-                        <h4 className="text-sm font-bold text-slate-900 dark:text-white">
+                        <h4 className="text-sm font-bold text-on-surface">
                           Tarjeta Clínica con Borde Órbita Multicromático
                         </h4>
                         <span className="text-2xs font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
@@ -2987,7 +2987,7 @@ export function UIShowcasePage() {
                         <p className="text-xs font-bold text-slate-800 dark:text-slate-200">Paciente: Roberto Santana</p>
                         <p className="text-xs text-teal-600 dark:text-teal-400 font-semibold">Tendinopatía Rotuliana • Sesión 6 de 12</p>
                       </div>
-                      <span className="text-xs font-black text-slate-900 dark:text-white">125° Flexión</span>
+                      <span className="text-xs font-black text-on-surface">125° Flexión</span>
                     </div>
                   </div>
                 </div>
@@ -3007,7 +3007,7 @@ export function UIShowcasePage() {
                   </div>
                   <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
                     <div>
-                      <h4 className="text-sm font-bold text-slate-900 dark:text-white mb-1">
+                      <h4 className="text-sm font-bold text-on-surface mb-1">
                         Estrellas y Destellos Festivos Vectoriales
                       </h4>
                       <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mb-4">
@@ -3019,7 +3019,7 @@ export function UIShowcasePage() {
                       <SparklesText
                         sparklesCount={8}
                         colors={{ first: '#0d9488', second: '#c1ff72' }}
-                        className="text-2xl sm:text-3xl text-slate-900 dark:text-white"
+                        className="text-2xl sm:text-3xl text-on-surface"
                       >
                         {sparklesWord}
                       </SparklesText>
@@ -3031,7 +3031,7 @@ export function UIShowcasePage() {
                         value={sparklesWord}
                         onChange={(e) => setSparklesWord(e.target.value)}
                         placeholder="Escribe un mensaje de logro..."
-                        className="flex-1 px-3 py-2 rounded-xl text-xs bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 focus:outline-hidden focus:border-teal-500"
+                        className="flex-1 px-3 py-2 rounded-xl text-xs bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-on-surface focus:outline-hidden focus:border-teal-500"
                       />
                       <button
                         type="button"
@@ -3112,7 +3112,7 @@ export function UIShowcasePage() {
                         key={`text-anim-${textAnimateKey}-${textAnimateVariant}-${textAnimateType}`}
                         animation={textAnimateVariant}
                         by={textAnimateType}
-                        className="text-sm sm:text-base font-bold text-slate-900 dark:text-slate-100 leading-relaxed"
+                        className="text-sm sm:text-base font-bold text-on-surface leading-relaxed"
                       >
                         Evaluación biomecánica asistida por Physi IA: simetría escapular y ángulo articular en rango óptimo.
                       </TextAnimate>
@@ -3162,7 +3162,7 @@ export function UIShowcasePage() {
 
                     <div className="p-2 rounded-lg bg-teal-50/50 dark:bg-teal-950/20 border border-teal-500/20">
                       <p className="text-2xs uppercase font-bold text-teal-600 dark:text-teal-400">Versión Evolved Integrada:</p>
-                      <p className="text-xs font-bold text-slate-900 dark:text-slate-100">{item.evolvedComponent}</p>
+                      <p className="text-xs font-bold text-on-surface">{item.evolvedComponent}</p>
                     </div>
                   </div>
 
@@ -3280,7 +3280,7 @@ export function UIShowcasePage() {
                     Aceternity Spotlight
                   </span>
                 </div>
-                <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1">
+                <h3 className="text-lg font-bold text-on-surface mb-1">
                   CardSpotlight Reactivo
                 </h3>
                 <p className="text-xs text-slate-500 dark:text-slate-400 mb-4 leading-relaxed">
@@ -3303,7 +3303,7 @@ export function UIShowcasePage() {
                       Magic UI BorderBeam
                     </span>
                   </div>
-                  <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1">
+                  <h3 className="text-lg font-bold text-on-surface mb-1">
                     Borde Orbital Cinético
                   </h3>
                   <p className="text-xs text-slate-500 dark:text-slate-400 mb-4 leading-relaxed">

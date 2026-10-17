@@ -143,7 +143,7 @@ export function NotificationDrawer({ isOpen, onClose, userId }: NotificationDraw
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <h2 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white">
+                    <h2 className="text-sm sm:text-base font-bold text-on-surface">
                       Centro de Notificaciones
                     </h2>
                     {unreadCount > 0 && (
@@ -276,7 +276,7 @@ export function NotificationDrawer({ isOpen, onClose, userId }: NotificationDraw
                         {/* Text Details */}
                         <div className="flex-1 min-w-0">
                           <div className="flex items-baseline justify-between gap-2">
-                            <h4 className="text-xs font-bold text-slate-900 dark:text-slate-100 truncate">
+                            <h4 className="text-xs font-bold text-on-surface truncate">
                               {notif.title}
                             </h4>
                             <span className="text-2xs text-slate-400 shrink-0 font-medium">

@@ -85,7 +85,7 @@ export function CatalogPage() {
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 lg:px-8 py-8 space-y-12">
+    <div className="fm-page">
       {/* Header Banner */}
       <div className="relative rounded-3xl p-8 overflow-hidden border border-outline/15 bg-gradient-to-br from-surface-container-low via-surface to-surface-container shadow-elevated">
         <BorderBeam size={130} duration={8} colorFrom="#14b8a6" colorTo="#0ea5e9" />
@@ -95,7 +95,7 @@ export function CatalogPage() {
               <Sparkles className="size-3.5" />
               <span>Suite de Componentes Next-Gen FisioMirror</span>
             </div>
-            <h1 className="text-3xl lg:text-4xl font-extrabold tracking-tight text-on-surface">
+            <h1 className="fm-title text-on-surface">
               Design System &amp; <AuroraText>FisioMirror UI</AuroraText>
             </h1>
             <p className="text-xs sm:text-sm text-on-surface-variant leading-relaxed">
@@ -632,7 +632,7 @@ export function CatalogPage() {
                 <span className="p-1.5 rounded-lg bg-cyan-500/20 text-cyan-600 dark:text-cyan-400">
                   <Sparkles className="w-5 h-5" />
                 </span>
-                <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+                <h2 className="fm-title text-on-surface">
                   Macro Suite FisioMirror (50 Componentes Modulares)
                 </h2>
               </div>
@@ -782,7 +782,7 @@ export function CatalogPage() {
                 <span className="p-1.5 rounded-lg bg-teal-500/20 text-teal-600 dark:text-teal-400">
                   <Activity className="w-5 h-5" />
                 </span>
-                <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+                <h2 className="fm-title text-on-surface">
                   Suite Estelar de Innovación Biomecánica FisioMirror
                 </h2>
               </div>

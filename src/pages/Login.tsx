@@ -769,7 +769,7 @@ export function Login() {
   };
 
   return (
-    <div className="min-h-[100dvh] w-full flex font-sans text-slate-900 dark:text-slate-100 relative overflow-hidden bg-[#f9f9fc] dark:bg-slate-950">
+    <div className="min-h-[100dvh] w-full flex font-sans text-on-surface relative overflow-hidden bg-[#f9f9fc] dark:bg-slate-950">
       {/* ── MESH BACKGROUND GRADIENT ── */}
       <div
         className="pointer-events-none absolute inset-0 z-0"
@@ -953,7 +953,7 @@ export function Login() {
                         aria-label="Correo electrónico del paciente"
                         autoComplete="email"
                         required
-                        className="w-full rounded-2xl border border-slate-200/80 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 pl-11 pr-4 py-3.5 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 outline-none transition-all focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20 dark:focus:border-teal-400 dark:focus:ring-teal-400/20 shadow-sm"
+                        className="w-full rounded-2xl border border-slate-200/80 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 pl-11 pr-4 py-3.5 text-sm text-on-surface placeholder-slate-400 outline-none transition-all focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20 dark:focus:border-teal-400 dark:focus:ring-teal-400/20 shadow-sm"
                       />
                     </div>
 
@@ -971,7 +971,7 @@ export function Login() {
                         aria-label="Contraseña del paciente"
                         autoComplete="current-password"
                         required
-                        className="w-full rounded-2xl border border-slate-200/80 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 pl-11 pr-11 py-3.5 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 outline-none transition-all focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20 dark:focus:border-teal-400 dark:focus:ring-teal-400/20 shadow-sm"
+                        className="w-full rounded-2xl border border-slate-200/80 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 pl-11 pr-11 py-3.5 text-sm text-on-surface placeholder-slate-400 outline-none transition-all focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20 dark:focus:border-teal-400 dark:focus:ring-teal-400/20 shadow-sm"
                       />
                       <button
                         type="button"
@@ -1082,7 +1082,7 @@ export function Login() {
                         placeholder="Tu correo electrónico personal"
                         autoComplete="email"
                         required
-                        className="w-full rounded-2xl border border-slate-200/80 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 pl-11 pr-4 py-3 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 outline-none transition-all focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20 dark:focus:border-teal-400 dark:focus:ring-teal-400/20 shadow-sm"
+                        className="w-full rounded-2xl border border-slate-200/80 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 pl-11 pr-4 py-3 text-sm text-on-surface placeholder-slate-400 outline-none transition-all focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20 dark:focus:border-teal-400 dark:focus:ring-teal-400/20 shadow-sm"
                       />
                     </div>
 
@@ -1099,7 +1099,7 @@ export function Login() {
                         placeholder="Crear contraseña"
                         autoComplete="new-password"
                         required
-                        className="w-full rounded-2xl border border-slate-200/80 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 pl-11 pr-11 py-3 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 outline-none transition-all focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20 dark:focus:border-teal-400 dark:focus:ring-teal-400/20 shadow-sm"
+                        className="w-full rounded-2xl border border-slate-200/80 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 pl-11 pr-11 py-3 text-sm text-on-surface placeholder-slate-400 outline-none transition-all focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20 dark:focus:border-teal-400 dark:focus:ring-teal-400/20 shadow-sm"
                       />
                       <button
                         type="button"
@@ -1124,7 +1124,7 @@ export function Login() {
                         autoComplete="new-password"
                         required
                         className={cn(
-                          'w-full rounded-2xl border bg-white/80 dark:bg-slate-800/80 pl-11 pr-4 py-3 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 outline-none transition-all shadow-sm',
+                          'w-full rounded-2xl border bg-white/80 dark:bg-slate-800/80 pl-11 pr-4 py-3 text-sm text-on-surface placeholder-slate-400 outline-none transition-all shadow-sm',
                           confirmPassword && password !== confirmPassword
                             ? 'border-red-500 focus:ring-2 focus:ring-red-400/20'
                             : 'border-slate-200/80 dark:border-slate-700 focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20 dark:focus:border-teal-400'
@@ -1222,7 +1222,7 @@ export function Login() {
                         aria-label="Correo del fisioterapeuta"
                         autoComplete="email"
                         required
-                        className="w-full rounded-2xl border border-slate-200/80 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 pl-11 pr-4 py-3.5 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 outline-none transition-all focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20 dark:focus:border-teal-400 dark:focus:ring-teal-400/20 shadow-sm"
+                        className="w-full rounded-2xl border border-slate-200/80 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 pl-11 pr-4 py-3.5 text-sm text-on-surface placeholder-slate-400 outline-none transition-all focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20 dark:focus:border-teal-400 dark:focus:ring-teal-400/20 shadow-sm"
                       />
                     </div>
 
@@ -1240,7 +1240,7 @@ export function Login() {
                         aria-label="Contraseña del fisioterapeuta"
                         autoComplete="current-password"
                         required
-                        className="w-full rounded-2xl border border-slate-200/80 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 pl-11 pr-11 py-3.5 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 outline-none transition-all focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20 dark:focus:border-teal-400 dark:focus:ring-teal-400/20 shadow-sm"
+                        className="w-full rounded-2xl border border-slate-200/80 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 pl-11 pr-11 py-3.5 text-sm text-on-surface placeholder-slate-400 outline-none transition-all focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20 dark:focus:border-teal-400 dark:focus:ring-teal-400/20 shadow-sm"
                       />
                       <button
                         type="button"
@@ -1338,7 +1338,7 @@ export function Login() {
                               onChange={(e) => setFullName(e.target.value)}
                               placeholder="Lic. Roberto Silva"
                               required
-                              className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 px-3.5 py-2.5 text-sm text-slate-900 dark:text-slate-100 outline-none focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20"
+                              className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 px-3.5 py-2.5 text-sm text-on-surface outline-none focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20"
                             />
                           </div>
                           <div>
@@ -1351,7 +1351,7 @@ export function Login() {
                               onChange={(e) => setEmail(e.target.value)}
                               placeholder="roberto.fisio@ejemplo.com"
                               required
-                              className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 px-3.5 py-2.5 text-sm text-slate-900 dark:text-slate-100 outline-none focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20"
+                              className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 px-3.5 py-2.5 text-sm text-on-surface outline-none focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20"
                             />
                           </div>
                           <div>
@@ -1364,7 +1364,7 @@ export function Login() {
                               onChange={(e) => setPassword(e.target.value)}
                               placeholder="••••••••"
                               required
-                              className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 px-3.5 py-2.5 text-sm text-slate-900 dark:text-slate-100 outline-none focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20"
+                              className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 px-3.5 py-2.5 text-sm text-on-surface outline-none focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20"
                             />
                           </div>
                           <div>
@@ -1378,7 +1378,7 @@ export function Login() {
                               placeholder="••••••••"
                               required
                               className={cn(
-                                'w-full rounded-xl border bg-white/80 dark:bg-slate-800/80 px-3.5 py-2.5 text-sm text-slate-900 dark:text-slate-100 outline-none',
+                                'w-full rounded-xl border bg-white/80 dark:bg-slate-800/80 px-3.5 py-2.5 text-sm text-on-surface outline-none',
                                 confirmPassword && password !== confirmPassword
                                   ? 'border-red-500 focus:ring-2 focus:ring-red-400/20'
                                   : 'border-slate-200 dark:border-slate-700 focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20'
@@ -1415,7 +1415,7 @@ export function Login() {
                               onChange={(e) => setCedula(e.target.value)}
                               placeholder="000000-F"
                               required
-                              className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 px-3.5 py-2.5 text-sm text-slate-900 dark:text-slate-100 outline-none focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20"
+                              className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 px-3.5 py-2.5 text-sm text-on-surface outline-none focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20"
                             />
                           </div>
                           <div>
@@ -1428,7 +1428,7 @@ export function Login() {
                               placeholder="+58 412-1234567"
                               inputMode="tel"
                               required
-                              className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 px-3.5 py-2.5 text-sm text-slate-900 dark:text-slate-100 outline-none focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20"
+                              className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 px-3.5 py-2.5 text-sm text-on-surface outline-none focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20"
                             />
                           </div>
                           <div>
@@ -1439,7 +1439,7 @@ export function Login() {
                               value={universidad}
                               onChange={(e) => setUniversidad(e.target.value)}
                               placeholder="Nombre de la Institución"
-                              className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 px-3.5 py-2.5 text-sm text-slate-900 dark:text-slate-100 outline-none focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20"
+                              className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 px-3.5 py-2.5 text-sm text-on-surface outline-none focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20"
                             />
                           </div>
                           <div>
@@ -1450,7 +1450,7 @@ export function Login() {
                               value={colegiadoId}
                               onChange={(e) => setColegiadoId(e.target.value)}
                               placeholder="Ej: COL-12345"
-                              className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 px-3.5 py-2.5 text-sm text-slate-900 dark:text-slate-100 outline-none focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20"
+                              className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 px-3.5 py-2.5 text-sm text-on-surface outline-none focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20"
                             />
                           </div>
                           <div>
@@ -1460,7 +1460,7 @@ export function Login() {
                             <select
                               value={anioEgreso}
                               onChange={(e) => setAnioEgreso(e.target.value)}
-                              className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 px-3.5 py-2.5 text-sm text-slate-900 dark:text-slate-100 outline-none focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20 cursor-pointer"
+                              className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 px-3.5 py-2.5 text-sm text-on-surface outline-none focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20 cursor-pointer"
                             >
                               <option value="">Selecciona un año</option>
                               {[2026, 2025, 2024, 2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016, 2015].map((y) => (
@@ -1523,7 +1523,7 @@ export function Login() {
                                 }
                               }}
                               placeholder="O escribe una..."
-                              className="bg-transparent text-xs text-slate-900 dark:text-slate-100 flex-grow min-w-[100px] outline-none"
+                              className="bg-transparent text-xs text-on-surface flex-grow min-w-[100px] outline-none"
                             />
                           </div>
                         </div>
@@ -1880,7 +1880,7 @@ export function Login() {
                   value={resetEmail}
                   onChange={(e) => setResetEmail(e.target.value)}
                   placeholder="Correo electrónico"
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl text-sm border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 outline-none focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20"
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl text-sm border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-on-surface outline-none focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20"
                 />
               </div>
 

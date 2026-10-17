@@ -58,7 +58,7 @@ const glassStyles: Record<HarmonizedGlassTone, string> = {
   "pastel-lavender":
     "bg-indigo-50/70 dark:bg-indigo-950/25 backdrop-blur-xl border border-indigo-200/50 dark:border-indigo-500/25 text-indigo-950 dark:text-indigo-100",
   "pastel-gradient":
-    "bg-gradient-to-br from-teal-50/70 via-sky-50/60 to-indigo-50/50 dark:from-teal-950/25 dark:via-sky-950/20 dark:to-indigo-950/20 backdrop-blur-2xl border border-teal-200/50 dark:border-teal-500/25 text-slate-900 dark:text-slate-100",
+    "bg-gradient-to-br from-teal-50/70 via-sky-50/60 to-indigo-50/50 dark:from-teal-950/25 dark:via-sky-950/20 dark:to-indigo-950/20 backdrop-blur-2xl border border-teal-200/50 dark:border-teal-500/25 text-on-surface",
 }
 
 const glowStyles: Record<NonNullable<HarmonizedSurfaceProps["glow"]>, string> = {

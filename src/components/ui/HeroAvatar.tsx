@@ -87,7 +87,7 @@ export function AvatarDemo() {
           <Avatar.Fallback>FM</Avatar.Fallback>
         </Avatar>
         <div>
-          <p className="text-xs font-bold text-slate-900 dark:text-white">Dra. Elena Ramos</p>
+          <p className="text-xs font-bold text-on-surface">Dra. Elena Ramos</p>
           <p className="text-xs text-teal-600 dark:text-teal-400">Fisioterapeuta Titular</p>
         </div>
       </div>
@@ -98,7 +98,7 @@ export function AvatarDemo() {
           <Avatar.Fallback>CR</Avatar.Fallback>
         </Avatar>
         <div>
-          <p className="text-xs font-bold text-slate-900 dark:text-white">Carlos Romero</p>
+          <p className="text-xs font-bold text-on-surface">Carlos Romero</p>
           <p className="text-xs text-slate-400">Paciente Activo • Rodilla</p>
         </div>
       </div>
@@ -108,7 +108,7 @@ export function AvatarDemo() {
           <Avatar.Fallback>JR</Avatar.Fallback>
         </Avatar>
         <div>
-          <p className="text-xs font-bold text-slate-900 dark:text-white">Jorge Ramírez</p>
+          <p className="text-xs font-bold text-on-surface">Jorge Ramírez</p>
           <p className="text-xs text-slate-400">Token Pendiente (Sin foto)</p>
         </div>
       </div>

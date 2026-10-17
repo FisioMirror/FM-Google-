@@ -133,7 +133,7 @@ export function EmailSystemStatusCard() {
             <Mail size={24} />
           </div>
           <div>
-            <h3 className="font-bold text-base text-slate-900 dark:text-white">
+            <h3 className="font-bold text-base text-on-surface">
               Diagnóstico de Correo y Notificaciones
             </h3>
             <p className="text-xs text-slate-500 dark:text-slate-400">
@@ -240,7 +240,7 @@ export function EmailSystemStatusCard() {
             value={testEmail}
             onChange={(e) => setTestEmail(e.target.value)}
             placeholder="fisiomirror@proton.me (o correo de prueba)"
-            className="w-full sm:flex-1 px-3.5 py-2 rounded-xl text-xs border border-teal-200 dark:border-teal-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-teal-500/20"
+            className="w-full sm:flex-1 px-3.5 py-2 rounded-xl text-xs border border-teal-200 dark:border-teal-800 bg-white dark:bg-slate-900 text-on-surface outline-none focus:ring-2 focus:ring-teal-500/20"
           />
           <div className="flex items-center gap-1.5 w-full sm:w-auto">
             <button
@@ -275,7 +275,7 @@ export function EmailSystemStatusCard() {
       {/* Resend Domain Verification Helper Guide */}
       <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/30 border border-slate-200/60 dark:border-slate-800 text-xs space-y-2 text-slate-600 dark:text-slate-300">
         <div className="flex items-center justify-between">
-          <span className="font-bold text-slate-900 dark:text-white">
+          <span className="font-bold text-on-surface">
             ¿Cómo habilitar envíos masivos a cualquier paciente?
           </span>
           <a

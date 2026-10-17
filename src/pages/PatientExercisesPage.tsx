@@ -177,7 +177,7 @@ export function PatientExercisesPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="font-extrabold text-2xl sm:text-3xl text-on-surface tracking-tight">
+          <h1 className="fm-title text-on-surface">
             Mi Rutina de Rehabilitación
           </h1>
           <p className="text-on-surface-variant text-sm mt-0.5">

@@ -61,7 +61,7 @@ export const AssignmentProgressCard: React.FC<AssignmentProgressCardProps> = ({ 
       </div>
 
       <div className="mb-4">
-        <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white capitalize tracking-tight">
+        <h3 className="text-base sm:text-lg font-bold text-on-surface capitalize tracking-tight">
           {title}
         </h3>
         <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 leading-relaxed">

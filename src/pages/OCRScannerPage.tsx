@@ -545,7 +545,7 @@ export function OCRScannerPage() {
   const textareaClass = 'w-full glass-teal border border-outline-variant/20 rounded-xl px-4 py-3 text-on-surface focus:ring-2 focus:ring-primary/20 outline-none resize-none';
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6 overflow-x-hidden">
+    <div className="fm-page-narrow">
       <div className="flex items-center gap-2 text-primary font-label-sm text-label-sm">
         <Icon name="person_add" size={18} /> Nuevo Paciente
       </div>
@@ -953,7 +953,7 @@ export function OCRScannerPage() {
               <div className="flex-1 space-y-4 min-w-0">
                 <div>
                   <span className="text-primary font-semibold text-label-sm uppercase tracking-wider">Onboarding • Paso 3</span>
-                  <h1 className="font-headline-lg text-headline-lg-mobile lg:text-headline-lg text-primary">Configuración de Rutina</h1>
+                  <h1 className="fm-title text-primary">Configuración de Rutina</h1>
                   <p className="text-body-lg text-secondary">Busca y selecciona ejercicios para construir el plan de recuperación.</p>
                 </div>
                 <div className="glass-panel p-4 rounded-2xl card-glow-hover">

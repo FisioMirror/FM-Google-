@@ -409,7 +409,7 @@ export const CompactTelehealthBar: React.FC<CompactTelehealthBarProps> = ({
       <div className="flex items-center gap-2.5 min-w-0">
         <span className="size-2 rounded-full bg-emerald-500 shrink-0 animate-ping" />
         <div className="truncate">
-          <p className="font-bold truncate text-slate-900 dark:text-slate-100">{therapistName}</p>
+          <p className="font-bold truncate text-on-surface">{therapistName}</p>
           {status && <p className="text-2xs text-slate-500 dark:text-slate-400 truncate">{status}</p>}
         </div>
       </div>
@@ -530,7 +530,7 @@ export const ContextualActionIsland: React.FC<ContextualActionIslandProps> = ({
     >
       <div className="flex items-center gap-2">
         <span className="size-2 rounded-full bg-teal-500 animate-ping" />
-        <span className="font-bold text-slate-900 dark:text-white">{message}</span>
+        <span className="font-bold text-on-surface">{message}</span>
       </div>
 
       <AnimatePresence>

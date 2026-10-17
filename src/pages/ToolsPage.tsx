@@ -807,7 +807,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
       <div className="flex flex-col xl:flex-row gap-6">
         <div className="flex-1 flex flex-col gap-6 min-w-0">
           <div>
-            <h1 className="font-headline-lg text-headline-lg-mobile lg:text-headline-lg gradient-text-editorial">Herramientas IA Clínicas</h1>
+            <h1 className="fm-title gradient-text-editorial">Herramientas IA Clínicas</h1>
             <p className="text-on-surface-variant font-body-lg">Acelera tu flujo de trabajo con instrumentos clínicos de precisión potenciados por IA.</p>
           </div>
 
@@ -961,9 +961,9 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
               onChange={(e) => setUpdatePatientId(e.target.value)}
               className="w-full px-4 py-3 rounded-xl bg-surface-variant/20 dark:bg-slate-800 text-on-surface border border-divider focus:border-primary focus:outline-none transition-colors mb-4"
             >
-              <option className="bg-white dark:bg-slate-800 text-slate-900 dark:text-white" value="">Selecciona un paciente...</option>
+              <option className="bg-white dark:bg-slate-800 text-on-surface" value="">Selecciona un paciente...</option>
               {patients.map((p) => (
-                <option className="bg-white dark:bg-slate-800 text-slate-900 dark:text-white" key={p.id} value={p.id}>{p.full_name}</option>
+                <option className="bg-white dark:bg-slate-800 text-on-surface" key={p.id} value={p.id}>{p.full_name}</option>
               ))}
             </select>
 

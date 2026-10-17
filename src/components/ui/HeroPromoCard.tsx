@@ -57,7 +57,7 @@ export function PromoCardDemo({
       <div className="flex flex-1 flex-col gap-2 pt-3 sm:pt-0 sm:pl-4 justify-between">
         <div>
           <div className="flex items-start justify-between gap-3">
-            <h4 className="text-sm sm:text-base font-extrabold text-slate-900 dark:text-white tracking-tight">
+            <h4 className="text-sm sm:text-base font-extrabold text-on-surface tracking-tight">
               {title}
             </h4>
             <button

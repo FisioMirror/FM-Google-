@@ -894,7 +894,7 @@ export function SettingsPage() {
           <Icon name="settings" size={28} className="text-primary animate-breathe-icon" />
         </div>
         <div>
-          <h1 className="text-headline-lg-mobile lg:text-headline-lg font-bold gradient-text-editorial">Configuración</h1>
+          <h1 className="fm-title gradient-text-editorial">Configuración</h1>
           <p className="text-on-surface-variant text-sm">Personaliza tu experiencia en FisioMirror</p>
         </div>
       </motion.div>

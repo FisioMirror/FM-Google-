@@ -65,7 +65,7 @@ export function MultiSelect({
         type="button"
         onClick={() => setOpen((o) => !o)}
         className={cn(
-          "w-full min-h-[44px] px-3.5 py-2 rounded-xl border bg-white dark:bg-slate-900 text-slate-900 dark:text-white text-left flex items-center justify-between gap-2 transition-all",
+          "w-full min-h-[44px] px-3.5 py-2 rounded-xl border bg-white dark:bg-slate-900 text-on-surface text-left flex items-center justify-between gap-2 transition-all",
           open
             ? "border-teal-500 ring-2 ring-teal-500/20"
             : "border-slate-200 dark:border-slate-700 hover:border-teal-500/50",
