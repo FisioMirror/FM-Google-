@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Icon } from '../components/ui/Icon';
@@ -97,6 +98,7 @@ interface PatientProfile {
 type Tab = 'overview' | 'history' | 'routine' | 'statistics';
 
 export function PatientDetailPage() {
+  const { t, i18n } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const toast = useToast();
