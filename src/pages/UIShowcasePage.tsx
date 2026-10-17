@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { 
   Sparkles, 
   Send, 
@@ -129,474 +130,476 @@ interface InventoryComparison {
   evolvedComponent: string;
   librarySource: string;
   keyImprovements: string[];
-  status: 'Activo en Galería' | 'Listo para Producción';
+  status: string;
 }
 
 const INVENTORY_COMPARISONS: InventoryComparison[] = [
   {
-    category: '1. Reportes y Analítica Temporal',
-    originalComponent: 'Gráficos o tarjetas estadísticas planas',
+    category: 'shw.n1ReportsAndTemporalAnalytics',
+    originalComponent: 'shw.flatChartsOrPlainStatsCards',
     originalFile: 'src/pages/DashboardFisio.tsx',
     evolvedComponent: 'IncidentReportCard (Reaviz AreaChart)',
     librarySource: 'Reaviz',
     keyImprovements: [
-      'Gráficos vectoriales con interpolación suavizada (smooth area interpolation)',
-      'Gradientes translúcidos automáticos compatibles con modo oscuro',
-      'Desglose en tiempo real de 3 variables clínicas (ROM, Precisión AR y Adherencia)',
-      'Métricas de respuesta y compensaciones con íconos de tendencia direccional'
+      'shw.vectorChartsWithSmoothedInterpolationSmoothAreaInter',
+      'shw.automaticTranslucentGradientsCompatibleWithDarkMode',
+      'shw.realTimeBreakdownOf3ClinicalVariablesRomArAccuracyAn',
+      'shw.responseAndCompensationMetricsWithDirectionalTrendIc'
     ],
-    status: 'Activo en Galería'
+    status: 'shw.activeInGallery'
   },
   {
-    category: '2. Rutinas y Tareas Asignadas',
-    originalComponent: 'Listados de texto plano sin avance temporal',
+    category: 'shw.n2RoutinesAndAssignedTasks',
+    originalComponent: 'shw.plainTextListsWithNoTimeBasedProgress',
     originalFile: 'src/pages/ExercisesPage.tsx',
-    evolvedComponent: 'AssignmentProgressCard (Tarjetas de Asignación)',
+    evolvedComponent: 'shw.assignmentprogresscardAssignmentCards',
     librarySource: 'HeroUI / 21st.dev',
     keyImprovements: [
-      'Barra de progreso con gradiente esmeralda dinámico y valor porcentual',
-      'Avatares superpuestos del fisioterapeuta supervisor y paciente vinculado',
-      'Contador de cuenta regresiva para la próxima revisión médica presencial u online',
-      'Badge de fase clínica y menú de opciones rápidas contextual'
+      'shw.progressBarWithADynamicEmeraldGradientAndPercentageV',
+      'shw.overlappingAvatarsOfTheSupervisingPhysiotherapistAnd',
+      'shw.countdownTimerForTheNextInPersonOrOnlineMedicalRevie',
+      'shw.clinicalPhaseBadgeAndContextualQuickOptionsMenu'
     ],
-    status: 'Activo en Galería'
+    status: 'shw.activeInGallery'
   },
   {
-    category: '3. Avisos y Notificaciones del Sistema',
-    originalComponent: 'Banners caseros o textos planos de alerta',
+    category: 'shw.n3SystemAlertsAndNotifications',
+    originalComponent: 'shw.homemadeBannersOrPlainAlertText',
     originalFile: 'src/components/ui/InsightBanner.tsx',
     evolvedComponent: 'HeroUI Alert (Alert, Indicator, Content, Title)',
     librarySource: 'HeroUI',
     keyImprovements: [
-      'Estados semánticos con contraste accesible: default, accent, success, warning, danger',
-      'Micro-animación de entrada Framer Motion con botón de cierre suave',
-      'Iconografía de advertencia, éxito o conexión con Supabase contextualizada',
-      'Diseño en caja de cristal con bordes refinados para no saturar la vista'
+      'shw.semanticStatesWithAccessibleContrastDefaultAccentSuc',
+      'shw.framerMotionEntranceMicroAnimationWithASmoothCloseBu',
+      'shw.contextualizedWarningSuccessOrSupabaseConnectionIcon',
+      'shw.glassBoxDesignWithRefinedBordersThatDontOverwhelmThe'
     ],
-    status: 'Activo en Galería'
+    status: 'shw.activeInGallery'
   },
   {
-    category: '4. Diálogos de Confirmación Críticos',
-    originalComponent: 'Ventanas nativas window.confirm',
+    category: 'shw.n4CriticalConfirmationDialogs',
+    originalComponent: 'shw.nativeWindowConfirmPopUps',
     originalFile: 'src/pages/Tokens.tsx / PatientsPage.tsx',
     evolvedComponent: 'HeroUI AlertDialog (Backdrop, Container, Dialog)',
     librarySource: 'HeroUI',
     keyImprovements: [
-      'Backdrop de cristal líquido oscuro (backdrop-blur-md) sin romper el Glassmorphism',
-      'Física de muelle spring (damping: 25, stiffness: 350) en apertura y cierre',
-      'Icono de advertencia en escudo para operaciones destructivas irreversibles',
-      'Botones con slot="close" para cierre instantáneo en un solo toque'
+      'shw.darkLiquidGlassBackdropBackdropBlurMdWithoutBreaking',
+      'shw.springPhysicsDamping25Stiffness350OnOpenAndClose',
+      'shw.shieldWarningIconForIrreversibleDestructiveOperation',
+      'shw.buttonsWithSlotCloseForInstantOneTapClose'
     ],
-    status: 'Activo en Galería'
+    status: 'shw.activeInGallery'
   },
   {
-    category: '5. Avatares e Identificación de Usuarios',
-    originalComponent: 'Elementos img simples sin fallback de iniciales',
+    category: 'shw.n5AvatarsAndUserIdentification',
+    originalComponent: 'shw.plainImgElementsWithNoInitialsFallback',
     originalFile: 'src/components/FisioLayout.tsx',
     evolvedComponent: 'HeroUI Avatar (Avatar, Avatar.Image, Avatar.Fallback)',
     librarySource: 'HeroUI',
     keyImprovements: [
-      'Respaldo automático con iniciales en caso de falla o demora en cargar la imagen',
-      'Anillo luminoso perimetral en verde azulado médico (ring-teal-500/20)',
-      'Escalabilidad en 4 tamaños estándar (sm, md, lg, xl)',
-      'Manejo de errores seguro con referrerPolicy="no-referrer"'
+      'shw.automaticInitialsFallbackIfTheImageFailsOrIsSlowToLo',
+      'shw.glowingPerimeterRingInMedicalTealRingTeal50020',
+      'shw.scalableAcross4StandardSizesSmMdLgXl',
+      'shw.safeErrorHandlingWithReferrerpolicyNoReferrer'
     ],
-    status: 'Activo en Galería'
+    status: 'shw.activeInGallery'
   },
   {
-    category: '6. Paneles Multimedia y Anuncios',
-    originalComponent: 'Tarjetas de contenido planas sin soporte multimedia',
+    category: 'shw.n6MultimediaPanelsAndAnnouncements',
+    originalComponent: 'shw.flatContentCardsWithNoMultimediaSupport',
     originalFile: 'src/pages/DashboardFisio.tsx',
     evolvedComponent: 'HeroUI PromoCard (Cards with Images)',
     librarySource: 'HeroUI',
     keyImprovements: [
-      'Disposición horizontal responsive (columna en móvil, fila en escritorio)',
-      'Contenedor de imagen con efecto zoom suave en hover e indicador Sparkles',
-      'Botón de cierre rápido y botón CTA para explorar novedades de la plataforma',
-      'Fondo con destello radial ambiental difuminado'
+      'shw.responsiveHorizontalLayoutColumnOnMobileRowOnDesktop',
+      'shw.imageContainerWithSmoothZoomEffectOnHoverAndASparkle',
+      'shw.quickCloseButtonAndCtaButtonToExplorePlatformUpdates',
+      'shw.backgroundWithABlurredAmbientRadialGlow'
     ],
-    status: 'Activo en Galería'
+    status: 'shw.activeInGallery'
   },
   {
-    category: '7. Preferencias y Casillas Múltiples',
-    originalComponent: 'Inputs checkbox HTML sin estilos de modo oscuro',
+    category: 'shw.n7PreferencesAndMultipleCheckboxes',
+    originalComponent: 'shw.htmlCheckboxInputsWithNoDarkModeStyles',
     originalFile: 'src/pages/SettingsPage.tsx',
     evolvedComponent: 'HeroUI Checkbox (Surface, CheckboxGroup, Indicator)',
     librarySource: 'HeroUI',
     keyImprovements: [
-      'Superficie acolchada con retroalimentación visual al seleccionar',
-      'Casilla animada con check marcado de alto contraste y borde en teal',
-      'Títulos y descripciones clínicas explicativas por cada canal de notificación',
-      'Soporte completo de navegación por teclado y selección múltiple'
+      'shw.paddedSurfaceWithVisualFeedbackOnSelection',
+      'shw.animatedCheckboxWithHighContrastCheckMarkAndTealBord',
+      'shw.titlesAndExplanatoryClinicalDescriptionsForEachNotif',
+      'shw.fullKeyboardNavigationAndMultiSelectSupport'
     ],
-    status: 'Activo en Galería'
+    status: 'shw.activeInGallery'
   },
   {
-    category: '8. Etiquetas de Estado Rápido',
-    originalComponent: 'Badges de texto coloreados manualmente',
+    category: 'shw.n8QuickStatusBadges',
+    originalComponent: 'shw.manuallyColoredTextBadges',
     originalFile: 'src/components/clinical/PatientCard.tsx',
     evolvedComponent: 'HeroUI Chip (Chip, Chip.Label)',
     librarySource: 'HeroUI',
     keyImprovements: [
-      'Colores semánticos definidos: success, warning, danger, primary, neutral',
-      'Punto de actividad animado o íconos SVG vectoriales',
-      'Diseño compacto estilo píldora con micro-borde sutil',
-      'Ideal para semáforos de adherencia y severidad diagnóstica'
+      'shw.definedSemanticColorsSuccessWarningDangerPrimaryNeut',
+      'shw.animatedActivityDotOrVectorSvgIcons',
+      'shw.compactPillStyleDesignWithASubtleMicroBorder',
+      'shw.idealForAdherenceAndDiagnosticSeverityTrafficLights'
     ],
-    status: 'Activo en Galería'
+    status: 'shw.activeInGallery'
   },
   {
-    category: '9. Modales Interactivos & Parámetros',
-    originalComponent: 'Modales básicos con posicionado absolute o fixed',
+    category: 'shw.n9InteractiveModalsParameters',
+    originalComponent: 'shw.basicModalsPositionedWithAbsoluteOrFixed',
     originalFile: 'src/components/ui/GlassModal.tsx',
     evolvedComponent: 'HeroUI Modal (Backdrop, Container, Dialog, CloseTrigger)',
     librarySource: 'HeroUI',
     keyImprovements: [
-      'Backdrop con blur óptico profundo, spring physics y tecla Escape',
-      'Encabezados semánticos con icono de acción y disparador de cierre automático',
-      'Integración con slot="close" en botones de pie para flujo sin boilerplate',
-      'Control deslizante interactivo de calibración biomecánica y sensibilidad'
+      'shw.backdropWithDeepOpticalBlurSpringPhysicsAndTheEscape',
+      'shw.semanticHeadersWithActionIconAndAutomaticCloseTrigge',
+      'shw.integrationWithSlotCloseOnFooterButtonsForABoilerpla',
+      'shw.interactiveSliderForBiomechanicalCalibrationAndSensi'
     ],
-    status: 'Activo en Galería'
+    status: 'shw.activeInGallery'
   },
   {
-    category: '10. Menú Desplegable Contextual',
-    originalComponent: 'Tooltips planos o cajas estáticas sin anclaje dinámico',
+    category: 'shw.n10ContextualDropdownMenu',
+    originalComponent: 'shw.plainTooltipsOrStaticBoxesWithNoDynamicAnchoring',
     originalFile: 'src/components/ui/Tooltip.tsx',
     evolvedComponent: 'HeroUI Popover (Popover, Popover.Content, Popover.Dialog)',
     librarySource: 'HeroUI',
     keyImprovements: [
-      'Anclaje dinámico automático al botón disparador con soporte táctil y clic',
-      'Desglose biomecánico por articulación (rodilla, hombro, codo)',
-      'Semáforo visual de rangos fisiológicos óptimos en tiempo real',
-      'Cierre inteligente al pulsar fuera (click outside) o Escape'
+      'shw.automaticDynamicAnchoringToTheTriggerButtonWithTouch',
+      'shw.biomechanicalBreakdownByJointKneeShoulderElbow',
+      'shw.visualTrafficLightForOptimalPhysiologicalRangesInRea',
+      'shw.smartCloseOnClickOutsideOrEscape'
     ],
-    status: 'Activo en Galería'
+    status: 'shw.activeInGallery'
   },
   {
-    category: '11. Panel Lateral Deslizante',
-    originalComponent: 'Navegación completa obligatoria a otra página para editar',
+    category: 'shw.n11SlidingSidePanel',
+    originalComponent: 'shw.forcedFullNavigationToAnotherPageToEdit',
     originalFile: 'src/pages/PatientDetailPage.tsx',
     evolvedComponent: 'HeroUI Drawer (Drawer, Drawer.Dialog, Drawer.Body)',
     librarySource: 'HeroUI',
     keyImprovements: [
-      'Apertura lateral suave desde la derecha sin perder el contexto de sesión',
-      'Ajuste clínico directo de tolerancia biomecánica y repeticiones objetivo',
-      'Área de observaciones del terapeuta y notas clínicas integradas',
-      'Física de resorte táctil con esquinas redondeadas en radio unificado 3xl'
+      'shw.smoothLateralOpeningFromTheRightWithoutLosingSession',
+      'shw.directClinicalAdjustmentOfBiomechanicalToleranceAndT',
+      'shw.therapistObservationsAreaAndIntegratedClinicalNotes',
+      'shw.tactileSpringPhysicsWithRoundedCornersAtAUnified3xlR'
     ],
-    status: 'Activo en Galería'
+    status: 'shw.activeInGallery'
   },
   {
-    category: '12. Selector de Rango de Fechas',
-    originalComponent: 'Inputs de fecha estándar HTML o calendarios simples',
+    category: 'shw.n12DateRangeSelector',
+    originalComponent: 'shw.standardHtmlDateInputsOrPlainCalendars',
     originalFile: 'src/components/ui/SimpleCalendar.tsx',
     evolvedComponent: 'HeroUI DateRangePicker (RangeCalendar, Grid, Popover)',
     librarySource: 'HeroUI',
     keyImprovements: [
-      'Selección de intervalo temporal interactivo (fecha de inicio y fin)',
-      'Presets rápidos clínicos para terapeutas (7 días, 14 días, 30 días)',
-      'Resaltado en degradado teal/esmeralda con bordes redondeados en extremos',
-      'Cálculo dinámico de días de evolución y sesiones programadas'
+      'shw.interactiveTimeRangeSelectionStartAndEndDate',
+      'shw.quickClinicalPresetsForTherapists7Days14Days30Days',
+      'shw.tealEmeraldGradientHighlightWithRoundedEdgesAtTheEnd',
+      'shw.dynamicCalculationOfDaysOfProgressAndScheduledSessio'
     ],
-    status: 'Activo en Galería'
+    status: 'shw.activeInGallery'
   },
   {
-    category: '13. Sombras de Desbordamiento de Scroll',
-    originalComponent: 'Contenedores estándar overflow-y-auto sin avisos de contenido oculto',
+    category: 'shw.n13ScrollOverflowShadows',
+    originalComponent: 'shw.standardOverflowYAutoContainersWithNoHiddenContentCu',
     originalFile: 'src/pages/DashboardFisio.tsx',
-    evolvedComponent: 'HeroUI ScrollShadow (Sombras automáticas de gradiente)',
+    evolvedComponent: 'shw.herouiScrollshadowAutomaticGradientShadows',
     librarySource: 'HeroUI',
     keyImprovements: [
-      'Detecta desbordamiento y aplica gradientes superiores e inferiores automáticos',
-      'Soporte vertical y horizontal con offset configurable',
-      'Evita que el terapeuta pierda de vista tareas o ejercicios ocultos por scroll',
-      'Transición suave con opacidad y sin barras de scroll invasivas'
+      'shw.detectsOverflowAndAppliesAutomaticTopAndBottomGradie',
+      'shw.verticalAndHorizontalSupportWithConfigurableOffset',
+      'shw.keepsTheTherapistFromMissingTasksOrExercisesHiddenBy',
+      'shw.smoothOpacityTransitionWithNoIntrusiveScrollbars'
     ],
-    status: 'Activo en Galería'
+    status: 'shw.activeInGallery'
   },
   {
-    category: '14. Placeholders de Carga Progresiva',
-    originalComponent: 'Spinners genéricos o pantallas en blanco parpadeantes',
+    category: 'shw.n14ProgressiveLoadingPlaceholders',
+    originalComponent: 'shw.genericSpinnersOrFlickeringBlankScreens',
     originalFile: 'src/components/ui/Loader.tsx',
     evolvedComponent: 'HeroUI Skeleton (Shimmer, Wave, Pulse)',
     librarySource: 'HeroUI',
     keyImprovements: [
-      'Efectos shimmer, pulse y wave con degradados cinéticos de FisioMirror',
-      'Soporte isLoaded con preservación de dimensiones del layout',
-      'Variantes text, rect y circle alineadas a radios redondeados 2xl/3xl',
-      'Feedback táctil inmediato durante consultas clínicas asíncronas'
+      'shw.shimmerPulseAndWaveEffectsWithFisiomirrorKineticGrad',
+      'shw.isloadedSupportWithLayoutDimensionPreservation',
+      'shw.textRectAndCircleVariantsAlignedTo2xl3xlRoundedRadii',
+      'shw.immediateTactileFeedbackDuringAsynchronousClinicalQu'
     ],
-    status: 'Activo en Galería'
+    status: 'shw.activeInGallery'
   },
   {
-    category: '15. Notificaciones Toast Canónicas',
-    originalComponent: 'Alerts bloqueantes o mensajes estáticos en cabecera',
+    category: 'shw.n15CanonicalToastNotifications',
+    originalComponent: 'shw.blockingAlertsOrStaticHeaderMessages',
     originalFile: 'src/components/ui/GlassToast.tsx',
     evolvedComponent: 'HeroUI / Sonner Toast (toast, toast.success, indicator, action)',
     librarySource: 'HeroUI',
     keyImprovements: [
-      'Llamada directa desde cualquier función o callback: toast("Mensaje")',
-      'Soporte para action buttons interactivos, duraciones y custom indicators',
-      'Física de resortes de Framer Motion con deslizamiento y cierre táctil',
-      'Contraste de alto impacto en modo oscuro con bordes luminosos por severidad'
+      'shw.directCallFromAnyFunctionOrCallbackToastMessage',
+      'shw.supportForInteractiveActionButtonsDurationsAndCustom',
+      'shw.framerMotionSpringPhysicsWithSlidingAndTouchBasedClo',
+      'shw.highImpactContrastInDarkModeWithGlowingBordersBySeve'
     ],
-    status: 'Activo en Galería'
+    status: 'shw.activeInGallery'
   },
   {
-    category: '16. Feed de Notificaciones en Vivo',
-    originalComponent: 'Listados estáticos de notificaciones o alertas en texto',
+    category: 'shw.n16LiveNotificationFeed',
+    originalComponent: 'shw.staticListsOfNotificationsOrTextAlerts',
     originalFile: 'src/pages/DashboardFisio.tsx',
-    evolvedComponent: 'Magic UI AnimatedList (Feed Clínico en Vivo)',
+    evolvedComponent: 'shw.magicUiAnimatedlistLiveClinicalFeed',
     librarySource: 'Magic UI',
     keyImprovements: [
-      'Animación de entrada con resortes elásticos (spring physics) y efecto ticker automático',
-      'Desplazamiento fluido y apilamiento progresivo con soporte para pausa/reanudación',
-      'Tarjetas translúcidas calibradas con tokens de FisioMirror y modo oscuro',
-      'Integración con eventos reales de MediaPipe, tokens y análisis Physi IA'
+      'shw.entranceAnimationWithElasticSpringsSpringPhysicsAndA',
+      'shw.smoothScrollingAndProgressiveStackingWithPauseResume',
+      'shw.translucentCardsCalibratedWithFisiomirrorTokensAndDa',
+      'shw.integrationWithRealMediapipeEventsTokensAndPhysiIaAn'
     ],
-    status: 'Activo en Galería'
+    status: 'shw.activeInGallery'
   },
   {
-    category: '17. Celebración Festiva de Objetivos',
-    originalComponent: 'Botones simples sin feedback visual de logro o avance',
+    category: 'shw.n17FestiveGoalCelebration',
+    originalComponent: 'shw.plainButtonsWithNoVisualFeedbackForAchievementOrProg',
     originalFile: 'src/components/ui/ConfettiButton.tsx',
     evolvedComponent: 'Magic UI / Canvas Confetti (ConfettiSideCannons)',
     librarySource: 'Magic UI',
     keyImprovements: [
-      'Disparo simultáneo continuo desde ambos bordes de la pantalla (ángulos 60° y 120°)',
-      'Paleta corporativa FisioMirror (teal primario, esmeralda, kinetic lime y cian)',
-      'Física fluida mediante requestAnimationFrame sin saturar el render loop',
-      'Ideal para altas médicas, superación de rangos articulares y rachas semanales'
+      'shw.continuousSimultaneousBurstFromBothScreenEdges60And1',
+      'shw.fisiomirrorCorporatePalettePrimaryTealEmeraldKinetic',
+      'shw.fluidPhysicsViaRequestanimationframeWithoutOverloadi',
+      'shw.idealForMedicalDischargesExceedingJointRangesAndWeek'
     ],
-    status: 'Activo en Galería'
+    status: 'shw.activeInGallery'
   },
   {
-    category: '18. Resaltador Dinámico de Texto',
-    originalComponent: 'Clases estáticas bg-yellow-200 o subrayados planos HTML',
+    category: 'shw.n18DynamicTextHighlighter',
+    originalComponent: 'shw.staticBgYellow200ClassesOrPlainHtmlUnderlines',
     originalFile: 'src/components/ui/Highlighter.tsx',
     evolvedComponent: 'Magic UI / Rough Notation (Highlighter)',
     librarySource: 'Magic UI',
     keyImprovements: [
-      'Trazos orgánicos vectoriales simulando marcador manual cuando entra en viewport',
-      'Siete modos visuales: highlight, underline, box, circle, bracket, strike-through, crossed-off',
-      'Variantes clínicas semánticas (warning, success, accent, info) para diagnósticos',
-      'Integración con ResizeObserver para mantener el trazo fiel en cualquier resolución'
+      'shw.organicVectorStrokesSimulatingAHandDrawnMarkerWhenEn',
+      'shw.sevenVisualModesHighlightUnderlineBoxCircleBracketSt',
+      'shw.semanticClinicalVariantsWarningSuccessAccentInfoForD',
+      'shw.resizeobserverIntegrationToKeepTheStrokeFaithfulAtAn'
     ],
-    status: 'Activo en Galería'
+    status: 'shw.activeInGallery'
   },
   {
-    category: '19. Botón de Desplazamiento Interactivo',
-    originalComponent: 'Botones tradicionales sin transiciones de cursor dinámicas',
+    category: 'shw.n19InteractiveScrollButton',
+    originalComponent: 'shw.traditionalButtonsWithNoDynamicCursorTransitions',
     originalFile: 'src/components/ui/InteractiveHoverButton.tsx',
     evolvedComponent: 'Magic UI (InteractiveHoverButton)',
     librarySource: 'Magic UI',
     keyImprovements: [
-      'Microinteracción de expansión radial con círculo de acento en hover',
-      'Transición deslizante del texto con icono de flecha hacia adelante',
-      'Compatibilidad total de foco y accesibilidad para teclado',
-      'Ideal para CTAs principales de navegación (Iniciar Espejo AR, Guardar Rutina)'
+      'shw.radialExpansionMicrointeractionWithAnAccentCircleOnH',
+      'shw.slidingTextTransitionWithForwardArrowIcon',
+      'shw.fullFocusCompatibilityAndKeyboardAccessibility',
+      'shw.idealForMainNavigationCtasStartArMirrorSaveRoutine'
     ],
-    status: 'Activo en Galería'
+    status: 'shw.activeInGallery'
   },
   {
-    category: '20. Tipografía Cinética por Proximidad',
-    originalComponent: 'Títulos h1/h2 estáticos sin interactividad tipográfica',
+    category: 'shw.n20ProximityKineticTypography',
+    originalComponent: 'shw.staticH1H2HeadingsWithNoTypographicInteractivity',
     originalFile: 'src/components/ui/KineticText.tsx',
     evolvedComponent: 'Magic UI (KineticText)',
     librarySource: 'Magic UI',
     keyImprovements: [
-      'Deformación letra por letra del font-weight (de 300 a 900) por proximidad del cursor',
-      'Padding y trazos webkit dinámicos en cascada vecina (has:selector)',
-      'Soporte polimórfico (h1, h2, h3, p, span) y accesibilidad para lectores de pantalla',
-      'Aporta sensación vanguardista y tecnológica a cabeceras de bienvenida'
+      'shw.letterByLetterFontWeightMorphingFrom300To900BasedOnC',
+      'shw.dynamicPaddingAndWebkitStrokesOnNeighboringCascadeHa',
+      'shw.polymorphicSupportH1H2H3PSpanAndScreenReaderAccessib',
+      'shw.bringsAnAvantGardeTechnologicalFeelToWelcomeHeaders'
     ],
-    status: 'Activo en Galería'
+    status: 'shw.activeInGallery'
   },
   {
-    category: '21. Rayos de Luz Atmosféricos',
-    originalComponent: 'Fondos planos o degradados estáticos sin vida',
+    category: 'shw.n21AtmosphericLightRays',
+    originalComponent: 'shw.flatBackgroundsOrLifelessStaticGradients',
     originalFile: 'src/components/ui/LightRays.tsx',
     evolvedComponent: 'Magic UI (LightRays)',
     librarySource: 'Magic UI',
     keyImprovements: [
-      'Haces de luz oscilantes con balanceo angular y desvanecimiento progresivo',
-      'Luces radiales ambientales superiores combinadas con color-mix srgb',
-      'Control de desenfoque, velocidad de ciclo, cantidad de haces y longitud',
-      'Crea una atmósfera clínica premium en login y modo espejo'
+      'shw.swayingLightBeamsWithAngularSwingAndProgressiveFadin',
+      'shw.topAmbientRadialLightsCombinedWithColorMixSrgb',
+      'shw.controlOfBlurCycleSpeedBeamCountAndLength',
+      'shw.createsAPremiumClinicalAtmosphereOnLoginAndMirrorMod'
     ],
-    status: 'Activo en Galería'
+    status: 'shw.activeInGallery'
   },
   {
-    category: '22. Contador Numérico con Resortes',
-    originalComponent: 'Números estáticos que saltan de golpe sin interpolación',
+    category: 'shw.n22SpringBasedNumberCounter',
+    originalComponent: 'shw.staticNumbersThatJumpAbruptlyWithNoInterpolation',
     originalFile: 'src/components/ui/NumberTicker.tsx',
     evolvedComponent: 'Magic UI (NumberTicker)',
     librarySource: 'Magic UI',
     keyImprovements: [
-      'Física de resortes (damping & stiffness) para transición numérica fluida',
-      'Soporte startValue, prefijos, sufijos, decimales y cuenta regresiva o ascendente',
-      'Activación automática al entrar en viewport con useInView',
-      'Ideal para ángulos de ROM (articulaciones), adherencia (%) y pacientes activos'
+      'shw.springPhysicsDampingStiffnessForSmoothNumericTransit',
+      'shw.supportForStartvaluePrefixesSuffixesDecimalsAndCount',
+      'shw.automaticActivationWhenEnteringTheViewportWithUseinv',
+      'shw.idealForRomAnglesJointsAdherenceAndActivePatients'
     ],
-    status: 'Activo en Galería'
+    status: 'shw.activeInGallery'
   },
   {
-    category: '23. Tarjeta Iluminada MagicCard',
-    originalComponent: 'Tarjetas con bordes planos y sin respuesta al cursor',
+    category: 'shw.n23IlluminatedMagiccard',
+    originalComponent: 'shw.cardsWithFlatBordersAndNoCursorResponse',
     originalFile: 'src/components/ui/MagicCard.tsx',
     evolvedComponent: 'Magic UI (MagicCard)',
     librarySource: 'Magic UI',
     keyImprovements: [
-      'Modo Dual: Brillo dinámico de gradiente radial o efecto Orb luminoso difuminado',
-      'Física de seguimiento del cursor suave mediante useSpring sin saltos bruscos',
-      'Integración con modo oscuro/claro y borde degradado perimetral',
-      'Eleva la jerarquía visual de accesos rápidos y resúmenes clínicos'
+      'shw.dualModeDynamicRadialGradientGlowOrDiffusedLuminousO',
+      'shw.smoothCursorTrackingPhysicsViaUsespringWithNoAbruptJ',
+      'shw.integrationWithDarkLightModeAndPerimeterGradientBord',
+      'shw.elevatesTheVisualHierarchyOfQuickActionsAndClinicalS'
     ],
-    status: 'Activo en Galería'
+    status: 'shw.activeInGallery'
   },
   {
-    category: '24. Imagen Pixelada con Revelación Gradual',
-    originalComponent: 'Imágenes estáticas con carga abrupta sin feedback visual',
+    category: 'shw.n24PixelatedImageWithGradualReveal',
+    originalComponent: 'shw.staticImagesWithAbruptLoadingAndNoVisualFeedback',
     originalFile: 'src/components/ui/PixelImage.tsx',
     evolvedComponent: 'Magic UI (PixelImage)',
     librarySource: 'Magic UI',
     keyImprovements: [
-      'División de la imagen en cuadrícula poligonal clip-path (6x4, 8x8, 8x3, etc.)',
-      'Aparición escalonada aleatoria de cada fragmento con transición suave',
-      'Transición opcional de escala de grises a color vibrante',
-      'Ideal para avatares de pacientes, terapeutas o modelos de rehabilitación'
+      'shw.imageDivisionIntoAPolygonalClipPathGrid6x48x88x3Etc',
+      'shw.randomStaggeredAppearanceOfEachFragmentWithSmoothTra',
+      'shw.optionalTransitionFromGrayscaleToVibrantColor',
+      'shw.idealForPatientAvatarsTherapistsOrRehabilitationMode'
     ],
-    status: 'Activo en Galería'
+    status: 'shw.activeInGallery'
   },
   {
-    category: '25. Botón Pulsante Dinámico',
-    originalComponent: 'Botones planos sin jerarquía visual en pantallas densas',
+    category: 'shw.n25DynamicPulsingButton',
+    originalComponent: 'shw.flatButtonsWithNoVisualHierarchyOnDenseScreens',
     originalFile: 'src/components/ui/Button.tsx',
     evolvedComponent: 'Magic UI (PulsatingButton)',
     librarySource: 'Magic UI',
     keyImprovements: [
-      'Ondas de pulso concéntricas o efecto ripple expansivo infinito',
-      'Cálculo adaptativo de color de fondo mediante MutationObserver reactivo',
-      'Atrae inmediatamente la atención hacia la acción principal (Iniciar AR / Calibración)',
-      'Diseño táctil calibrado con tokens de FisioMirror y accesibilidad'
+      'shw.concentricPulseWavesOrInfiniteExpandingRippleEffect',
+      'shw.adaptiveBackgroundColorCalculationViaReactiveMutatio',
+      'shw.immediatelyDrawsAttentionToThePrimaryActionStartArCa',
+      'shw.touchDesignCalibratedWithFisiomirrorTokensAndAccessi'
     ],
-    status: 'Activo en Galería'
+    status: 'shw.activeInGallery'
   },
   {
-    category: '26. Barra de Progreso de Desplazamiento',
-    originalComponent: 'Barras estándar del navegador o ausencia total de indicador',
+    category: 'shw.n26ScrollProgressBar',
+    originalComponent: 'shw.standardBrowserBarsOrNoIndicatorAtAll',
     originalFile: 'src/components/ui/ScrollProgress.tsx',
     evolvedComponent: 'Magic UI / Motion (ScrollProgress)',
     librarySource: 'Magic UI',
     keyImprovements: [
-      'Rastreo continuo de scrollYProgress mediante aceleración GPU con scaleX',
-      'Gradiente canónico FisioMirror (teal-600 a cian y kinetic lime #c1ff72)',
-      'Soporte fijo superior global o anclado a un contenedor con scroll local',
-      'Ideal para guías clínicas, protocolos de ejercicios y expedientes extensos'
+      'shw.continuousScrollyprogressTrackingViaGpuAccelerationW',
+      'shw.fisiomirrorCanonicalGradientTeal600ToCyanAndKineticL',
+      'shw.supportForGloballyFixedTopPositionOrAnchoredToAConta',
+      'shw.idealForClinicalGuidesExerciseProtocolsAndLongRecord'
     ],
-    status: 'Activo en Galería'
+    status: 'shw.activeInGallery'
   },
   {
-    category: '27. Botón con Brillo Deslizante',
-    originalComponent: 'Botones sólidos oscuros sin dinamismo prémium',
+    category: 'shw.n27ButtonWithSlidingShine',
+    originalComponent: 'shw.solidDarkButtonsWithNoPremiumDynamism',
     originalFile: 'src/components/ui/ShimmerButton.tsx',
     evolvedComponent: 'Magic UI (ShimmerButton)',
     librarySource: 'Magic UI',
     keyImprovements: [
-      'Efecto de brillo cónico en rotación continua con conic-gradient a 360°',
-      'Profundidad con sombras interiores biseladas y aceleración por GPU',
-      'Ideal para acciones de alta prioridad: Generar Informes IA y Exportar PDF',
-      'Totalmente responsive y estilizado con la identidad médica de FisioMirror'
+      'shw.continuousRotatingConicalShineEffectWithConicGradien',
+      'shw.depthWithBeveledInnerShadowsAndGpuAcceleration',
+      'shw.idealForHighPriorityActionsGenerateAiReportsAndExpor',
+      'shw.fullyResponsiveAndStyledWithTheFisiomirrorMedicalIde'
     ],
-    status: 'Activo en Galería'
+    status: 'shw.activeInGallery'
   },
   {
-    category: '28. Borde Brillante Animado',
-    originalComponent: 'Bordes planos estáticos sin realce dinámico',
+    category: 'shw.n28AnimatedGlowingBorder',
+    originalComponent: 'shw.flatStaticBordersWithNoDynamicHighlight',
     originalFile: 'src/components/ui/ShineBorder.tsx',
     evolvedComponent: 'Magic UI (ShineBorder)',
     librarySource: 'Magic UI',
     keyImprovements: [
-      'Gradiente radial animado que recorre continuamente el perímetro del contenedor',
-      'Máscara CSS doble (content-box vs border-box) con exclusión XOR nativa',
-      'Soporte para múltiples colores en array (teal, cian, kinetic lime)',
-      'Acentúa tarjetas de login, informes de IA y alertas biomecánicas críticas'
+      'shw.animatedRadialGradientThatContinuouslyTravelsTheCont',
+      'shw.dualCssMaskContentBoxVsBorderBoxWithNativeXorExclusi',
+      'shw.supportForMultipleColorsInArrayTealCyanKineticLime',
+      'shw.accentuatesLoginCardsAiReportsAndCriticalBiomechanic'
     ],
-    status: 'Activo en Galería'
+    status: 'shw.activeInGallery'
   },
   {
-    category: '29. Texto con Destellos Mágicos',
-    originalComponent: 'Títulos estáticos sin elementos festivos o gamificados',
+    category: 'shw.n29TextWithMagicSparkles',
+    originalComponent: 'shw.staticHeadingsWithNoFestiveOrGamifiedElements',
     originalFile: 'src/components/ui/SparklesText.tsx',
     evolvedComponent: 'Magic UI (SparklesText)',
     librarySource: 'Magic UI',
     keyImprovements: [
-      'Destellos y estrellas vectoriales que nacen, giran y escalan aleatoriamente',
-      'Colores adaptados a la paleta médica (teal #0d9488 y kinetic lime #c1ff72)',
-      'Ciclo de vida dinámico optimizado con temporizador no bloqueante',
-      'Refuerzo positivo para celebraciones de logros, rachas y objetivos cumplidos'
+      'shw.vectorSparklesAndStarsThatSpawnRotateAndScaleRandoml',
+      'shw.colorsAdaptedToTheMedicalPaletteTeal0d9488AndKinetic',
+      'shw.dynamicLifecycleOptimizedWithANonBlockingTimer',
+      'shw.positiveReinforcementForAchievementCelebrationsStrea'
     ],
-    status: 'Activo en Galería'
+    status: 'shw.activeInGallery'
   },
   {
-    category: '30. Texto Animado por Segmentos',
-    originalComponent: 'Textos que aparecen de golpe sin transición tipográfica',
+    category: 'shw.n30SegmentedAnimatedText',
+    originalComponent: 'shw.textThatAppearsAbruptlyWithNoTypographicTransition',
     originalFile: 'src/components/ui/TextAnimate.tsx',
     evolvedComponent: 'Magic UI (TextAnimate)',
     librarySource: 'Magic UI',
     keyImprovements: [
-      'Segmentación por palabra, carácter, línea o texto completo con retardo escalonado',
-      '10 variantes cinematográficas: blurIn, blurInUp, slideUp, scaleUp, fadeIn, etc.',
-      'Soporte estricto de accesibilidad con texto oculto sr-only y aria-hidden',
-      'Perfecto para saludos de bienvenida, títulos diagnósticos y mensajes de IA'
+      'shw.segmentationByWordCharacterLineOrFullTextWithStagger',
+      'shw.n10CinematicVariantsBlurinBlurinupSlideupScaleupFadei',
+      'shw.strictAccessibilitySupportWithSrOnlyHiddenTextAndAri',
+      'shw.perfectForWelcomeGreetingsDiagnosticHeadingsAndAiMes'
     ],
-    status: 'Activo en Galería'
+    status: 'shw.activeInGallery'
   }
 ];
 
-const SAMPLE_ROUTINE_CARDS: RoutineCardData[] = [
+const buildSampleRoutineCards = (t: (key: string) => string): RoutineCardData[] => [
   {
     id: 1,
-    date: 'Prescrito: 08 Octubre',
-    title: 'Rutina Lumbar & Movilidad Activa',
-    description: '3 ejercicios diarios enfocados en estabilización del core y descompresión lumbosacra.',
+    date: t('shw.prescribedOctober08'),
+    title: t('shw.lumbarRoutineActiveMobility'),
+    description: t('shw.n3DailyExercisesFocusedOnCoreStabilizationAndLumbosac'),
     progressValue: '75%',
-    countdownText: 'Revisión en 2 días',
-    badge: 'Fase 2',
+    countdownText: t('shw.reviewIn2Days'),
+    badge: t('shw.phase2'),
     imgSrc1: '/physi.png',
-    imgAlt1: 'Fisio Dra. Ramos',
+    imgAlt1: t('shw.physioDrRamos'),
     imgSrc2: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80',
-    imgAlt2: 'Paciente Carlos',
+    imgAlt2: t('shw.patientCarlos'),
   },
   {
     id: 2,
-    date: 'Prescrito: 06 Octubre',
-    title: 'Rehabilitación Manguito Rotador',
-    description: 'Rotación externa con banda elástica y bio-feedback angular en tiempo real.',
+    date: t('shw.prescribedOctober06'),
+    title: t('shw.rotatorCuffRehabilitation'),
+    description: t('shw.externalRotationWithElasticBandAndRealTimeAngularBio'),
     progressValue: '40%',
-    countdownText: 'Próxima sesión: Hoy',
-    badge: 'Fase 1',
+    countdownText: t('shw.nextSessionToday'),
+    badge: t('shw.phase1'),
     imgSrc1: '/physi.png',
-    imgAlt1: 'Fisio Dra. Ramos',
+    imgAlt1: t('shw.physioDrRamos'),
   },
   {
     id: 3,
-    date: 'Prescrito: 01 Octubre',
-    title: 'Fortalecimiento Cuádriceps & Rodilla',
-    description: 'Sentadilla asistida a 90° con detección de valgo dinámico por cámara web.',
+    date: t('shw.prescribedOctober01'),
+    title: t('shw.quadricepsKneeStrengthening'),
+    description: t('shw.assistedSquatAt90WithWebcamBasedDynamicValgusDetecti'),
     progressValue: '90%',
-    countdownText: 'Alta próxima en 4 días',
-    badge: 'Alta próxima',
+    countdownText: t('shw.upcomingDischargeIn4Days'),
+    badge: t('shw.upcomingDischarge'),
     imgSrc1: '/physi.png',
-    imgAlt1: 'Fisio Dra. Ramos',
+    imgAlt1: t('shw.physioDrRamos'),
     imgSrc2: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80',
-    imgAlt2: 'Paciente Lucía',
+    imgAlt2: t('shw.patientLucia'),
   },
 ];
 
 export function UIShowcasePage() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
+  const sampleRoutineCards = useMemo(() => buildSampleRoutineCards(t), [t]);
   const [activeTab, setActiveTab] = useState<FilterTab>('todos');
 
   // Dialog states
@@ -636,12 +639,12 @@ export function UIShowcasePage() {
   const [textAnimateType, setTextAnimateType] = useState<AnimationType>('word');
   const [textAnimateVariant, setTextAnimateVariant] = useState<AnimationVariant>('blurInUp');
   const [textAnimateKey, setTextAnimateKey] = useState(0);
-  const [sparklesWord, setSparklesWord] = useState('¡Rehabilitación Completada!');
+  const [sparklesWord, setSparklesWord] = useState(t('shw.rehabilitationComplete'));
 
   // Estados interactivos para la Suite Estelar Biomecánica & Gamificación (8 Componentes)
   const [gaugeAngle, setGaugeAngle] = useState(128);
   const [gaugeTarget, setGaugeTarget] = useState(135);
-  const [gaugeJoint, setGaugeJoint] = useState('Rodilla Derecha');
+  const [gaugeJoint, setGaugeJoint] = useState('shw.rightKnee');
   const [dockSelectedJoint, setDockSelectedJoint] = useState('Rodilla');
   const [springReps, setSpringReps] = useState(12);
   const [energyLevel, setEnergyLevel] = useState(78);
@@ -664,19 +667,19 @@ export function UIShowcasePage() {
   const [compactTolerance, setCompactTolerance] = useState<'strict' | 'standard' | 'relaxed'>('standard');
 
   const tabs: { id: FilterTab; label: string; icon: React.ReactNode; count?: number }[] = [
-    { id: 'todos', label: 'Todos los Componentes', icon: <Layers className="w-4 h-4" /> },
-    { id: 'megasuite', label: 'Macro Suite (50)', icon: <Sparkles className="w-4 h-4 text-cyan-400" />, count: 50 },
-    { id: 'mobile', label: 'PWA Móvil & Motion', icon: <Smartphone className="w-4 h-4 text-emerald-400" />, count: 6 },
-    { id: 'armonizacion', label: 'Armonización Pastel', icon: <Sparkles className="w-4 h-4 text-sky-400" />, count: 12 },
-    { id: 'estelar', label: 'Suite Estelar', icon: <Activity className="w-4 h-4 text-emerald-400" />, count: 8 },
-    { id: 'solicitados', label: 'Suite Previa', icon: <Sparkles className="w-4 h-4" />, count: 30 },
-    { id: 'comparativa', label: 'Inventario & Mapeo', icon: <Search className="w-4 h-4" />, count: INVENTORY_COMPARISONS.length },
-    { id: 'botones', label: 'Botones Evolved', icon: <Zap className="w-4 h-4" /> },
-    { id: 'tarjetas', label: 'Tarjetas & Bento', icon: <MousePointer className="w-4 h-4" /> },
-    { id: 'modales', label: 'Modales Glass', icon: <Eye className="w-4 h-4" /> },
-    { id: 'entradas', label: 'Inputs & OTP', icon: <Smartphone className="w-4 h-4" /> },
-    { id: 'clinicos', label: 'Controles Clínicos', icon: <Sliders className="w-4 h-4" /> },
-    { id: 'luces', label: 'Tipografía & Luces', icon: <Sparkles className="w-4 h-4" /> },
+    { id: 'todos', label: t('shw.allComponents'), icon: <Layers className="w-4 h-4" /> },
+    { id: 'megasuite', label: t('shw.macroSuite50'), icon: <Sparkles className="w-4 h-4 text-cyan-400" />, count: 50 },
+    { id: 'mobile', label: t('shw.pwaMobileMotion'), icon: <Smartphone className="w-4 h-4 text-emerald-400" />, count: 6 },
+    { id: 'armonizacion', label: t('shw.pastelHarmonization'), icon: <Sparkles className="w-4 h-4 text-sky-400" />, count: 12 },
+    { id: 'estelar', label: t('shw.starSuite'), icon: <Activity className="w-4 h-4 text-emerald-400" />, count: 8 },
+    { id: 'solicitados', label: t('shw.previousSuite'), icon: <Sparkles className="w-4 h-4" />, count: 30 },
+    { id: 'comparativa', label: t('shw.inventoryMapping'), icon: <Search className="w-4 h-4" />, count: INVENTORY_COMPARISONS.length },
+    { id: 'botones', label: t('shw.evolvedButtons'), icon: <Zap className="w-4 h-4" /> },
+    { id: 'tarjetas', label: t('shw.cardsBento'), icon: <MousePointer className="w-4 h-4" /> },
+    { id: 'modales', label: t('shw.glassModals'), icon: <Eye className="w-4 h-4" /> },
+    { id: 'entradas', label: t('shw.inputsOtp'), icon: <Smartphone className="w-4 h-4" /> },
+    { id: 'clinicos', label: t('shw.clinicalControls'), icon: <Sliders className="w-4 h-4" /> },
+    { id: 'luces', label: t('shw.typographyLights'), icon: <Sparkles className="w-4 h-4" /> },
   ];
 
   return (
@@ -691,7 +694,7 @@ export function UIShowcasePage() {
           <div className="flex items-center gap-3">
             <BackButton onClick={() => navigate(-1)}>
               <ArrowLeft className="w-4 h-4 mr-1.5" />
-              <span>Volver</span>
+              <span>{t('shw.back')}</span>
             </BackButton>
             <div>
               <div className="flex flex-wrap items-center gap-2">
@@ -699,30 +702,30 @@ export function UIShowcasePage() {
                   FisioMirror UI Lab
                 </span>
                 <span className="px-2.5 py-0.5 rounded-full text-2xs font-bold bg-lime-500/10 text-lime-600 dark:text-lime-400 border border-lime-500/20">
-                  Ecosistema CLI / MCP Activo
+                  {t('shw.cliMcpEcosystemActive')}
                 </span>
                 <span className="px-2 py-0.5 rounded-full text-2xs font-bold bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
                   Reaviz · HeroUI · Magic UI · Aceternity
                 </span>
               </div>
               <h1 className="fm-title mt-1 flex items-center gap-2">
-                Galería de Componentes Evolved
+                {t('shw.evolvedComponentsGallery')}
               </h1>
               <p className="text-xs sm:text-sm text-on-surface-variant">
-                Inventario de componentes de FisioMirror con integración completa de Reaviz, HeroUI, Magic UI y Aceternity.
+                {t('shw.inventorySectionDescription')}
               </p>
             </div>
           </div>
 
           <div className="flex items-center gap-2">
-            <Tooltip content="Ir al panel del fisioterapeuta" side="bottom">
+            <Tooltip content={t('shw.goToThePhysiotherapistDashboard')} side="bottom">
               <Button variant="outline" size="sm" onClick={() => navigate('/dashboard-fisio')}>
-                Panel Clínico
+                {t('shw.clinicalDashboard')}
               </Button>
             </Tooltip>
-            <Tooltip content="Ir a la pantalla de vinculación de paciente" side="bottom">
+            <Tooltip content={t('shw.goToThePatientLinkingScreen')} side="bottom">
               <Button variant="glow" glowEffect size="sm" onClick={() => navigate('/registro-paciente')} icon={<Zap className="w-3.5 h-3.5" />}>
-                Registro Token
+                {t('shw.tokenRegistration')}
               </Button>
             </Tooltip>
           </div>
@@ -731,31 +734,31 @@ export function UIShowcasePage() {
         {/* System KPIs Bar */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 p-4 rounded-2xl bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 backdrop-blur-md shadow-xs">
           <div>
-            <span className="text-2xs uppercase font-bold tracking-wider text-on-surface-variant">Componentes Usados</span>
+            <span className="text-2xs uppercase font-bold tracking-wider text-on-surface-variant">{t('shw.componentsUsed')}</span>
             <div className="text-xl sm:text-2xl font-black text-on-surface tabular-nums flex items-baseline gap-1">
               <span>72</span>
-              <span className="text-2xs font-medium text-on-surface-variant">en FisioMirror</span>
+              <span className="text-2xs font-medium text-on-surface-variant">{t('shw.inFisiomirror')}</span>
             </div>
           </div>
           <div>
-            <span className="text-2xs uppercase font-bold tracking-wider text-on-surface-variant">Nuevos Solicitados</span>
+            <span className="text-2xs uppercase font-bold tracking-wider text-on-surface-variant">{t('shw.newlyRequested')}</span>
             <div className="text-xl sm:text-2xl font-black text-teal-600 dark:text-teal-400 tabular-nums flex items-baseline gap-1">
               <span>12</span>
-              <span className="text-2xs font-medium text-teal-500/80">integrados 100%</span>
+              <span className="text-2xs font-medium text-teal-500/80">{t('shw.fullyIntegrated')}</span>
             </div>
           </div>
           <div>
-            <span className="text-2xs uppercase font-bold tracking-wider text-on-surface-variant">Gráficos Vectoriales</span>
+            <span className="text-2xs uppercase font-bold tracking-wider text-on-surface-variant">{t('shw.vectorCharts')}</span>
             <div className="text-xl sm:text-2xl font-black text-lime-600 dark:text-lime-400 tabular-nums flex items-baseline gap-1">
               <span>Reaviz</span>
-              <span className="text-2xs font-medium text-on-surface-variant">Áreas Suaves</span>
+              <span className="text-2xs font-medium text-on-surface-variant">{t('shw.smoothAreas')}</span>
             </div>
           </div>
           <div>
-            <span className="text-2xs uppercase font-bold tracking-wider text-on-surface-variant">Micro-interacción</span>
+            <span className="text-2xs uppercase font-bold tracking-wider text-on-surface-variant">{t('shw.microInteraction')}</span>
             <div className="text-xl sm:text-2xl font-black text-blue-600 dark:text-blue-400 tabular-nums flex items-baseline gap-1">
               <span>&lt; 300ms</span>
-              <span className="text-2xs font-medium text-on-surface-variant">Regla Oro</span>
+              <span className="text-2xs font-medium text-on-surface-variant">{t('shw.goldenRule')}</span>
             </div>
           </div>
         </div>
@@ -796,23 +799,23 @@ export function UIShowcasePage() {
                     <Sparkles className="w-5 h-5" />
                   </span>
                   <h2 className="fm-title text-on-surface">
-                    Macro Suite FisioMirror (50 Componentes)
+                    {t('shw.macroSuiteFisioMirror50')}
                   </h2>
                 </div>
                 <p className="text-xs sm:text-sm text-on-surface-variant max-w-2xl">
-                  Catálogo masivo de 50 componentes modulares creados con HeroUI, Magic UI y DaisyUI para dashboards clínicos, telemetría MediaPipe, microinteracciones táctiles, gamificación y docks AR.
+                  {t('shw.massiveCatalogDescription')}
                 </p>
               </div>
 
               {/* Sub-selector de las 5 Macro Categorías */}
               <div className="flex items-center gap-1.5 flex-wrap">
                 {[
-                  { id: 'all', label: 'Todos (50)' },
-                  { id: 'actividad', label: '1. Diagnóstico (10)' },
-                  { id: 'realtime', label: '2. En Tiempo Real (10)' },
-                  { id: 'flotantes', label: '3. Flotantes & Popovers (10)' },
-                  { id: 'gamificacion', label: '4. Gamificación (10)' },
-                  { id: 'navegacion', label: '5. Docks & Menús (10)' },
+                  { id: 'all', label: t('shw.all50') },
+                  { id: 'actividad', label: t('shw.n1Diagnostics10') },
+                  { id: 'realtime', label: t('shw.n2RealTime10') },
+                  { id: 'flotantes', label: t('shw.floatingPopovers10') },
+                  { id: 'gamificacion', label: t('shw.n4Gamification10') },
+                  { id: 'navegacion', label: t('shw.n5DocksMenus10') },
                 ].map((cat) => (
                   <button
                     key={cat.id}
@@ -837,7 +840,7 @@ export function UIShowcasePage() {
                 <div className="flex items-center gap-2 pb-2 border-b border-cyan-500/15">
                   <span className="size-2 rounded-full bg-cyan-500" />
                   <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
-                    Categoría 1: Tarjetas de Actividad y Diagnóstico Clínico (10 Componentes)
+                    {t('shw.category1ActivityCards')}
                   </h3>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -861,7 +864,7 @@ export function UIShowcasePage() {
                 <div className="flex items-center gap-2 pb-2 border-b border-cyan-500/15">
                   <span className="size-2 rounded-full bg-teal-500" />
                   <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
-                    Categoría 2: Paneles y Métricas en Tiempo Real (MediaPipe / IA) (10 Componentes)
+                    {t('shw.category2RealTimePanels')}
                   </h3>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -885,7 +888,7 @@ export function UIShowcasePage() {
                 <div className="flex items-center gap-2 pb-2 border-b border-cyan-500/15">
                   <span className="size-2 rounded-full bg-indigo-500" />
                   <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
-                    Categoría 3: Microinteracciones y Controles Flotantes Contextuales (10 Componentes)
+                    {t('shw.category3Microinteractions')}
                   </h3>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 rounded-2xl bg-surface-container-low/40">
@@ -909,7 +912,7 @@ export function UIShowcasePage() {
                 <div className="flex items-center gap-2 pb-2 border-b border-cyan-500/15">
                   <span className="size-2 rounded-full bg-amber-500" />
                   <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
-                    Categoría 4: Gamificación, Rachas y Motivación para Pacientes (10 Componentes)
+                    {t('shw.category4Gamification')}
                   </h3>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -937,7 +940,7 @@ export function UIShowcasePage() {
                 <div className="flex items-center gap-2 pb-2 border-b border-cyan-500/15">
                   <span className="size-2 rounded-full bg-emerald-500" />
                   <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
-                    Categoría 5: Docks, Barras de Herramientas y Navegación Ergonómica (10 Componentes)
+                    {t('shw.category5DocksNavigation')}
                   </h3>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 rounded-2xl bg-surface-container-low/40">
@@ -982,17 +985,17 @@ export function UIShowcasePage() {
                     <Activity className="w-5 h-5" />
                   </span>
                   <h2 className="fm-title text-on-surface">
-                    Suite Estelar de Innovación FisioMirror
+                    {t('shw.fisiomirrorStellarInnovationSuite')}
                   </h2>
                 </div>
                 <p className="text-xs sm:text-sm text-on-surface-variant max-w-2xl">
-                  8 componentes de vanguardia para rehabilitación física con IA: arcos biomecánicos continuos, dock flotante AR no intrusivo, barras de fatiga muscular, gamificación 3D y herramientas clínicas para fisioterapeutas.
+                  {t('shw.starSectionDescription')}
                 </p>
               </div>
 
               <div className="flex items-center gap-2">
                 <span className="px-3 py-1 rounded-full text-xs font-black bg-teal-500/15 text-teal-700 dark:text-teal-300 border border-teal-500/30">
-                  8 / 8 Nuevos y Operativos
+                  {t('shw.n8Of8NewOperational')}
                 </span>
               </div>
             </div>
@@ -1004,13 +1007,13 @@ export function UIShowcasePage() {
                 <div className="flex items-center justify-between">
                   <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface flex items-center gap-2">
                     <span className="size-2 rounded-full bg-teal-500" />
-                    1. Medidor Biomecánico Continuo (BiomechanicalAngleGauge)
+                    {t('shw.m1BiomechanicalGauge')}
                   </h3>
                 </div>
 
                 <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
                   <p className="text-xs text-on-surface-variant leading-relaxed">
-                    Arco SVG graduado con semáforo biomecánico continuo (verde para rango seguro, amarillo para compensación moderada, rojo para alerta de dolor).
+                    {t('shw.m1BiomechanicalGaugeDescription')}
                   </p>
 
                   <div className="flex flex-col sm:flex-row items-center justify-center gap-6 py-2">
@@ -1020,18 +1023,18 @@ export function UIShowcasePage() {
                       minAngle={0}
                       maxAngle={180}
                       safeTolerance={8}
-                      jointName={gaugeJoint}
+                      jointName={t(gaugeJoint)}
                     />
 
                     {/* Interactive Simulator Controls */}
                     <div className="flex-1 w-full space-y-3 p-4 rounded-2xl bg-surface-container-low/60 dark:bg-slate-900/60 border border-outline-variant/20">
                       <span className="text-xs font-bold uppercase tracking-wider text-on-surface-variant block">
-                        Simulador de Ángulo en Vivo:
+                        {t('shw.liveAngleSimulator')}
                       </span>
                       
                       <div className="space-y-1">
                         <div className="flex justify-between text-xs font-mono">
-                          <span className="text-on-surface-variant">Ángulo Actual:</span>
+                          <span className="text-on-surface-variant">{t('shw.currentAngle')}</span>
                           <span className="font-bold text-teal-600 dark:text-teal-400">{gaugeAngle}°</span>
                         </div>
                         <input
@@ -1046,7 +1049,7 @@ export function UIShowcasePage() {
 
                       <div className="space-y-1">
                         <div className="flex justify-between text-xs font-mono">
-                          <span className="text-on-surface-variant">Meta Prescrita:</span>
+                          <span className="text-on-surface-variant">{t('shw.prescribedTarget')}</span>
                           <span className="font-bold text-primary">{gaugeTarget}°</span>
                         </div>
                         <input
@@ -1060,7 +1063,7 @@ export function UIShowcasePage() {
                       </div>
 
                       <div className="pt-2 flex gap-1.5">
-                        {['Rodilla Derecha', 'Codo Izquierdo', 'Hombro'].map((j) => (
+                        {['shw.rightKnee', 'shw.leftElbow', 'shw.shoulder'].map((j) => (
                           <button
                             key={j}
                             type="button"
@@ -1072,7 +1075,7 @@ export function UIShowcasePage() {
                                 : "bg-white/60 dark:bg-slate-800 text-on-surface-variant border-slate-200 dark:border-slate-700"
                             )}
                           >
-                            {j}
+                            {t(j)}
                           </button>
                         ))}
                       </div>
@@ -1086,13 +1089,13 @@ export function UIShowcasePage() {
                 <div className="flex items-center justify-between">
                   <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface flex items-center gap-2">
                     <span className="size-2 rounded-full bg-teal-500" />
-                    2. Contador con Físicas de Resorte (RepetitionCounterSpring)
+                    {t('shw.m2RepetitionCounterSpring')}
                   </h3>
                 </div>
 
                 <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
                   <p className="text-xs text-on-surface-variant leading-relaxed">
-                    Contador cinético de alta visibilidad para modo espejo AR con física de rebote elástica en cada repetición válida detectada por IA y control de cadencia.
+                    {t('shw.highVisibilityKineticCounterForArMirrorModeWithElast')}
                   </p>
 
                   <RepetitionCounterSpring
@@ -1112,11 +1115,11 @@ export function UIShowcasePage() {
               <div className="space-y-3">
                 <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface flex items-center gap-2">
                   <span className="size-2 rounded-full bg-teal-500" />
-                  3. Dock Flotante Contextual AR (ARFloatingDock)
+                  {t('shw.m3ArFloatingDock')}
                 </h3>
                 <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4 flex flex-col items-center justify-center min-h-[190px]">
                   <p className="text-xs text-on-surface-variant text-center max-w-md">
-                    Diseñado para la parte inferior del modo espejo AR. Magnifica íconos en hover y permite alternar articulación y audio sin obstruir la vista clínica.
+                    {t('shw.designedForTheLowerPartOfArMirrorModeMagnifiesIconsO')}
                   </p>
                   
                   <ARFloatingDock
@@ -1130,11 +1133,11 @@ export function UIShowcasePage() {
               <div className="space-y-3">
                 <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface flex items-center gap-2">
                   <span className="size-2 rounded-full bg-teal-500" />
-                  4. Barra Rápida de Terapeuta (TherapistQuickToolbar)
+                  {t('shw.m4TherapistQuickToolbar')}
                 </h3>
                 <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4 flex flex-col items-center justify-center min-h-[190px]">
                   <p className="text-xs text-on-surface-variant text-center max-w-md">
-                    Panel colapsable con microinteracción elástica para pausar la sesión, tomar capturas de postura, dictar notas de voz y calibrar metas ROM.
+                    {t('shw.m4TherapistToolbarDescription')}
                   </p>
 
                   <TherapistQuickToolbar />
@@ -1148,7 +1151,7 @@ export function UIShowcasePage() {
               <div className="space-y-3">
                 <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface flex items-center gap-2">
                   <span className="size-2 rounded-full bg-teal-500" />
-                  5. Barra de Fatiga y Energía Muscular (RehabEnergyBar)
+                  {t('shw.m5RehabEnergyBar')}
                 </h3>
                 <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
                   <RehabEnergyBar
@@ -1162,7 +1165,7 @@ export function UIShowcasePage() {
                   <div className="grid grid-cols-2 gap-3 pt-2">
                     <div>
                       <span className="text-2xs uppercase font-bold text-on-surface-variant block mb-1">
-                        Energía: {energyLevel}%
+                        {t('shw.energyLabel')} {energyLevel}%
                       </span>
                       <input
                         type="range"
@@ -1175,7 +1178,7 @@ export function UIShowcasePage() {
                     </div>
                     <div>
                       <span className="text-2xs uppercase font-bold text-on-surface-variant block mb-1">
-                        Fatiga: {fatigueLevel.toFixed(1)}/10
+                        {t('shw.fatigueLabel')} {fatigueLevel.toFixed(1)}/10
                       </span>
                       <input
                         type="range"
@@ -1196,7 +1199,7 @@ export function UIShowcasePage() {
                 <div className="flex items-center justify-between">
                   <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface flex items-center gap-2">
                     <span className="size-2 rounded-full bg-teal-500" />
-                    6. Monitor de Compensaciones Posturales (CompensationAlertBanner)
+                    {t('shw.m6CompensationAlertBanner')}
                   </h3>
                   <div className="flex gap-1">
                     {(['mild', 'moderate', 'high'] as const).map((s) => (
@@ -1217,13 +1220,13 @@ export function UIShowcasePage() {
                 
                 <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
                   <p className="text-xs text-on-surface-variant">
-                    Alerta semántica de biofeedback en tiempo real cuando MediaPipe detecta compensaciones o trampas motoras durante el ejercicio.
+                    {t('shw.realTimeSemanticBiofeedbackAlertWhenMediapipeDetects')}
                   </p>
 
                   <CompensationAlertBanner
-                    deviationJoint="Escápula & Hombro Izquierdo"
-                    detectedIssue="Elevación excesiva de trapecio durante la rotación externa."
-                    recommendedCorrection="Desciende el hombro, activa dorsal y mantén el codo adherido al torso antes de iniciar la fase concéntrica."
+                    deviationJoint={t('shw.scapulaLeftShoulder')}
+                    detectedIssue={t('shw.excessiveTrapeziusElevationDuringExternalRotation')}
+                    recommendedCorrection={t('shw.lowerTheShoulderEngageTheLatsAndKeepTheElbowTuckedAg')}
                     severity={alertSeverity}
                   />
                 </div>
@@ -1236,18 +1239,18 @@ export function UIShowcasePage() {
               <div className="space-y-3">
                 <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface flex items-center gap-2">
                   <span className="size-2 rounded-full bg-teal-500" />
-                  7. Tarjeta Holográfica 3D de Logros (GamifiedBadgeCard)
+                  {t('shw.m7GamifiedBadgeCard')}
                 </h3>
                 <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
                   <p className="text-xs text-on-surface-variant">
-                    Efecto interactivo de inclinación tridimensional (3D tilt) según la posición del cursor, con emblema holográfico y reclamo de XP para incentivar la adherencia del paciente.
+                    {t('shw.m7HolographicCardDescription')}
                   </p>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <GamifiedBadgeCard
-                      title="Maestro de Movilidad"
-                      category="Rango Articular"
-                      description="Completaste 5 sesiones consecutivas superando los 120° de flexión segura."
+                      title={t('shw.mobilityMaster')}
+                      category={t('shw.categoryRom')}
+                      description={t('shw.youCompleted5ConsecutiveSessionsExceeding120OfSafeFl')}
                       level={4}
                       xpPoints={300}
                       unlocked={true}
@@ -1255,9 +1258,9 @@ export function UIShowcasePage() {
                     />
 
                     <GamifiedBadgeCard
-                      title="Postura Impecable"
-                      category="Biomecánica"
-                      description="0 compensaciones detectadas por MediaPipe en una serie completa de 15 reps."
+                      title={t('shw.flawlessPosture')}
+                      category={t('shw.categoryBiomechanics')}
+                      description={t('shw.n0CompensationsDetectedByMediapipeAcrossAFullSetOf15R')}
                       level={2}
                       xpPoints={150}
                       unlocked={true}
@@ -1271,18 +1274,18 @@ export function UIShowcasePage() {
               <div className="space-y-3">
                 <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface flex items-center gap-2">
                   <span className="size-2 rounded-full bg-teal-500" />
-                  8. Popover Flotante de Desglose Articular (JointDetailPopover)
+                  {t('shw.m8JointDetailPopover')}
                 </h3>
                 <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4 flex flex-col items-center justify-center min-h-[260px]">
                   <p className="text-xs text-on-surface-variant text-center max-w-sm mb-2">
-                    Permite anclar sobre cualquier articulación un panel flotante que expone ROM actual, velocidad angular y asimetría respecto al lado contralateral sin bloquear la cámara.
+                    {t('shw.m8JointPopoverDescription')}
                   </p>
 
                   <div className="flex flex-wrap items-center justify-center gap-3">
                     <JointDetailPopover
-                      triggerLabel="Inspeccionar Rodilla Derecha"
+                      triggerLabel={t('shw.inspectRightKnee')}
                       metrics={{
-                        jointName: 'Rodilla Derecha (Flexión)',
+                        jointName: t('shw.rightKneeFlexion'),
                         currentRom: gaugeAngle,
                         maxHistoricalRom: 135,
                         angularVelocity: 48,
@@ -1292,9 +1295,9 @@ export function UIShowcasePage() {
                     />
 
                     <JointDetailPopover
-                      triggerLabel="Inspeccionar Hombro Izquierdo"
+                      triggerLabel={t('shw.inspectLeftShoulder')}
                       metrics={{
-                        jointName: 'Hombro Izquierdo (Abducción)',
+                        jointName: t('shw.leftShoulderAbduction'),
                         currentRom: 112,
                         maxHistoricalRom: 120,
                         angularVelocity: 36,
@@ -1322,11 +1325,11 @@ export function UIShowcasePage() {
                     <Smartphone className="w-5 h-5" />
                   </span>
                   <h2 className="fm-title text-on-surface">
-                    PWA Móvil de Alta Densidad & Físicas de Resorte (Spring Motion)
+                    {t('shw.pwaMobileHighDensity')}
                   </h2>
                 </div>
                 <p className="text-xs sm:text-sm text-on-surface-variant max-w-2xl">
-                  Erradicación del scroll infinito mediante cajones inferiores deslizables (bottom sheets con snap points), barra inferior fija ergonómica para el pulgar, selectores compactos de 1-toque y animaciones orgánicas estilo Magic UI / 21st.dev.
+                  {t('shw.eradicatingInfiniteScroll')}
                 </p>
               </div>
 
@@ -1339,7 +1342,7 @@ export function UIShowcasePage() {
                     className="px-4 py-2.5 rounded-2xl bg-teal-600 hover:bg-teal-500 text-white font-bold text-xs flex items-center gap-2 shadow-card shadow-teal-600/25 border border-teal-400/40"
                   >
                     <Sliders className="size-4" />
-                    <span>Abrir Bottom Sheet Móvil</span>
+                    <span>{t('shw.openMobileBottomSheet')}</span>
                   </button>
                 </TactileFeedback>
               </div>
@@ -1351,10 +1354,10 @@ export function UIShowcasePage() {
                 <div>
                   <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface flex items-center gap-2">
                     <span className="size-2 rounded-full bg-emerald-500" />
-                    1. Selectores Compactos de 1-Toque (Reemplazo de Formularios Largos)
+                    {t('shw.n1CompactOneTapSelectors')}
                   </h3>
                   <p className="text-xs text-on-surface-variant">
-                    Diseñados para sustituir inputs pequeños y desplegables torpes en smartphones.
+                    {t('shw.designedToReplaceSmallInputsAndClumsyDropdownsOnSmar')}
                   </p>
                 </div>
               </div>
@@ -1367,7 +1370,7 @@ export function UIShowcasePage() {
                     onSelectJoint={(j) => setCompactJoint(j)}
                   />
                   <div className="mt-3 pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs">
-                    <span className="text-on-surface-variant">Seleccionada:</span>
+                    <span className="text-on-surface-variant">{t('shw.selected')}</span>
                     <span className="font-bold text-teal-600 dark:text-teal-400 uppercase">{compactJoint}</span>
                   </div>
                 </div>
@@ -1380,11 +1383,11 @@ export function UIShowcasePage() {
                     min={30}
                     max={170}
                     step={5}
-                    label="Meta ROM Articular"
+                    label={t('shw.jointRomTarget')}
                   />
                   <div className="mt-3 pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs">
-                    <span className="text-on-surface-variant">Estado Clínico:</span>
-                    <span className="font-bold text-emerald-600 dark:text-emerald-400">Rango Seguro (+12%)</span>
+                    <span className="text-on-surface-variant">{t('shw.clinicalStatus')}</span>
+                    <span className="font-bold text-emerald-600 dark:text-emerald-400">{t('shw.safeRange12')}</span>
                   </div>
                 </div>
 
@@ -1392,7 +1395,7 @@ export function UIShowcasePage() {
                 <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
                   <div className="space-y-1.5">
                     <span className="text-2xs font-bold uppercase tracking-wider text-on-surface-variant block px-1">
-                      Calibración MediaPipe
+                      {t('shw.mediapipeCalibration')}
                     </span>
                     <CompactToleranceDropdown
                       tolerance={compactTolerance}
@@ -1400,9 +1403,9 @@ export function UIShowcasePage() {
                     />
                   </div>
                   <div className="mt-3 pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs">
-                    <span className="text-on-surface-variant">Sensibilidad:</span>
+                    <span className="text-on-surface-variant">{t('shw.sensitivity')}</span>
                     <span className="font-mono text-sky-600 dark:text-sky-400 font-bold">
-                      {compactTolerance === 'strict' ? '±3° Exacta' : compactTolerance === 'standard' ? '±7° Estándar' : '±12° Asistida'}
+                      {compactTolerance === 'strict' ? t('shw.n3Precise') : compactTolerance === 'standard' ? t('shw.n7Standard') : t('shw.n12Assisted')}
                     </span>
                   </div>
                 </div>
@@ -1413,7 +1416,7 @@ export function UIShowcasePage() {
             <div className="space-y-4 pt-2">
               <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface flex items-center gap-2">
                 <span className="size-2 rounded-full bg-emerald-500" />
-                2. Wrappers de Motion: Blur-Fade & Tactile Spring Feedback
+                {t('shw.n2MotionWrappers')}
               </h3>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -1421,15 +1424,15 @@ export function UIShowcasePage() {
                 <MotionBlurFade delay={0.1} className="p-5 rounded-2xl bg-gradient-to-br from-teal-50/70 via-surface/90 to-sky-50/40 dark:from-teal-950/25 dark:via-surface-container/80 dark:to-slate-900/90 border border-teal-200/50 dark:border-teal-500/25 shadow-sm space-y-3">
                   <div className="flex items-center justify-between">
                     <span className="text-2xs font-bold px-2 py-0.5 rounded-full bg-teal-500/15 text-teal-700 dark:text-teal-300 border border-teal-500/30">
-                      MotionBlurFade Wrapper
+                      {t('shw.motionblurfadeWrapper')}
                     </span>
                     <span className="text-xs font-mono text-on-surface-variant">ease: [0.16, 1, 0.3, 1]</span>
                   </div>
                   <h4 className="text-sm font-bold text-on-surface">
-                    Revelación Progresiva con Desenfoque Dinámico
+                    {t('shw.progressiveRevealWithDynamicBlur')}
                   </h4>
                   <p className="text-xs text-on-surface-variant leading-relaxed">
-                    Las estadísticas y reportes médicos aparecen fluidamente desde un desenfoque sutil (6px blur) con física amortiguada, reduciendo la carga cognitiva en móviles.
+                    {t('shw.medicalStatsAppear')}
                   </p>
                   <div className="flex items-center gap-2 pt-2">
                     <div className="h-1.5 flex-1 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden">
@@ -1443,15 +1446,15 @@ export function UIShowcasePage() {
                 <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-3">
                   <div className="flex items-center justify-between">
                     <span className="text-2xs font-bold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30">
-                      TactileFeedback Wrapper
+                      {t('shw.tactilefeedbackWrapper')}
                     </span>
                     <span className="text-xs font-mono text-on-surface-variant">stiffness: 420 · damping: 18</span>
                   </div>
                   <h4 className="text-sm font-bold text-on-surface">
-                    Respuesta Táctil Visual Inmediata
+                    {t('shw.immediateVisualTactileFeedback')}
                   </h4>
                   <p className="text-xs text-on-surface-variant leading-relaxed">
-                    Toca o haz clic sobre los botones de prueba para sentir la física de resorte optimizada sin retardo de interacción:
+                    {t('shw.tapOrClickTheTestButtonsToFeelTheOptimizedSpringPhys')}
                   </p>
                   <div className="flex items-center gap-3 pt-2 flex-wrap">
                     <TactileFeedback>
@@ -1462,7 +1465,7 @@ export function UIShowcasePage() {
                         }}
                         className="px-3.5 py-2 rounded-xl bg-primary text-on-primary font-bold text-xs shadow-xs"
                       >
-                        +5° ROM Rápido
+                        {t('shw.n5QuickRom')}
                       </button>
                     </TactileFeedback>
 
@@ -1474,7 +1477,7 @@ export function UIShowcasePage() {
                         }}
                         className="px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-on-surface font-bold text-xs border border-slate-200 dark:border-slate-700"
                       >
-                        -5° ROM Rápido
+                        {t('shw.n5QuickRom2')}
                       </button>
                     </TactileFeedback>
 
@@ -1484,7 +1487,7 @@ export function UIShowcasePage() {
                         onClick={() => setIsBottomSheetOpen(true)}
                         className="px-3.5 py-2 rounded-xl bg-sky-50 dark:bg-sky-950/40 text-sky-700 dark:text-sky-300 font-bold text-xs border border-sky-200 dark:border-sky-500/30"
                       >
-                        Probar Bottom Sheet
+                        {t('shw.tryBottomSheet')}
                       </button>
                     </TactileFeedback>
                   </div>
@@ -1496,20 +1499,20 @@ export function UIShowcasePage() {
             <div className="space-y-3 pt-2">
               <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface flex items-center gap-2">
                 <span className="size-2 rounded-full bg-emerald-500" />
-                3. Barra Fija Inferior Ergonómica (MobileFixedDock)
+                {t('shw.n3MobileFixedDock')}
               </h3>
               <div className="p-5 rounded-2xl bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 space-y-3">
                 <p className="text-xs text-on-surface-variant">
-                  Ubicada rígidamente en la base de la pantalla móvil (debajo de esta vista). Permite cambiar de módulo instantáneamente con el pulgar e iniciar la sesión de Espejo AR con un toque central prominente.
+                  {t('shw.mobileFixedDockDescription')}
                 </p>
                 <div className="max-w-md mx-auto p-2 rounded-2xl bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700 flex items-center justify-around text-center text-2xs font-bold text-on-surface-variant">
                   <div className="py-1 px-3 rounded-xl bg-teal-500/20 text-teal-700 dark:text-teal-300">
                     <Home className="size-4 mx-auto mb-0.5" />
-                    <span>Inicio</span>
+                    <span>{t('shw.home')}</span>
                   </div>
                   <div className="py-1 px-3">
                     <Users className="size-4 mx-auto mb-0.5" />
-                    <span>Pacientes</span>
+                    <span>{t('shw.patients')}</span>
                   </div>
                   <div className="size-10 rounded-xl bg-gradient-to-tr from-teal-600 to-sky-400 text-white flex flex-col items-center justify-center -mt-3 shadow-sm">
                     <Camera className="size-4" />
@@ -1517,7 +1520,7 @@ export function UIShowcasePage() {
                   </div>
                   <div className="py-1 px-3">
                     <Dumbbell className="size-4 mx-auto mb-0.5" />
-                    <span>Ejercicios</span>
+                    <span>{t('shw.exercises')}</span>
                   </div>
                   <div className="py-1 px-3">
                     <Sparkles className="size-4 mx-auto mb-0.5" />
@@ -1533,8 +1536,8 @@ export function UIShowcasePage() {
         <MobileBottomSheet
           isOpen={isBottomSheetOpen}
           onClose={() => setIsBottomSheetOpen(false)}
-          title="Ficha Rápida & Calibración Móvil"
-          subtitle="Ajuste ergonómico sin scroll infinito"
+          title={t('shw.quickCardMobileCalibration')}
+          subtitle={t('shw.ergonomicAdjustmentWithoutInfiniteScroll')}
           icon={<Sliders className="size-5" />}
           snapPoint={bottomSheetSnap}
           onSnapPointChange={(snap) => setBottomSheetSnap(snap)}
@@ -1546,7 +1549,7 @@ export function UIShowcasePage() {
                 onClick={() => setIsBottomSheetOpen(false)}
                 className="px-4 py-2 rounded-xl text-xs font-bold text-on-surface-variant hover:bg-slate-100 dark:hover:bg-slate-800"
               >
-                Cerrar
+                {t('shw.close')}
               </button>
               <TactileFeedback>
                 <button
@@ -1557,7 +1560,7 @@ export function UIShowcasePage() {
                   }}
                   className="px-5 py-2 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-bold text-xs shadow-sm shadow-teal-600/30"
                 >
-                  Iniciar AR Mirror
+                  {t('shw.startArMirror')}
                 </button>
               </TactileFeedback>
             </>
@@ -1567,7 +1570,7 @@ export function UIShowcasePage() {
             {/* Controles de snap point dentro del sheet */}
             <div className="flex items-center justify-between p-2.5 rounded-xl bg-white/70 dark:bg-slate-800/70 border border-slate-200/60 dark:border-slate-700/60">
               <span className="text-xs font-bold text-on-surface">
-                Nivel de Altura (Snap Point):
+                {t('shw.heightLevelSnapPoint')}
               </span>
               <div className="flex items-center gap-1">
                 {(['peek', 'medium', 'full'] as const).map((s) => (
@@ -1582,7 +1585,7 @@ export function UIShowcasePage() {
                         : 'text-on-surface-variant hover:bg-slate-200 dark:hover:bg-slate-700'
                     )}
                   >
-                    {s === 'peek' ? 'Compacto (35%)' : s === 'medium' ? 'Medio (65%)' : 'Completo (92%)'}
+                    {s === 'peek' ? t('shw.compact35') : s === 'medium' ? t('shw.medium65') : t('shw.full92')}
                   </button>
                 ))}
               </div>
@@ -1597,7 +1600,7 @@ export function UIShowcasePage() {
             <CompactRomStepper
               value={compactRom}
               onChange={(val) => setCompactRom(val)}
-              label="Objetivo ROM en Sesión Móvil"
+              label={t('shw.romTargetInMobileSession')}
             />
 
             <CompactToleranceDropdown
@@ -1609,14 +1612,14 @@ export function UIShowcasePage() {
             <div className="p-3.5 rounded-2xl bg-teal-50/70 dark:bg-teal-950/30 border border-teal-200/50 dark:border-teal-500/25 space-y-1.5">
               <div className="flex items-center justify-between">
                 <span className="text-2xs font-bold uppercase tracking-wider text-teal-700 dark:text-teal-300">
-                  Informe Biomecánico
+                  {t('shw.biomechanicalReport')}
                 </span>
                 <span className="text-2xs font-mono font-bold text-teal-600 dark:text-teal-400">
-                  IA Activa
+                  {t('shw.aiActive')}
                 </span>
               </div>
               <p className="text-xs text-teal-950 dark:text-teal-100 font-medium">
-                Listo para iniciar sesión de {compactJoint} a {compactRom}° con tolerancia {compactTolerance}. Arrastra la barra superior hacia abajo para cerrar o cambiar el nivel de altura.
+                {t('shw.readyToStartSession', { joint: compactJoint, rom: compactRom, tol: compactTolerance })}
               </p>
             </div>
           </div>
@@ -1635,11 +1638,11 @@ export function UIShowcasePage() {
                     <Sparkles className="w-5 h-5" />
                   </span>
                   <h2 className="fm-title text-on-surface">
-                    Armonización Cromática Pastel Clínica (FisioMirror Design System)
+                    {t('shw.clinicalPastelHarmony')}
                   </h2>
                 </div>
                 <p className="text-xs sm:text-sm text-on-surface-variant max-w-2xl">
-                  Reemplazo de los fondos blancos y grises fríos por una paleta médica cálida y tecnológica: celeste suave (soft sky), menta/turquesa (mint/teal) y azul lavanda sutil. Alternancia entre vidrio translúcido con gradiente y capas sólidas para tarjetas secundarias y badges.
+                  {t('shw.clinicalPastelHarmonyDescription')}
                 </p>
               </div>
 
@@ -1658,7 +1661,7 @@ export function UIShowcasePage() {
                           : "text-on-surface-variant hover:text-on-surface dark:hover:text-slate-200"
                       )}
                     >
-                      {tone === 'sky' ? 'Celeste' : tone === 'mint' ? 'Menta' : tone === 'lavender' ? 'Lavanda' : 'Gradiente'}
+                      {tone === 'sky' ? t('shw.skyBlue') : tone === 'mint' ? t('shw.mint') : tone === 'lavender' ? t('shw.lavender') : t('shw.gradient')}
                     </button>
                   ))}
                 </div>
@@ -1674,7 +1677,7 @@ export function UIShowcasePage() {
                         : "text-on-surface-variant hover:text-on-surface dark:hover:text-slate-200"
                     )}
                   >
-                    Translúcido Glass
+                    {t('shw.translucentGlass')}
                   </button>
                   <button
                     type="button"
@@ -1686,7 +1689,7 @@ export function UIShowcasePage() {
                         : "text-on-surface-variant hover:text-on-surface dark:hover:text-slate-200"
                     )}
                   >
-                    Capa Sólida
+                    {t('shw.solidLayer')}
                   </button>
                 </div>
               </div>
@@ -1709,17 +1712,17 @@ export function UIShowcasePage() {
                     <Activity className="size-5" />
                   </div>
                   <span className="text-2xs font-bold px-2.5 py-0.5 rounded-full bg-sky-500/15 border border-sky-500/30 text-sky-700 dark:text-sky-300">
-                    Soft Sky
+                    {t('shw.softSky')}
                   </span>
                 </div>
                 <h3 className="text-sm font-bold text-sky-950 dark:text-sky-100 mb-1">
-                  Celeste Pastel Clínico
+                  {t('shw.clinicalPastelSkyBlue')}
                 </h3>
                 <p className="text-xs text-sky-700/80 dark:text-sky-300/80 mb-4 leading-relaxed">
-                  Ideal para telemetría, monitoreo articular en tiempo real y métricas respiratorias/oximetría.
+                  {t('shw.idealForTelemetry')}
                 </p>
                 <div className="flex items-center justify-between pt-3 border-t border-sky-200/50 dark:border-sky-500/20 text-xs font-semibold">
-                  <span className="text-sky-800 dark:text-sky-200">Ángulo ROM</span>
+                  <span className="text-sky-800 dark:text-sky-200">{t('shw.romAngle')}</span>
                   <span className="font-mono font-black text-sky-600 dark:text-sky-300">128.4° (+4.2%)</span>
                 </div>
               </HarmonizedSurface>
@@ -1739,18 +1742,18 @@ export function UIShowcasePage() {
                     <Heart className="size-5" />
                   </div>
                   <span className="text-2xs font-bold px-2.5 py-0.5 rounded-full bg-teal-500/15 border border-teal-500/30 text-teal-700 dark:text-teal-300">
-                    Mint / Teal
+                    {t('shw.mintTeal')}
                   </span>
                 </div>
                 <h3 className="text-sm font-bold text-teal-950 dark:text-teal-100 mb-1">
-                  Menta / Turquesa Pastel
+                  {t('shw.pastelMintTurquoise')}
                 </h3>
                 <p className="text-xs text-teal-700/80 dark:text-teal-300/80 mb-4 leading-relaxed">
-                  Eje cromático primario de FisioMirror. Comunica recuperación óptima, adherencia y salud articular activa.
+                  {t('shw.primaryChromaticAxis')}
                 </p>
                 <div className="flex items-center justify-between pt-3 border-t border-teal-200/50 dark:border-teal-500/20 text-xs font-semibold">
-                  <span className="text-teal-800 dark:text-teal-200">Adherencia Semanal</span>
-                  <span className="font-mono font-black text-teal-600 dark:text-teal-300">94.8% (Óptima)</span>
+                  <span className="text-teal-800 dark:text-teal-200">{t('shw.weeklyAdherence')}</span>
+                  <span className="font-mono font-black text-teal-600 dark:text-teal-300">{t('shw.n948Optimal')}</span>
                 </div>
               </HarmonizedSurface>
 
@@ -1769,18 +1772,18 @@ export function UIShowcasePage() {
                     <Sparkles className="size-5" />
                   </div>
                   <span className="text-2xs font-bold px-2.5 py-0.5 rounded-full bg-indigo-500/15 border border-indigo-500/30 text-indigo-700 dark:text-indigo-300">
-                    Lavender Blue
+                    {t('shw.lavenderBlue')}
                   </span>
                 </div>
                 <h3 className="text-sm font-bold text-indigo-950 dark:text-indigo-100 mb-1">
-                  Azul Lavanda Sutil
+                  {t('shw.subtleLavenderBlue')}
                 </h3>
                 <p className="text-xs text-indigo-700/80 dark:text-indigo-300/80 mb-4 leading-relaxed">
-                  Diseñado para tele-rehabilitación, reportes generados con IA y recordatorios de calma postural.
+                  {t('shw.designedForTeleRehab')}
                 </p>
                 <div className="flex items-center justify-between pt-3 border-t border-indigo-200/50 dark:border-indigo-500/20 text-xs font-semibold">
-                  <span className="text-indigo-800 dark:text-indigo-200">Sesiones Guiadas</span>
-                  <span className="font-mono font-black text-indigo-600 dark:text-indigo-300">18 Completadas</span>
+                  <span className="text-indigo-800 dark:text-indigo-200">{t('shw.guidedSessions')}</span>
+                  <span className="font-mono font-black text-indigo-600 dark:text-indigo-300">{t('shw.n18Completed')}</span>
                 </div>
               </HarmonizedSurface>
             </div>
@@ -1788,26 +1791,26 @@ export function UIShowcasePage() {
             {/* Fila 2: Comparativa Visual Directa "Antes vs Ahora" */}
             <div className="space-y-3 pt-2">
               <h3 className="text-xs font-bold uppercase tracking-wider text-on-surface-variant">
-                Comparativa Visual: Gris/Blanco Plano vs. Harmonized Pastel Clínico
+                {t('shw.visualComparisonFlatGrayWhiteVsHarmonizedClinicalPas')}
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 {/* Antes: Blanco plano / gris aburrido */}
                 <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-on-surface relative">
                   <div className="flex items-center justify-between mb-3">
                     <span className="text-2xs font-bold px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-on-surface-variant border border-slate-300 dark:border-slate-700">
-                      Estilo Previo (Blanco / Gris Plano)
+                      {t('shw.previousStyleWhiteFlatGray')}
                     </span>
-                    <span className="text-xs text-on-surface-variant">Sin matiz</span>
+                    <span className="text-xs text-on-surface-variant">{t('shw.noTint')}</span>
                   </div>
                   <p className="text-sm font-bold text-on-surface mb-1">
-                    Evaluación Postural de Hombro
+                    {t('shw.shoulderPosturalAssessment')}
                   </p>
                   <p className="text-xs text-on-surface-variant mb-4">
-                    Contenedor frío y genérico que produce fatiga visual y no transmite calidez médica.
+                    {t('shw.coldGenericContainerThatCausesVisualFatigueAndConvey')}
                   </p>
                   <div className="flex items-center gap-3 text-xs text-on-surface-variant">
                     <span className="size-2 rounded-full bg-slate-400" />
-                    <span>8 repeticiones registradas sin resaltado sensorial</span>
+                    <span>{t('shw.n8RepsNoSensoryHighlight')}</span>
                   </div>
                 </div>
 
@@ -1820,22 +1823,22 @@ export function UIShowcasePage() {
                   <div className="flex items-center justify-between mb-3">
                     <span className="text-2xs font-bold px-2.5 py-0.5 rounded-full bg-teal-500/20 text-teal-800 dark:text-teal-200 border border-teal-500/30 flex items-center gap-1">
                       <span className="size-1.5 rounded-full bg-teal-500 animate-pulse" />
-                      Evolved (Pastel Trilateral + Glass)
+                      {t('shw.evolvedPastelTrilateralGlass')}
                     </span>
-                    <span className="text-xs font-bold text-teal-700 dark:text-teal-300">Contraste AAA</span>
+                    <span className="text-xs font-bold text-teal-700 dark:text-teal-300">{t('shw.aaaContrast')}</span>
                   </div>
                   <p className="text-sm font-bold text-on-surface mb-1">
-                    Evaluación Postural de Hombro
+                    {t('shw.shoulderPosturalAssessment')}
                   </p>
                   <p className="text-xs text-on-surface mb-4 leading-relaxed">
-                    Elegancia clínica, micro-resplandor bio-adaptativo y contraste nítido garantizado para adultos mayores.
+                    {t('shw.clinicalElegance')}
                   </p>
                   <div className="flex items-center justify-between text-xs font-semibold">
                     <span className="text-teal-800 dark:text-teal-200 flex items-center gap-1.5">
                       <span className="size-2 rounded-full bg-teal-500" />
-                      8 reps perfectas (0 compensaciones)
+                      {t('shw.n8PerfectReps')}
                     </span>
-                    <span className="font-mono text-teal-700 dark:text-teal-300 font-black">98.5% SCORE</span>
+                    <span className="font-mono text-teal-700 dark:text-teal-300 font-black">{t('shw.n985Score')}</span>
                   </div>
                 </HarmonizedSurface>
               </div>
@@ -1844,7 +1847,7 @@ export function UIShowcasePage() {
             {/* Fila 3: Semáforos Biomecánicos & Badges Pastel */}
             <div className="space-y-3 pt-2">
               <h3 className="text-xs font-bold uppercase tracking-wider text-on-surface-variant">
-                Semáforos Biomecánicos & Badges con Acentos Pastel
+                {t('shw.biomechanicalTrafficLightsBadgesWithPastelAccents')}
               </h3>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 <div className="p-3.5 rounded-xl bg-teal-50/90 dark:bg-teal-950/35 border border-teal-200/80 dark:border-teal-500/30 flex items-center gap-2.5">
@@ -1852,8 +1855,8 @@ export function UIShowcasePage() {
                     <CheckCircle2 className="size-4" />
                   </div>
                   <div>
-                    <span className="text-2xs font-bold text-teal-600 dark:text-teal-400 uppercase tracking-wider block">Biomecánica</span>
-                    <p className="text-xs font-bold text-teal-950 dark:text-teal-100">Rango Seguro</p>
+                    <span className="text-2xs font-bold text-teal-600 dark:text-teal-400 uppercase tracking-wider block">{t('shw.biomechanics')}</span>
+                    <p className="text-xs font-bold text-teal-950 dark:text-teal-100">{t('shw.safeRange')}</p>
                   </div>
                 </div>
 
@@ -1862,8 +1865,8 @@ export function UIShowcasePage() {
                     <Activity className="size-4" />
                   </div>
                   <div>
-                    <span className="text-2xs font-bold text-sky-600 dark:text-sky-400 uppercase tracking-wider block">Telemetría</span>
-                    <p className="text-xs font-bold text-sky-950 dark:text-sky-100">Tracking 60 FPS</p>
+                    <span className="text-2xs font-bold text-sky-600 dark:text-sky-400 uppercase tracking-wider block">{t('shw.telemetry')}</span>
+                    <p className="text-xs font-bold text-sky-950 dark:text-sky-100">{t('shw.tracking60Fps')}</p>
                   </div>
                 </div>
 
@@ -1872,8 +1875,8 @@ export function UIShowcasePage() {
                     <AlertTriangle className="size-4" />
                   </div>
                   <div>
-                    <span className="text-2xs font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider block">Compensación</span>
-                    <p className="text-xs font-bold text-amber-950 dark:text-amber-100">Elevación Hombro</p>
+                    <span className="text-2xs font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider block">{t('shw.compensation')}</span>
+                    <p className="text-xs font-bold text-amber-950 dark:text-amber-100">{t('shw.shoulderElevation')}</p>
                   </div>
                 </div>
 
@@ -1882,8 +1885,8 @@ export function UIShowcasePage() {
                     <Sparkles className="size-4" />
                   </div>
                   <div>
-                    <span className="text-2xs font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider block">Inteligencia IA</span>
-                    <p className="text-xs font-bold text-indigo-950 dark:text-indigo-100">Physi Predictivo</p>
+                    <span className="text-2xs font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider block">{t('shw.aiIntelligence')}</span>
+                    <p className="text-xs font-bold text-indigo-950 dark:text-indigo-100">{t('shw.predictivePhysi')}</p>
                   </div>
                 </div>
               </div>
@@ -1899,14 +1902,14 @@ export function UIShowcasePage() {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-teal-500/15">
               <div>
                 <span className="text-2xs font-extrabold uppercase tracking-widest text-teal-600 dark:text-teal-400 bg-teal-500/10 px-2.5 py-0.5 rounded-full border border-teal-500/20">
-                  Suite Integrada
+                  {t('shw.integratedSuite')}
                 </span>
                 <h2 className="text-xl sm:text-2xl font-black text-on-surface mt-1 flex items-center gap-2">
                   <Sparkles className="w-5 h-5 text-teal-500" />
-                  Los 12 Componentes Solicitados con Temática FisioMirror
+                  {t('shw.the12RequestedComponentsWithFisiomirrorTheme')}
                 </h2>
                 <p className="text-xs text-on-surface-variant">
-                  Implementación funcional adaptada a la paleta médica (Teal, Azure, Kinetic Lime) y tipografías oficiales.
+                  {t('shw.functionalImplementation')}
                 </p>
               </div>
             </div>
@@ -1916,7 +1919,7 @@ export function UIShowcasePage() {
               <div className="flex items-center gap-2">
                 <BarChart3 className="w-4 h-4 text-teal-600" />
                 <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
-                  1. Tarjeta de Reportes con Gráficos Reaviz (IncidentReportCard)
+                  {t('shw.n1IncidentReportCard')}
                 </h3>
               </div>
               <div className="flex justify-center sm:justify-start">
@@ -1929,11 +1932,11 @@ export function UIShowcasePage() {
               <div className="flex items-center gap-2">
                 <ListTodo className="w-4 h-4 text-teal-600" />
                 <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
-                  2. Tarjetas de Asignación y Progreso (course-design-cards)
+                  {t('shw.n2AssignmentProgressCards')}
                 </h3>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {SAMPLE_ROUTINE_CARDS.map((cardData) => (
+                {sampleRoutineCards.map((cardData) => (
                   <AssignmentProgressCard key={cardData.id} data={cardData} />
                 ))}
               </div>
@@ -1946,7 +1949,7 @@ export function UIShowcasePage() {
                 <div className="flex items-center gap-2">
                   <Bell className="w-4 h-4 text-teal-600" />
                   <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
-                    3. Sistema de Alertas de HeroUI (Alert)
+                    {t('shw.n3HerouiAlertSystem')}
                   </h3>
                 </div>
                 <BasicAlertsDemo />
@@ -1957,13 +1960,13 @@ export function UIShowcasePage() {
                 <div className="flex items-center gap-2">
                   <AlertTriangle className="w-4 h-4 text-rose-600" />
                   <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
-                    4. Diálogos de Alerta / Confirmación (AlertDialog)
+                    {t('shw.n4AlertDialogs')}
                   </h3>
                 </div>
                 <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col justify-between h-[calc(100%-2rem)]">
                   <div>
                     <h4 className="text-sm font-bold text-on-surface mb-1">
-                      Modal de Confirmación Crítica
+                      {t('shw.criticalConfirmationModal')}
                     </h4>
                     <p className="text-xs text-on-surface-variant mb-6 leading-relaxed">
                       Sustituye llamadas estándar <code className="text-rose-500 font-mono">window.confirm</code> por un diálogo con backdrop difuminado, spring physics y confirmación accesible.
@@ -1983,7 +1986,7 @@ export function UIShowcasePage() {
                 <div className="flex items-center gap-2">
                   <UserCheck className="w-4 h-4 text-teal-600" />
                   <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
-                    5. Avatares de Usuario con Fallback (Avatar)
+                    {t('shw.n5UserAvatarsFallback')}
                   </h3>
                 </div>
                 <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm">
@@ -1996,7 +1999,7 @@ export function UIShowcasePage() {
                 <div className="flex items-center gap-2">
                   <Megaphone className="w-4 h-4 text-teal-600" />
                   <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
-                    6. Tarjeta Multimedia & Banner (Cards with Images)
+                    {t('shw.n6MediaBannerCard')}
                   </h3>
                 </div>
                 <PromoCardDemo onCtaClick={() => navigate('/ocr-scanner')} />
@@ -2010,7 +2013,7 @@ export function UIShowcasePage() {
                 <div className="flex items-center gap-2">
                   <CheckSquare className="w-4 h-4 text-teal-600" />
                   <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
-                    7. Grupos de Casillas de Verificación (CheckboxGroup)
+                    {t('shw.n7CheckboxGroups')}
                   </h3>
                 </div>
                 <CheckboxPreferencesDemo />
@@ -2021,12 +2024,12 @@ export function UIShowcasePage() {
                 <div className="flex items-center gap-2">
                   <Tag className="w-4 h-4 text-teal-600" />
                   <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
-                    8. Etiquetas de Estado (Chip)
+                    {t('shw.n8StatusChips')}
                   </h3>
                 </div>
                 <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
                   <p className="text-xs text-on-surface-variant">
-                    Semáforo de estados de pacientes y severidad clínica:
+                    {t('shw.patientStatusAndClinicalSeverityTrafficLight')}
                   </p>
                   <ChipStatusesDemo />
                 </div>
@@ -2040,13 +2043,13 @@ export function UIShowcasePage() {
                 <div className="flex items-center gap-2">
                   <Sliders className="w-4 h-4 text-teal-600" />
                   <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
-                    9. Ventana Modal Interactiva (Modal)
+                    {t('shw.n9InteractiveModal')}
                   </h3>
                 </div>
                 <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
                   <div>
                     <h4 className="text-sm font-bold text-on-surface mb-1">
-                      Calibración y Configuración Modal
+                      {t('shw.calibrationAndModalConfiguration')}
                     </h4>
                     <p className="text-xs text-on-surface-variant leading-relaxed mb-4">
                       Ventana emergente accesible con física de muelle, disparador de cierre automático (slot=&quot;close&quot;), selector de sensibilidad y mallas AR.
@@ -2061,16 +2064,16 @@ export function UIShowcasePage() {
                 <div className="flex items-center gap-2">
                   <Activity className="w-4 h-4 text-teal-600" />
                   <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
-                    10. Menú Desplegable Contextual (Popover)
+                    {t('shw.n10ContextMenuPopover')}
                   </h3>
                 </div>
                 <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
                   <div>
                     <h4 className="text-sm font-bold text-on-surface mb-1">
-                      Detalle Biomecánico Dinámico
+                      {t('shw.dynamicBiomechanicalDetail')}
                     </h4>
                     <p className="text-xs text-on-surface-variant leading-relaxed mb-4">
-                      Cuadro anclado con micro-interacción que muestra el semáforo y rango fisiológico óptimo según la articulación seleccionada (rodilla, hombro, codo).
+                      {t('shw.anchoredBoxDescription')}
                     </p>
                   </div>
                   <PopoverMetricDemo />
@@ -2085,16 +2088,16 @@ export function UIShowcasePage() {
                 <div className="flex items-center gap-2">
                   <Sliders className="w-4 h-4 text-teal-600" />
                   <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
-                    11. Panel Lateral Deslizante (Drawer)
+                    {t('shw.n11SlidingDrawer')}
                   </h3>
                 </div>
                 <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
                   <div>
                     <h4 className="text-sm font-bold text-on-surface mb-1">
-                      Panel Lateral de Ajustes de Sesión
+                      {t('shw.sessionSettingsSidePanel')}
                     </h4>
                     <p className="text-xs text-on-surface-variant leading-relaxed mb-4">
-                      Emerge desde el lateral derecho sin desconectar al terapeuta de su pantalla actual, permitiendo ajustar repeticiones y redactar observaciones.
+                      {t('shw.slidingDrawerDescription')}
                     </p>
                   </div>
                   <DrawerClinicalDemo />
@@ -2106,16 +2109,16 @@ export function UIShowcasePage() {
                 <div className="flex items-center gap-2">
                   <Calendar className="w-4 h-4 text-teal-600" />
                   <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
-                    12. Selector de Rango de Fechas (DateRangePicker)
+                    {t('shw.n12DateRangePicker')}
                   </h3>
                 </div>
                 <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
                   <div>
                     <h4 className="text-sm font-bold text-on-surface mb-1">
-                      Calendario de Intervalo Clínico
+                      {t('shw.clinicalIntervalCalendar')}
                     </h4>
                     <p className="text-xs text-on-surface-variant leading-relaxed mb-4">
-                      Selecciona fecha inicial y final para filtrar la evolución y adherencia del paciente, con botones rápidos para 7, 14 o 30 días.
+                      {t('shw.dateRangeDescription')}
                     </p>
                   </div>
                   <DateRangePickerDemo />
@@ -2130,7 +2133,7 @@ export function UIShowcasePage() {
                 <div className="flex items-center gap-2">
                   <Calendar className="w-4 h-4 text-teal-600" />
                   <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
-                    Calendarios de Rango Avanzados (RangeCalendar y Vistas Múltiples)
+                    {t('shw.advancedRangeCalendars')}
                   </h3>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -2138,13 +2141,13 @@ export function UIShowcasePage() {
                   <div className="p-5 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col justify-between">
                     <div>
                       <span className="text-2xs font-bold text-teal-600 dark:text-teal-400 uppercase tracking-wider bg-teal-500/10 px-2 py-0.5 rounded-md">
-                        1. Vista Básica
+                        {t('shw.n1BasicView')}
                       </span>
                       <h4 className="text-sm font-bold text-on-surface mt-1 mb-1">
                         firstDayOfWeek=&quot;mon&quot;
                       </h4>
                       <p className="text-xs text-on-surface-variant mb-3">
-                        Subcomponentes Headings, NavButtons y Grid con selección táctil de inicio y fin.
+                        {t('shw.headingsNavbuttonsGrid')}
                       </p>
                     </div>
                     <div className="flex justify-center">
@@ -2156,13 +2159,13 @@ export function UIShowcasePage() {
                   <div className="p-5 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col justify-between">
                     <div>
                       <span className="text-2xs font-bold text-teal-600 dark:text-teal-400 uppercase tracking-wider bg-teal-500/10 px-2 py-0.5 rounded-md">
-                        2. Vista por Semanas (WeekView)
+                        {t('shw.n2WeekView')}
                       </span>
                       <h4 className="text-sm font-bold text-on-surface mt-1 mb-1">
-                        visibleDuration Dinámico
+                        {t('shw.dynamicVisibleduration')}
                       </h4>
                       <p className="text-xs text-on-surface-variant mb-3">
-                        Selector HeroUI Select que amplía o contrae la vista de 1 a 8 semanas según el plan.
+                        {t('shw.herouiSelectPickerThatExpandsOrContractsTheViewFrom1')}
                       </p>
                     </div>
                     <div className="flex justify-center">
@@ -2174,13 +2177,13 @@ export function UIShowcasePage() {
                   <div className="p-5 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col justify-between">
                     <div>
                       <span className="text-2xs font-bold text-teal-600 dark:text-teal-400 uppercase tracking-wider bg-teal-500/10 px-2 py-0.5 rounded-md">
-                        3. Rango Inicial (DefaultValue)
+                        {t('shw.n3InitialRange')}
                       </span>
                       <h4 className="text-sm font-bold text-on-surface mt-1 mb-1">
                         parseDate(&quot;2026-02-03&quot;)
                       </h4>
                       <p className="text-xs text-on-surface-variant mb-3">
-                        Carga directa de intervalo médico pre-seleccionado con colores y contrastes clínicos.
+                        {t('shw.directLoadingOfAPreSelectedMedicalIntervalWithClinic')}
                       </p>
                     </div>
                     <div className="flex justify-center">
@@ -2197,28 +2200,28 @@ export function UIShowcasePage() {
                   <div className="flex items-center gap-2">
                     <Layers className="w-4 h-4 text-teal-600" />
                     <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
-                      Sombras de Desbordamiento de Scroll (ScrollShadow)
+                      {t('shw.scrollOverflowShadows')}
                     </h3>
                   </div>
                   <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
                     <div>
                       <h4 className="text-sm font-bold text-on-surface mb-1">
-                        Contenedor con Gradientes Automáticos
+                        {t('shw.containerWithAutomaticGradients')}
                       </h4>
                       <p className="text-xs text-on-surface-variant leading-relaxed mb-3">
-                        Haz scroll en la lista de ejercicios de rehabilitación. Las sombras superior e inferior aparecen de forma reactiva avisando que hay más tareas.
+                        {t('shw.scrollTheRehabilitationExerciseListTheTopAndBottomSh')}
                       </p>
                     </div>
                     <ScrollShadow className="h-60 rounded-2xl border border-slate-200/60 dark:border-slate-800/80 p-3 bg-slate-50/50 dark:bg-slate-900/50" size={36}>
                       <div className="space-y-2.5">
                         {[
-                          { name: 'Sentadilla Biomecánica Asistida', reps: '3 series × 12 reps', target: 'Rodilla y Cuádriceps', status: 'Completado' },
-                          { name: 'Rotación Externa de Hombro con Banda', reps: '3 series × 15 reps', target: 'Manguito Rotador', status: 'En Progreso' },
-                          { name: 'Puente Glúteo con Descompresión Lumbar', reps: '4 series × 10 reps', target: 'Core & Espina', status: 'Pendiente' },
-                          { name: 'Flexión Plantar en Borde de Escalón', reps: '3 series × 15 reps', target: 'Tendón de Aquiles', status: 'Pendiente' },
-                          { name: 'Elevación Lateral de Escápula', reps: '3 series × 12 reps', target: 'Trapecio Medio', status: 'Pendiente' },
-                          { name: 'Estiramiento Dinámico Isquiotibial', reps: '2 series × 30 seg', target: 'Cadena Posterior', status: 'Completado' },
-                          { name: 'Equilibrio Monopodal en Disco de Aire', reps: '3 series × 45 seg', target: 'Propiocepción', status: 'Pendiente' }
+                          { name: t('shw.assistedBiomechanicalSquat'), reps: t('shw.n3Sets12Reps'), target: t('shw.kneeAndQuadriceps'), status: t('shw.completed') },
+                          { name: t('shw.bandedShoulderExternalRotation'), reps: t('shw.n3Sets15Reps'), target: t('shw.rotatorCuff'), status: t('shw.inProgress') },
+                          { name: t('shw.gluteBridgeWithLumbarDecompression'), reps: t('shw.n4Sets10Reps'), target: t('shw.coreAndSpine'), status: t('shw.pending') },
+                          { name: t('shw.stepEdgePlantarFlexion'), reps: t('shw.n3Sets15Reps'), target: t('shw.achillesTendon'), status: t('shw.pending') },
+                          { name: t('shw.lateralScapularElevation'), reps: t('shw.n3Sets12Reps'), target: t('shw.middleTrapezius'), status: t('shw.pending') },
+                          { name: t('shw.dynamicHamstringStretch'), reps: t('shw.n2Sets30Sec'), target: t('shw.posteriorChain'), status: t('shw.completed') },
+                          { name: t('shw.singleLegBalanceOnAirDisc'), reps: t('shw.n3Sets45Sec'), target: t('shw.proprioception'), status: t('shw.pending') }
                         ].map((ex, i) => (
                           <div key={i} className="p-3 rounded-xl bg-white dark:bg-slate-800/80 border border-slate-200/60 dark:border-slate-700/60 flex items-center justify-between shadow-xs">
                             <div>
@@ -2242,16 +2245,16 @@ export function UIShowcasePage() {
                     <div className="flex items-center gap-2">
                       <Activity className="w-4 h-4 text-teal-600" />
                       <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
-                        Placeholders de Carga Progresiva (Skeleton)
+                        {t('shw.progressiveLoadingPlaceholders')}
                       </h3>
                     </div>
                     <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
                       <div>
                         <h4 className="text-sm font-bold text-on-surface mb-1">
-                          Animación Shimmer / Wave sin parpadeos
+                          {t('shw.shimmerWaveAnimationWithoutFlicker')}
                         </h4>
                         <p className="text-xs text-on-surface-variant leading-relaxed mb-3">
-                          Permite mantener la estructura del layout mientras se sincronizan las métricas del sensor LiDAR o cámara.
+                          {t('shw.keepsTheLayoutStructureIntactWhileLidarOrCameraSenso')}
                         </p>
                       </div>
                       <div className="p-4 rounded-2xl bg-slate-50/70 dark:bg-slate-900/60 border border-slate-200/60 dark:border-slate-800/80 space-y-3">
@@ -2277,43 +2280,43 @@ export function UIShowcasePage() {
                     <div className="flex items-center gap-2">
                       <Bell className="w-4 h-4 text-teal-600" />
                       <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
-                        Notificaciones Toast HeroUI / Sonner (toast)
+                        {t('shw.herouiSonnerToastNotifications')}
                       </h3>
                     </div>
                     <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-3">
                       <p className="text-xs text-on-surface-variant">
-                        Dispara notificaciones ergonómicas directas con feedback háptico y física suave:
+                        {t('shw.triggersDirectErgonomicNotificationsWithHapticFeedba')}
                       </p>
                       <div className="flex flex-wrap gap-2.5">
                         <button
                           type="button"
-                          onClick={() => toast("Sesión de fisioterapia iniciada correctamente")}
+                          onClick={() => toast(t('shw.toastSessionStarted'))}
                           className="px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-900 text-white dark:bg-slate-100 dark:text-on-surface hover:opacity-90 transition-opacity"
                         >
-                          Toast Default
+                          {t('shw.defaultToast')}
                         </button>
                         <button
                           type="button"
-                          onClick={() => toast.success("Ángulo articular validado a 135°", { description: "Registrado en el historial del paciente Carlos Ramos." })}
+                          onClick={() => toast.success(t('shw.toastAngleValidated'), { description: t('shw.toastRecordedInHistory') })}
                           className="px-3.5 py-2 rounded-xl text-xs font-bold bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/25 transition-colors"
                         >
-                          Éxito Clínico
+                          {t('shw.clinicalSuccess')}
                         </button>
                         <button
                           type="button"
-                          onClick={() => toast.warning("Compensación postural detectada", { description: "La cadera izquierda sobrepasa el límite de 12°." })}
+                          onClick={() => toast.warning(t('shw.toastPosturalCompensation'), { description: t('shw.toastHipExceedsLimit') })}
                           className="px-3.5 py-2 rounded-xl text-xs font-bold bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30 hover:bg-amber-500/25 transition-colors"
                         >
-                          Alerta Biomecánica
+                          {t('shw.biomechanicalAlert')}
                         </button>
                         <button
                           type="button"
-                          onClick={() => toast.error("Error al conectar sensor de cámara", {
-                            action: { label: "Reintentar", onClick: () => toast.info("Reintentando conexión...") }
+                          onClick={() => toast.error(t('shw.toastCameraSensorError'), {
+                            action: { label: t('shw.retry'), onClick: () => toast.info(t('shw.retryingConnection')) }
                           })}
                           className="px-3.5 py-2 rounded-xl text-xs font-bold bg-red-500/15 text-red-600 dark:text-red-400 border border-red-500/30 hover:bg-red-500/25 transition-colors"
                         >
-                          Error con Acción
+                          {t('shw.errorWithAction')}
                         </button>
                       </div>
                     </div>
@@ -2328,7 +2331,7 @@ export function UIShowcasePage() {
                   <div className="flex items-center gap-2">
                     <Radio className="w-4 h-4 text-emerald-500 animate-pulse" />
                     <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
-                      16. Feed de Actividad Clínica en Vivo (AnimatedList)
+                      {t('shw.n16LiveClinicalFeed')}
                     </h3>
                   </div>
                   <ClinicalActivityFeed delay={2800} />
@@ -2339,30 +2342,30 @@ export function UIShowcasePage() {
                   <div className="flex items-center gap-2">
                     <Sparkles className="w-4 h-4 text-teal-600" />
                     <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
-                      17. Ráfaga de Cañones Laterales (ConfettiSideCannons)
+                      {t('shw.n17ConfettiSideCannons')}
                     </h3>
                   </div>
                   <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4 flex flex-col justify-between h-[calc(100%-2rem)]">
                     <div>
                       <h4 className="text-sm font-bold text-on-surface mb-1">
-                        Efecto Festivo Bidireccional Continuo
+                        {t('shw.continuousBidirectionalFestiveEffect')}
                       </h4>
                       <p className="text-xs text-on-surface-variant leading-relaxed mb-4">
-                        Dispara ráfagas de confeti a 60° y 120° desde los dos extremos de la pantalla durante 2.5 segundos con la paleta turquesa/kinetic de FisioMirror.
+                        {t('shw.firesConfettiBurstsAt60And120FromBothEndsOfTheScreen')}
                       </p>
                     </div>
                     <div className="flex flex-col sm:flex-row gap-3">
                       <ConfettiSideCannons
                         className="w-full sm:w-auto"
-                        onClick={() => toast.success("¡Objetivo Semanal Superado!", { description: "Celebrando progreso biomecánico del paciente." })}
+                        onClick={() => toast.success(t('shw.toastWeeklyGoalExceeded'), { description: t('shw.toastCelebratingProgress') })}
                       >
-                        Disparar Celebración (Cañones)
+                        {t('shw.triggerCelebrationCannons')}
                       </ConfettiSideCannons>
                       <ConfettiStars
                         className="w-full sm:w-auto text-xs"
-                        onClick={() => toast.info("¡Estrellas de Logro!", { description: "Recompensa gamificada asignada." })}
+                        onClick={() => toast.info(t('shw.toastAchievementStars'), { description: t('shw.toastGamifiedReward') })}
                       >
-                        Estrellas de Logro
+                        {t('shw.achievementStars')}
                       </ConfettiStars>
                     </div>
                   </div>
@@ -2378,13 +2381,13 @@ export function UIShowcasePage() {
                   <div className="flex items-center gap-2">
                     <Sparkles className="w-4 h-4 text-teal-600" />
                     <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
-                      18. Resaltador Dinámico de Texto (Highlighter)
+                      {t('shw.n18DynamicTextHighlighterTitle')}
                     </h3>
                   </div>
                   <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
                     <div className="flex flex-wrap items-center justify-between gap-2">
                       <p className="text-xs text-on-surface-variant">
-                        Trazos orgánicos tipo rough-notation animados:
+                        {t('shw.animatedOrganicRoughNotationStrokes')}
                       </p>
                       <button
                         type="button"
@@ -2419,20 +2422,20 @@ export function UIShowcasePage() {
 
                     {/* Preview Paragraph */}
                     <div className="p-4 rounded-2xl bg-surface-container-low/50 dark:bg-slate-900/50 border border-outline-variant/20 text-sm text-on-surface leading-relaxed">
-                      El paciente Carlos presenta{" "}
+                      {t('shw.patientCarlosPresents')}{" "}
                       <Highlighter
                         key={`hl-${highlighterKey}-${highlighterAction}`}
                         action={highlighterAction}
                         color="rgba(76, 218, 210, 0.45)"
                         strokeWidth={2}
                       >
-                        compensación pélvica a 14°
+                        {t('shw.pelvicCompensationAt14')}
                       </Highlighter>{" "}
-                      durante la fase de flexión, requiriendo{" "}
+                      {t('shw.duringFlexionPhaseRequiring')}{" "}
                       <ClinicalHighlighter variant="warning" action="underline">
-                        estabilización activa de core
+                        {t('shw.activeCoreStabilization')}
                       </ClinicalHighlighter>{" "}
-                      para evitar recidiva lumbosacra.
+                      {t('shw.toPreventLumbosacralRecurrence')}
                     </div>
                   </div>
                 </div>
@@ -2442,35 +2445,35 @@ export function UIShowcasePage() {
                   <div className="flex items-center gap-2">
                     <MousePointer className="w-4 h-4 text-teal-600" />
                     <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
-                      19. Botón Interactivo con Desplazamiento (InteractiveHoverButton)
+                      {t('shw.n19InteractiveHoverButton')}
                     </h3>
                   </div>
                   <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4 flex flex-col justify-between h-[calc(100%-2rem)]">
                     <div>
                       <h4 className="text-sm font-bold text-on-surface mb-1">
-                        Microinteracción Radial & Slide
+                        {t('shw.radialSlideMicrointeraction')}
                       </h4>
                       <p className="text-xs text-on-surface-variant leading-relaxed mb-4">
-                        Al pasar el cursor sobre el botón, el punto central indicador se expande y desliza suavemente el texto junto con la flecha directriz.
+                        {t('shw.interactiveHoverButtonDescription')}
                       </p>
                     </div>
 
                     <div className="flex flex-col sm:flex-row items-center gap-4 py-2">
                       <InteractiveHoverButton
                         onClick={() => {
-                          toast.success("¡Acción Ejecutada!", { description: "Navegando a la sesión de rehabilitación activa." });
+                          toast.success(t('shw.toastActionExecuted'), { description: t('shw.toastNavigatingToSession') });
                         }}
                       >
-                        Iniciar Modo Espejo AR
+                        {t('shw.startArMirrorMode')}
                       </InteractiveHoverButton>
 
                       <InteractiveHoverButton
                         onClick={() => {
-                          toast.info("Rutina guardada", { description: "Los parámetros clínicos han sido sincronizados." });
+                          toast.info(t('shw.toastRoutineSaved'), { description: t('shw.toastParamsSynced') });
                         }}
                         className="border-emerald-500/40"
                       >
-                        Guardar Prescripción
+                        {t('shw.savePrescription')}
                       </InteractiveHoverButton>
                     </div>
                   </div>
@@ -2486,16 +2489,16 @@ export function UIShowcasePage() {
                   <div className="flex items-center gap-2">
                     <Sparkles className="w-4 h-4 text-teal-600" />
                     <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
-                      20. Tipografía Cinética (KineticText)
+                      {t('shw.n20KineticText')}
                     </h3>
                   </div>
                   <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
                     <div>
                       <h4 className="text-sm font-bold text-on-surface mb-1">
-                        Deformación de Peso Tipográfico por Proximidad
+                        {t('shw.proximityBasedTypographicWeightDeformation')}
                       </h4>
                       <p className="text-xs text-on-surface-variant leading-relaxed mb-3">
-                        Pasa el cursor letra por letra para ver cómo el font-weight se altera orgánicamente de 300 a 900.
+                        {t('shw.hoverLetterByLetterToSeeHowFontWeightChangesOrganica')}
                       </p>
                     </div>
 
@@ -2512,15 +2515,15 @@ export function UIShowcasePage() {
                         type="text"
                         value={kineticInputText}
                         onChange={(e) => setKineticInputText(e.target.value)}
-                        placeholder="Escribe un texto..."
+                        placeholder={t('shw.typeAText')}
                         className="flex-1 px-3 py-1.5 text-xs rounded-xl border border-outline-variant/30 bg-surface dark:bg-slate-900 text-on-surface focus:outline-none focus:ring-1 focus:ring-primary"
                       />
                       <button
                         type="button"
-                        onClick={() => setKineticInputText('FisioMirror Biomecánica')}
+                        onClick={() => setKineticInputText(t('shw.fisiomirrorBiomechanics'))}
                         className="text-xs font-semibold text-primary hover:underline px-2"
                       >
-                        Reset
+                        {t('shw.reset')}
                       </button>
                     </div>
                   </div>
@@ -2531,7 +2534,7 @@ export function UIShowcasePage() {
                   <div className="flex items-center gap-2">
                     <Sparkles className="w-4 h-4 text-teal-600" />
                     <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
-                      21. Rayos de Luz Atmosféricos (LightRays)
+                      {t('shw.n21LightRays')}
                     </h3>
                   </div>
                   <div className="relative h-64 rounded-3xl overflow-hidden bg-gradient-to-b from-slate-950 via-slate-900 to-[#002724] border border-slate-800 shadow-card p-6 flex flex-col justify-between">
@@ -2544,20 +2547,20 @@ export function UIShowcasePage() {
                     />
                     <div className="relative z-10">
                       <span className="text-2xs font-bold uppercase tracking-widest text-teal-400 bg-teal-500/15 px-2 py-0.5 rounded-md border border-teal-500/30">
-                        Ambiente Dinámico
+                        {t('shw.dynamicEnvironment')}
                       </span>
                       <h4 className="text-base font-bold text-white mt-2">
-                        Fondo de Iluminación Holográfica
+                        {t('shw.holographicLightingBackground')}
                       </h4>
                       <p className="text-xs text-slate-300 max-w-sm mt-1">
-                        Haces de luz oscilantes con balanceo angular continuo, diseñados para pantallas de inicio o vistas de calibración AR.
+                        {t('shw.lightRaysDescription')}
                       </p>
                     </div>
                     <div className="relative z-10 flex items-center justify-between text-xs text-teal-200/80">
-                      <span>Ciclo: 10s • Desenfoque: 32px</span>
+                      <span>{t('shw.cycle10sBlur32px')}</span>
                       <span className="flex items-center gap-1">
                         <span className="size-2 rounded-full bg-teal-400 animate-ping" />
-                        Activo
+                        {t('shw.active')}
                       </span>
                     </div>
                   </div>
@@ -2573,34 +2576,34 @@ export function UIShowcasePage() {
                   <div className="flex items-center gap-2">
                     <Activity className="w-4 h-4 text-teal-600" />
                     <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
-                      22. Contador Numérico Animado con Resortes (NumberTicker)
+                      {t('shw.n22NumberTicker')}
                     </h3>
                   </div>
                   <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
                     <div>
                       <h4 className="text-sm font-bold text-on-surface mb-1">
-                        Física de Resortes sin Saltos Bruscos
+                        {t('shw.springPhysicsWithoutAbruptJumps')}
                       </h4>
                       <p className="text-xs text-on-surface-variant leading-relaxed mb-4">
-                        Modifica los valores numéricos y observa la transición elástica mediante useSpring:
+                        {t('shw.changeTheNumericValuesAndWatchTheElasticTransitionVi')}
                       </p>
                     </div>
 
                     <div className="grid grid-cols-3 gap-3 text-center">
                       <div className="p-3.5 rounded-2xl bg-surface-container-low/60 border border-outline-variant/20">
-                        <p className="text-2xs uppercase font-semibold text-on-surface-variant">Ángulo ROM</p>
+                        <p className="text-2xs uppercase font-semibold text-on-surface-variant">{t('shw.romAngle')}</p>
                         <p className="text-2xl font-bold text-primary mt-1">
                           <NumberTicker value={tickerRomValue} suffix="°" />
                         </p>
                       </div>
                       <div className="p-3.5 rounded-2xl bg-surface-container-low/60 border border-outline-variant/20">
-                        <p className="text-2xs uppercase font-semibold text-on-surface-variant">Adherencia</p>
+                        <p className="text-2xs uppercase font-semibold text-on-surface-variant">{t('shw.adherence')}</p>
                         <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400 mt-1">
                           <NumberTicker value={Math.min(100, Math.round(tickerRomValue * 0.72))} suffix="%" />
                         </p>
                       </div>
                       <div className="p-3.5 rounded-2xl bg-surface-container-low/60 border border-outline-variant/20">
-                        <p className="text-2xs uppercase font-semibold text-on-surface-variant">Pacientes</p>
+                        <p className="text-2xs uppercase font-semibold text-on-surface-variant">{t('shw.patients')}</p>
                         <p className="text-2xl font-bold text-teal-600 dark:text-teal-400 mt-1">
                           <NumberTicker value={Math.round(tickerRomValue / 5)} />
                         </p>
@@ -2620,7 +2623,7 @@ export function UIShowcasePage() {
                         onClick={() => setTickerRomValue(140)}
                         className="px-3 py-1.5 text-xs font-bold rounded-xl bg-primary text-on-primary hover:bg-primary/90 transition-all"
                       >
-                        Reset (140°)
+                        {t('shw.reset140')}
                       </button>
                       <button
                         type="button"
@@ -2638,13 +2641,13 @@ export function UIShowcasePage() {
                   <div className="flex items-center gap-2">
                     <Sparkles className="w-4 h-4 text-teal-600" />
                     <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
-                      23. Tarjeta Mágica Interactiva (MagicCard)
+                      {t('shw.n23MagicCard')}
                     </h3>
                   </div>
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
                       <p className="text-xs text-on-surface-variant">
-                        Mueve el cursor dentro de la tarjeta:
+                        {t('shw.moveTheCursorInsideTheCard')}
                       </p>
                       <div className="flex items-center gap-1 bg-surface-container-high/60 p-1 rounded-xl">
                         <button
@@ -2655,7 +2658,7 @@ export function UIShowcasePage() {
                             magicCardMode === 'gradient' ? "bg-primary text-on-primary shadow-xs" : "text-on-surface-variant hover:text-on-surface"
                           )}
                         >
-                          Modo Gradient
+                          {t('shw.gradientMode')}
                         </button>
                         <button
                           type="button"
@@ -2665,7 +2668,7 @@ export function UIShowcasePage() {
                             magicCardMode === 'orb' ? "bg-primary text-on-primary shadow-xs" : "text-on-surface-variant hover:text-on-surface"
                           )}
                         >
-                          Modo Orb
+                          {t('shw.orbMode')}
                         </button>
                       </div>
                     </div>
@@ -2681,18 +2684,18 @@ export function UIShowcasePage() {
                       <div className="space-y-3">
                         <div className="flex items-center justify-between">
                           <span className="text-2xs font-bold uppercase tracking-wider text-teal-600 dark:text-teal-400 bg-teal-500/10 px-2 py-0.5 rounded-md">
-                            Sensor Biomecánico
+                            {t('shw.biomechanicalSensor')}
                           </span>
-                          <span className="text-xs font-bold text-emerald-500">Conectado</span>
+                          <span className="text-xs font-bold text-emerald-500">{t('shw.connected')}</span>
                         </div>
                         <h4 className="text-base font-bold text-on-surface">
-                          Evaluación Lumbar en Tiempo Real
+                          {t('shw.realTimeLumbarAssessment')}
                         </h4>
                         <p className="text-xs text-on-surface-variant leading-relaxed">
-                          Seguimiento cinético mediante sensor de profundidad y visión artificial. El degradado responde con suavidad al movimiento del cursor.
+                          {t('shw.kineticTrackingViaDepthSensorAndComputerVisionTheGra')}
                         </p>
                         <div className="pt-2 flex items-center justify-between text-xs font-semibold text-primary">
-                          <span>Modo actual: {magicCardMode.toUpperCase()}</span>
+                          <span>{t('shw.currentMode')} {magicCardMode.toUpperCase()}</span>
                           <ArrowRight className="size-4" />
                         </div>
                       </div>
@@ -2709,7 +2712,7 @@ export function UIShowcasePage() {
                   <div className="flex items-center gap-2">
                     <Eye className="w-4 h-4 text-teal-600" />
                     <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
-                      24. Imagen Pixelada con Revelación Gradual (PixelImage)
+                      {t('shw.n24PixelImage')}
                     </h3>
                   </div>
                   <div className="flex items-center gap-2">
@@ -2755,23 +2758,23 @@ export function UIShowcasePage() {
                   />
                   <div className="max-w-md space-y-3">
                     <span className="text-2xs font-bold uppercase tracking-widest text-teal-600 dark:text-teal-400 bg-teal-500/10 px-2 py-0.5 rounded-md">
-                      Efecto de Entrada Digital
+                      {t('shw.digitalEntryEffect')}
                     </span>
                     <h4 className="text-lg font-bold text-on-surface">
-                      Aparición Escalonada por Polígonos clip-path
+                      {t('shw.staggeredAppearanceWithClipPathPolygons')}
                     </h4>
                     <p className="text-xs text-on-surface-variant leading-relaxed">
-                      Divide la imagen en una cuadrícula poligonal matemática ({pixelGridKey}) con retardo pseudoaleatorio por pieza y transición fluida de escala de grises a color completo.
+                      {t('shw.pixelGridParagraph', { grid: pixelGridKey })}
                     </p>
                     <div className="pt-2 flex flex-wrap gap-2 text-xs text-on-surface-variant">
                       <span className="px-2.5 py-1 rounded-lg bg-surface-container-low border border-outline-variant/20">
-                        Cuadrícula: {pixelGridKey}
+                        {t('shw.gridLabel')} {pixelGridKey}
                       </span>
                       <span className="px-2.5 py-1 rounded-lg bg-surface-container-low border border-outline-variant/20">
-                        Transición: 800ms
+                        {t('shw.transition800ms')}
                       </span>
                       <span className="px-2.5 py-1 rounded-lg bg-surface-container-low border border-outline-variant/20">
-                        Filtro: Grayscale → Color
+                        {t('shw.filterGrayscaleColor')}
                       </span>
                     </div>
                   </div>
@@ -2788,7 +2791,7 @@ export function UIShowcasePage() {
                     <div className="flex items-center gap-2">
                       <Zap className="w-4 h-4 text-teal-600" />
                       <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
-                        25. Botón Pulsante Dinámico (PulsatingButton)
+                        {t('shw.n25PulsatingButton')}
                       </h3>
                     </div>
                     <div className="flex items-center gap-1 bg-surface-container-high/60 p-1 rounded-xl">
@@ -2800,7 +2803,7 @@ export function UIShowcasePage() {
                           pulsatingVariant === 'pulse' ? "bg-primary text-on-primary shadow-xs" : "text-on-surface-variant hover:text-on-surface"
                         )}
                       >
-                        Pulse
+                        {t('shw.pulse')}
                       </button>
                       <button
                         type="button"
@@ -2810,7 +2813,7 @@ export function UIShowcasePage() {
                           pulsatingVariant === 'ripple' ? "bg-primary text-on-primary shadow-xs" : "text-on-surface-variant hover:text-on-surface"
                         )}
                       >
-                        Ripple
+                        {t('shw.ripple')}
                       </button>
                     </div>
                   </div>
@@ -2818,10 +2821,10 @@ export function UIShowcasePage() {
                   <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
                     <div>
                       <h4 className="text-sm font-bold text-on-surface mb-1">
-                        Llamada a la Acción Crítica con Ondas de Frecuencia
+                        {t('shw.criticalCallToActionWithFrequencyWaves')}
                       </h4>
                       <p className="text-xs text-on-surface-variant leading-relaxed mb-4">
-                        Emite anillos de pulso o expansiones de onda continua. Identifica de inmediato el próximo paso crítico del paciente o fisioterapeuta.
+                        {t('shw.emitsPulseRingsOrContinuousWaveExpansionsInstantlyId')}
                       </p>
                     </div>
 
@@ -2829,11 +2832,11 @@ export function UIShowcasePage() {
                       <PulsatingButton
                         variant={pulsatingVariant}
                         pulseColor={pulsatingColor}
-                        onClick={() => toast.success("Calibración Iniciada", { description: "Activando modelo MediaPipe para detección ósea." })}
+                        onClick={() => toast.success(t('shw.toastCalibrationStarted'), { description: t('shw.toastActivatingMediapipe') })}
                         className="text-xs"
                       >
                         <Activity className="size-4" />
-                        <span>Calibrar Cámara MediaPipe</span>
+                        <span>{t('shw.calibrateMediapipeCamera')}</span>
                       </PulsatingButton>
 
                       <PulsatingButton
@@ -2843,32 +2846,32 @@ export function UIShowcasePage() {
                         className="bg-cyan-600 hover:bg-cyan-500 text-xs"
                       >
                         <Zap className="size-4" />
-                        <span>Iniciar Espejo AR</span>
+                        <span>{t('shw.startArMirror2')}</span>
                       </PulsatingButton>
                     </div>
 
                     <div className="flex items-center gap-2 pt-2 text-xs text-on-surface-variant">
-                      <span>Color de Pulso:</span>
+                      <span>{t('shw.pulseColor')}</span>
                       <button
                         type="button"
                         onClick={() => setPulsatingColor('rgba(13, 148, 136, 0.6)')}
                         className="px-2 py-0.5 rounded-md bg-teal-500/10 text-teal-600 dark:text-teal-400 border border-teal-500/20"
                       >
-                        Teal Médico
+                        {t('shw.medicalTeal')}
                       </button>
                       <button
                         type="button"
                         onClick={() => setPulsatingColor('rgba(193, 255, 114, 0.7)')}
                         className="px-2 py-0.5 rounded-md bg-lime-500/10 text-lime-700 dark:text-lime-400 border border-lime-500/20"
                       >
-                        Kinetic Lime
+                        {t('shw.kineticLime')}
                       </button>
                       <button
                         type="button"
                         onClick={() => setPulsatingColor('rgba(59, 130, 246, 0.6)')}
                         className="px-2 py-0.5 rounded-md bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20"
                       >
-                        Azure Blue
+                        {t('shw.azureBlue')}
                       </button>
                     </div>
                   </div>
@@ -2879,29 +2882,29 @@ export function UIShowcasePage() {
                   <div className="flex items-center gap-2">
                     <Sliders className="w-4 h-4 text-teal-600" />
                     <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
-                      26. Barra de Progreso de Desplazamiento (ScrollProgress)
+                      {t('shw.n26ScrollProgress')}
                     </h3>
                   </div>
                   <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
                     <div>
                       <h4 className="text-sm font-bold text-on-surface mb-1">
-                        Lectura Dinámica del Scroll con Escala GPU
+                        {t('shw.dynamicScrollReadingWithGpuScale')}
                       </h4>
                       <p className="text-xs text-on-surface-variant leading-relaxed mb-3">
-                        Mira la línea continua en la parte superior fija de esta página: se actualiza en tiempo real con scaleX y el gradiente oficial de FisioMirror.
+                        {t('shw.lookAtTheContinuousLineAtTheFixedTopOfThisPageItUpda')}
                       </p>
                     </div>
 
                     <div className="p-4 rounded-2xl bg-slate-100/70 dark:bg-slate-900/60 border border-slate-200/60 dark:border-slate-800/80 space-y-3">
                       <div className="flex items-center justify-between text-xs font-semibold text-on-surface-variant">
-                        <span>Gradiente:</span>
+                        <span>{t('shw.gradient2')}</span>
                         <code className="text-xs text-teal-600 dark:text-teal-400 font-mono">
                           from-teal-600 via-cyan-400 to-[#c1ff72]
                         </code>
                       </div>
                       <div className="h-2 w-full rounded-full bg-gradient-to-r from-teal-600 via-cyan-400 to-[#c1ff72] shadow-sm shadow-teal-500/20" />
                       <p className="text-xs text-on-surface-variant leading-normal">
-                        Activa en todas las pantallas clínicas para que el paciente o terapeuta conozca su progreso en la lectura de expedientes y guías biomecánicas.
+                        {t('shw.enableItOnAllClinicalScreensSoThePatientOrTherapistC')}
                       </p>
                     </div>
                   </div>
@@ -2917,16 +2920,16 @@ export function UIShowcasePage() {
                   <div className="flex items-center gap-2">
                     <Sparkles className="w-4 h-4 text-teal-600" />
                     <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
-                      27. Botón con Brillo Deslizante (ShimmerButton)
+                      {t('shw.n27ShimmerButton')}
                     </h3>
                   </div>
                   <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
                     <div>
                       <h4 className="text-sm font-bold text-on-surface mb-1">
-                        Rotación Cónica Continua (Conic Gradient)
+                        {t('shw.continuousConicRotation')}
                       </h4>
                       <p className="text-xs text-on-surface-variant leading-relaxed mb-4">
-                        Brillo periférico que rota continuamente a 360°, ideal para acciones de alta jerarquía médica como generación de informes IA o exportación clínica.
+                        {t('shw.peripheralShineDescription')}
                       </p>
                     </div>
 
@@ -2934,21 +2937,21 @@ export function UIShowcasePage() {
                       <ShimmerButton
                         shimmerColor="#c1ff72"
                         background="rgba(0, 50, 48, 0.95)"
-                        onClick={() => toast.success("Informe de Fisioterapia Generado", { description: "Análisis IA procesado con éxito." })}
+                        onClick={() => toast.success(t('shw.toastReportGenerated'), { description: t('shw.toastAiAnalysisProcessed') })}
                         className="text-xs"
                       >
                         <Sparkles className="size-4 text-kinetic" />
-                        <span>Generar Informe IA Physi</span>
+                        <span>{t('shw.generatePhysiAiReport')}</span>
                       </ShimmerButton>
 
                       <ShimmerButton
                         shimmerColor="#38bdf8"
                         background="rgba(15, 23, 42, 0.95)"
-                        onClick={() => toast.info("Exportando Historial...", { description: "Preparando documento PDF cifrado." })}
+                        onClick={() => toast.info(t('shw.toastExportingHistory'), { description: t('shw.toastPreparingPdf') })}
                         className="text-xs border-slate-700"
                       >
                         <Copy className="size-4" />
-                        <span>Exportar Historia PDF</span>
+                        <span>{t('shw.exportHistoryPdf')}</span>
                       </ShimmerButton>
                     </div>
                   </div>
@@ -2959,7 +2962,7 @@ export function UIShowcasePage() {
                   <div className="flex items-center gap-2">
                     <ShieldCheck className="w-4 h-4 text-teal-600" />
                     <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
-                      28. Borde Brillante Animado (ShineBorder)
+                      {t('shw.n28ShineBorder')}
                     </h3>
                   </div>
                   <div className="relative p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4 overflow-hidden">
@@ -2971,23 +2974,23 @@ export function UIShowcasePage() {
                     <div>
                       <div className="flex items-center justify-between mb-1">
                         <h4 className="text-sm font-bold text-on-surface">
-                          Tarjeta Clínica con Borde Órbita Multicromático
+                          {t('shw.clinicalCardWithMulticolorOrbitBorder')}
                         </h4>
                         <span className="text-2xs font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
-                          Prioridad Alta
+                          {t('shw.highPriority')}
                         </span>
                       </div>
                       <p className="text-xs text-on-surface-variant leading-relaxed mb-3">
-                        El gradiente radial animado recorre las 4 esquinas sin alterar el contenido interno gracias a una máscara XOR de doble capa.
+                        {t('shw.theAnimatedRadialGradientTravelsAcrossAll4CornersWit')}
                       </p>
                     </div>
 
                     <div className="p-3.5 rounded-2xl bg-teal-500/5 dark:bg-teal-950/20 border border-teal-500/20 flex items-center justify-between">
                       <div>
-                        <p className="text-xs font-bold text-on-surface">Paciente: Roberto Santana</p>
-                        <p className="text-xs text-teal-600 dark:text-teal-400 font-semibold">Tendinopatía Rotuliana • Sesión 6 de 12</p>
+                        <p className="text-xs font-bold text-on-surface">{t('shw.patientRobertoSantana')}</p>
+                        <p className="text-xs text-teal-600 dark:text-teal-400 font-semibold">{t('shw.patellarTendinopathySession6Of12')}</p>
                       </div>
-                      <span className="text-xs font-black text-on-surface">125° Flexión</span>
+                      <span className="text-xs font-black text-on-surface">{t('shw.n125Flexion')}</span>
                     </div>
                   </div>
                 </div>
@@ -3002,16 +3005,16 @@ export function UIShowcasePage() {
                   <div className="flex items-center gap-2">
                     <Sparkles className="w-4 h-4 text-teal-600" />
                     <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
-                      29. Texto con Destellos Mágicos (SparklesText)
+                      {t('shw.n29SparklesText')}
                     </h3>
                   </div>
                   <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
                     <div>
                       <h4 className="text-sm font-bold text-on-surface mb-1">
-                        Estrellas y Destellos Festivos Vectoriales
+                        {t('shw.vectorFestiveStarsAndSparkles')}
                       </h4>
                       <p className="text-xs text-on-surface-variant leading-relaxed mb-4">
-                        Ideal para celebraciones de objetivos clínicos cumplidos, rachas de rehabilitación y ascensos de nivel en la recuperación.
+                        {t('shw.sparklesDescription')}
                       </p>
                     </div>
 
@@ -3030,15 +3033,15 @@ export function UIShowcasePage() {
                         type="text"
                         value={sparklesWord}
                         onChange={(e) => setSparklesWord(e.target.value)}
-                        placeholder="Escribe un mensaje de logro..."
+                        placeholder={t('shw.typeAnAchievementMessage')}
                         className="flex-1 px-3 py-2 rounded-xl text-xs bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-on-surface focus:outline-hidden focus:border-teal-500"
                       />
                       <button
                         type="button"
-                        onClick={() => setSparklesWord('¡100% Rango Articular Superado!')}
+                        onClick={() => setSparklesWord(t('shw.n100RangeOfMotionExceeded'))}
                         className="px-3 py-2 rounded-xl text-xs font-semibold bg-teal-500/15 text-teal-600 dark:text-teal-400 hover:bg-teal-500/25 transition-colors whitespace-nowrap"
                       >
-                        Ejemplo Clínico
+                        {t('shw.clinicalExample')}
                       </button>
                     </div>
                   </div>
@@ -3050,7 +3053,7 @@ export function UIShowcasePage() {
                     <div className="flex items-center gap-2">
                       <Activity className="w-4 h-4 text-teal-600" />
                       <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
-                        30. Texto Animado por Segmentos (TextAnimate)
+                        {t('shw.n30TextAnimate')}
                       </h3>
                     </div>
                     <button
@@ -3064,7 +3067,7 @@ export function UIShowcasePage() {
 
                   <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
                     <div className="flex flex-wrap items-center gap-2">
-                      <span className="text-xs text-on-surface-variant">Variante:</span>
+                      <span className="text-xs text-on-surface-variant">{t('shw.variant')}</span>
                       {(['blurInUp', 'fadeIn', 'slideUp', 'scaleUp', 'blurIn'] as AnimationVariant[]).map((anim) => (
                         <button
                           key={anim}
@@ -3086,7 +3089,7 @@ export function UIShowcasePage() {
                     </div>
 
                     <div className="flex items-center gap-2 text-xs text-on-surface-variant">
-                      <span>Segmentación:</span>
+                      <span>{t('shw.segmentation')}</span>
                       {(['word', 'character', 'line'] as AnimationType[]).map((type) => (
                         <button
                           key={type}
@@ -3114,7 +3117,7 @@ export function UIShowcasePage() {
                         by={textAnimateType}
                         className="text-sm sm:text-base font-bold text-on-surface leading-relaxed"
                       >
-                        Evaluación biomecánica asistida por Physi IA: simetría escapular y ángulo articular en rango óptimo.
+                        {t('shw.biomechanicalAssessmentAssistedByPhysiAiScapularSymm')}
                       </TextAnimate>
                     </div>
                   </div>
@@ -3133,10 +3136,10 @@ export function UIShowcasePage() {
               <div>
                 <h2 className="text-lg font-bold flex items-center gap-2">
                   <Search className="w-5 h-5 text-teal-600 dark:text-teal-400" />
-                  Inventario Completo: Componentes Originales vs. Versiones Evolved
+                  {t('shw.fullInventoryOriginalComponentsVsEvolvedVersions')}
                 </h2>
                 <p className="text-xs text-on-surface-variant">
-                  Mapeo directo de componentes de FisioMirror con sus reemplazos de Magic UI, Aceternity UI, 21st, HeroUI y Reaviz.
+                  {t('shw.directComponentMapping')}
                 </p>
               </div>
             </div>
@@ -3146,33 +3149,33 @@ export function UIShowcasePage() {
                 <Card key={index} variant="glass" hoverEffect animated className="relative overflow-hidden">
                   <div className="flex items-start justify-between gap-3 mb-3">
                     <span className="text-2xs font-bold uppercase tracking-wider text-teal-600 dark:text-teal-400 bg-teal-500/10 px-2 py-0.5 rounded-md border border-teal-500/20">
-                      {item.category}
+                      {t(item.category)}
                     </span>
                     <span className="text-2xs font-bold px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
-                      Fuente: {item.librarySource}
+                      {t('shw.sourceLabel')} {item.librarySource}
                     </span>
                   </div>
 
                   <div className="space-y-2 mb-3">
                     <div className="p-2 rounded-lg bg-slate-100/60 dark:bg-slate-800/40 border border-slate-200/50 dark:border-slate-700/50">
-                      <p className="text-2xs uppercase font-bold text-on-surface-variant">Componente Original en FisioMirror:</p>
-                      <p className="text-xs font-semibold text-on-surface">{item.originalComponent}</p>
+                      <p className="text-2xs uppercase font-bold text-on-surface-variant">{t('shw.originalComponentInFisiomirror')}</p>
+                      <p className="text-xs font-semibold text-on-surface">{t(item.originalComponent)}</p>
                       <code className="text-2xs text-on-surface-variant font-mono">{item.originalFile}</code>
                     </div>
 
                     <div className="p-2 rounded-lg bg-teal-50/50 dark:bg-teal-950/20 border border-teal-500/20">
-                      <p className="text-2xs uppercase font-bold text-teal-600 dark:text-teal-400">Versión Evolved Integrada:</p>
-                      <p className="text-xs font-bold text-on-surface">{item.evolvedComponent}</p>
+                      <p className="text-2xs uppercase font-bold text-teal-600 dark:text-teal-400">{t('shw.integratedEvolvedVersion')}</p>
+                      <p className="text-xs font-bold text-on-surface">{t(item.evolvedComponent)}</p>
                     </div>
                   </div>
 
                   <div>
-                    <p className="text-xs font-bold text-on-surface-variant mb-1.5">Ventajas y Características Superiores:</p>
+                    <p className="text-xs font-bold text-on-surface-variant mb-1.5">{t('shw.advantagesAndSuperiorFeatures')}</p>
                     <ul className="space-y-1">
                       {item.keyImprovements.map((improvement, i) => (
                         <li key={i} className="text-xs text-on-surface-variant flex items-start gap-1.5">
                           <CheckCircle2 className="w-3.5 h-3.5 text-teal-500 shrink-0 mt-0.5" />
-                          <span>{improvement}</span>
+                          <span>{t(improvement)}</span>
                         </li>
                       ))}
                     </ul>
@@ -3192,10 +3195,10 @@ export function UIShowcasePage() {
               <div>
                 <h2 className="text-lg font-bold flex items-center gap-2">
                   <Zap className="w-5 h-5 text-teal-600 dark:text-teal-400" />
-                  Botones Evolved (ShimmerButton, Glow, Kinetic & CVA)
+                  {t('shw.evolvedButtonsHeader')}
                 </h2>
                 <p className="text-xs text-on-surface-variant">
-                  Sustituye botones planos por microinteracciones de muelle y rayos lumínicos giratorios.
+                  {t('shw.replacesFlatButtonsWithSpringMicrointeractionsAndRot')}
                 </p>
               </div>
               <Button 
@@ -3204,14 +3207,14 @@ export function UIShowcasePage() {
                 onClick={() => setButtonLoading(!buttonLoading)}
                 className="text-xs"
               >
-                Alternar Carga: {buttonLoading ? 'Activada' : 'Desactivada'}
+                {t('shw.toggleLoading')} {buttonLoading ? t('shw.enabled') : t('shw.disabled')}
               </Button>
             </div>
 
             <div className="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-6">
               <div>
                 <h3 className="text-xs font-bold uppercase tracking-wider text-on-surface-variant mb-3 flex items-center gap-2">
-                  <span>Variantes del componente</span>
+                  <span>{t('shw.componentVariants')}</span>
                   <span className="text-2xs text-teal-500 lowercase">(framer-motion + cva + magic-ui)</span>
                 </h3>
                 <div className="flex flex-wrap gap-3 items-center">
@@ -3221,34 +3224,34 @@ export function UIShowcasePage() {
                   </ShimmerButton>
 
                   <Button variant="glow" glowEffect icon={<Sparkles className="w-4 h-4" />}>
-                    Button Glow (Infinito)
+                    {t('shw.buttonGlowInfinite')}
                   </Button>
 
                   <Button variant="kinetic" glowEffect icon={<Activity className="w-4 h-4" />}>
-                    Button Kinetic (Alta Frecuencia)
+                    {t('shw.buttonKineticHighFrequency')}
                   </Button>
 
                   <Button variant="glass">Button Glass Effect</Button>
-                  <Button variant="gradient" icon={<Zap className="w-4 h-4" />}>Gradient</Button>
+                  <Button variant="gradient" icon={<Zap className="w-4 h-4" />}>{t('shw.gradient3')}</Button>
                   <Button variant="default" loading={buttonLoading}>Default CVA</Button>
-                  <Button variant="secondary">Secondary</Button>
-                  <Button variant="outline">Outline</Button>
-                  <Button variant="destructive" icon={<Trash2 className="w-4 h-4" />}>Destructive</Button>
+                  <Button variant="secondary">{t('shw.secondary')}</Button>
+                  <Button variant="outline">{t('shw.outline')}</Button>
+                  <Button variant="destructive" icon={<Trash2 className="w-4 h-4" />}>{t('shw.destructive')}</Button>
                 </div>
               </div>
 
               <div className="pt-4 border-t border-slate-100 dark:border-slate-800">
-                <h3 className="text-xs font-bold uppercase tracking-wider text-on-surface-variant mb-3">Escalas & Botones de Utilidad</h3>
+                <h3 className="text-xs font-bold uppercase tracking-wider text-on-surface-variant mb-3">{t('shw.scalesUtilityButtons')}</h3>
                 <div className="flex flex-wrap gap-3 items-center">
-                  <Button size="sm" variant="glow">Pequeño (sm)</Button>
-                  <Button size="default" variant="glow">Normal (default)</Button>
+                  <Button size="sm" variant="glow">{t('shw.smallSm')}</Button>
+                  <Button size="default" variant="glow">{t('shw.normalDefault')}</Button>
                   <Button size="lg" variant="glow" icon={<Send className="w-5 h-5" />} iconPosition="right">
-                    Grande Táctil (lg)
+                    {t('shw.largeTactileLg')}
                   </Button>
-                  <Tooltip content="IconButton accesible para navegación">
+                  <Tooltip content={t('shw.accessibleIconbuttonForNavigation')}>
                     <IconButton icon={<Heart className="w-4 h-4 text-rose-500" />} />
                   </Tooltip>
-                  <BackButton onClick={() => toast.info('Simulación de navegación: retrocediendo a la pantalla anterior')}>BackButton Atrás</BackButton>
+                  <BackButton onClick={() => toast.info(t('shw.navigationSimulationGoingBackToThePreviousScreen'))}>{t('shw.backbuttonBack')}</BackButton>
                 </div>
               </div>
             </div>
@@ -3263,10 +3266,10 @@ export function UIShowcasePage() {
             <div>
               <h2 className="text-lg font-bold flex items-center gap-2">
                 <MousePointer className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
-                Tarjetas Activas: CardSpotlight (Aceternity) & Bento con BorderBeam (Magic UI)
+                {t('shw.activeCardsCardspotlightBento')}
               </h2>
               <p className="text-xs text-on-surface-variant">
-                Mueve el mouse sobre las tarjetas para apreciar el haz de luz radial matemático y el haz orbital en el borde.
+                {t('shw.moveTheMouseOverTheCardsToAppreciateTheMathematicalR')}
               </p>
             </div>
 
@@ -3281,14 +3284,14 @@ export function UIShowcasePage() {
                   </span>
                 </div>
                 <h3 className="text-lg font-bold text-on-surface mb-1">
-                  CardSpotlight Reactivo
+                  {t('shw.reactiveCardspotlight')}
                 </h3>
                 <p className="text-xs text-on-surface-variant mb-4 leading-relaxed">
-                  Proyecta un gradiente radial matemático dinámico que persigue al cursor exactamente sin forzar re-renderizados del DOM.
+                  {t('shw.projectsADynamicMathematicalRadialGradientThatFollow')}
                 </p>
                 <div className="pt-3 border-t border-slate-200/50 dark:border-slate-700/50 flex justify-between items-center text-xs">
-                  <span className="text-on-surface-variant">Efecto Biomecánico</span>
-                  <span className="font-bold text-teal-600 dark:text-teal-400">60 FPS Suave</span>
+                  <span className="text-on-surface-variant">{t('shw.biomechanicalEffect')}</span>
+                  <span className="font-bold text-teal-600 dark:text-teal-400">{t('shw.smooth60Fps')}</span>
                 </div>
               </CardSpotlight>
 
@@ -3304,14 +3307,14 @@ export function UIShowcasePage() {
                     </span>
                   </div>
                   <h3 className="text-lg font-bold text-on-surface mb-1">
-                    Borde Orbital Cinético
+                    {t('shw.kineticOrbitalBorder')}
                   </h3>
                   <p className="text-xs text-on-surface-variant mb-4 leading-relaxed">
-                    Un rayo lumínico SVG recorre el perímetro de la tarjeta constantemente para destacar elementos de alta prioridad clínica.
+                    {t('shw.anSvgLightBeamConstantlyTravelsTheCardsPerimeterToHi')}
                   </p>
                 </div>
                 <Button size="sm" variant="kinetic" className="w-full">
-                  Ver Módulo Activo
+                  {t('shw.viewActiveModule')}
                 </Button>
               </div>
 
@@ -3327,13 +3330,13 @@ export function UIShowcasePage() {
                     <span>%</span>
                   </div>
                 }
-                label="Adherencia Media Semanal"
+                label={t('shw.averageWeeklyAdherence')}
                 trend={
                   <span 
                     onClick={() => setTickerTrigger((prev) => prev + 1)}
                     className="cursor-pointer underline decoration-dotted hover:opacity-80"
                   >
-                    +14% vs mes previo (Clic para re-animar)
+                    {t('shw.n14PercentVsPreviousMonth')}
                   </span>
                 }
               />
@@ -3349,10 +3352,10 @@ export function UIShowcasePage() {
             <div>
               <h2 className="text-lg font-bold flex items-center gap-2">
                 <Layers className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-                Modales & Diálogos Evolved (Física Spring & Liquid Glass)
+                {t('shw.evolvedModalsHeader')}
               </h2>
               <p className="text-xs text-on-surface-variant">
-                Sustituye ventanas rígidas por transiciones fluidas con resorte y desenfoque óptico de cristal.
+                {t('shw.replacesRigidWindowsWithFluidSpringTransitionsAndOpt')}
               </p>
             </div>
 
@@ -3361,25 +3364,25 @@ export function UIShowcasePage() {
                 variant="outline" 
                 onClick={() => { setDialogSize('sm'); setDialogOpen(true); }}
               >
-                Abrir Modal Pequeño (sm)
+                {t('shw.openSmallModalSm')}
               </Button>
               <Button 
                 variant="glass" 
                 onClick={() => { setDialogSize('md'); setDialogOpen(true); }}
               >
-                Abrir Modal Glass Mediano (md)
+                {t('shw.openMediumGlassModalMd')}
               </Button>
               <Button 
                 variant="glow" 
                 onClick={() => { setDialogSize('lg'); setDialogOpen(true); }}
               >
-                Abrir Modal Clínico Grande (lg)
+                {t('shw.openLargeClinicalModalLg')}
               </Button>
               <Button 
                 variant="destructive" 
                 onClick={() => setConfirmOpen(true)}
               >
-                Probar ConfirmDialog Destructivo
+                {t('shw.tryDestructiveConfirmdialog')}
               </Button>
             </div>
           </section>
@@ -3393,32 +3396,32 @@ export function UIShowcasePage() {
             <div>
               <h2 className="text-lg font-bold flex items-center gap-2">
                 <Smartphone className="w-5 h-5 text-amber-600 dark:text-amber-400" />
-                Inputs Clínicos & OtpInput (Origin UI + 21st.dev)
+                {t('shw.clinicalInputsOtpinput')}
               </h2>
               <p className="text-xs text-on-surface-variant">
-                Formularios con micro-escalado en foco y entrada segmentada de 6 casillas para vinculación de pacientes.
+                {t('shw.formsWithFocusMicroScalingAnd6BoxSegmentedInputForPa')}
               </p>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
               <div className="space-y-4">
                 <h3 className="text-sm font-bold text-on-surface">
-                  Campo Clínico con Micro-Zoom (Input)
+                  {t('shw.clinicalFieldMicroZoom')}
                 </h3>
                 <Input 
-                  label="Nombre del Paciente o Diagnóstico" 
-                  placeholder="Ej. María Fernández — Tendinopatía" 
+                  label={t('shw.patientNameOrDiagnosis')} 
+                  placeholder={t('shw.eGMariaFernandezTendinopathy')} 
                   value={inputValue}
                   onChange={(e) => {
                     setInputValue(e.target.value);
                     if (e.target.value.length > 0 && e.target.value.length < 3) {
-                      setInputError('El campo debe tener al menos 3 caracteres');
+                      setInputError(t('shw.theFieldMustHaveAtLeast3Characters'));
                     } else {
                       setInputError('');
                     }
                   }}
                   error={inputError}
-                  hint="Foco suave con resalte en verde azulado médico"
+                  hint={t('shw.softFocusWithMedicalTealHighlight')}
                   glassEffect={inputGlass}
                 />
                 <div className="flex items-center gap-2 pt-1">
@@ -3427,7 +3430,7 @@ export function UIShowcasePage() {
                     variant="outline" 
                     onClick={() => setInputGlass(!inputGlass)}
                   >
-                    Efecto Cristal: {inputGlass ? 'Activado' : 'Desactivado'}
+                    {t('shw.glassEffect')} {inputGlass ? t('shw.enabled2') : t('shw.disabled2')}
                   </Button>
                 </div>
               </div>
@@ -3435,7 +3438,7 @@ export function UIShowcasePage() {
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <h3 className="text-sm font-bold text-on-surface">
-                    Entrada OTP de 6 Casillas (OtpInput)
+                    {t('shw.n6BoxOtpInput')}
                   </h3>
                   <div className="flex items-center gap-2">
                     <Button 
@@ -3447,7 +3450,7 @@ export function UIShowcasePage() {
                       }}
                       className="text-xs"
                     >
-                      Probar Pegado Demo
+                      {t('shw.tryPasteDemo')}
                     </Button>
                     <Button 
                       size="sm" 
@@ -3455,12 +3458,12 @@ export function UIShowcasePage() {
                       onClick={() => setOtpError(!otpError)}
                       className="text-xs"
                     >
-                      Error: {otpError ? 'Sí' : 'No'}
+                      {t('shw.errorLabel')} {otpError ? t('common.yes') : t('common.no')}
                     </Button>
                   </div>
                 </div>
                 <p className="text-xs text-on-surface-variant">
-                  Pega o escribe un token. Salta de casilla automáticamente con compatibilidad teclado numérico móvil.
+                  {t('shw.pasteOrTypeATokenItJumpsBetweenBoxesAutomaticallyWit')}
                 </p>
                 
                 <div className="flex justify-center sm:justify-start">
@@ -3476,7 +3479,7 @@ export function UIShowcasePage() {
                 {otpCompletedCode && (
                   <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-700 dark:text-emerald-300 text-xs flex items-center gap-2">
                     <CheckCircle className="w-4 h-4 shrink-0" />
-                    <span>Código detectado y validado en tiempo real: <strong>{otpCompletedCode}</strong></span>
+                    <span>{t('shw.codeDetectedAndValidatedInRealTime')} <strong>{otpCompletedCode}</strong></span>
                   </div>
                 )}
               </div>
@@ -3492,10 +3495,10 @@ export function UIShowcasePage() {
             <div>
               <h2 className="text-lg font-bold flex items-center gap-2">
                 <Sliders className="w-5 h-5 text-teal-600 dark:text-teal-400" />
-                Controles Clínicos Hápticos: Deslizador de ROM Articular & Dolor (Origin UI)
+                {t('shw.hapticClinicalControls')}
               </h2>
               <p className="text-xs text-on-surface-variant">
-                Diseñado para calibración de ángulos biomecánicos con marcas visuales de 0° a 180°.
+                {t('shw.designedForBiomechanicalAngleCalibrationWithVisualMa')}
               </p>
             </div>
 
@@ -3505,11 +3508,11 @@ export function UIShowcasePage() {
                 onChange={setClinicalRom}
                 min={0}
                 max={180}
-                label="Flexión de Rodilla / Codo (ROM)"
+                label={t('shw.kneeElbowFlexionRom')}
                 unit="°"
                 icon={<Activity className="w-5 h-5" />}
                 ticks={[0, 45, 90, 135, 180]}
-                helperText="Mueve el deslizador para calibrar el ángulo umbral de la sesión guiada."
+                helperText={t('shw.moveTheSliderToCalibrateTheGuidedSessionsThresholdAn')}
               />
 
               <div className="p-4 rounded-xl bg-teal-50/60 dark:bg-teal-950/30 border border-teal-500/20 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
@@ -3520,8 +3523,8 @@ export function UIShowcasePage() {
                   </span>
                 </div>
                 <div className="flex gap-2">
-                  <Button size="sm" variant="outline" onClick={() => setClinicalRom(90)}>Preset 90° (Funcional)</Button>
-                  <Button size="sm" variant="glow" onClick={() => setClinicalRom(135)}>Preset 135° (Avanzado)</Button>
+                  <Button size="sm" variant="outline" onClick={() => setClinicalRom(90)}>{t('shw.preset90Functional')}</Button>
+                  <Button size="sm" variant="glow" onClick={() => setClinicalRom(135)}>{t('shw.preset135Advanced')}</Button>
                 </div>
               </div>
             </div>
@@ -3536,49 +3539,49 @@ export function UIShowcasePage() {
             <div>
               <h2 className="text-lg font-bold flex items-center gap-2">
                 <Sparkles className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
-                Tipografía Lumínica en Movimiento & Tooltips con Flecha (Magic UI)
+                {t('shw.luminousTypographyTooltips')}
               </h2>
               <p className="text-xs text-on-surface-variant">
-                Textos con flujo de gradiente orgánico vivo y tooltips en 4 orientaciones con desenfoque de cristal.
+                {t('shw.textWithALivingOrganicGradientFlowAndTooltipsIn4Orie')}
               </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
-                <span className="text-2xs uppercase font-bold tracking-wider text-on-surface-variant">Tipografía Dinámica</span>
+                <span className="text-2xs uppercase font-bold tracking-wider text-on-surface-variant">{t('shw.dynamicTypography')}</span>
                 <div>
-                  <p className="text-xs text-on-surface-variant mb-1">Efecto Aurora Text:</p>
+                  <p className="text-xs text-on-surface-variant mb-1">{t('shw.auroraTextEffect')}</p>
                   <h3 className="text-2xl font-black">
-                    Rehabilitación con <AuroraText>Inteligencia Artificial</AuroraText>
+                    Rehabilitación con <AuroraText>{t('shw.artificialIntelligence')}</AuroraText>
                   </h3>
                 </div>
                 <div className="pt-3 border-t border-slate-100 dark:border-slate-800">
-                  <p className="text-xs text-on-surface-variant mb-1">Efecto Shimmer Text (Barrido):</p>
-                  <ShimmerText text="Análisis Biomecánico a 30 FPS en Tiempo Real" className="text-lg font-bold" />
+                  <p className="text-xs text-on-surface-variant mb-1">{t('shw.shimmerTextEffectSweep')}</p>
+                  <ShimmerText text={t('shw.realTimeBiomechanicalAnalysisAt30Fps')} className="text-lg font-bold" />
                 </div>
               </div>
 
               <div className="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
                 <div>
                   <span className="text-2xs uppercase font-bold tracking-wider text-on-surface-variant block mb-2">
-                    Tooltips con Flecha Geométrica
+                    {t('shw.tooltipsWithGeometricArrow')}
                   </span>
                   <p className="text-xs text-on-surface-variant mb-4">
-                    Pasa el cursor para ver el posicionamiento y la micro-flecha alineada:
+                    {t('shw.hoverToSeeThePositioningAndTheAlignedMicroArrow')}
                   </p>
                 </div>
                 <div className="grid grid-cols-2 gap-3">
-                  <Tooltip content="Tooltip superior con efecto glass" side="top">
-                    <Button variant="outline" size="sm" className="w-full">Arriba (Top)</Button>
+                  <Tooltip content={t('shw.topTooltipWithGlassEffect')} side="top">
+                    <Button variant="outline" size="sm" className="w-full">{t('shw.top')}</Button>
                   </Tooltip>
-                  <Tooltip content="Tooltip derecho con flecha integrada" side="right">
-                    <Button variant="glass" size="sm" className="w-full">Derecha (Right)</Button>
+                  <Tooltip content={t('shw.rightTooltipWithIntegratedArrow')} side="right">
+                    <Button variant="glass" size="sm" className="w-full">{t('shw.right')}</Button>
                   </Tooltip>
-                  <Tooltip content="Tooltip inferior con retardo suave" side="bottom">
-                    <Button variant="glow" size="sm" className="w-full">Abajo (Bottom)</Button>
+                  <Tooltip content={t('shw.bottomTooltipWithSoftDelay')} side="bottom">
+                    <Button variant="glow" size="sm" className="w-full">{t('shw.bottom')}</Button>
                   </Tooltip>
-                  <Tooltip content="Tooltip lateral izquierdo" side="left">
-                    <Button variant="kinetic" size="sm" className="w-full">Izquierda (Left)</Button>
+                  <Tooltip content={t('shw.leftSideTooltip')} side="left">
+                    <Button variant="kinetic" size="sm" className="w-full">{t('shw.left')}</Button>
                   </Tooltip>
                 </div>
               </div>
@@ -3593,26 +3596,26 @@ export function UIShowcasePage() {
         <DialogHeader>
           <DialogTitle>Modal Interactivo Glass ({dialogSize.toUpperCase()})</DialogTitle>
           <DialogDescription>
-            Este diálogo cuenta con desenfoque óptico de alta fidelidad, botón de cierre y animación Framer Motion tipo spring.
+            {t('shw.dialogDescription')}
           </DialogDescription>
         </DialogHeader>
         <DialogContent>
           <div className="space-y-3">
             <p className="text-xs text-on-surface-variant">
-              Inspirado en la ergonomía de HeroUI y modales de tele-rehabilitación con accesibilidad completa.
+              {t('shw.inspiredByHerouiErgonomicsAndTeleRehabilitationModal')}
             </p>
             <Input 
-              label="Comentario clínico de prueba" 
-              placeholder="Escribe una observación para el paciente..." 
+              label={t('shw.testClinicalComment')} 
+              placeholder={t('shw.writeAnObservationForThePatient')} 
             />
           </div>
         </DialogContent>
         <DialogFooter>
           <Button variant="outline" onClick={() => setDialogOpen(false)}>
-            Cerrar
+            {t('shw.close')}
           </Button>
           <Button variant="glow" glowEffect onClick={() => setDialogOpen(false)}>
-            Aceptar Cambios
+            {t('shw.acceptChanges')}
           </Button>
         </DialogFooter>
       </Dialog>
@@ -3620,10 +3623,10 @@ export function UIShowcasePage() {
       <ConfirmDialog 
         open={confirmOpen}
         onOpenChange={setConfirmOpen}
-        title="¿Confirmar acción destructiva?"
-        description="Esta es una demostración de ConfirmDialog con variantes estilizadas y cierre con un solo toque."
-        confirmText="Sí, continuar"
-        cancelText="Regresar"
+        title={t('shw.confirmDestructiveAction')}
+        description={t('shw.thisIsAConfirmdialogDemoWithStyledVariantsAndOneTapC')}
+        confirmText={t('shw.yesContinue')}
+        cancelText={t('shw.goBack')}
         confirmVariant="destructive"
         onConfirm={() => setConfirmOpen(false)}
       />
