@@ -1383,6 +1383,36 @@ export const en: typeof es = {
     goHome: 'Back to home',
   },
 
+
+  ai: {
+    copied: 'Message copied',
+    consultError: 'Error consulting Physi',
+    welcome: 'Hi! I\'m Physi, your personal rehab assistant at FisioMirror. I\'m here to support your recovery, answer questions about your assigned exercises and analyze your progress. How are you feeling today?',
+    now: 'Now',
+    q1: 'Which exercises do I have today?',
+    p1: 'What are my recommended exercises for today?',
+    q2: 'How is my progress?',
+    p2: 'Explain my current recovery progress and what I should keep strengthening.',
+    q3: 'Tips to ease pain',
+    p3: 'I feel mild discomfort after the session — what self-care tips can I safely apply?',
+    q4: 'Improve AR posture',
+    p4: 'What tips do you give me to better calibrate and perform my exercises in front of the camera?',
+    title: 'Physi AI Assistant',
+    guide: 'Rehab Guide',
+    tagline: 'Personalized intelligent biomechanical support for your therapy.',
+    autoRead: 'Auto Read',
+    manualRead: 'Manual Read',
+    listenTip: 'Listen to message with Physi\'s human voice',
+    stop: 'Stop',
+    listenNatural: 'Listen to natural voice',
+    analyzing: 'Physi is analyzing your query...',
+    attachImage: 'Attach exercise or discomfort image',
+    stopDictate: 'Stop voice dictation',
+    dictate: 'Dictate message by voice',
+    inputPh: 'Write your query to Physi (or press the microphone)...',
+    send: 'Send message to Physi',
+  },
+
 } as const;
 
 export default en;

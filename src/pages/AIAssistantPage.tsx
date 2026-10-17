@@ -19,6 +19,7 @@ import { useToast } from '../components/ui/ToastProvider';
 import { humanVoice, getVoiceGender, setVoiceGender, type VoiceGender } from '../lib/humanVoice';
 import { formatAIReport } from '../lib/formatReport';
 import { LoadingText } from '../components/ui/LoadingText';
+import { useTranslation } from 'react-i18next';
 import { MascotAnimation } from '../components/ui/MascotAnimation';
 import { QuickVoiceSelector } from '../components/ui/QuickVoiceSelector';
 import { isValidUUID } from '../lib/utils';
@@ -73,6 +74,7 @@ interface ChatMessage {
 }
 
 export function AIAssistantPage() {
+  const { t, i18n } = useTranslation();
   const user = useAuthStore((s) => s.user);
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
@@ -144,7 +146,7 @@ export function AIAssistantPage() {
   const handleCopy = (id: string, text: string) => {
     navigator.clipboard.writeText(text);
     setCopiedId(id);
-    toast.success('Mensaje copiado');
+    toast.success(t('ai.copied'));
     setTimeout(() => setCopiedId(null), 2000);
   };
 
@@ -308,7 +310,7 @@ export function AIAssistantPage() {
       }
 
       const promptSystem = `Eres Physi, un asistente virtual de fisioterapia empático, profesional y motivador en la app FisioMirror.
-Responde de forma estructurada, clara y cálida. Si sugieres ejercicios, recuerda siempre indicar la importancia de la postura y no sobrepasar el umbral de dolor. Responde SIEMPRE en español.`;
+Responde de forma estructurada, clara y cálida. Si sugieres ejercicios, recuerda siempre indicar la importancia de la postura y no sobrepasar el umbral de dolor. Responde SIEMPRE en ${i18n.language}.`;
 
       const fullPrompt = `${promptSystem}
 
@@ -380,7 +382,7 @@ Pregunta del paciente: ${messageText}`;
           timestamp: 'Ahora',
         },
       ]);
-      toast.error('Error al consultar a Physi');
+      toast.error(t('ai.consultError'));
     } finally {
       setLoading(false);
     }
@@ -437,7 +439,7 @@ Pregunta del paciente: ${messageText}`;
             }`}
           >
             {autoVoice ? <Volume2 className="size-3.5" /> : <VolumeX className="size-3.5" />}
-            <span>{autoVoice ? 'Lectura Automática' : 'Lectura Manual'}</span>
+            <span>{autoVoice ? t('ai.autoRead') : t('ai.manualRead')}</span>
           </button>
         </div>
       </div>
@@ -502,12 +504,12 @@ Pregunta del paciente: ${messageText}`;
                               ? 'bg-teal-500 text-white shadow-xs animate-pulse ring-2 ring-teal-400/40'
                               : 'hover:bg-teal-500/10 text-teal-600 dark:text-teal-400'
                           }`}
-                          title="Escuchar mensaje con voz humana de Physi"
+                          title={t('ai.listenTip')}
                         >
                           {currentlySpeakingId === msg.id ? (
                             <>
                               <VolumeX className="size-3.5" />
-                              <span>Detener</span>
+                              <span>{t('ai.stop')}</span>
                               <span className="flex gap-0.5 items-center ml-0.5">
                                 <span className="size-1 rounded-full bg-white animate-bounce" style={{ animationDelay: '0ms' }} />
                                 <span className="size-1 rounded-full bg-white animate-bounce" style={{ animationDelay: '150ms' }} />
@@ -517,14 +519,14 @@ Pregunta del paciente: ${messageText}`;
                           ) : (
                             <>
                               <Volume2 className="size-3.5" />
-                              <span>Escuchar voz natural</span>
+                              <span>{t('ai.listenNatural')}</span>
                             </>
                           )}
                         </button>
                         <button
                           onClick={() => handleCopy(msg.id, msg.text)}
                           className="p-1.5 rounded-xl hover:bg-surface-container text-outline hover:text-on-surface transition-colors flex items-center gap-1 font-semibold"
-                          title="Copiar texto"
+                          title={t('common.copy')}
                         >
                           {copiedId === msg.id ? <Check className="size-3.5 text-emerald-500" /> : <Copy className="size-3.5" />}
                           <span>{copiedId === msg.id ? 'Copiado' : 'Copiar'}</span>
@@ -546,7 +548,7 @@ Pregunta del paciente: ${messageText}`;
               <div className="p-4 rounded-3xl bg-surface/90 dark:bg-surface-container-low/90 border border-teal-500/20 text-on-surface rounded-tl-none shadow-xs">
                 <div className="flex items-center gap-2 text-xs font-semibold text-teal-600 dark:text-teal-400 mb-1.5">
                   <Sparkles className="size-3.5 animate-spin" />
-                  <span>Physi está analizando tu consulta...</span>
+                  <span>{t('ai.analyzing')}</span>
                 </div>
                 <LoadingText context="ai" className="block text-xs text-on-surface-variant italic" />
               </div>
@@ -591,7 +593,7 @@ Pregunta del paciente: ${messageText}`;
       <div className="flex gap-2 items-end shrink-0 min-h-0 bg-surface/70 dark:bg-surface-container-low/70 p-2 rounded-3xl border border-outline/15">
         <button
           onClick={() => fileInputRef.current?.click()}
-          aria-label="Adjuntar imagen de ejercicio o molestia"
+          aria-label={t('ai.attachImage')}
           className="size-11 rounded-2xl hover:bg-teal-500/10 text-teal-600 dark:text-teal-400 flex items-center justify-center transition-all shrink-0"
         >
           <ImageIcon className="size-5" />
@@ -608,7 +610,7 @@ Pregunta del paciente: ${messageText}`;
         <button
           onClick={toggleRecording}
           type="button"
-          aria-label={isRecording ? 'Detener dictado de voz' : 'Dictar mensaje por voz'}
+          aria-label={isRecording ? t('ai.stopDictate') : t('ai.dictate')}
           className={`size-11 rounded-2xl flex items-center justify-center transition-all shrink-0 ${
             isRecording
               ? 'bg-red-500/15 border border-red-500/40 text-red-600 animate-pulse'
@@ -627,7 +629,7 @@ Pregunta del paciente: ${messageText}`;
               sendMessage();
             }
           }}
-          placeholder="Escribe tu consulta a Physi (o presiona el micrófono)..."
+          placeholder={t('ai.inputPh')}
           rows={1}
           className="flex-1 px-3 py-2.5 text-xs sm:text-sm bg-transparent outline-none resize-none text-on-surface placeholder:text-outline"
         />
@@ -635,7 +637,7 @@ Pregunta del paciente: ${messageText}`;
         <button
           onClick={() => sendMessage()}
           disabled={loading || (!input.trim() && images.length === 0)}
-          aria-label="Enviar mensaje a Physi"
+          aria-label={t('ai.send')}
           className="size-11 rounded-2xl bg-primary hover:bg-primary/90 text-on-primary flex items-center justify-center hover:scale-105 active:scale-95 transition-all disabled:opacity-40 disabled:hover:scale-100 shrink-0 shadow-sm"
         >
           <Send className="size-4" />
