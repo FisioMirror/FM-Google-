@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Icon } from '../components/ui/Icon';
@@ -104,6 +105,7 @@ const DEFAULT_FALLBACK_EXERCISES: AssignedExercise[] = [
 ];
 
 export function PatientExercisesPage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const toast = useToast();
   const user = useAuthStore((s) => s.user);
@@ -191,28 +193,28 @@ export function PatientExercisesPage() {
             <button
               onClick={() => {
                 const calExercises: CalendarExercise[] = exercises.map((ex) => ({
-                  nombre: ex.ejercicio_nombre || 'Ejercicio',
+                  nombre: ex.ejercicio_nombre || t('ex.defaultName'),
                   series: ex.series,
                   repeticiones: ex.repeticiones,
                   frecuencia_semana: ex.frecuencia_semana,
                 }));
-                const url = buildGoogleCalendarUrl(calExercises, user?.full_name || 'Paciente');
+                const url = buildGoogleCalendarUrl(calExercises, user?.full_name || t('common.patientDefault'));
                 if (url) window.open(url, '_blank');
               }}
               className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-surface-container-high border border-outline-variant/30 text-on-surface hover:bg-surface-container-highest transition-all text-xs font-semibold"
             >
               <Calendar size={14} className="text-primary" />
-              <span>Google Calendar</span>
+              <span>{t('ex.googleCalendar')}</span>
             </button>
             <button
               onClick={() => {
                 const calExercises: CalendarExercise[] = exercises.map((ex) => ({
-                  nombre: ex.ejercicio_nombre || 'Ejercicio',
+                  nombre: ex.ejercicio_nombre || t('ex.defaultName'),
                   series: ex.series,
                   repeticiones: ex.repeticiones,
                   frecuencia_semana: ex.frecuencia_semana,
                 }));
-                const ics = buildIcsFileContent(calExercises, user?.full_name || 'Paciente');
+                const ics = buildIcsFileContent(calExercises, user?.full_name || t('common.patientDefault'));
                 if (!ics) return;
                 const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
                 const url = URL.createObjectURL(blob);
@@ -221,12 +223,12 @@ export function PatientExercisesPage() {
                 a.download = 'rutina-fisiomirror.ics';
                 a.click();
                 URL.revokeObjectURL(url);
-                toast.success('Calendario descargado');
+                toast.success(t('ex.calendarDownloaded'));
               }}
               className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-surface-container-high border border-outline-variant/30 text-on-surface hover:bg-surface-container-highest transition-all text-xs font-semibold"
             >
               <Download size={14} className="text-primary" />
-              <span>Descargar .ics</span>
+              <span>{t('ex.downloadIcs')}</span>
             </button>
           </div>
         )}
@@ -235,7 +237,7 @@ export function PatientExercisesPage() {
       {isOffline && (
         <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-700 dark:text-amber-300 font-medium">
           <Icon name="cloud_off" size={16} />
-          <span>Modo sin conexión — usando rutina local almacenada</span>
+          <span>{t('ex.offlineMode')}</span>
         </div>
       )}
 
@@ -243,7 +245,7 @@ export function PatientExercisesPage() {
         <div className="flex items-center justify-between gap-2 px-4 py-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-xs text-rose-700 dark:text-rose-300 font-medium">
           <div className="flex items-center gap-2">
             <Icon name="error_outline" size={16} />
-            <span>No se pudo sincronizar la rutina con el servidor. Mostrando ejercicios guardados.</span>
+            <span>{t('ex.syncFailed')}</span>
           </div>
           <button
             onClick={() => loadExercises()}
@@ -264,24 +266,24 @@ export function PatientExercisesPage() {
             data={{
               id: 1,
               date: new Date().toLocaleDateString('es-ES', { month: 'short', day: 'numeric', year: 'numeric' }),
-              title: 'Plan Terapéutico de Cadena Cinética y Movilidad',
-              description: 'Rehabilitación activa con foco en control escapular, estabilidad y cadencia controlada.',
+              title: t('ex.planTitle'),
+              description: t('ex.planDesc') || 'Rehabilitación activa con foco en control escapular, estabilidad y cadencia controlada.',
               progressValue: `${Math.min(100, Math.max(30, exercises.length * 25))}%`,
-              countdownText: 'Revisión con tu fisioterapeuta en 3 días',
-              badge: 'Fase 2: Movilidad Activa',
+              countdownText: t('ex.reviewIn3Days'),
+              badge: t('ex.phase2Badge'),
             }}
             onAction={() => navigate('/stats')}
           />
         </div>
         <div className="space-y-4">
           <MobilityQuestCard
-            questTitle="Misión Diaria: 3 Series Cumplidas"
+            questTitle={t('ex.dailyQuest')}
             targetExercises={3}
             completedExercises={exercises.length > 0 ? 1 : 0}
             xpReward={150}
           />
           <div className="flex items-center justify-between p-4 rounded-3xl bg-surface/80 dark:bg-slate-900/60 border border-outline/15">
-            <span className="text-xs font-bold text-on-surface">¿Sesión completada?</span>
+            <span className="text-xs font-bold text-on-surface">{t('ex.completedQuestion')}</span>
             <CheerReactionButton />
           </div>
         </div>
@@ -292,10 +294,10 @@ export function PatientExercisesPage() {
         <ExerciseTimelineScrubber />
         {exercises.length > 0 && (
           <div className="flex items-center justify-between gap-3 flex-wrap">
-            <span className="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Filtro rápido:</span>
+            <span className="text-xs font-bold text-on-surface-variant uppercase tracking-wider">{t('ex.quickFilter')}:</span>
             <ExerciseSwitchFloatingMenu
-              exercises={exercises.map(e => e.ejercicio_nombre || 'Ejercicio')}
-              currentExercise={exercises[0]?.ejercicio_nombre || 'Ejercicio'}
+              exercises={exercises.map(e => e.ejercicio_nombre || t('ex.defaultName'))}
+              currentExercise={exercises[0]?.ejercicio_nombre || t('ex.defaultName')}
             />
           </div>
         )}
@@ -321,15 +323,15 @@ export function PatientExercisesPage() {
                   <div className="rounded-2xl overflow-hidden mb-3.5 bg-slate-100 dark:bg-slate-800">
                     <ExerciseImage
                       src={getExerciseImage(ex.ejercicio_id)}
-                      name={ex.ejercicio_nombre || 'Ejercicio asignado'}
+                      name={ex.ejercicio_nombre || t('ex.assignedExercise')}
                     />
                   </div>
 
                   <div className="mb-2">
                     <JointAnatomyTooltip
-                      jointName={ex.ejercicio_nombre || 'Articulación'}
-                      agonists={ex.ejercicio_detailed_description?.slice(0, 70) || 'Músculos flexores y estabilizadores'}
-                      precautions={ex.notas || 'Controlar velocidad y mantener rango sin dolor'}
+                      jointName={ex.ejercicio_nombre || t('ex.joint')}
+                      agonists={ex.ejercicio_detailed_description?.slice(0, 70) || t('ex.defaultAgonists')}
+                      precautions={ex.notas || t('ex.defaultPrecautions')}
                     />
                   </div>
 
@@ -345,21 +347,21 @@ export function PatientExercisesPage() {
                     <div className="flex flex-col items-center">
                       <p className="text-2xs uppercase font-bold text-on-surface-variant flex items-center justify-center gap-1">
                         <Repeat size={11} className="text-teal-600 dark:text-teal-400" />
-                        <span>Series</span>
+                        <span>{t('ex.sets')}</span>
                       </p>
                       <span className="font-extrabold text-base text-on-surface mt-0.5">{ex.series ?? 3}</span>
                     </div>
                     <div className="flex flex-col items-center pl-2">
                       <p className="text-2xs uppercase font-bold text-on-surface-variant flex items-center justify-center gap-1">
                         <Flame size={11} className="text-amber-500" />
-                        <span>Reps</span>
+                        <span>{t('ex.reps')}</span>
                       </p>
                       <span className="font-extrabold text-base text-on-surface mt-0.5">{ex.repeticiones ?? 12}</span>
                     </div>
                     <div className="flex flex-col items-center pl-2">
                       <p className="text-2xs uppercase font-bold text-on-surface-variant flex items-center justify-center gap-1">
                         <Calendar size={11} className="text-teal-600 dark:text-teal-400" />
-                        <span>Frecuencia</span>
+                        <span>{t('ex.frequency')}</span>
                       </p>
                       <span className="font-extrabold text-base text-on-surface mt-0.5">{ex.frecuencia_semana ?? 4}x/sem</span>
                     </div>
@@ -375,7 +377,7 @@ export function PatientExercisesPage() {
                       className="py-2.5 px-3 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-on-surface font-semibold text-xs transition-all flex items-center justify-center gap-1.5"
                     >
                       <BookOpen size={14} className="text-teal-600 dark:text-teal-400" />
-                      <span>Descripción</span>
+                      <span>{t('ex.description')}</span>
                     </button>
 
                     {/* Botón 2: Demostración 3D Biomecánica Separada */}
@@ -384,19 +386,19 @@ export function PatientExercisesPage() {
                       className="py-2.5 px-3 rounded-xl bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/30 text-teal-700 dark:text-teal-300 font-semibold text-xs transition-all flex items-center justify-center gap-1.5"
                     >
                       <Layers size={14} className="text-teal-600 dark:text-teal-400" />
-                      <span>Demostración 3D</span>
+                      <span>{t('ex.demo3d')}</span>
                     </button>
                   </div>
 
                   {/* Botón 3: Iniciar Sesión con Espejo AR */}
                   <button
                     onClick={() =>
-                      navigate(`/ar-mirror?ejercicio=${encodeURIComponent(ex.ejercicio_nombre || 'Ejercicio')}`)
+                      navigate(`/ar-mirror?ejercicio=${encodeURIComponent(ex.ejercicio_nombre || t('ex.defaultName'))}`)
                     }
                     className="w-full py-3 rounded-2xl bg-primary hover:bg-primary/90 text-on-primary font-bold text-xs transition-all shadow-sm shadow-teal-700/20 flex items-center justify-center gap-2 active:scale-[0.98]"
                   >
                     <Play size={16} fill="currentColor" />
-                    <span>Iniciar en Espejo AR</span>
+                    <span>{t('ex.startArMirror')}</span>
                   </button>
                 </div>
               </div>
@@ -412,12 +414,12 @@ export function PatientExercisesPage() {
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <UnlockableExerciseLocker
-            exerciseTitle="Rotación Externa con Carga Excéntrica (3kg)"
-            requirement="Requiere 80% adherencia + ROM ≥ 120°"
+            exerciseTitle={t('ex.quest2Title')}
+            requirement={t('ex.quest2Req')}
           />
           <UnlockableExerciseLocker
-            exerciseTitle="Elevación Escapular en Suspensión Dinámica"
-            requirement="Requiere dolor ≤ 1 EVA en 4 sesiones continuas"
+            exerciseTitle={t('ex.quest3Title')}
+            requirement={t('ex.quest3Req')}
           />
         </div>
       </div>
@@ -431,20 +433,20 @@ export function PatientExercisesPage() {
                 <BookOpen size={18} />
               </div>
               <h3 className="font-bold text-base text-on-surface">
-                {descriptionExercise.ejercicio_nombre || 'Ejercicio asignado'}
+                {descriptionExercise.ejercicio_nombre || t('ex.assignedExercise')}
               </h3>
             </div>
 
             <ExerciseImage
               src={getExerciseImage(descriptionExercise.ejercicio_id)}
-              name={descriptionExercise.ejercicio_nombre || 'Ejercicio asignado'}
+              name={descriptionExercise.ejercicio_nombre || t('ex.assignedExercise')}
               heightClass="h-40"
             />
 
             <div className="space-y-3">
               <div>
                 <p className="text-xs font-bold uppercase tracking-wider text-on-surface-variant mb-1">
-                  Instrucciones de Ejecución
+                  {t('ex.instructions')}
                 </p>
                 <p className="text-xs text-on-surface leading-relaxed whitespace-pre-wrap">
                   {descriptionExercise.ejercicio_detailed_description ||
@@ -455,7 +457,7 @@ export function PatientExercisesPage() {
               {descriptionExercise.notas && (
                 <div className="p-3 rounded-xl bg-teal-500/10 border border-teal-500/20">
                   <p className="text-xs font-bold text-teal-700 dark:text-teal-300">
-                    Nota del Terapeuta:
+                    {t('ex.therapistNote')}
                   </p>
                   <p className="text-xs text-on-surface mt-0.5">{descriptionExercise.notas}</p>
                 </div>
@@ -467,7 +469,7 @@ export function PatientExercisesPage() {
                 onClick={() => setDescriptionExercise(null)}
                 className="px-5 py-2 rounded-xl bg-primary text-on-primary text-xs font-bold hover:opacity-90 transition-opacity"
               >
-                Entendido
+                {t('common.understood')}
               </button>
             </div>
           </div>
@@ -484,7 +486,7 @@ export function PatientExercisesPage() {
               </div>
               <div>
                 <h3 className="font-bold text-base text-on-surface">
-                  Demostración Biomecánica 3D
+                  {t('ex.demo3dTitle')}
                 </h3>
                 <p className="text-xs text-on-surface-variant">
                   {demo3DExercise.ejercicio_nombre}
@@ -496,7 +498,7 @@ export function PatientExercisesPage() {
               <SkeletonDemo
                 exercise={buildExerciseDefinition(
                   demo3DExercise.ejercicio_id || demo3DExercise.id,
-                  demo3DExercise.ejercicio_nombre || 'Ejercicio',
+                  demo3DExercise.ejercicio_nombre || t('ex.defaultName'),
                   demo3DExercise.series ?? 3,
                   demo3DExercise.repeticiones ?? 10,
                   undefined,
@@ -510,13 +512,13 @@ export function PatientExercisesPage() {
 
             <div className="flex items-center justify-between pt-2">
               <span className="text-xs text-on-surface-variant">
-                Observa los ángulos articulares y la postura corporal recomendada.
+                {t('ex.observeAngles')}
               </span>
               <button
                 onClick={() => setDemo3DExercise(null)}
                 className="px-5 py-2 rounded-xl bg-primary text-on-primary text-xs font-bold hover:opacity-90 transition-opacity"
               >
-                Cerrar Visor 3D
+                {t('ex.close3dViewer')}
               </button>
             </div>
           </div>
