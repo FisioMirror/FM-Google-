@@ -183,6 +183,7 @@ export function UpdatePasswordPage() {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
+                aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1"
               >
                 {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
