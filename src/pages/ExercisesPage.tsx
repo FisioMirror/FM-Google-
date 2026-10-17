@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Activity,
@@ -269,18 +270,19 @@ const DEFAULT_CLINICAL_EXERCISES: Exercise[] = [
 ];
 
 const FILTER_CATEGORIES = [
-  { id: 'todos', label: 'Todos los Protocolos', icon: Activity },
-  { id: 'hombro', label: 'Hombro', icon: RotateCw },
-  { id: 'rodilla', label: 'Rodilla', icon: Target },
-  { id: 'cadera', label: 'Cadera & Pelvis', icon: Compass },
-  { id: 'tobillo', label: 'Tobillo & Pie', icon: Footprints },
-  { id: 'columna', label: 'Columna & Core', icon: Shield },
-  { id: 'codo', label: 'Codo & Brazos', icon: Dumbbell },
-  { id: 'cervical', label: 'Cervical', icon: CircleDot },
+  { id: 'todos', labelKey: 'exs.catAll', icon: Activity },
+  { id: 'hombro', labelKey: 'joints.hombro', icon: RotateCw },
+  { id: 'rodilla', labelKey: 'joints.rodilla', icon: Target },
+  { id: 'cadera', labelKey: 'exs.catHipPelvis', icon: Compass },
+  { id: 'tobillo', labelKey: 'exs.catAnkleFoot', icon: Footprints },
+  { id: 'columna', labelKey: 'exs.catSpineCore', icon: Shield },
+  { id: 'codo', labelKey: 'exs.catElbowArms', icon: Dumbbell },
+  { id: 'cervical', labelKey: 'joints.cervical', icon: CircleDot },
 ];
 
 export function ExercisesPage() {
   const user = useAuthStore((s) => s.user);
+  const { t } = useTranslation();
   const toast = useToast();
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [activeFilter, setActiveFilter] = useState('todos');
@@ -435,7 +437,7 @@ export function ExercisesPage() {
 
   const handleAssignExercise = async () => {
     if (!assignExercise || !selectedPatientId) {
-      toast.error('Selecciona un paciente');
+      toast.error(t('exs.selectPatient'));
       return;
     }
     setAssigning(true);
@@ -500,7 +502,7 @@ export function ExercisesPage() {
       setAssignExercise(null);
       setSelectedPatientId(null);
     } catch (e) {
-      toast.error('Error al asignar ejercicio: ' + (e as Error).message);
+      toast.error(t('exs.assignError') + ': ' + (e as Error).message);
     } finally {
       setAssigning(false);
     }
@@ -546,7 +548,7 @@ export function ExercisesPage() {
 
   const saveExercise = async () => {
     if (!form.nombre.trim()) {
-      toast.error('El nombre es requerido');
+      toast.error(t('exs.nameRequired'));
       return;
     }
     try {
@@ -569,7 +571,7 @@ export function ExercisesPage() {
           })
           .eq('id', editing.id);
         if (error) throw error;
-        toast.success('Ejercicio actualizado');
+        toast.success(t('exs.updated'));
       } else {
         const { error } = await supabase.from('exercises').insert({
           nombre: form.nombre,
@@ -587,12 +589,12 @@ export function ExercisesPage() {
           fisio_id: user?.id,
         });
         if (error) throw error;
-        toast.success('Ejercicio creado con éxito');
+        toast.success(t('exs.created'));
       }
       setShowModal(false);
       loadExercises();
     } catch {
-      toast.error('Error guardando ejercicio');
+      toast.error(t('exs.saveError'));
     }
   };
 
@@ -600,10 +602,10 @@ export function ExercisesPage() {
     try {
       const { error } = await supabase.from('exercises').delete().eq('id', id);
       if (error) throw error;
-      toast.success('Ejercicio eliminado');
+      toast.success(t('exs.deleted'));
       loadExercises();
     } catch {
-      toast.error('Error eliminando ejercicio');
+      toast.error(t('exs.deleteError'));
     }
   };
 
@@ -620,10 +622,10 @@ export function ExercisesPage() {
         fisio_id: user?.id,
       });
       if (error) throw error;
-      toast.success('Ejercicio clonado');
+      toast.success(t('exs.cloned'));
       loadExercises();
     } catch {
-      toast.error('Error clonando ejercicio');
+      toast.error(t('exs.cloneError'));
     }
   };
 
@@ -713,10 +715,10 @@ export function ExercisesPage() {
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 relative z-10">
           <div className="space-y-2">
             <h1 className="fm-title text-on-surface">
-              Catálogo de Ejercicios & Guía Anatómica
+              {t('exs.pageTitle')}
             </h1>
             <p className="text-sm text-on-surface-variant max-w-3xl leading-relaxed">
-              Prescribe protocolos kinesiológicos con modelos anatómicos 3D interactivos, ángulos ROM objetivo y biofeedback en tiempo real.
+              {t('exs.pageSubtitle')}
             </p>
           </div>
 
@@ -726,7 +728,7 @@ export function ExercisesPage() {
               className="px-5 py-3 rounded-2xl bg-primary hover:bg-primary/90 active:scale-95 text-on-primary font-bold text-sm transition-all shadow-sm shadow-teal-600/20 flex items-center gap-2 shrink-0 self-start lg:self-center"
             >
               <Plus className="size-4" />
-              <span>Nuevo Ejercicio</span>
+              <span>{t('exs.newExercise')}</span>
             </button>
           )}
         </div>
@@ -774,7 +776,7 @@ export function ExercisesPage() {
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Buscar por ejercicio, músculo objetivo o articulación..."
+            placeholder={t('exs.searchPlaceholder')}
             className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-100/80 dark:bg-slate-800/80 border border-transparent focus:border-teal-500/40 focus:bg-white dark:focus:bg-slate-900 text-sm text-on-surface placeholder:text-on-surface-variant outline-none transition-all"
           />
           {search && (
@@ -815,7 +817,7 @@ export function ExercisesPage() {
                 )}
               >
                 <IconComp className="size-3.5" />
-                <span>{cat.label}</span>
+                <span>{t(cat.labelKey)}</span>
                 <span
                   className={cn(
                     'text-2xs px-1.5 py-0.5 rounded-full font-bold',
@@ -882,7 +884,7 @@ export function ExercisesPage() {
                 {ex.featured && (
                   <div className="absolute top-4 left-4 z-10 px-3 py-1 rounded-full bg-teal-600/90 backdrop-blur-md text-white text-2xs font-bold uppercase tracking-wider flex items-center gap-1.5 shadow-sm">
                     <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
-                    <span>Protocolo Clínico</span>
+                    <span>{t('exs.clinicalProtocol')}</span>
                   </div>
                 )}
 
@@ -897,7 +899,7 @@ export function ExercisesPage() {
                     />
                     <button
                       onClick={() => setDescriptionExercise(ex)}
-                      aria-label="Ver Guía Anatómica"
+                      aria-label={t('exs.viewAnatomy')}
                       className="absolute bottom-3 right-3 size-9 rounded-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-md flex items-center justify-center text-teal-700 dark:text-teal-300 hover:scale-110 active:scale-95 shadow-sm transition-transform"
                     >
                       <BookOpen className="size-4" />
@@ -993,7 +995,7 @@ export function ExercisesPage() {
                     className="w-full py-2.5 px-3 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-on-surface text-xs font-bold transition-all flex items-center justify-center gap-1.5 active:scale-98"
                   >
                     <BookOpen className="size-3.5 text-teal-600 dark:text-teal-400" />
-                    <span>Ver Guía Anatómica</span>
+                    <span>{t('exs.viewAnatomy')}</span>
                   </button>
 
                   {isFisio && (
@@ -1002,7 +1004,7 @@ export function ExercisesPage() {
                       className="w-full py-2.5 px-3 rounded-xl bg-primary hover:bg-primary/90 text-on-primary text-xs font-bold transition-all flex items-center justify-center gap-1.5 shadow-sm shadow-teal-700/20 active:scale-98"
                     >
                       <UserPlus className="size-3.5" />
-                      <span>Asignar a Paciente</span>
+                      <span>{t('exs.assignToPatient')}</span>
                     </button>
                   )}
 
@@ -1013,18 +1015,18 @@ export function ExercisesPage() {
                         className="flex-1 py-1.5 rounded-lg bg-slate-100/90 dark:bg-slate-800/90 hover:bg-teal-50 dark:hover:bg-teal-950/40 text-on-surface-variant hover:text-teal-600 text-xs font-bold transition-all flex items-center justify-center gap-1"
                       >
                         <Edit3 className="size-3" />
-                        <span>Editar</span>
+                        <span>{t('common.edit')}</span>
                       </button>
                       <button
                         onClick={() => cloneExercise(ex)}
                         className="flex-1 py-1.5 rounded-lg bg-slate-100/90 dark:bg-slate-800/90 hover:bg-slate-200 dark:hover:bg-slate-700 text-on-surface-variant text-xs font-bold transition-all flex items-center justify-center gap-1"
                       >
                         <Copy className="size-3" />
-                        <span>Clonar</span>
+                        <span>{t('exs.clone')}</span>
                       </button>
                       <button
                         onClick={() => deleteExercise(ex.id)}
-                        aria-label="Eliminar ejercicio"
+                        aria-label={t('exs.deleteExercise')}
                         className="p-1.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-600 transition-all"
                       >
                         <Trash2 className="size-3.5" />
@@ -1106,7 +1108,7 @@ export function ExercisesPage() {
                 <div className="rounded-2xl p-4 bg-white/90 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 space-y-3">
                   <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-teal-600 dark:text-teal-400">
                     <Brain className="size-4" />
-                    <span>Prescripción Paso a Paso & Control Biomecánico</span>
+                    <span>{t('exs.stepByStep')}
                   </div>
 
                   <div className="text-xs sm:text-sm text-on-surface whitespace-pre-wrap leading-relaxed space-y-2">
@@ -1135,7 +1137,7 @@ export function ExercisesPage() {
                 <div className="w-full flex items-center justify-between mb-2">
                   <span className="text-xs font-bold uppercase tracking-wider text-on-surface-variant flex items-center gap-1.5">
                     <Activity className="size-3.5 text-teal-600" />
-                    <span>Simulación 3D Sincronizada</span>
+                    <span>{t('exs.sync3d')}
                   </span>
                 </div>
 
@@ -1169,7 +1171,7 @@ export function ExercisesPage() {
                   className="px-4 py-2 rounded-xl bg-primary hover:bg-primary/90 text-on-primary text-xs font-bold transition-all flex items-center gap-2 shadow-xs"
                 >
                   <UserPlus className="size-3.5" />
-                  <span>Asignar este Ejercicio</span>
+                  <span>{t('exs.assignThis')}
                 </button>
               ) : <div />}
 
@@ -1213,7 +1215,7 @@ export function ExercisesPage() {
                 type="text"
                 value={patientSearch}
                 onChange={(e) => setPatientSearch(e.target.value)}
-                placeholder="Buscar por nombre del paciente..."
+                placeholder={t('exs.searchPatientPlaceholder')}
                 className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-sm text-on-surface border border-slate-200 dark:border-slate-700 focus:border-teal-500 focus:outline-none transition-colors"
               />
             </div>
@@ -1263,12 +1265,12 @@ export function ExercisesPage() {
               {assigning ? (
                 <>
                   <Spinner size={16} />
-                  <span>Asignando...</span>
+                  <span>{t('common.saving')}
                 </>
               ) : (
                 <>
                   <CheckCircle2 className="size-4" />
-                  <span>Confirmar Asignación</span>
+                  <span>{t('exs.confirmAssign')}
                 </>
               )}
             </button>
@@ -1298,12 +1300,12 @@ export function ExercisesPage() {
                 <div className="flex items-center gap-2">
                   <Activity className="size-5 text-teal-600" />
                   <h3 className="text-xl font-bold text-on-surface">
-                    {editing ? 'Editar Protocolo de Ejercicio' : 'Nuevo Protocolo de Ejercicio'}
+                    {editing ? t('exs.editProtocol') : t('exs.newProtocol')}
                   </h3>
                 </div>
                 <button
                   onClick={() => setShowModal(false)}
-                  aria-label="Cerrar modal"
+                  aria-label={t('common.close')}
                   className="text-on-surface-variant hover:text-on-surface-variant p-1"
                 >
                   <X className="size-5" />
@@ -1319,7 +1321,7 @@ export function ExercisesPage() {
                     value={form.nombre}
                     onChange={(e) => setForm({ ...form, nombre: e.target.value })}
                     className="w-full px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-teal-500 text-sm outline-none text-on-surface"
-                    placeholder="Ej: Flexión de Hombro Activa"
+                    placeholder={t('exs.namePlaceholder')}
                   />
                 </div>
 
@@ -1332,7 +1334,7 @@ export function ExercisesPage() {
                     onChange={(e) => setForm({ ...form, descripcion: e.target.value })}
                     className="w-full px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-teal-500 text-sm outline-none text-on-surface"
                     rows={2}
-                    placeholder="Resumen del objetivo terapéutico..."
+                    placeholder={t('exs.summaryPlaceholder')}
                   />
                 </div>
 
@@ -1345,7 +1347,7 @@ export function ExercisesPage() {
                     onChange={(e) => setForm({ ...form, detailed_description: e.target.value })}
                     className="w-full px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-teal-500 text-sm outline-none font-mono text-xs text-on-surface"
                     rows={4}
-                    placeholder="Detalla la posición inicial, fase concéntrica, sostén isométrico y retorno excéntrico..."
+                    placeholder={t('exs.descriptionPlaceholder')}
                   />
                 </div>
 
@@ -1359,12 +1361,12 @@ export function ExercisesPage() {
                       onChange={(e) => setForm({ ...form, articulacion: e.target.value })}
                       className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-teal-500 text-xs outline-none font-bold text-on-surface"
                     >
-                      <option value="hombro">Hombro</option>
-                      <option value="codo">Codo</option>
-                      <option value="rodilla">Rodilla</option>
-                      <option value="cadera">Cadera</option>
-                      <option value="tobillo">Tobillo</option>
-                      <option value="cervical">Cervical</option>
+                      <option value="hombro">{t('joints.hombro')}</option>
+                      <option value="codo">{t('joints.codo')}</option>
+                      <option value="rodilla">{t('joints.rodilla')}</option>
+                      <option value="cadera">{t('joints.cadera')}</option>
+                      <option value="tobillo">{t('joints.tobillo')}</option>
+                      <option value="cervical">{t('joints.cervical')}</option>
                     </select>
                   </div>
 
@@ -1376,7 +1378,7 @@ export function ExercisesPage() {
                       value={form.grupo_muscular}
                       onChange={(e) => setForm({ ...form, grupo_muscular: e.target.value })}
                       className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-teal-500 text-xs outline-none text-on-surface"
-                      placeholder="Ej: Deltoides, Supraespinoso"
+                      placeholder={t('exs.musclePlaceholder')}
                     />
                   </div>
 
@@ -1429,9 +1431,9 @@ export function ExercisesPage() {
                       onChange={(e) => setForm({ ...form, lado: e.target.value })}
                       className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-teal-500 text-xs outline-none font-bold text-on-surface"
                     >
-                      <option value="bilateral">Bilateral</option>
-                      <option value="derecho">Derecho</option>
-                      <option value="izquierdo">Izquierdo</option>
+                      <option value="bilateral">{t('exs.bilateral')}</option>
+                      <option value="derecho">{t('exs.right')}</option>
+                      <option value="izquierdo">{t('exs.left')}</option>
                     </select>
                   </div>
                 </div>
@@ -1441,7 +1443,7 @@ export function ExercisesPage() {
                   <div className="pt-2">
                     <p className="text-xs font-bold uppercase tracking-wide text-on-surface-variant mb-2 flex items-center gap-1.5">
                       <Gauge className="size-4 text-teal-600" />
-                      <span>Vista Previa Biomecánica 3D</span>
+                      <span>{t('exs.preview3d')}
                     </p>
                     <div className="flex justify-center">
                       <SkeletonDemo
@@ -1472,7 +1474,7 @@ export function ExercisesPage() {
                     onClick={saveExercise}
                     className="flex-1 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-on-primary font-bold text-xs shadow-xs"
                   >
-                    {editing ? 'Actualizar Protocolo' : 'Crear Protocolo'}
+                    {editing ? t('exs.updateProtocol') : t('exs.createProtocol')}
                   </button>
                 </div>
               </div>
