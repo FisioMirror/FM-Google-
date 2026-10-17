@@ -1058,6 +1058,40 @@ export const pt: typeof es = {
     fEmergencyPhone: "Tel. Emergência",
   },
 
+
+  tok: {
+    generated: "Token {{tok}} gerado com sucesso",
+    regenerated: "Token regenerado",
+    regenerateError: "Erro ao regenerar token",
+    deleted: "Token excluído",
+    deleteError: "Erro ao excluir token",
+    copyError: "Não foi possível copiar o token",
+    pageTitle: "Tokens de Acesso",
+    pageSubtitle: "Gere e gerencie códigos seguros de vinculação para seus pacientes.",
+    newToken: "Gerar Novo Token",
+    fAll: "Todos",
+    fPending: "Pendente",
+    fActive: "Ativado",
+    fExpired: "Expirado",
+    emptyTitle: "Não há tokens registrados",
+    emptySubtitle: "Você ainda não criou tokens neste filtro. Os tokens permitem que os pacientes sincronizem seus dados clínicos com o app.",
+    activationCode: "Código de Ativação",
+    copyToken: "Copiar token",
+    copyClipboard: "Copiar token para a área de transferência",
+    unassigned: "Sem atribuir (disponível)",
+    deleteToken: "Excluir token",
+    regenerateTip: "Gerar um novo código aleatório",
+    sendEmailTip: "Enviar token por e-mail",
+    deleteTip: "Excluir token permanentemente",
+    regenerate: "Regenerar",
+    send: "Enviar",
+    confirmDeleteTitle: "Excluir código de ativação?",
+    confirmDeleteDesc: "Tem certeza de que deseja excluir o token {{tok}}? Esta ação é irreversível.",
+    confirmDelete: "Sim, excluir",
+    keep: "Manter",
+    status: { pendiente: "Pendente", activado: "Ativado", expirado: "Expirado" },
+  },
+
 } as const;
 
 export default pt;

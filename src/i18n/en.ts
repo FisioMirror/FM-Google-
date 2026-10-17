@@ -1058,6 +1058,40 @@ export const en: typeof es = {
     fEmergencyPhone: "Emergency Phone",
   },
 
+
+  tok: {
+    generated: "Token {{tok}} generated successfully",
+    regenerated: "Token regenerated",
+    regenerateError: "Error regenerating token",
+    deleted: "Token deleted",
+    deleteError: "Error deleting token",
+    copyError: "Could not copy the token",
+    pageTitle: "Access Tokens",
+    pageSubtitle: "Generate and manage secure linking codes for your patients.",
+    newToken: "Generate New Token",
+    fAll: "All",
+    fPending: "Pending",
+    fActive: "Activated",
+    fExpired: "Expired",
+    emptyTitle: "No tokens registered",
+    emptySubtitle: "You have not created tokens under this filter yet. Tokens allow patients to sync their clinical data with the app.",
+    activationCode: "Activation Code",
+    copyToken: "Copy token",
+    copyClipboard: "Copy token to clipboard",
+    unassigned: "Unassigned (available)",
+    deleteToken: "Delete token",
+    regenerateTip: "Generate a new random code",
+    sendEmailTip: "Send token by email",
+    deleteTip: "Delete token permanently",
+    regenerate: "Regenerate",
+    send: "Send",
+    confirmDeleteTitle: "Delete activation code?",
+    confirmDeleteDesc: "Are you sure you want to delete token {{tok}}? This action is irreversible.",
+    confirmDelete: "Yes, delete",
+    keep: "Keep",
+    status: { pendiente: "Pending", activado: "Activated", expirado: "Expired" },
+  },
+
 } as const;
 
 export default en;

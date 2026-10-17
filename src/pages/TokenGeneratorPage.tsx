@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { Icon } from '../components/ui/Icon';
 import { GlassPanel } from '../components/ui/Glass';
@@ -21,7 +22,7 @@ interface TokenRow {
   createdAt: string;
 }
 
-const filters = ['Todos', 'Pendiente', 'Activado', 'Expirado'];
+const filterKeys = ['tok.fAll', 'tok.fPending', 'tok.fActive', 'tok.fExpired'];
 
 const defaultDemoTokens: TokenRow[] = [
   { id: 'demo-token-1', token: '482910', patientName: 'Carlos Mendoza', status: 'activado', createdAt: '2026-03-20T10:00:00Z' },
@@ -32,6 +33,7 @@ const defaultDemoTokens: TokenRow[] = [
 
 export function TokenGeneratorPage() {
   const user = useAuthStore((s) => s.user);
+  const { t } = useTranslation();
   const toast = useToast();
   const [tokens, setTokens] = useState<TokenRow[]>([]);
   const [activeFilter, setActiveFilter] = useState(0);
@@ -80,7 +82,7 @@ export function TokenGeneratorPage() {
       const realTokens = data.map((t) => ({
         id: t.id,
         token: t.token,
-        patientName: t.paciente_id ? patientMap[t.paciente_id] ?? 'Paciente' : null,
+        patientName: t.paciente_id ? patientMap[t.paciente_id] ?? t('common.patientDefault') : null,
         status: (t.paciente_id ? 'activado' : 'pendiente') as TokenRow['status'],
         createdAt: t.created_at,
       }));
@@ -113,7 +115,7 @@ export function TokenGeneratorPage() {
           token: randomSixDigits,
         }).select().single();
         if (!error && data) {
-          toast.success(`Token ${randomSixDigits} generado con éxito`);
+          toast.success(t('tok.generated', { tok: randomSixDigits }));
           loadTokens();
           return;
         }
@@ -131,7 +133,7 @@ export function TokenGeneratorPage() {
       createdAt: new Date().toISOString(),
     };
     setTokens(prev => [newDemoToken, ...prev]);
-    toast.success(`Token ${randomSixDigits} generado con éxito`);
+    toast.success(t('tok.generated', { tok: randomSixDigits }));
     setGenerating(false);
   };
 
@@ -145,10 +147,10 @@ export function TokenGeneratorPage() {
         .update({ token: newToken })
         .eq('id', id);
       if (error) throw error;
-      toast.success('Token regenerado');
+      toast.success(t('tok.regenerated'));
       loadTokens();
     } catch {
-      toast.error('Error regenerando token');
+      toast.error(t('tok.regenerateError'));
     }
   };
 
@@ -156,10 +158,10 @@ export function TokenGeneratorPage() {
     try {
       const { error } = await supabase.from('activation_tokens').delete().eq('id', id);
       if (error) throw error;
-      toast.success('Token eliminado');
+      toast.success(t('tok.deleted'));
       loadTokens();
     } catch {
-      toast.error('Error eliminando token');
+      toast.error(t('tok.deleteError'));
     }
   };
 
@@ -169,13 +171,13 @@ export function TokenGeneratorPage() {
       setCopiedId(id);
       setTimeout(() => setCopiedId(null), 2000);
     } catch {
-      toast.error('No se pudo copiar el token');
+      toast.error(t('tok.copyError'));
     }
   };
 
   const filteredTokens = tokens.filter((t) => {
     if (activeFilter === 0) return true;
-    return t.status === filters[activeFilter].toLowerCase();
+    return t.status === t(filterKeys[activeFilter]).toLowerCase();
   });
 
   return (
@@ -189,8 +191,8 @@ export function TokenGeneratorPage() {
           />
         )}
         <div className="relative z-10">
-          <h1 className="font-display fm-title gradient-text-living">Tokens de Acceso</h1>
-          <p className="text-on-surface-variant text-xs sm:text-sm font-medium mt-1">Genera y administra códigos seguros de vinculación para tus pacientes.</p>
+          <h1 className="font-display fm-title gradient-text-living">{t('tok.pageTitle')}</h1>
+          <p className="text-on-surface-variant text-xs sm:text-sm font-medium mt-1">{t('tok.pageSubtitle')}</p>
         </div>
         <div className="relative z-10 shrink-0">
           <Button
@@ -200,17 +202,16 @@ export function TokenGeneratorPage() {
             loading={generating}
             size="default"
             icon={<Icon name="add" size={18} />}
-          >
-            Generar Nuevo Token
+          >{t('tok.newToken')}
           </Button>
         </div>
       </div>
 
       {/* Filters */}
       <div className="flex items-center gap-2 overflow-x-auto pb-1 hide-scrollbar">
-        {filters.map((f, i) => (
+         {filterKeys.map((fKey, i) => (
           <button
-            key={f}
+            key={fKey}
             onClick={() => setActiveFilter(i)}
             className={cn(
               'px-4 py-2 rounded-2xl text-xs font-bold whitespace-nowrap transition-all',
@@ -218,8 +219,7 @@ export function TokenGeneratorPage() {
                 ? 'bg-primary text-on-primary shadow-sm'
                 : 'bg-surface-container/70 hover:bg-surface-container text-on-surface-variant border border-outline/15',
             )}
-          >
-            {f}
+          >{t(fKey)}
           </button>
         ))}
       </div>
@@ -235,9 +235,9 @@ export function TokenGeneratorPage() {
           <div className="w-14 h-14 rounded-2xl bg-teal-500/10 text-teal-700 dark:text-teal-300 flex items-center justify-center mx-auto mb-4">
             <Icon name="key" size={28} />
           </div>
-          <h3 className="font-display text-lg font-bold text-on-surface mb-1.5">No hay tokens registrados</h3>
+          <h3 className="font-display text-lg font-bold text-on-surface mb-1.5">{t('tok.emptyTitle')}</h3>
           <p className="text-on-surface-variant text-xs sm:text-sm max-w-md mx-auto">
-            Aún no has creado tokens bajo este filtro. Los tokens permiten a los pacientes sincronizar sus datos clínicos con la app.
+            {t('tok.emptySubtitle')}
           </p>
         </div>
       ) : (
@@ -254,19 +254,19 @@ export function TokenGeneratorPage() {
                 <div>
                   <div className="flex justify-between items-start mb-4">
                     <div>
-                      <p className="text-2xs uppercase text-on-surface-variant font-bold tracking-wider mb-1">Código de Activación</p>
+                      <p className="text-2xs uppercase text-on-surface-variant font-bold tracking-wider mb-1">{t('tok.activationCode')}</p>
                       <div className="flex items-center gap-3">
                         <span className="font-mono text-3xl sm:text-4xl font-extrabold tracking-widest text-teal-700 dark:text-teal-300 select-all">{t.token}</span>
                         <button
                           onClick={() => copyToken(t.id, t.token)}
-                          aria-label="Copiar token"
+                          aria-label={t("tok.copyToken")}
                           className={cn(
                             'flex items-center justify-center size-9 rounded-xl transition-all active:scale-95',
                             copiedId === t.id
                               ? 'bg-emerald-500 text-white shadow-xs'
                               : 'bg-teal-500/10 text-teal-700 dark:text-teal-300 hover:bg-teal-500/20',
                           )}
-                          title="Copiar token al portapapeles"
+                          title={t("tok.copyClipboard")}
                         >
                           <Icon name={copiedId === t.id ? 'check' : 'content_copy'} size={16} />
                         </button>
@@ -278,14 +278,14 @@ export function TokenGeneratorPage() {
                       t.status === 'activado' && 'bg-emerald-500/10 border-emerald-500/20 text-emerald-700 dark:text-emerald-300',
                       t.status === 'expirado' && 'bg-slate-500/10 border-slate-500/20 text-on-surface-variant',
                     )}>
-                      {t.status.charAt(0).toUpperCase() + t.status.slice(1)}
+                      {t('tok.status.' + t.status)}
                     </span>
                   </div>
 
                   <div className="space-y-2 text-xs sm:text-sm py-2">
                     <div className="flex items-center gap-2 text-on-surface">
                       <Icon name="person" size={16} className="text-teal-600 dark:text-teal-400 shrink-0" />
-                      <span className="font-semibold">{t.patientName || 'Sin asignar (disponible)'}</span>
+                      <span className="font-semibold">{t.patientName || t('tok.unassigned')}</span>
                     </div>
                     <div className="flex items-center gap-2 text-on-surface-variant">
                       <Icon name="schedule" size={16} className="text-outline shrink-0" />
@@ -295,28 +295,28 @@ export function TokenGeneratorPage() {
                 </div>
 
                 <div className="flex gap-2 mt-4 pt-4 border-t border-outline/15">
-                  <Tooltip content="Generar un nuevo código aleatorio" side="top">
+                  <Tooltip content={t("tok.regenerateTip")} side="top">
                     <button
                       onClick={() => regenerateToken(t.id)}
                       className="flex-1 py-2.5 px-3 rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface font-bold text-xs transition-all flex items-center justify-center gap-1.5"
                     >
-                      <Icon name="refresh" size={14} /> Regenerar
+                      <Icon name="refresh" size={14} /> {t('tok.regenerate')}
                     </button>
                   </Tooltip>
-                  <Tooltip content="Enviar token por correo electrónico" side="top">
+                  <Tooltip content={t("tok.sendEmailTip")} side="top">
                     <button
                       onClick={() => setEmailModalToken(t)}
                       className="flex-1 py-2.5 px-3 rounded-xl bg-teal-500/10 hover:bg-teal-500/20 text-teal-700 dark:text-teal-300 font-bold text-xs transition-all flex items-center justify-center gap-1.5"
                     >
-                      <Icon name="mail" size={14} /> Enviar
+                      <Icon name="mail" size={14} /> {t('tok.send')}
                     </button>
                   </Tooltip>
-                  <Tooltip content="Eliminar token permanentemente" side="top">
+                  <Tooltip content={t("tok.deleteTip")} side="top">
                     <button
                       onClick={() => setDeleteConfirmToken(t)}
-                      aria-label="Eliminar token"
+                      aria-label={t("tok.deleteToken")}
                       className="py-2.5 px-3 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 transition-all flex items-center justify-center"
-                      title="Eliminar token"
+                      title={t("tok.deleteToken")}
                     >
                       <Icon name="delete" size={14} />
                     </button>
@@ -339,10 +339,10 @@ export function TokenGeneratorPage() {
       <ConfirmDialog
         open={deleteConfirmToken !== null}
         onOpenChange={(open) => !open && setDeleteConfirmToken(null)}
-        title="¿Eliminar código de activación?"
-        description={`¿Estás seguro de que deseas eliminar el token ${deleteConfirmToken?.token}? Esta acción es irreversible.`}
-        confirmText="Sí, eliminar"
-        cancelText="Conservar"
+        title={t("tok.confirmDeleteTitle")}
+        description={t('tok.confirmDeleteDesc', { tok: deleteConfirmToken?.token })}
+        confirmText={t("tok.confirmDelete")}
+        cancelText={t("tok.keep")}
         confirmVariant="destructive"
         onConfirm={() => {
           if (deleteConfirmToken) {
