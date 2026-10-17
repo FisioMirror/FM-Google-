@@ -164,7 +164,7 @@ export function ExerciseImage({ src, name, articulacion, categoria, className, h
         />
         {/* Gradiente sutil inferior para legibilidad del nombre */}
         <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
-        <span className="absolute bottom-2 left-3 right-3 text-white font-title-md text-title-md drop-shadow line-clamp-1">
+        <span className="absolute bottom-2 left-3 right-3 text-white fm-section-title drop-shadow line-clamp-1">
           {name}
         </span>
       </div>

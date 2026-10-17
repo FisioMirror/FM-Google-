@@ -407,7 +407,7 @@ small, .text-muted {
     @apply text-sm text-on-surface-variant leading-relaxed;
   }
   .fm-section-title {
-    @apply text-title-md font-bold tracking-tight text-on-surface;
+    @apply text-title-md font-bold tracking-tight;
   }
 
   /* Premium Glass — primary surface with specular highlight */

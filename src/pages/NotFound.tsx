@@ -58,7 +58,7 @@ export function NotFound() {
         onClick={goHome}
         whileHover={{ scale: 1.03 }}
         whileTap={{ scale: 0.97 }}
-        className="premium-btn bg-primary text-on-primary px-8 py-4 rounded-2xl font-title-md text-title-md shadow-glow-primary flex items-center gap-2"
+        className="premium-btn bg-primary text-on-primary px-8 py-4 rounded-2xl fm-section-title shadow-glow-primary flex items-center gap-2"
       >
         <Icon name="home" size={20} />
         Volver al inicio

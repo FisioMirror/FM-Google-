@@ -286,7 +286,7 @@ export function ReassignRoutineModal({
                   <Icon name="autorenew" size={24} className="text-primary" />
                 </div>
                 <div className="min-w-0">
-                  <h2 className="font-title-md text-title-md text-on-surface truncate">Reasignar Rutina</h2>
+                  <h2 className="fm-section-title truncate">Reasignar Rutina</h2>
                   <p className="text-xs text-on-surface-variant truncate">
                     Paciente: <span className="font-semibold">{pacienteNombre}</span>
                   </p>

@@ -344,7 +344,7 @@ export function LegalModal({ isOpen, onClose, type }: LegalModalProps) {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: sIdx * 0.05, duration: 0.3 }}
             >
-              <h3 className="font-title-md text-title-md text-on-surface font-bold mb-2 flex items-center gap-2">
+              <h3 className="fm-section-title font-bold mb-2 flex items-center gap-2">
                 <CheckCircle2 size={16} className="text-primary shrink-0" />
                 {section.heading}
               </h3>

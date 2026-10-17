@@ -587,7 +587,7 @@ export function OCRScannerPage() {
                       <Icon name="psychology" size={24} />
                     </div>
                     <div>
-                      <h3 className="font-title-md text-title-md text-on-surface">Carga con IA</h3>
+                      <h3 className="fm-section-title">Carga con IA</h3>
                       <p className="text-xs text-on-surface-variant">Sube documento + audio</p>
                     </div>
                   </div>
@@ -602,7 +602,7 @@ export function OCRScannerPage() {
                       <Icon name="edit_note" size={24} />
                     </div>
                     <div>
-                      <h3 className="font-title-md text-title-md text-on-surface">Carga Manual</h3>
+                      <h3 className="fm-section-title">Carga Manual</h3>
                       <p className="text-xs text-on-surface-variant">Sin OCR, formulario vacío</p>
                     </div>
                   </div>
@@ -624,7 +624,7 @@ export function OCRScannerPage() {
                     <div className="w-20 h-20 rounded-2xl bg-primary-fixed flex items-center justify-center text-primary mb-2 shadow-sm group-hover:scale-110 transition-transform animate-breathe-icon">
                       <Icon name="cloud_upload" size={40} />
                     </div>
-                    <h3 className="font-title-md text-title-md text-on-surface">Arrastra tu prescripción o receta médica</h3>
+                    <h3 className="fm-section-title">Arrastra tu prescripción o receta médica</h3>
                     <p className="font-body-lg text-body-lg text-on-surface-variant max-w-sm">PDF, JPG o escaneo de alta resolución. Nuestra IA extraerá automáticamente los datos del documento.</p>
                     <input ref={fileInputRef} type="file" accept=".pdf,image/*" multiple className="hidden" onChange={(e) => e.target.files && handleFile(e.target.files)} />
                   </div>
@@ -756,7 +756,7 @@ export function OCRScannerPage() {
                     <Icon name="edit_note" size={40} />
                   </div>
                   <div>
-                    <h3 className="font-title-md text-title-md text-on-surface">Carga Manual</h3>
+                    <h3 className="fm-section-title">Carga Manual</h3>
                     <p className="text-sm text-on-surface-variant max-w-md mx-auto mt-2">Completa todos los campos del formulario manualmente. No se requiere documento ni audio.</p>
                   </div>
                   <div className="flex gap-3 justify-center">
@@ -788,7 +788,7 @@ export function OCRScannerPage() {
               <div className="flex items-center gap-3 mb-6">
                 <div className="p-3 bg-primary/10 rounded-2xl text-primary"><Icon name="person" size={24} className="animate-breathe-icon" /></div>
                 <div>
-                  <h3 className="font-title-md text-title-md">Datos Personales</h3>
+                  <h3 className="fm-section-title">Datos Personales</h3>
                   <p className="text-xs text-on-surface-variant">Información básica del paciente</p>
                 </div>
               </div>
@@ -867,7 +867,7 @@ export function OCRScannerPage() {
               <div className="flex items-center gap-3 mb-6">
                 <div className="p-3 bg-tertiary-fixed rounded-2xl text-on-tertiary-fixed-variant"><MedicalIcon name="activity" size={24} className="animate-breathe-icon" /></div>
                 <div>
-                  <h3 className="font-title-md text-title-md">Datos Clínicos</h3>
+                  <h3 className="fm-section-title">Datos Clínicos</h3>
                   <p className="text-xs text-on-surface-variant">Diagnóstico, tratamiento y antecedentes</p>
                 </div>
               </div>
@@ -920,7 +920,7 @@ export function OCRScannerPage() {
               <div className="flex items-center gap-3 mb-6">
                 <div className="p-3 bg-error/10 rounded-2xl text-error"><Icon name="emergency" size={24} className="animate-breathe-icon" /></div>
                 <div>
-                  <h3 className="font-title-md text-title-md">Contacto de Emergencia</h3>
+                  <h3 className="fm-section-title">Contacto de Emergencia</h3>
                   <p className="text-xs text-on-surface-variant">Persona a contactar en caso de emergencia</p>
                 </div>
               </div>
@@ -985,7 +985,7 @@ export function OCRScannerPage() {
                           {ex.fase_recuperacion && <div className="absolute top-3 left-3 px-3 py-1 rounded-full bg-primary text-on-primary text-2xs font-bold uppercase tracking-widest">{ex.fase_recuperacion}</div>}
                         </div>
                         <div className="p-4 flex flex-col gap-2">
-                          <h3 className="font-title-md text-title-md text-primary">{ex.nombre}</h3>
+                          <h3 className="fm-section-title text-primary">{ex.nombre}</h3>
                           <p className="text-label-sm text-secondary">{ex.descripcion || ex.grupo_muscular || 'Sin descripción'}</p>
                           <button
                             onClick={() => addToPrescription(ex.nombre)}
@@ -1005,7 +1005,7 @@ export function OCRScannerPage() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <Icon name="list_alt" filled size={24} className="text-primary animate-breathe-icon" />
-                    <h2 className="font-title-md text-title-md text-primary">Prescripción Actual</h2>
+                    <h2 className="fm-section-title text-primary">Prescripción Actual</h2>
                   </div>
                   <span className="px-3 py-1 bg-primary/10 text-primary text-label-sm font-bold rounded-full">{prescription.length} Ejercicios</span>
                 </div>
@@ -1079,14 +1079,14 @@ export function OCRScannerPage() {
                     <div className="w-12 h-12 rounded-full bg-secondary-container border border-outline-variant flex items-center justify-center"><Icon name="person" size={24} /></div>
                     <div>
                       <p className="text-2xs text-secondary uppercase">Paciente</p>
-                      <p className="font-title-md text-title-md text-on-surface">{extractedData.nombre_completo}</p>
+                      <p className="fm-section-title">{extractedData.nombre_completo}</p>
                     </div>
                   </div>
                   <div className="glass-teal rounded-2xl p-4 border border-outline-variant/30 flex items-center gap-4">
                     <div className="w-12 h-12 rounded-full bg-tertiary-fixed flex items-center justify-center"><Icon name="document_scanner" size={24} /></div>
                     <div>
                       <p className="text-2xs text-secondary uppercase">Resumen Rutina</p>
-                      <p className="font-title-md text-title-md text-on-surface">{prescription.length} Ejercicios</p>
+                      <p className="fm-section-title">{prescription.length} Ejercicios</p>
                     </div>
                   </div>
                 </div>
@@ -1100,7 +1100,7 @@ export function OCRScannerPage() {
                   </button>
                 </div>
 
-                <button onClick={() => navigate('/patients')} className="premium-btn bg-primary text-on-primary py-5 px-10 rounded-2xl font-title-md text-title-md shadow-elevated hover:shadow-elevated hover:-translate-y-1 flex items-center justify-center gap-3 transition-all">
+                <button onClick={() => navigate('/patients')} className="premium-btn bg-primary text-on-primary py-5 px-10 rounded-2xl fm-section-title shadow-elevated hover:shadow-elevated hover:-translate-y-1 flex items-center justify-center gap-3 transition-all">
                   Finalizar y volver al Directorio <Icon name="arrow_forward" size={20} />
                 </button>
               </div>

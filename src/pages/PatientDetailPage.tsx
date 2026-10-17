@@ -400,7 +400,7 @@ export function PatientDetailPage() {
   }
 
   return (
-    <div className="space-y-8 max-w-7xl mx-auto pb-12">
+    <div className="fm-page pb-12">
       <ScrollProgress className="top-0 fixed z-50 h-1 bg-gradient-to-r from-teal-500 to-cyan-400" />
 
       {/* Patient Header Section */}
@@ -495,7 +495,7 @@ export function PatientDetailPage() {
             onClick={() => setActiveTab(tab.id)}
             className={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all flex items-center gap-1.5 ${
               activeTab === tab.id
-                ? 'bg-teal-600 text-white shadow-sm'
+                ? 'bg-primary text-on-primary shadow-sm'
                 : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container'
             }`}
           >
@@ -512,7 +512,7 @@ export function PatientDetailPage() {
             <div className="flex items-center gap-3 mb-6">
               <div className="p-3 bg-primary/10 rounded-2xl text-primary"><MedicalIcon name="activity" size={24} /></div>
               <div>
-                <h3 className="font-title-md text-title-md text-on-surface">Datos Clínicos del Paciente</h3>
+                <h3 className="fm-section-title">Datos Clínicos del Paciente</h3>
                 <p className="text-xs text-on-surface-variant">Información extraída del expediente y documentos médicos</p>
               </div>
             </div>
@@ -570,7 +570,7 @@ export function PatientDetailPage() {
             )}
           </GlassPanel>
           <GlassPanel className="card-glow-hover lg:col-span-2 p-8 rounded-3xl">
-            <h3 className="font-title-md text-title-md text-on-surface mb-2 flex items-center gap-2">
+            <h3 className="fm-section-title mb-2 flex items-center gap-2">
               <MedicalIcon name="activity" size={20} className="text-primary" /> Progreso Biomecánico
             </h3>
             <p className="text-sm text-on-surface-variant mb-6">Evolución del Rango de Movimiento (ROM)</p>
@@ -684,7 +684,7 @@ export function PatientDetailPage() {
       {activeTab === 'history' && (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
           <GlassPanel className="card-glow-hover p-8 rounded-3xl">
-            <h3 className="font-title-md text-title-md text-on-surface mb-6">Historial Clínico</h3>
+            <h3 className="fm-section-title mb-6">Historial Clínico</h3>
             {sessions.length === 0 ? (
               <div className="empty-state-premium text-center py-12">
                 <Icon name="history" size={48} className="mx-auto text-outline opacity-30 mb-3" />
@@ -737,7 +737,7 @@ export function PatientDetailPage() {
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
           <GlassPanel className="card-glow-hover p-8 rounded-3xl">
             <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
-              <h3 className="font-title-md text-title-md text-on-surface">Rutina Asignada</h3>
+              <h3 className="fm-section-title">Rutina Asignada</h3>
               <div className="flex gap-2 flex-wrap">
                 <button
                   onClick={() => loadRoutineHistory()}
@@ -810,7 +810,7 @@ export function PatientDetailPage() {
               <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
                 <Icon name="tune" size={24} className="text-primary" />
               </div>
-              <h3 className="font-title-md text-title-md text-on-surface">Recomendación de Ajuste de Rutina</h3>
+              <h3 className="fm-section-title">Recomendación de Ajuste de Rutina</h3>
             </div>
             <p className="text-sm text-on-surface-variant mb-4 leading-relaxed">{routineNote}</p>
             <div className="bg-surface-variant/10 rounded-2xl p-4 mb-4">
@@ -875,7 +875,7 @@ export function PatientDetailPage() {
               <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
                 <Icon name="document_scanner" size={24} className="text-primary" />
               </div>
-              <h3 className="font-title-md text-title-md text-on-surface">Actualizar Expediente con Nuevo Documento</h3>
+              <h3 className="fm-section-title">Actualizar Expediente con Nuevo Documento</h3>
             </div>
 
             {!ocrSuggestedChanges ? (
@@ -1044,7 +1044,7 @@ export function PatientDetailPage() {
               <div className="w-10 h-10 rounded-xl bg-secondary-container flex items-center justify-center">
                 <Icon name="history" size={24} className="text-primary" />
               </div>
-              <h3 className="font-title-md text-title-md text-on-surface">Historial de Rutinas</h3>
+              <h3 className="fm-section-title">Historial de Rutinas</h3>
             </div>
             {routineHistory.length === 0 ? (
               <p className="text-sm text-on-surface-variant text-center py-8">No hay rutinas registradas para este paciente.</p>

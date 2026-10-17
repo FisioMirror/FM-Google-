@@ -706,7 +706,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
             <div className="flex items-center gap-3 mb-6 relative">
               <div className="w-12 h-12 rounded-xl bg-secondary-container/20 flex items-center justify-center"><Icon name="group" size={24} className="text-secondary animate-breathe-icon" /></div>
               <div>
-                <h3 className="font-title-md text-title-md gradient-text-blue">Resumen de Pacientes</h3>
+                <h3 className="fm-section-title gradient-text-blue">Resumen de Pacientes</h3>
                 <p className="text-sm text-on-surface-variant">Resumen general del progreso de todos tus pacientes activos</p>
               </div>
             </div>
@@ -725,7 +725,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
                       <MedicalIcon name="heart" size={22} className="text-secondary" />
                     </div>
                     <div>
-                      <h4 className="font-title-md text-title-md text-secondary tracking-wide">Informe de Paciente</h4>
+                      <h4 className="fm-section-title text-secondary tracking-wide">Informe de Paciente</h4>
                       <p className="text-2xs text-on-surface-variant font-semibold uppercase tracking-wider">Progreso General IA</p>
                     </div>
                   </div>
@@ -768,7 +768,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
             <div className="flex items-center gap-3 mb-6 relative">
               <div className="w-12 h-12 rounded-xl bg-error/10 flex items-center justify-center"><Icon name="picture_as_pdf" size={24} className="text-error animate-breathe-icon" /></div>
               <div>
-                <h3 className="font-title-md text-title-md gradient-text-editorial">Exportar Reporte PDF</h3>
+                <h3 className="fm-section-title gradient-text-editorial">Exportar Reporte PDF</h3>
                 <p className="text-sm text-on-surface-variant">Genera un reporte clínico en PDF con datos reales del paciente</p>
               </div>
             </div>
@@ -929,7 +929,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
           <div className="glass-panel rounded-3xl p-5 sm:p-6 lg:p-8 max-w-full sm:max-w-md w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center gap-3 mb-4">
               <Icon name="picture_as_pdf" size={28} className="text-error" />
-              <h3 className="font-title-md text-title-md">Confirmar Reporte PDF</h3>
+              <h3 className="fm-section-title">Confirmar Reporte PDF</h3>
             </div>
             <p className="text-sm text-on-surface-variant mb-6">
               {pdfMode === 'simple'

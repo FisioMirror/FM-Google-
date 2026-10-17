@@ -337,7 +337,7 @@ export function PatientDashboard() {
             >
               {greeting}, {user?.full_name?.split(' ')[0] || 'Paciente'}
             </SparklesText>
-            <p className="text-outline font-title-md text-title-md">
+            <p className="text-outline fm-section-title">
               {new Date().toLocaleDateString(i18n.language === 'en' ? 'en-US' : i18n.language === 'pt' ? 'pt-BR' : 'es-ES', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
             </p>
           </div>

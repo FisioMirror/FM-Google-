@@ -75,7 +75,7 @@ export function SimpleCalendar({ onSelectDate, markedDates = [], className }: Si
         <button onClick={prevMonth} aria-label="Mes anterior" className="p-1 rounded-lg hover:bg-primary/10 transition-colors text-on-surface-variant">
           <ChevronLeft size={18} />
         </button>
-        <h3 className="font-title-md text-title-md text-on-surface">{MONTHS[currentMonth]} {currentYear}</h3>
+        <h3 className="fm-section-title">{MONTHS[currentMonth]} {currentYear}</h3>
         <button onClick={nextMonth} aria-label="Mes siguiente" className="p-1 rounded-lg hover:bg-primary/10 transition-colors text-on-surface-variant">
           <ChevronRight size={18} />
         </button>

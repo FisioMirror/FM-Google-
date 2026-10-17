@@ -716,7 +716,7 @@ export function StatsPage() {
                   <div className="blob-teal absolute -top-12 -right-12 w-40 h-40 opacity-20 pointer-events-none" />
                   <div className="flex justify-between items-center mb-6">
                     <div>
-                      <h3 className="font-title-md text-title-md gradient-text-teal">Sesiones por Día</h3>
+                      <h3 className="fm-section-title gradient-text-teal">Sesiones por Día</h3>
                       <p className="text-sm text-on-surface-variant">Últimos 7 días {selectedPatient ? `· ${patients.find(p => p.id === selectedPatient)?.full_name || ''}` : '· Todos los pacientes'}</p>
                     </div>
                     <Icon name="bar_chart" size={28} className="text-primary" />
@@ -752,7 +752,7 @@ export function StatsPage() {
                 <GlassPanel className="p-8 rounded-3xl flex flex-col card-glow-hover relative overflow-hidden">
                   <div className="blob-warm absolute -top-12 -right-12 w-32 h-32 opacity-20 pointer-events-none" />
                   <div className="flex justify-between items-center mb-4">
-                    <h3 className="font-title-md text-title-md gradient-text-editorial">Distribución de Calidad</h3>
+                    <h3 className="fm-section-title gradient-text-editorial">Distribución de Calidad</h3>
                     <Icon name="pie_chart" size={24} className="text-tertiary" />
                   </div>
                   <div className="h-56 flex-1">
@@ -798,7 +798,7 @@ export function StatsPage() {
                 <GlassPanel className="p-6 sm:p-8 rounded-3xl flex flex-col card-glow-hover relative overflow-hidden">
                   <div className="blob-blue absolute -top-12 -right-12 w-32 h-32 opacity-20 pointer-events-none" />
                   <div className="flex justify-between items-center mb-4">
-                    <h3 className="font-title-md text-title-md gradient-text-blue">Pacientes Más Activos</h3>
+                    <h3 className="fm-section-title gradient-text-blue">Pacientes Más Activos</h3>
                     <Icon name="leaderboard" size={24} className="text-primary" />
                   </div>
                   <div className="h-64">
@@ -833,7 +833,7 @@ export function StatsPage() {
                   <div className="blob-warm absolute -top-12 -right-12 w-32 h-32 opacity-20 pointer-events-none" />
                   <div className="flex justify-between items-center mb-4">
                     <div>
-                      <h3 className="font-title-md text-title-md gradient-text-editorial">Sesiones por Diagnóstico</h3>
+                      <h3 className="fm-section-title gradient-text-editorial">Sesiones por Diagnóstico</h3>
                       <p className="text-xs text-on-surface-variant mt-0.5">Distribución de carga clínica</p>
                     </div>
                     <Icon name="medical_information" size={24} className="text-secondary" />
@@ -879,7 +879,7 @@ export function StatsPage() {
               {patients.length > 0 && (
                 <GlassPanel className="p-8 rounded-3xl relative overflow-hidden">
                   <div className="blob-warm absolute -bottom-12 -right-12 w-32 h-32 opacity-15 pointer-events-none" />
-                  <h3 className="font-title-md text-title-md gradient-text-editorial mb-4">Resumen por Paciente</h3>
+                  <h3 className="fm-section-title gradient-text-editorial mb-4">Resumen por Paciente</h3>
                   <div className="overflow-x-auto">
                     <table className="w-full text-sm">
                       <thead>
@@ -933,7 +933,7 @@ export function StatsPage() {
                   <div className="blob-teal absolute -top-12 -right-12 w-40 h-40 opacity-20 pointer-events-none" />
                   <div className="flex justify-between items-center mb-6">
                     <div>
-                      <h3 className="font-title-md text-title-md gradient-text-teal">Evolución Biomecánica</h3>
+                      <h3 className="fm-section-title gradient-text-teal">Evolución Biomecánica</h3>
                       <p className="text-sm text-on-surface-variant">Seguimiento de Calidad de Ejecución (6 semanas)</p>
                     </div>
                     <div className="flex gap-2">
@@ -998,7 +998,7 @@ export function StatsPage() {
 
                 <GlassPanel className="p-8 rounded-3xl flex flex-col card-glow-hover relative overflow-hidden">
                   <div className="blob-blue absolute -top-12 -right-12 w-32 h-32 opacity-20 pointer-events-none" />
-                  <h3 className="font-title-md text-title-md gradient-text-editorial mb-4">Sesiones Recientes</h3>
+                  <h3 className="fm-section-title gradient-text-editorial mb-4">Sesiones Recientes</h3>
                   <div className="space-y-4 flex-1 overflow-y-auto max-h-64">
                     {sessions.length === 0 ? (
                       <div className="empty-state-premium text-center py-4">
@@ -1028,7 +1028,7 @@ export function StatsPage() {
                   <div className="blob-blue absolute -top-12 -right-12 w-40 h-40 opacity-20 pointer-events-none" />
                   <div className="flex justify-between items-center mb-6">
                     <div>
-                      <h3 className="font-title-md text-title-md gradient-text-blue">Calidad por Sesión</h3>
+                      <h3 className="fm-section-title gradient-text-blue">Calidad por Sesión</h3>
                       <p className="text-sm text-on-surface-variant">Últimas 12 sesiones (orden cronológico)</p>
                     </div>
                     <Icon name="timeline" size={28} className="text-secondary" />
@@ -1066,7 +1066,7 @@ export function StatsPage() {
                 <GlassPanel className="p-8 rounded-3xl flex flex-col card-glow-hover relative overflow-hidden">
                   <div className="blob-warm absolute -top-12 -right-12 w-32 h-32 opacity-20 pointer-events-none" />
                   <div className="flex justify-between items-center mb-4">
-                    <h3 className="font-title-md text-title-md gradient-text-editorial">Distribución de Ejercicios</h3>
+                    <h3 className="fm-section-title gradient-text-editorial">Distribución de Ejercicios</h3>
                     <Icon name="pie_chart" size={24} className="text-tertiary" />
                   </div>
                   <div className="h-56 flex-1">
@@ -1113,7 +1113,7 @@ export function StatsPage() {
                 <div className="blob-teal absolute -top-12 -right-12 w-40 h-40 opacity-15 pointer-events-none" />
                 <div className="flex justify-between items-center mb-6">
                   <div>
-                    <h3 className="font-title-md text-title-md gradient-text-teal">Minutos de Entrenamiento</h3>
+                    <h3 className="fm-section-title gradient-text-teal">Minutos de Entrenamiento</h3>
                     <p className="text-sm text-on-surface-variant">Distribución semanal (últimas 6 semanas)</p>
                   </div>
                   <Icon name="timer" size={28} className="text-primary" />

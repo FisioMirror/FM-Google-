@@ -688,7 +688,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
                   <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
                     <Video size={22} />
                   </div>
-                  <h3 className="font-title-md text-title-md text-on-surface">Iniciar videollamada</h3>
+                  <h3 className="fm-section-title">Iniciar videollamada</h3>
                 </div>
                 <button
                   onClick={() => !videoStarting && setShowVideoModal(false)}

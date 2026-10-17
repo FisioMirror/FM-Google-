@@ -709,7 +709,7 @@ export function DashboardFisio() {
             <TextAnimate
               animation="fadeIn"
               by="word"
-              className="text-outline font-title-md text-title-md"
+              className="text-outline fm-section-title"
             >
               {new Date().toLocaleDateString(i18n.language === 'en' ? 'en-US' : i18n.language === 'pt' ? 'pt-BR' : 'es-ES', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
             </TextAnimate>
@@ -853,7 +853,7 @@ export function DashboardFisio() {
               <div className={`w-12 h-12 ${action.color} rounded-2xl shadow-md flex items-center justify-center mb-4 text-white`}>
                 <Icon name={action.icon} filled size={24} />
               </div>
-              <h3 className="font-title-md text-title-md text-on-surface font-bold mb-1.5">{action.title}</h3>
+              <h3 className="fm-section-title font-bold mb-1.5">{action.title}</h3>
               <p className="text-on-surface-variant text-xs sm:text-sm leading-relaxed mb-4">{action.desc}</p>
             </div>
             <span className="text-primary font-bold flex items-center gap-1.5 text-xs sm:text-sm group-hover:translate-x-1 transition-transform">
