@@ -48,6 +48,14 @@ export function ToolsPage() {
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([
     { role: 'assistant', text: t('tools.physiIntro') },
   ]);
+
+  useEffect(() => {
+    setChatMessages((prev) =>
+      prev.length === 1 && prev[0]?.role === 'assistant'
+        ? [{ role: 'assistant', text: t('tools.physiIntro') }]
+        : prev
+    );
+  }, [t]);
   const [chatInput, setChatInput] = useState('');
   const [aiLoading, setAiLoading] = useState(false);
   const [scanProcessing, setScanProcessing] = useState(false);

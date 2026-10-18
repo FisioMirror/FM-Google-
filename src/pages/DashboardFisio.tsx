@@ -301,11 +301,11 @@ export function DashboardFisio() {
   useEffect(() => {
     loadKpis();
     loadPriorities();
-  }, [user?.id]);
+  }, [user?.id, t]);
 
   useEffect(() => {
     if (!kpi.isDemo) loadInsight();
-  }, [kpi.isDemo]);
+  }, [kpi.isDemo, t]);
 
   const loadKpis = async () => {
     if (!user?.id) return;

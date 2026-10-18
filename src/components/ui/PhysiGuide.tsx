@@ -175,6 +175,15 @@ export function PhysiGuide({
       timestamp: t('common.now'),
     },
   ]);
+
+  useEffect(() => {
+    setMessages((prev) =>
+      prev.length <= 1 && prev[0]?.id === 'welcome'
+        ? [{ ...prev[0], text: getWelcome(t), timestamp: t('common.now') }]
+        : prev
+    );
+  }, [t]);
+
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [autoVoice, setAutoVoice] = useState<boolean>(() => {

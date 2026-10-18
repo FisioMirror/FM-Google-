@@ -103,7 +103,7 @@ export function PatientsPage() {
   useEffect(() => {
     loadPatients();
     loadTokens();
-  }, [user?.id]);
+  }, [user?.id, t]);
 
   useEffect(() => {
     const q = searchParams.get('q');

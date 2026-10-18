@@ -129,7 +129,7 @@ export function RegistroPacientePage() {
     } finally {
       setTokenValidating(false);
     }
-  }, [toast]);
+  }, [toast, t]);
 
   useEffect(() => {
     if (queryToken && queryToken.length >= 4) {

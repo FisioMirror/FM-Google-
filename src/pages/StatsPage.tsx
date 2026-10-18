@@ -562,7 +562,7 @@ export function StatsPage() {
         calidad: s.calidad_ejecucion || 0,
         ejercicio: s.ejercicio_nombre || t('ex.defaultName'),
       }));
-  }, [sessions]);
+  }, [sessions, t]);
 
   // Paciente: exercise distribution (pie)
   const exerciseDistribution = useMemo(() => {

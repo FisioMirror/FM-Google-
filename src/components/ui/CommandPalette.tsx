@@ -102,7 +102,7 @@ export function CommandPalette({
     return () => {
       if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current);
     };
-  }, [query, navigate]);
+  }, [query, navigate, t]);
 
   // Combine static items with live DB items, removing duplicates by label/id
   const filtered = useMemo(() => {

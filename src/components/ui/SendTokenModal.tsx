@@ -106,7 +106,7 @@ export function SendTokenModal({
     } catch {
       // silent background lookup
     }
-  }, [user?.id, therapistPhone, token, email, phone, recipientName]);
+  }, [user?.id, therapistPhone, token, email, phone, recipientName, t]);
 
   useEffect(() => {
     if (isModalOpen) {
@@ -121,7 +121,7 @@ export function SendTokenModal({
     if ((propRecipientName || propPatientName) && recipientName === t('common.patient')) {
       setRecipientName(propRecipientName || propPatientName || t('common.patient'));
     }
-  }, [initialEmail, initialPhone, propRecipientName, propPatientName, email, phone, recipientName]);
+  }, [initialEmail, initialPhone, propRecipientName, propPatientName, email, phone, recipientName, t]);
 
   const activationLink = `${window.location.origin}/registro-paciente?token=${encodeURIComponent(token)}`;
   const senderName = user?.full_name || t('common.therapist');

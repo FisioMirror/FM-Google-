@@ -134,7 +134,7 @@ export function ChatMessages({
     }
     replay();
     return clearTimers;
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [t]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Auto-scroll al final.
   useEffect(() => {
