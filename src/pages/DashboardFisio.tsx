@@ -678,7 +678,7 @@ export function DashboardFisio() {
     });
 
     return list;
-  }, [allPatientsForSearch, allExercisesForSearch, navigate]);
+  }, [allPatientsForSearch, allExercisesForSearch, navigate, t]);
 
   const realIsEmpty =
     kpi.activePatients === 0 && kpi.sessionsToday === 0 && kpi.weeklyAdherence === 0 && kpi.pendingTokens === 0;

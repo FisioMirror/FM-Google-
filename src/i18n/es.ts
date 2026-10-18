@@ -346,6 +346,7 @@ export const es = {
     tipRest: "Completa al menos una sesión hoy para mantener la movilidad articular y evitar rigidez.",
   },
   patients: {
+    filterAll: 'Todos',
     resetFilter: 'Restablecer Filtro',
     title: 'Gestión de Pacientes',
     subtitle: 'Directorio clínico, seguimiento biométrico y asignación de rutinas',
@@ -938,6 +939,7 @@ export const es = {
 
 
   st: {
+    weekShort: 'Sem {{n}}',
     userName: 'Nombre completo',
     user: 'Usuario',
     terms: 'Términos de Servicio',

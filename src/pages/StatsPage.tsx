@@ -540,16 +540,16 @@ export function StatsPage() {
         color: PIE_PALETTE[i % PIE_PALETTE.length],
       }))
       .sort((a, b) => b.value - a.value);
-  }, [patients]);
+  }, [patients, t]);
 
   // Paciente: 6-week quality evolution (area + line)
   const evolutionChartData = useMemo(
     () =>
       weekData.map((v, i) => ({
-        semana: `Sem ${i + 1}`,
+        semana: t('st.weekShort', { n: i + 1 }),
         calidad: v,
       })),
-    [weekData],
+    [weekData, t],
   );
 
   // Paciente: per-session quality (line) — last 12 sessions chronological
@@ -579,7 +579,7 @@ export function StatsPage() {
       }))
       .sort((a, b) => b.value - a.value)
       .slice(0, 6);
-  }, [sessions]);
+  }, [sessions, t]);
 
   // Paciente: weekly minutes bar chart
   const weeklyMinutesData = useMemo(() => {
@@ -590,8 +590,8 @@ export function StatsPage() {
         buckets[5 - weeksAgo] += Math.round((s.duracion_segundos || 0) / 60);
       }
     });
-    return buckets.map((m, i) => ({ semana: `Sem ${i + 1}`, minutos: m }));
-  }, [sessions]);
+    return buckets.map((m, i) => ({ semana: t('st.weekShort', { n: i + 1 }), minutos: m }));
+  }, [sessions, t]);
 
   return (
     <div className="fm-page">

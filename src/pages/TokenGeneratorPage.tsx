@@ -79,12 +79,12 @@ export function TokenGeneratorPage() {
         }
       }
 
-      const realTokens = data.map((t) => ({
-        id: t.id,
-        token: t.token,
-        patientName: t.paciente_id ? patientMap[t.paciente_id] ?? t('common.patientDefault') : null,
-        status: (t.paciente_id ? 'activado' : 'pendiente') as TokenRow['status'],
-        createdAt: t.created_at,
+      const realTokens = data.map((row) => ({
+        id: row.id,
+        token: row.token,
+        patientName: row.paciente_id ? patientMap[row.paciente_id] ?? t('common.patientDefault') : null,
+        status: (row.paciente_id ? 'activado' : 'pendiente') as TokenRow['status'],
+        createdAt: row.created_at,
       }));
 
       if (isDemoAccount(user)) {
@@ -175,9 +175,9 @@ export function TokenGeneratorPage() {
     }
   };
 
-  const filteredTokens = tokens.filter((t) => {
+  const filteredTokens = tokens.filter((token) => {
     if (activeFilter === 0) return true;
-    return t.status === t(filterKeys[activeFilter]).toLowerCase();
+    return token.status === t(filterKeys[activeFilter]).toLowerCase();
   });
 
   return (
@@ -242,9 +242,9 @@ export function TokenGeneratorPage() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {filteredTokens.map((t, i) => (
+          {filteredTokens.map((token, i) => (
             <motion.div
-              key={t.id}
+              key={token.id}
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.05 }}
@@ -256,40 +256,40 @@ export function TokenGeneratorPage() {
                     <div>
                       <p className="text-2xs uppercase text-on-surface-variant font-bold tracking-wider mb-1">{t('tok.activationCode')}</p>
                       <div className="flex items-center gap-3">
-                        <span className="font-mono text-3xl sm:text-4xl font-extrabold tracking-widest text-teal-700 dark:text-teal-300 select-all">{t.token}</span>
+                        <span className="font-mono text-3xl sm:text-4xl font-extrabold tracking-widest text-teal-700 dark:text-teal-300 select-all">{token.token}</span>
                         <button
-                          onClick={() => copyToken(t.id, t.token)}
+                          onClick={() => copyToken(token.id, token.token)}
                           aria-label={t("tok.copyToken")}
                           className={cn(
                             'flex items-center justify-center size-9 rounded-xl transition-all active:scale-95',
-                            copiedId === t.id
+                            copiedId === token.id
                               ? 'bg-emerald-500 text-white shadow-xs'
                               : 'bg-teal-500/10 text-teal-700 dark:text-teal-300 hover:bg-teal-500/20',
                           )}
                           title={t("tok.copyClipboard")}
                         >
-                          <Icon name={copiedId === t.id ? 'check' : 'content_copy'} size={16} />
+                          <Icon name={copiedId === token.id ? 'check' : 'content_copy'} size={16} />
                         </button>
                       </div>
                     </div>
                     <span className={cn(
                       'px-2.5 py-1 rounded-full text-xs font-bold border',
-                      t.status === 'pendiente' && 'bg-warning/10 border-warning/20 text-warning dark:text-warning',
-                      t.status === 'activado' && 'bg-emerald-500/10 border-emerald-500/20 text-emerald-700 dark:text-emerald-300',
-                      t.status === 'expirado' && 'bg-slate-500/10 border-slate-500/20 text-on-surface-variant',
+                      token.status === 'pendiente' && 'bg-warning/10 border-warning/20 text-warning dark:text-warning',
+                      token.status === 'activado' && 'bg-emerald-500/10 border-emerald-500/20 text-emerald-700 dark:text-emerald-300',
+                      token.status === 'expirado' && 'bg-slate-500/10 border-slate-500/20 text-on-surface-variant',
                     )}>
-                      {t('tok.status.' + t.status)}
+                      {t('tok.status.' + token.status)}
                     </span>
                   </div>
 
                   <div className="space-y-2 text-xs sm:text-sm py-2">
                     <div className="flex items-center gap-2 text-on-surface">
                       <Icon name="person" size={16} className="text-teal-600 dark:text-teal-400 shrink-0" />
-                      <span className="font-semibold">{t.patientName || t('tok.unassigned')}</span>
+                      <span className="font-semibold">{token.patientName || t('tok.unassigned')}</span>
                     </div>
                     <div className="flex items-center gap-2 text-on-surface-variant">
                       <Icon name="schedule" size={16} className="text-outline shrink-0" />
-                      <span>{new Date(t.createdAt).toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+                      <span>{new Date(token.createdAt).toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
                     </div>
                   </div>
                 </div>
@@ -297,7 +297,7 @@ export function TokenGeneratorPage() {
                 <div className="flex gap-2 mt-4 pt-4 border-t border-outline/15">
                   <Tooltip content={t("tok.regenerateTip")} side="top">
                     <button
-                      onClick={() => regenerateToken(t.id)}
+                      onClick={() => regenerateToken(token.id)}
                       className="flex-1 py-2.5 px-3 rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface font-bold text-xs transition-all flex items-center justify-center gap-1.5"
                     >
                       <Icon name="refresh" size={14} /> {t('tok.regenerate')}

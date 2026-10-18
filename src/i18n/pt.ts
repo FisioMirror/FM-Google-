@@ -342,6 +342,7 @@ export const pt: typeof es = {
     tipRest: "Complete pelo menos uma sessão hoje para manter a mobilidade articular e evitar rigidez.",
   },
   patients: {
+    filterAll: 'Todos',
     resetFilter: 'Redefinir Filtro',
     title: 'Gestão de Pacientes',
     subtitle: 'Prontuário clínico, rastreamento biométrico e prescrição de rotinas',
@@ -934,6 +935,7 @@ export const pt: typeof es = {
 
 
   st: {
+    weekShort: 'Sem {{n}}',
     userName: 'Nome completo',
     user: 'Usuário',
     terms: 'Termos de Serviço',

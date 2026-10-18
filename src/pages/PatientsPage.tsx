@@ -72,7 +72,7 @@ const defaultDemoTokens: TokenRow[] = [
 ];
 
 const filterOptions = [
-  { id: 'todos', label: 'Todos' },
+  { id: 'todos', labelKey: 'patients.filterAll' },
   { id: 'activos', labelKey: 'patients.filterActive' },
   { id: 'revision', labelKey: 'patients.filterReview' },
   { id: 'recuperacion', labelKey: 'patients.filterRecovery' },
@@ -252,14 +252,14 @@ export function PatientsPage() {
         }
       }
 
-      const realTokens: TokenRow[] = data.map((t) => ({
-        id: t.id,
-        token: t.token,
-        patientName: t.paciente_id ? (patientMap[t.paciente_id]?.name ?? t('patients.linkedPatient')) : null,
-        patientEmail: t.paciente_id ? patientMap[t.paciente_id]?.email : null,
-        patientPhone: t.paciente_id ? patientMap[t.paciente_id]?.phone : null,
-        status: (t.paciente_id ? 'activado' : 'pendiente') as TokenRow['status'],
-        createdAt: t.created_at,
+      const realTokens: TokenRow[] = data.map((row) => ({
+        id: row.id,
+        token: row.token,
+        patientName: row.paciente_id ? (patientMap[row.paciente_id]?.name ?? t('patients.linkedPatient')) : null,
+        patientEmail: row.paciente_id ? patientMap[row.paciente_id]?.email : null,
+        patientPhone: row.paciente_id ? patientMap[row.paciente_id]?.phone : null,
+        status: (row.paciente_id ? 'activado' : 'pendiente') as TokenRow['status'],
+        createdAt: row.created_at,
       }));
 
       if (isDemo) {
@@ -548,7 +548,7 @@ export function PatientsPage() {
                         : 'bg-surface-container/70 border-outline/15 text-on-surface-variant hover:bg-surface-container-high'
                     )}
                   >
-                    <span>{t(f.label)}</span>
+                    <span>{t(f.labelKey)}</span>
                     <span
                       className={cn(
                         'text-2xs px-1.5 py-0.2 rounded-full font-bold',

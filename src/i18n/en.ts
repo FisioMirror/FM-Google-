@@ -342,6 +342,7 @@ export const en: typeof es = {
     tipRest: "Complete at least one session today to maintain joint mobility and avoid stiffness.",
   },
   patients: {
+    filterAll: 'All',
     resetFilter: 'Reset Filter',
     title: 'Patient Management',
     subtitle: 'Clinical directory, biometric tracking and routine assignment',
@@ -934,6 +935,7 @@ export const en: typeof es = {
 
 
   st: {
+    weekShort: 'Wk {{n}}',
     userName: 'Full name',
     user: 'User',
     terms: 'Terms of Service',
