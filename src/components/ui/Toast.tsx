@@ -187,11 +187,11 @@ export const ToastItemComponent = React.forwardRef<HTMLDivElement, ToastItemComp
         case "success":
           return <CheckCircle2 className="size-4 text-emerald-400" />;
         case "error":
-          return <AlertCircle className="size-4 text-red-400" />;
+          return <AlertCircle className="size-4 text-danger" />;
         case "warning":
-          return <AlertTriangle className="size-4 text-amber-400" />;
+          return <AlertTriangle className="size-4 text-warning" />;
         case "info":
-          return <Info className="size-4 text-cyan-400" />;
+          return <Info className="size-4 text-info" />;
         case "secondary":
         case "default":
         default:
@@ -204,11 +204,11 @@ export const ToastItemComponent = React.forwardRef<HTMLDivElement, ToastItemComp
         case "success":
           return "border-emerald-500/30 shadow-emerald-500/10";
         case "error":
-          return "border-red-500/30 shadow-red-500/10";
+          return "border-danger/30 shadow-danger/10";
         case "warning":
-          return "border-amber-500/30 shadow-amber-500/10";
+          return "border-warning/30 shadow-warning/10";
         case "info":
-          return "border-cyan-500/30 shadow-cyan-500/10";
+          return "border-info/30 shadow-info/10";
         default:
           return "border-teal-500/30 shadow-teal-500/10";
       }

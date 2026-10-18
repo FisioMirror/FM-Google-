@@ -50,16 +50,16 @@ function timeAgo(dateString: string, t: (key: string, options?: any) => any): st
 function getNotificationIcon(type: string) {
   switch (type) {
     case 'videollamada':
-      return <Video size={16} className="text-cyan-600 dark:text-cyan-400" />;
+      return <Video size={16} className="text-info dark:text-info" />;
     case 'rutina':
       return <Dumbbell size={16} className="text-teal-600 dark:text-teal-400" />;
     case 'ejercicio':
     case 'clinica':
       return <Activity size={16} className="text-emerald-600 dark:text-emerald-400" />;
     case 'seguridad':
-      return <ShieldCheck size={16} className="text-amber-600 dark:text-amber-400" />;
+      return <ShieldCheck size={16} className="text-warning dark:text-warning" />;
     case 'logro':
-      return <Sparkles size={16} className="text-purple-600 dark:text-purple-400" />;
+      return <Sparkles size={16} className="text-secondary dark:text-secondary" />;
     case 'sistema':
     default:
       return <Info size={16} className="text-on-surface-variant" />;
@@ -69,16 +69,16 @@ function getNotificationIcon(type: string) {
 function getNotificationBadgeStyle(type: string) {
   switch (type) {
     case 'videollamada':
-      return 'bg-cyan-500/10 border-cyan-500/20 text-cyan-700 dark:text-cyan-300';
+      return 'bg-info/10 border-info/20 text-info dark:text-info';
     case 'rutina':
       return 'bg-teal-500/10 border-teal-500/20 text-teal-700 dark:text-teal-300';
     case 'ejercicio':
     case 'clinica':
       return 'bg-emerald-500/10 border-emerald-500/20 text-emerald-700 dark:text-emerald-300';
     case 'seguridad':
-      return 'bg-amber-500/10 border-amber-500/20 text-amber-700 dark:text-amber-300';
+      return 'bg-warning/10 border-warning/20 text-warning dark:text-warning';
     case 'logro':
-      return 'bg-purple-500/10 border-purple-500/20 text-purple-700 dark:text-purple-300';
+      return 'bg-secondary/10 border-secondary/20 text-secondary dark:text-secondary';
     case 'sistema':
     default:
       return 'bg-slate-500/10 border-slate-500/20 text-on-surface';
@@ -318,7 +318,7 @@ export function NotificationDrawer({ isOpen, onClose, userId }: NotificationDraw
                               <button
                                 type="button"
                                 onClick={() => removeNotification(notif.id)}
-                                className="p-1 rounded-lg text-on-surface-variant hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/40 transition-colors"
+                                className="p-1 rounded-lg text-on-surface-variant hover:text-danger hover:bg-danger dark:hover:bg-danger/40 transition-colors"
                                 title={t('nd.deleteNotification')}
                                 aria-label={t('common.delete')}
                               >

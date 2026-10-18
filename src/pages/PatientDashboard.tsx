@@ -375,13 +375,13 @@ export function PatientDashboard() {
         >
           <CardSpotlight
             color="rgba(245, 158, 11, 0.16)"
-            className="p-3.5 sm:p-5 rounded-2xl flex flex-col justify-between cursor-default shadow-sm hover:shadow-card transition-all h-full bg-gradient-to-br from-amber-50/75 via-surface/90 to-amber-50/30 dark:from-amber-950/25 dark:via-surface-container/80 dark:to-slate-900/90 border border-amber-200/50 dark:border-amber-500/25"
+            className="p-3.5 sm:p-5 rounded-2xl flex flex-col justify-between cursor-default shadow-sm hover:shadow-card transition-all h-full bg-gradient-to-br from-warning/75 via-surface/90 to-warning/30 dark:from-warning/25 dark:via-surface-container/80 dark:to-slate-900/90 border border-warning/50 dark:border-warning/25"
           >
             <div className="flex items-start justify-between mb-2">
-              <div className="size-9 sm:size-11 rounded-xl sm:rounded-2xl bg-amber-500/15 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0 border border-amber-500/20">
+              <div className="size-9 sm:size-11 rounded-xl sm:rounded-2xl bg-warning/15 text-warning dark:text-warning flex items-center justify-center shrink-0 border border-warning/20">
                 <Flame className="size-4 sm:size-5" />
               </div>
-              <span className="text-2xs sm:text-xs font-bold text-amber-700 dark:text-amber-300 uppercase tracking-wider hidden xs:inline">{t('dashboard.streak', 'Racha')}</span>
+              <span className="text-2xs sm:text-xs font-bold text-warning dark:text-warning uppercase tracking-wider hidden xs:inline">{t('dashboard.streak', 'Racha')}</span>
             </div>
             <div>
               <p className="text-2xs sm:text-xs font-semibold text-on-surface-variant uppercase tracking-wider line-clamp-1 xs:hidden">{t('dashboard.streak', 'Racha')}</p>
@@ -423,13 +423,13 @@ export function PatientDashboard() {
         >
           <CardSpotlight
             color="rgba(14, 165, 233, 0.16)"
-            className="p-3.5 sm:p-5 rounded-2xl flex flex-col justify-between cursor-default shadow-sm hover:shadow-card transition-all h-full bg-gradient-to-br from-sky-50/75 via-surface/90 to-sky-50/40 dark:from-sky-950/25 dark:via-surface-container/80 dark:to-slate-900/90 border border-sky-200/60 dark:border-sky-500/30"
+            className="p-3.5 sm:p-5 rounded-2xl flex flex-col justify-between cursor-default shadow-sm hover:shadow-card transition-all h-full bg-gradient-to-br from-info/75 via-surface/90 to-info/40 dark:from-info/25 dark:via-surface-container/80 dark:to-slate-900/90 border border-info/60 dark:border-info/30"
           >
             <div className="flex items-start justify-between mb-2">
-              <div className="size-9 sm:size-11 rounded-xl sm:rounded-2xl bg-sky-500/15 text-sky-700 dark:text-sky-300 flex items-center justify-center shrink-0 border border-sky-500/25">
+              <div className="size-9 sm:size-11 rounded-xl sm:rounded-2xl bg-info/15 text-info dark:text-info flex items-center justify-center shrink-0 border border-info/25">
                 <Clock className="size-4 sm:size-5" />
               </div>
-              <span className="text-2xs sm:text-xs font-bold text-sky-700 dark:text-sky-300 uppercase tracking-wider hidden xs:inline">{t('dashboard.totalMinutes', 'Minutos')}</span>
+              <span className="text-2xs sm:text-xs font-bold text-info dark:text-info uppercase tracking-wider hidden xs:inline">{t('dashboard.totalMinutes', 'Minutos')}</span>
             </div>
             <div>
               <p className="text-2xs sm:text-xs font-semibold text-on-surface-variant uppercase tracking-wider line-clamp-1 xs:hidden">{t('dashboard.totalMinutes', 'Minutos')}</p>
@@ -484,7 +484,7 @@ export function PatientDashboard() {
         {/* Left 2 Cols: Daily Routine & Primary Action */}
         <div className="lg:col-span-2 space-y-6">
           {/* Featured AR Session Card con fondo pastel menta/celeste clínico */}
-          <div className="relative overflow-hidden rounded-3xl p-6 lg:p-8 bg-gradient-to-br from-teal-50/80 via-surface/95 to-sky-50/60 dark:from-teal-950/30 dark:via-surface-container/85 dark:to-sky-950/20 border border-teal-200/60 dark:border-teal-500/30 shadow-card">
+          <div className="relative overflow-hidden rounded-3xl p-6 lg:p-8 bg-gradient-to-br from-teal-50/80 via-surface/95 to-info/60 dark:from-teal-950/30 dark:via-surface-container/85 dark:to-info/20 border border-teal-200/60 dark:border-teal-500/30 shadow-card">
             <BorderBeam size={120} duration={8} colorFrom="#14b8a6" colorTo="#38bdf8" />
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 relative z-10">
               <div className="space-y-2 max-w-md">

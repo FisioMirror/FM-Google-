@@ -46,7 +46,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           />
         </motion.div>
         {error && (
-          <p className="text-xs font-medium text-destructive dark:text-red-400 mt-0.5">
+          <p className="text-xs font-medium text-destructive dark:text-danger mt-0.5">
             {error}
           </p>
         )}

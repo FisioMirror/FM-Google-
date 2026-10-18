@@ -29,8 +29,8 @@ export function Alert({ status = 'default', children, className, onClose, ...pro
     default: 'bg-slate-100/80 dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 text-on-surface',
     accent: 'bg-teal-500/10 border-teal-500/25 text-teal-950 dark:text-teal-200',
     success: 'bg-emerald-500/10 border-emerald-500/25 text-emerald-950 dark:text-emerald-200',
-    warning: 'bg-amber-500/10 border-amber-500/25 text-amber-950 dark:text-amber-200',
-    danger: 'bg-rose-500/10 border-rose-500/25 text-rose-950 dark:text-rose-200',
+    warning: 'bg-warning/10 border-warning/25 text-warning dark:text-warning',
+    danger: 'bg-danger/10 border-danger/25 text-danger dark:text-danger',
   };
 
   const handleClose = () => {
@@ -64,16 +64,16 @@ export function AlertIndicator({ className }: { className?: string }) {
     default: <Info className="size-4 text-on-surface-variant" />,
     accent: <Info className="size-4 text-teal-600 dark:text-teal-400" />,
     success: <CheckCircle2 className="size-4 text-emerald-600 dark:text-emerald-400" />,
-    warning: <AlertTriangle className="size-4 text-amber-600 dark:text-amber-400" />,
-    danger: <AlertCircle className="size-4 text-rose-600 dark:text-rose-400" />,
+    warning: <AlertTriangle className="size-4 text-warning dark:text-warning" />,
+    danger: <AlertCircle className="size-4 text-danger dark:text-danger" />,
   };
 
   const bgMap: Record<AlertStatus, string> = {
     default: 'bg-slate-200/50 dark:bg-slate-700/50',
     accent: 'bg-teal-500/20',
     success: 'bg-emerald-500/20',
-    warning: 'bg-amber-500/20',
-    danger: 'bg-rose-500/20',
+    warning: 'bg-warning/20',
+    danger: 'bg-danger/20',
   };
 
   return (
@@ -142,7 +142,7 @@ export function BasicAlertsDemo() {
             {t('uix.haDesc2')}
           </Alert.Description>
         </Alert.Content>
-        <button className="px-3 py-1.5 rounded-xl bg-rose-600 text-white text-xs font-bold shadow-sm shrink-0 active:scale-95">
+        <button className="px-3 py-1.5 rounded-xl bg-danger text-white text-xs font-bold shadow-sm shrink-0 active:scale-95">
           {t('common.retry')}
         </button>
       </Alert>

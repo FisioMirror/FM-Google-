@@ -84,8 +84,8 @@ export const JointAnatomyTooltip: React.FC<JointAnatomyTooltipProps> = ({
             <p className="text-xs text-on-surface-variant leading-relaxed">
               <strong className="text-on-surface">{t('ffcs.agonistMuscles')}</strong> {agonistList}
             </p>
-            <div className="p-2 rounded-xl bg-amber-500/15 border border-amber-500/30 text-2xs text-amber-300 flex items-start gap-1.5">
-              <ShieldAlert className="w-3.5 h-3.5 shrink-0 text-amber-400 mt-0.5" />
+            <div className="p-2 rounded-xl bg-warning/15 border border-warning/30 text-2xs text-warning flex items-start gap-1.5">
+              <ShieldAlert className="w-3.5 h-3.5 shrink-0 text-warning mt-0.5" />
               <span>{precautionText}</span>
             </div>
           </motion.div>
@@ -123,9 +123,9 @@ export const ARCameraFilterDropdown: React.FC<ARCameraFilterDropdownProps> = ({
         type="button"
         whileTap={{ scale: 0.97 }}
         onClick={() => setOpen(!open)}
-        className="flex items-center gap-2.5 px-4 py-2 rounded-2xl bg-gradient-to-r from-surface/90 via-surface-container/90 to-surface/90 dark:from-slate-800/90 dark:to-slate-900/90 border border-cyan-500/30 text-xs font-bold text-on-surface shadow-sm hover:border-cyan-500/50 transition-all"
+        className="flex items-center gap-2.5 px-4 py-2 rounded-2xl bg-gradient-to-r from-surface/90 via-surface-container/90 to-surface/90 dark:from-slate-800/90 dark:to-slate-900/90 border border-info/30 text-xs font-bold text-on-surface shadow-sm hover:border-info/50 transition-all"
       >
-        <span className="p-1 rounded-lg bg-cyan-500/20 text-cyan-600 dark:text-cyan-400">
+        <span className="p-1 rounded-lg bg-info/20 text-info dark:text-info">
           <Eye className="w-3.5 h-3.5" />
         </span>
         <span>{selected}</span>
@@ -139,7 +139,7 @@ export const ARCameraFilterDropdown: React.FC<ARCameraFilterDropdownProps> = ({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 6, scale: 0.95 }}
             transition={{ duration: 0.15 }}
-            className="absolute left-0 top-full mt-2 z-50 w-60 p-2 rounded-2xl bg-surface/95 dark:bg-slate-900/95 border border-cyan-500/30 shadow-elevated backdrop-blur-2xl space-y-1"
+            className="absolute left-0 top-full mt-2 z-50 w-60 p-2 rounded-2xl bg-surface/95 dark:bg-slate-900/95 border border-info/30 shadow-elevated backdrop-blur-2xl space-y-1"
           >
             {filters.map((f) => {
               const isCurrent = selected === f.id;
@@ -155,13 +155,13 @@ export const ARCameraFilterDropdown: React.FC<ARCameraFilterDropdownProps> = ({
                   className={cn(
                     "w-full text-left p-2 rounded-xl text-xs font-semibold transition-all flex items-center justify-between",
                     isCurrent
-                      ? "bg-cyan-600 text-white shadow-sm"
+                      ? "bg-info text-white shadow-sm"
                       : "hover:bg-black/5 dark:hover:bg-white/5 text-on-surface"
                   )}
                 >
                   <div>
                     <span className="block font-bold">{f.id}</span>
-                    <span className={cn("text-2xs", isCurrent ? "text-cyan-100" : "text-on-surface-variant")}>
+                    <span className={cn("text-2xs", isCurrent ? "text-info" : "text-on-surface-variant")}>
                       {f.desc}
                     </span>
                   </div>
@@ -192,9 +192,9 @@ export const RapidToleranceAdjuster: React.FC<RapidToleranceAdjusterProps> = ({
   const [val, setVal] = useState(toleranceDegrees);
 
   const getModeLabel = () => {
-    if (val <= 4) return { text: t('arMirror.strict'), color: 'text-rose-500 bg-rose-500/10 border-rose-500/20' };
+    if (val <= 4) return { text: t('arMirror.strict'), color: 'text-danger bg-danger/10 border-danger/20' };
     if (val <= 8) return { text: t('arMirror.clinicalStandard'), color: 'text-teal-600 dark:text-teal-400 bg-teal-500/10 border-teal-500/20' };
-    return { text: t('arMirror.permissive'), color: 'text-amber-500 bg-amber-500/10 border-amber-500/20' };
+    return { text: t('arMirror.permissive'), color: 'text-warning bg-warning/10 border-warning/20' };
   };
 
   const mode = getModeLabel();
@@ -276,12 +276,12 @@ export const AudioMuteFloatingPill: React.FC<AudioMuteFloatingPillProps> = ({
       className={cn(
         "inline-flex items-center gap-2.5 px-4 py-2 rounded-2xl border text-xs font-bold transition-all shadow-sm select-none",
         muted
-          ? "bg-rose-500/15 text-rose-500 border-rose-500/30"
+          ? "bg-danger/15 text-danger border-danger/30"
           : "bg-teal-500/15 text-teal-600 dark:text-teal-400 border-teal-500/30",
         className
       )}
     >
-      <div className={cn("p-1 rounded-lg", muted ? "bg-rose-500/20" : "bg-teal-500/20")}>
+      <div className={cn("p-1 rounded-lg", muted ? "bg-danger/20" : "bg-teal-500/20")}>
         {muted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
       </div>
       <span>{muted ? t('ffcs.audioMuted') : t('ffcs.biofeedbackActive')}</span>
@@ -361,15 +361,15 @@ export const PhysioNoteAnnotationBubble: React.FC<PhysioNoteAnnotationBubbleProp
     <motion.div
       whileHover={{ y: -2 }}
       className={cn(
-        "inline-flex items-center gap-2.5 p-2.5 px-4 rounded-2xl bg-amber-500/15 border border-amber-500/35 text-amber-900 dark:text-amber-100 text-xs shadow-sm",
+        "inline-flex items-center gap-2.5 p-2.5 px-4 rounded-2xl bg-warning/15 border border-warning/35 text-warning dark:text-warning text-xs shadow-sm",
         className
       )}
     >
-      <div className="p-1 rounded-lg bg-amber-500/20 text-amber-500 shrink-0">
+      <div className="p-1 rounded-lg bg-warning/20 text-warning shrink-0">
         <Pin className="w-3.5 h-3.5" />
       </div>
       <div>
-        <span className="font-bold text-amber-600 dark:text-amber-400 block">{author}:</span>
+        <span className="font-bold text-warning dark:text-warning block">{author}:</span>
         <span className="truncate max-w-[220px] font-medium">{note}</span>
       </div>
     </motion.div>

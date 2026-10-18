@@ -129,7 +129,7 @@ export const JointDetailPopover: React.FC<JointDetailPopoverProps> = ({
                 <div
                   className={cn(
                     'h-full rounded-full',
-                    metrics.asymmetryPercentage > 15 ? 'bg-rose-500' : 'bg-primary'
+                    metrics.asymmetryPercentage > 15 ? 'bg-danger' : 'bg-primary'
                   )}
                   style={{ width: `${Math.min(100, metrics.asymmetryPercentage * 3)}%` }}
                 />

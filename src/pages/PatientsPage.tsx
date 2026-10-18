@@ -434,48 +434,48 @@ export function PatientsPage() {
         <motion.div
           variants={staggerItem}
           whileHover={{ y: -3, scale: 1.015, transition: springTactile }}
-          className="p-3.5 sm:p-5 rounded-2xl flex flex-col justify-between group cursor-default transition-all shadow-sm hover:shadow-card bg-gradient-to-br from-sky-50/75 via-surface/90 to-sky-50/40 dark:from-sky-950/25 dark:via-surface-container/80 dark:to-slate-900/90 border border-sky-200/60 dark:border-sky-500/30"
+          className="p-3.5 sm:p-5 rounded-2xl flex flex-col justify-between group cursor-default transition-all shadow-sm hover:shadow-card bg-gradient-to-br from-info/75 via-surface/90 to-info/40 dark:from-info/25 dark:via-surface-container/80 dark:to-slate-900/90 border border-info/60 dark:border-info/30"
         >
           <div className="flex items-start justify-between mb-2 sm:mb-3">
-            <div className="size-9 sm:size-11 rounded-xl sm:rounded-2xl bg-sky-500/15 text-sky-700 dark:text-sky-300 flex items-center justify-center font-bold border border-sky-500/25">
+            <div className="size-9 sm:size-11 rounded-xl sm:rounded-2xl bg-info/15 text-info dark:text-info flex items-center justify-center font-bold border border-info/25">
               <CheckCircle2 className="size-4 sm:size-5" />
             </div>
-            <span className="text-xs sm:text-xs text-sky-800 dark:text-sky-200 font-bold">{t('patients.activeTreatment')}</span>
+            <span className="text-xs sm:text-xs text-info dark:text-info font-bold">{t('patients.activeTreatment')}</span>
           </div>
           <div className="flex items-end gap-2">
-            <p className="text-2xl sm:text-3xl font-black text-sky-700 dark:text-sky-300 tabular-nums tracking-tight">{stats.active}</p>
+            <p className="text-2xl sm:text-3xl font-black text-info dark:text-info tabular-nums tracking-tight">{stats.active}</p>
           </div>
         </motion.div>
 
         <motion.div
           variants={staggerItem}
           whileHover={{ y: -3, scale: 1.015, transition: springTactile }}
-          className="p-3.5 sm:p-5 rounded-2xl flex flex-col justify-between group cursor-default transition-all shadow-sm hover:shadow-card bg-gradient-to-br from-amber-50/75 via-surface/90 to-amber-50/30 dark:from-amber-950/25 dark:via-surface-container/80 dark:to-slate-900/90 border border-amber-200/50 dark:border-amber-500/25"
+          className="p-3.5 sm:p-5 rounded-2xl flex flex-col justify-between group cursor-default transition-all shadow-sm hover:shadow-card bg-gradient-to-br from-warning/75 via-surface/90 to-warning/30 dark:from-warning/25 dark:via-surface-container/80 dark:to-slate-900/90 border border-warning/50 dark:border-warning/25"
         >
           <div className="flex items-start justify-between mb-2 sm:mb-3">
-            <div className="size-9 sm:size-11 rounded-xl sm:rounded-2xl bg-amber-500/15 text-amber-700 dark:text-amber-300 flex items-center justify-center font-bold border border-amber-500/25">
+            <div className="size-9 sm:size-11 rounded-xl sm:rounded-2xl bg-warning/15 text-warning dark:text-warning flex items-center justify-center font-bold border border-warning/25">
               <AlertTriangle className="size-4 sm:size-5" />
             </div>
-            <span className="text-xs sm:text-xs text-amber-800 dark:text-amber-200 font-bold">{t('patients.needAttention')}</span>
+            <span className="text-xs sm:text-xs text-warning dark:text-warning font-bold">{t('patients.needAttention')}</span>
           </div>
           <div className="flex items-end gap-2">
-            <p className="text-2xl sm:text-3xl font-black text-amber-600 dark:text-amber-400 tabular-nums tracking-tight">{stats.needReview}</p>
+            <p className="text-2xl sm:text-3xl font-black text-warning dark:text-warning tabular-nums tracking-tight">{stats.needReview}</p>
           </div>
         </motion.div>
 
         <motion.div
           variants={staggerItem}
           whileHover={{ y: -3, scale: 1.015, transition: springTactile }}
-          className="p-3.5 sm:p-5 rounded-2xl flex flex-col justify-between group cursor-default transition-all shadow-sm hover:shadow-card bg-gradient-to-br from-indigo-50/70 via-surface/90 to-purple-50/40 dark:from-indigo-950/25 dark:via-surface-container/80 dark:to-slate-900/90 border border-indigo-200/50 dark:border-indigo-500/25"
+          className="p-3.5 sm:p-5 rounded-2xl flex flex-col justify-between group cursor-default transition-all shadow-sm hover:shadow-card bg-gradient-to-br from-secondary/70 via-surface/90 to-secondary/40 dark:from-secondary/25 dark:via-surface-container/80 dark:to-slate-900/90 border border-secondary/50 dark:border-secondary/25"
         >
           <div className="flex items-start justify-between mb-2 sm:mb-3">
-            <div className="size-9 sm:size-11 rounded-xl sm:rounded-2xl bg-indigo-500/15 text-indigo-700 dark:text-indigo-300 flex items-center justify-center font-bold border border-indigo-500/25">
+            <div className="size-9 sm:size-11 rounded-xl sm:rounded-2xl bg-secondary/15 text-secondary dark:text-secondary flex items-center justify-center font-bold border border-secondary/25">
               <Key className="size-4 sm:size-5" />
             </div>
-            <span className="text-xs sm:text-xs text-indigo-800 dark:text-indigo-200 font-bold">{t('dashboard.pendingReports')}</span>
+            <span className="text-xs sm:text-xs text-secondary dark:text-secondary font-bold">{t('dashboard.pendingReports')}</span>
           </div>
           <div className="flex items-end gap-2">
-            <p className="text-2xl sm:text-3xl font-black text-indigo-700 dark:text-indigo-300 tabular-nums tracking-tight">{stats.pendingTokCount}</p>
+            <p className="text-2xl sm:text-3xl font-black text-secondary dark:text-secondary tabular-nums tracking-tight">{stats.pendingTokCount}</p>
           </div>
         </motion.div>
       </motion.div>
@@ -641,7 +641,7 @@ export function PatientsPage() {
                     onClick={() => navigate(`/paciente/${p.id}`)}
                     className="h-full"
                   >
-                    <SpotlightCard className="p-6 rounded-2xl group cursor-pointer transition-all duration-300 relative flex flex-col justify-between h-full shadow-sm hover:shadow-elevated bg-gradient-to-br from-surface/95 via-surface to-sky-50/30 dark:from-surface-container/85 dark:via-surface-container/70 dark:to-teal-950/20 border border-outline-variant/25 dark:border-white/10 hover:border-teal-500/35">
+                    <SpotlightCard className="p-6 rounded-2xl group cursor-pointer transition-all duration-300 relative flex flex-col justify-between h-full shadow-sm hover:shadow-elevated bg-gradient-to-br from-surface/95 via-surface to-info/30 dark:from-surface-container/85 dark:via-surface-container/70 dark:to-teal-950/20 border border-outline-variant/25 dark:border-white/10 hover:border-teal-500/35">
                     <div>
                       {/* Top Header: Avatar/Badge + Name & ID + Status Tag */}
                       <div className="flex justify-between items-start mb-5">
@@ -650,15 +650,15 @@ export function PatientsPage() {
                             <div className={cn(
                               "w-12 h-12 rounded-full flex items-center justify-center font-extrabold text-base border-2 shadow-sm shrink-0",
                               isAlert 
-                                ? "bg-rose-500/15 text-rose-600 dark:text-rose-400 border-rose-300 dark:border-rose-800" 
+                                ? "bg-danger/15 text-danger dark:text-danger border-danger dark:border-danger" 
                                 : isGood
                                 ? "bg-teal-500/15 text-teal-700 dark:text-teal-300 border-teal-200/70 dark:border-teal-500/30 ring-2 ring-teal-400/20"
-                                : "bg-sky-500/15 text-sky-700 dark:text-sky-300 border-sky-200/70 dark:border-sky-500/30 ring-2 ring-sky-400/20"
+                                : "bg-info/15 text-info dark:text-info border-info/70 dark:border-info/30 ring-2 ring-info/20"
                             )}>
                               {initials || 'FM'}
                             </div>
                             {isAlert ? (
-                              <div className="absolute -top-1 -right-1 w-5 h-5 bg-rose-500 text-white text-2xs font-bold rounded-full flex items-center justify-center border-2 border-white dark:border-slate-800 shadow-xs">
+                              <div className="absolute -top-1 -right-1 w-5 h-5 bg-danger text-white text-2xs font-bold rounded-full flex items-center justify-center border-2 border-white dark:border-slate-800 shadow-xs">
                                 !
                               </div>
                             ) : presence ? (
@@ -686,14 +686,14 @@ export function PatientsPage() {
                         <span className={cn(
                           "px-3 py-1 text-xs font-bold rounded-full border uppercase tracking-wider flex items-center gap-1.5 shrink-0",
                           isAlert
-                            ? "bg-rose-50 text-rose-700 dark:bg-rose-950/40 dark:text-rose-300 border-rose-200"
+                            ? "bg-danger text-danger dark:bg-danger/40 dark:text-danger border-danger"
                             : isGood
                             ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300 border-emerald-200"
                             : "bg-teal-50 text-teal-700 dark:bg-teal-950/40 dark:text-teal-300 border-teal-200"
                         )}>
                           <span className={cn(
                             "w-1.5 h-1.5 rounded-full",
-                            isAlert ? "bg-rose-500" : isGood ? "bg-emerald-500 animate-pulse" : "bg-teal-600"
+                            isAlert ? "bg-danger" : isGood ? "bg-emerald-500 animate-pulse" : "bg-teal-600"
                           )} />
                           <span>{p.status}</span>
                         </span>
@@ -705,7 +705,7 @@ export function PatientsPage() {
                           <span className="text-on-surface-variant font-semibold">{t('patients.recoveryProgress')}</span>
                           <span className={cn(
                             "font-extrabold text-sm",
-                            isAlert ? "text-rose-600 dark:text-rose-400" : "text-teal-700 dark:text-teal-300"
+                            isAlert ? "text-danger dark:text-danger" : "text-teal-700 dark:text-teal-300"
                           )}>
                             {p.recoveryProgress}%
                           </span>
@@ -714,7 +714,7 @@ export function PatientsPage() {
                           <div
                             className={cn(
                               "h-full rounded-full transition-all duration-300 relative overflow-hidden",
-                              isAlert ? "bg-rose-500" : p.recoveryProgress >= 75 ? "bg-emerald-500" : "bg-teal-600"
+                              isAlert ? "bg-danger" : p.recoveryProgress >= 75 ? "bg-emerald-500" : "bg-teal-600"
                             )}
                             style={{ width: `${Math.max(6, p.recoveryProgress)}%` }}
                           >
@@ -803,13 +803,13 @@ export function PatientsPage() {
                               rowPresence.status === 'en_ejercicio'
                                 ? "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border-emerald-500/30"
                                 : rowPresence.status === 'videoconsulta'
-                                ? "bg-indigo-500/15 text-indigo-700 dark:text-indigo-300 border-indigo-500/30"
+                                ? "bg-secondary/15 text-secondary dark:text-secondary border-secondary/30"
                                 : "bg-teal-500/15 text-teal-700 dark:text-teal-300 border-teal-500/30"
                             )}>
                               <span className={cn(
                                 "w-1.5 h-1.5 rounded-full",
                                 rowPresence.status === 'en_ejercicio' ? "bg-emerald-500 animate-pulse" :
-                                rowPresence.status === 'videoconsulta' ? "bg-indigo-500 animate-ping" : "bg-teal-500"
+                                rowPresence.status === 'videoconsulta' ? "bg-secondary animate-ping" : "bg-teal-500"
                               )} />
                               {rowPresence.status === 'en_ejercicio' ? 'En ejercicio' : rowPresence.status === 'videoconsulta' ? 'En llamada' : 'En línea'}
                             </span>
@@ -823,7 +823,7 @@ export function PatientsPage() {
                           className={cn(
                             'text-2xs font-bold px-2 py-0.5 rounded-full',
                             p.statusColor === 'red'
-                              ? 'bg-red-500/10 text-red-600'
+                              ? 'bg-danger/10 text-danger'
                               : 'bg-teal-500/10 text-teal-600'
                           )}
                         >
@@ -927,7 +927,7 @@ export function PatientsPage() {
                         'text-2xs font-bold px-2.5 py-1 rounded-full uppercase tracking-wider',
                         tok.status === 'activado'
                           ? 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20'
-                          : 'bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/20'
+                          : 'bg-warning/10 text-warning dark:text-warning border border-warning/20'
                       )}
                     >
                       {tok.status}
@@ -941,7 +941,7 @@ export function PatientsPage() {
                         {t('patients.linked')} {tok.patientName}
                       </p>
                     ) : (
-                      <p className="text-amber-600 dark:text-amber-400">{t('patients.availableToAssign')}</p>
+                      <p className="text-warning dark:text-warning">{t('patients.availableToAssign')}</p>
                     )}
                     <p className="text-xs text-outline mt-0.5">
                       {t('patients.issuedOn')} {new Date(tok.createdAt).toLocaleDateString()}
@@ -1042,8 +1042,8 @@ export function PatientsPage() {
             </div>
 
             {/* Inspección biomecánica rápida */}
-            <div className="p-3.5 rounded-2xl bg-sky-50/50 dark:bg-sky-950/20 border border-sky-100 dark:border-sky-900/30">
-              <span className="text-2xs uppercase font-bold text-sky-700 dark:text-sky-300 block mb-2">{t('patients.quickBiomech')}</span>
+            <div className="p-3.5 rounded-2xl bg-info/50 dark:bg-info/20 border border-info dark:border-info/30">
+              <span className="text-2xs uppercase font-bold text-info dark:text-info block mb-2">{t('patients.quickBiomech')}</span>
               <JointDetailPopover
                 metrics={{
                   jointName: previewPatient.condition.includes('Rodilla') ? 'Rodilla Afectada (Extensión)' : 'Articulación en Tratamiento',

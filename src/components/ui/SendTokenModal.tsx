@@ -459,7 +459,7 @@ export function SendTokenModal({
                 onClick={() => setChannel('sms')}
                 className={`py-2 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all ${
                   channel === 'sms'
-                    ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-xs'
+                    ? 'bg-white dark:bg-slate-700 text-info dark:text-info shadow-xs'
                     : 'text-on-surface-variant hover:text-on-surface dark:hover:text-white'
                 }`}
               >
@@ -556,7 +556,7 @@ export function SendTokenModal({
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
                       placeholder="+34 612 345 678"
-                      className="w-full pl-10 pr-4 py-2.5 rounded-xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-on-surface outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20"
+                      className="w-full pl-10 pr-4 py-2.5 rounded-xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-on-surface outline-none focus:border-info focus:ring-2 focus:ring-info/20"
                     />
                   </div>
                 </div>
@@ -565,7 +565,7 @@ export function SendTokenModal({
                   <label className="block text-xs font-bold text-on-surface mb-1">
                     {t('stm.smsTextLabel')}
                   </label>
-                  <div className="p-3 rounded-xl bg-blue-50/50 dark:bg-blue-950/20 border border-blue-200/60 dark:border-blue-800/40 text-xs font-mono leading-relaxed text-blue-950 dark:text-blue-200 max-h-28 overflow-y-auto whitespace-pre-wrap">
+                  <div className="p-3 rounded-xl bg-info/50 dark:bg-info/20 border border-info/60 dark:border-info/40 text-xs font-mono leading-relaxed text-info dark:text-info max-h-28 overflow-y-auto whitespace-pre-wrap">
                     {smsText}
                   </div>
                 </div>
@@ -616,7 +616,7 @@ export function SendTokenModal({
                 <button
                   type="button"
                   onClick={handleSendSMS}
-                  className="w-full py-2.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 active:scale-98 text-white font-bold text-xs transition-all flex items-center justify-center gap-1.5 shadow-sm shadow-blue-600/20"
+                  className="w-full py-2.5 px-4 rounded-xl bg-info hover:bg-info active:scale-98 text-white font-bold text-xs transition-all flex items-center justify-center gap-1.5 shadow-sm shadow-info/20"
                 >
                   <Send size={14} />
                   <span>{t('stm.sendBySms')}</span>

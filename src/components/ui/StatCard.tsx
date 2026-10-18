@@ -75,7 +75,7 @@ export function StatCard({
                 <ArrowUpRight className="size-3.5" /> +{trend.value}%
               </span>
             ) : (
-              <span className="inline-flex items-center text-rose-600 dark:text-rose-400">
+              <span className="inline-flex items-center text-danger dark:text-danger">
                 <ArrowDownRight className="size-3.5" /> -{trend.value}%
               </span>
             )}

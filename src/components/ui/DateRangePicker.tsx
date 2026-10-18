@@ -947,7 +947,7 @@ export function DateRangePickerDemo() {
                 <button
                   type="button"
                   onClick={() => setRange({ start: null, end: null })}
-                  className="px-2.5 py-1 rounded-lg text-xs font-semibold text-rose-500 hover:bg-rose-500/10 border border-rose-500/20 ml-auto transition-colors"
+                  className="px-2.5 py-1 rounded-lg text-xs font-semibold text-danger hover:bg-danger/10 border border-danger/20 ml-auto transition-colors"
                 >
                   {t('common.clear')}
                 </button>

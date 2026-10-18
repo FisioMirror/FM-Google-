@@ -290,14 +290,14 @@ export function PatientLayout({ children }: PatientLayoutProps) {
         >
           <Bell size={18} />
           {unreadCount > 0 && (
-            <span className="absolute top-1 right-1 min-w-[16px] h-[16px] bg-red-500 rounded-full text-white text-2xs font-bold flex items-center justify-center px-1">
+            <span className="absolute top-1 right-1 min-w-[16px] h-[16px] bg-danger rounded-full text-white text-2xs font-bold flex items-center justify-center px-1">
               {unreadCount > 9 ? '9+' : unreadCount}
             </span>
           )}
         </button>
         <button
           onClick={() => { onNavAway?.(); setShowLogout(true); }}
-          className="p-2 rounded-xl text-on-surface-variant hover:bg-red-50 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 transition-colors"
+          className="p-2 rounded-xl text-on-surface-variant hover:bg-danger dark:hover:bg-danger/30 hover:text-danger dark:hover:text-danger transition-colors"
           aria-label={t('common.logout')}
         >
           <LogOut size={18} />
@@ -395,8 +395,8 @@ export function PatientLayout({ children }: PatientLayoutProps) {
       {/* Ambient Clinical Pastel Mesh Glow (Celeste, Menta y Lavanda suave) */}
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
         <div className="absolute -top-32 left-1/4 w-96 h-96 rounded-full bg-teal-400/10 dark:bg-teal-500/10 blur-[110px]" />
-        <div className="absolute top-1/3 -right-20 w-80 h-80 rounded-full bg-sky-400/10 dark:bg-sky-500/10 blur-[100px]" />
-        <div className="absolute -bottom-24 left-1/3 w-96 h-96 rounded-full bg-indigo-400/8 dark:bg-indigo-500/8 blur-[120px]" />
+        <div className="absolute top-1/3 -right-20 w-80 h-80 rounded-full bg-info/10 dark:bg-info/10 blur-[100px]" />
+        <div className="absolute -bottom-24 left-1/3 w-96 h-96 rounded-full bg-secondary/8 dark:bg-secondary/8 blur-[120px]" />
       </div>
 
       {/* Desktop sidebar navigation */}

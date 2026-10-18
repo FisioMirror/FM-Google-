@@ -18,8 +18,8 @@ export function Chip({ color = 'primary', variant = 'primary', size = 'md', chil
   const colorStyles: Record<ChipColor, string> = {
     primary: 'bg-teal-500/10 text-teal-700 dark:text-teal-300 border-teal-500/25',
     success: 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/25',
-    warning: 'bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-500/25',
-    danger: 'bg-rose-500/10 text-rose-700 dark:text-rose-300 border-rose-500/25',
+    warning: 'bg-warning/10 text-warning dark:text-warning border-warning/25',
+    danger: 'bg-danger/10 text-danger dark:text-danger border-danger/25',
     neutral: 'bg-slate-100 dark:bg-slate-800 text-on-surface border-slate-200 dark:border-slate-700',
   };
 

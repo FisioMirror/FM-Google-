@@ -27,7 +27,7 @@ export function IOSInstallModal({ isOpen, onClose }: IOSInstallModalProps) {
           >
             <div className="flex items-center justify-between pb-4 border-b border-outline/15">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-teal-500 to-cyan-600 flex items-center justify-center text-white shadow-sm">
+                <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-teal-500 to-info flex items-center justify-center text-white shadow-sm">
                   <Smartphone className="size-5" />
                 </div>
                 <div>

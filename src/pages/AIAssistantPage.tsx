@@ -580,7 +580,7 @@ Pregunta del paciente: ${messageText}`;
               <img src={img} alt="" className="w-14 h-14 rounded-2xl object-cover border border-teal-500/30" />
               <button
                 onClick={() => removeImage(i)}
-                className="absolute -top-1 -right-1 size-5 bg-red-500 text-white rounded-full flex items-center justify-center text-xs shadow-xs"
+                className="absolute -top-1 -right-1 size-5 bg-danger text-white rounded-full flex items-center justify-center text-xs shadow-xs"
               >
                 ×
               </button>
@@ -613,7 +613,7 @@ Pregunta del paciente: ${messageText}`;
           aria-label={isRecording ? t('ai.stopDictate') : t('ai.dictate')}
           className={`size-11 rounded-2xl flex items-center justify-center transition-all shrink-0 ${
             isRecording
-              ? 'bg-red-500/15 border border-red-500/40 text-red-600 animate-pulse'
+              ? 'bg-danger/15 border border-danger/40 text-danger animate-pulse'
               : 'hover:bg-teal-500/10 text-teal-600 dark:text-teal-400'
           }`}
         >

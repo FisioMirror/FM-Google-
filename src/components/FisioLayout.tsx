@@ -336,7 +336,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
             {isActive && (
               <motion.div
                 layoutId="active-fisio-nav-indicator"
-                className="absolute inset-0 rounded-xl bg-gradient-to-r from-teal-500/15 via-cyan-500/10 to-transparent border border-teal-400/30 dark:border-teal-500/30 -z-10 shadow-xs"
+                className="absolute inset-0 rounded-xl bg-gradient-to-r from-teal-500/15 via-info/10 to-transparent border border-teal-400/30 dark:border-teal-500/30 -z-10 shadow-xs"
                 transition={{ type: 'spring', stiffness: 380, damping: 30 }}
               />
             )}
@@ -363,7 +363,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
   };
 
   const renderBottomActions = (collapsed: boolean, onNavAway?: () => void) => (
-    <div className={cn('shrink-0 border-t border-sky-100/60 dark:border-slate-800 p-3', collapsed ? 'flex flex-col items-center gap-2' : 'space-y-3')}>
+    <div className={cn('shrink-0 border-t border-info/60 dark:border-slate-800 p-3', collapsed ? 'flex flex-col items-center gap-2' : 'space-y-3')}>
       {!isInstalled && (
         <button
           onClick={async () => {
@@ -375,18 +375,18 @@ export function FisioLayout({ children }: FisioLayoutProps) {
             }
           }}
           className={cn(
-            'rounded-xl text-on-surface hover:bg-sky-50 dark:hover:bg-slate-800 hover:text-sky-700 dark:hover:text-sky-300 transition-colors',
+            'rounded-xl text-on-surface hover:bg-info dark:hover:bg-slate-800 hover:text-info dark:hover:text-info transition-colors',
             collapsed ? 'p-2' : 'flex items-center gap-3 px-3 py-2 w-full',
           )}
           title={collapsed ? 'Instalar App' : undefined}
         >
-          <Download size={18} className="shrink-0 text-sky-600 dark:text-sky-400" />
+          <Download size={18} className="shrink-0 text-info dark:text-info" />
           {!collapsed && <span className="text-sm font-medium">{t('layout.installApp')}</span>}
         </button>
       )}
       {!collapsed && (
-        <div className="rounded-2xl bg-sky-50/80 dark:bg-slate-800/80 p-3 flex items-center gap-3 border border-sky-100/50 dark:border-slate-700/50">
-          <div className="w-10 h-10 rounded-full bg-sky-500 flex items-center justify-center text-white font-bold text-sm overflow-hidden shrink-0 shadow-xs relative">
+        <div className="rounded-2xl bg-info/80 dark:bg-slate-800/80 p-3 flex items-center gap-3 border border-info/50 dark:border-slate-700/50">
+          <div className="w-10 h-10 rounded-full bg-info flex items-center justify-center text-white font-bold text-sm overflow-hidden shrink-0 shadow-xs relative">
             {user?.avatar_url ? (
               <img src={user.avatar_url} alt="" className="w-full h-full object-cover" />
             ) : (
@@ -398,7 +398,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
             <p className="font-bold text-sm text-on-surface truncate">{user?.full_name || 'Fisioterapeuta'}</p>
             <div className="flex items-center gap-1.5 mt-0.5">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              <p className="text-2xs text-sky-600 dark:text-sky-400 uppercase tracking-wider font-semibold">{t('layout.inConsultation')}</p>
+              <p className="text-2xs text-info dark:text-info uppercase tracking-wider font-semibold">{t('layout.inConsultation')}</p>
             </div>
           </div>
         </div>
@@ -407,18 +407,18 @@ export function FisioLayout({ children }: FisioLayoutProps) {
         <button
           onClick={toggleTheme}
           aria-label={t('common.changeTheme')}
-          className="p-2 rounded-xl text-on-surface-variant hover:bg-sky-50 dark:hover:bg-slate-800 hover:text-sky-600 dark:hover:text-sky-400 transition-colors"
+          className="p-2 rounded-xl text-on-surface-variant hover:bg-info dark:hover:bg-slate-800 hover:text-info dark:hover:text-info transition-colors"
         >
           {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
         </button>
         <button
           onClick={() => { onNavAway?.(); setShowNotifications(true); }}
           aria-label={t('navigation.notifications')}
-          className="relative p-2 rounded-xl text-on-surface-variant hover:bg-sky-50 dark:hover:bg-slate-800 hover:text-sky-600 dark:hover:text-sky-400 transition-colors"
+          className="relative p-2 rounded-xl text-on-surface-variant hover:bg-info dark:hover:bg-slate-800 hover:text-info dark:hover:text-info transition-colors"
         >
           <Bell size={18} />
           {unreadCount > 0 && (
-            <span className="absolute top-1 right-1 min-w-[16px] h-[16px] bg-red-500 rounded-full text-white text-2xs font-bold flex items-center justify-center px-1">
+            <span className="absolute top-1 right-1 min-w-[16px] h-[16px] bg-danger rounded-full text-white text-2xs font-bold flex items-center justify-center px-1">
               {unreadCount > 9 ? '9+' : unreadCount}
             </span>
           )}
@@ -426,7 +426,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
         <button
           onClick={() => { onNavAway?.(); setShowLogout(true); }}
           aria-label={t('common.logout')}
-          className="p-2 rounded-xl text-on-surface-variant hover:bg-red-50 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 transition-colors"
+          className="p-2 rounded-xl text-on-surface-variant hover:bg-danger dark:hover:bg-danger/30 hover:text-danger dark:hover:text-danger transition-colors"
         >
           <LogOut size={18} />
         </button>
@@ -436,13 +436,13 @@ export function FisioLayout({ children }: FisioLayoutProps) {
 
   const sidebarContent = (collapsed: boolean, opts?: { onNavigate?: () => void; showToggle?: boolean }) => (
     <>
-      <div className="px-4 py-3 shrink-0 relative flex items-center border-b border-sky-100/60 dark:border-slate-800/80" style={{ minHeight: 64 }}>
+      <div className="px-4 py-3 shrink-0 relative flex items-center border-b border-info/60 dark:border-slate-800/80" style={{ minHeight: 64 }}>
         {!collapsed ? (
           <div className="flex items-center gap-3 min-w-0 pr-6">
             <img src="/logo.png" alt="FisioMirror" className="h-9 w-9 min-w-[36px] min-h-[36px] object-contain shrink-0 aspect-square" />
             <div className="flex flex-col min-w-0">
               <h1 className="text-base font-extrabold text-on-surface tracking-tight leading-tight whitespace-nowrap">FisioMirror</h1>
-              <p className="text-2xs uppercase tracking-wider text-sky-600 dark:text-sky-400 font-bold whitespace-nowrap">{t('navigation.clinicalEdition')}</p>
+              <p className="text-2xs uppercase tracking-wider text-info dark:text-info font-bold whitespace-nowrap">{t('navigation.clinicalEdition')}</p>
             </div>
           </div>
         ) : (
@@ -454,7 +454,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
           <button
             onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
             aria-label={sidebarCollapsed ? t('layout.expandMenu') : t('layout.collapseMenu')}
-            className="hidden lg:flex absolute top-1/2 -translate-y-1/2 right-2 w-6 h-6 rounded-full bg-sky-500 text-white items-center justify-center text-xs shadow-sm hover:scale-110 transition-transform z-10"
+            className="hidden lg:flex absolute top-1/2 -translate-y-1/2 right-2 w-6 h-6 rounded-full bg-info text-white items-center justify-center text-xs shadow-sm hover:scale-110 transition-transform z-10"
           >
             {sidebarCollapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
           </button>
@@ -471,7 +471,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
 
   const desktopSidebar = (
     <aside
-      className="fixed left-0 top-0 h-[100dvh] flex flex-col z-30 bg-gradient-to-b from-white/90 via-sky-50/30 to-surface/90 dark:from-slate-900 dark:via-slate-900/95 dark:to-slate-950 border-r border-sky-200/50 dark:border-slate-800 text-on-surface dark:text-slate-200 transition-all duration-300 overflow-hidden backdrop-blur-xl"
+      className="fixed left-0 top-0 h-[100dvh] flex flex-col z-30 bg-gradient-to-b from-white/90 via-info/30 to-surface/90 dark:from-slate-900 dark:via-slate-900/95 dark:to-slate-950 border-r border-info/50 dark:border-slate-800 text-on-surface dark:text-slate-200 transition-all duration-300 overflow-hidden backdrop-blur-xl"
       style={{ width: `${sidebarWidth}px` }}
     >
       {sidebarContent(sidebarCollapsed, { showToggle: true })}
@@ -483,8 +483,8 @@ export function FisioLayout({ children }: FisioLayoutProps) {
       {/* Ambient Clinical Pastel Mesh Glow (Celeste, Menta y Lavanda suave) */}
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
         <div className="absolute -top-32 left-1/4 w-96 h-96 rounded-full bg-teal-400/10 dark:bg-teal-500/10 blur-[110px]" />
-        <div className="absolute top-1/3 -right-20 w-80 h-80 rounded-full bg-sky-400/10 dark:bg-sky-500/10 blur-[100px]" />
-        <div className="absolute -bottom-24 left-1/3 w-96 h-96 rounded-full bg-indigo-400/8 dark:bg-indigo-500/8 blur-[120px]" />
+        <div className="absolute top-1/3 -right-20 w-80 h-80 rounded-full bg-info/10 dark:bg-info/10 blur-[100px]" />
+        <div className="absolute -bottom-24 left-1/3 w-96 h-96 rounded-full bg-secondary/8 dark:bg-secondary/8 blur-[120px]" />
       </div>
 
       {/* Desktop sidebar */}
@@ -506,14 +506,14 @@ export function FisioLayout({ children }: FisioLayoutProps) {
               exit={{ x: '-100%' }}
               transition={{ type: 'spring', damping: 28, stiffness: 320 }}
               onClick={(e) => e.stopPropagation()}
-              className="h-full w-72 max-w-[85vw] flex flex-col bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl border-r border-sky-200/50 dark:border-slate-800 text-on-surface rounded-r-3xl shadow-elevated overflow-hidden"
+              className="h-full w-72 max-w-[85vw] flex flex-col bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl border-r border-info/50 dark:border-slate-800 text-on-surface rounded-r-3xl shadow-elevated overflow-hidden"
             >
-              <div className="p-4 flex items-center justify-between border-b border-sky-100/60 dark:border-slate-800">
+              <div className="p-4 flex items-center justify-between border-b border-info/60 dark:border-slate-800">
                 <div className="flex items-center gap-3">
                   <img src="/logo.png" alt="FisioMirror" className="h-9 w-9 object-contain shrink-0" />
                   <div>
                     <h2 className="text-base font-extrabold text-on-surface leading-tight">FisioMirror</h2>
-                    <p className="text-2xs uppercase tracking-wider text-sky-600 dark:text-sky-400 font-bold">{t('navigation.clinicalEdition')}</p>
+                    <p className="text-2xs uppercase tracking-wider text-info dark:text-info font-bold">{t('navigation.clinicalEdition')}</p>
                   </div>
                 </div>
                 <button

@@ -268,7 +268,7 @@ export function QuickVoiceSelector({
                     <div className="pr-2">
                       <div className="flex items-center gap-1.5">
                         <span className="text-xs font-bold">Fish Audio S2.1 Pro</span>
-                        <span className="text-2xs font-bold px-1.5 py-0.2 rounded-full bg-blue-500/20 text-blue-700 dark:text-blue-300">
+                        <span className="text-2xs font-bold px-1.5 py-0.2 rounded-full bg-info/20 text-info dark:text-info">
                           {t('qvs.optionalKey')}
                         </span>
                       </div>
@@ -294,7 +294,7 @@ export function QuickVoiceSelector({
                     <div className="pr-2">
                       <div className="flex items-center gap-1.5">
                         <span className="text-xs font-bold">{t('qvs.localSynthesis')}</span>
-                        <span className="text-2xs font-bold px-1.5 py-0.2 rounded-full bg-amber-500/20 text-amber-700 dark:text-amber-300">
+                        <span className="text-2xs font-bold px-1.5 py-0.2 rounded-full bg-warning/20 text-warning dark:text-warning">
                           {t('qvs.noInternet')}
                         </span>
                       </div>
@@ -373,7 +373,7 @@ export function QuickVoiceSelector({
                   onClick={toggleTestAudio}
                   className={`px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
                     isPlayingTest
-                      ? 'bg-rose-500 text-white animate-pulse'
+                      ? 'bg-danger text-white animate-pulse'
                       : 'bg-teal-500/15 hover:bg-teal-500/25 text-teal-700 dark:text-teal-300 border border-teal-500/30'
                   }`}
                 >

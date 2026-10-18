@@ -26,7 +26,7 @@ const CONFIG: Record<string, { icon: string; title: string; message: string; col
     icon: 'fitness_center',
     title: 'empty.noExercisesAssigned',
     message: 'empty.exercisesMessage',
-    color: 'text-cyan-600 dark:text-cyan-400',
+    color: 'text-info dark:text-info',
   },
   notifications: {
     icon: 'notifications_none',
@@ -44,7 +44,7 @@ const CONFIG: Record<string, { icon: string; title: string; message: string; col
     icon: 'key',
     title: 'empty.noTokens',
     message: 'empty.tokensMessage',
-    color: 'text-amber-500',
+    color: 'text-warning',
   },
   achievements: {
     icon: 'emoji_events',

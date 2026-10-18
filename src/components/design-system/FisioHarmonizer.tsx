@@ -140,7 +140,7 @@ export const FisioButton = forwardRef<HTMLButtonElement, FisioButtonProps>(
         break;
       case 'danger':
         variantClasses =
-          'bg-rose-600/10 hover:bg-rose-600/20 text-rose-600 dark:text-rose-400 border border-rose-500/20';
+          'bg-danger/10 hover:bg-danger/20 text-danger dark:text-danger border border-danger/20';
         break;
     }
 

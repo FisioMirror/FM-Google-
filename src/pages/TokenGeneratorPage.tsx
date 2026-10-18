@@ -274,7 +274,7 @@ export function TokenGeneratorPage() {
                     </div>
                     <span className={cn(
                       'px-2.5 py-1 rounded-full text-xs font-bold border',
-                      t.status === 'pendiente' && 'bg-amber-500/10 border-amber-500/20 text-amber-700 dark:text-amber-300',
+                      t.status === 'pendiente' && 'bg-warning/10 border-warning/20 text-warning dark:text-warning',
                       t.status === 'activado' && 'bg-emerald-500/10 border-emerald-500/20 text-emerald-700 dark:text-emerald-300',
                       t.status === 'expirado' && 'bg-slate-500/10 border-slate-500/20 text-on-surface-variant',
                     )}>
@@ -315,7 +315,7 @@ export function TokenGeneratorPage() {
                     <button
                       onClick={() => setDeleteConfirmToken(t)}
                       aria-label={t("tok.deleteToken")}
-                      className="py-2.5 px-3 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 transition-all flex items-center justify-center"
+                      className="py-2.5 px-3 rounded-xl bg-danger/10 hover:bg-danger/20 text-danger dark:text-danger transition-all flex items-center justify-center"
                       title={t("tok.deleteToken")}
                     >
                       <Icon name="delete" size={14} />

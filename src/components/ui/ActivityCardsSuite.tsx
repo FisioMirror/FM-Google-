@@ -75,7 +75,7 @@ export const MuscleTargetRadarCard: React.FC<MuscleTargetRadarCardProps> = ({
     >
       {/* Glow ambiental de fondo */}
       <div className="absolute -top-12 -right-12 size-36 rounded-full bg-teal-500/10 blur-3xl pointer-events-none group-hover:bg-teal-500/20 transition-all duration-300" />
-      <div className="absolute -bottom-10 -left-10 size-32 rounded-full bg-cyan-500/10 blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-10 -left-10 size-32 rounded-full bg-info/10 blur-3xl pointer-events-none" />
 
       <div className="relative flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
@@ -244,8 +244,8 @@ export const PainScaleInteractiveCard: React.FC<PainScaleInteractiveCardProps> =
   const getFace = () => {
     if (pain === 0) return <Smile className="w-8 h-8 text-emerald-400 animate-pulse" />;
     if (pain <= 3) return <Smile className="w-8 h-8 text-teal-400" />;
-    if (pain <= 6) return <Meh className="w-8 h-8 text-amber-400 animate-wiggle" />;
-    return <Frown className="w-8 h-8 text-rose-500 animate-bounce" />;
+    if (pain <= 6) return <Meh className="w-8 h-8 text-warning animate-wiggle" />;
+    return <Frown className="w-8 h-8 text-danger animate-bounce" />;
   };
 
   const getLabel = () => {
@@ -258,14 +258,14 @@ export const PainScaleInteractiveCard: React.FC<PainScaleInteractiveCardProps> =
 
   const getAccentGradient = () => {
     if (pain <= 3) return 'from-teal-500/20 via-emerald-500/10 to-surface';
-    if (pain <= 6) return 'from-amber-500/20 via-amber-500/10 to-surface';
-    return 'from-rose-500/20 via-rose-500/10 to-surface';
+    if (pain <= 6) return 'from-warning/20 via-warning/10 to-surface';
+    return 'from-danger/20 via-danger/10 to-surface';
   };
 
   const getBadgeColor = () => {
     if (pain <= 3) return 'text-teal-600 dark:text-teal-400 bg-teal-500/15 border-teal-500/30';
-    if (pain <= 6) return 'text-amber-600 dark:text-amber-400 bg-amber-500/15 border-amber-500/30';
-    return 'text-rose-600 dark:text-rose-400 bg-rose-500/15 border-rose-500/30';
+    if (pain <= 6) return 'text-warning dark:text-warning bg-warning/15 border-warning/30';
+    return 'text-danger dark:text-danger bg-danger/15 border-danger/30';
   };
 
   return (
@@ -332,8 +332,8 @@ export const PainScaleInteractiveCard: React.FC<PainScaleInteractiveCardProps> =
         </div>
         <div className="flex justify-between text-2xs font-mono font-bold text-on-surface-variant">
           <span className="text-emerald-500">{t('facs.painScale0')}</span>
-          <span className="text-amber-500">{t('facs.painScale5')}</span>
-          <span className="text-rose-500">{t('facs.painScale10')}</span>
+          <span className="text-warning">{t('facs.painScale5')}</span>
+          <span className="text-danger">{t('facs.painScale10')}</span>
         </div>
       </div>
     </motion.div>
@@ -376,13 +376,13 @@ export const GaitSymmetryCard: React.FC<GaitSymmetryCardProps> = ({
       whileHover={{ y: -3, scale: 1.01 }}
       transition={{ duration: 0.2 }}
       className={cn(
-        "relative p-5 rounded-3xl bg-gradient-to-br from-surface/95 via-surface-container/85 to-surface/95 dark:from-surface-container/80 dark:via-slate-900/90 dark:to-surface-container/80 backdrop-blur-2xl border border-cyan-500/20 dark:border-cyan-500/30 shadow-card overflow-hidden group",
+        "relative p-5 rounded-3xl bg-gradient-to-br from-surface/95 via-surface-container/85 to-surface/95 dark:from-surface-container/80 dark:via-slate-900/90 dark:to-surface-container/80 backdrop-blur-2xl border border-info/20 dark:border-info/30 shadow-card overflow-hidden group",
         className
       )}
     >
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <div className="p-1.5 rounded-xl bg-cyan-500/15 text-cyan-600 dark:text-cyan-400">
+          <div className="p-1.5 rounded-xl bg-info/15 text-info dark:text-info">
             <Footprints className="w-4 h-4 animate-bounce" />
           </div>
           <h4 className="text-xs font-bold uppercase tracking-wider text-on-surface">
@@ -394,10 +394,10 @@ export const GaitSymmetryCard: React.FC<GaitSymmetryCardProps> = ({
             "text-2xs font-bold px-2.5 py-0.5 rounded-full border shadow-xs flex items-center gap-1",
             isSymmetric
               ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border-emerald-500/30"
-              : "bg-amber-500/15 text-amber-600 dark:text-amber-400 border-amber-500/30"
+              : "bg-warning/15 text-warning dark:text-warning border-warning/30"
           )}
         >
-          <span className={cn("size-1.5 rounded-full", isSymmetric ? "bg-emerald-500" : "bg-amber-500 animate-ping")} />
+          <span className={cn("size-1.5 rounded-full", isSymmetric ? "bg-emerald-500" : "bg-warning animate-ping")} />
           {isSymmetric ? t('facs.gaitBalanced') : t('facs.gaitAsymmetry')}
         </span>
       </div>
@@ -407,8 +407,8 @@ export const GaitSymmetryCard: React.FC<GaitSymmetryCardProps> = ({
           <span className="text-2xs uppercase font-bold text-teal-600 dark:text-teal-400 block mb-0.5">{t('facs.leftFoot')}</span>
           <span className="text-2xl font-black font-mono text-on-surface tabular-nums">{left}%</span>
         </div>
-        <div className="p-3 rounded-2xl bg-cyan-500/10 dark:bg-cyan-500/15 border border-cyan-500/20 text-center">
-          <span className="text-2xs uppercase font-bold text-cyan-600 dark:text-cyan-400 block mb-0.5">{t('facs.rightFoot')}</span>
+        <div className="p-3 rounded-2xl bg-info/10 dark:bg-info/15 border border-info/20 text-center">
+          <span className="text-2xs uppercase font-bold text-info dark:text-info block mb-0.5">{t('facs.rightFoot')}</span>
           <span className="text-2xl font-black font-mono text-on-surface tabular-nums">{right}%</span>
         </div>
       </div>
@@ -422,7 +422,7 @@ export const GaitSymmetryCard: React.FC<GaitSymmetryCardProps> = ({
         <motion.div
           animate={{ width: `${right}%` }}
           transition={{ type: 'spring', stiffness: 200, damping: 25 }}
-          className="h-full bg-gradient-to-r from-cyan-400 to-cyan-500 rounded-r-full"
+          className="h-full bg-gradient-to-r from-info to-info rounded-r-full"
         />
         {/* Marcador central */}
         <div className="absolute left-1/2 top-0 bottom-0 w-0.5 bg-white shadow-sm z-10 -translate-x-1/2" />
@@ -435,7 +435,7 @@ export const GaitSymmetryCard: React.FC<GaitSymmetryCardProps> = ({
         <button
           type="button"
           onClick={toggleSimulation}
-          className="text-2xs font-bold text-cyan-600 dark:text-cyan-400 hover:underline flex items-center gap-1"
+          className="text-2xs font-bold text-info dark:text-info hover:underline flex items-center gap-1"
         >
           <RotateCcw className="w-3 h-3" />
           {isSimulating ? t('facs.restore') : t('facs.simulateLoad')}
@@ -463,20 +463,20 @@ export const TremorFrequencyCard: React.FC<TremorFrequencyCardProps> = ({
       whileHover={{ y: -3, scale: 1.01 }}
       transition={{ duration: 0.2 }}
       className={cn(
-        "relative p-5 rounded-3xl bg-gradient-to-br from-surface/95 via-surface-container/85 to-surface/95 dark:from-surface-container/80 dark:via-slate-900/90 dark:to-surface-container/80 backdrop-blur-2xl border border-cyan-500/20 dark:border-cyan-500/30 shadow-card overflow-hidden group",
+        "relative p-5 rounded-3xl bg-gradient-to-br from-surface/95 via-surface-container/85 to-surface/95 dark:from-surface-container/80 dark:via-slate-900/90 dark:to-surface-container/80 backdrop-blur-2xl border border-info/20 dark:border-info/30 shadow-card overflow-hidden group",
         className
       )}
     >
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
-          <div className="p-1.5 rounded-xl bg-cyan-500/15 text-cyan-600 dark:text-cyan-400">
+          <div className="p-1.5 rounded-xl bg-info/15 text-info dark:text-info">
             <Waves className="w-4 h-4" />
           </div>
           <h4 className="text-xs font-bold uppercase tracking-wider text-on-surface">
             {t('facs.isometricStability')}
           </h4>
         </div>
-        <span className="text-2xs font-mono font-bold text-cyan-600 dark:text-cyan-400 bg-cyan-500/15 border border-cyan-500/30 px-2.5 py-0.5 rounded-full">
+        <span className="text-2xs font-mono font-bold text-info dark:text-info bg-info/15 border border-info/30 px-2.5 py-0.5 rounded-full">
           {t('facs.frequencyHz', { n: frequencyHz })}
         </span>
       </div>
@@ -496,7 +496,7 @@ export const TremorFrequencyCard: React.FC<TremorFrequencyCardProps> = ({
                 delay: idx * 0.05,
                 ease: 'easeInOut',
               }}
-              className="w-1.5 rounded-full bg-gradient-to-t from-teal-600 via-cyan-400 to-lime-300 shadow-sm"
+              className="w-1.5 rounded-full bg-gradient-to-t from-teal-600 via-info to-kinetic shadow-sm"
             />
           ))}
         </div>
@@ -586,7 +586,7 @@ export const PostureStabilityCard: React.FC<PostureStabilityCardProps> = ({
           <motion.div
             animate={{ x: shiftX * 2.2, y: shiftY * 2.2 }}
             transition={{ type: 'spring', stiffness: 350, damping: 22 }}
-            className="absolute size-4 rounded-full bg-gradient-to-r from-teal-400 to-lime-300 ring-4 ring-emerald-500/40 shadow-card shadow-teal-500/50 flex items-center justify-center"
+            className="absolute size-4 rounded-full bg-gradient-to-r from-teal-400 to-kinetic ring-4 ring-emerald-500/40 shadow-card shadow-teal-500/50 flex items-center justify-center"
           >
             <span className="size-1 rounded-full bg-slate-900" />
           </motion.div>
@@ -621,7 +621,7 @@ export const CardioEffortPillCard: React.FC<CardioEffortPillCardProps> = ({
       whileHover={{ y: -3, scale: 1.01 }}
       transition={{ duration: 0.2 }}
       className={cn(
-        "relative p-5 rounded-3xl bg-gradient-to-br from-surface/95 via-surface-container/85 to-surface/95 dark:from-surface-container/80 dark:via-slate-900/90 dark:to-surface-container/80 backdrop-blur-2xl border border-rose-500/20 dark:border-rose-500/30 shadow-card overflow-hidden group",
+        "relative p-5 rounded-3xl bg-gradient-to-br from-surface/95 via-surface-container/85 to-surface/95 dark:from-surface-container/80 dark:via-slate-900/90 dark:to-surface-container/80 backdrop-blur-2xl border border-danger/20 dark:border-danger/30 shadow-card overflow-hidden group",
         className
       )}
     >
@@ -630,7 +630,7 @@ export const CardioEffortPillCard: React.FC<CardioEffortPillCardProps> = ({
           <motion.div
             animate={{ scale: [1, 1.25, 1, 1.2, 1] }}
             transition={{ repeat: Infinity, duration: 1.2, ease: 'easeInOut' }}
-            className="p-1.5 rounded-xl bg-rose-500/15 text-rose-500"
+            className="p-1.5 rounded-xl bg-danger/15 text-danger"
           >
             <HeartPulse className="w-4 h-4" />
           </motion.div>
@@ -638,7 +638,7 @@ export const CardioEffortPillCard: React.FC<CardioEffortPillCardProps> = ({
             {t('facs.cardioEffort')}
           </h4>
         </div>
-        <span className="text-2xs font-mono font-bold text-rose-600 dark:text-rose-400 bg-rose-500/15 border border-rose-500/30 px-2.5 py-0.5 rounded-full">
+        <span className="text-2xs font-mono font-bold text-danger dark:text-danger bg-danger/15 border border-danger/30 px-2.5 py-0.5 rounded-full">
           RPE {borgLevel} / 20
         </span>
       </div>
@@ -648,7 +648,7 @@ export const CardioEffortPillCard: React.FC<CardioEffortPillCardProps> = ({
           <span className="text-3xl font-black font-mono text-on-surface tabular-nums">
             {heartRateEstimated}
           </span>
-          <span className="text-xs font-semibold text-rose-500 ml-1.5">BPM est.</span>
+          <span className="text-xs font-semibold text-danger ml-1.5">BPM est.</span>
         </div>
         <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
           {t('facs.aerobicZone')}
@@ -659,7 +659,7 @@ export const CardioEffortPillCard: React.FC<CardioEffortPillCardProps> = ({
         <motion.div
           animate={{ width: `${percent}%` }}
           transition={{ duration: 0.8, ease: 'easeOut' }}
-          className="h-full bg-gradient-to-r from-emerald-500 via-amber-400 to-rose-500 rounded-full shadow-sm"
+          className="h-full bg-gradient-to-r from-emerald-500 via-warning to-danger rounded-full shadow-sm"
         />
       </div>
 
@@ -910,7 +910,7 @@ export const PatientAdherenceHeatmapCard: React.FC<PatientAdherenceHeatmapCardPr
           </h4>
         </div>
         <div className="flex items-center gap-1 text-xs font-bold text-teal-600 dark:text-teal-400 bg-teal-500/15 border border-teal-500/30 px-2.5 py-0.5 rounded-full">
-          <Flame className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
+          <Flame className="w-3.5 h-3.5 text-warning fill-warning" />
           <span>{t('facs.compliancePct', { n: 86 })}</span>
         </div>
       </div>

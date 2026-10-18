@@ -463,7 +463,7 @@ export function PhysiGuide({
                   onClick={() => setOpen(false)}
                   aria-label={t('pg.closeWindow')}
                   title={t('common.close')}
-                  className="text-on-surface-variant hover:text-rose-500 transition-colors p-1.5 rounded-xl hover:bg-rose-500/10 cursor-pointer"
+                  className="text-on-surface-variant hover:text-danger transition-colors p-1.5 rounded-xl hover:bg-danger/10 cursor-pointer"
                 >
                   <X size={17} />
                 </button>
@@ -529,8 +529,8 @@ export function PhysiGuide({
                             >
                               {isSpeaking ? (
                                 <>
-                                  <VolumeX size={13} className="text-rose-500" />
-                                  <span className="text-rose-600 dark:text-rose-400 font-bold">{t('ai.stop')}</span>
+                                  <VolumeX size={13} className="text-danger" />
+                                  <span className="text-danger dark:text-danger font-bold">{t('ai.stop')}</span>
                                 </>
                               ) : (
                                 <>

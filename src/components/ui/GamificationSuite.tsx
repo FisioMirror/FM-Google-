@@ -36,20 +36,20 @@ export const StreakFlameCounter: React.FC<StreakFlameCounterProps> = ({
       whileHover={{ y: -3, scale: 1.01 }}
       transition={{ duration: 0.2 }}
       className={cn(
-        "relative p-5 rounded-3xl bg-gradient-to-br from-amber-500/20 via-surface/90 to-orange-500/10 dark:from-amber-500/20 dark:via-slate-900/90 dark:to-orange-500/10 border border-amber-500/40 shadow-elevated overflow-hidden flex items-center gap-4 group",
+        "relative p-5 rounded-3xl bg-gradient-to-br from-warning/20 via-surface/90 to-warning/10 dark:from-warning/20 dark:via-slate-900/90 dark:to-warning/10 border border-warning/40 shadow-elevated overflow-hidden flex items-center gap-4 group",
         className
       )}
     >
-      <div className="absolute -top-12 -right-12 size-36 rounded-full bg-amber-500/15 blur-3xl pointer-events-none group-hover:bg-amber-500/25 transition-all" />
+      <div className="absolute -top-12 -right-12 size-36 rounded-full bg-warning/15 blur-3xl pointer-events-none group-hover:bg-warning/25 transition-all" />
 
-      <div className="relative p-4 rounded-2xl bg-gradient-to-br from-amber-500/30 to-orange-500/20 text-amber-500 border border-amber-500/40 shadow-card flex items-center justify-center shrink-0">
+      <div className="relative p-4 rounded-2xl bg-gradient-to-br from-warning/30 to-warning/20 text-warning border border-warning/40 shadow-card flex items-center justify-center shrink-0">
         <motion.div
           animate={{ scale: [1, 1.15, 1], rotate: [-2, 2, -2] }}
           transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }}
         >
-          <Flame className="w-8 h-8 fill-amber-500" />
+          <Flame className="w-8 h-8 fill-warning" />
         </motion.div>
-        <span className="absolute -bottom-1.5 text-2xs font-black uppercase tracking-wider bg-gradient-to-r from-amber-500 to-orange-500 text-white px-2 py-0.5 rounded-full shadow-sm">
+        <span className="absolute -bottom-1.5 text-2xs font-black uppercase tracking-wider bg-gradient-to-r from-warning to-warning text-white px-2 py-0.5 rounded-full shadow-sm">
           {t('st.kpiStreak')}
         </span>
       </div>
@@ -59,12 +59,12 @@ export const StreakFlameCounter: React.FC<StreakFlameCounterProps> = ({
           <span className="text-3xl font-black font-mono text-on-surface tabular-nums">
             {streakDays}
           </span>
-          <span className="text-xs font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider">
+          <span className="text-xs font-bold text-warning dark:text-warning uppercase tracking-wider">
             {t('gamification.consecutiveDays')}
           </span>
         </div>
         <p className="text-xs text-on-surface-variant font-medium">
-          {t('fgam.constancyMessage')} {t('gamification.xpMultiplier')} <strong className="text-amber-500">{t('fgam.multiplierActive')}</strong>.
+          {t('fgam.constancyMessage')} {t('gamification.xpMultiplier')} <strong className="text-warning">{t('fgam.multiplierActive')}</strong>.
         </p>
       </div>
     </motion.div>
@@ -127,7 +127,7 @@ export const LevelProgressRibbon: React.FC<LevelProgressRibbonProps> = ({
         <motion.div
           animate={{ width: `${percent}%` }}
           transition={{ type: 'spring', stiffness: 200, damping: 20 }}
-          className="h-full bg-gradient-to-r from-teal-500 via-cyan-400 to-lime-300 rounded-full shadow-sm"
+          className="h-full bg-gradient-to-r from-teal-500 via-info to-kinetic rounded-full shadow-sm"
         />
       </div>
 
@@ -245,7 +245,7 @@ export const MobilityQuestCard: React.FC<MobilityQuestCardProps> = ({
           </span>
         </div>
       </div>
-      <span className="text-xs font-mono font-bold text-amber-500 bg-amber-500/15 border border-amber-500/30 px-2.5 py-1 rounded-full">
+      <span className="text-xs font-mono font-bold text-warning bg-warning/15 border border-warning/30 px-2.5 py-1 rounded-full">
         +{xpReward} XP
       </span>
     </motion.div>
@@ -268,12 +268,12 @@ export const VirtualTrophyCabinet: React.FC<VirtualTrophyCabinetProps> = ({
       whileHover={{ y: -3, scale: 1.01 }}
       transition={{ duration: 0.2 }}
       className={cn(
-        "relative p-5 rounded-3xl bg-gradient-to-br from-amber-500/15 via-surface/90 to-surface dark:from-amber-500/15 dark:via-slate-900/90 dark:to-surface-container/80 border border-amber-500/35 shadow-card overflow-hidden flex items-center justify-between group",
+        "relative p-5 rounded-3xl bg-gradient-to-br from-warning/15 via-surface/90 to-surface dark:from-warning/15 dark:via-slate-900/90 dark:to-surface-container/80 border border-warning/35 shadow-card overflow-hidden flex items-center justify-between group",
         className
       )}
     >
       <div className="flex items-center gap-3">
-        <div className="p-2.5 rounded-2xl bg-amber-500/20 text-amber-500 border border-amber-500/40">
+        <div className="p-2.5 rounded-2xl bg-warning/20 text-warning border border-warning/40">
           <Trophy className="w-6 h-6 animate-pulse" />
         </div>
         <div>
@@ -311,7 +311,7 @@ export const DailyHealthPointsWidget: React.FC<DailyHealthPointsWidgetProps> = (
       whileHover={{ y: -3, scale: 1.01 }}
       transition={{ duration: 0.2 }}
       className={cn(
-        "relative p-5 rounded-3xl bg-gradient-to-br from-amber-500/15 via-surface/90 to-surface dark:from-amber-500/15 dark:via-slate-900/90 dark:to-surface-container/80 border border-amber-500/35 shadow-card overflow-hidden flex items-center justify-between group",
+        "relative p-5 rounded-3xl bg-gradient-to-br from-warning/15 via-surface/90 to-surface dark:from-warning/15 dark:via-slate-900/90 dark:to-surface-container/80 border border-warning/35 shadow-card overflow-hidden flex items-center justify-between group",
         className
       )}
     >
@@ -319,7 +319,7 @@ export const DailyHealthPointsWidget: React.FC<DailyHealthPointsWidgetProps> = (
         <motion.div
           animate={{ rotateY: [0, 180, 360] }}
           transition={{ repeat: Infinity, duration: 4, ease: 'easeInOut' }}
-          className="p-2.5 rounded-2xl bg-amber-500/20 text-amber-500 border border-amber-500/40 shrink-0"
+          className="p-2.5 rounded-2xl bg-warning/20 text-warning border border-warning/40 shrink-0"
         >
           <Coins className="w-6 h-6" />
         </motion.div>
@@ -331,7 +331,7 @@ export const DailyHealthPointsWidget: React.FC<DailyHealthPointsWidgetProps> = (
       <button
         type="button"
         onClick={() => setPts((p) => p + 50)}
-        className="text-2xl font-black font-mono text-amber-500 hover:scale-105 transition-transform"
+        className="text-2xl font-black font-mono text-warning hover:scale-105 transition-transform"
       >
         {pts} pts
       </button>
@@ -362,7 +362,7 @@ export const RehabHeroAvatarCard: React.FC<RehabHeroAvatarCardProps> = ({
         className
       )}
     >
-      <div className="relative size-12 rounded-2xl bg-gradient-to-br from-teal-500 to-cyan-500 text-white flex items-center justify-center font-black text-base shadow-sm shadow-teal-500/30 shrink-0">
+      <div className="relative size-12 rounded-2xl bg-gradient-to-br from-teal-500 to-info text-white flex items-center justify-center font-black text-base shadow-sm shadow-teal-500/30 shrink-0">
         CR
         <span className="absolute -bottom-1 -right-1 size-3.5 rounded-full bg-emerald-500 border-2 border-white dark:border-slate-900" />
       </div>
@@ -440,13 +440,13 @@ export const RecoveryRankBadge: React.FC<RecoveryRankBadgeProps> = ({
     <motion.div
       whileHover={{ y: -2 }}
       className={cn(
-        "inline-flex items-center gap-2 p-2.5 px-4 rounded-2xl bg-gradient-to-r from-teal-500/20 via-cyan-500/20 to-teal-500/20 border border-teal-500/40 text-xs font-bold text-teal-900 dark:text-teal-100 shadow-sm",
+        "inline-flex items-center gap-2 p-2.5 px-4 rounded-2xl bg-gradient-to-r from-teal-500/20 via-info/20 to-teal-500/20 border border-teal-500/40 text-xs font-bold text-teal-900 dark:text-teal-100 shadow-sm",
         className
       )}
     >
       <Award className="w-4 h-4 text-teal-500" />
       <span>{rankLabel}</span>
-      <Sparkles className="w-3.5 h-3.5 text-amber-400 animate-spin" style={{ animationDuration: '8s' }} />
+      <Sparkles className="w-3.5 h-3.5 text-warning animate-spin" style={{ animationDuration: '8s' }} />
     </motion.div>
   );
 };

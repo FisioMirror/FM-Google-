@@ -42,7 +42,7 @@ function getBiomechanicalVisual(name: string, articulacion?: string | null, cate
   if (n.includes('tobillo') || n.includes('pie') || n.includes('gemelo') || n.includes('plantar') || n.includes('marcha') || a.includes('tobillo')) {
     return {
       IconComponent: Footprints,
-      bgClass: 'bg-gradient-to-br from-teal-500/15 via-emerald-500/10 to-cyan-500/5',
+      bgClass: 'bg-gradient-to-br from-teal-500/15 via-emerald-500/10 to-info/5',
       iconClass: 'text-teal-600 dark:text-teal-400',
       badgeKey: 'eiBadgeAnkle',
     };
@@ -52,7 +52,7 @@ function getBiomechanicalVisual(name: string, articulacion?: string | null, cate
   if (n.includes('rodilla') || n.includes('sentadilla') || n.includes('cuadriceps') || n.includes('isquio') || n.includes('patela') || a.includes('rodilla')) {
     return {
       IconComponent: Target,
-      bgClass: 'bg-gradient-to-br from-emerald-500/15 via-teal-500/10 to-cyan-500/5',
+      bgClass: 'bg-gradient-to-br from-emerald-500/15 via-teal-500/10 to-info/5',
       iconClass: 'text-emerald-600 dark:text-emerald-400',
       badgeKey: 'eiBadgeKnee',
     };
@@ -62,8 +62,8 @@ function getBiomechanicalVisual(name: string, articulacion?: string | null, cate
   if (n.includes('hombro') || n.includes('escapul') || n.includes('deltoid') || n.includes('manguito') || a.includes('hombro')) {
     return {
       IconComponent: CircleDot,
-      bgClass: 'bg-gradient-to-br from-cyan-500/15 via-teal-500/10 to-blue-500/5',
-      iconClass: 'text-cyan-600 dark:text-cyan-400',
+      bgClass: 'bg-gradient-to-br from-info/15 via-teal-500/10 to-info/5',
+      iconClass: 'text-info dark:text-info',
       badgeKey: 'eiBadgeShoulder',
     };
   }
@@ -72,7 +72,7 @@ function getBiomechanicalVisual(name: string, articulacion?: string | null, cate
   if (n.includes('codo') || n.includes('muñeca') || n.includes('mano') || n.includes('antebrazo') || n.includes('biceps') || n.includes('triceps') || a.includes('codo') || a.includes('brazo')) {
     return {
       IconComponent: Dumbbell,
-      bgClass: 'bg-gradient-to-br from-teal-500/15 via-blue-500/10 to-cyan-500/5',
+      bgClass: 'bg-gradient-to-br from-teal-500/15 via-info/10 to-info/5',
       iconClass: 'text-teal-600 dark:text-teal-400',
       badgeKey: 'eiBadgeUpperLimb',
     };
@@ -92,8 +92,8 @@ function getBiomechanicalVisual(name: string, articulacion?: string | null, cate
   if (n.includes('cervical') || n.includes('cuello') || n.includes('trapecio') || a.includes('cervical') || a.includes('cuello')) {
     return {
       IconComponent: Sparkles,
-      bgClass: 'bg-gradient-to-br from-cyan-500/15 via-teal-500/10 to-emerald-500/5',
-      iconClass: 'text-cyan-600 dark:text-cyan-300',
+      bgClass: 'bg-gradient-to-br from-info/15 via-teal-500/10 to-emerald-500/5',
+      iconClass: 'text-info dark:text-info',
       badgeKey: 'eiBadgeCervical',
     };
   }
@@ -102,7 +102,7 @@ function getBiomechanicalVisual(name: string, articulacion?: string | null, cate
   if (n.includes('rotacion') || n.includes('circunducc') || n.includes('giro') || n.includes('arco') || n.includes('movilidad')) {
     return {
       IconComponent: RotateCw,
-      bgClass: 'bg-gradient-to-br from-teal-500/15 via-cyan-500/10 to-blue-500/5',
+      bgClass: 'bg-gradient-to-br from-teal-500/15 via-info/10 to-info/5',
       iconClass: 'text-teal-600 dark:text-teal-400',
       badgeKey: 'eiBadgeRom',
     };
@@ -112,7 +112,7 @@ function getBiomechanicalVisual(name: string, articulacion?: string | null, cate
   if (c.includes('fuerza') || n.includes('resistencia') || n.includes('pesa') || n.includes('banda') || n.includes('isometric')) {
     return {
       IconComponent: Flame,
-      bgClass: 'bg-gradient-to-br from-emerald-500/15 via-teal-500/10 to-cyan-500/5',
+      bgClass: 'bg-gradient-to-br from-emerald-500/15 via-teal-500/10 to-info/5',
       iconClass: 'text-emerald-600 dark:text-emerald-400',
       badgeKey: 'eiBadgeStrength',
     };
@@ -122,8 +122,8 @@ function getBiomechanicalVisual(name: string, articulacion?: string | null, cate
   if (n.includes('equilibrio') || n.includes('propiocepc') || n.includes('unipodal') || c.includes('equilibrio')) {
     return {
       IconComponent: Compass,
-      bgClass: 'bg-gradient-to-br from-blue-500/15 via-teal-500/10 to-emerald-500/5',
-      iconClass: 'text-blue-600 dark:text-blue-400',
+      bgClass: 'bg-gradient-to-br from-info/15 via-teal-500/10 to-emerald-500/5',
+      iconClass: 'text-info dark:text-info',
       badgeKey: 'eiBadgeBalance',
     };
   }
@@ -132,7 +132,7 @@ function getBiomechanicalVisual(name: string, articulacion?: string | null, cate
   if (n.includes('estiramiento') || n.includes('flexibilidad') || n.includes('elongacion') || c.includes('estiramiento')) {
     return {
       IconComponent: Layers,
-      bgClass: 'bg-gradient-to-br from-teal-500/15 via-emerald-500/10 to-blue-500/5',
+      bgClass: 'bg-gradient-to-br from-teal-500/15 via-emerald-500/10 to-info/5',
       iconClass: 'text-teal-600 dark:text-teal-400',
       badgeKey: 'eiBadgeFlexibility',
     };
@@ -141,7 +141,7 @@ function getBiomechanicalVisual(name: string, articulacion?: string | null, cate
   // Por defecto: Dinámica articular y cinemática
   return {
     IconComponent: Activity,
-    bgClass: 'bg-gradient-to-br from-teal-500/15 via-emerald-500/10 to-cyan-500/5',
+    bgClass: 'bg-gradient-to-br from-teal-500/15 via-emerald-500/10 to-info/5',
     iconClass: 'text-teal-600 dark:text-teal-400',
     badgeKey: 'eiBadgeKinesio',
   };

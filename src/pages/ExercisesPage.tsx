@@ -930,9 +930,9 @@ export function ExercisesPage() {
                           className={cn(
                             'text-2xs font-bold uppercase px-2.5 py-0.5 rounded-full border',
                             ex.complejidad === 'alta'
-                              ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/25'
+                              ? 'bg-warning/10 text-warning dark:text-warning border-warning/25'
                               : ex.complejidad === 'media'
-                              ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/25'
+                              ? 'bg-info/10 text-info dark:text-info border-info/25'
                               : 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/25'
                           )}
                         >
@@ -965,7 +965,7 @@ export function ExercisesPage() {
                     </div>
                     <div className="flex flex-col items-center pl-2">
                       <p className="text-2xs uppercase font-bold text-on-surface-variant flex items-center justify-center gap-1">
-                        <Flame className="size-2.5 text-amber-500" /> REPS
+                        <Flame className="size-2.5 text-warning" /> REPS
                       </p>
                       <p className="text-base font-extrabold text-on-surface mt-0.5">{ex.repeticiones ?? 10}</p>
                     </div>
@@ -1027,7 +1027,7 @@ export function ExercisesPage() {
                       <button
                         onClick={() => deleteExercise(ex.id)}
                         aria-label={t('exs.deleteExercise')}
-                        className="p-1.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-600 transition-all"
+                        className="p-1.5 rounded-lg bg-danger/10 hover:bg-danger/20 text-danger transition-all"
                       >
                         <Trash2 className="size-3.5" />
                       </button>

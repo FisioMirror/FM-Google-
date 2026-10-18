@@ -69,7 +69,7 @@ export const CurvedMobileDock: React.FC<CurvedMobileDockProps> = ({
             setInternalTab('scan');
             onScanClick?.();
           }}
-          className="size-14 rounded-2xl bg-gradient-to-tr from-teal-600 via-teal-500 to-cyan-400 text-white flex items-center justify-center shadow-elevated shadow-teal-500/40 border-2 border-white dark:border-slate-950 cursor-pointer"
+          className="size-14 rounded-2xl bg-gradient-to-tr from-teal-600 via-teal-500 to-info text-white flex items-center justify-center shadow-elevated shadow-teal-500/40 border-2 border-white dark:border-slate-950 cursor-pointer"
           title={t('fnds.startScan')}
         >
           <Sparkles className="w-6 h-6 animate-pulse" />
@@ -204,7 +204,7 @@ export const QuickPatientSwitcherBar: React.FC<QuickPatientSwitcherBarProps> = (
                 : "bg-white/80 dark:bg-slate-800/80 border-slate-200 dark:border-white/10 text-on-surface-variant hover:text-on-surface dark:hover:text-white hover:border-teal-500/40"
             )}
           >
-            {isCurrent && <span className="size-1.5 rounded-full bg-lime-300 animate-ping" />}
+            {isCurrent && <span className="size-1.5 rounded-full bg-kinetic animate-ping" />}
             <span>{name}</span>
           </motion.button>
         );
@@ -503,7 +503,7 @@ export const ExerciseTimelineScrubber: React.FC<ExerciseTimelineScrubberProps> =
       >
         <motion.div
           animate={{ width: `${(sec / totalSeconds) * 100}%` }}
-          className="h-full bg-gradient-to-r from-teal-500 to-cyan-400 rounded-full"
+          className="h-full bg-gradient-to-r from-teal-500 to-info rounded-full"
         />
       </div>
     </div>

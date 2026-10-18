@@ -120,13 +120,13 @@ export const AngularVelocityStreamGauge: React.FC<AngularVelocityStreamGaugeProp
       whileHover={{ y: -3, scale: 1.01 }}
       transition={{ duration: 0.2 }}
       className={cn(
-        "relative p-4 rounded-3xl bg-gradient-to-br from-surface/95 via-surface-container/85 to-surface/95 dark:from-surface-container/80 dark:via-slate-900/90 dark:to-surface-container/80 backdrop-blur-2xl border border-cyan-500/25 dark:border-cyan-500/35 shadow-card overflow-hidden space-y-2.5 group",
+        "relative p-4 rounded-3xl bg-gradient-to-br from-surface/95 via-surface-container/85 to-surface/95 dark:from-surface-container/80 dark:via-slate-900/90 dark:to-surface-container/80 backdrop-blur-2xl border border-info/25 dark:border-info/35 shadow-card overflow-hidden space-y-2.5 group",
         className
       )}
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <div className="p-1.5 rounded-xl bg-cyan-500/15 text-cyan-600 dark:text-cyan-400">
+          <div className="p-1.5 rounded-xl bg-info/15 text-info dark:text-info">
             <Gauge className="w-4 h-4 animate-pulse" />
           </div>
           <div>
@@ -141,7 +141,7 @@ export const AngularVelocityStreamGauge: React.FC<AngularVelocityStreamGaugeProp
         <button
           type="button"
           onClick={simulateAcceleration}
-          className="text-xs font-mono font-bold text-cyan-600 dark:text-cyan-400 bg-cyan-500/15 border border-cyan-500/30 px-2.5 py-0.5 rounded-full hover:bg-cyan-500/25 transition-colors cursor-pointer"
+          className="text-xs font-mono font-bold text-info dark:text-info bg-info/15 border border-info/30 px-2.5 py-0.5 rounded-full hover:bg-info/25 transition-colors cursor-pointer"
         >
           {vel} °/s
         </button>
@@ -151,7 +151,7 @@ export const AngularVelocityStreamGauge: React.FC<AngularVelocityStreamGaugeProp
         <motion.div
           animate={{ width: `${percent}%` }}
           transition={{ type: 'spring', stiffness: 220, damping: 20 }}
-          className="h-full bg-gradient-to-r from-teal-500 via-cyan-400 to-lime-300 rounded-full shadow-sm"
+          className="h-full bg-gradient-to-r from-teal-500 via-info to-kinetic rounded-full shadow-sm"
         />
       </div>
 
@@ -333,13 +333,13 @@ export const CameraFramingGuideHUD: React.FC<CameraFramingGuideHUDProps> = ({
       whileHover={{ y: -3, scale: 1.01 }}
       transition={{ duration: 0.2 }}
       className={cn(
-        "relative p-4 rounded-3xl bg-gradient-to-br from-surface/95 via-surface-container/85 to-surface/95 dark:from-surface-container/80 dark:via-slate-900/90 dark:to-surface-container/80 backdrop-blur-2xl border border-cyan-500/25 dark:border-cyan-500/35 shadow-card overflow-hidden flex items-center justify-between gap-3 group cursor-pointer",
+        "relative p-4 rounded-3xl bg-gradient-to-br from-surface/95 via-surface-container/85 to-surface/95 dark:from-surface-container/80 dark:via-slate-900/90 dark:to-surface-container/80 backdrop-blur-2xl border border-info/25 dark:border-info/35 shadow-card overflow-hidden flex items-center justify-between gap-3 group cursor-pointer",
         className
       )}
       onClick={cycleStatus}
     >
       <div className="flex items-center gap-3">
-        <div className="p-2.5 rounded-2xl bg-cyan-500/15 text-cyan-600 dark:text-cyan-400 border border-cyan-500/30">
+        <div className="p-2.5 rounded-2xl bg-info/15 text-info dark:text-info border border-info/30">
           <Scan className="w-4 h-4 animate-spin" style={{ animationDuration: '24s' }} />
         </div>
         <div>
@@ -357,10 +357,10 @@ export const CameraFramingGuideHUD: React.FC<CameraFramingGuideHUDProps> = ({
           "text-xs font-bold px-3 py-1 rounded-full border shadow-xs flex items-center gap-1.5",
           status === 'ok'
             ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border-emerald-500/30"
-            : "bg-amber-500/15 text-amber-600 dark:text-amber-400 border-amber-500/30"
+            : "bg-warning/15 text-warning dark:text-warning border-warning/30"
         )}
       >
-        <span className={cn("size-1.5 rounded-full", status === 'ok' ? "bg-emerald-500" : "bg-amber-500 animate-ping")} />
+        <span className={cn("size-1.5 rounded-full", status === 'ok' ? "bg-emerald-500" : "bg-warning animate-ping")} />
         {status === 'ok' ? t('frtms.bodyComplete') : t('frtms.adjustPosition')}
       </span>
     </motion.div>
@@ -385,9 +385,9 @@ export const RepCadenceMetronome: React.FC<RepCadenceMetronomeProps> = ({
   const getPhaseData = () => {
     switch (currentPhase) {
       case 'concentric':
-        return { name: t('frtms.concentricPhase'), time: 2, color: 'from-teal-500 to-cyan-400' };
+        return { name: t('frtms.concentricPhase'), time: 2, color: 'from-teal-500 to-info' };
       case 'isometric':
-        return { name: t('frtms.isometricPhase'), time: 1, color: 'from-amber-400 to-orange-400' };
+        return { name: t('frtms.isometricPhase'), time: 1, color: 'from-warning to-warning' };
       case 'eccentric':
         return { name: t('frtms.eccentricPhase'), time: 3, color: 'from-emerald-400 to-teal-500' };
     }
@@ -465,7 +465,7 @@ export const AIBiomechanicalSummaryBadge: React.FC<AIBiomechanicalSummaryBadgePr
       whileHover={{ y: -3, scale: 1.01 }}
       transition={{ duration: 0.2 }}
       className={cn(
-        "relative p-4 rounded-3xl bg-gradient-to-br from-teal-500/15 via-surface to-cyan-500/10 border border-teal-500/30 shadow-card space-y-2 group overflow-hidden",
+        "relative p-4 rounded-3xl bg-gradient-to-br from-teal-500/15 via-surface to-info/10 border border-teal-500/30 shadow-card space-y-2 group overflow-hidden",
         className
       )}
     >
@@ -593,7 +593,7 @@ export const HoldDurationTimerRing: React.FC<HoldDurationTimerRingProps> = ({
       whileHover={{ y: -3, scale: 1.01 }}
       transition={{ duration: 0.2 }}
       className={cn(
-        "relative p-4 rounded-3xl bg-gradient-to-br from-surface/95 via-surface-container/85 to-surface/95 dark:from-surface-container/80 dark:via-slate-900/90 dark:to-surface-container/80 backdrop-blur-2xl border border-amber-500/25 dark:border-amber-500/35 shadow-card overflow-hidden flex items-center justify-between gap-3 group",
+        "relative p-4 rounded-3xl bg-gradient-to-br from-surface/95 via-surface-container/85 to-surface/95 dark:from-surface-container/80 dark:via-slate-900/90 dark:to-surface-container/80 backdrop-blur-2xl border border-warning/25 dark:border-warning/35 shadow-card overflow-hidden flex items-center justify-between gap-3 group",
         className
       )}
     >
@@ -601,7 +601,7 @@ export const HoldDurationTimerRing: React.FC<HoldDurationTimerRingProps> = ({
         <button
           type="button"
           onClick={() => setRunning(!running)}
-          className="p-2.5 rounded-2xl bg-amber-500/15 text-amber-500 border border-amber-500/30 hover:bg-amber-500/25 transition-colors"
+          className="p-2.5 rounded-2xl bg-warning/15 text-warning border border-warning/30 hover:bg-warning/25 transition-colors"
         >
           {running ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
         </button>
@@ -614,7 +614,7 @@ export const HoldDurationTimerRing: React.FC<HoldDurationTimerRingProps> = ({
           </span>
         </div>
       </div>
-      <div className="text-2xl font-black font-mono text-amber-500 tabular-nums">
+      <div className="text-2xl font-black font-mono text-warning tabular-nums">
         00:0{seconds}s
       </div>
     </motion.div>

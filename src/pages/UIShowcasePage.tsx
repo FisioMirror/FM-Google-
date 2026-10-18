@@ -668,9 +668,9 @@ export function UIShowcasePage() {
 
   const tabs: { id: FilterTab; label: string; icon: React.ReactNode; count?: number }[] = [
     { id: 'todos', label: t('shw.allComponents'), icon: <Layers className="w-4 h-4" /> },
-    { id: 'megasuite', label: t('shw.macroSuite50'), icon: <Sparkles className="w-4 h-4 text-cyan-400" />, count: 50 },
+    { id: 'megasuite', label: t('shw.macroSuite50'), icon: <Sparkles className="w-4 h-4 text-info" />, count: 50 },
     { id: 'mobile', label: t('shw.pwaMobileMotion'), icon: <Smartphone className="w-4 h-4 text-emerald-400" />, count: 6 },
-    { id: 'armonizacion', label: t('shw.pastelHarmonization'), icon: <Sparkles className="w-4 h-4 text-sky-400" />, count: 12 },
+    { id: 'armonizacion', label: t('shw.pastelHarmonization'), icon: <Sparkles className="w-4 h-4 text-info" />, count: 12 },
     { id: 'estelar', label: t('shw.starSuite'), icon: <Activity className="w-4 h-4 text-emerald-400" />, count: 8 },
     { id: 'solicitados', label: t('shw.previousSuite'), icon: <Sparkles className="w-4 h-4" />, count: 30 },
     { id: 'comparativa', label: t('shw.inventoryMapping'), icon: <Search className="w-4 h-4" />, count: INVENTORY_COMPARISONS.length },
@@ -701,10 +701,10 @@ export function UIShowcasePage() {
                 <span className="px-2.5 py-0.5 rounded-full text-2xs font-bold bg-teal-500/10 text-teal-700 dark:text-teal-300 border border-teal-500/20">
                   FisioMirror UI Lab
                 </span>
-                <span className="px-2.5 py-0.5 rounded-full text-2xs font-bold bg-lime-500/10 text-lime-600 dark:text-lime-400 border border-lime-500/20">
+                <span className="px-2.5 py-0.5 rounded-full text-2xs font-bold bg-kinetic/10 text-kinetic dark:text-kinetic border border-kinetic/20">
                   {t('shw.cliMcpEcosystemActive')}
                 </span>
-                <span className="px-2 py-0.5 rounded-full text-2xs font-bold bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
+                <span className="px-2 py-0.5 rounded-full text-2xs font-bold bg-info/10 text-info dark:text-info border border-info/20">
                   Reaviz · HeroUI · Magic UI · Aceternity
                 </span>
               </div>
@@ -749,14 +749,14 @@ export function UIShowcasePage() {
           </div>
           <div>
             <span className="text-2xs uppercase font-bold tracking-wider text-on-surface-variant">{t('shw.vectorCharts')}</span>
-            <div className="text-xl sm:text-2xl font-black text-lime-600 dark:text-lime-400 tabular-nums flex items-baseline gap-1">
+            <div className="text-xl sm:text-2xl font-black text-kinetic dark:text-kinetic tabular-nums flex items-baseline gap-1">
               <span>Reaviz</span>
               <span className="text-2xs font-medium text-on-surface-variant">{t('shw.smoothAreas')}</span>
             </div>
           </div>
           <div>
             <span className="text-2xs uppercase font-bold tracking-wider text-on-surface-variant">{t('shw.microInteraction')}</span>
-            <div className="text-xl sm:text-2xl font-black text-blue-600 dark:text-blue-400 tabular-nums flex items-baseline gap-1">
+            <div className="text-xl sm:text-2xl font-black text-info dark:text-info tabular-nums flex items-baseline gap-1">
               <span>&lt; 300ms</span>
               <span className="text-2xs font-medium text-on-surface-variant">{t('shw.goldenRule')}</span>
             </div>
@@ -790,12 +790,12 @@ export function UIShowcasePage() {
             MACRO SUITE: 50 NUEVOS COMPONENTES EN 5 CATEGORÍAS MODULARES
             ───────────────────────────────────────────────────────────── */}
         {(activeTab === 'todos' || activeTab === 'megasuite') && (
-          <section className="space-y-8 p-6 sm:p-8 rounded-3xl bg-gradient-to-b from-cyan-500/10 via-surface/70 to-surface border border-cyan-500/30 shadow-elevated">
+          <section className="space-y-8 p-6 sm:p-8 rounded-3xl bg-gradient-to-b from-info/10 via-surface/70 to-surface border border-info/30 shadow-elevated">
             {/* Header de la Macro Suite */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-cyan-500/20">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-info/20">
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
-                  <span className="p-1.5 rounded-lg bg-cyan-500/20 text-cyan-600 dark:text-cyan-400">
+                  <span className="p-1.5 rounded-lg bg-info/20 text-info dark:text-info">
                     <Sparkles className="w-5 h-5" />
                   </span>
                   <h2 className="fm-title text-on-surface">
@@ -824,7 +824,7 @@ export function UIShowcasePage() {
                     className={cn(
                       "px-3 py-1.5 rounded-xl text-xs font-bold transition-all",
                       megaSuiteCategory === cat.id
-                        ? "bg-cyan-600 text-white shadow-sm"
+                        ? "bg-info text-white shadow-sm"
                         : "bg-surface-container-low text-on-surface-variant hover:text-on-surface dark:hover:text-white"
                     )}
                   >
@@ -837,8 +837,8 @@ export function UIShowcasePage() {
             {/* CATEGORÍA 1: TARJETAS DE ACTIVIDAD Y DIAGNÓSTICO (1 - 10) */}
             {(megaSuiteCategory === 'all' || megaSuiteCategory === 'actividad') && (
               <div className="space-y-4">
-                <div className="flex items-center gap-2 pb-2 border-b border-cyan-500/15">
-                  <span className="size-2 rounded-full bg-cyan-500" />
+                <div className="flex items-center gap-2 pb-2 border-b border-info/15">
+                  <span className="size-2 rounded-full bg-info" />
                   <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
                     {t('shw.category1ActivityCards')}
                   </h3>
@@ -860,8 +860,8 @@ export function UIShowcasePage() {
 
             {/* CATEGORÍA 2: PANELES Y MÉTRICAS EN TIEMPO REAL (11 - 20) */}
             {(megaSuiteCategory === 'all' || megaSuiteCategory === 'realtime') && (
-              <div className="space-y-4 pt-4 border-t border-cyan-500/15">
-                <div className="flex items-center gap-2 pb-2 border-b border-cyan-500/15">
+              <div className="space-y-4 pt-4 border-t border-info/15">
+                <div className="flex items-center gap-2 pb-2 border-b border-info/15">
                   <span className="size-2 rounded-full bg-teal-500" />
                   <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
                     {t('shw.category2RealTimePanels')}
@@ -884,9 +884,9 @@ export function UIShowcasePage() {
 
             {/* CATEGORÍA 3: MICROINTERACCIONES Y CONTROLES FLOTANTES (21 - 30) */}
             {(megaSuiteCategory === 'all' || megaSuiteCategory === 'flotantes') && (
-              <div className="space-y-4 pt-4 border-t border-cyan-500/15">
-                <div className="flex items-center gap-2 pb-2 border-b border-cyan-500/15">
-                  <span className="size-2 rounded-full bg-indigo-500" />
+              <div className="space-y-4 pt-4 border-t border-info/15">
+                <div className="flex items-center gap-2 pb-2 border-b border-info/15">
+                  <span className="size-2 rounded-full bg-secondary" />
                   <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
                     {t('shw.category3Microinteractions')}
                   </h3>
@@ -908,9 +908,9 @@ export function UIShowcasePage() {
 
             {/* CATEGORÍA 4: GAMIFICACIÓN Y MOTIVACIÓN (31 - 40) */}
             {(megaSuiteCategory === 'all' || megaSuiteCategory === 'gamificacion') && (
-              <div className="space-y-4 pt-4 border-t border-cyan-500/15">
-                <div className="flex items-center gap-2 pb-2 border-b border-cyan-500/15">
-                  <span className="size-2 rounded-full bg-amber-500" />
+              <div className="space-y-4 pt-4 border-t border-info/15">
+                <div className="flex items-center gap-2 pb-2 border-b border-info/15">
+                  <span className="size-2 rounded-full bg-warning" />
                   <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
                     {t('shw.category4Gamification')}
                   </h3>
@@ -936,8 +936,8 @@ export function UIShowcasePage() {
 
             {/* CATEGORÍA 5: DOCKS Y NAVEGACIÓN ERGONÓMICA (41 - 50) */}
             {(megaSuiteCategory === 'all' || megaSuiteCategory === 'navegacion') && (
-              <div className="space-y-4 pt-4 border-t border-cyan-500/15">
-                <div className="flex items-center gap-2 pb-2 border-b border-cyan-500/15">
+              <div className="space-y-4 pt-4 border-t border-info/15">
+                <div className="flex items-center gap-2 pb-2 border-b border-info/15">
                   <span className="size-2 rounded-full bg-emerald-500" />
                   <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
                     {t('shw.category5DocksNavigation')}
@@ -1187,7 +1187,7 @@ export function UIShowcasePage() {
                         step={0.5}
                         value={fatigueLevel}
                         onChange={(e) => setFatigueLevel(Number(e.target.value))}
-                        className="w-full accent-amber-500 cursor-pointer"
+                        className="w-full accent-warning cursor-pointer"
                       />
                     </div>
                   </div>
@@ -1404,7 +1404,7 @@ export function UIShowcasePage() {
                   </div>
                   <div className="mt-3 pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs">
                     <span className="text-on-surface-variant">{t('shw.sensitivity')}</span>
-                    <span className="font-mono text-sky-600 dark:text-sky-400 font-bold">
+                    <span className="font-mono text-info dark:text-info font-bold">
                       {compactTolerance === 'strict' ? t('shw.n3Precise') : compactTolerance === 'standard' ? t('shw.n7Standard') : t('shw.n12Assisted')}
                     </span>
                   </div>
@@ -1421,7 +1421,7 @@ export function UIShowcasePage() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 {/* Blur-Fade InView Demo */}
-                <MotionBlurFade delay={0.1} className="p-5 rounded-2xl bg-gradient-to-br from-teal-50/70 via-surface/90 to-sky-50/40 dark:from-teal-950/25 dark:via-surface-container/80 dark:to-slate-900/90 border border-teal-200/50 dark:border-teal-500/25 shadow-sm space-y-3">
+                <MotionBlurFade delay={0.1} className="p-5 rounded-2xl bg-gradient-to-br from-teal-50/70 via-surface/90 to-info/40 dark:from-teal-950/25 dark:via-surface-container/80 dark:to-slate-900/90 border border-teal-200/50 dark:border-teal-500/25 shadow-sm space-y-3">
                   <div className="flex items-center justify-between">
                     <span className="text-2xs font-bold px-2 py-0.5 rounded-full bg-teal-500/15 text-teal-700 dark:text-teal-300 border border-teal-500/30">
                       {t('shw.motionblurfadeWrapper')}
@@ -1436,7 +1436,7 @@ export function UIShowcasePage() {
                   </p>
                   <div className="flex items-center gap-2 pt-2">
                     <div className="h-1.5 flex-1 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden">
-                      <div className="h-full w-4/5 bg-gradient-to-r from-teal-500 to-sky-400 rounded-full" />
+                      <div className="h-full w-4/5 bg-gradient-to-r from-teal-500 to-info rounded-full" />
                     </div>
                     <span className="text-xs font-mono font-bold text-teal-600 dark:text-teal-400">80%</span>
                   </div>
@@ -1485,7 +1485,7 @@ export function UIShowcasePage() {
                       <button
                         type="button"
                         onClick={() => setIsBottomSheetOpen(true)}
-                        className="px-3.5 py-2 rounded-xl bg-sky-50 dark:bg-sky-950/40 text-sky-700 dark:text-sky-300 font-bold text-xs border border-sky-200 dark:border-sky-500/30"
+                        className="px-3.5 py-2 rounded-xl bg-info dark:bg-info/40 text-info dark:text-info font-bold text-xs border border-info dark:border-info/30"
                       >
                         {t('shw.tryBottomSheet')}
                       </button>
@@ -1514,7 +1514,7 @@ export function UIShowcasePage() {
                     <Users className="size-4 mx-auto mb-0.5" />
                     <span>{t('shw.patients')}</span>
                   </div>
-                  <div className="size-10 rounded-xl bg-gradient-to-tr from-teal-600 to-sky-400 text-white flex flex-col items-center justify-center -mt-3 shadow-sm">
+                  <div className="size-10 rounded-xl bg-gradient-to-tr from-teal-600 to-info text-white flex flex-col items-center justify-center -mt-3 shadow-sm">
                     <Camera className="size-4" />
                     <span className="text-2xs">AR</span>
                   </div>
@@ -1629,12 +1629,12 @@ export function UIShowcasePage() {
             ARMONIZACIÓN CROMÁTICA PASTEL CLÍNICA: SOFT SKY, MINT & LAVENDER
             ───────────────────────────────────────────────────────────── */}
         {(activeTab === 'todos' || activeTab === 'armonizacion') && (
-          <section className="space-y-8 p-6 sm:p-8 rounded-3xl bg-gradient-to-b from-sky-500/10 via-teal-500/5 to-surface border border-sky-500/25 shadow-elevated">
+          <section className="space-y-8 p-6 sm:p-8 rounded-3xl bg-gradient-to-b from-info/10 via-teal-500/5 to-surface border border-info/25 shadow-elevated">
             {/* Header de la Armonización */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-sky-500/20">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-info/20">
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
-                  <span className="p-1.5 rounded-lg bg-sky-500/20 text-sky-600 dark:text-sky-400">
+                  <span className="p-1.5 rounded-lg bg-info/20 text-info dark:text-info">
                     <Sparkles className="w-5 h-5" />
                   </span>
                   <h2 className="fm-title text-on-surface">
@@ -1657,7 +1657,7 @@ export function UIShowcasePage() {
                       className={cn(
                         "px-2.5 py-1 text-xs font-bold rounded-lg capitalize transition-all",
                         activePastelDemo === tone
-                          ? "bg-white dark:bg-slate-900 text-sky-700 dark:text-sky-300 shadow-xs"
+                          ? "bg-white dark:bg-slate-900 text-info dark:text-info shadow-xs"
                           : "text-on-surface-variant hover:text-on-surface dark:hover:text-slate-200"
                       )}
                     >
@@ -1703,27 +1703,27 @@ export function UIShowcasePage() {
                 className={cn(
                   "p-5 rounded-2xl relative overflow-hidden transition-all duration-300",
                   pastelFinish === 'solid' && CLINICAL_PASTELS.sky.solid,
-                  activePastelDemo === 'sky' && "ring-2 ring-sky-400/60 shadow-card"
+                  activePastelDemo === 'sky' && "ring-2 ring-info/60 shadow-card"
                 )}
                 interactive
               >
                 <div className="flex items-start justify-between mb-4">
-                  <div className="size-11 rounded-xl bg-sky-500/20 text-sky-700 dark:text-sky-300 flex items-center justify-center font-bold ring-2 ring-sky-400/30">
+                  <div className="size-11 rounded-xl bg-info/20 text-info dark:text-info flex items-center justify-center font-bold ring-2 ring-info/30">
                     <Activity className="size-5" />
                   </div>
-                  <span className="text-2xs font-bold px-2.5 py-0.5 rounded-full bg-sky-500/15 border border-sky-500/30 text-sky-700 dark:text-sky-300">
+                  <span className="text-2xs font-bold px-2.5 py-0.5 rounded-full bg-info/15 border border-info/30 text-info dark:text-info">
                     {t('shw.softSky')}
                   </span>
                 </div>
-                <h3 className="text-sm font-bold text-sky-950 dark:text-sky-100 mb-1">
+                <h3 className="text-sm font-bold text-info dark:text-info mb-1">
                   {t('shw.clinicalPastelSkyBlue')}
                 </h3>
-                <p className="text-xs text-sky-700/80 dark:text-sky-300/80 mb-4 leading-relaxed">
+                <p className="text-xs text-info/80 dark:text-info/80 mb-4 leading-relaxed">
                   {t('shw.idealForTelemetry')}
                 </p>
-                <div className="flex items-center justify-between pt-3 border-t border-sky-200/50 dark:border-sky-500/20 text-xs font-semibold">
-                  <span className="text-sky-800 dark:text-sky-200">{t('shw.romAngle')}</span>
-                  <span className="font-mono font-black text-sky-600 dark:text-sky-300">128.4° (+4.2%)</span>
+                <div className="flex items-center justify-between pt-3 border-t border-info/50 dark:border-info/20 text-xs font-semibold">
+                  <span className="text-info dark:text-info">{t('shw.romAngle')}</span>
+                  <span className="font-mono font-black text-info dark:text-info">128.4° (+4.2%)</span>
                 </div>
               </HarmonizedSurface>
 
@@ -1763,27 +1763,27 @@ export function UIShowcasePage() {
                 className={cn(
                   "p-5 rounded-2xl relative overflow-hidden transition-all duration-300",
                   pastelFinish === 'solid' && CLINICAL_PASTELS.lavender.solid,
-                  activePastelDemo === 'lavender' && "ring-2 ring-indigo-400/60 shadow-card"
+                  activePastelDemo === 'lavender' && "ring-2 ring-secondary/60 shadow-card"
                 )}
                 interactive
               >
                 <div className="flex items-start justify-between mb-4">
-                  <div className="size-11 rounded-xl bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 flex items-center justify-center font-bold ring-2 ring-indigo-400/30">
+                  <div className="size-11 rounded-xl bg-secondary/20 text-secondary dark:text-secondary flex items-center justify-center font-bold ring-2 ring-secondary/30">
                     <Sparkles className="size-5" />
                   </div>
-                  <span className="text-2xs font-bold px-2.5 py-0.5 rounded-full bg-indigo-500/15 border border-indigo-500/30 text-indigo-700 dark:text-indigo-300">
+                  <span className="text-2xs font-bold px-2.5 py-0.5 rounded-full bg-secondary/15 border border-secondary/30 text-secondary dark:text-secondary">
                     {t('shw.lavenderBlue')}
                   </span>
                 </div>
-                <h3 className="text-sm font-bold text-indigo-950 dark:text-indigo-100 mb-1">
+                <h3 className="text-sm font-bold text-secondary dark:text-secondary mb-1">
                   {t('shw.subtleLavenderBlue')}
                 </h3>
-                <p className="text-xs text-indigo-700/80 dark:text-indigo-300/80 mb-4 leading-relaxed">
+                <p className="text-xs text-secondary/80 dark:text-secondary/80 mb-4 leading-relaxed">
                   {t('shw.designedForTeleRehab')}
                 </p>
-                <div className="flex items-center justify-between pt-3 border-t border-indigo-200/50 dark:border-indigo-500/20 text-xs font-semibold">
-                  <span className="text-indigo-800 dark:text-indigo-200">{t('shw.guidedSessions')}</span>
-                  <span className="font-mono font-black text-indigo-600 dark:text-indigo-300">{t('shw.n18Completed')}</span>
+                <div className="flex items-center justify-between pt-3 border-t border-secondary/50 dark:border-secondary/20 text-xs font-semibold">
+                  <span className="text-secondary dark:text-secondary">{t('shw.guidedSessions')}</span>
+                  <span className="font-mono font-black text-secondary dark:text-secondary">{t('shw.n18Completed')}</span>
                 </div>
               </HarmonizedSurface>
             </div>
@@ -1860,33 +1860,33 @@ export function UIShowcasePage() {
                   </div>
                 </div>
 
-                <div className="p-3.5 rounded-xl bg-sky-50/90 dark:bg-sky-950/35 border border-sky-200/80 dark:border-sky-500/30 flex items-center gap-2.5">
-                  <div className="size-8 rounded-lg bg-sky-500/20 text-sky-700 dark:text-sky-300 flex items-center justify-center shrink-0">
+                <div className="p-3.5 rounded-xl bg-info/90 dark:bg-info/35 border border-info/80 dark:border-info/30 flex items-center gap-2.5">
+                  <div className="size-8 rounded-lg bg-info/20 text-info dark:text-info flex items-center justify-center shrink-0">
                     <Activity className="size-4" />
                   </div>
                   <div>
-                    <span className="text-2xs font-bold text-sky-600 dark:text-sky-400 uppercase tracking-wider block">{t('shw.telemetry')}</span>
-                    <p className="text-xs font-bold text-sky-950 dark:text-sky-100">{t('shw.tracking60Fps')}</p>
+                    <span className="text-2xs font-bold text-info dark:text-info uppercase tracking-wider block">{t('shw.telemetry')}</span>
+                    <p className="text-xs font-bold text-info dark:text-info">{t('shw.tracking60Fps')}</p>
                   </div>
                 </div>
 
-                <div className="p-3.5 rounded-xl bg-amber-50/90 dark:bg-amber-950/35 border border-amber-200/80 dark:border-amber-500/30 flex items-center gap-2.5">
-                  <div className="size-8 rounded-lg bg-amber-500/20 text-amber-700 dark:text-amber-300 flex items-center justify-center shrink-0">
+                <div className="p-3.5 rounded-xl bg-warning/90 dark:bg-warning/35 border border-warning/80 dark:border-warning/30 flex items-center gap-2.5">
+                  <div className="size-8 rounded-lg bg-warning/20 text-warning dark:text-warning flex items-center justify-center shrink-0">
                     <AlertTriangle className="size-4" />
                   </div>
                   <div>
-                    <span className="text-2xs font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider block">{t('shw.compensation')}</span>
-                    <p className="text-xs font-bold text-amber-950 dark:text-amber-100">{t('shw.shoulderElevation')}</p>
+                    <span className="text-2xs font-bold text-warning dark:text-warning uppercase tracking-wider block">{t('shw.compensation')}</span>
+                    <p className="text-xs font-bold text-warning dark:text-warning">{t('shw.shoulderElevation')}</p>
                   </div>
                 </div>
 
-                <div className="p-3.5 rounded-xl bg-indigo-50/90 dark:bg-indigo-950/35 border border-indigo-200/80 dark:border-indigo-500/30 flex items-center gap-2.5">
-                  <div className="size-8 rounded-lg bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 flex items-center justify-center shrink-0">
+                <div className="p-3.5 rounded-xl bg-secondary/90 dark:bg-secondary/35 border border-secondary/80 dark:border-secondary/30 flex items-center gap-2.5">
+                  <div className="size-8 rounded-lg bg-secondary/20 text-secondary dark:text-secondary flex items-center justify-center shrink-0">
                     <Sparkles className="size-4" />
                   </div>
                   <div>
-                    <span className="text-2xs font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider block">{t('shw.aiIntelligence')}</span>
-                    <p className="text-xs font-bold text-indigo-950 dark:text-indigo-100">{t('shw.predictivePhysi')}</p>
+                    <span className="text-2xs font-bold text-secondary dark:text-secondary uppercase tracking-wider block">{t('shw.aiIntelligence')}</span>
+                    <p className="text-xs font-bold text-secondary dark:text-secondary">{t('shw.predictivePhysi')}</p>
                   </div>
                 </div>
               </div>
@@ -1958,7 +1958,7 @@ export function UIShowcasePage() {
               {/* 4. AlertDialog HeroUI */}
               <div className="space-y-3">
                 <div className="flex items-center gap-2">
-                  <AlertTriangle className="w-4 h-4 text-rose-600" />
+                  <AlertTriangle className="w-4 h-4 text-danger" />
                   <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
                     {t('shw.n4AlertDialogs')}
                   </h3>
@@ -1969,7 +1969,7 @@ export function UIShowcasePage() {
                       {t('shw.criticalConfirmationModal')}
                     </h4>
                     <p className="text-xs text-on-surface-variant mb-6 leading-relaxed">
-                      Sustituye llamadas estándar <code className="text-rose-500 font-mono">window.confirm</code> por un diálogo con backdrop difuminado, spring physics y confirmación accesible.
+                      Sustituye llamadas estándar <code className="text-danger font-mono">window.confirm</code> por un diálogo con backdrop difuminado, spring physics y confirmación accesible.
                     </p>
                   </div>
                   <div>
@@ -2305,7 +2305,7 @@ export function UIShowcasePage() {
                         <button
                           type="button"
                           onClick={() => toast.warning(t('shw.toastPosturalCompensation'), { description: t('shw.toastHipExceedsLimit') })}
-                          className="px-3.5 py-2 rounded-xl text-xs font-bold bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30 hover:bg-amber-500/25 transition-colors"
+                          className="px-3.5 py-2 rounded-xl text-xs font-bold bg-warning/15 text-warning dark:text-warning border border-warning/30 hover:bg-warning/25 transition-colors"
                         >
                           {t('shw.biomechanicalAlert')}
                         </button>
@@ -2314,7 +2314,7 @@ export function UIShowcasePage() {
                           onClick={() => toast.error(t('shw.toastCameraSensorError'), {
                             action: { label: t('shw.retry'), onClick: () => toast.info(t('shw.retryingConnection')) }
                           })}
-                          className="px-3.5 py-2 rounded-xl text-xs font-bold bg-red-500/15 text-red-600 dark:text-red-400 border border-red-500/30 hover:bg-red-500/25 transition-colors"
+                          className="px-3.5 py-2 rounded-xl text-xs font-bold bg-danger/15 text-danger dark:text-danger border border-danger/30 hover:bg-danger/25 transition-colors"
                         >
                           {t('shw.errorWithAction')}
                         </button>
@@ -2754,7 +2754,7 @@ export function UIShowcasePage() {
                     pixelFadeInDuration={800}
                     maxAnimationDelay={1000}
                     colorRevealDelay={1100}
-                    className="h-60 w-60 md:h-72 md:w-72 bg-gradient-to-br from-teal-500/10 to-cyan-500/10 flex items-center justify-center p-4"
+                    className="h-60 w-60 md:h-72 md:w-72 bg-gradient-to-br from-teal-500/10 to-info/10 flex items-center justify-center p-4"
                   />
                   <div className="max-w-md space-y-3">
                     <span className="text-2xs font-bold uppercase tracking-widest text-teal-600 dark:text-teal-400 bg-teal-500/10 px-2 py-0.5 rounded-md">
@@ -2843,7 +2843,7 @@ export function UIShowcasePage() {
                         variant={pulsatingVariant}
                         pulseColor="#06b6d4"
                         onClick={() => navigate('/ar-mirror')}
-                        className="bg-cyan-600 hover:bg-cyan-500 text-xs"
+                        className="bg-info hover:bg-info text-xs"
                       >
                         <Zap className="size-4" />
                         <span>{t('shw.startArMirror2')}</span>
@@ -2862,14 +2862,14 @@ export function UIShowcasePage() {
                       <button
                         type="button"
                         onClick={() => setPulsatingColor('rgba(193, 255, 114, 0.7)')}
-                        className="px-2 py-0.5 rounded-md bg-lime-500/10 text-lime-700 dark:text-lime-400 border border-lime-500/20"
+                        className="px-2 py-0.5 rounded-md bg-kinetic/10 text-kinetic dark:text-kinetic border border-kinetic/20"
                       >
                         {t('shw.kineticLime')}
                       </button>
                       <button
                         type="button"
                         onClick={() => setPulsatingColor('rgba(59, 130, 246, 0.6)')}
-                        className="px-2 py-0.5 rounded-md bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20"
+                        className="px-2 py-0.5 rounded-md bg-info/10 text-info dark:text-info border border-info/20"
                       >
                         {t('shw.azureBlue')}
                       </button>
@@ -2899,10 +2899,10 @@ export function UIShowcasePage() {
                       <div className="flex items-center justify-between text-xs font-semibold text-on-surface-variant">
                         <span>{t('shw.gradient2')}</span>
                         <code className="text-xs text-teal-600 dark:text-teal-400 font-mono">
-                          from-teal-600 via-cyan-400 to-[#c1ff72]
+                          from-teal-600 via-info to-[#c1ff72]
                         </code>
                       </div>
-                      <div className="h-2 w-full rounded-full bg-gradient-to-r from-teal-600 via-cyan-400 to-[#c1ff72] shadow-sm shadow-teal-500/20" />
+                      <div className="h-2 w-full rounded-full bg-gradient-to-r from-teal-600 via-info to-[#c1ff72] shadow-sm shadow-teal-500/20" />
                       <p className="text-xs text-on-surface-variant leading-normal">
                         {t('shw.enableItOnAllClinicalScreensSoThePatientOrTherapistC')}
                       </p>
@@ -3151,7 +3151,7 @@ export function UIShowcasePage() {
                     <span className="text-2xs font-bold uppercase tracking-wider text-teal-600 dark:text-teal-400 bg-teal-500/10 px-2 py-0.5 rounded-md border border-teal-500/20">
                       {t(item.category)}
                     </span>
-                    <span className="text-2xs font-bold px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
+                    <span className="text-2xs font-bold px-2 py-0.5 rounded-full bg-info/10 text-info dark:text-info border border-info/20">
                       {t('shw.sourceLabel')} {item.librarySource}
                     </span>
                   </div>
@@ -3249,7 +3249,7 @@ export function UIShowcasePage() {
                     {t('shw.largeTactileLg')}
                   </Button>
                   <Tooltip content={t('shw.accessibleIconbuttonForNavigation')}>
-                    <IconButton icon={<Heart className="w-4 h-4 text-rose-500" />} />
+                    <IconButton icon={<Heart className="w-4 h-4 text-danger" />} />
                   </Tooltip>
                   <BackButton onClick={() => toast.info(t('shw.navigationSimulationGoingBackToThePreviousScreen'))}>{t('shw.backbuttonBack')}</BackButton>
                 </div>
@@ -3299,10 +3299,10 @@ export function UIShowcasePage() {
                 <BorderBeam size={90} duration={6} colorFrom="#14b8a6" colorTo="#C1FF72" />
                 <div>
                   <div className="flex items-center justify-between mb-4">
-                    <div className="p-3 rounded-2xl bg-lime-500/10 text-lime-600 dark:text-lime-400">
+                    <div className="p-3 rounded-2xl bg-kinetic/10 text-kinetic dark:text-kinetic">
                       <Sparkles className="w-6 h-6" />
                     </div>
-                    <span className="text-2xs font-bold text-lime-600 bg-lime-500/10 px-2.5 py-1 rounded-full border border-lime-500/20">
+                    <span className="text-2xs font-bold text-kinetic bg-kinetic/10 px-2.5 py-1 rounded-full border border-kinetic/20">
                       Magic UI BorderBeam
                     </span>
                   </div>
@@ -3351,7 +3351,7 @@ export function UIShowcasePage() {
           <section className="space-y-4">
             <div>
               <h2 className="text-lg font-bold flex items-center gap-2">
-                <Layers className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                <Layers className="w-5 h-5 text-info dark:text-info" />
                 {t('shw.evolvedModalsHeader')}
               </h2>
               <p className="text-xs text-on-surface-variant">
@@ -3395,7 +3395,7 @@ export function UIShowcasePage() {
           <section className="space-y-4">
             <div>
               <h2 className="text-lg font-bold flex items-center gap-2">
-                <Smartphone className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+                <Smartphone className="w-5 h-5 text-warning dark:text-warning" />
                 {t('shw.clinicalInputsOtpinput')}
               </h2>
               <p className="text-xs text-on-surface-variant">
@@ -3538,7 +3538,7 @@ export function UIShowcasePage() {
           <section className="space-y-4">
             <div>
               <h2 className="text-lg font-bold flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+                <Sparkles className="w-5 h-5 text-secondary dark:text-secondary" />
                 {t('shw.luminousTypographyTooltips')}
               </h2>
               <p className="text-xs text-on-surface-variant">

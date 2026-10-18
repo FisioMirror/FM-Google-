@@ -80,8 +80,8 @@ export const BiomechanicalAngleGauge: React.FC<BiomechanicalAngleGaugeProps> = (
           className={cn(
             'text-2xs font-medium px-2 py-0.5 rounded-full border',
             status.color === 'emerald' && 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20',
-            status.color === 'amber' && 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20',
-            status.color === 'rose' && 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20'
+            status.color === 'amber' && 'bg-warning/10 text-warning dark:text-warning border-warning/20',
+            status.color === 'rose' && 'bg-danger/10 text-danger dark:text-danger border-danger/20'
           )}
         >
           {status.label}
@@ -169,7 +169,7 @@ export const BiomechanicalAngleGauge: React.FC<BiomechanicalAngleGaugeProps> = (
           {status.color === 'emerald' ? (
             <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
           ) : (
-            <AlertTriangle className="w-3.5 h-3.5 text-amber-500" />
+            <AlertTriangle className="w-3.5 h-3.5 text-warning" />
           )}
           <span className="font-sans">Δ {delta > 0 ? `+${Math.round(delta)}` : 0}{unit}</span>
         </div>

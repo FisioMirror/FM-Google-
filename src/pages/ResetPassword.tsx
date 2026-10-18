@@ -215,7 +215,7 @@ export function ResetPassword() {
     <div className="min-h-[100dvh] w-full flex items-center justify-center p-4 sm:p-6 bg-slate-50 dark:bg-slate-950 relative overflow-hidden">
       {/* Background Subtle Blurs */}
       <div className="absolute -top-32 -right-32 w-80 h-80 rounded-full bg-teal-500/10 blur-3xl pointer-events-none" />
-      <div className="absolute -bottom-32 -left-32 w-80 h-80 rounded-full bg-cyan-500/10 blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-32 -left-32 w-80 h-80 rounded-full bg-info/10 blur-3xl pointer-events-none" />
 
       <motion.div
         initial={{ opacity: 0, y: 15 }}
@@ -251,7 +251,7 @@ export function ResetPassword() {
         </div>
 
         {errorMessage && (
-          <div className="mb-4 p-3.5 rounded-2xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 text-xs font-semibold flex items-center gap-2.5">
+          <div className="mb-4 p-3.5 rounded-2xl bg-danger dark:bg-danger/40 border border-danger dark:border-danger text-danger dark:text-danger text-xs font-semibold flex items-center gap-2.5">
             <AlertCircle size={16} className="shrink-0" />
             <span>{errorMessage}</span>
           </div>
@@ -457,11 +457,11 @@ export function ResetPassword() {
                         <div
                           className={`h-full rounded-full transition-all duration-300 ${
                             strengthScore <= 1
-                              ? 'w-1/4 bg-red-500'
+                              ? 'w-1/4 bg-danger'
                               : strengthScore === 2
-                              ? 'w-2/4 bg-amber-500'
+                              ? 'w-2/4 bg-warning'
                               : strengthScore === 3
-                              ? 'w-3/4 bg-blue-500'
+                              ? 'w-3/4 bg-info'
                               : 'w-full bg-teal-500'
                           }`}
                         />
@@ -490,7 +490,7 @@ export function ResetPassword() {
                     />
                   </div>
                   {confirmPassword && password !== confirmPassword && (
-                    <p className="text-2xs text-red-500 mt-1">{t('auth.passwordMismatch')}</p>
+                    <p className="text-2xs text-danger mt-1">{t('auth.passwordMismatch')}</p>
                   )}
                   {confirmPassword && password === confirmPassword && (
                     <p className="text-2xs text-teal-600 dark:text-teal-400 mt-1 flex items-center gap-1">

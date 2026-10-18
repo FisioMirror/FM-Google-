@@ -43,7 +43,7 @@ export function InsightBanner({
           exit={{ opacity: 0, height: 0, marginBottom: 0 }}
           className={cn(
             'relative overflow-hidden rounded-3xl p-5 sm:p-6 border border-teal-500/25 bg-gradient-to-r from-teal-950/80 via-slate-900/90 to-teal-950/80 text-white shadow-elevated backdrop-blur-xl',
-            variant === 'secondary' && 'border-cyan-500/25 from-cyan-950/80 via-slate-900/90 to-cyan-950/80',
+            variant === 'secondary' && 'border-info/25 from-info/80 via-slate-900/90 to-info/80',
             className
           )}
         >

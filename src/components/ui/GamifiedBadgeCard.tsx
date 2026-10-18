@@ -55,7 +55,7 @@ export const GamifiedBadgeCard: React.FC<GamifiedBadgeCardProps> = ({
   const renderIcon = () => {
     switch (iconName) {
       case 'award':
-        return <Award className="w-8 h-8 text-amber-400" />;
+        return <Award className="w-8 h-8 text-warning" />;
       case 'sparkles':
         return <Sparkles className="w-8 h-8 text-[#c1ff72]" />;
       default:
@@ -93,7 +93,7 @@ export const GamifiedBadgeCard: React.FC<GamifiedBadgeCardProps> = ({
         <span className="text-xs font-semibold uppercase tracking-wider text-primary dark:text-teal-400 bg-primary/10 dark:bg-teal-400/10 px-2.5 py-1 rounded-full border border-primary/20">
           {category}
         </span>
-        <div className="flex items-center gap-1 text-xs font-mono font-bold text-amber-500 dark:text-amber-400">
+        <div className="flex items-center gap-1 text-xs font-mono font-bold text-warning dark:text-warning">
           <span>+{xpPoints} XP</span>
         </div>
       </div>
@@ -104,7 +104,7 @@ export const GamifiedBadgeCard: React.FC<GamifiedBadgeCardProps> = ({
           className={cn(
             'relative flex items-center justify-center w-20 h-20 rounded-2xl p-4 border transition-transform duration-300',
             unlocked
-              ? 'bg-gradient-to-br from-teal-500/20 via-cyan-500/20 to-emerald-500/20 border-teal-500/30 shadow-[0_0_25px_rgba(13,148,136,0.25)]'
+              ? 'bg-gradient-to-br from-teal-500/20 via-info/20 to-emerald-500/20 border-teal-500/30 shadow-[0_0_25px_rgba(13,148,136,0.25)]'
               : 'bg-slate-200 dark:bg-slate-800 border-slate-300 dark:border-slate-700'
           )}
         >

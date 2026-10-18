@@ -574,15 +574,15 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
                   <span className="text-4xl font-black font-mono tracking-tight">{bmi}</span>
                 </div>
                 <div className="text-right">
-                  <span className={`px-3 py-1 rounded-full text-xs font-bold shadow-xs ${bmiStatus === 'healthy' ? 'bg-emerald-500 text-white' : bmiStatus === 'low' ? 'bg-amber-500 text-white' : bmiStatus === 'over' ? 'bg-orange-500 text-white' : 'bg-red-500 text-white'}`}>{t('tools.bmi.' + bmiStatus)}</span>
+                  <span className={`px-3 py-1 rounded-full text-xs font-bold shadow-xs ${bmiStatus === 'healthy' ? 'bg-emerald-500 text-white' : bmiStatus === 'low' ? 'bg-warning text-white' : bmiStatus === 'over' ? 'bg-warning text-white' : 'bg-danger text-white'}`}>{t('tools.bmi.' + bmiStatus)}</span>
                   <p className="text-2xs text-teal-200 font-medium mt-1">Normal: 18.5 – 24.9</p>
                 </div>
               </div>
               <div className="mt-4 flex h-2 rounded-full overflow-hidden bg-white/20">
-                <div className="bg-amber-400" style={{ width: '25%' }} />
+                <div className="bg-warning" style={{ width: '25%' }} />
                 <div className="bg-emerald-400" style={{ width: '35%' }} />
-                <div className="bg-orange-400" style={{ width: '25%' }} />
-                <div className="bg-red-400" style={{ width: '15%' }} />
+                <div className="bg-warning" style={{ width: '25%' }} />
+                <div className="bg-danger" style={{ width: '15%' }} />
               </div>
             </div>
           </SpotlightCard>
@@ -893,7 +893,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
         <div className="flex-1 p-6 space-y-4 overflow-y-auto">
           {chatMessages.map((msg, i) => (
             <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-              <div className={`max-w-[80%] p-3 rounded-2xl text-sm shadow-card transition-transform hover:scale-[1.01] ${msg.role === 'user' ? 'bg-gradient-to-br from-blue-100/80 to-blue-200/60 dark:from-slate-700/80 dark:to-slate-800/60 text-on-surface rounded-tr-none shadow-blue-200/40' : 'bg-gradient-to-br from-teal-100/80 to-teal-200/50 dark:from-slate-800/80 dark:to-slate-900/60 text-on-surface rounded-tl-none shadow-teal-200/40'}`}>
+              <div className={`max-w-[80%] p-3 rounded-2xl text-sm shadow-card transition-transform hover:scale-[1.01] ${msg.role === 'user' ? 'bg-gradient-to-br from-info/80 to-info/60 dark:from-slate-700/80 dark:to-slate-800/60 text-on-surface rounded-tr-none shadow-info/40' : 'bg-gradient-to-br from-teal-100/80 to-teal-200/50 dark:from-slate-800/80 dark:to-slate-900/60 text-on-surface rounded-tl-none shadow-teal-200/40'}`}>
                 {msg.text}
               </div>
             </div>
@@ -921,7 +921,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
               <Icon name="send" size={20} />
             </button>
           </div>
-          <p className="text-2xs text-outline mt-2 flex items-center gap-1"><span className="w-2 h-2 bg-green-500 rounded-full" /> {t('tools.hipaa')}</p>
+          <p className="text-2xs text-outline mt-2 flex items-center gap-1"><span className="w-2 h-2 bg-success rounded-full" /> {t('tools.hipaa')}</p>
         </div>
       </div>
 

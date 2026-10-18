@@ -27,7 +27,7 @@ const DragDropRetry = () => {
         {status === 'idle' && <span>{t('uix.ddrWaiting')}</span>}
         {status === 'uploading' && <><Loader2 size={16} className="animate-spin text-primary" /> <span>{t('uix.ddrUploading')}</span></>}
         {status === 'success' && <><CheckCircle2 size={16} className="text-emerald-500" /> <span className="text-emerald-600 dark:text-emerald-400 font-medium">{t('uix.ddrSuccess')}</span></>}
-        {status === 'error' && <><AlertCircle size={16} className="text-red-500" /> <span className="text-red-600 dark:text-red-400 font-medium">{t('uix.ddrError')}</span></>}
+        {status === 'error' && <><AlertCircle size={16} className="text-danger" /> <span className="text-danger dark:text-danger font-medium">{t('uix.ddrError')}</span></>}
       </div>
       {status === 'error' && (
         <button className="mt-4 inline-flex items-center gap-2 px-6 py-2 bg-teal-500 text-white rounded-full font-semibold text-sm hover:bg-teal-600 transition-colors" onClick={(e) => { e.stopPropagation(); setStatus('idle'); setTimeout(simulateUpload, 300); }}>

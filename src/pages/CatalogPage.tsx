@@ -183,16 +183,16 @@ export function CatalogPage() {
 
             {/* SpotlightCard 2: Biomechanical ROM */}
             <SpotlightCard className="p-6 space-y-4">
-              <div className="size-12 rounded-2xl bg-cyan-500/10 text-cyan-600 flex items-center justify-center font-bold">
+              <div className="size-12 rounded-2xl bg-info/10 text-info flex items-center justify-center font-bold">
                 <Compass className="size-6" />
               </div>
               <h3 className="text-base font-bold text-on-surface">Calibración Goniométrica</h3>
               <p className="text-xs text-on-surface-variant leading-relaxed">
                 Ángulo objetivo de flexión evaluado en 165° con compensación escapular mitigada mediante IA.
               </p>
-              <div className="pt-2 flex items-center justify-between text-xs font-mono font-bold text-cyan-600 dark:text-cyan-400">
+              <div className="pt-2 flex items-center justify-between text-xs font-mono font-bold text-info dark:text-info">
                 <span>{t('exs.mdRom')}: 165°</span>
-                <span className="text-2xs bg-cyan-500/10 px-2 py-0.5 rounded-full">Óptimo</span>
+                <span className="text-2xs bg-info/10 px-2 py-0.5 rounded-full">Óptimo</span>
               </div>
             </SpotlightCard>
 
@@ -627,11 +627,11 @@ export function CatalogPage() {
 
       {/* BLOQUE MACRO SUITE (50 COMPONENTES DE ÉLITE) */}
       {(activeTab === 'all' || activeTab === 'megasuite') && (
-        <section className="space-y-8 p-6 sm:p-8 rounded-3xl bg-gradient-to-b from-cyan-500/10 via-surface/60 to-surface border border-cyan-500/25 shadow-elevated">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-cyan-500/20">
+        <section className="space-y-8 p-6 sm:p-8 rounded-3xl bg-gradient-to-b from-info/10 via-surface/60 to-surface border border-info/25 shadow-elevated">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-info/20">
             <div className="space-y-1">
               <div className="flex items-center gap-2">
-                <span className="p-1.5 rounded-lg bg-cyan-500/20 text-cyan-600 dark:text-cyan-400">
+                <span className="p-1.5 rounded-lg bg-info/20 text-info dark:text-info">
                   <Sparkles className="w-5 h-5" />
                 </span>
                 <h2 className="fm-title text-on-surface">
@@ -642,15 +642,15 @@ export function CatalogPage() {
                 Catálogo masivo de 50 componentes modulares creados con HeroUI, Magic UI y DaisyUI para telemetría MediaPipe, diagnóstico clínico, microinteracciones, gamificación y docks AR.
               </p>
             </div>
-            <span className="px-3 py-1 rounded-full bg-cyan-500/15 text-cyan-700 dark:text-cyan-300 border border-cyan-500/30 text-xs font-bold shrink-0">
+            <span className="px-3 py-1 rounded-full bg-info/15 text-info dark:text-info border border-info/30 text-xs font-bold shrink-0">
               50 / 50 Activos
             </span>
           </div>
 
           {/* Categoría 1: Diagnóstico (10) */}
           <div className="space-y-4">
-            <div className="flex items-center gap-2 pb-2 border-b border-cyan-500/15">
-              <span className="size-2 rounded-full bg-cyan-500" />
+            <div className="flex items-center gap-2 pb-2 border-b border-info/15">
+              <span className="size-2 rounded-full bg-info" />
               <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
                 Categoría 1: Tarjetas de Actividad y Diagnóstico Clínico (1 - 10)
               </h3>
@@ -670,8 +670,8 @@ export function CatalogPage() {
           </div>
 
           {/* Categoría 2: Paneles en Tiempo Real (11 - 20) */}
-          <div className="space-y-4 pt-6 border-t border-cyan-500/15">
-            <div className="flex items-center gap-2 pb-2 border-b border-cyan-500/15">
+          <div className="space-y-4 pt-6 border-t border-info/15">
+            <div className="flex items-center gap-2 pb-2 border-b border-info/15">
               <span className="size-2 rounded-full bg-teal-500" />
               <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
                 Categoría 2: Paneles y Métricas en Tiempo Real (MediaPipe / IA) (11 - 20)
@@ -692,9 +692,9 @@ export function CatalogPage() {
           </div>
 
           {/* Categoría 3: Microinteracciones Flotantes (21 - 30) */}
-          <div className="space-y-4 pt-6 border-t border-cyan-500/15">
-            <div className="flex items-center gap-2 pb-2 border-b border-cyan-500/15">
-              <span className="size-2 rounded-full bg-indigo-500" />
+          <div className="space-y-4 pt-6 border-t border-info/15">
+            <div className="flex items-center gap-2 pb-2 border-b border-info/15">
+              <span className="size-2 rounded-full bg-secondary" />
               <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
                 Categoría 3: Microinteracciones y Controles Flotantes Contextuales (21 - 30)
               </h3>
@@ -714,9 +714,9 @@ export function CatalogPage() {
           </div>
 
           {/* Categoría 4: Gamificación (31 - 40) */}
-          <div className="space-y-4 pt-6 border-t border-cyan-500/15">
-            <div className="flex items-center gap-2 pb-2 border-b border-cyan-500/15">
-              <span className="size-2 rounded-full bg-amber-500" />
+          <div className="space-y-4 pt-6 border-t border-info/15">
+            <div className="flex items-center gap-2 pb-2 border-b border-info/15">
+              <span className="size-2 rounded-full bg-warning" />
               <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
                 Categoría 4: Gamificación, Rachas y Motivación de Pacientes (31 - 40)
               </h3>
@@ -740,8 +740,8 @@ export function CatalogPage() {
           </div>
 
           {/* Categoría 5: Docks y Navegación Ergonómica (41 - 50) */}
-          <div className="space-y-4 pt-6 border-t border-cyan-500/15">
-            <div className="flex items-center gap-2 pb-2 border-b border-cyan-500/15">
+          <div className="space-y-4 pt-6 border-t border-info/15">
+            <div className="flex items-center gap-2 pb-2 border-b border-info/15">
               <span className="size-2 rounded-full bg-emerald-500" />
               <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
                 Categoría 5: Docks, Barras de Herramientas y Navegación Ergonómica (41 - 50)

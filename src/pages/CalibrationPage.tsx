@@ -228,7 +228,7 @@ export function CalibrationPage() {
       {/* Indicador Flotante Superior de Detección */}
       {isReady && !error && state !== 'idle' && state !== 'success' && (
         <div className="absolute top-14 sm:top-16 left-3 sm:left-6 z-20 flex items-center gap-2 bg-slate-900/80 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/15 shadow-card">
-          <span className={`w-2 h-2 rounded-full ${poseData?.isTracking ? 'bg-teal-400 animate-pulse' : 'bg-amber-400'}`} />
+          <span className={`w-2 h-2 rounded-full ${poseData?.isTracking ? 'bg-teal-400 animate-pulse' : 'bg-warning'}`} />
           <span className="text-white text-2xs sm:text-xs font-bold uppercase tracking-wider">
             {poseData?.isTracking ? (isSimulated ? t('cal.liveSim') : t('cal.bodyInFrame')) : t('cal.searching')}
           </span>
@@ -237,12 +237,12 @@ export function CalibrationPage() {
 
       {/* Banner de Modo Simulación cuando la cámara física no está accesible */}
       {isSimulated && isReady && (
-        <div className="absolute top-14 sm:top-16 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 bg-amber-500/20 border border-amber-400/40 backdrop-blur-md px-3 py-1.5 rounded-full text-amber-200 text-xs sm:text-xs font-medium shadow-sm">
-          <Icon name="sensors" size={14} className="text-amber-400 shrink-0" />
+        <div className="absolute top-14 sm:top-16 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 bg-warning/20 border border-warning/40 backdrop-blur-md px-3 py-1.5 rounded-full text-warning text-xs sm:text-xs font-medium shadow-sm">
+          <Icon name="sensors" size={14} className="text-warning shrink-0" />
           <span>Modo Simulación Biomecánica</span>
           <button
             onClick={reconnectCamera}
-            className="ml-1 px-2 py-0.5 rounded-full bg-amber-400/30 hover:bg-amber-400/50 text-white text-2xs font-bold uppercase tracking-wider transition-colors cursor-pointer"
+            className="ml-1 px-2 py-0.5 rounded-full bg-warning/30 hover:bg-warning/50 text-white text-2xs font-bold uppercase tracking-wider transition-colors cursor-pointer"
           >
             Reconectar
           </button>
@@ -280,10 +280,10 @@ export function CalibrationPage() {
       {/* Estado: Error */}
       {error && (
         <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-slate-950/90 backdrop-blur-md gap-4 p-6 text-center">
-          <div className="w-16 h-16 rounded-full bg-red-500/20 flex items-center justify-center border border-red-500/30">
-            <Icon name="videocam_off" filled size={36} className="text-red-400" />
+          <div className="w-16 h-16 rounded-full bg-danger/20 flex items-center justify-center border border-danger/30">
+            <Icon name="videocam_off" filled size={36} className="text-danger" />
           </div>
-          <p className="text-red-200 text-sm max-w-sm">{error}</p>
+          <p className="text-danger text-sm max-w-sm">{error}</p>
           <div className="flex flex-col sm:flex-row gap-3 mt-2">
             <button
               onClick={reconnectCamera}
@@ -316,7 +316,7 @@ export function CalibrationPage() {
               className="flex items-center justify-between px-4 py-3 cursor-pointer hover:bg-white/5 transition-colors border-b border-white/10 select-none"
             >
               <div className="flex items-center gap-2.5">
-                <div className={`w-3 h-3 rounded-full ${poseData?.isTracking ? 'bg-teal-400 shadow-[0_0_8px_rgba(45,212,191,0.6)]' : 'bg-amber-400'}`} />
+                <div className={`w-3 h-3 rounded-full ${poseData?.isTracking ? 'bg-teal-400 shadow-[0_0_8px_rgba(45,212,191,0.6)]' : 'bg-warning'}`} />
                 <span className="font-bold text-xs sm:text-sm text-white tracking-wide">
                   {state === 'calibrating' ? t('cal.step2') : t('cal.step1')}
                 </span>
@@ -377,7 +377,7 @@ export function CalibrationPage() {
                         <div className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 border ${
                           handRaisedDetected
                             ? 'bg-teal-500/20 text-teal-300 border-teal-500/40'
-                            : 'bg-amber-500/20 text-amber-300 border-amber-500/40 animate-pulse'
+                            : 'bg-warning/20 text-warning border-warning/40 animate-pulse'
                         }`}>
                           <Icon name={handRaisedDetected ? 'check_circle' : 'pan_tool'} size={20} />
                         </div>
@@ -470,8 +470,8 @@ export function CalibrationPage() {
             exit={{ opacity: 0 }}
             className="absolute inset-0 z-40 flex flex-col items-center justify-center bg-slate-950/90 backdrop-blur-md gap-4 p-6 text-center select-none"
           >
-            <div className="w-16 h-16 rounded-full bg-amber-500/20 flex items-center justify-center border border-amber-500/40">
-              <Icon name="warning" filled size={36} className="text-amber-400" />
+            <div className="w-16 h-16 rounded-full bg-warning/20 flex items-center justify-center border border-warning/40">
+              <Icon name="warning" filled size={36} className="text-warning" />
             </div>
             <h2 className="text-xl sm:text-2xl font-bold text-white">{t('cal.notDetected')}</h2>
             <p className="text-white/70 text-sm max-w-sm">
@@ -499,8 +499,8 @@ export function CalibrationPage() {
         {showSkipConfirm && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 z-[200] flex items-center justify-center bg-black/70 backdrop-blur-md p-4" onClick={() => setShowSkipConfirm(false)}>
             <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} onClick={(e) => e.stopPropagation()} className="rounded-3xl p-6 max-w-md w-full text-center border border-white/10" style={{ background: 'rgba(22,35,34,0.95)', backdropFilter: 'blur(24px)' }}>
-              <div className="w-16 h-16 rounded-full bg-amber-500/20 flex items-center justify-center mx-auto mb-4">
-                <Icon name="warning" filled size={32} className="text-amber-400" />
+              <div className="w-16 h-16 rounded-full bg-warning/20 flex items-center justify-center mx-auto mb-4">
+                <Icon name="warning" filled size={32} className="text-warning" />
               </div>
               <h3 className="text-white text-xl font-bold mb-2">{t('cal.continueWithout')}?</h3>
               <p className="text-white/70 text-sm mb-6">La precision del seguimiento puede verse afectada sin calibrar. Deseas continuar?</p>

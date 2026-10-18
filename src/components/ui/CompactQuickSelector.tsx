@@ -202,7 +202,7 @@ export function CompactToleranceDropdown({
       id: 'relaxed' as const,
       label: t('cqs.toleranceRelaxed'),
       desc: t('cqs.relaxedDesc'),
-      badge: 'bg-sky-500/15 text-sky-700 dark:text-sky-300 border-sky-500/30',
+      badge: 'bg-info/15 text-info dark:text-info border-info/30',
     },
   ];
 

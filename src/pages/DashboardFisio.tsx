@@ -205,8 +205,8 @@ const quickActions = [
     title: 'Cargar Paciente',
     desc: 'Sube historias clínicas o importa perfiles con OCR inteligente.',
     icon: 'person_add',
-    color: 'bg-sky-600',
-    pastelBg: 'bg-gradient-to-br from-sky-50/70 via-surface/90 to-sky-50/30 dark:from-sky-950/25 dark:via-surface-container/80 dark:to-slate-900/90 border-sky-200/50 dark:border-sky-500/25',
+    color: 'bg-info',
+    pastelBg: 'bg-gradient-to-br from-info/70 via-surface/90 to-info/30 dark:from-info/25 dark:via-surface-container/80 dark:to-slate-900/90 border-info/50 dark:border-info/25',
     cta: 'Importar',
     route: '/ocr-scanner'
   },
@@ -214,8 +214,8 @@ const quickActions = [
     title: 'Directorio Clínico',
     desc: 'Gestión integral de pacientes, expedientes y tokens de vinculación.',
     icon: 'group',
-    color: 'bg-indigo-600',
-    pastelBg: 'bg-gradient-to-br from-indigo-50/65 via-surface/90 to-indigo-50/30 dark:from-indigo-950/20 dark:via-surface-container/80 dark:to-slate-900/90 border-indigo-200/50 dark:border-indigo-500/25',
+    color: 'bg-secondary',
+    pastelBg: 'bg-gradient-to-br from-secondary/65 via-surface/90 to-secondary/30 dark:from-secondary/20 dark:via-surface-container/80 dark:to-slate-900/90 border-secondary/50 dark:border-secondary/25',
     cta: 'Ver pacientes',
     route: '/patients'
   },
@@ -655,7 +655,7 @@ export function DashboardFisio() {
       label: t('dashboard.quickTokens'),
       subtitle: t('dashboard.quickTokensDesc'),
       category: t('common.actions'),
-      icon: <Icon name="key" size={18} className="text-amber-500" />,
+      icon: <Icon name="key" size={18} className="text-warning" />,
       onSelect: () => navigate('/patients?tab=tokens'),
     });
 
@@ -691,7 +691,7 @@ export function DashboardFisio() {
       numericValue: displayKpi.activePatients,
       colorHex: '#00504d',
       icon: 'group',
-      bgClass: 'bg-gradient-to-br from-teal-50/80 via-surface/90 to-cyan-50/50 dark:from-teal-950/30 dark:via-surface-container/80 dark:to-slate-900/90 border-teal-200/60 dark:border-teal-500/30',
+      bgClass: 'bg-gradient-to-br from-teal-50/80 via-surface/90 to-info/50 dark:from-teal-950/30 dark:via-surface-container/80 dark:to-slate-900/90 border-teal-200/60 dark:border-teal-500/30',
       iconClass: 'bg-teal-500/15 text-teal-700 dark:text-teal-300',
       badgeClass: 'bg-teal-500/15 text-teal-700 dark:text-teal-300 border-teal-500/30',
     },
@@ -701,9 +701,9 @@ export function DashboardFisio() {
       numericValue: displayKpi.sessionsToday,
       colorHex: '#158f8a',
       icon: 'calendar_today',
-      bgClass: 'bg-gradient-to-br from-cyan-50/75 via-surface/90 to-teal-50/40 dark:from-cyan-950/25 dark:via-surface-container/80 dark:to-slate-900/90 border-cyan-200/60 dark:border-cyan-500/30',
-      iconClass: 'bg-cyan-500/15 text-cyan-700 dark:text-cyan-300',
-      badgeClass: 'bg-cyan-500/15 text-cyan-700 dark:text-cyan-300 border-cyan-500/30',
+      bgClass: 'bg-gradient-to-br from-info/75 via-surface/90 to-teal-50/40 dark:from-info/25 dark:via-surface-container/80 dark:to-slate-900/90 border-info/60 dark:border-info/30',
+      iconClass: 'bg-info/15 text-info dark:text-info',
+      badgeClass: 'bg-info/15 text-info dark:text-info border-info/30',
     },
     {
       label: t('dashboard.adherence', 'Adherencia Semanal'),
@@ -722,7 +722,7 @@ export function DashboardFisio() {
       numericValue: displayKpi.pendingTokens,
       colorHex: '#E2725B',
       icon: 'key',
-      bgClass: 'bg-gradient-to-br from-orange-50/70 via-surface/90 to-amber-50/40 dark:from-amber-950/25 dark:via-surface-container/80 dark:to-slate-900/90 border-orange-200/50 dark:border-orange-500/25',
+      bgClass: 'bg-gradient-to-br from-warning/70 via-surface/90 to-warning/40 dark:from-warning/25 dark:via-surface-container/80 dark:to-slate-900/90 border-warning/50 dark:border-warning/25',
       iconClass: 'bg-tertiary-500/15 text-tertiary-700 dark:text-tertiary-300',
       badgeClass: 'bg-tertiary-500/15 text-tertiary-700 dark:text-tertiary-300 border-tertiary-500/30',
     },
@@ -838,7 +838,7 @@ export function DashboardFisio() {
                 {loadingKpis ? (
                   <span className="text-2xs sm:text-2xs font-bold text-outline px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full bg-slate-100 dark:bg-slate-800">{t('common.loading')}</span>
                 ) : realIsEmpty ? (
-                  <span className="text-2xs sm:text-2xs font-bold text-amber-700 dark:text-amber-300 bg-amber-500/10 border border-amber-500/20 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full">{t('common.noDataShort')}</span>
+                  <span className="text-2xs sm:text-2xs font-bold text-warning dark:text-warning bg-warning/10 border border-warning/20 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full">{t('common.noDataShort')}</span>
                 ) : (
                   <span className={`inline-flex items-center gap-1 sm:gap-1.5 text-2xs sm:text-2xs font-bold ${card.badgeClass} border px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full`}>
                     <span className="w-1.5 h-1.5 rounded-full bg-current animate-pulse" />
@@ -945,12 +945,12 @@ export function DashboardFisio() {
                     else if (lower.includes('moderada') || lower.includes('media') || lower.includes('atención')) severity = 'media';
                     else if (lower.includes('leve') || lower.includes('baja') || lower.includes('estable')) severity = 'baja';
                     if (!severity) return null;
-                    const colors = { alta: 'bg-red-500/15 text-red-600 ring-red-500/20', media: 'bg-amber-500/15 text-amber-600 ring-amber-500/20', baja: 'bg-emerald-500/15 text-emerald-600 ring-emerald-500/20' };
+                    const colors = { alta: 'bg-danger/15 text-danger ring-danger/20', media: 'bg-warning/15 text-warning ring-warning/20', baja: 'bg-emerald-500/15 text-emerald-600 ring-emerald-500/20' };
                     const labels: Record<string, string> = { alta: t('dashboard.priorityHigh'), media: t('dashboard.priorityMedium'), baja: t('dashboard.priorityLow') };
                     return (
                       <div className="flex items-center gap-2">
                         <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold ring-1 ${colors[severity]}`}>
-                          <span className={`w-2 h-2 rounded-full ${severity === 'alta' ? 'bg-red-500' : severity === 'media' ? 'bg-amber-500' : 'bg-emerald-500'} animate-pulse`} />
+                          <span className={`w-2 h-2 rounded-full ${severity === 'alta' ? 'bg-danger' : severity === 'media' ? 'bg-warning' : 'bg-emerald-500'} animate-pulse`} />
                           {labels[severity]}
                         </span>
                       </div>
@@ -999,10 +999,10 @@ export function DashboardFisio() {
         </motion.div>
 
         <GlassPanel className="p-8 rounded-3xl hover-lift relative overflow-hidden border-l-4 border-l-teal-400/60 dark:border-l-teal-600/40 shadow-[0_8px_30px_rgba(13,148,136,0.10)]">
-          <div className="absolute -top-10 -right-10 w-32 h-32 rounded-full bg-gradient-to-br from-cyan-400/15 to-teal-500/10 blur-2xl pointer-events-none" />
+          <div className="absolute -top-10 -right-10 w-32 h-32 rounded-full bg-gradient-to-br from-info/15 to-teal-500/10 blur-2xl pointer-events-none" />
           <div className="flex justify-between items-center mb-5 relative">
             <div className="flex items-center gap-3">
-              <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-teal-500/15 to-cyan-400/10 flex items-center justify-center ring-1 ring-cyan-500/20 breathe-teal">
+              <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-teal-500/15 to-info/10 flex items-center justify-center ring-1 ring-info/20 breathe-teal">
                 <Icon name="flag" size={24} className="icon-accent-cyan animate-breathe-icon" />
               </div>
               <div>
@@ -1021,7 +1021,7 @@ export function DashboardFisio() {
                 initial={{ width: 0 }}
                 animate={{ width: `${priorities.length ? (checkedPriorities.filter(Boolean).length / priorities.length) * 100 : 0}%` }}
                 transition={{ type: 'spring', stiffness: 120, damping: 20 }}
-                className="h-full rounded-full bg-gradient-to-r from-cyan-400 to-teal-500"
+                className="h-full rounded-full bg-gradient-to-r from-info to-teal-500"
               />
             </div>
           )}
@@ -1034,9 +1034,9 @@ export function DashboardFisio() {
                 priorities.map((p, i) => {
                   const checked = checkedPriorities[i];
                   const priorityColor =
-                    p.priority === 'ALTA' ? 'text-sky-700 dark:text-sky-300 bg-sky-500/15 border border-sky-500/30' :
+                    p.priority === 'ALTA' ? 'text-info dark:text-info bg-info/15 border border-info/30' :
                     p.priority === 'MEDIA' ? 'text-teal-700 dark:text-teal-300 bg-teal-500/15 border border-teal-500/30' :
-                    'text-indigo-700 dark:text-indigo-300 bg-indigo-500/15 border border-indigo-500/30';
+                    'text-secondary dark:text-secondary bg-secondary/15 border border-secondary/30';
                   return (
                     <motion.label
                       key={i}
@@ -1047,8 +1047,8 @@ export function DashboardFisio() {
                       whileTap={{ scale: 0.99 }}
                       className={`flex items-center gap-4 cursor-pointer p-4 rounded-2xl border transition-all duration-300 ${
                         checked
-                          ? 'bg-gradient-to-r from-teal-50/80 via-surface/90 to-sky-50/60 dark:from-teal-950/30 dark:via-surface-container/80 dark:to-sky-950/20 border-teal-300/60 dark:border-teal-500/30 shadow-xs'
-                          : 'bg-gradient-to-r from-sky-50/40 via-surface/90 to-surface dark:from-slate-900/60 dark:via-surface-container/70 dark:to-slate-900/60 border-sky-100/60 dark:border-white/5 hover:border-teal-400/40'
+                          ? 'bg-gradient-to-r from-teal-50/80 via-surface/90 to-info/60 dark:from-teal-950/30 dark:via-surface-container/80 dark:to-info/20 border-teal-300/60 dark:border-teal-500/30 shadow-xs'
+                          : 'bg-gradient-to-r from-info/40 via-surface/90 to-surface dark:from-slate-900/60 dark:via-surface-container/70 dark:to-slate-900/60 border-info/60 dark:border-white/5 hover:border-teal-400/40'
                       }`}
                     >
                       {/* Animated checkbox */}
@@ -1071,7 +1071,7 @@ export function DashboardFisio() {
                         />
                         <div className={`w-7 h-7 rounded-xl border-2 flex items-center justify-center transition-all duration-300 ${
                           checked
-                            ? 'bg-gradient-to-br from-cyan-400 to-teal-500 border-transparent shadow-card shadow-cyan-500/30'
+                            ? 'bg-gradient-to-br from-info to-teal-500 border-transparent shadow-card shadow-info/30'
                             : 'border-outline-variant/40 bg-surface-container-low/60'
                         }`}>
                           <motion.div
@@ -1190,7 +1190,7 @@ export function DashboardFisio() {
       <section className="section-bg-cyan relative">
         <div className="flex items-center justify-between mb-6 relative z-10">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-2xl bg-cyan-500/10 flex items-center justify-center ring-1 ring-cyan-500/20">
+            <div className="w-12 h-12 rounded-2xl bg-info/10 flex items-center justify-center ring-1 ring-info/20">
               <Icon name="self_improvement" size={26} className="icon-accent-cyan animate-breathe-icon" />
             </div>
             <div>
@@ -1207,7 +1207,7 @@ export function DashboardFisio() {
         </div>
 
         {/* Selector rápido 1-Tap por articulación clínica */}
-        <div className="mb-6 relative z-10 max-w-2xl bg-white/70 dark:bg-slate-900/70 p-3.5 rounded-2xl border border-sky-100/60 dark:border-slate-800 shadow-xs backdrop-blur-md">
+        <div className="mb-6 relative z-10 max-w-2xl bg-white/70 dark:bg-slate-900/70 p-3.5 rounded-2xl border border-info/60 dark:border-slate-800 shadow-xs backdrop-blur-md">
           <CompactJointSelector
             selectedJoint={selectedJointFilter}
             onSelectJoint={(id) => {
@@ -1264,7 +1264,7 @@ export function DashboardFisio() {
                         <div className="relative shrink-0">
                           <div className={`w-12 h-12 rounded-full flex items-center justify-center font-extrabold text-base border-2 shadow-sm ${
                             isWarning
-                              ? "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-200 dark:border-amber-800"
+                              ? "bg-warning/10 text-warning dark:text-warning border-warning dark:border-warning"
                               : "bg-slate-100 dark:bg-slate-800 text-on-surface border-white dark:border-slate-700"
                           }`}>
                             {initials}
@@ -1273,7 +1273,7 @@ export function DashboardFisio() {
                             <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-500 border-2 border-white dark:border-slate-800 rounded-full animate-pulse" />
                           )}
                           {isWarning && (
-                            <div className="absolute -top-1 -right-1 w-5 h-5 bg-amber-500 text-white text-2xs font-bold rounded-full flex items-center justify-center border-2 border-white dark:border-slate-800 shadow-xs">
+                            <div className="absolute -top-1 -right-1 w-5 h-5 bg-warning text-white text-2xs font-bold rounded-full flex items-center justify-center border-2 border-white dark:border-slate-800 shadow-xs">
                               !
                             </div>
                           )}
@@ -1292,11 +1292,11 @@ export function DashboardFisio() {
                         p.status === 'Activo'
                           ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300 border-emerald-200'
                           : p.status === 'Requiere Revisión'
-                          ? 'bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300 border-amber-200'
+                          ? 'bg-warning text-warning dark:bg-warning/40 dark:text-warning border-warning'
                           : 'bg-teal-50 text-teal-700 dark:bg-teal-950/40 dark:text-teal-300 border-teal-200'
                       }`}>
                         <span className={`w-1.5 h-1.5 rounded-full ${
-                          p.status === 'Activo' ? 'bg-emerald-500 animate-pulse' : p.status === 'Requiere Revisión' ? 'bg-amber-500' : 'bg-teal-600'
+                          p.status === 'Activo' ? 'bg-emerald-500 animate-pulse' : p.status === 'Requiere Revisión' ? 'bg-warning' : 'bg-teal-600'
                         }`} />
                         <span>{t(STATUS_T[p.status] || p.status)}</span>
                       </span>

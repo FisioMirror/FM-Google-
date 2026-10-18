@@ -72,7 +72,7 @@ export function ClinicalSlider({
         {/* Custom Track */}
         <div className="relative h-3 w-full rounded-full bg-surface-container-high overflow-hidden shadow-inner">
           <motion.div
-            className="h-full bg-gradient-to-r from-teal-500 via-teal-400 to-cyan-500 rounded-full"
+            className="h-full bg-gradient-to-r from-teal-500 via-teal-400 to-info rounded-full"
             style={{ width: `${percentage}%` }}
             transition={{ ease: 'easeOut', duration: 0.1 }}
           />

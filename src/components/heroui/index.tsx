@@ -111,10 +111,10 @@ export const BasicAlert = ({ className }: { className?: string }) => {
 
       <motion.div
         whileHover={{ scale: 1.01 }}
-        className="flex items-start gap-3.5 p-4 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-950 dark:text-rose-200 shadow-sm"
+        className="flex items-start gap-3.5 p-4 rounded-2xl bg-danger/10 border border-danger/20 text-danger dark:text-danger shadow-sm"
       >
-        <div className="size-8 rounded-xl bg-rose-500/20 flex items-center justify-center shrink-0 mt-0.5">
-          <XCircle className="size-4 text-rose-600 dark:text-rose-400" />
+        <div className="size-8 rounded-xl bg-danger/20 flex items-center justify-center shrink-0 mt-0.5">
+          <XCircle className="size-4 text-danger dark:text-danger" />
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-xs sm:text-sm font-bold">{t('fhero.docError')}</p>
@@ -159,7 +159,7 @@ export const DeleteDialog = ({
     <div>
       <button
         onClick={() => setIsOpen(true)}
-        className="inline-flex items-center gap-2 rounded-2xl bg-rose-500/10 text-rose-600 hover:bg-rose-500/20 border border-rose-500/20 px-4 py-2.5 text-xs font-bold transition-all cursor-pointer active:scale-95"
+        className="inline-flex items-center gap-2 rounded-2xl bg-danger/10 text-danger hover:bg-danger/20 border border-danger/20 px-4 py-2.5 text-xs font-bold transition-all cursor-pointer active:scale-95"
       >
         <Trash2 className="size-3.5" />
         {t('fhero.deletePatient')}
@@ -183,7 +183,7 @@ export const DeleteDialog = ({
               className="relative w-full max-w-md rounded-3xl bg-surface border border-outline/20 p-6 sm:p-7 shadow-elevated z-10 space-y-4 max-h-[90vh] overflow-y-auto"
             >
               <div className="flex items-start gap-4">
-                <div className="p-3 rounded-2xl bg-rose-500/15 text-rose-600 border border-rose-500/20 shrink-0">
+                <div className="p-3 rounded-2xl bg-danger/15 text-danger border border-danger/20 shrink-0">
                   <ShieldAlert className="size-6" />
                 </div>
                 <div>
@@ -204,7 +204,7 @@ export const DeleteDialog = ({
                     onConfirm?.();
                     setIsOpen(false);
                   }}
-                  className="px-4 py-2 rounded-xl text-xs font-bold bg-rose-600 text-white hover:bg-rose-700 shadow-sm shadow-rose-600/20 transition-all active:scale-95 cursor-pointer"
+                  className="px-4 py-2 rounded-xl text-xs font-bold bg-danger text-white hover:bg-danger shadow-sm shadow-danger/20 transition-all active:scale-95 cursor-pointer"
                 >
                   {t('fhero.confirmDeletion')}
                 </button>
@@ -277,14 +277,14 @@ export const AvatarWithBadge = ({
     <div className="relative inline-block">
       <BasicAvatar src={src} fallback={fallback} size="md" />
       {badgeCount > 0 ? (
-        <span className="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-rose-600 px-1 text-2xs font-black text-white shadow-sm ring-2 ring-surface">
+        <span className="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-danger px-1 text-2xs font-black text-white shadow-sm ring-2 ring-surface">
           {badgeCount}
         </span>
       ) : (
         <span
           className={cn(
             'absolute bottom-0 right-0 size-3 rounded-full ring-2 ring-surface',
-            status === 'online' ? 'bg-emerald-500 animate-pulse' : status === 'warning' ? 'bg-amber-500' : 'bg-outline'
+            status === 'online' ? 'bg-emerald-500 animate-pulse' : status === 'warning' ? 'bg-warning' : 'bg-outline'
           )}
         />
       )}
@@ -347,7 +347,7 @@ export const IconButtons = () => {
       <button className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-surface-container-high text-on-surface text-xs font-bold hover:bg-surface-container-highest transition-all active:scale-95 cursor-pointer">
         <Mail className="size-3.5" /> {t('common.send')}
       </button>
-      <button className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-rose-500/10 text-rose-600 border border-rose-500/20 text-xs font-bold hover:bg-rose-500/20 transition-all active:scale-95 cursor-pointer">
+      <button className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-danger/10 text-danger border border-danger/20 text-xs font-bold hover:bg-danger/20 transition-all active:scale-95 cursor-pointer">
         <Trash2 className="size-3.5" /> {t('common.delete')}
       </button>
     </div>
@@ -366,7 +366,7 @@ export const IconOnlyButtons = () => {
       <button className="size-9 rounded-2xl bg-surface-container-high text-on-surface-variant hover:text-teal-600 hover:bg-teal-500/10 transition-all flex items-center justify-center cursor-pointer active:scale-90">
         <Settings className="size-4" />
       </button>
-      <button className="size-9 rounded-2xl bg-rose-500/10 text-rose-600 hover:bg-rose-500/20 transition-all flex items-center justify-center cursor-pointer active:scale-90">
+      <button className="size-9 rounded-2xl bg-danger/10 text-danger hover:bg-danger/20 transition-all flex items-center justify-center cursor-pointer active:scale-90">
         <Trash2 className="size-4" />
       </button>
     </div>
@@ -570,11 +570,11 @@ export const StatusChips = () => {
       <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
         <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" /> {t('common.active')}
       </span>
-      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
-        <span className="size-1.5 rounded-full bg-amber-500" /> {t('common.pending')}
+      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-warning/10 text-warning dark:text-warning border border-warning/20">
+        <span className="size-1.5 rounded-full bg-warning" /> {t('common.pending')}
       </span>
-      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20">
-        <span className="size-1.5 rounded-full bg-rose-500" /> {t('common.inactive')}
+      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-danger/10 text-danger dark:text-danger border border-danger/20">
+        <span className="size-1.5 rounded-full bg-danger" /> {t('common.inactive')}
       </span>
       <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-teal-500/10 text-teal-600 dark:text-teal-400 border border-teal-500/20">
         <Sparkles className="size-3" /> {t('fhero.new')}
@@ -742,7 +742,7 @@ export const ActionDropdown = () => {
               onClick={() => setIsOpen(false)}
               className="w-full flex items-start gap-3 p-3 rounded-2xl hover:bg-surface-container-high text-left transition-colors cursor-pointer"
             >
-              <div className="p-2 rounded-xl bg-cyan-500/10 text-cyan-600 shrink-0 mt-0.5">
+              <div className="p-2 rounded-xl bg-info/10 text-info shrink-0 mt-0.5">
                 <FolderOpen className="size-4" />
               </div>
               <div>
@@ -826,7 +826,7 @@ export const ProgressSizes = ({ value = 75 }: { value?: number }) => {
           <span>{value}%</span>
         </div>
         <div className="h-4 w-full rounded-full bg-surface-container-high overflow-hidden p-0.5">
-          <div className="h-full bg-gradient-to-r from-teal-500 via-teal-400 to-cyan-500 rounded-full transition-all duration-300 shadow" style={{ width: `${value}%` }} />
+          <div className="h-full bg-gradient-to-r from-teal-500 via-teal-400 to-info rounded-full transition-all duration-300 shadow" style={{ width: `${value}%` }} />
         </div>
       </div>
     </div>
@@ -922,10 +922,10 @@ export const ToastVariants = () => {
       <button onClick={() => trigger(t('fhero.patientSavedToast'))} className="px-4 py-2 rounded-2xl bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 text-xs font-bold hover:bg-emerald-500/25 transition-all cursor-pointer">
         {t('fhero.toastSuccess')}
       </button>
-      <button onClick={() => trigger(t('fhero.angleWarningToast'))} className="px-4 py-2 rounded-2xl bg-amber-500/15 text-amber-600 dark:text-amber-400 text-xs font-bold hover:bg-amber-500/25 transition-all cursor-pointer">
+      <button onClick={() => trigger(t('fhero.angleWarningToast'))} className="px-4 py-2 rounded-2xl bg-warning/15 text-warning dark:text-warning text-xs font-bold hover:bg-warning/25 transition-all cursor-pointer">
         {t('fhero.toastAlert')}
       </button>
-      <button onClick={() => trigger(t('fhero.cameraCalibrationToast'))} className="px-4 py-2 rounded-2xl bg-rose-500/15 text-rose-600 dark:text-rose-400 text-xs font-bold hover:bg-rose-500/25 transition-all cursor-pointer">
+      <button onClick={() => trigger(t('fhero.cameraCalibrationToast'))} className="px-4 py-2 rounded-2xl bg-danger/15 text-danger dark:text-danger text-xs font-bold hover:bg-danger/25 transition-all cursor-pointer">
         {t('fhero.toastError')}
       </button>
 
@@ -998,8 +998,8 @@ export const PatientsTable = ({
                     u.status === t('common.active')
                       ? 'bg-emerald-500/10 text-emerald-600 border border-emerald-500/20'
                       : u.status === t('common.pending')
-                      ? 'bg-amber-500/10 text-amber-600 border border-amber-500/20'
-                      : 'bg-rose-500/10 text-rose-600 border border-rose-500/20'
+                      ? 'bg-warning/10 text-warning border border-warning/20'
+                      : 'bg-danger/10 text-danger border border-danger/20'
                   )}
                 >
                   {u.status}
@@ -1032,17 +1032,17 @@ export const CustomAlert = ({
   const alertTitle = title ?? t('fhero.planExpiringTitle');
   const alertDescription = description ?? t('fhero.planExpiringDesc');
   return (
-    <div className="relative overflow-hidden rounded-3xl border border-amber-500/30 bg-gradient-to-br from-amber-500/15 via-surface to-amber-500/5 p-5 shadow-sm">
-      <div className="pointer-events-none absolute -top-8 -right-8 size-28 rounded-full bg-amber-500/15 blur-2xl" />
+    <div className="relative overflow-hidden rounded-3xl border border-warning/30 bg-gradient-to-br from-warning/15 via-surface to-warning/5 p-5 shadow-sm">
+      <div className="pointer-events-none absolute -top-8 -right-8 size-28 rounded-full bg-warning/15 blur-2xl" />
       <div className="flex items-start gap-3.5">
-        <div className="p-2.5 rounded-2xl bg-amber-500/20 text-amber-600 shrink-0">
+        <div className="p-2.5 rounded-2xl bg-warning/20 text-warning shrink-0">
           <AlertTriangle className="size-5" />
         </div>
         <div className="flex-1">
           <h4 className="text-xs sm:text-sm font-bold text-on-surface">{alertTitle}</h4>
           <p className="text-xs sm:text-xs text-on-surface-variant mt-0.5 leading-relaxed">{alertDescription}</p>
         </div>
-        <button className="px-3.5 py-1.5 rounded-xl bg-amber-500 text-white text-xs font-bold hover:bg-amber-600 transition-colors shrink-0 shadow-sm cursor-pointer">
+        <button className="px-3.5 py-1.5 rounded-xl bg-warning text-white text-xs font-bold hover:bg-warning transition-colors shrink-0 shadow-sm cursor-pointer">
           {t('common.update')}
         </button>
       </div>
@@ -1059,7 +1059,7 @@ export const ChipVariants = () => {
       <span className="px-3.5 py-1.5 rounded-full text-xs font-bold bg-primary text-on-primary shadow-sm">Solid</span>
       <span className="px-3.5 py-1.5 rounded-full text-xs font-bold bg-teal-500/10 text-teal-600 dark:text-teal-400 border border-teal-500/30">Bordered</span>
       <span className="px-3.5 py-1.5 rounded-full text-xs font-bold bg-surface-container-high text-on-surface">Flat</span>
-      <span className="px-3.5 py-1.5 rounded-full text-xs font-bold bg-cyan-500/15 text-cyan-700 dark:text-cyan-300">Light</span>
+      <span className="px-3.5 py-1.5 rounded-full text-xs font-bold bg-info/15 text-info dark:text-info">Light</span>
     </div>
   );
 };
@@ -1074,11 +1074,11 @@ export const ChipStatuses = () => {
       <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">
         <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" /> {t('common.active')}
       </span>
-      <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-amber-500/10 text-amber-600 border border-amber-500/20">
-        <span className="size-1.5 rounded-full bg-amber-500" /> {t('fhero.underReview')}
+      <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-warning/10 text-warning border border-warning/20">
+        <span className="size-1.5 rounded-full bg-warning" /> {t('fhero.underReview')}
       </span>
-      <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-rose-500/10 text-rose-600 border border-rose-500/20">
-        <span className="size-1.5 rounded-full bg-rose-500" /> {t('fhero.suspended')}
+      <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-danger/10 text-danger border border-danger/20">
+        <span className="size-1.5 rounded-full bg-danger" /> {t('fhero.suspended')}
       </span>
     </div>
   );

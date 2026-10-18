@@ -229,7 +229,7 @@ export function PopoverMetricDemo() {
       currentAngle: "172°",
       optimalRange: "175° - 180°",
       status: t('pop.slightDeficit'),
-      badgeColor: "text-amber-500 bg-amber-500/10 border-amber-500/20",
+      badgeColor: "text-warning bg-warning/10 border-warning/20",
       description: t('pop.residualFlexion'),
     },
   };

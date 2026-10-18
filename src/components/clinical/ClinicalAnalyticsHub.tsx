@@ -433,7 +433,7 @@ export function ClinicalAnalyticsHub() {
                       ? 'bg-emerald-500/10 text-emerald-600 border border-emerald-500/20'
                       : currentJointData.status === 'recovering'
                       ? 'bg-teal-500/10 text-teal-600 border border-teal-500/20'
-                      : 'bg-amber-500/10 text-amber-600 border border-amber-500/20'
+                      : 'bg-warning/10 text-warning border border-warning/20'
                   }`}
                 >
                   {currentJointData.status === 'optimal'
@@ -487,7 +487,7 @@ export function ClinicalAnalyticsHub() {
                     initial={{ width: 0 }}
                     animate={{ width: `${currentJointData.percent}%` }}
                     transition={{ duration: 0.6 }}
-                    className="h-full rounded-full bg-gradient-to-r from-teal-500 to-cyan-400"
+                    className="h-full rounded-full bg-gradient-to-r from-teal-500 to-info"
                   />
                 </div>
               </div>
@@ -515,7 +515,7 @@ export function ClinicalAnalyticsHub() {
             <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-6">
               <div>
                 <h4 className="font-bold text-sm text-on-surface flex items-center gap-2">
-                  <Zap className="size-4 text-cyan-600 dark:text-cyan-400" />
+                  <Zap className="size-4 text-info dark:text-info" />
                   {t('cah.biomechanicalPrecisionVsPainScale')}
                 </h4>
                 <p className="text-xs text-on-surface-variant mt-0.5">
@@ -527,8 +527,8 @@ export function ClinicalAnalyticsHub() {
                 <span className="flex items-center gap-1.5 text-teal-600 dark:text-teal-400">
                   <span className="size-2.5 rounded-full bg-teal-500" /> {t('cah.precisionPercent')}
                 </span>
-                <span className="flex items-center gap-1.5 text-amber-500">
-                  <span className="size-2.5 rounded-full bg-amber-500" /> {t('cah.painVas')}
+                <span className="flex items-center gap-1.5 text-warning">
+                  <span className="size-2.5 rounded-full bg-warning" /> {t('cah.painVas')}
                 </span>
               </div>
             </div>
@@ -609,7 +609,7 @@ export function ClinicalAnalyticsHub() {
           <GlassPanel className="p-6 sm:p-8 rounded-3xl border border-outline/15 flex flex-col justify-between shadow-sm">
             <div>
               <div className="flex items-center gap-2 mb-3">
-                <div className="p-2 rounded-xl bg-cyan-500/10 text-cyan-600 dark:text-cyan-400">
+                <div className="p-2 rounded-xl bg-info/10 text-info dark:text-info">
                   <Stethoscope className="size-4" />
                 </div>
                 <h4 className="font-bold text-sm text-on-surface">{t('cah.biomechanicalReading')}</h4>
@@ -746,7 +746,7 @@ export function ClinicalAnalyticsHub() {
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <AlertTriangle className="size-4 text-amber-500" />
+            <AlertTriangle className="size-4 text-warning" />
             <h4 className="font-bold text-sm text-on-surface">{t('cah.triageEarlyAlerts')}</h4>
           </div>
           <span className="text-xs text-on-surface-variant font-semibold">
@@ -768,7 +768,7 @@ export function ClinicalAnalyticsHub() {
                   isMilestone
                     ? 'bg-emerald-500/5 dark:bg-emerald-950/20 border-emerald-500/30 hover:border-emerald-500/50'
                     : isWarning
-                    ? 'bg-amber-500/5 dark:bg-amber-950/20 border-amber-500/30 hover:border-amber-500/50'
+                    ? 'bg-warning/5 dark:bg-warning/20 border-warning/30 hover:border-warning/50'
                     : 'bg-surface/80 dark:bg-surface-container-low/60 border-outline/15 hover:border-teal-500/40'
                 }`}
               >
@@ -784,7 +784,7 @@ export function ClinicalAnalyticsHub() {
                     isMilestone
                       ? 'text-emerald-700 dark:text-emerald-300'
                       : isWarning
-                      ? 'text-amber-800 dark:text-amber-300'
+                      ? 'text-warning dark:text-warning'
                       : 'text-teal-700 dark:text-teal-300'
                   }`}>
                     {alert.title}

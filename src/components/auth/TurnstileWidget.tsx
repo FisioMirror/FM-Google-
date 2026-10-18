@@ -192,7 +192,7 @@ export const TurnstileWidget = forwardRef<TurnstileWidgetRef, TurnstileWidgetPro
         />
 
         {status === 'error' && (
-          <div className="mt-1.5 flex items-center justify-between text-xs text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/40 p-2 rounded-lg border border-red-200 dark:border-red-800/50">
+          <div className="mt-1.5 flex items-center justify-between text-xs text-danger dark:text-danger bg-danger dark:bg-danger/40 p-2 rounded-lg border border-danger dark:border-danger/50">
             <span className="flex items-center gap-1.5 text-xs">
               <AlertCircle size={13} />
               {errorMsg || t('uix.twCaptchaError')}

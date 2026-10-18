@@ -43,7 +43,7 @@ export function PatientRecoveryHub() {
     <div className="space-y-6 w-full">
       {/* Recovery Meter Hero Card */}
       <GlassPanel className="p-6 sm:p-10 rounded-3xl border-l-4 border-l-teal-500 shadow-sm relative overflow-hidden">
-        <div className="absolute -top-16 -right-16 w-64 h-64 rounded-full bg-gradient-to-br from-teal-400/20 to-cyan-500/10 blur-3xl pointer-events-none" />
+        <div className="absolute -top-16 -right-16 w-64 h-64 rounded-full bg-gradient-to-br from-teal-400/20 to-info/10 blur-3xl pointer-events-none" />
 
         <div className="flex flex-col lg:flex-row items-center justify-between gap-8 relative z-10">
           {/* Left: Empathetic text and score */}
@@ -68,12 +68,12 @@ export function PatientRecoveryHub() {
                 <CheckCircle2 className="size-4 text-teal-600" />
                 <span>{t('prh.continuousProgress')}</span>
               </div>
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-2xl bg-amber-500/5 dark:bg-amber-900/20 border border-amber-500/20 text-xs font-semibold text-amber-800 dark:text-amber-200">
-                <Flame className="size-4 text-amber-500" />
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-2xl bg-warning/5 dark:bg-warning/20 border border-warning/20 text-xs font-semibold text-warning dark:text-warning">
+                <Flame className="size-4 text-warning" />
                 <span>{t('prh.consecutiveDays')}</span>
               </div>
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-2xl bg-cyan-500/5 dark:bg-cyan-900/20 border border-cyan-500/20 text-xs font-semibold text-cyan-800 dark:text-cyan-200">
-                <Heart className="size-4 text-cyan-600" />
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-2xl bg-info/5 dark:bg-info/20 border border-info/20 text-xs font-semibold text-info dark:text-info">
+                <Heart className="size-4 text-info" />
                 <span>{t('prh.discomfortDecreasing')}</span>
               </div>
             </div>
@@ -159,7 +159,7 @@ export function PatientRecoveryHub() {
               onClick={handleTogglePhysiVoice}
               className={`px-4 py-2.5 rounded-2xl text-xs font-bold transition-all flex items-center gap-2 shadow-sm ${
                 isPlayingAudio
-                  ? 'bg-amber-500 hover:bg-amber-600 text-white'
+                  ? 'bg-warning hover:bg-warning text-white'
                   : 'bg-primary hover:bg-primary/90 text-on-primary'
               }`}
             >

@@ -69,7 +69,7 @@ export const ARFloatingDock: React.FC<ARFloatingDockProps> = ({
     {
       id: 'audio',
       label: audioMuted ? t('afd.enableAiVoice') : t('afd.muteAiVoice'),
-      icon: audioMuted ? <VolumeX className="w-5 h-5 text-rose-400" /> : <Volume2 className="w-5 h-5 text-emerald-400" />,
+      icon: audioMuted ? <VolumeX className="w-5 h-5 text-danger" /> : <Volume2 className="w-5 h-5 text-emerald-400" />,
       onClick: () => {
         const next = !audioMuted;
         setAudioMuted(next);
@@ -85,7 +85,7 @@ export const ARFloatingDock: React.FC<ARFloatingDockProps> = ({
     {
       id: 'biofeedback',
       label: t('afd.biomechanicalFilter'),
-      icon: <Sparkles className="w-5 h-5 text-lime-400" />,
+      icon: <Sparkles className="w-5 h-5 text-kinetic" />,
       onClick: () => {},
     },
     {

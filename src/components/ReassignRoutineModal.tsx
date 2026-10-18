@@ -525,8 +525,8 @@ export function ReassignRoutineModal({
             {/* STEP 2 — Confirmación */}
             {step === 2 && (
               <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="space-y-5">
-                <div className="p-5 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-start gap-3">
-                  <Icon name="archive" size={24} className="text-amber-600 shrink-0 mt-0.5" />
+                <div className="p-5 rounded-2xl bg-warning/10 border border-warning/20 flex items-start gap-3">
+                  <Icon name="archive" size={24} className="text-warning shrink-0 mt-0.5" />
                   <div>
                     <p className="font-bold text-on-surface text-sm">{t('rrm.archiveWarning')}</p>
                     <p className="text-xs text-on-surface-variant mt-1">

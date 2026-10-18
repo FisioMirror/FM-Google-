@@ -216,8 +216,8 @@ export function SettingsPage() {
         <div className="blob-teal absolute -top-12 -right-12 w-32 h-32 opacity-20 pointer-events-none" />
         <div className="relative flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className={cn('w-12 h-12 rounded-xl flex items-center justify-center', theme === 'light' ? 'bg-amber-100' : 'bg-slate-800')}>
-              <Icon name={theme === 'light' ? 'light_mode' : 'dark_mode'} size={24} className={theme === 'light' ? 'text-amber-600' : 'text-slate-300'} />
+            <div className={cn('w-12 h-12 rounded-xl flex items-center justify-center', theme === 'light' ? 'bg-warning' : 'bg-slate-800')}>
+              <Icon name={theme === 'light' ? 'light_mode' : 'dark_mode'} size={24} className={theme === 'light' ? 'text-warning' : 'text-slate-300'} />
             </div>
             <div>
               <p className="font-semibold text-on-surface">{theme === 'light' ? t('pf.lightMode') : t('pf.darkMode')}</p>
@@ -340,8 +340,8 @@ export function SettingsPage() {
         <div className="blob-blue absolute -top-12 -right-12 w-32 h-32 opacity-20 pointer-events-none" />
         <div className="relative">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center">
-              <Globe size={24} className="text-blue-500" />
+            <div className="w-12 h-12 rounded-xl bg-info/10 flex items-center justify-center">
+              <Globe size={24} className="text-info" />
             </div>
             <div>
               <p className="font-semibold text-on-surface">{t('settings.language', 'Idioma / Language')}</p>
@@ -459,7 +459,7 @@ export function SettingsPage() {
           key: 'talkback',
           icon: 'record_voice_over',
           color: 'icon-accent-cyan',
-          bg: 'bg-cyan-500/10',
+          bg: 'bg-info/10',
           titleKey: 'set.a11yTalkback',
           descKey: 'set.a11yTalkbackDesc',
           value: talkback,
@@ -536,7 +536,7 @@ export function SettingsPage() {
               className={cn(
                 "px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all self-start sm:self-auto",
                 testingVoice
-                  ? "bg-rose-500 text-white shadow-sm animate-pulse"
+                  ? "bg-danger text-white shadow-sm animate-pulse"
                   : "bg-primary hover:bg-primary/90 text-on-primary shadow-sm hover:shadow"
               )}
             >
@@ -611,7 +611,7 @@ export function SettingsPage() {
           {[
             { icon: 'mail', color: 'text-primary', bg: 'bg-primary/10', titleKey: 'set.nEmail', descKey: 'set.nEmailDesc', value: notifEmail, onChange: setNotifEmail },
             { icon: 'notifications_active', color: 'text-secondary', bg: 'bg-secondary-container/20', titleKey: 'set.nPush', descKey: 'set.nPushDesc', value: notifPush, onChange: setNotifPush },
-            { icon: 'volume_up', color: 'icon-accent-cyan', bg: 'bg-cyan-500/10', titleKey: 'set.nSound', descKey: 'set.nSoundDesc', value: notifSound, onChange: setNotifSound },
+            { icon: 'volume_up', color: 'icon-accent-cyan', bg: 'bg-info/10', titleKey: 'set.nSound', descKey: 'set.nSoundDesc', value: notifSound, onChange: setNotifSound },
           ].map((item) => (
             <div key={item.titleKey} className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -722,7 +722,7 @@ export function SettingsPage() {
           <div className="space-y-3">
             {[
               { icon: Code2, color: 'text-primary', bg: 'bg-primary/10', labelKey: 'set.devTeam', valueKey: 'set.devTeamVal' },
-              { icon: Palette, color: 'text-cyan-600', bg: 'bg-cyan-500/10', labelKey: 'set.designTeam', valueKey: 'set.designTeamVal' },
+              { icon: Palette, color: 'text-info', bg: 'bg-info/10', labelKey: 'set.designTeam', valueKey: 'set.designTeamVal' },
               { icon: Heart, color: 'text-emerald-600', bg: 'bg-emerald-500/10', labelKey: 'set.clinicTeam', valueKey: 'set.clinicTeamVal' },
             ].map((item) => (
               <div key={item.label} className="flex items-start gap-3 p-3 rounded-xl bg-surface-container-low/60">
@@ -764,8 +764,8 @@ export function SettingsPage() {
             className="w-full flex items-center justify-between p-3 rounded-xl bg-surface-container-low/60 hover:bg-surface-container-high transition-colors group"
           >
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-cyan-500/10 flex items-center justify-center">
-                <Shield size={20} className="text-cyan-600" />
+              <div className="w-10 h-10 rounded-xl bg-info/10 flex items-center justify-center">
+                <Shield size={20} className="text-info" />
               </div>
               <div className="text-left">
                 <p className="font-medium text-on-surface text-sm">{t('set.ossLicenses')}</p>
@@ -1049,8 +1049,8 @@ export function SettingsPage() {
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-12 rounded-xl bg-cyan-500/10 flex items-center justify-center">
-                  <Shield size={24} className="text-cyan-600" />
+                <div className="w-12 h-12 rounded-xl bg-info/10 flex items-center justify-center">
+                  <Shield size={24} className="text-info" />
                 </div>
                 <h3 className="text-lg font-bold text-on-surface">{t('set.ossLicenses')}</h3>
               </div>

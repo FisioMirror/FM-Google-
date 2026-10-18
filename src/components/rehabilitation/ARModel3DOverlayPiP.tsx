@@ -237,7 +237,7 @@ export const ARModel3DOverlayPiP: React.FC<ARModel3DOverlayPiPProps> = ({
           {onClose && (
             <button
               onClick={onClose}
-              className="p-1 rounded-lg text-white/60 hover:text-red-400 hover:bg-red-500/10 transition-colors cursor-pointer"
+              className="p-1 rounded-lg text-white/60 hover:text-danger hover:bg-danger/10 transition-colors cursor-pointer"
               title={t('apip.hideModel3d')}
             >
               <X className="size-3.5 sm:size-4" />

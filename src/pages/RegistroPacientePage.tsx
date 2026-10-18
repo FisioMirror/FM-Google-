@@ -191,7 +191,7 @@ export function RegistroPacientePage() {
     <div className="min-h-[100dvh] w-full flex items-center justify-center p-4 sm:p-6 bg-slate-50 dark:bg-slate-950 relative overflow-hidden">
       {/* Ambient background glows */}
       <div className="absolute top-0 right-1/4 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-info/10 rounded-full blur-3xl pointer-events-none" />
 
       <div className="w-full max-w-lg bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 shadow-elevated border border-slate-200/80 dark:border-slate-800 relative z-10">
         {/* Header */}
@@ -271,7 +271,7 @@ export function RegistroPacientePage() {
           </div>
 
           {tokenError && (
-            <div className="mt-2 flex items-center gap-1.5 text-xs text-red-600 dark:text-red-400 font-medium">
+            <div className="mt-2 flex items-center gap-1.5 text-xs text-danger dark:text-danger font-medium">
               <AlertCircle size={14} />
               <span>{tokenError}</span>
             </div>

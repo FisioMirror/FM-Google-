@@ -235,21 +235,21 @@ export function PatientExercisesPage() {
       </div>
 
       {isOffline && (
-        <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-700 dark:text-amber-300 font-medium">
+        <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-warning/10 border border-warning/20 text-xs text-warning dark:text-warning font-medium">
           <Icon name="cloud_off" size={16} />
           <span>{t('ex.offlineMode')}</span>
         </div>
       )}
 
       {error && !loading && (
-        <div className="flex items-center justify-between gap-2 px-4 py-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-xs text-rose-700 dark:text-rose-300 font-medium">
+        <div className="flex items-center justify-between gap-2 px-4 py-3 rounded-xl bg-danger/10 border border-danger/20 text-xs text-danger dark:text-danger font-medium">
           <div className="flex items-center gap-2">
             <Icon name="error_outline" size={16} />
             <span>{t('ex.syncFailed')}</span>
           </div>
           <button
             onClick={() => loadExercises()}
-            className="px-3 py-1 rounded-lg bg-rose-500/20 hover:bg-rose-500/30 text-rose-700 dark:text-rose-200 font-semibold transition-colors"
+            className="px-3 py-1 rounded-lg bg-danger/20 hover:bg-danger/30 text-danger dark:text-danger font-semibold transition-colors"
           >
             Reintentar
           </button>
@@ -353,7 +353,7 @@ export function PatientExercisesPage() {
                     </div>
                     <div className="flex flex-col items-center pl-2">
                       <p className="text-2xs uppercase font-bold text-on-surface-variant flex items-center justify-center gap-1">
-                        <Flame size={11} className="text-amber-500" />
+                        <Flame size={11} className="text-warning" />
                         <span>{t('ex.reps')}</span>
                       </p>
                       <span className="font-extrabold text-base text-on-surface mt-0.5">{ex.repeticiones ?? 12}</span>

@@ -81,7 +81,7 @@ export const TherapistQuickToolbar: React.FC<TherapistQuickToolbarProps> = ({
               className={cn(
                 'flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all',
                 isPaused
-                  ? 'bg-amber-500/15 text-amber-500 border border-amber-500/30'
+                  ? 'bg-warning/15 text-warning border border-warning/30'
                   : 'bg-primary/10 text-primary dark:text-teal-300 hover:bg-primary/20'
               )}
             >
@@ -106,7 +106,7 @@ export const TherapistQuickToolbar: React.FC<TherapistQuickToolbarProps> = ({
               className={cn(
                 'p-2 rounded-xl transition-colors',
                 isRecordingVoice
-                  ? 'bg-rose-500/20 text-rose-500 animate-pulse'
+                  ? 'bg-danger/20 text-danger animate-pulse'
                   : 'text-on-surface-variant hover:bg-black/5 dark:hover:bg-white/10'
               )}
               title={t('tqt.dictateVoiceNote')}

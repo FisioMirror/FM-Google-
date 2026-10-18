@@ -469,7 +469,7 @@ export function ARMirrorPage() {
               className="rounded-full px-2 sm:px-2.5 py-1 flex items-center gap-1.5 bg-slate-900/80 backdrop-blur-xl border border-white/15 shadow-sm"
               title={poseData?.isTracking ? t('arm.bodyTrackingActive') : t('arm.searchingBodyPosture')}
             >
-              <span className={`w-2 h-2 rounded-full ${poseData?.isTracking ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'}`} />
+              <span className={`w-2 h-2 rounded-full ${poseData?.isTracking ? 'bg-emerald-400 animate-pulse' : 'bg-warning'}`} />
               <span className="text-white/80 text-2xs font-bold uppercase tracking-wider hidden xs:inline">
                 {poseData?.isTracking ? 'AR' : t('arm.searching')}
               </span>
@@ -551,7 +551,7 @@ export function ARMirrorPage() {
               className={cn(
                 'px-2.5 sm:px-3 h-8 sm:h-9 rounded-full flex items-center gap-1 border backdrop-blur-xl transition-all shadow-sm active:scale-95 text-2xs sm:text-xs font-bold uppercase tracking-wider',
                 hudMode === 'minimal'
-                  ? 'bg-amber-500/30 text-amber-300 border-amber-400/50 shadow-amber-500/20'
+                  ? 'bg-warning/30 text-warning border-warning/50 shadow-warning/20'
                   : 'bg-slate-900/80 text-white/80 border-white/15 hover:text-white'
               )}
             >
@@ -564,12 +564,12 @@ export function ARMirrorPage() {
 
       {/* Badge discreto si el modo simulación biomecánica está activo */}
       {isSimulated && isReady && (
-        <div className="fixed top-12 sm:top-14 left-1/2 -translate-x-1/2 z-[34] flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/20 border border-amber-400/40 backdrop-blur-xl text-amber-200 text-2xs sm:text-xs font-semibold shadow-card">
-          <Icon name="sensors" size={13} className="text-amber-400 shrink-0" />
+        <div className="fixed top-12 sm:top-14 left-1/2 -translate-x-1/2 z-[34] flex items-center gap-1.5 px-3 py-1 rounded-full bg-warning/20 border border-warning/40 backdrop-blur-xl text-warning text-2xs sm:text-xs font-semibold shadow-card">
+          <Icon name="sensors" size={13} className="text-warning shrink-0" />
           <span>{t('arm.biomechanicalSimulation')}</span>
           <button
             onClick={reconnectCamera}
-            className="ml-1 px-1.5 py-0.5 rounded bg-amber-400/30 hover:bg-amber-400/50 text-white font-bold uppercase tracking-wider text-2xs transition-colors cursor-pointer"
+            className="ml-1 px-1.5 py-0.5 rounded bg-warning/30 hover:bg-warning/50 text-white font-bold uppercase tracking-wider text-2xs transition-colors cursor-pointer"
           >
             {t('arm.reconnect')}
           </button>
@@ -613,7 +613,7 @@ export function ARMirrorPage() {
             className="text-white text-lg md:text-xl font-medium max-w-md"
           />
           {!calibrated && (
-            <div className="mt-2 max-w-md rounded-2xl bg-amber-500/15 border border-amber-400/40 px-4 py-3 text-amber-200 text-sm flex items-center gap-2">
+            <div className="mt-2 max-w-md rounded-2xl bg-warning/15 border border-warning/40 px-4 py-3 text-warning text-sm flex items-center gap-2">
               <Icon name="warning" filled size={18} />
               <span>{t('arm.uncalibratedWarning')}</span>
             </div>
@@ -773,7 +773,7 @@ export function ARMirrorPage() {
                 {/* Finalizar */}
                 <button
                   onClick={() => { setState('finished'); setShowPainReport(true); }}
-                  className="rounded-xl px-3 sm:px-4 py-2 sm:py-2.5 bg-red-500/80 hover:bg-red-500 text-white flex items-center gap-1.5 hover:scale-105 active:scale-95 transition-all cursor-pointer font-bold text-xs sm:text-sm min-h-[40px] sm:min-h-[44px]"
+                  className="rounded-xl px-3 sm:px-4 py-2 sm:py-2.5 bg-danger/80 hover:bg-danger text-white flex items-center gap-1.5 hover:scale-105 active:scale-95 transition-all cursor-pointer font-bold text-xs sm:text-sm min-h-[40px] sm:min-h-[44px]"
                   aria-label={t('arm.finishExercise')}
                 >
                   <Icon name="stop" size={18} />
@@ -807,7 +807,7 @@ export function ARMirrorPage() {
                   className={cn(
                     "rounded-xl px-2.5 sm:px-3 py-2 sm:py-2.5 flex items-center gap-1.5 hover:scale-105 active:scale-95 transition-all cursor-pointer min-h-[40px] sm:min-h-[44px]",
                     hudMode === 'minimal'
-                      ? "bg-amber-500/25 text-amber-300 border border-amber-400/50"
+                      ? "bg-warning/25 text-warning border border-warning/50"
                       : "bg-white/5 text-white/70 hover:text-white"
                   )}
                   title={hudMode === 'minimal' ? t('arm.essentialModeActive') : t('arm.fullModeActive')}
@@ -870,7 +870,7 @@ export function ARMirrorPage() {
                 </button>
                 <button
                   onClick={() => { setState('finished'); setShowPainReport(true); }}
-                  className="rounded-xl px-3 sm:px-4 py-2 sm:py-2.5 bg-red-500/80 hover:bg-red-500 text-white flex items-center gap-1.5 hover:scale-105 active:scale-95 transition-all cursor-pointer font-bold text-xs sm:text-sm min-h-[40px] sm:min-h-[44px]"
+                  className="rounded-xl px-3 sm:px-4 py-2 sm:py-2.5 bg-danger/80 hover:bg-danger text-white flex items-center gap-1.5 hover:scale-105 active:scale-95 transition-all cursor-pointer font-bold text-xs sm:text-sm min-h-[40px] sm:min-h-[44px]"
                 >
                   <Icon name="stop" size={18} /> {t('arm.abandon')}
                 </button>

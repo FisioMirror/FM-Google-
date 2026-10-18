@@ -405,7 +405,7 @@ export function PatientDetailPage() {
 
   return (
     <div className="fm-page pb-12">
-      <ScrollProgress className="top-0 fixed z-50 h-1 bg-gradient-to-r from-teal-500 to-cyan-400" />
+      <ScrollProgress className="top-0 fixed z-50 h-1 bg-gradient-to-r from-teal-500 to-info" />
 
       {/* Patient Header Section */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 p-6 rounded-3xl bg-surface/85 dark:bg-surface-container-low/70 border border-outline/15 shadow-sm">
@@ -429,7 +429,7 @@ export function PatientDetailPage() {
               <span className="font-bold">ID: #{patient.id.slice(0, 8)}</span>
               <span>•</span>
               {daysSinceLast !== null ? (
-                <span className={daysSinceLast > 7 ? 'text-amber-600 font-bold' : 'text-emerald-600 font-bold'}>
+                <span className={daysSinceLast > 7 ? 'text-warning font-bold' : 'text-emerald-600 font-bold'}>
                   {daysSinceLast > 7 ? t('patientDetail.inactiveDays', { d: daysSinceLast }) : t('patientDetail.recentSession')}
                 </span>
               ) : (
@@ -560,10 +560,10 @@ export function PatientDetailPage() {
               </div>
             )}
             {patient.es_menor_edad && (patient.tutor_nombre || patient.tutor_telefono || patient.tutor_email) && (
-              <div className="mt-4 p-4 rounded-xl bg-amber-500/10 dark:bg-amber-500/15 border border-amber-500/25">
+              <div className="mt-4 p-4 rounded-xl bg-warning/10 dark:bg-warning/15 border border-warning/25">
                 <div className="flex items-center gap-2 mb-2">
-                  <Icon name="guardian" size={16} className="text-amber-600 dark:text-amber-400" />
-                  <span className="text-xs font-bold uppercase tracking-wider text-amber-700 dark:text-amber-300">{t('patientDetail.tutorData')}</span>
+                  <Icon name="guardian" size={16} className="text-warning dark:text-warning" />
+                  <span className="text-xs font-bold uppercase tracking-wider text-warning dark:text-warning">{t('patientDetail.tutorData')}</span>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-2 text-sm text-on-surface">
                   <span>{patient.tutor_nombre || t('patientDetail.noName')}</span>
@@ -723,7 +723,7 @@ export function PatientDetailPage() {
                         </div>
                       )}
                       {Boolean(s.compensaciones_detectadas) && typeof s.compensaciones_detectadas === 'object' && String(s.compensaciones_detectadas) !== '[object Object]' && (
-                        <div className="mt-2 p-3 rounded-xl bg-amber-500/10 text-sm text-amber-600">
+                        <div className="mt-2 p-3 rounded-xl bg-warning/10 text-sm text-warning">
                           <p className="text-xs font-bold uppercase tracking-wider mb-1">{t('patientDetail.detectedCompensations')}</p>
                           {String((s.compensaciones_detectadas as Record<string, unknown>).tipo || t('patientDetail.compensationDetected'))}
                         </div>

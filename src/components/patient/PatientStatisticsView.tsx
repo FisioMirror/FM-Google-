@@ -192,10 +192,10 @@ export function PatientStatisticsView({
         {/* Metric 2: Therapeutic Time */}
         <div className="ios-glass-heavy refraction-border p-4 sm:p-5 rounded-2xl flex flex-col justify-between">
           <div className="flex items-center justify-between mb-3">
-            <div className="size-10 sm:size-11 bg-blue-500/10 text-blue-700 dark:text-blue-300 rounded-xl sm:rounded-2xl flex items-center justify-center">
+            <div className="size-10 sm:size-11 bg-info/10 text-info dark:text-info rounded-xl sm:rounded-2xl flex items-center justify-center">
               <Icon name="timer" size={22} />
             </div>
-            <span className="text-2xs sm:text-xs font-bold px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-700 dark:text-blue-300">
+            <span className="text-2xs sm:text-xs font-bold px-2 py-0.5 rounded-full bg-info/10 text-info dark:text-info">
               {t('psv.minPerSession', { value: Math.round(totalMinutes / (totalSessions || 1)) })}
             </span>
           </div>
@@ -217,7 +217,7 @@ export function PatientStatisticsView({
               <Icon name="target" size={22} />
             </div>
             <span className={`text-2xs sm:text-xs font-bold px-2 py-0.5 rounded-full ${
-              avgQuality >= 85 ? 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-300' : 'bg-amber-500/10 text-amber-700 dark:text-amber-300'
+              avgQuality >= 85 ? 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-300' : 'bg-warning/10 text-warning dark:text-warning'
             }`}>
               {avgQuality >= 85 ? t('psv.excellent') : t('auth.pwFair')}
             </span>
@@ -236,10 +236,10 @@ export function PatientStatisticsView({
         {/* Metric 4: Peak ROM */}
         <div className="ios-glass-heavy refraction-border p-4 sm:p-5 rounded-2xl flex flex-col justify-between">
           <div className="flex items-center justify-between mb-3">
-            <div className="size-10 sm:size-11 bg-cyan-500/10 text-cyan-700 dark:text-cyan-300 rounded-xl sm:rounded-2xl flex items-center justify-center">
+            <div className="size-10 sm:size-11 bg-info/10 text-info dark:text-info rounded-xl sm:rounded-2xl flex items-center justify-center">
               <Icon name="straighten" size={22} />
             </div>
-            <span className="text-2xs sm:text-xs font-bold px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-700 dark:text-cyan-300">
+            <span className="text-2xs sm:text-xs font-bold px-2 py-0.5 rounded-full bg-info/10 text-info dark:text-info">
               {t('psv.goal', { value: targetRom ? targetRom.split(' ')[0] : '160°' })}
             </span>
           </div>
@@ -304,7 +304,7 @@ export function PatientStatisticsView({
                           </p>
                           <p className="flex justify-between gap-4">
                             <span className="text-slate-300">{t('psv.jointRange')}:</span>
-                            <span className="font-bold text-sky-400">{data.rom}°</span>
+                            <span className="font-bold text-info">{data.rom}°</span>
                           </p>
                           <p className="flex justify-between gap-4">
                             <span className="text-slate-300">{t('psv.duration')}:</span>
@@ -354,7 +354,7 @@ export function PatientStatisticsView({
           <div className="flex items-start justify-between">
             <div>
               <h3 className="text-base sm:text-lg font-bold text-on-surface flex items-center gap-2">
-                <Icon name="bar_chart" size={20} className="text-blue-600 dark:text-blue-400" />
+                <Icon name="bar_chart" size={20} className="text-info dark:text-info" />
                 {t('psv.volumeTitle')}
               </h3>
               <p className="text-xs text-on-surface-variant mt-0.5">
@@ -390,7 +390,7 @@ export function PatientStatisticsView({
                           </p>
                           <p className="flex justify-between gap-4">
                             <span className="text-slate-300">{t('psv.totalRepsLabel')}:</span>
-                            <span className="font-bold text-sky-400">{d.repeticiones} reps</span>
+                            <span className="font-bold text-info">{d.repeticiones} reps</span>
                           </p>
                           <p className="flex justify-between gap-4">
                             <span className="text-slate-300">{t('psv.avgQualityLabel')}:</span>
@@ -447,8 +447,8 @@ export function PatientStatisticsView({
                     comp.severity === 'controlada'
                       ? 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20'
                       : comp.severity === 'moderada'
-                      ? 'bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/20'
-                      : 'bg-blue-500/10 text-blue-700 dark:text-blue-300 border border-blue-500/20'
+                      ? 'bg-warning/10 text-warning dark:text-warning border border-warning/20'
+                      : 'bg-info/10 text-info dark:text-info border border-info/20'
                   }`}>
                     {comp.severity === 'controlada' ? t('psv.wellControlled') : comp.severity === 'moderada' ? t('psv.reviewSuggested') : t('psv.lowIncidence')}
                   </span>
@@ -542,12 +542,12 @@ export function PatientStatisticsView({
                             ? 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-300'
                             : (s.calidad_ejecucion || 0) >= 70
                             ? 'bg-teal-500/10 text-teal-700 dark:text-teal-300'
-                            : 'bg-amber-500/10 text-amber-700 dark:text-amber-300'
+                            : 'bg-warning/10 text-warning dark:text-warning'
                         }`}>
                           {s.calidad_ejecucion || 0}%
                         </span>
                       </td>
-                      <td className="py-3 px-3 font-bold tabular-nums text-sky-700 dark:text-sky-300">{romVal}°</td>
+                      <td className="py-3 px-3 font-bold tabular-nums text-info dark:text-info">{romVal}°</td>
                       <td className="py-3 px-3 text-on-surface-variant max-w-xs truncate">{s.notas || t('psv.defaultNotes')}</td>
                     </tr>
                   );

@@ -28,12 +28,12 @@ export const RehabEnergyBar: React.FC<RehabEnergyBarProps> = ({
   // Determination of color tone
   const getGradient = () => {
     if (isLowEnergy || isHighFatigue) {
-      return 'from-rose-500 via-amber-500 to-rose-600';
+      return 'from-danger via-warning to-danger';
     }
     if (clampedEnergy < 60) {
-      return 'from-amber-400 via-teal-500 to-teal-400';
+      return 'from-warning via-teal-500 to-teal-400';
     }
-    return 'from-teal-500 via-cyan-400 to-[#c1ff72]';
+    return 'from-teal-500 via-info to-[#c1ff72]';
   };
 
   return (
@@ -42,7 +42,7 @@ export const RehabEnergyBar: React.FC<RehabEnergyBarProps> = ({
         'flex flex-col p-5 rounded-2xl border transition-all duration-300',
         'bg-surface/85 dark:bg-surface-container/65 backdrop-blur-xl',
         'border-outline-variant/30 dark:border-white/10 shadow-sm',
-        isHighFatigue && 'ring-2 ring-rose-500/40 border-rose-500/50',
+        isHighFatigue && 'ring-2 ring-danger/40 border-danger/50',
         className
       )}
     >
@@ -52,7 +52,7 @@ export const RehabEnergyBar: React.FC<RehabEnergyBarProps> = ({
           <div className={cn(
             'p-2 rounded-xl border',
             isLowEnergy
-              ? 'bg-rose-500/10 text-rose-500 border-rose-500/20'
+              ? 'bg-danger/10 text-danger border-danger/20'
               : 'bg-primary/10 text-primary border-primary/20'
           )}>
             {isLowEnergy ? <BatteryCharging className="w-4 h-4 animate-pulse" /> : <Zap className="w-4 h-4" />}
@@ -101,14 +101,14 @@ export const RehabEnergyBar: React.FC<RehabEnergyBarProps> = ({
       {/* Footer Metrics */}
       <div className="grid grid-cols-2 gap-3 mt-4 pt-3 border-t border-outline-variant/15 dark:border-white/5 text-xs">
         <div className="flex items-center gap-1.5 text-on-surface-variant">
-          <Flame className="w-3.5 h-3.5 text-amber-500" />
+          <Flame className="w-3.5 h-3.5 text-warning" />
           <span>{t('uix.rebFatigueIndex')}</span>
           <span className="font-mono font-bold text-on-surface dark:text-white">{fatigueScore.toFixed(1)} / 10</span>
         </div>
 
         <div className="flex items-center justify-end gap-1.5 text-on-surface-variant">
           {isHighFatigue ? (
-            <span className="flex items-center gap-1 text-rose-500 font-medium">
+            <span className="flex items-center gap-1 text-danger font-medium">
               <ShieldAlert className="w-3.5 h-3.5" />
               {t('uix.rebRestAdvised')}
             </span>

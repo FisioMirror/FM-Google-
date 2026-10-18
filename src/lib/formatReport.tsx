@@ -244,13 +244,13 @@ export function formatAIReport(text: string): ReactNode {
       return <Target className="size-4 text-teal-600 dark:text-teal-400" />;
     }
     if (lower.includes('evalua') || lower.includes('biomecán') || lower.includes('rom') || lower.includes('rango')) {
-      return <Activity className="size-4 text-cyan-600 dark:text-cyan-400" />;
+      return <Activity className="size-4 text-info dark:text-info" />;
     }
     if (lower.includes('adher') || lower.includes('progre') || lower.includes('evolu') || lower.includes('resumen')) {
       return <TrendingUp className="size-4 text-emerald-600 dark:text-emerald-400" />;
     }
     if (lower.includes('alerta') || lower.includes('dolor') || lower.includes('riesgo') || lower.includes('eva')) {
-      return <AlertTriangle className="size-4 text-amber-500" />;
+      return <AlertTriangle className="size-4 text-warning" />;
     }
     return <Stethoscope className="size-4 text-teal-600 dark:text-teal-400" />;
   };
@@ -278,9 +278,9 @@ export function formatAIReport(text: string): ReactNode {
           return (
             <div
               key={idx}
-              className="flex items-start gap-3 p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-950 dark:text-amber-200 text-xs leading-relaxed shadow-xs"
+              className="flex items-start gap-3 p-3.5 rounded-2xl bg-warning/10 border border-warning/30 text-warning dark:text-warning text-xs leading-relaxed shadow-xs"
             >
-              <AlertTriangle className="size-4 text-amber-600 shrink-0 mt-0.5" />
+              <AlertTriangle className="size-4 text-warning shrink-0 mt-0.5" />
               <div className="flex-1 font-medium">{renderInline(block.text)}</div>
             </div>
           );
@@ -341,7 +341,7 @@ function renderInline(text: string): ReactNode {
     }
     if (/^\d+°$/.test(part)) {
       return (
-        <span key={i} className="inline-block px-1.5 py-0.2 rounded font-bold text-cyan-700 dark:text-cyan-300 bg-cyan-500/15">
+        <span key={i} className="inline-block px-1.5 py-0.2 rounded font-bold text-info dark:text-info bg-info/15">
           {part}
         </span>
       );

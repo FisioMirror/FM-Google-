@@ -656,7 +656,7 @@ export function OCRScannerPage() {
                         <button
                           onClick={isRecording ? stopRecording : startRecording}
                           aria-label={isRecording ? t('ocr.stopRec') : t('ocr.startRec')}
-                          className={`w-14 h-14 ${isRecording ? 'bg-red-500' : 'bg-primary'} text-on-primary rounded-full flex items-center justify-center shadow-card active:scale-90 transition-transform`}
+                          className={`w-14 h-14 ${isRecording ? 'bg-danger' : 'bg-primary'} text-on-primary rounded-full flex items-center justify-center shadow-card active:scale-90 transition-transform`}
                         >
                           <Icon name={isRecording ? 'stop' : 'mic'} size={28} />
                         </button>
@@ -665,8 +665,8 @@ export function OCRScannerPage() {
                           <div className="flex items-center gap-2 mb-2">
                             {isRecording && (
                               <span className="relative flex h-3 w-3">
-                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75" />
-                                <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500" />
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-danger opacity-75" />
+                                <span className="relative inline-flex rounded-full h-3 w-3 bg-danger" />
                               </span>
                             )}
                             <span className="text-2xs font-bold text-outline">
@@ -678,7 +678,7 @@ export function OCRScannerPage() {
                           </div>
                           <div className="h-1 bg-outline-variant/20 rounded-full overflow-hidden">
                             <div
-                              className={`h-full rounded-full transition-all duration-300 ${isRecording ? 'bg-red-500' : 'bg-primary'}`}
+                              className={`h-full rounded-full transition-all duration-300 ${isRecording ? 'bg-danger' : 'bg-primary'}`}
                               style={{ width: isRecording ? `${(recordSeconds % 60) / 60 * 100}%` : audioURL ? '100%' : '0%' }}
                             />
                           </div>

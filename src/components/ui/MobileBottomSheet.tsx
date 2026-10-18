@@ -127,9 +127,9 @@ export function MobileBottomSheet({
 
   const variantStyles = {
     default: 'bg-white/95 dark:bg-slate-900/95 border-slate-200/80 dark:border-slate-800',
-    'pastel-sky': cn('bg-gradient-to-b from-sky-50/95 via-white/95 to-white/95 dark:from-sky-950/80 dark:via-slate-900/95 dark:to-slate-900/95 border-sky-300/50 dark:border-sky-500/30'),
+    'pastel-sky': cn('bg-gradient-to-b from-info/95 via-white/95 to-white/95 dark:from-info/80 dark:via-slate-900/95 dark:to-slate-900/95 border-info/50 dark:border-info/30'),
     'pastel-mint': cn('bg-gradient-to-b from-teal-50/95 via-white/95 to-white/95 dark:from-teal-950/80 dark:via-slate-900/95 dark:to-slate-900/95 border-teal-300/50 dark:border-teal-500/30'),
-    'pastel-lavender': cn('bg-gradient-to-b from-indigo-50/95 via-white/95 to-white/95 dark:from-indigo-950/80 dark:via-slate-900/95 dark:to-slate-900/95 border-indigo-300/50 dark:border-indigo-500/30'),
+    'pastel-lavender': cn('bg-gradient-to-b from-secondary/95 via-white/95 to-white/95 dark:from-secondary/80 dark:via-slate-900/95 dark:to-slate-900/95 border-secondary/50 dark:border-secondary/30'),
   };
 
   if (typeof document === 'undefined') return null;

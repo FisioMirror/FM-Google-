@@ -132,7 +132,7 @@ export function AnimatedThemeToggler({
       )}
       {...props}
     >
-      {isDark ? <Sun size={18} className="text-amber-400" /> : <Moon size={18} className="text-teal-600" />}
+      {isDark ? <Sun size={18} className="text-warning" /> : <Moon size={18} className="text-teal-600" />}
       <span className="sr-only">Toggle theme</span>
     </button>
   );

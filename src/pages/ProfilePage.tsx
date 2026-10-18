@@ -309,7 +309,7 @@ export function ProfilePage() {
                   exit={{ opacity: 0, y: 10 }}
                   className="absolute inset-0 -bottom-2 flex flex-col items-center justify-center gap-2 bg-surface/95 backdrop-blur-sm rounded-[inherit] p-3 z-20"
                 >
-                  <img src={avatarPreview} alt={t('pf.preview')} className="w-24 h-24 rounded-full object-cover ring-4 ring-cyan-400/60" />
+                  <img src={avatarPreview} alt={t('pf.preview')} className="w-24 h-24 rounded-full object-cover ring-4 ring-info/60" />
                   <div className="flex items-center gap-2 mt-1">
                     <button
                       type="button"
@@ -471,7 +471,7 @@ export function ProfilePage() {
                 </GlassPanel>
                 {isFisio && (
                   <GlassPanel className="p-6 rounded-3xl card-glow-hover hover-lift mt-6 shimmer-border relative overflow-hidden">
-                    <div className="absolute -top-10 -right-10 w-32 h-32 rounded-full bg-gradient-to-br from-cyan-400/15 to-teal-500/10 blur-2xl pointer-events-none" />
+                    <div className="absolute -top-10 -right-10 w-32 h-32 rounded-full bg-gradient-to-br from-info/15 to-teal-500/10 blur-2xl pointer-events-none" />
                     <h3 className="font-headline-lg-mobile gradient-text-living font-bold mb-6 relative">{t('pf.clinicSettings')}</h3>
                     <div className="relative">
                       <label className="text-2xs uppercase text-outline font-bold block mb-2">{t('pf.clinicName')}</label>
@@ -480,7 +480,7 @@ export function ProfilePage() {
                         onMouseEnter={() => setClinicNameHover(true)}
                         onMouseLeave={() => setClinicNameHover(false)}
                       >
-                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-teal-500/15 to-cyan-400/10 flex items-center justify-center ring-1 ring-cyan-500/20 breathe-teal flex-shrink-0">
+                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-teal-500/15 to-info/10 flex items-center justify-center ring-1 ring-info/20 breathe-teal flex-shrink-0">
                           <Icon name="medical_services" size={24} className="icon-accent-cyan animate-breathe-icon" />
                         </div>
                         {clinicNameEditing ? (
@@ -496,7 +496,7 @@ export function ProfilePage() {
                             }}
                             onBlur={saveClinicName}
                             placeholder={t('pf.clinicPh')}
-                            className="flex-1 bg-transparent border-b-2 border-cyan-500/40 focus:border-cyan-500 outline-none text-on-surface font-medium text-lg py-1"
+                            className="flex-1 bg-transparent border-b-2 border-info/40 focus:border-info outline-none text-on-surface font-medium text-lg py-1"
                           />
                         ) : (
                           <button
@@ -512,7 +512,7 @@ export function ProfilePage() {
                                   initial={{ opacity: 0, scale: 0.8 }}
                                   animate={{ opacity: 1, scale: 1 }}
                                   exit={{ opacity: 0, scale: 0.8 }}
-                                  className="flex items-center gap-1 text-xs font-bold text-cyan-600 bg-cyan-500/10 px-3 py-1.5 rounded-full ring-1 ring-cyan-500/20"
+                                  className="flex items-center gap-1 text-xs font-bold text-info bg-info/10 px-3 py-1.5 rounded-full ring-1 ring-info/20"
                                 >
                                   <Icon name="edit" size={14} />
                                   {user?.clinic_name ? t('common.edit') : t('common.add')}
@@ -535,11 +535,11 @@ export function ProfilePage() {
               { id: 'activity', label: isFisio ? t('pf.tabActivity') : t('pf.tabSessions'), content: (
                 <>
                 <GlassPanel className="p-6 rounded-3xl card-glow-hover hover-lift shimmer-border relative overflow-hidden">
-                  <div className="absolute -top-10 -right-10 w-32 h-32 rounded-full bg-gradient-to-br from-cyan-400/15 to-teal-500/10 blur-2xl pointer-events-none" />
+                  <div className="absolute -top-10 -right-10 w-32 h-32 rounded-full bg-gradient-to-br from-info/15 to-teal-500/10 blur-2xl pointer-events-none" />
                   <div className="relative">
                     <div className="flex items-center justify-between mb-6">
                       <div className="flex items-center gap-3">
-                        <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-teal-500/15 to-cyan-400/10 flex items-center justify-center ring-1 ring-cyan-500/20 breathe-teal">
+                        <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-teal-500/15 to-info/10 flex items-center justify-center ring-1 ring-info/20 breathe-teal">
                           <Icon name="groups" size={24} className="icon-accent-cyan animate-breathe-icon" />
                         </div>
                         <div>
@@ -575,7 +575,7 @@ export function ProfilePage() {
                               transition={{ delay: i * 0.07 }}
                               className="flex items-center gap-3 p-4 rounded-2xl bg-surface-container-low/60 border divider-teal hover-lift"
                             >
-                              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500/15 to-teal-500/10 flex items-center justify-center ring-1 ring-cyan-500/20 flex-shrink-0">
+                              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-info/15 to-teal-500/10 flex items-center justify-center ring-1 ring-info/20 flex-shrink-0">
                                 <span className="font-bold text-sm icon-accent-cyan">{p.name.charAt(0)}</span>
                               </div>
                               <div className="flex-1 min-w-0">
@@ -583,8 +583,8 @@ export function ProfilePage() {
                                 <p className="text-xs text-outline truncate">{p.diagnosis}</p>
                               </div>
                               <div className="flex items-center gap-2 flex-shrink-0">
-                                <span className="w-2 h-2 rounded-full bg-gradient-to-r from-cyan-400 to-teal-500 pulse-ring" />
-                                <span className="text-xs font-bold text-cyan-600">{p.sessionTime}</span>
+                                <span className="w-2 h-2 rounded-full bg-gradient-to-r from-info to-teal-500 pulse-ring" />
+                                <span className="text-xs font-bold text-info">{p.sessionTime}</span>
                               </div>
                             </motion.div>
                           ))}
@@ -592,7 +592,7 @@ export function ProfilePage() {
                       )
                     ) : (
                       <div className="text-center py-8">
-                        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-teal-500/15 to-cyan-400/10 flex items-center justify-center ring-1 ring-cyan-500/20 mx-auto mb-3 breathe-teal">
+                        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-teal-500/15 to-info/10 flex items-center justify-center ring-1 ring-info/20 mx-auto mb-3 breathe-teal">
                           <Icon name="event_available" size={28} className="icon-accent-cyan animate-breathe-icon" />
                         </div>
                         <p className="text-sm text-on-surface-variant">{t('pf.checkExercises')}</p>

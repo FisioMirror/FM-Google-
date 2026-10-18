@@ -205,7 +205,7 @@ function CharacterSpotlight({
         aria-label={t('auth.selectRolePatient')}
         className={cn(
           'absolute top-0 bottom-0 right-0 w-1/2 pointer-events-auto cursor-pointer group flex flex-col justify-center items-center transition-all',
-          isPaciente ? 'z-20' : 'z-10 hover:bg-sky-500/[0.02]'
+          isPaciente ? 'z-20' : 'z-10 hover:bg-info/[0.02]'
         )}
       >
         {/* Biomechanical Recovery Beacon when active */}
@@ -221,13 +221,13 @@ function CharacterSpotlight({
               {/* Pulse target ring */}
               <div className="relative flex items-center justify-center">
                 {!reduceMotion && (
-                  <span className="absolute w-8 h-8 rounded-full bg-sky-500/25 border border-sky-400/60 animate-ping" />
+                  <span className="absolute w-8 h-8 rounded-full bg-info/25 border border-info/60 animate-ping" />
                 )}
-                <span className="w-3.5 h-3.5 rounded-full bg-sky-500 shadow-[0_0_12px_#0ea5e9] border-2 border-white dark:border-slate-900" />
+                <span className="w-3.5 h-3.5 rounded-full bg-info shadow-[0_0_12px_#0ea5e9] border-2 border-white dark:border-slate-900" />
               </div>
               {/* Glass status badge */}
-              <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/95 dark:bg-slate-900/90 backdrop-blur-md shadow-card border border-sky-500/35 text-sky-800 dark:text-sky-300 text-xs font-extrabold tracking-tight">
-                <Icon name="person" size={13} className="text-sky-600 dark:text-sky-400" />
+              <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/95 dark:bg-slate-900/90 backdrop-blur-md shadow-card border border-info/35 text-info dark:text-info text-xs font-extrabold tracking-tight">
+                <Icon name="person" size={13} className="text-info dark:text-info" />
                 <span>{t('auth.rolePatientBadge')}</span>
               </div>
             </motion.div>
@@ -278,8 +278,8 @@ function getPasswordStrength(pw: string): { score: number; label: string; color:
   if (/[0-9]/.test(pw)) score++;
   if (/[^A-Za-z0-9]/.test(pw)) score++;
   const labels = ['pwVeryWeak', 'pwWeak', 'pwFair', 'pwStrong', 'pwVeryStrong'];
-  const colors = ['bg-red-500', 'bg-red-500', 'bg-amber-500', 'bg-teal-600', 'bg-teal-600'];
-  return { score, label: labels[score] || 'pwVeryWeak', color: colors[score] || 'bg-red-500' };
+  const colors = ['bg-danger', 'bg-danger', 'bg-warning', 'bg-teal-600', 'bg-teal-600'];
+  return { score, label: labels[score] || 'pwVeryWeak', color: colors[score] || 'bg-danger' };
 }
 
 function getTimeGreetingKey(): 'greetingMorning' | 'greetingAfternoon' | 'greetingEvening' {
@@ -796,7 +796,7 @@ export function Login() {
       <LightRays className="opacity-25 pointer-events-none" />
       {/* Ambient glowing orbs */}
       <div className="pointer-events-none absolute -left-12 top-16 h-72 w-72 rounded-full bg-[#00504d]/10 dark:bg-teal-500/10 blur-[90px]" />
-      <div className="pointer-events-none absolute bottom-10 right-0 h-64 w-64 rounded-full bg-cyan-500/10 blur-[90px]" />
+      <div className="pointer-events-none absolute bottom-10 right-0 h-64 w-64 rounded-full bg-info/10 blur-[90px]" />
 
       {/* ═══════════════════════════════════════════════════
           LEFT PANEL — MAIN FORM
@@ -836,7 +836,7 @@ export function Login() {
 
           {/* Internal ambient color spots */}
           <div className="pointer-events-none absolute -top-12 -right-12 h-40 w-40 rounded-full bg-teal-500/15 blur-2xl" />
-          <div className="pointer-events-none absolute -bottom-10 -left-10 h-36 w-36 rounded-full bg-cyan-500/10 blur-2xl" />
+          <div className="pointer-events-none absolute -bottom-10 -left-10 h-36 w-36 rounded-full bg-info/10 blur-2xl" />
 
           {/* Registration Progress Indicator (Physio Multi-step) */}
           {isFisio && isRegister && (
@@ -870,7 +870,7 @@ export function Login() {
                 className={cn(
                   'absolute h-[calc(100%-8px)] w-[calc(50%-4px)] bg-white dark:bg-slate-900 rounded-xl shadow-sm border transition-colors',
                   isPaciente
-                    ? 'border-blue-500/30 shadow-blue-500/10'
+                    ? 'border-info/30 shadow-info/10'
                     : 'border-teal-600/30 shadow-teal-600/10'
                 )}
                 animate={{ left: isPaciente ? '4px' : 'calc(50% + 0px)' }}
@@ -882,7 +882,7 @@ export function Login() {
                 className={cn(
                   'relative flex-1 py-3 text-sm font-bold z-10 transition-colors flex items-center justify-center gap-2 rounded-xl',
                   isPaciente
-                    ? 'text-blue-600 dark:text-blue-400 font-extrabold'
+                    ? 'text-info dark:text-info font-extrabold'
                     : 'text-on-surface-variant hover:text-on-surface dark:hover:text-slate-200'
                 )}
               >
@@ -1013,7 +1013,7 @@ export function Login() {
                     <motion.div
                       initial={{ opacity: 0, y: -4 }}
                       animate={errorShake ? { x: [-8, 8, -6, 6, 0] } : { y: 0 }}
-                      className="p-3 rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800/50 text-red-600 dark:text-red-400 text-xs font-bold text-center"
+                      className="p-3 rounded-xl bg-danger dark:bg-danger/40 border border-danger dark:border-danger/50 text-danger dark:text-danger text-xs font-bold text-center"
                     >
                       {error}
                     </motion.div>
@@ -1141,7 +1141,7 @@ export function Login() {
                         className={cn(
                           'w-full rounded-2xl border bg-white/80 dark:bg-slate-800/80 pl-11 pr-4 py-3 text-sm text-on-surface placeholder-slate-400 outline-none transition-all shadow-sm',
                           confirmPassword && password !== confirmPassword
-                            ? 'border-red-500 focus:ring-2 focus:ring-red-400/20'
+                            ? 'border-danger focus:ring-2 focus:ring-danger/20'
                             : 'border-slate-200/80 dark:border-slate-700 focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20 dark:focus:border-teal-400'
                         )}
                       />
@@ -1168,7 +1168,7 @@ export function Login() {
                     <motion.div
                       initial={{ opacity: 0, y: -4 }}
                       animate={errorShake ? { x: [-8, 8, -6, 6, 0] } : { y: 0 }}
-                      className="p-3 rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800/50 text-red-600 dark:text-red-400 text-xs font-bold text-center"
+                      className="p-3 rounded-xl bg-danger dark:bg-danger/40 border border-danger dark:border-danger/50 text-danger dark:text-danger text-xs font-bold text-center"
                     >
                       {error}
                     </motion.div>
@@ -1281,7 +1281,7 @@ export function Login() {
                     <motion.div
                       initial={{ opacity: 0, y: -4 }}
                       animate={errorShake ? { x: [-8, 8, -6, 6, 0] } : { y: 0 }}
-                      className="p-3 rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800/50 text-red-600 dark:text-red-400 text-xs font-bold text-center"
+                      className="p-3 rounded-xl bg-danger dark:bg-danger/40 border border-danger dark:border-danger/50 text-danger dark:text-danger text-xs font-bold text-center"
                     >
                       {error}
                     </motion.div>
@@ -1346,7 +1346,7 @@ export function Login() {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                           <div>
                             <label className="block text-xs font-bold text-on-surface mb-1">
-                              Nombre Completo <span className="text-red-500">*</span>
+                              Nombre Completo <span className="text-danger">*</span>
                             </label>
                             <input
                               value={fullName}
@@ -1358,7 +1358,7 @@ export function Login() {
                           </div>
                           <div>
                             <label className="block text-xs font-bold text-on-surface mb-1">
-                              Email Profesional <span className="text-red-500">*</span>
+                              Email Profesional <span className="text-danger">*</span>
                             </label>
                             <input
                               type="email"
@@ -1371,7 +1371,7 @@ export function Login() {
                           </div>
                           <div>
                             <label className="block text-xs font-bold text-on-surface mb-1">
-                              Contraseña <span className="text-red-500">*</span>
+                              Contraseña <span className="text-danger">*</span>
                             </label>
                             <input
                               type={showPassword ? 'text' : 'password'}
@@ -1384,7 +1384,7 @@ export function Login() {
                           </div>
                           <div>
                             <label className="block text-xs font-bold text-on-surface mb-1">
-                              Confirmar Contraseña <span className="text-red-500">*</span>
+                              Confirmar Contraseña <span className="text-danger">*</span>
                             </label>
                             <input
                               type={showPassword ? 'text' : 'password'}
@@ -1395,7 +1395,7 @@ export function Login() {
                               className={cn(
                                 'w-full rounded-xl border bg-white/80 dark:bg-slate-800/80 px-3.5 py-2.5 text-sm text-on-surface outline-none',
                                 confirmPassword && password !== confirmPassword
-                                  ? 'border-red-500 focus:ring-2 focus:ring-red-400/20'
+                                  ? 'border-danger focus:ring-2 focus:ring-danger/20'
                                   : 'border-slate-200 dark:border-slate-700 focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20'
                               )}
                             />
@@ -1423,7 +1423,7 @@ export function Login() {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                           <div>
                             <label className="block text-xs font-bold text-on-surface mb-1">
-                              Cédula / Documento <span className="text-red-500">*</span>
+                              Cédula / Documento <span className="text-danger">*</span>
                             </label>
                             <input
                               value={cedula}
@@ -1435,7 +1435,7 @@ export function Login() {
                           </div>
                           <div>
                             <label className="block text-xs font-bold text-on-surface mb-1">
-                              Teléfono / WhatsApp <span className="text-red-500">*</span>
+                              Teléfono / WhatsApp <span className="text-danger">*</span>
                             </label>
                             <input
                               value={telefono}
@@ -1648,7 +1648,7 @@ export function Login() {
                     <motion.div
                       initial={{ opacity: 0, y: -4 }}
                       animate={errorShake ? { x: [-8, 8, -6, 6, 0] } : { y: 0 }}
-                      className="p-3 rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800/50 text-red-600 dark:text-red-400 text-xs font-bold text-center"
+                      className="p-3 rounded-xl bg-danger dark:bg-danger/40 border border-danger dark:border-danger/50 text-danger dark:text-danger text-xs font-bold text-center"
                     >
                       {error}
                     </motion.div>
@@ -1714,9 +1714,9 @@ export function Login() {
             </button>
             <button
               onClick={fillPacienteDemo}
-              className="px-4 py-2 rounded-full border border-slate-200/80 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 backdrop-blur-md hover:bg-white dark:hover:bg-slate-800 text-on-surface hover:text-blue-600 dark:hover:text-blue-400 text-xs font-bold shadow-sm transition-all flex items-center gap-1.5 active:scale-95"
+              className="px-4 py-2 rounded-full border border-slate-200/80 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 backdrop-blur-md hover:bg-white dark:hover:bg-slate-800 text-on-surface hover:text-info dark:hover:text-info text-xs font-bold shadow-sm transition-all flex items-center gap-1.5 active:scale-95"
             >
-              <Icon name="person" size={15} className="text-blue-600 dark:text-blue-400" />
+              <Icon name="person" size={15} className="text-info dark:text-info" />
               Demo Paciente
             </button>
             <button
@@ -1786,21 +1786,21 @@ export function Login() {
                   className={cn(
                     'rounded-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border px-6 py-2.5 shadow-elevated transition-all duration-300 flex items-center gap-2.5',
                     isPaciente
-                      ? 'border-blue-200/90 dark:border-blue-800/60 shadow-blue-500/10'
+                      ? 'border-info/90 dark:border-info/60 shadow-info/10'
                       : 'border-teal-200/90 dark:border-teal-800/60 shadow-teal-500/10'
                   )}
                 >
                   <span
                     className={cn(
                       'w-2 h-2 rounded-full animate-pulse',
-                      isPaciente ? 'bg-blue-500' : 'bg-teal-500'
+                      isPaciente ? 'bg-info' : 'bg-teal-500'
                     )}
                   />
                   <p
                     className={cn(
                       'text-xs font-bold tracking-wide',
                       isPaciente
-                        ? 'text-blue-700 dark:text-blue-300'
+                        ? 'text-info dark:text-info'
                         : 'text-[#00504d] dark:text-[#8ad3cf]'
                     )}
                   >
@@ -1838,8 +1838,8 @@ export function Login() {
                 exit={{ opacity: 0 }}
                 className="absolute inset-0 flex items-center justify-center pointer-events-none z-30"
               >
-                <div className="rounded-2xl bg-red-900/60 backdrop-blur-md px-8 py-4 border border-red-500/40 shadow-elevated">
-                  <div className="flex items-center gap-3 text-red-200">
+                <div className="rounded-2xl bg-danger/60 backdrop-blur-md px-8 py-4 border border-danger/40 shadow-elevated">
+                  <div className="flex items-center gap-3 text-danger">
                     <Icon name="error" filled size={24} />
                     <span className="text-sm font-bold">
                       Revisa tus credenciales e intenta de nuevo

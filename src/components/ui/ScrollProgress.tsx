@@ -17,7 +17,7 @@ export const ScrollProgress = React.forwardRef<HTMLDivElement, ScrollProgressPro
         ref={ref}
         aria-hidden="true"
         className={cn(
-          "pointer-events-none fixed inset-x-0 top-0 z-50 h-1 origin-left bg-gradient-to-r from-teal-600 via-cyan-400 to-[#c1ff72] shadow-sm shadow-teal-500/20",
+          "pointer-events-none fixed inset-x-0 top-0 z-50 h-1 origin-left bg-gradient-to-r from-teal-600 via-info to-[#c1ff72] shadow-sm shadow-teal-500/20",
           className
         )}
         style={{

@@ -31,10 +31,10 @@ export const CompensationAlertBanner: React.FC<CompensationAlertBannerProps> = (
     switch (severity) {
       case 'high':
         return {
-          bg: 'bg-rose-500/10 dark:bg-rose-950/40',
-          border: 'border-rose-500/30',
-          iconColor: 'text-rose-500',
-          badge: 'bg-rose-500/20 text-rose-600 dark:text-rose-400',
+          bg: 'bg-danger/10 dark:bg-danger/40',
+          border: 'border-danger/30',
+          iconColor: 'text-danger',
+          badge: 'bg-danger/20 text-danger dark:text-danger',
           label: t('cab.severeCompensation'),
         };
       case 'mild':
@@ -47,10 +47,10 @@ export const CompensationAlertBanner: React.FC<CompensationAlertBannerProps> = (
         };
       default:
         return {
-          bg: 'bg-amber-500/10 dark:bg-amber-950/40',
-          border: 'border-amber-500/30',
-          iconColor: 'text-amber-500',
-          badge: 'bg-amber-500/20 text-amber-600 dark:text-amber-400',
+          bg: 'bg-warning/10 dark:bg-warning/40',
+          border: 'border-warning/30',
+          iconColor: 'text-warning',
+          badge: 'bg-warning/20 text-warning dark:text-warning',
           label: t('cab.moderateCompensation'),
         };
     }

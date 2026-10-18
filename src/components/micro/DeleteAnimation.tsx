@@ -19,7 +19,7 @@ const DeleteAnimation = () => {
           <span>Documento_importante.pdf</span>
         </span>
       )}
-      <button className="flex items-center gap-1.5 px-5 py-2 border border-slate-300 dark:border-slate-600 text-red-500 rounded-full font-semibold hover:bg-red-50 dark:hover:bg-red-900/20 transition text-sm" onClick={handleToggle}>
+      <button className="flex items-center gap-1.5 px-5 py-2 border border-slate-300 dark:border-slate-600 text-danger rounded-full font-semibold hover:bg-danger dark:hover:bg-danger/20 transition text-sm" onClick={handleToggle}>
         {itemState === 'exists' && <><Trash2 size={16} /> <span>{t('common.delete')}</span></>}
         {itemState === 'deleting' && <><Undo2 size={16} /> <span>{t('uix.delUndo')}</span></>}
         {itemState === 'gone' && <><RotateCcw size={16} /> <span>{t('uix.delRestore')}</span></>}

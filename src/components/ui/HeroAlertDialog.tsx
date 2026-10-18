@@ -107,7 +107,7 @@ export function AlertDialogHeader({ children, className }: { children: React.Rea
 
 export function AlertDialogIcon({ status = 'danger' }: { status?: 'danger' | 'warning' | 'info' }) {
   return (
-    <div className="p-3 rounded-2xl bg-rose-500/15 text-rose-600 border border-rose-500/20 shrink-0">
+    <div className="p-3 rounded-2xl bg-danger/15 text-danger border border-danger/20 shrink-0">
       <ShieldAlert className="size-6" />
     </div>
   );
@@ -168,7 +168,7 @@ export function DeleteProjectDialogDemo() {
               <AlertDialog.Icon status="danger" />
               <div>
                 <AlertDialog.Heading>{t('uix.hadConfirmTitle')}</AlertDialog.Heading>
-                <span className="text-2xs text-rose-600 dark:text-rose-400 font-bold uppercase tracking-wider">{t('uix.hadIrreversible')}</span>
+                <span className="text-2xs text-danger dark:text-danger font-bold uppercase tracking-wider">{t('uix.hadIrreversible')}</span>
               </div>
             </AlertDialog.Header>
             <AlertDialog.Body>
