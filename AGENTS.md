@@ -8,7 +8,7 @@ Guía para agentes que trabajen en esta app. **Aplícala en todo cambio de UI.**
 - **Sin `node_modules` ni build/typecheck local.** Verificación = `git push` y esperar
   build READY en Vercel (el build solo detecta errores de sintaxis/imports, no de tipos).
 - Trabajo **por lotes**: cada lote termina en un commit pusheado y verificado.
-- Regla base: **mejorar, nunca eliminar** funcionalidad.
+- Regla base: **mejorar y podar**. La restriccion historica "solo mejorar, nunca eliminar" quedo **anulada** (oct 2026, a pedido del owner): se permite y se espera **eliminar** codigo/UI/componentes obsoletos, muertos, rotos o reemplazables por algo mejor.
 
 ## Fuente de verdad del sistema de diseño
 - `tailwind.config.ts` — escala de `fontSize`, `borderRadius`, `boxShadow`, `animation`, colores.
@@ -26,7 +26,7 @@ Guía para agentes que trabajen en esta app. **Aplícala en todo cambio de UI.**
 - **Cero emojis** en UI. Wording profesional/clínico. Sin etiquetas tipo `v2.0`/`Premium`/`Élite`.
 - **Móvil**: `min-h-[100dvh]` (nunca `100vh`/`min-h-screen`); respetar safe-area en FAB/docks; respetar `prefers-reduced-motion`.
 - **A11y**: `role`/`aria-*` en modales (`role="dialog"`, `aria-modal`), `aria-label` en botones-ícono, cerrar drawer/modal con `Escape` + scroll-lock.
-- **Mejorar, no eliminar**: no quitar funcionalidad; refinar jerarquía, espaciado, radios, sombras y tipografía dentro del sistema.
+- **Mejorar y podar**: se autoriza eliminar componentes, páginas, efectos o dependencias cuando no funcionen, estén muertos o exista un reemplazo mejor. Al borrar: limpiar keys i18n huérfanas, imports y rutas; revisar el diff antes del commit.
 
 ## Efectos y motion
 - Los efectos (glass, glows, breathe, shimmer) se **mantienen** y se refinan: sombras más suaves y duraciones uniformes.
