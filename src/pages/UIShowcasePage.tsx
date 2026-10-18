@@ -1485,7 +1485,7 @@ export function UIShowcasePage() {
                       <button
                         type="button"
                         onClick={() => setIsBottomSheetOpen(true)}
-                        className="px-3.5 py-2 rounded-xl bg-info dark:bg-info/40 text-info dark:text-info font-bold text-xs border border-info dark:border-info/30"
+                        className="px-3.5 py-2 rounded-xl bg-info/10 dark:bg-info/40 text-info dark:text-info font-bold text-xs border border-info/30 dark:border-info/30"
                       >
                         {t('shw.tryBottomSheet')}
                       </button>
@@ -1703,7 +1703,7 @@ export function UIShowcasePage() {
                 className={cn(
                   "p-5 rounded-2xl relative overflow-hidden transition-all duration-300",
                   pastelFinish === 'solid' && CLINICAL_PASTELS.sky.solid,
-                  activePastelDemo === 'sky' && "ring-2 ring-info/60 shadow-card"
+                  activePastelDemo === 'sky' && "ring-2 ring-sky-400/60 shadow-card"
                 )}
                 interactive
               >
@@ -1860,7 +1860,7 @@ export function UIShowcasePage() {
                   </div>
                 </div>
 
-                <div className="p-3.5 rounded-xl bg-info/90 dark:bg-info/35 border border-info/80 dark:border-info/30 flex items-center gap-2.5">
+                <div className="p-3.5 rounded-xl bg-info/10 dark:bg-info/35 border border-info/30 dark:border-info/30 flex items-center gap-2.5">
                   <div className="size-8 rounded-lg bg-info/20 text-info dark:text-info flex items-center justify-center shrink-0">
                     <Activity className="size-4" />
                   </div>
@@ -1870,7 +1870,7 @@ export function UIShowcasePage() {
                   </div>
                 </div>
 
-                <div className="p-3.5 rounded-xl bg-warning/90 dark:bg-warning/35 border border-warning/80 dark:border-warning/30 flex items-center gap-2.5">
+                <div className="p-3.5 rounded-xl bg-warning/10 dark:bg-warning/35 border border-warning/30 dark:border-warning/30 flex items-center gap-2.5">
                   <div className="size-8 rounded-lg bg-warning/20 text-warning dark:text-warning flex items-center justify-center shrink-0">
                     <AlertTriangle className="size-4" />
                   </div>

@@ -375,7 +375,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
             }
           }}
           className={cn(
-            'rounded-xl text-on-surface hover:bg-info dark:hover:bg-slate-800 hover:text-info dark:hover:text-info transition-colors',
+            'rounded-xl text-on-surface hover:bg-info/10 dark:hover:bg-slate-800 hover:text-info dark:hover:text-info transition-colors',
             collapsed ? 'p-2' : 'flex items-center gap-3 px-3 py-2 w-full',
           )}
           title={collapsed ? 'Instalar App' : undefined}
@@ -407,14 +407,14 @@ export function FisioLayout({ children }: FisioLayoutProps) {
         <button
           onClick={toggleTheme}
           aria-label={t('common.changeTheme')}
-          className="p-2 rounded-xl text-on-surface-variant hover:bg-info dark:hover:bg-slate-800 hover:text-info dark:hover:text-info transition-colors"
+          className="p-2 rounded-xl text-on-surface-variant hover:bg-info/10 dark:hover:bg-slate-800 hover:text-info dark:hover:text-info transition-colors"
         >
           {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
         </button>
         <button
           onClick={() => { onNavAway?.(); setShowNotifications(true); }}
           aria-label={t('navigation.notifications')}
-          className="relative p-2 rounded-xl text-on-surface-variant hover:bg-info dark:hover:bg-slate-800 hover:text-info dark:hover:text-info transition-colors"
+          className="relative p-2 rounded-xl text-on-surface-variant hover:bg-info/10 dark:hover:bg-slate-800 hover:text-info dark:hover:text-info transition-colors"
         >
           <Bell size={18} />
           {unreadCount > 0 && (
@@ -426,7 +426,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
         <button
           onClick={() => { onNavAway?.(); setShowLogout(true); }}
           aria-label={t('common.logout')}
-          className="p-2 rounded-xl text-on-surface-variant hover:bg-danger dark:hover:bg-danger/30 hover:text-danger dark:hover:text-danger transition-colors"
+          className="p-2 rounded-xl text-on-surface-variant hover:bg-danger/10 dark:hover:bg-danger/30 hover:text-danger dark:hover:text-danger transition-colors"
         >
           <LogOut size={18} />
         </button>

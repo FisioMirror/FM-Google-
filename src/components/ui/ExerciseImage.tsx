@@ -44,7 +44,7 @@ function getBiomechanicalVisual(name: string, articulacion?: string | null, cate
       IconComponent: Footprints,
       bgClass: 'bg-gradient-to-br from-teal-500/15 via-emerald-500/10 to-info/5',
       iconClass: 'text-teal-600 dark:text-teal-400',
-      badgeKey: 'eiBadgeAnkle',
+      badgeKey: 'uix.eiBadgeAnkle',
     };
   }
 
@@ -54,7 +54,7 @@ function getBiomechanicalVisual(name: string, articulacion?: string | null, cate
       IconComponent: Target,
       bgClass: 'bg-gradient-to-br from-emerald-500/15 via-teal-500/10 to-info/5',
       iconClass: 'text-emerald-600 dark:text-emerald-400',
-      badgeKey: 'eiBadgeKnee',
+      badgeKey: 'uix.eiBadgeKnee',
     };
   }
 
@@ -64,7 +64,7 @@ function getBiomechanicalVisual(name: string, articulacion?: string | null, cate
       IconComponent: CircleDot,
       bgClass: 'bg-gradient-to-br from-info/15 via-teal-500/10 to-info/5',
       iconClass: 'text-info dark:text-info',
-      badgeKey: 'eiBadgeShoulder',
+      badgeKey: 'uix.eiBadgeShoulder',
     };
   }
 
@@ -74,7 +74,7 @@ function getBiomechanicalVisual(name: string, articulacion?: string | null, cate
       IconComponent: Dumbbell,
       bgClass: 'bg-gradient-to-br from-teal-500/15 via-info/10 to-info/5',
       iconClass: 'text-teal-600 dark:text-teal-400',
-      badgeKey: 'eiBadgeUpperLimb',
+      badgeKey: 'uix.eiBadgeUpperLimb',
     };
   }
 
@@ -84,7 +84,7 @@ function getBiomechanicalVisual(name: string, articulacion?: string | null, cate
       IconComponent: Shield,
       bgClass: 'bg-gradient-to-br from-teal-600/15 via-emerald-600/10 to-teal-500/5',
       iconClass: 'text-teal-700 dark:text-teal-300',
-      badgeKey: 'eiBadgeSpine',
+      badgeKey: 'uix.eiBadgeSpine',
     };
   }
 
@@ -94,7 +94,7 @@ function getBiomechanicalVisual(name: string, articulacion?: string | null, cate
       IconComponent: Sparkles,
       bgClass: 'bg-gradient-to-br from-info/15 via-teal-500/10 to-emerald-500/5',
       iconClass: 'text-info dark:text-info',
-      badgeKey: 'eiBadgeCervical',
+      badgeKey: 'uix.eiBadgeCervical',
     };
   }
 
@@ -104,7 +104,7 @@ function getBiomechanicalVisual(name: string, articulacion?: string | null, cate
       IconComponent: RotateCw,
       bgClass: 'bg-gradient-to-br from-teal-500/15 via-info/10 to-info/5',
       iconClass: 'text-teal-600 dark:text-teal-400',
-      badgeKey: 'eiBadgeRom',
+      badgeKey: 'uix.eiBadgeRom',
     };
   }
 
@@ -114,7 +114,7 @@ function getBiomechanicalVisual(name: string, articulacion?: string | null, cate
       IconComponent: Flame,
       bgClass: 'bg-gradient-to-br from-emerald-500/15 via-teal-500/10 to-info/5',
       iconClass: 'text-emerald-600 dark:text-emerald-400',
-      badgeKey: 'eiBadgeStrength',
+      badgeKey: 'uix.eiBadgeStrength',
     };
   }
 
@@ -124,7 +124,7 @@ function getBiomechanicalVisual(name: string, articulacion?: string | null, cate
       IconComponent: Compass,
       bgClass: 'bg-gradient-to-br from-info/15 via-teal-500/10 to-emerald-500/5',
       iconClass: 'text-info dark:text-info',
-      badgeKey: 'eiBadgeBalance',
+      badgeKey: 'uix.eiBadgeBalance',
     };
   }
 
@@ -134,7 +134,7 @@ function getBiomechanicalVisual(name: string, articulacion?: string | null, cate
       IconComponent: Layers,
       bgClass: 'bg-gradient-to-br from-teal-500/15 via-emerald-500/10 to-info/5',
       iconClass: 'text-teal-600 dark:text-teal-400',
-      badgeKey: 'eiBadgeFlexibility',
+      badgeKey: 'uix.eiBadgeFlexibility',
     };
   }
 
@@ -143,7 +143,7 @@ function getBiomechanicalVisual(name: string, articulacion?: string | null, cate
     IconComponent: Activity,
     bgClass: 'bg-gradient-to-br from-teal-500/15 via-emerald-500/10 to-info/5',
     iconClass: 'text-teal-600 dark:text-teal-400',
-    badgeKey: 'eiBadgeKinesio',
+    badgeKey: 'uix.eiBadgeKinesio',
   };
 }
 

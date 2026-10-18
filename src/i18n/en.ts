@@ -342,6 +342,7 @@ export const en: typeof es = {
     tipRest: "Complete at least one session today to maintain joint mobility and avoid stiffness.",
   },
   patients: {
+    weekShort: 'S{{n}}',
     filterAll: 'All',
     resetFilter: 'Reset Filter',
     title: 'Patient Management',
@@ -479,6 +480,9 @@ export const en: typeof es = {
     physiWarmAdvice: "Physi's Warm Advice",
   },
   patientDetail: {
+    tutorName: 'Tutor Name',
+    tutorPhone: 'Tutor Phone',
+    generateInsight: 'Generate Insight',
     clinicalFile: 'Clinical File',
     biometrics: 'Biometrics & Parameters',
     interactiveRom: 'Interactive Range of Motion (ROM)',

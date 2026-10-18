@@ -51,16 +51,16 @@ const MASCOT_CONFIG: Record<
   MascotType,
   { src: string; altKey: string }
 > = {
-  idle:         { src: '/animations/mascot/idle.webp',         altKey: 'mascotIdle' },
-  greeting:     { src: '/animations/mascot/saludo.webp',       altKey: 'mascotGreeting' },
-  success:      { src: '/animations/mascot/exito.webp',        altKey: 'mascotSuccess' },
-  error:        { src: '/animations/mascot/error.webp',        altKey: 'mascotError' },
-  loading:      { src: '/animations/mascot/cargando.webp',     altKey: 'mascotLoading' },
-  scanning:     { src: '/animations/mascot/escaneando.webp',   altKey: 'mascotScanning' },
-  speaking:     { src: '/animations/mascot/consejo.webp', altKey: 'mascotSpeaking' },
-  achievement:  { src: '/animations/mascot/racha.webp',        altKey: 'mascotAchievement' },
-  notification: { src: '/animations/mascot/notificacion.webp', altKey: 'mascotNotification' },
-  goodbye:      { src: '/animations/mascot/despedida.webp',    altKey: 'mascotGoodbye' },
+  idle:         { src: '/animations/mascot/idle.webp',         altKey: 'uix.mascotIdle' },
+  greeting:     { src: '/animations/mascot/saludo.webp',       altKey: 'uix.mascotGreeting' },
+  success:      { src: '/animations/mascot/exito.webp',        altKey: 'uix.mascotSuccess' },
+  error:        { src: '/animations/mascot/error.webp',        altKey: 'uix.mascotError' },
+  loading:      { src: '/animations/mascot/cargando.webp',     altKey: 'uix.mascotLoading' },
+  scanning:     { src: '/animations/mascot/escaneando.webp',   altKey: 'uix.mascotScanning' },
+  speaking:     { src: '/animations/mascot/consejo.webp', altKey: 'uix.mascotSpeaking' },
+  achievement:  { src: '/animations/mascot/racha.webp',        altKey: 'uix.mascotAchievement' },
+  notification: { src: '/animations/mascot/notificacion.webp', altKey: 'uix.mascotNotification' },
+  goodbye:      { src: '/animations/mascot/despedida.webp',    altKey: 'uix.mascotGoodbye' },
 };
 
 /**

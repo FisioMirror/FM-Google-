@@ -273,7 +273,7 @@ export function ResetPassword() {
                   <Check size={26} />
                 </div>
                 <h3 className="text-sm font-bold text-teal-950 dark:text-teal-200">
-                  t('reset.completedBanner')
+                  {t('reset.completedBanner')}
                 </h3>
                 <p className="text-xs text-teal-800 dark:text-teal-300 leading-relaxed">
                   {t('reset.comprobante')}{' '}
@@ -331,7 +331,7 @@ export function ResetPassword() {
                       className="w-full py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-on-surface text-xs font-semibold transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                     >
                       <RefreshCw size={13} className={loading ? 'animate-spin' : ''} />
-                      {cooldown > 0 ? `{t('reset.resendIn', { s: cooldown })}` : t('reset.resendEmail')}
+                      {cooldown > 0 ? t('reset.resendIn', { s: cooldown }) : t('reset.resendEmail')}
                     </button>
                   </div>
                 </div>

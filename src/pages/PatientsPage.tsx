@@ -686,7 +686,7 @@ export function PatientsPage() {
                         <span className={cn(
                           "px-3 py-1 text-xs font-bold rounded-full border uppercase tracking-wider flex items-center gap-1.5 shrink-0",
                           isAlert
-                            ? "bg-danger text-danger dark:bg-danger/40 dark:text-danger border-danger"
+                            ? "bg-danger/10 text-danger dark:bg-danger/40 dark:text-danger border-danger/30"
                             : isGood
                             ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300 border-emerald-200"
                             : "bg-teal-50 text-teal-700 dark:bg-teal-950/40 dark:text-teal-300 border-teal-200"

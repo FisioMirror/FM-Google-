@@ -1292,7 +1292,7 @@ export function DashboardFisio() {
                         p.status === 'Activo'
                           ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300 border-emerald-200'
                           : p.status === 'Requiere Revisión'
-                          ? 'bg-warning text-warning dark:bg-warning/40 dark:text-warning border-warning'
+                          ? 'bg-warning/10 text-warning dark:bg-warning/40 dark:text-warning border-warning/30'
                           : 'bg-teal-50 text-teal-700 dark:bg-teal-950/40 dark:text-teal-300 border-teal-200'
                       }`}>
                         <span className={`w-1.5 h-1.5 rounded-full ${

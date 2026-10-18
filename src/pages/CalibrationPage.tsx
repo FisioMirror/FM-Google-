@@ -353,10 +353,10 @@ export function CalibrationPage() {
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className="text-white text-xs sm:text-sm font-semibold leading-snug">
-                            t('cal.standFront')
+                            {t('cal.standFront')}
                           </p>
                           <p className="text-white/60 text-xs sm:text-xs mt-0.5 leading-relaxed">
-                            t('cal.standFrontDesc')
+                            {t('cal.standFrontDesc')}
                           </p>
                         </div>
                       </div>
@@ -367,7 +367,7 @@ export function CalibrationPage() {
                           onClick={() => setShowSkipConfirm(true)}
                           className="text-teal-300 hover:text-teal-200 font-semibold transition-colors"
                         >
-                          t('cal.skipStep')
+                          {t('cal.skipStep')}
                         </button>
                       </div>
                     </>
@@ -445,7 +445,7 @@ export function CalibrationPage() {
                 colors={{ first: '#2dd4bf', second: '#c1ff72' }}
                 className="text-2xl sm:text-3xl font-bold text-white mb-2"
               >
-                t('cal.successTitle')
+                {t('cal.successTitle')}
               </SparklesText>
               <p className="text-white/70 text-sm max-w-sm">{t('cal.successDesc')}</p>
             </motion.div>

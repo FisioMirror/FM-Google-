@@ -161,7 +161,7 @@ export const ARCameraFilterDropdown: React.FC<ARCameraFilterDropdownProps> = ({
                 >
                   <div>
                     <span className="block font-bold">{f.id}</span>
-                    <span className={cn("text-2xs", isCurrent ? "text-info" : "text-on-surface-variant")}>
+                    <span className={cn("text-2xs", isCurrent ? "text-white/80" : "text-on-surface-variant")}>
                       {f.desc}
                     </span>
                   </div>

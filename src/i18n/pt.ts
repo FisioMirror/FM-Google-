@@ -342,6 +342,7 @@ export const pt: typeof es = {
     tipRest: "Complete pelo menos uma sessão hoje para manter a mobilidade articular e evitar rigidez.",
   },
   patients: {
+    weekShort: 'S{{n}}',
     filterAll: 'Todos',
     resetFilter: 'Redefinir Filtro',
     title: 'Gestão de Pacientes',
@@ -479,6 +480,9 @@ export const pt: typeof es = {
     physiWarmAdvice: 'Conselho Acolhedor de Physi',
   },
   patientDetail: {
+    tutorName: 'Nome do Tutor',
+    tutorPhone: 'Telefone do Tutor',
+    generateInsight: 'Gerar Insight',
     clinicalFile: 'Prontuário Clínico',
     biometrics: 'Biometria e Parâmetros',
     interactiveRom: 'Amplitude Articular (ADM) Interativa',

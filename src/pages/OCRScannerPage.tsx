@@ -808,7 +808,7 @@ export function OCRScannerPage() {
                   <input type="date" value={extractedData.fecha_nacimiento} onChange={(e) => setExtractedData({ ...extractedData, fecha_nacimiento: e.target.value })} className={inputClass} />
                 </div>
                 <div>
-                  <label className={labelClass}>{t('tools.fPhone')}</label>
+                  <label className={labelClass}>{t('patientDetail.tutorPhone')}</label>
                   <input value={extractedData.telefono} onChange={(e) => setExtractedData({ ...extractedData, telefono: e.target.value })} placeholder={t('ocr.notDetected')} className={inputClass} />
                 </div>
                 <div>
@@ -849,12 +849,12 @@ export function OCRScannerPage() {
               {extractedData.es_menor_edad && (
                 <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4 p-4 rounded-xl bg-tertiary-fixed/10 border border-tertiary-fixed/20">
                   <div>
-                    <label className={labelClass}>{t('patientDetail.tutorData')}</label>
-                    <input value={extractedData.tutor_nombre} onChange={(e) => setExtractedData({ ...extractedData, tutor_nombre: e.target.value })} placeholder={t('patientDetail.tutorData')} className={inputClass} />
+                    <label className={labelClass}>{t('patientDetail.tutorName')}</label>
+                    <input value={extractedData.tutor_nombre} onChange={(e) => setExtractedData({ ...extractedData, tutor_nombre: e.target.value })} placeholder={t('patientDetail.tutorName')} className={inputClass} />
                   </div>
                   <div>
-                    <label className={labelClass}>{t('tools.fPhone')}</label>
-                    <input value={extractedData.tutor_telefono} onChange={(e) => setExtractedData({ ...extractedData, tutor_telefono: e.target.value })} placeholder={t('tools.fPhone')} className={inputClass} />
+                    <label className={labelClass}>{t('patientDetail.tutorPhone')}</label>
+                    <input value={extractedData.tutor_telefono} onChange={(e) => setExtractedData({ ...extractedData, tutor_telefono: e.target.value })} placeholder={t('patientDetail.tutorPhone')} className={inputClass} />
                   </div>
                   <div>
                     <label className={labelClass}>Email</label>

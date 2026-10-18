@@ -92,7 +92,7 @@ export function InstallModal() {
               {/* Body */}
               <div className="px-6 pb-2">
                 <p className="text-sm text-primary-600 dark:text-slate-300 text-center leading-relaxed">
-                  {t('uix.instBody1')}
+                  {t('uix.instBody1')}{' '}
                   {t('uix.instBody2')}
                 </p>
 

@@ -216,7 +216,7 @@ export function SettingsPage() {
         <div className="blob-teal absolute -top-12 -right-12 w-32 h-32 opacity-20 pointer-events-none" />
         <div className="relative flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className={cn('w-12 h-12 rounded-xl flex items-center justify-center', theme === 'light' ? 'bg-warning' : 'bg-slate-800')}>
+            <div className={cn('w-12 h-12 rounded-xl flex items-center justify-center', theme === 'light' ? 'bg-warning/15' : 'bg-slate-800')}>
               <Icon name={theme === 'light' ? 'light_mode' : 'dark_mode'} size={24} className={theme === 'light' ? 'text-warning' : 'text-slate-300'} />
             </div>
             <div>

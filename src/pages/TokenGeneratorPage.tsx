@@ -175,9 +175,10 @@ export function TokenGeneratorPage() {
     }
   };
 
+  const filterStatuses = ['todos', 'pendiente', 'activado', 'expirado'];
   const filteredTokens = tokens.filter((token) => {
     if (activeFilter === 0) return true;
-    return token.status === t(filterKeys[activeFilter]).toLowerCase();
+    return token.status === filterStatuses[activeFilter];
   });
 
   return (

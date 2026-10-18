@@ -1013,7 +1013,7 @@ export function Login() {
                     <motion.div
                       initial={{ opacity: 0, y: -4 }}
                       animate={errorShake ? { x: [-8, 8, -6, 6, 0] } : { y: 0 }}
-                      className="p-3 rounded-xl bg-danger dark:bg-danger/40 border border-danger dark:border-danger/50 text-danger dark:text-danger text-xs font-bold text-center"
+                      className="p-3 rounded-xl bg-danger/10 border border-danger/30 text-danger dark:bg-danger/40 dark:border-danger/50 dark:text-danger text-xs font-bold text-center"
                     >
                       {error}
                     </motion.div>
@@ -1168,7 +1168,7 @@ export function Login() {
                     <motion.div
                       initial={{ opacity: 0, y: -4 }}
                       animate={errorShake ? { x: [-8, 8, -6, 6, 0] } : { y: 0 }}
-                      className="p-3 rounded-xl bg-danger dark:bg-danger/40 border border-danger dark:border-danger/50 text-danger dark:text-danger text-xs font-bold text-center"
+                      className="p-3 rounded-xl bg-danger/10 border border-danger/30 text-danger dark:bg-danger/40 dark:border-danger/50 dark:text-danger text-xs font-bold text-center"
                     >
                       {error}
                     </motion.div>
@@ -1281,7 +1281,7 @@ export function Login() {
                     <motion.div
                       initial={{ opacity: 0, y: -4 }}
                       animate={errorShake ? { x: [-8, 8, -6, 6, 0] } : { y: 0 }}
-                      className="p-3 rounded-xl bg-danger dark:bg-danger/40 border border-danger dark:border-danger/50 text-danger dark:text-danger text-xs font-bold text-center"
+                      className="p-3 rounded-xl bg-danger/10 border border-danger/30 text-danger dark:bg-danger/40 dark:border-danger/50 dark:text-danger text-xs font-bold text-center"
                     >
                       {error}
                     </motion.div>
@@ -1648,7 +1648,7 @@ export function Login() {
                     <motion.div
                       initial={{ opacity: 0, y: -4 }}
                       animate={errorShake ? { x: [-8, 8, -6, 6, 0] } : { y: 0 }}
-                      className="p-3 rounded-xl bg-danger dark:bg-danger/40 border border-danger dark:border-danger/50 text-danger dark:text-danger text-xs font-bold text-center"
+                      className="p-3 rounded-xl bg-danger/10 border border-danger/30 text-danger dark:bg-danger/40 dark:border-danger/50 dark:text-danger text-xs font-bold text-center"
                     >
                       {error}
                     </motion.div>
@@ -1838,7 +1838,7 @@ export function Login() {
                 exit={{ opacity: 0 }}
                 className="absolute inset-0 flex items-center justify-center pointer-events-none z-30"
               >
-                <div className="rounded-2xl bg-danger/60 backdrop-blur-md px-8 py-4 border border-danger/40 shadow-elevated">
+                <div className="rounded-2xl bg-danger/15 backdrop-blur-md px-8 py-4 border border-danger/40 shadow-elevated">
                   <div className="flex items-center gap-3 text-danger">
                     <Icon name="error" filled size={24} />
                     <span className="text-sm font-bold">

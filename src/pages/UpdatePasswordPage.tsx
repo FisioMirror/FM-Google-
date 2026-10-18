@@ -161,7 +161,7 @@ export function UpdatePasswordPage() {
         </div>
 
         {statusMsg && (
-          <div className="mb-4 p-3 rounded-xl bg-danger dark:bg-danger/40 border border-danger dark:border-danger text-danger dark:text-danger text-xs font-semibold flex items-center gap-2">
+          <div className="mb-4 p-3 rounded-xl bg-danger/10 border border-danger/30 text-danger dark:bg-danger/40 dark:border-danger/50 dark:text-danger text-xs font-semibold flex items-center gap-2">
             <AlertCircle size={15} />
             <span>{statusMsg}</span>
           </div>

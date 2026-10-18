@@ -163,7 +163,7 @@ export function EmailSystemStatusCard() {
             <div className="flex items-center gap-2">
               <span className="text-xs font-bold text-on-surface">Resend API</span>
             </div>
-            <span className="px-2 py-0.5 rounded-full text-2xs font-bold bg-warning text-warning dark:bg-warning/60 dark:text-warning flex items-center gap-1">
+            <span className="px-2 py-0.5 rounded-full text-2xs font-bold bg-warning/10 text-warning dark:bg-warning/60 dark:text-warning flex items-center gap-1">
               <AlertTriangle size={11} /> {t('esc.pendingDomain')}
             </span>
           </div>
@@ -189,7 +189,7 @@ export function EmailSystemStatusCard() {
                 <CheckCircle2 size={11} /> {t('shw.connected')}
               </span>
             ) : diagnostics?.smtp?.configured ? (
-              <span className="px-2 py-0.5 rounded-full text-2xs font-bold bg-warning text-warning dark:bg-warning/60 dark:text-warning flex items-center gap-1">
+              <span className="px-2 py-0.5 rounded-full text-2xs font-bold bg-warning/10 text-warning dark:bg-warning/60 dark:text-warning flex items-center gap-1">
                 <AlertTriangle size={11} /> {t('common.connError')}
               </span>
             ) : (

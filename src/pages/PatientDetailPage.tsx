@@ -295,7 +295,7 @@ export function PatientDetailPage() {
   const adherenceLevelKey = avgQuality >= 80 ? 'patientDetail.highAdherence' : avgQuality >= 50 ? 'patientDetail.mediumAdherence' : 'patientDetail.lowAdherence';
   const adherenceLevel = t(adherenceLevelKey);
 
-  const weekLabels = Array.from({ length: 8 }, (_, i) => i === 7 ? t('patients.current') : `${i + 1}`);
+  const weekLabels = Array.from({ length: 8 }, (_, i) => i === 7 ? t('patients.current') : t('patients.weekShort', { n: i + 1 }));
   const weekBuckets = Array(8).fill(0);
   sessions.forEach(s => {
     const weeksAgo = Math.floor((Date.now() - new Date(s.fecha).getTime()) / (7 * 86400000));
@@ -672,7 +672,7 @@ export function PatientDetailPage() {
               </div>
               <div className="flex gap-2">
                 <button onClick={generateInsight} disabled={aiLoading} className="flex-1 py-2.5 bg-on-primary-container text-primary font-bold text-xs rounded-xl transition-all hover:bg-on-primary-container/90 active:scale-95 shadow-sm disabled:opacity-50">
-                  {aiInsight ? t('patientDetail.regenerateInsight') : t('common.consult')}
+                  {aiInsight ? t('patientDetail.regenerateInsight') : t('patientDetail.generateInsight')}
                 </button>
                 {aiInsight && (
                   <button onClick={applyRecommendations} disabled={routineAdjusting} className="flex-1 py-2.5 bg-white/20 text-on-primary-container font-bold text-xs rounded-xl transition-all hover:bg-white/30 active:scale-95 disabled:opacity-50 flex items-center justify-center gap-1">

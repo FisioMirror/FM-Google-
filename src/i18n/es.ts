@@ -346,6 +346,7 @@ export const es = {
     tipRest: "Completa al menos una sesión hoy para mantener la movilidad articular y evitar rigidez.",
   },
   patients: {
+    weekShort: 'S{{n}}',
     filterAll: 'Todos',
     resetFilter: 'Restablecer Filtro',
     title: 'Gestión de Pacientes',
@@ -483,6 +484,9 @@ export const es = {
     physiWarmAdvice: 'Consejo Cálido de Physi',
   },
   patientDetail: {
+    tutorName: 'Nombre del Tutor',
+    tutorPhone: 'Teléfono del Tutor',
+    generateInsight: 'Generar Insight',
     clinicalFile: 'Expediente Clínico',
     biometrics: 'Biometría y Parámetros',
     interactiveRom: 'Rango Articular (ROM) Interactivo',

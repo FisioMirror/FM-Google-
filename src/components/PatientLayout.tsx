@@ -297,7 +297,7 @@ export function PatientLayout({ children }: PatientLayoutProps) {
         </button>
         <button
           onClick={() => { onNavAway?.(); setShowLogout(true); }}
-          className="p-2 rounded-xl text-on-surface-variant hover:bg-danger dark:hover:bg-danger/30 hover:text-danger dark:hover:text-danger transition-colors"
+          className="p-2 rounded-xl text-on-surface-variant hover:bg-danger/10 dark:hover:bg-danger/30 hover:text-danger dark:hover:text-danger transition-colors"
           aria-label={t('common.logout')}
         >
           <LogOut size={18} />

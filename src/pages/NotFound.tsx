@@ -15,7 +15,7 @@ export function NotFound() {
   };
 
   return (
-    <div className="min-h-dvh flex flex-col items-center justify-center px-6 text-center bg-gradient-to-br from-teal-50 via-white to-info dark:from-slate-950 dark:via-slate-900 dark:to-teal-950">
+    <div className="min-h-dvh flex flex-col items-center justify-center px-6 text-center bg-gradient-to-br from-teal-50 via-white to-cyan-50 dark:from-slate-950 dark:via-slate-900 dark:to-teal-950">
       <motion.div
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}

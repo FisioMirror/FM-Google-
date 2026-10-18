@@ -387,7 +387,7 @@ export const RepCadenceMetronome: React.FC<RepCadenceMetronomeProps> = ({
       case 'concentric':
         return { name: t('frtms.concentricPhase'), time: 2, color: 'from-teal-500 to-info' };
       case 'isometric':
-        return { name: t('frtms.isometricPhase'), time: 1, color: 'from-warning to-warning' };
+        return { name: t('frtms.isometricPhase'), time: 1, color: 'from-warning to-kinetic' };
       case 'eccentric':
         return { name: t('frtms.eccentricPhase'), time: 3, color: 'from-emerald-400 to-teal-500' };
     }
