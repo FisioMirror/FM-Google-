@@ -9,6 +9,14 @@
         "mcp"
       ],
       "enabled": true
+    },
+    "21st": {
+      "type": "remote",
+      "url": "https://21st.dev/api/mcp",
+      "enabled": true,
+      "headers": {
+        "x-api-key": "{env:MAGIC_API_KEY}"
+      }
     }
   }
 }

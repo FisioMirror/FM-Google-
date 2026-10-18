@@ -26,3 +26,6 @@ dist-ssr
 supabase-credentials.json
 .vercel/
 package-lock.json
+
+# MCP config local (contiene API keys)
+mcp.json
