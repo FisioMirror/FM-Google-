@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle2, AlertTriangle, AlertCircle, Info, X } from 'lucide-react';
 import { cn } from '../../lib/utils';
@@ -96,6 +97,7 @@ export function AlertDescription({ children, className }: { children: React.Reac
 
 export function AlertCloseButton({ className, onClick }: { className?: string; onClick?: () => void }) {
   const { onClose } = useContext(AlertContext);
+  const { t } = useTranslation();
 
   return (
     <button
@@ -104,7 +106,7 @@ export function AlertCloseButton({ className, onClick }: { className?: string; o
         'size-7 rounded-lg flex items-center justify-center text-on-surface-variant hover:text-on-surface dark:hover:text-slate-200 hover:bg-black/5 dark:hover:bg-white/5 transition-colors shrink-0',
         className
       )}
-      aria-label="Cerrar aviso"
+      aria-label={t('haCloseAlert')}
     >
       <X className="size-4" />
     </button>
@@ -118,14 +120,15 @@ Alert.Description = AlertDescription;
 Alert.CloseButton = AlertCloseButton;
 
 export function BasicAlertsDemo() {
+  const { t } = useTranslation();
   return (
     <div className="grid w-full max-w-xl gap-3.5">
       <Alert status="accent">
         <Alert.Indicator />
         <Alert.Content>
-          <Alert.Title>Nuevas funciones disponibles</Alert.Title>
+          <Alert.Title>{t('haTitle1')}</Alert.Title>
           <Alert.Description>
-            Consulta nuestras últimas actualizaciones incluyendo soporte para modo oscuro y accesibilidad mejorada en FisioMirror.
+            {t('haDesc1')}
           </Alert.Description>
         </Alert.Content>
         <Alert.CloseButton />
@@ -134,21 +137,21 @@ export function BasicAlertsDemo() {
       <Alert status="danger">
         <Alert.Indicator />
         <Alert.Content>
-          <Alert.Title>No se pudo conectar al servidor</Alert.Title>
+          <Alert.Title>{t('haTitle2')}</Alert.Title>
           <Alert.Description>
-            Tenemos problemas de sincronización con Supabase. Por favor verifica tu conexión de red o continúa en modo offline.
+            {t('haDesc2')}
           </Alert.Description>
         </Alert.Content>
         <button className="px-3 py-1.5 rounded-xl bg-rose-600 text-white text-xs font-bold shadow-sm shrink-0 active:scale-95">
-          Reintentar
+          {t('common.retry')}
         </button>
       </Alert>
 
       <Alert status="success">
         <Alert.Indicator />
         <Alert.Content>
-          <Alert.Title>Perfil clínico actualizado con éxito</Alert.Title>
-          <Alert.Description>Todos los cambios en tu rutina fueron guardados y cifrados localmente.</Alert.Description>
+          <Alert.Title>{t('haTitle3')}</Alert.Title>
+          <Alert.Description>{t('haDesc3')}</Alert.Description>
         </Alert.Content>
         <Alert.CloseButton />
       </Alert>
@@ -156,8 +159,8 @@ export function BasicAlertsDemo() {
       <Alert status="warning">
         <Alert.Indicator />
         <Alert.Content>
-          <Alert.Title>Aviso de Iluminación para Cámara AR</Alert.Title>
-          <Alert.Description>Para una detección de articulaciones precisa a 30 FPS, asegúrate de buena iluminación frontal.</Alert.Description>
+          <Alert.Title>{t('haTitle4')}</Alert.Title>
+          <Alert.Description>{t('haDesc4')}</Alert.Description>
         </Alert.Content>
         <Alert.CloseButton />
       </Alert>

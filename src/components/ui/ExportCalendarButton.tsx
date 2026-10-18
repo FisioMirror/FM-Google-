@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Calendar, Check, ExternalLink } from 'lucide-react';
 import { generateGoogleCalendarUrl } from '../../lib/calendarExport';
 import { cn } from '../../lib/utils';
@@ -25,6 +26,7 @@ export function ExportCalendarButton({
   size = 'md',
 }: ExportCalendarButtonProps) {
   const [exported, setExported] = useState(false);
+  const { t } = useTranslation();
 
   const handleExport = () => {
     const sessionDate = startDate || new Date(Date.now() + 1000 * 60 * 60 * 24); // Mañana por defecto si no se pasa
@@ -64,12 +66,12 @@ export function ExportCalendarButton({
         variantClasses[variant],
         className
       )}
-      title="Agregar recordatorio a Google Calendar"
+      title={t('ecbTitle')}
     >
       {exported ? (
         <>
           <Check className="size-4 text-emerald-500" />
-          <span>¡Agendado!</span>
+          <span>{t('ecbScheduled')}</span>
         </>
       ) : (
         <>

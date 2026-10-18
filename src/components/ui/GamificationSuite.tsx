@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import {
@@ -29,6 +30,7 @@ export const StreakFlameCounter: React.FC<StreakFlameCounterProps> = ({
   streakDays = 7,
   className,
 }) => {
+  const { t } = useTranslation();
   return (
     <motion.div
       whileHover={{ y: -3, scale: 1.01 }}
@@ -48,7 +50,7 @@ export const StreakFlameCounter: React.FC<StreakFlameCounterProps> = ({
           <Flame className="w-8 h-8 fill-amber-500" />
         </motion.div>
         <span className="absolute -bottom-1.5 text-2xs font-black uppercase tracking-wider bg-gradient-to-r from-amber-500 to-orange-500 text-white px-2 py-0.5 rounded-full shadow-sm">
-          Racha
+          {t('st.kpiStreak')}
         </span>
       </div>
 
@@ -58,11 +60,11 @@ export const StreakFlameCounter: React.FC<StreakFlameCounterProps> = ({
             {streakDays}
           </span>
           <span className="text-xs font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider">
-            Días Consecutivos
+            {t('gamification.consecutiveDays')}
           </span>
         </div>
         <p className="text-xs text-on-surface-variant font-medium">
-          ¡Constancia clínica ejemplar! Multiplicador de XP <strong className="text-amber-500">x1.5 activo</strong>.
+          {t('fgam.constancyMessage')} {t('gamification.xpMultiplier')} <strong className="text-amber-500">{t('fgam.multiplierActive')}</strong>.
         </p>
       </div>
     </motion.div>
@@ -83,6 +85,7 @@ export const LevelProgressRibbon: React.FC<LevelProgressRibbonProps> = ({
   nextLevelXp = 600,
   className,
 }) => {
+  const { t } = useTranslation();
   const [xp, setXp] = useState(currentXp);
   const percent = Math.min(100, Math.round((xp / nextLevelXp) * 100));
 
@@ -106,9 +109,9 @@ export const LevelProgressRibbon: React.FC<LevelProgressRibbonProps> = ({
           </div>
           <div>
             <span className="text-xs font-bold text-on-surface dark:text-white block">
-              Nivel Terapéutico
+              {t('fgam.therapeuticLevel')}
             </span>
-            <span className="text-2xs text-on-surface-variant">Rango de rehabilitación</span>
+            <span className="text-2xs text-on-surface-variant">{t('fgam.rehabRank')}</span>
           </div>
         </div>
         <button
@@ -116,7 +119,7 @@ export const LevelProgressRibbon: React.FC<LevelProgressRibbonProps> = ({
           onClick={addBonusXP}
           className="text-xs font-black px-3 py-1 rounded-full bg-teal-500/15 text-teal-600 dark:text-teal-400 border border-teal-500/30 hover:bg-teal-500/25 transition-colors cursor-pointer"
         >
-          Nivel {currentLevel} • +XP
+          {t('gamification.level')} {currentLevel} • +XP
         </button>
       </div>
 
@@ -130,7 +133,7 @@ export const LevelProgressRibbon: React.FC<LevelProgressRibbonProps> = ({
 
       <div className="flex justify-between text-xs text-on-surface-variant font-mono font-semibold">
         <span>{xp} XP</span>
-        <span className="text-teal-600 dark:text-teal-400">{percent}% completado</span>
+        <span className="text-teal-600 dark:text-teal-400">{t('fgam.percentCompleted', { n: percent })}</span>
         <span>{nextLevelXp} XP</span>
       </div>
     </motion.div>
@@ -144,10 +147,12 @@ export interface MilestoneCelebrationModalProps {
 }
 
 export const MilestoneCelebrationModal: React.FC<MilestoneCelebrationModalProps> = ({
-  milestoneTitle = '¡Meta de 135° de Flexión Superada!',
+  milestoneTitle,
   className,
 }) => {
+  const { t } = useTranslation();
   const [celebrated, setCelebrated] = useState(false);
+  const title = milestoneTitle ?? t('fgam.milestoneDefault');
 
   return (
     <motion.div
@@ -168,9 +173,9 @@ export const MilestoneCelebrationModal: React.FC<MilestoneCelebrationModalProps>
       </div>
 
       <div>
-        <h4 className="text-sm font-black text-on-surface">{milestoneTitle}</h4>
+        <h4 className="text-sm font-black text-on-surface">{title}</h4>
         <p className="text-xs text-on-surface-variant max-w-xs mx-auto mt-0.5">
-          Tu fisioterapeuta ha sido notificado del avance clínico en el portal.
+          {t('fgam.notified')}
         </p>
       </div>
 
@@ -182,7 +187,7 @@ export const MilestoneCelebrationModal: React.FC<MilestoneCelebrationModalProps>
           className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-xl bg-emerald-600 text-white text-xs font-bold shadow-sm shadow-emerald-600/30 hover:bg-emerald-500 transition-colors"
         >
           <Sparkles className="w-3.5 h-3.5" />
-          <span>{celebrated ? '¡XP Reclamada!' : 'Reclamar +250 XP'}</span>
+          <span>{celebrated ? t('fgam.xpClaimed') : t('fgam.claimXp')}</span>
         </motion.button>
       </div>
     </motion.div>
@@ -198,12 +203,15 @@ export interface MobilityQuestCardProps {
 }
 
 export const MobilityQuestCard: React.FC<MobilityQuestCardProps> = ({
-  questTitle = 'Misión Diaria: 3 series con cadencia perfecta',
-  progressText = '2 / 3 Completadas',
+  questTitle,
+  progressText,
   xpReward = 120,
   className,
 }) => {
+  const { t } = useTranslation();
   const [completed, setCompleted] = useState(false);
+  const title = questTitle ?? t('fgam.questDefault');
+  const progress = progressText ?? t('fgam.progressDefault');
 
   return (
     <motion.div
@@ -230,10 +238,10 @@ export const MobilityQuestCard: React.FC<MobilityQuestCardProps> = ({
         </motion.button>
         <div>
           <h4 className={cn("text-xs font-bold text-on-surface dark:text-white", completed && "line-through text-on-surface-variant")}>
-            {questTitle}
+            {title}
           </h4>
           <span className="text-xs text-on-surface-variant font-mono">
-            {completed ? '3 / 3 Completada' : progressText}
+            {completed ? t('fgam.questCompleted') : progress}
           </span>
         </div>
       </div>
@@ -254,6 +262,7 @@ export const VirtualTrophyCabinet: React.FC<VirtualTrophyCabinetProps> = ({
   trophiesCount = 6,
   className,
 }) => {
+  const { t } = useTranslation();
   return (
     <motion.div
       whileHover={{ y: -3, scale: 1.01 }}
@@ -268,9 +277,9 @@ export const VirtualTrophyCabinet: React.FC<VirtualTrophyCabinetProps> = ({
           <Trophy className="w-6 h-6 animate-pulse" />
         </div>
         <div>
-          <h4 className="text-xs font-bold text-on-surface dark:text-white">Vitrina de Trofeos Clínicos</h4>
+          <h4 className="text-xs font-bold text-on-surface dark:text-white">{t('fgam.trophyCabinet')}</h4>
           <span className="text-xs text-on-surface-variant font-medium">
-            {trophiesCount} medallas biomecánicas desbloqueadas
+            {t('fgam.medalsUnlocked', { n: trophiesCount })}
           </span>
         </div>
       </div>
@@ -278,7 +287,7 @@ export const VirtualTrophyCabinet: React.FC<VirtualTrophyCabinetProps> = ({
         type="button"
         className="text-xs font-bold text-primary hover:underline bg-primary/10 px-3 py-1.5 rounded-xl border border-primary/20"
       >
-        Explorar (6/12)
+        {t('fgam.explore')}
       </button>
     </motion.div>
   );
@@ -294,6 +303,7 @@ export const DailyHealthPointsWidget: React.FC<DailyHealthPointsWidgetProps> = (
   points = 840,
   className,
 }) => {
+  const { t } = useTranslation();
   const [pts, setPts] = useState(points);
 
   return (
@@ -314,8 +324,8 @@ export const DailyHealthPointsWidget: React.FC<DailyHealthPointsWidgetProps> = (
           <Coins className="w-6 h-6" />
         </motion.div>
         <div>
-          <h4 className="text-xs font-bold text-on-surface dark:text-white">Puntos de Salud</h4>
-          <span className="text-xs text-on-surface-variant">Canjeables por consultas prioritarias</span>
+          <h4 className="text-xs font-bold text-on-surface dark:text-white">{t('gamification.healthPoints')}</h4>
+          <span className="text-xs text-on-surface-variant">{t('fgam.redeemable')}</span>
         </div>
       </div>
       <button
@@ -338,9 +348,11 @@ export interface RehabHeroAvatarCardProps {
 
 export const RehabHeroAvatarCard: React.FC<RehabHeroAvatarCardProps> = ({
   patientName = 'Carlos Rivera',
-  rankTitle = 'Guerrero de la Movilidad',
+  rankTitle,
   className,
 }) => {
+  const { t } = useTranslation();
+  const heroRank = rankTitle ?? t('fgam.heroRank');
   return (
     <motion.div
       whileHover={{ y: -3, scale: 1.01 }}
@@ -356,8 +368,8 @@ export const RehabHeroAvatarCard: React.FC<RehabHeroAvatarCardProps> = ({
       </div>
       <div>
         <h4 className="text-sm font-black text-on-surface">{patientName}</h4>
-        <span className="text-xs text-primary font-bold">{rankTitle}</span>
-        <span className="text-2xs text-on-surface-variant block">Nivel 5 • 86% Adherencia</span>
+        <span className="text-xs text-primary font-bold">{heroRank}</span>
+        <span className="text-2xs text-on-surface-variant block">{t('gamification.level')} 5 • 86% {t('patients.columns.adherence')}</span>
       </div>
     </motion.div>
   );
@@ -369,6 +381,7 @@ export interface CheerReactionButtonProps {
 }
 
 export const CheerReactionButton: React.FC<CheerReactionButtonProps> = ({ className }) => {
+  const { t } = useTranslation();
   const [likes, setLikes] = useState(24);
   const [hearts, setHearts] = useState<number[]>([]);
 
@@ -392,7 +405,7 @@ export const CheerReactionButton: React.FC<CheerReactionButtonProps> = ({ classN
         )}
       >
         <ThumbsUp className="w-4 h-4" />
-        <span>¡Ánimo! ({likes})</span>
+        <span>{t('fgam.cheer', { n: likes })}</span>
       </motion.button>
 
       {/* Partículas de ánimo flotantes */}
@@ -418,9 +431,11 @@ export interface RecoveryRankBadgeProps {
 }
 
 export const RecoveryRankBadge: React.FC<RecoveryRankBadgeProps> = ({
-  rank = 'Rango: Constante',
+  rank,
   className,
 }) => {
+  const { t } = useTranslation();
+  const rankLabel = rank ?? t('pf.rankSteady');
   return (
     <motion.div
       whileHover={{ y: -2 }}
@@ -430,7 +445,7 @@ export const RecoveryRankBadge: React.FC<RecoveryRankBadgeProps> = ({
       )}
     >
       <Award className="w-4 h-4 text-teal-500" />
-      <span>{rank}</span>
+      <span>{rankLabel}</span>
       <Sparkles className="w-3.5 h-3.5 text-amber-400 animate-spin" style={{ animationDuration: '8s' }} />
     </motion.div>
   );
@@ -444,11 +459,14 @@ export interface UnlockableExerciseLockerProps {
 }
 
 export const UnlockableExerciseLocker: React.FC<UnlockableExerciseLockerProps> = ({
-  exerciseTitle = 'Salto Pliométrico Controlado',
-  requirement = 'Requiere 130° ROM + 0 dolor en EVA',
+  exerciseTitle,
+  requirement,
   className,
 }) => {
+  const { t } = useTranslation();
   const [jiggling, setJiggling] = useState(false);
+  const title = exerciseTitle ?? t('fgam.lockedExercise');
+  const requirementText = requirement ?? t('fgam.lockedRequirement');
 
   return (
     <motion.div
@@ -471,12 +489,12 @@ export const UnlockableExerciseLocker: React.FC<UnlockableExerciseLockerProps> =
           <Lock className="w-5 h-5" />
         </motion.div>
         <div>
-          <h4 className="text-xs font-bold text-on-surface">{exerciseTitle}</h4>
-          <span className="text-2xs text-on-surface-variant">{requirement}</span>
+          <h4 className="text-xs font-bold text-on-surface">{title}</h4>
+          <span className="text-2xs text-on-surface-variant">{requirementText}</span>
         </div>
       </div>
       <span className="text-2xs uppercase font-bold text-on-surface-variant bg-black/5 dark:bg-white/5 px-2.5 py-1 rounded-full">
-        85% Bloqueado
+        {t('fgam.lockedLabel')}
       </span>
     </motion.div>
   );

@@ -1,4 +1,5 @@
 import { cn } from '../../lib/utils';
+import { useTranslation } from 'react-i18next';
 import { PixelImage } from './PixelImage';
 import {
   Activity,
@@ -43,7 +44,7 @@ function getBiomechanicalVisual(name: string, articulacion?: string | null, cate
       IconComponent: Footprints,
       bgClass: 'bg-gradient-to-br from-teal-500/15 via-emerald-500/10 to-cyan-500/5',
       iconClass: 'text-teal-600 dark:text-teal-400',
-      badge: 'Tobillo & Apoyo',
+      badgeKey: 'eiBadgeAnkle',
     };
   }
 
@@ -53,7 +54,7 @@ function getBiomechanicalVisual(name: string, articulacion?: string | null, cate
       IconComponent: Target,
       bgClass: 'bg-gradient-to-br from-emerald-500/15 via-teal-500/10 to-cyan-500/5',
       iconClass: 'text-emerald-600 dark:text-emerald-400',
-      badge: 'Rodilla & Carga',
+      badgeKey: 'eiBadgeKnee',
     };
   }
 
@@ -63,7 +64,7 @@ function getBiomechanicalVisual(name: string, articulacion?: string | null, cate
       IconComponent: CircleDot,
       bgClass: 'bg-gradient-to-br from-cyan-500/15 via-teal-500/10 to-blue-500/5',
       iconClass: 'text-cyan-600 dark:text-cyan-400',
-      badge: 'Complejo Glenohumeral',
+      badgeKey: 'eiBadgeShoulder',
     };
   }
 
@@ -73,7 +74,7 @@ function getBiomechanicalVisual(name: string, articulacion?: string | null, cate
       IconComponent: Dumbbell,
       bgClass: 'bg-gradient-to-br from-teal-500/15 via-blue-500/10 to-cyan-500/5',
       iconClass: 'text-teal-600 dark:text-teal-400',
-      badge: 'Miembro Superior',
+      badgeKey: 'eiBadgeUpperLimb',
     };
   }
 
@@ -83,7 +84,7 @@ function getBiomechanicalVisual(name: string, articulacion?: string | null, cate
       IconComponent: Shield,
       bgClass: 'bg-gradient-to-br from-teal-600/15 via-emerald-600/10 to-teal-500/5',
       iconClass: 'text-teal-700 dark:text-teal-300',
-      badge: 'Control Espinal & Core',
+      badgeKey: 'eiBadgeSpine',
     };
   }
 
@@ -93,7 +94,7 @@ function getBiomechanicalVisual(name: string, articulacion?: string | null, cate
       IconComponent: Sparkles,
       bgClass: 'bg-gradient-to-br from-cyan-500/15 via-teal-500/10 to-emerald-500/5',
       iconClass: 'text-cyan-600 dark:text-cyan-300',
-      badge: 'Región Cervical',
+      badgeKey: 'eiBadgeCervical',
     };
   }
 
@@ -103,7 +104,7 @@ function getBiomechanicalVisual(name: string, articulacion?: string | null, cate
       IconComponent: RotateCw,
       bgClass: 'bg-gradient-to-br from-teal-500/15 via-cyan-500/10 to-blue-500/5',
       iconClass: 'text-teal-600 dark:text-teal-400',
-      badge: 'Arco de Movimiento (ROM)',
+      badgeKey: 'eiBadgeRom',
     };
   }
 
@@ -113,7 +114,7 @@ function getBiomechanicalVisual(name: string, articulacion?: string | null, cate
       IconComponent: Flame,
       bgClass: 'bg-gradient-to-br from-emerald-500/15 via-teal-500/10 to-cyan-500/5',
       iconClass: 'text-emerald-600 dark:text-emerald-400',
-      badge: 'Fortalecimiento Progresivo',
+      badgeKey: 'eiBadgeStrength',
     };
   }
 
@@ -123,7 +124,7 @@ function getBiomechanicalVisual(name: string, articulacion?: string | null, cate
       IconComponent: Compass,
       bgClass: 'bg-gradient-to-br from-blue-500/15 via-teal-500/10 to-emerald-500/5',
       iconClass: 'text-blue-600 dark:text-blue-400',
-      badge: 'Propiocepción & Balance',
+      badgeKey: 'eiBadgeBalance',
     };
   }
 
@@ -133,7 +134,7 @@ function getBiomechanicalVisual(name: string, articulacion?: string | null, cate
       IconComponent: Layers,
       bgClass: 'bg-gradient-to-br from-teal-500/15 via-emerald-500/10 to-blue-500/5',
       iconClass: 'text-teal-600 dark:text-teal-400',
-      badge: 'Flexibilidad Muscular',
+      badgeKey: 'eiBadgeFlexibility',
     };
   }
 
@@ -142,7 +143,7 @@ function getBiomechanicalVisual(name: string, articulacion?: string | null, cate
     IconComponent: Activity,
     bgClass: 'bg-gradient-to-br from-teal-500/15 via-emerald-500/10 to-cyan-500/5',
     iconClass: 'text-teal-600 dark:text-teal-400',
-    badge: 'Kinesioterapia Activa',
+    badgeKey: 'eiBadgeKinesio',
   };
 }
 
@@ -152,6 +153,7 @@ function getBiomechanicalVisual(name: string, articulacion?: string | null, cate
  * gradientes clínicos (esmeralda/azul/verde) y badge de región anatómica.
  */
 export function ExerciseImage({ src, name, articulacion, categoria, className, heightClass = 'h-40' }: ExerciseImageProps) {
+  const { t } = useTranslation();
   if (src) {
     return (
       <div className={cn('relative w-full overflow-hidden rounded-2xl mb-4', heightClass, className)}>
@@ -187,7 +189,7 @@ export function ExerciseImage({ src, name, articulacion, categoria, className, h
         <IconCmp className={cn('size-6 animate-breathe-icon', visual.iconClass)} />
       </div>
       <span className="text-2xs font-bold uppercase tracking-wider text-teal-700 dark:text-teal-300 bg-white/60 dark:bg-slate-900/60 px-2.5 py-0.5 rounded-full mb-1">
-        {visual.badge}
+        {t(visual.badgeKey)}
       </span>
       <span className="font-title-md text-sm sm:text-base font-bold text-on-surface text-center px-2 line-clamp-1">
         {name}

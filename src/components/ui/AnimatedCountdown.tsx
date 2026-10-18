@@ -1,4 +1,5 @@
 import NumberFlow from '@number-flow/react';
+import { useTranslation } from 'react-i18next';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { cn } from '../../lib/utils';
@@ -11,6 +12,7 @@ interface AnimatedCountdownProps {
 
 export function AnimatedCountdown({ initialCount = 60, onComplete, className }: AnimatedCountdownProps) {
   const [isPaused, setIsPaused] = useState(false);
+  const { t } = useTranslation();
   const [resetTrigger, setResetTrigger] = useState(0);
   const [count, setCount] = useState(initialCount);
 
@@ -42,7 +44,7 @@ export function AnimatedCountdown({ initialCount = 60, onComplete, className }: 
       </div>
       <div className="flex w-fit items-center gap-2 mt-4">
         <motion.button
-          aria-label={isPaused ? 'Reanudar' : 'Pausar'}
+          aria-label={isPaused ? t('acResume') : t('acPause')}
           onClick={() => setIsPaused((p) => !p)}
           whileTap={{ scale: 0.9 }}
           className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-on-primary transition-colors hover:opacity-80"
@@ -76,11 +78,11 @@ export function AnimatedCountdown({ initialCount = 60, onComplete, className }: 
           </AnimatePresence>
         </motion.button>
         <button
-          aria-label="Reiniciar"
+          aria-label={t('acRestart')}
           onClick={() => { setResetTrigger((prev) => prev + 1); setIsPaused(false); }}
           className="glass-panel rounded-full px-4 py-1.5 text-sm text-on-surface-variant hover:bg-white/60 transition-colors"
         >
-          Reiniciar
+          {t('acRestart')}
         </button>
       </div>
     </div>

@@ -1,4 +1,5 @@
 import { useState, type ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, X } from 'lucide-react';
 import { BorderBeam } from './BorderBeam';
@@ -25,6 +26,7 @@ export function InsightBanner({
   className,
 }: InsightBannerProps) {
   const [visible, setVisible] = useState(true);
+  const { t } = useTranslation();
   if (!visible) return null;
 
   const handleDismiss = () => {
@@ -58,7 +60,7 @@ export function InsightBanner({
                     {title}
                   </h4>
                   <span className="hidden sm:inline-flex items-center gap-1 text-2xs font-bold text-teal-300 bg-teal-500/20 px-2 py-0.5 rounded-full border border-teal-500/30">
-                    <span className="size-1 rounded-full bg-teal-400 animate-pulse" /> IA Clínica
+                    <span className="size-1 rounded-full bg-teal-400 animate-pulse" /> {t('ibClinicalAi')}
                   </span>
                 </div>
                 <p className="text-xs sm:text-sm text-teal-100/80 leading-relaxed max-w-3xl">
@@ -70,7 +72,7 @@ export function InsightBanner({
             <button
               onClick={handleDismiss}
               className="size-8 rounded-xl bg-white/10 hover:bg-white/20 text-white/70 hover:text-white transition-colors flex items-center justify-center shrink-0 cursor-pointer"
-              aria-label="Cerrar notificación"
+              aria-label={t('ibCloseNotification')}
             >
               <X className="size-4" />
             </button>

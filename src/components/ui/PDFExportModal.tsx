@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Icon } from './Icon';
 import { Spinner } from './Loader';
@@ -16,6 +17,7 @@ interface PDFModalProps {
 
 export function PDFExportModal({ open, onClose, data, filename }: PDFModalProps) {
   const toast = useToast();
+  const { t } = useTranslation();
   const [selectedType, setSelectedType] = useState<ReportType>('evolution');
   const [formatMode, setFormatMode] = useState<'quick' | 'ai'>('quick');
   const [loading, setLoading] = useState(false);
@@ -30,32 +32,32 @@ export function PDFExportModal({ open, onClose, data, filename }: PDFModalProps)
   }> = [
     {
       id: 'evolution',
-      title: 'Informe de Evolución y Sesiones',
-      description: 'Progreso biomecánico, adherencia porcentual y tabla cronológica de sesiones completadas.',
+      title: t('pem.evolutionSessionsReport'),
+      description: t('pem.biomechanicalProgress'),
       icon: 'insights',
       color: 'text-teal-600 dark:text-teal-400',
       bg: 'bg-teal-500/10 border-teal-500/30',
     },
     {
       id: 'pain',
-      title: 'Reporte de Casos de Dolor & Compensaciones',
-      description: 'Registro de dolor (escala EVA), incidentes referidos y posturas compensatorias captadas por MediaPipe.',
+      title: t('pem.painCompensationReport'),
+      description: t('pem.painLog'),
       icon: 'healing',
       color: 'text-rose-600 dark:text-rose-400',
       bg: 'bg-rose-500/10 border-rose-500/30',
     },
     {
       id: 'medical',
-      title: 'Informe Médico para Especialista Tratante',
-      description: 'Resumen clínico formal para interconsulta con traumatólogo o médico tratante.',
+      title: t('pem.medicalReport'),
+      description: t('pem.clinicalSummary'),
       icon: 'medical_services',
       color: 'text-sky-600 dark:text-sky-400',
       bg: 'bg-sky-500/10 border-sky-500/30',
     },
     {
       id: 'recipe',
-      title: 'Récipe & Prescripción Domiciliaria',
-      description: 'Prescripción de rutina de ejercicios en casa con series, repeticiones, objetivo ROM y precauciones.',
+      title: t('pem.prescriptionHomeProgram'),
+      description: t('pem.homeRoutinePrescription'),
       icon: 'receipt_long',
       color: 'text-emerald-600 dark:text-emerald-400',
       bg: 'bg-emerald-500/10 border-emerald-500/30',
@@ -81,7 +83,7 @@ export function PDFExportModal({ open, onClose, data, filename }: PDFModalProps)
     try {
       if (formatMode === 'quick') {
         exportSimplePDF(enrichedData, safeFilename, selectedType);
-        toast.success('PDF generado y descargado correctamente');
+        toast.success(t('pem.pdfDownloaded'));
         onClose();
       } else {
         // Generación asistida por IA
@@ -97,7 +99,7 @@ export function PDFExportModal({ open, onClose, data, filename }: PDFModalProps)
         if (jobError || !jobRow) {
           // Fallback a generación inmediata si la cola de background está offline
           await exportPremiumPDF(enrichedData, safeFilename);
-          toast.success('PDF estilizado generado con éxito');
+          toast.success(t('pem.styledPdfGenerated'));
           onClose();
           return;
         }
@@ -118,12 +120,12 @@ export function PDFExportModal({ open, onClose, data, filename }: PDFModalProps)
         }
 
         await exportPremiumPDF(enrichedData, safeFilename, aiNarrative || undefined);
-        toast.success('Reporte PDF estilizado generado con éxito');
+        toast.success(t('pem.styledReportGenerated'));
         onClose();
       }
     } catch (err) {
       console.error('[PDF Export Error]:', err);
-      toast.error('Error generando el archivo PDF');
+      toast.error(t('pem.pdfGenerationError'));
     } finally {
       setLoading(false);
     }
@@ -151,18 +153,18 @@ export function PDFExportModal({ open, onClose, data, filename }: PDFModalProps)
             <div className="flex justify-between items-start mb-5 pb-4 border-b border-outline-variant/20">
               <div>
                 <span className="text-2xs font-black uppercase tracking-wider text-teal-600 dark:text-teal-400">
-                  Documentación Médica Oficial
+                  {t('pem.officialDocumentation')}
                 </span>
                 <h3 className="text-lg sm:text-xl font-extrabold text-on-surface">
-                  Exportar Informe Clínico
+                  {t('pem.exportClinicalReport')}
                 </h3>
                 <p className="text-xs text-on-surface-variant mt-0.5">
-                  Paciente: <span className="font-bold text-on-surface">{data.patientName}</span>
+                  {t('common.patient')}: <span className="font-bold text-on-surface">{data.patientName}</span>
                 </p>
               </div>
               <button
                 onClick={onClose}
-                aria-label="Cerrar ventana de exportación"
+                aria-label={t('pem.closeExportWindow')}
                 className="p-1.5 rounded-xl text-outline hover:text-on-surface hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer"
               >
                 <Icon name="close" size={20} />
@@ -172,7 +174,7 @@ export function PDFExportModal({ open, onClose, data, filename }: PDFModalProps)
             {/* Paso 1: Selección de Tipo de Reporte */}
             <div className="space-y-3 mb-5">
               <label className="block text-xs font-bold text-on-surface uppercase tracking-wider">
-                1. Tipo de Documento Clínico
+                {t('pem.n1ClinicalDocumentType')}
               </label>
               <div className="grid grid-cols-1 gap-2.5">
                 {reportTypesConfig.map((cfg) => {
@@ -212,7 +214,7 @@ export function PDFExportModal({ open, onClose, data, filename }: PDFModalProps)
             {/* Paso 2: Selección de Motor de Renderizado */}
             <div className="space-y-2 mb-6">
               <label className="block text-xs font-bold text-on-surface uppercase tracking-wider">
-                2. Formato de Generación
+                {t('pem.n2GenerationFormat')}
               </label>
               <div className="grid grid-cols-2 gap-3">
                 <button
@@ -227,10 +229,10 @@ export function PDFExportModal({ open, onClose, data, filename }: PDFModalProps)
                 >
                   <div className="flex items-center gap-2 mb-1">
                     <Icon name="bolt" size={16} className="text-teal-600 dark:text-teal-400" />
-                    <span className="text-xs font-bold text-on-surface">PDF Rápido</span>
+                    <span className="text-xs font-bold text-on-surface">{t('pem.quickPdf')}</span>
                   </div>
                   <p className="text-2xs text-on-surface-variant leading-tight">
-                    jsPDF instantáneo. Ligero e ideal para impresión médica directa.
+                    {t('pem.instantJsPdf')}
                   </p>
                 </button>
 
@@ -246,10 +248,10 @@ export function PDFExportModal({ open, onClose, data, filename }: PDFModalProps)
                 >
                   <div className="flex items-center gap-2 mb-1">
                     <Icon name="auto_awesome" size={16} className="text-teal-600 dark:text-teal-400" />
-                    <span className="text-xs font-bold text-on-surface">PDF Estilizado IA</span>
+                    <span className="text-xs font-bold text-on-surface">{t('pem.aiStyledPdf')}</span>
                   </div>
                   <p className="text-2xs text-on-surface-variant leading-tight">
-                    Membretado de alta fidelidad con narrativa analítica profunda.
+                    {t('pem.highFidelityLetterhead')}
                   </p>
                 </button>
               </div>
@@ -263,7 +265,7 @@ export function PDFExportModal({ open, onClose, data, filename }: PDFModalProps)
                 disabled={loading}
                 className="px-4 py-2.5 rounded-xl text-xs font-bold text-on-surface-variant hover:bg-surface-container-high transition-colors"
               >
-                Cancelar
+                {t('common.cancel')}
               </button>
               <button
                 type="button"
@@ -274,12 +276,12 @@ export function PDFExportModal({ open, onClose, data, filename }: PDFModalProps)
                 {loading ? (
                   <>
                     <Spinner size={16} className="text-white" />
-                    <span>Generando Documento...</span>
+                    <span>{t('pem.generatingDocument')}</span>
                   </>
                 ) : (
                   <>
                     <Icon name="download" size={16} />
-                    <span>Descargar PDF</span>
+                    <span>{t('pem.downloadPdf')}</span>
                   </>
                 )}
               </button>

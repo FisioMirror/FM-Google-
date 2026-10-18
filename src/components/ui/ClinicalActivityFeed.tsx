@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { useTranslation } from "react-i18next"
 import { motion } from "framer-motion"
 import { 
   Activity, 
@@ -26,12 +27,12 @@ export interface ClinicalFeedItem {
   color: string
 }
 
-const INITIAL_NOTIFICATIONS: ClinicalFeedItem[] = [
+const getInitialNotifications = (t: (key: string, options?: any) => any): ClinicalFeedItem[] => [
   {
     id: "notif-1",
-    name: "Sesión completada con éxito",
-    description: "Carlos Gómez finalizó 'Extensión Lumbar' • ROM 94% alcanzado",
-    time: "Hace 2 min",
+    name: t("caf.sessionCompleted"),
+    description: t("caf.sessionCompletedDesc", { name: "Carlos Gómez", exercise: t("caf.lumbarExtension"), rom: 94 }),
+    time: t("caf.minutesAgo", { n: 2 }),
     icon: <CheckCircle2 className="size-4 text-emerald-500" />,
     badge: "ROM 94%",
     category: "sesion",
@@ -39,29 +40,29 @@ const INITIAL_NOTIFICATIONS: ClinicalFeedItem[] = [
   },
   {
     id: "notif-2",
-    name: "Alerta Biomecánica MediaPipe",
-    description: "Compensación pélvica detectada en sentadilla unipodal",
-    time: "Hace 7 min",
+    name: t("caf.mediaPipeBiomechanicalAlert"),
+    description: t("caf.pelvicCompensation"),
+    time: t("caf.minutesAgo", { n: 7 }),
     icon: <AlertTriangle className="size-4 text-amber-500" />,
-    badge: "Compensación",
+    badge: t("caf.compensation"),
     category: "alerta",
     color: "#f59e0b",
   },
   {
     id: "notif-3",
-    name: "Nuevo paciente vinculado",
-    description: "Lucía Navarro canjeó el token #FM-9821 y activó su rutina",
-    time: "Hace 15 min",
+    name: t("caf.newPatientLinked"),
+    description: t("caf.tokenRedeemedDesc", { name: "Lucía Navarro", token: "#FM-9821" }),
+    time: t("caf.minutesAgo", { n: 15 }),
     icon: <KeyRound className="size-4 text-teal-500" />,
-    badge: "Token canjeado",
+    badge: t("caf.tokenRedeemed"),
     category: "sistema",
     color: "#006965",
   },
   {
     id: "notif-4",
-    name: "Análisis IA Physi disponible",
-    description: "Resumen de evolución semanal preparado para María Fernández",
-    time: "Hace 22 min",
+    name: t("caf.physiAiAnalysis"),
+    description: t("caf.weeklySummaryReady", { name: "María Fernández" }),
+    time: t("caf.minutesAgo", { n: 22 }),
     icon: <Sparkles className="size-4 text-cyan-500" />,
     badge: "Physi IA",
     category: "ia",
@@ -69,11 +70,11 @@ const INITIAL_NOTIFICATIONS: ClinicalFeedItem[] = [
   },
   {
     id: "notif-5",
-    name: "Excelente adherencia clínica",
-    description: "Roberto Silva completó 5 días seguidos de fortalecimiento",
-    time: "Hace 35 min",
+    name: t("caf.excellentClinicalAdherence"),
+    description: t("caf.completedFiveDayStreak", { name: "Roberto Silva" }),
+    time: t("caf.minutesAgo", { n: 35 }),
     icon: <Activity className="size-4 text-primary" />,
-    badge: "Racha 5 días",
+    badge: t("caf.n5DayStreak"),
     category: "sesion",
     color: "#00504d",
   },
@@ -135,7 +136,8 @@ export function ClinicalActivityFeed({
   className?: string
   delay?: number
 }) {
-  const [items, setItems] = useState<ClinicalFeedItem[]>(INITIAL_NOTIFICATIONS)
+  const { t } = useTranslation()
+  const [items, setItems] = useState<ClinicalFeedItem[]>(() => getInitialNotifications(t))
   const [isPaused, setIsPaused] = useState(false)
 
   const handleAddLiveEvent = () => {
@@ -143,17 +145,17 @@ export function ClinicalActivityFeed({
     const randomName = names[Math.floor(Math.random() * names.length)]
     const newEvent: ClinicalFeedItem = {
       id: `notif-${Date.now()}`,
-      name: "Nueva calibración de ángulo articular",
-      description: `${randomName} completó calibración con MediaPipe • Desviación < 2°`,
-      time: "Ahora mismo",
+      name: t("caf.newJointAngleCalibration"),
+      description: t("caf.calibrationCompletedDesc", { name: randomName }),
+      time: t("caf.rightNow"),
       icon: <Activity className="size-4 text-emerald-500" />,
-      badge: "En vivo",
+      badge: t("caf.live"),
       category: "sesion",
       color: "#10b981",
     }
     setItems((prev) => [newEvent, ...prev])
-    toast.success("Evento clínico simulado en vivo", {
-      description: `${randomName} registró su medición en el feed.`,
+    toast.success(t("caf.liveEventSimulated"), {
+      description: t("caf.measurementRegisteredDesc", { name: randomName }),
     })
   }
 
@@ -174,11 +176,11 @@ export function ClinicalActivityFeed({
           </div>
           <div>
             <h4 className="text-sm font-bold text-on-surface flex items-center gap-2">
-              Feed de Actividad en Vivo
+              {t("caf.liveActivityFeed")}
               <Radio className="size-3.5 text-primary animate-pulse" />
             </h4>
             <p className="text-xs text-on-surface-variant font-medium">
-              Sincronización en tiempo real de sesiones y MediaPipe
+              {t("caf.realTimeSync")}
             </p>
           </div>
         </div>
@@ -187,8 +189,8 @@ export function ClinicalActivityFeed({
           <button
             type="button"
             onClick={() => setIsPaused(!isPaused)}
-            aria-label={isPaused ? "Reanudar ticker" : "Pausar ticker"}
-            title={isPaused ? "Reanudar" : "Pausar"}
+            aria-label={isPaused ? t("caf.resumeTicker") : t("caf.pauseTicker")}
+            title={isPaused ? t("caf.resume") : t("caf.pause")}
             className="p-1.5 rounded-xl border border-outline-variant/30 text-on-surface-variant hover:bg-surface-container-high transition-colors"
           >
             {isPaused ? <Play className="size-3.5 text-emerald-500" /> : <Pause className="size-3.5" />}
@@ -199,7 +201,7 @@ export function ClinicalActivityFeed({
             className="flex items-center gap-1 text-xs font-semibold px-2.5 py-1.5 rounded-xl bg-primary text-on-primary hover:bg-primary/90 transition-all shadow-xs"
           >
             <Plus className="size-3.5" />
-            Simular Evento
+            {t("caf.simulateEvent")}
           </button>
         </div>
       </div>

@@ -31,7 +31,7 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
   className = '',
   dropdownAlign = 'right',
 }) => {
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -88,7 +88,7 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
           compact ? 'px-2 py-1.5' : 'px-2.5 sm:px-3 py-1.5'
         )}
         aria-label="Seleccionar idioma / Select language"
-        title={`Idioma actual: ${currentLang.nativeName}`}
+        title={t('ls.currentLanguage', { language: currentLang.nativeName })}
         aria-expanded={isOpen}
       >
         <span className="text-sm leading-none shrink-0" role="img" aria-label={currentLang.label}>

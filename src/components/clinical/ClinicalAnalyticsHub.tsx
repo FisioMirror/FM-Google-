@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import {
   ResponsiveContainer,
@@ -39,65 +40,65 @@ interface RomJointData {
   status: 'optimal' | 'recovering' | 'needs_work';
 }
 
-const ROM_DATA: RomJointData[] = [
+const getRomData = (t: (key: string, options?: any) => any): RomJointData[] => [
   {
-    joint: 'Flexión Hombro',
+    joint: t('cah.shoulderFlexion'),
     actual: 148,
     ideal: 180,
     deficit: 32,
     percent: 82,
     unit: '°',
-    clinicalNote: 'Buena progresión escapulohumeral sin compensación de trapecio superior.',
+    clinicalNote: t('cah.goodScapulohumeralProgress'),
     status: 'recovering',
   },
   {
-    joint: 'Extensión Rodilla',
+    joint: t('cah.kneeExtension'),
     actual: 125,
     ideal: 135,
     deficit: 10,
     percent: 93,
     unit: '°',
-    clinicalNote: 'Extensión terminal completa recuperada. Sin retraso de cuádriceps.',
+    clinicalNote: t('cah.fullTerminalExtension'),
     status: 'optimal',
   },
   {
-    joint: 'Abducción Cadera',
+    joint: t('cah.hipAbduction'),
     actual: 36,
     ideal: 45,
     deficit: 9,
     percent: 80,
     unit: '°',
-    clinicalNote: 'Fortalecimiento de glúteo medio en curso. Estable en apoyo monopodal.',
+    clinicalNote: t('cah.gluteusMediusStrengthening'),
     status: 'recovering',
   },
   {
-    joint: 'Flexión Codo',
+    joint: t('cah.elbowFlexion'),
     actual: 134,
     ideal: 145,
     deficit: 11,
     percent: 92,
     unit: '°',
-    clinicalNote: 'Arco funcional óptimo para actividades de la vida diaria (AVD).',
+    clinicalNote: t('cah.optimalFunctionalArc'),
     status: 'optimal',
   },
   {
-    joint: 'Rotación Externa',
+    joint: t('cah.externalRotation'),
     actual: 68,
     ideal: 90,
     deficit: 22,
     percent: 75,
     unit: '°',
-    clinicalNote: 'Leve tirantez capsular posterior. Se aconseja estiramiento suave.',
+    clinicalNote: t('cah.mildPosteriorTightness'),
     status: 'needs_work',
   },
   {
-    joint: 'Dorsiflexión Tobillo',
+    joint: t('cah.ankleDorsiflexion'),
     actual: 16,
     ideal: 20,
     deficit: 4,
     percent: 80,
     unit: '°',
-    clinicalNote: 'Suficiente para marcha sin claudicación. Continuar propiocepción.',
+    clinicalNote: t('cah.sufficientForGait'),
     status: 'recovering',
   },
 ];
@@ -111,15 +112,15 @@ interface VasCorrelationPoint {
   load: string;
 }
 
-const VAS_CORRELATION_DATA: VasCorrelationPoint[] = [
-  { session: 'S1', precision: 54, vasPain: 7.5, fatigue: 8.0, load: 'Inicial' },
-  { session: 'S2', precision: 62, vasPain: 6.8, fatigue: 7.2, load: 'Adaptación' },
-  { session: 'S3', precision: 71, vasPain: 5.5, fatigue: 6.0, load: 'Moderada' },
-  { session: 'S4', precision: 78, vasPain: 4.2, fatigue: 5.1, load: 'Terapéutica' },
-  { session: 'S5', precision: 84, vasPain: 3.1, fatigue: 4.2, load: 'Terapéutica' },
-  { session: 'S6', precision: 90, vasPain: 2.2, fatigue: 3.5, load: 'Consolidación' },
-  { session: 'S7', precision: 93, vasPain: 1.8, fatigue: 2.9, load: 'Consolidación' },
-  { session: 'S8', precision: 96, vasPain: 1.0, fatigue: 2.1, load: 'Óptima' },
+const getVasData = (t: (key: string, options?: any) => any): VasCorrelationPoint[] => [
+  { session: 'S1', precision: 54, vasPain: 7.5, fatigue: 8.0, load: t('cah.initialLoad') },
+  { session: 'S2', precision: 62, vasPain: 6.8, fatigue: 7.2, load: t('cah.adaptationLoad') },
+  { session: 'S3', precision: 71, vasPain: 5.5, fatigue: 6.0, load: t('cah.moderateLoad') },
+  { session: 'S4', precision: 78, vasPain: 4.2, fatigue: 5.1, load: t('cah.therapeuticLoad') },
+  { session: 'S5', precision: 84, vasPain: 3.1, fatigue: 4.2, load: t('cah.therapeuticLoad') },
+  { session: 'S6', precision: 90, vasPain: 2.2, fatigue: 3.5, load: t('cah.consolidationLoad') },
+  { session: 'S7', precision: 93, vasPain: 1.8, fatigue: 2.9, load: t('cah.consolidationLoad') },
+  { session: 'S8', precision: 96, vasPain: 1.0, fatigue: 2.1, load: t('cah.optimalLoad') },
 ];
 
 // Cohortes Clínicos
@@ -132,45 +133,45 @@ interface ClinicalCohort {
   color: string;
 }
 
-const CLINICAL_COHORTS: ClinicalCohort[] = [
+const getCohorts = (t: (key: string, options?: any) => any): ClinicalCohort[] => [
   {
-    name: 'Postoperatorio LCA / Rodilla',
+    name: t('cah.postoperativeAclKnee'),
     patientsCount: 18,
     adherence: 94,
     avgQuality: 91,
-    dischargeForecast: '3-4 semanas',
+    dischargeForecast: t('cah.n34Weeks'),
     color: '#0d9488', // teal-600
   },
   {
-    name: 'Lumbalgia & Columna Funcional',
+    name: t('cah.lowBackPainSpine'),
     patientsCount: 26,
     adherence: 88,
     avgQuality: 85,
-    dischargeForecast: '5-6 semanas',
+    dischargeForecast: t('cah.n56Weeks'),
     color: '#06b6d4', // cyan-500
   },
   {
-    name: 'Manguito Rotador / Hombro',
+    name: t('cah.rotatorCuffShoulder'),
     patientsCount: 14,
     adherence: 78,
     avgQuality: 80,
-    dischargeForecast: '6-8 semanas',
+    dischargeForecast: t('cah.n68Weeks'),
     color: '#3b82f6', // blue-500
   },
   {
-    name: 'Geriatría & Prevención de Caídas',
+    name: t('cah.geriatricsFallPrevention'),
     patientsCount: 12,
     adherence: 84,
     avgQuality: 86,
-    dischargeForecast: 'Mantenimiento continuo',
+    dischargeForecast: t('cah.continuousMaintenance'),
     color: '#10b981', // emerald-500
   },
   {
-    name: 'Cervicalgia & Ergonomía',
+    name: t('cah.neckPainErgonomics'),
     patientsCount: 9,
     adherence: 82,
     avgQuality: 84,
-    dischargeForecast: '2-3 semanas',
+    dischargeForecast: t('cah.n23Weeks'),
     color: '#8b5cf6', // purple-500
   },
 ];
@@ -187,46 +188,46 @@ interface ClinicalAlertItem {
   timeAgo: string;
 }
 
-const CLINICAL_ALERTS: ClinicalAlertItem[] = [
+const getAlerts = (t: (key: string, options?: any) => any): ClinicalAlertItem[] => [
   {
     id: 'alt-1',
     patientName: 'Lucía Mendoza',
     patientId: 'demo-3',
     type: 'pain_spike',
-    title: 'Pico de Dolor Agudo (EVA 7.0)',
-    description: 'Reportó aumento de molestia tras serie de abducción con resistencia elástica.',
-    metric: 'EVA 3.0 → 7.0',
-    timeAgo: 'Hace 45 min',
+    title: t('cah.acutePainSpike'),
+    description: t('cah.reportedIncreasedDiscomfort'),
+    metric: t('cah.metricEvaRange'),
+    timeAgo: t('cah.timeAgo45Min'),
   },
   {
     id: 'alt-2',
     patientName: 'Carlos Domínguez',
     patientId: 'demo-2',
     type: 'overload',
-    title: 'Compensación Biomecánica Detectada',
-    description: 'Visión AR detectó inclinación de tronco >12° durante sentadilla monopodal.',
-    metric: 'Ángulo Compensado: 14°',
-    timeAgo: 'Hace 2 horas',
+    title: t('cah.biomechanicalCompensationDetected'),
+    description: t('cah.arVisionTrunkTilt'),
+    metric: t('cah.compensatedAngle'),
+    timeAgo: t('cah.timeAgo2Hours'),
   },
   {
     id: 'alt-3',
     patientName: 'Roberto Gómez',
     patientId: 'demo-4',
     type: 'dropout_risk',
-    title: 'Riesgo de Abandono Terapéutico',
-    description: 'Inactivo durante 6 días consecutivos tras haber completado el 40% del protocolo.',
-    metric: 'Adherencia: 42%',
-    timeAgo: 'Hace 1 día',
+    title: t('cah.therapyDropoutRisk'),
+    description: t('cah.inactiveSixDays'),
+    metric: t('cah.adherence42'),
+    timeAgo: t('cah.timeAgo1Day'),
   },
   {
     id: 'alt-4',
     patientName: 'María Fernández',
     patientId: 'demo-1',
     type: 'milestone_ready',
-    title: 'Candidata a Progresión de Carga',
-    description: 'Alcanzó 93% de ROM fisiológico y dolor 0 en las últimas 5 sesiones consecutivas.',
-    metric: 'ROM: 93% (Sin dolor)',
-    timeAgo: 'Hoy, 09:15',
+    title: t('cah.loadProgressionCandidate'),
+    description: t('cah.reachedPhysiologicalRom'),
+    metric: t('cah.rom93PainFree'),
+    timeAgo: t('cah.timeAgoToday'),
   },
 ];
 
@@ -246,7 +247,12 @@ const customTooltipStyle = {
 };
 
 export function ClinicalAnalyticsHub() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
+  const ROM_DATA = getRomData(t);
+  const VAS_CORRELATION_DATA = getVasData(t);
+  const CLINICAL_COHORTS = getCohorts(t);
+  const CLINICAL_ALERTS = getAlerts(t);
   const [selectedJoint, setSelectedJoint] = useState<string>(ROM_DATA[0].joint);
   const [activeTab, setActiveTab] = useState<'rom' | 'vas' | 'cohorts'>('rom');
 
@@ -259,15 +265,15 @@ export function ClinicalAnalyticsHub() {
         <div>
           <div className="flex items-center gap-2 mb-1">
             <span className="px-2.5 py-0.5 rounded-full text-2xs font-bold uppercase tracking-wider bg-teal-500/10 text-teal-700 dark:text-teal-300 border border-teal-500/20">
-              Módulo de Alta Precisión
+              {t('cah.highPrecisionModule')}
             </span>
-            <span className="text-xs text-on-surface-variant font-medium">· Biomecánica & Tele-rehabilitación</span>
+            <span className="text-xs text-on-surface-variant font-medium">· {t('cah.biomechanicsTeleRehab')}</span>
           </div>
           <h3 className="font-headline-md text-headline-sm lg:text-headline-md text-on-surface">
-            Analítica Clínica Avanzada
+            {t('cah.advancedClinicalAnalytics')}
           </h3>
           <p className="text-xs text-on-surface-variant max-w-2xl">
-            Monitoreo cuantitativo del rango articular (ROM), índice de biofeedback vs. umbral de dolor (EVA) y tasa de cumplimiento por cohortes.
+            {t('cah.quantitativeMonitoring')}
           </p>
         </div>
 
@@ -282,7 +288,7 @@ export function ClinicalAnalyticsHub() {
             }`}
           >
             <Activity className="size-3.5" />
-            <span>ROM Articular</span>
+            <span>{t('cah.jointRom')}</span>
           </button>
           <button
             onClick={() => setActiveTab('vas')}
@@ -293,7 +299,7 @@ export function ClinicalAnalyticsHub() {
             }`}
           >
             <Zap className="size-3.5" />
-            <span>Precisión vs. Dolor (EVA)</span>
+            <span>{t('cah.precisionVsPain')}</span>
           </button>
           <button
             onClick={() => setActiveTab('cohorts')}
@@ -304,7 +310,7 @@ export function ClinicalAnalyticsHub() {
             }`}
           >
             <Layers className="size-3.5" />
-            <span>Cohortes Clínicos</span>
+            <span>{t('cah.clinicalCohorts')}</span>
           </button>
         </div>
       </div>
@@ -318,20 +324,20 @@ export function ClinicalAnalyticsHub() {
               <div>
                 <h4 className="font-bold text-sm text-on-surface flex items-center gap-2">
                   <Target className="size-4 text-teal-600 dark:text-teal-400" />
-                  Rango de Movimiento (ROM): Actual vs. Objetivo Fisiológico
+                  {t('cah.rangeOfMotionCurrentVsTarget')}
                 </h4>
                 <p className="text-xs text-on-surface-variant mt-0.5">
-                  Valores en grados (°) medidos por cinemática AR y biofeedback
+                  {t('cah.valuesInDegrees')}
                 </p>
               </div>
 
               {/* Legend Badges */}
               <div className="flex items-center gap-3 text-xs font-semibold">
                 <span className="flex items-center gap-1.5 text-teal-700 dark:text-teal-300">
-                  <span className="size-2.5 rounded-full bg-teal-500" /> Ángulo Actual
+                  <span className="size-2.5 rounded-full bg-teal-500" /> {t('cah.currentAngle')}
                 </span>
                 <span className="flex items-center gap-1.5 text-on-surface-variant">
-                  <span className="size-2.5 rounded-full bg-slate-400 dark:bg-slate-600" /> Objetivo Ideal
+                  <span className="size-2.5 rounded-full bg-slate-400 dark:bg-slate-600" /> {t('cah.idealTarget')}
                 </span>
               </div>
             </div>
@@ -374,7 +380,7 @@ export function ClinicalAnalyticsHub() {
                     labelStyle={customTooltipStyle.labelStyle}
                     formatter={(value: number, name: string) => [
                       `${value}°`,
-                      name === 'actual' ? 'Ángulo Actual' : 'Objetivo Fisiológico',
+                      name === 'actual' ? t('cah.currentAngle') : t('cah.physiologicalTarget'),
                     ]}
                   />
                   <Bar
@@ -419,7 +425,7 @@ export function ClinicalAnalyticsHub() {
             <div>
               <div className="flex items-center justify-between gap-2 mb-4">
                 <span className="text-2xs font-black uppercase px-2.5 py-1 rounded-full bg-teal-500/10 text-teal-600 dark:text-teal-300 border border-teal-500/20">
-                  Evaluación Articular
+                  {t('cah.jointAssessment')}
                 </span>
                 <span
                   className={`text-xs font-bold px-2.5 py-0.5 rounded-full ${
@@ -431,10 +437,10 @@ export function ClinicalAnalyticsHub() {
                   }`}
                 >
                   {currentJointData.status === 'optimal'
-                    ? 'Óptimo'
+                    ? t('cah.optimal')
                     : currentJointData.status === 'recovering'
-                    ? 'En recuperación'
-                    : 'Requiere atención'}
+                    ? t('cah.recovering')
+                    : t('cah.needsAttention')}
                 </span>
               </div>
 
@@ -447,25 +453,25 @@ export function ClinicalAnalyticsHub() {
               <div className="grid grid-cols-2 gap-3 my-5">
                 <div className="p-4 rounded-2xl bg-teal-500/5 dark:bg-teal-900/10 border border-teal-500/20">
                   <p className="text-2xs font-bold uppercase tracking-wider text-teal-700 dark:text-teal-300">
-                    Ángulo Logrado
+                    {t('cah.achievedAngle')}
                   </p>
                   <p className="text-2xl font-black text-teal-900 dark:text-teal-100 mt-0.5">
                     {currentJointData.actual}°
                   </p>
                   <p className="text-2xs text-on-surface-variant mt-1">
-                    Meta: {currentJointData.ideal}°
+                    {t('cah.goal')}: {currentJointData.ideal}°
                   </p>
                 </div>
 
                 <div className="p-4 rounded-2xl bg-surface-container-low border border-outline/15">
                   <p className="text-2xs font-bold uppercase tracking-wider text-on-surface-variant">
-                    Déficit Residual
+                    {t('cah.residualDeficit')}
                   </p>
                   <p className="text-2xl font-black text-on-surface mt-0.5">
                     -{currentJointData.deficit}°
                   </p>
                   <p className="text-2xs text-on-surface-variant mt-1">
-                    {currentJointData.percent}% alcanzado
+                    {currentJointData.percent}% {t('cah.reached')}
                   </p>
                 </div>
               </div>
@@ -473,7 +479,7 @@ export function ClinicalAnalyticsHub() {
               {/* Progress bar */}
               <div className="space-y-1.5">
                 <div className="flex justify-between text-xs font-semibold">
-                  <span className="text-on-surface-variant">Cumplimiento del arco</span>
+                  <span className="text-on-surface-variant">{t('cah.arcCompliance')}</span>
                   <span className="text-teal-600 dark:text-teal-400 font-bold">{currentJointData.percent}%</span>
                 </div>
                 <div className="h-2.5 w-full rounded-full bg-surface-container-highest overflow-hidden">
@@ -489,13 +495,13 @@ export function ClinicalAnalyticsHub() {
 
             <div className="mt-6 pt-4 border-t border-outline/15 flex items-center justify-between text-xs">
               <span className="text-on-surface-variant flex items-center gap-1">
-                <Info className="size-3.5 text-teal-600" /> Escala Goniométrica
+                <Info className="size-3.5 text-teal-600" /> {t('cah.goniometricScale')}
               </span>
               <button
                 onClick={() => navigate('/fisio-exercises')}
                 className="font-bold text-teal-600 dark:text-teal-400 hover:underline flex items-center gap-0.5"
               >
-                Ajustar Ejercicios <ChevronRight className="size-3.5" />
+                {t('cah.adjustExercises')} <ChevronRight className="size-3.5" />
               </button>
             </div>
           </GlassPanel>
@@ -510,19 +516,19 @@ export function ClinicalAnalyticsHub() {
               <div>
                 <h4 className="font-bold text-sm text-on-surface flex items-center gap-2">
                   <Zap className="size-4 text-cyan-600 dark:text-cyan-400" />
-                  Correlación Precisión Biomecánica (%) vs. Escala de Dolor (EVA 0-10)
+                  {t('cah.biomechanicalPrecisionVsPainScale')}
                 </h4>
                 <p className="text-xs text-on-surface-variant mt-0.5">
-                  Comportamiento cinemático de la técnica frente a la fatiga y el umbral de dolor
+                  {t('cah.kinematicBehavior')}
                 </p>
               </div>
 
               <div className="flex items-center gap-3 text-xs font-semibold">
                 <span className="flex items-center gap-1.5 text-teal-600 dark:text-teal-400">
-                  <span className="size-2.5 rounded-full bg-teal-500" /> Precisión %
+                  <span className="size-2.5 rounded-full bg-teal-500" /> {t('cah.precisionPercent')}
                 </span>
                 <span className="flex items-center gap-1.5 text-amber-500">
-                  <span className="size-2.5 rounded-full bg-amber-500" /> Dolor EVA (0-10)
+                  <span className="size-2.5 rounded-full bg-amber-500" /> {t('cah.painVas')}
                 </span>
               </div>
             </div>
@@ -552,7 +558,7 @@ export function ClinicalAnalyticsHub() {
                     labelStyle={customTooltipStyle.labelStyle}
                     formatter={(value: number, name: string) => [
                       name === 'precision' ? `${value}%` : `${value}/10`,
-                      name === 'precision' ? 'Calidad de Ejecución' : 'Nivel de Dolor (EVA)',
+                      name === 'precision' ? t('cah.executionQuality') : t('cah.painLevelVas'),
                     ]}
                   />
                   <ReferenceArea
@@ -561,7 +567,7 @@ export function ClinicalAnalyticsHub() {
                     y2={100}
                     fill="#10b981"
                     fillOpacity={0.07}
-                    label={{ value: 'Zona Terapéutica Óptima', fill: '#10b981', fontSize: 10, position: 'insideTopLeft' }}
+                    label={{ value: t('cah.optimalTherapeuticZone'), fill: '#10b981', fontSize: 10, position: 'insideTopLeft' }}
                   />
                   <Area
                     yAxisId="left"
@@ -591,10 +597,10 @@ export function ClinicalAnalyticsHub() {
             <div className="mt-4 pt-3 border-t border-outline/15 flex items-center justify-between text-xs text-on-surface-variant">
               <span className="flex items-center gap-1.5">
                 <span className="size-2 rounded-full bg-emerald-500" />
-                Zona Óptima: Precisión &gt;80% con EVA &lt; 3.0
+                {t('cah.optimalZonePrecision')}
               </span>
               <span className="font-semibold text-teal-700 dark:text-teal-300">
-                Reducción de dolor: -76% en 8 sesiones
+                {t('cah.painReduction')}
               </span>
             </div>
           </GlassPanel>
@@ -606,23 +612,23 @@ export function ClinicalAnalyticsHub() {
                 <div className="p-2 rounded-xl bg-cyan-500/10 text-cyan-600 dark:text-cyan-400">
                   <Stethoscope className="size-4" />
                 </div>
-                <h4 className="font-bold text-sm text-on-surface">Lectura Biomecánica</h4>
+                <h4 className="font-bold text-sm text-on-surface">{t('cah.biomechanicalReading')}</h4>
               </div>
 
               <div className="space-y-3 text-xs leading-relaxed text-on-surface-variant">
                 <p>
-                  Existe una <strong>correlación inversa fuerte (r = -0.92)</strong> entre el dolor percibido y la precisión del movimiento guiado.
+                  {t('cah.corrIntro')} <strong>{t('cah.corrStrong')}</strong> {t('cah.corrOutro')}
                 </p>
                 <div className="p-3.5 rounded-2xl bg-teal-500/10 border border-teal-500/20 text-teal-900 dark:text-teal-200">
                   <p className="font-bold mb-1 flex items-center gap-1.5">
-                    <CheckCircle2 className="size-3.5 text-teal-600" /> Eficiencia Neuromuscular
+                    <CheckCircle2 className="size-3.5 text-teal-600" /> {t('cah.neuromuscularEfficiency')}
                   </p>
                   <p>
-                    A partir de la <strong>Sesión 4</strong>, la inhibición muscular artrogénica disminuye, permitiendo patrones de movimiento simétricos.
+                    {t('cah.sessionIntro')} <strong>{t('cah.session4')}</strong>{t('cah.inhibitionOutro')}
                   </p>
                 </div>
                 <p className="text-xs italic text-outline">
-                  * Algoritmo de visión computacional calibrado según la escala goniométrica internacional ISOM.
+                  {t('cah.isomNote')}
                 </p>
               </div>
             </div>
@@ -632,7 +638,7 @@ export function ClinicalAnalyticsHub() {
                 onClick={() => navigate('/tools')}
                 className="w-full py-2.5 px-4 rounded-xl bg-primary/10 hover:bg-primary/20 text-primary font-bold text-xs transition-colors flex items-center justify-center gap-1.5"
               >
-                <span>Generar Informe de Dolor / ROM</span>
+                <span>{t('cah.generatePainRomReport')}</span>
                 <ArrowUpRight className="size-3.5" />
               </button>
             </div>
@@ -648,14 +654,14 @@ export function ClinicalAnalyticsHub() {
               <div>
                 <h4 className="font-bold text-sm text-on-surface flex items-center gap-2">
                   <Layers className="size-4 text-emerald-600 dark:text-emerald-400" />
-                  Adherencia y Calidad por Cohortes Diagnósticas
+                  {t('cah.adherenceQualityCohorts')}
                 </h4>
                 <p className="text-xs text-on-surface-variant mt-0.5">
-                  Rendimiento terapéutico agrupado por categoría clínica
+                  {t('cah.therapeuticPerformance')}
                 </p>
               </div>
               <span className="text-xs font-bold px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20">
-                79 Pacientes Totales
+                {t('cah.totalPatients')}
               </span>
             </div>
 
@@ -669,15 +675,15 @@ export function ClinicalAnalyticsHub() {
                     <div>
                       <span className="font-bold text-sm text-on-surface">{cohort.name}</span>
                       <span className="text-xs text-on-surface-variant ml-2">
-                        ({cohort.patientsCount} pacientes)
+                        ({cohort.patientsCount} {t('cah.patients')})
                       </span>
                     </div>
                     <div className="flex items-center gap-4 text-xs font-semibold">
                       <span className="text-teal-700 dark:text-teal-300">
-                        Adherencia: <strong className="font-bold">{cohort.adherence}%</strong>
+                        {t('cah.adherence')}: <strong className="font-bold">{cohort.adherence}%</strong>
                       </span>
                       <span className="text-on-surface-variant">
-                        Alta est.: <span className="font-normal text-on-surface">{cohort.dischargeForecast}</span>
+                        {t('cah.dischargeEst')}: <span className="font-normal text-on-surface">{cohort.dischargeForecast}</span>
                       </span>
                     </div>
                   </div>
@@ -703,21 +709,21 @@ export function ClinicalAnalyticsHub() {
                 <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
                   <UserCheck className="size-4" />
                 </div>
-                <h4 className="font-bold text-sm text-on-surface">Factores de Cumplimiento</h4>
+                <h4 className="font-bold text-sm text-on-surface">{t('cah.complianceFactors')}</h4>
               </div>
 
               <div className="space-y-3.5 text-xs text-on-surface-variant">
                 <div className="p-3 rounded-2xl bg-surface-container-low border border-outline/15">
-                  <p className="font-bold text-on-surface mb-0.5">Postquirúrgicos (LCA)</p>
+                  <p className="font-bold text-on-surface mb-0.5">{t('cah.postoperativeAcl')}</p>
                   <p className="text-xs leading-relaxed">
-                    Mayor disciplina de sesiones matutinas (94%). La visualización del ángulo en tiempo real reduce el miedo al movimiento (kinesiofobia).
+                    {t('cah.morningDiscipline')}
                   </p>
                 </div>
 
                 <div className="p-3 rounded-2xl bg-surface-container-low border border-outline/15">
-                  <p className="font-bold text-on-surface mb-0.5">Manguito Rotador</p>
+                  <p className="font-bold text-on-surface mb-0.5">{t('cah.rotatorCuff')}</p>
                   <p className="text-xs leading-relaxed">
-                    Requieren recordatorios vespertinos para alcanzar la meta del 85% de adherencia.
+                    {t('cah.eveningReminders')}
                   </p>
                 </div>
               </div>
@@ -728,7 +734,7 @@ export function ClinicalAnalyticsHub() {
                 onClick={() => navigate('/patients')}
                 className="w-full py-2.5 rounded-xl bg-primary text-on-primary font-bold text-xs hover:bg-teal-700 transition-colors flex items-center justify-center gap-1.5"
               >
-                <span>Explorar Directorio de Pacientes</span>
+                <span>{t('cah.explorePatientDirectory')}</span>
                 <ChevronRight className="size-4" />
               </button>
             </div>
@@ -741,10 +747,10 @@ export function ClinicalAnalyticsHub() {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <AlertTriangle className="size-4 text-amber-500" />
-            <h4 className="font-bold text-sm text-on-surface">Triage y Alertas Clínicas Tempranas</h4>
+            <h4 className="font-bold text-sm text-on-surface">{t('cah.triageEarlyAlerts')}</h4>
           </div>
           <span className="text-xs text-on-surface-variant font-semibold">
-            {CLINICAL_ALERTS.length} eventos para revisión
+            {CLINICAL_ALERTS.length} {t('cah.eventsForReview')}
           </span>
         </div>
 
@@ -794,7 +800,7 @@ export function ClinicalAnalyticsHub() {
                     {alert.metric}
                   </span>
                   <span className="text-xs font-bold text-teal-600 dark:text-teal-400 flex items-center gap-0.5">
-                    Ver <ChevronRight className="size-3" />
+                    {t('common.view')} <ChevronRight className="size-3" />
                   </span>
                 </div>
               </motion.div>

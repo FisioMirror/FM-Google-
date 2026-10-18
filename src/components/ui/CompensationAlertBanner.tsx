@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { AlertCircle, ChevronDown, CheckCircle, ArrowRight } from 'lucide-react';
@@ -14,15 +15,16 @@ export interface CompensationAlertBannerProps {
 }
 
 export const CompensationAlertBanner: React.FC<CompensationAlertBannerProps> = ({
-  deviationJoint = 'Hombro Izquierdo',
-  detectedIssue = 'Elevación compensatoria durante la flexión de codo',
-  recommendedCorrection = 'Mantén la escápula retraída y desciende el trapecio antes de iniciar el movimiento.',
+  deviationJoint,
+  detectedIssue,
+  recommendedCorrection,
   severity = 'moderate',
   className,
   onDismiss,
   onApplyCorrection,
 }) => {
   const [expanded, setExpanded] = useState(false);
+  const { t } = useTranslation();
   const [corrected, setCorrected] = useState(false);
 
   const getSeverityStyles = () => {
@@ -33,7 +35,7 @@ export const CompensationAlertBanner: React.FC<CompensationAlertBannerProps> = (
           border: 'border-rose-500/30',
           iconColor: 'text-rose-500',
           badge: 'bg-rose-500/20 text-rose-600 dark:text-rose-400',
-          label: 'Compensación Severa',
+          label: t('cab.severeCompensation'),
         };
       case 'mild':
         return {
@@ -41,7 +43,7 @@ export const CompensationAlertBanner: React.FC<CompensationAlertBannerProps> = (
           border: 'border-teal-500/30',
           iconColor: 'text-teal-500',
           badge: 'bg-teal-500/20 text-teal-600 dark:text-teal-400',
-          label: 'Ajuste Leve Sugerido',
+          label: t('cab.mildAdjustment'),
         };
       default:
         return {
@@ -49,7 +51,7 @@ export const CompensationAlertBanner: React.FC<CompensationAlertBannerProps> = (
           border: 'border-amber-500/30',
           iconColor: 'text-amber-500',
           badge: 'bg-amber-500/20 text-amber-600 dark:text-amber-400',
-          label: 'Compensación Moderada',
+          label: t('cab.moderateCompensation'),
         };
     }
   };
@@ -65,13 +67,13 @@ export const CompensationAlertBanner: React.FC<CompensationAlertBannerProps> = (
       >
         <div className="flex items-center gap-2 text-sm font-semibold">
           <CheckCircle className="w-5 h-5 text-emerald-500" />
-          <span>¡Postura corregida con éxito! Articulación alineada con MediaPipe.</span>
+          <span>{t('cab.postureCorrected')}</span>
         </div>
         <button
           onClick={() => setCorrected(false)}
           className="text-xs text-on-surface-variant hover:underline"
         >
-          Reiniciar
+          {t('arm.restart')}
         </button>
       </motion.div>
     );
@@ -98,11 +100,11 @@ export const CompensationAlertBanner: React.FC<CompensationAlertBannerProps> = (
                 {style.label}
               </span>
               <span className="text-xs font-semibold text-on-surface dark:text-white">
-                {deviationJoint}
+                {deviationJoint ?? t('cab.defaultJoint')}
               </span>
             </div>
             <p className="text-sm text-on-surface font-medium">
-              {detectedIssue}
+              {detectedIssue ?? t('cab.defaultIssue')}
             </p>
           </div>
         </div>
@@ -111,7 +113,7 @@ export const CompensationAlertBanner: React.FC<CompensationAlertBannerProps> = (
           type="button"
           onClick={() => setExpanded(!expanded)}
           className="p-1.5 rounded-xl hover:bg-black/5 dark:hover:bg-white/10 text-on-surface-variant transition-colors"
-          aria-label="Expandir sugerencia correctiva"
+          aria-label={t('cab.expandSuggestion')}
         >
           <motion.div animate={{ rotate: expanded ? 180 : 0 }}>
             <ChevronDown className="w-5 h-5" />
@@ -130,10 +132,10 @@ export const CompensationAlertBanner: React.FC<CompensationAlertBannerProps> = (
           >
             <div className="p-3 rounded-xl bg-white/60 dark:bg-black/40 border border-black/5 dark:border-white/10 mb-3">
               <span className="text-xs font-semibold text-primary dark:text-teal-400 block mb-1">
-                Guía Biomecánica Inmediata:
+                {t('cab.immediateGuide')}
               </span>
               <p className="text-xs text-on-surface-variant leading-relaxed">
-                {recommendedCorrection}
+                {recommendedCorrection ?? t('cab.defaultCorrection')}
               </p>
             </div>
 
@@ -143,7 +145,7 @@ export const CompensationAlertBanner: React.FC<CompensationAlertBannerProps> = (
                 onClick={onDismiss}
                 className="px-3 py-1.5 text-xs text-on-surface-variant hover:text-on-surface dark:hover:text-slate-200"
               >
-                Ignorar
+                {t('cab.dismiss')}
               </button>
               <button
                 type="button"
@@ -153,7 +155,7 @@ export const CompensationAlertBanner: React.FC<CompensationAlertBannerProps> = (
                 }}
                 className="px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-primary text-on-primary hover:bg-primary/90 flex items-center gap-1.5 shadow-sm active:scale-95"
               >
-                <span>Confirmar Corrección</span>
+                <span>{t('cab.confirmCorrection')}</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </button>
             </div>

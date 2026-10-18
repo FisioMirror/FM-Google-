@@ -1,8 +1,10 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Eye, EyeOff } from 'lucide-react';
 
 const EyesLookAway = () => {
   const [hasText, setHasText] = useState(false);
+  const { t } = useTranslation();
   const [isFocused, setIsFocused] = useState(false);
   const lookAway = hasText || isFocused;
   return (
@@ -10,7 +12,7 @@ const EyesLookAway = () => {
       <span className={`text-primary transition-transform duration-300 ${lookAway ? 'translate-x-1 -translate-y-1 rotate-12 scale-90 text-primary/60' : ''}`}>
         {lookAway ? <EyeOff size={24} /> : <Eye size={24} />}
       </span>
-      <input type="password" className="bg-transparent border-none py-2 text-lg text-on-surface outline-none w-full" placeholder="Escribe tu contraseña..."
+      <input type="password" className="bg-transparent border-none py-2 text-lg text-on-surface outline-none w-full" placeholder={t('eyesPwdPlaceholder')}
         onChange={(e) => setHasText(e.target.value.length > 0)} onFocus={() => setIsFocused(true)} onBlur={() => setIsFocused(false)} />
     </div>
   );

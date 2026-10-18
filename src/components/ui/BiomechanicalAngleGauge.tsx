@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { Activity, AlertTriangle, CheckCircle2 } from 'lucide-react';
@@ -22,13 +23,14 @@ export const BiomechanicalAngleGauge: React.FC<BiomechanicalAngleGaugeProps> = (
   minAngle = 0,
   maxAngle = 180,
   safeTolerance = 10,
-  jointName = 'Rodilla Derecha',
+  jointName,
   unit = '°',
   size = 220,
   className,
   onAngleClick,
 }) => {
   const strokeWidth = 14;
+  const { t } = useTranslation();
   const radius = (size - strokeWidth * 2) / 2;
   const center = size / 2;
 
@@ -49,10 +51,10 @@ export const BiomechanicalAngleGauge: React.FC<BiomechanicalAngleGaugeProps> = (
   // Status calculation
   const delta = Math.abs(currentAngle - targetAngle);
   const status = useMemo(() => {
-    if (delta <= safeTolerance) return { label: 'Rango Óptimo', color: 'emerald', hex: '#10b981' };
-    if (delta <= safeTolerance * 2) return { label: 'Compensación Leve', color: 'amber', hex: '#f59e0b' };
-    return { label: 'Fuera de Rango', color: 'rose', hex: '#f43f5e' };
-  }, [delta, safeTolerance]);
+    if (delta <= safeTolerance) return { label: t('bagOptimal'), color: 'emerald', hex: '#10b981' };
+    if (delta <= safeTolerance * 2) return { label: t('bagMild'), color: 'amber', hex: '#f59e0b' };
+    return { label: t('bagOut'), color: 'rose', hex: '#f43f5e' };
+  }, [delta, safeTolerance, t]);
 
   return (
     <div
@@ -66,13 +68,13 @@ export const BiomechanicalAngleGauge: React.FC<BiomechanicalAngleGaugeProps> = (
       )}
       style={{ width: size + 40 }}
       role="region"
-      aria-label={`Medidor biomecánico para ${jointName}`}
+      aria-label={t('bagAria', { joint: jointName ?? t('bagJointDefault') })}
     >
       {/* Header Info */}
       <div className="w-full flex items-center justify-between mb-2 px-1">
         <div className="flex items-center gap-1.5 text-xs font-semibold text-on-surface-variant dark:text-slate-300">
           <Activity className="w-3.5 h-3.5 text-primary" />
-          <span className="truncate max-w-[130px]">{jointName}</span>
+          <span className="truncate max-w-[130px]">{jointName ?? t('bagJointDefault')}</span>
         </div>
         <span
           className={cn(
@@ -154,7 +156,7 @@ export const BiomechanicalAngleGauge: React.FC<BiomechanicalAngleGaugeProps> = (
               <span className="text-xl font-normal text-on-surface-variant ml-0.5">{unit}</span>
             </div>
             <div className="text-xs font-medium text-on-surface-variant mt-0.5">
-              Objetivo: <span className="font-mono font-bold text-primary dark:text-teal-400">{targetAngle}{unit}</span>
+              {t('bagTarget')} <span className="font-mono font-bold text-primary dark:text-teal-400">{targetAngle}{unit}</span>
             </div>
           </motion.div>
         </div>

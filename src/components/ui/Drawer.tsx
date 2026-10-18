@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
+import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from "framer-motion";
 import { X, SlidersHorizontal, Stethoscope, ChevronRight, Check } from "lucide-react";
 import { cn } from "../../lib/utils";
@@ -181,6 +182,7 @@ export function DrawerDialog({
 
 export function DrawerCloseTrigger({ className }: { className?: string }) {
   const { close } = useContext(DrawerContext);
+  const { t } = useTranslation();
 
   return (
     <button
@@ -192,7 +194,7 @@ export function DrawerCloseTrigger({ className }: { className?: string }) {
         "border border-border/50 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary/40",
         className
       )}
-      aria-label="Cerrar panel lateral"
+      aria-label={t('drw.closeSidePanel')}
     >
       <X className="size-4.5" />
     </button>
@@ -279,9 +281,10 @@ Drawer.Footer = DrawerFooter;
  * DrawerClinicalDemo con formulario clínico y métricas de fisioterapia en tiempo real
  */
 export function DrawerClinicalDemo() {
-  const [toleranceLevel, setToleranceLevel] = useState("Media");
+  const { t } = useTranslation();
+  const [toleranceLevel, setToleranceLevel] = useState(() => t('exercises.difficultyMedium'));
   const [maxReps, setMaxReps] = useState(12);
-  const [notes, setNotes] = useState("Paciente con buena evolución en rotación externa. Evitar abducción superior a 110° sin apoyo.");
+  const [notes, setNotes] = useState(t('drw.defaultNotes'));
   const [alertSaved, setAlertSaved] = useState(false);
 
   const handleSave = () => {
@@ -295,7 +298,7 @@ export function DrawerClinicalDemo() {
         <Drawer.Trigger asChild>
           <Button variant="secondary" className="gap-2 shadow-xs border-primary/20 hover:border-primary/50">
             <SlidersHorizontal className="size-4 text-primary" />
-            <span>Abrir Ajustes Clínicos (Drawer)</span>
+            <span>{t('drw.openClinicalSettings')}</span>
           </Button>
         </Drawer.Trigger>
         <Drawer.Backdrop>
@@ -307,8 +310,8 @@ export function DrawerClinicalDemo() {
                     <Stethoscope className="size-5" />
                   </Drawer.Icon>
                   <div>
-                    <Drawer.Heading>Ajustes de Sesión</Drawer.Heading>
-                    <p className="text-xs text-muted">Protocolo de Rehabilitación Hombro</p>
+                    <Drawer.Heading>{t('drw.sessionSettings')}</Drawer.Heading>
+                    <p className="text-xs text-muted">{t('drw.shoulderRehabProtocol')}</p>
                   </div>
                 </div>
                 <Drawer.CloseTrigger />
@@ -318,19 +321,19 @@ export function DrawerClinicalDemo() {
                 <div className="space-y-4">
                   <div className="p-4 rounded-2xl bg-teal-500/10 border border-teal-500/20 text-xs">
                     <span className="font-bold text-teal-700 dark:text-teal-300 block mb-1">
-                      Paciente Vinculado: Carlos Mendoza (ID: #FM-4029)
+                      {t('patients.linkedPatient')}: Carlos Mendoza (ID: #FM-4029)
                     </span>
                     <p className="text-on-surface-variant">
-                      Sesión 6 de 14. Diagnóstico: Tendinopatía supraespinosa derecha con limitación articular leve.
+                      {t('drw.sessionDiagnosis', { current: 6, total: 14 })}
                     </p>
                   </div>
 
                   <div>
                     <label className="text-xs font-semibold text-on-surface block mb-2">
-                      Tolerancia al Esfuerzo Biomecánico
+                      {t('drw.biomechanicalEffortTolerance')}
                     </label>
                     <div className="grid grid-cols-3 gap-2">
-                      {["Baja", "Media", "Alta"].map((level) => (
+                      {[t('exercises.difficultyEasy'), t('exercises.difficultyMedium'), t('exercises.difficultyHard')].map((level) => (
                         <button
                           key={level}
                           type="button"
@@ -350,7 +353,7 @@ export function DrawerClinicalDemo() {
 
                   <div>
                     <div className="flex justify-between items-center text-xs font-semibold text-on-surface mb-2">
-                      <span>Repeticiones Objetivo por Serie</span>
+                      <span>{t('drw.targetRepsPerSet')}</span>
                       <span className="text-primary font-bold">{maxReps} reps</span>
                     </div>
                     <input
@@ -365,7 +368,7 @@ export function DrawerClinicalDemo() {
 
                   <div>
                     <label className="text-xs font-semibold text-on-surface block mb-1.5">
-                      Observaciones Clínicas del Terapeuta
+                      {t('drw.therapistClinicalObservations')}
                     </label>
                     <textarea
                       value={notes}
@@ -379,7 +382,7 @@ export function DrawerClinicalDemo() {
 
               <Drawer.Footer>
                 <Button slot="close" className="w-full" onClick={handleSave}>
-                  Aplicar Parámetros a la Sesión
+                  {t('drw.applySessionParams')}
                 </Button>
               </Drawer.Footer>
             </Drawer.Dialog>
@@ -389,7 +392,7 @@ export function DrawerClinicalDemo() {
 
       {alertSaved && (
         <div className="text-xs px-3 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-700 dark:text-emerald-300 font-medium animate-fadeIn">
-          Parámetros actualizados: {maxReps} repeticiones, tolerancia {toleranceLevel}.
+          {t('drw.paramsUpdated', { reps: maxReps, tolerance: toleranceLevel })}
         </div>
       )}
     </div>

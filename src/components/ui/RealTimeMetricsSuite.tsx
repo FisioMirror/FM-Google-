@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import {
@@ -32,6 +33,7 @@ export const PoseConfidenceLiveIndicator: React.FC<PoseConfidenceLiveIndicatorPr
   visibleLandmarksCount = 33,
   className,
 }) => {
+  const { t } = useTranslation();
   const [jitter, setJitter] = useState(0);
 
   useEffect(() => {
@@ -65,11 +67,11 @@ export const PoseConfidenceLiveIndicator: React.FC<PoseConfidenceLiveIndicatorPr
         </div>
         <div>
           <span className="text-xs font-bold text-on-surface flex items-center gap-1.5">
-            Certidumbre MediaPipe AR
+            {t('frtms.poseConfidence')}
             <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />
           </span>
           <span className="text-2xs text-on-surface-variant font-mono">
-            {visibleLandmarksCount}/33 puntos anatómicos rastreados a 60 FPS
+            {t('frtms.trackedPoints', { n: visibleLandmarksCount })}
           </span>
         </div>
       </div>
@@ -84,7 +86,7 @@ export const PoseConfidenceLiveIndicator: React.FC<PoseConfidenceLiveIndicatorPr
           {displayConfidence}%
         </motion.span>
         <span className="text-2xs uppercase font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full">
-          Lock Cinemático
+          {t('frtms.kinematicLock')}
         </span>
       </div>
     </motion.div>
@@ -103,6 +105,7 @@ export const AngularVelocityStreamGauge: React.FC<AngularVelocityStreamGaugeProp
   maxSafeVelocity = 90,
   className,
 }) => {
+  const { t } = useTranslation();
   const [vel, setVel] = useState(velocityDegSec);
   const percent = Math.min(100, (vel / maxSafeVelocity) * 100);
 
@@ -128,10 +131,10 @@ export const AngularVelocityStreamGauge: React.FC<AngularVelocityStreamGaugeProp
           </div>
           <div>
             <span className="text-xs font-bold text-on-surface block">
-              Velocidad Angular en Vivo
+              {t('frtms.angularVelocity')}
             </span>
             <span className="text-2xs text-on-surface-variant">
-              Control motriz articular
+              {t('frtms.motorControl')}
             </span>
           </div>
         </div>
@@ -154,7 +157,7 @@ export const AngularVelocityStreamGauge: React.FC<AngularVelocityStreamGaugeProp
 
       <div className="flex justify-between text-2xs text-on-surface-variant font-mono font-semibold">
         <span>0 °/s</span>
-        <span className="text-teal-600 dark:text-teal-400">Zona de Control Óptimo</span>
+        <span className="text-teal-600 dark:text-teal-400">{t('frtms.optimalZone')}</span>
         <span>{maxSafeVelocity} °/s</span>
       </div>
     </motion.div>
@@ -167,6 +170,7 @@ export interface ROMDeviationLiveChartProps {
 }
 
 export const ROMDeviationLiveChart: React.FC<ROMDeviationLiveChartProps> = ({ className }) => {
+  const { t } = useTranslation();
   const [activeCurve, setActiveCurve] = useState<'both' | 'real' | 'ideal'>('both');
 
   return (
@@ -185,9 +189,9 @@ export const ROMDeviationLiveChart: React.FC<ROMDeviationLiveChartProps> = ({ cl
           </div>
           <div>
             <span className="text-xs font-bold text-on-surface block">
-              Trayectoria Real vs. Ideal
+              {t('frtms.trajectory')}
             </span>
-            <span className="text-2xs text-on-surface-variant">Osciloscopio ROM</span>
+            <span className="text-2xs text-on-surface-variant">{t('frtms.romOscilloscope')}</span>
           </div>
         </div>
         <span className="text-2xs font-mono font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/15 border border-emerald-500/30 px-2.5 py-0.5 rounded-full flex items-center gap-1">
@@ -237,10 +241,10 @@ export const ROMDeviationLiveChart: React.FC<ROMDeviationLiveChartProps> = ({ cl
 
       <div className="flex items-center justify-between text-2xs text-on-surface-variant">
         <span className="flex items-center gap-1">
-          <span className="size-2 rounded-full bg-teal-400" /> Paciente Real
+          <span className="size-2 rounded-full bg-teal-400" /> {t('frtms.realPatient')}
         </span>
         <span className="flex items-center gap-1">
-          <span className="w-3 h-0.5 bg-slate-400 inline-block border-b border-dashed" /> Plantilla Clínica
+          <span className="w-3 h-0.5 bg-slate-400 inline-block border-b border-dashed" /> {t('frtms.clinicalTemplate')}
         </span>
       </div>
     </motion.div>
@@ -256,10 +260,12 @@ export interface VoiceFeedbackWaveHUDProps {
 
 export const VoiceFeedbackWaveHUD: React.FC<VoiceFeedbackWaveHUDProps> = ({
   isSpeaking = true,
-  instructionText = 'Excelente extensión articular. Sostén 2 segundos arriba.',
+  instructionText,
   className,
 }) => {
+  const { t } = useTranslation();
   const [playing, setPlaying] = useState(isSpeaking);
+  const instruction = instructionText ?? t('frtms.voiceInstruction');
 
   return (
     <motion.div
@@ -281,7 +287,7 @@ export const VoiceFeedbackWaveHUD: React.FC<VoiceFeedbackWaveHUDProps> = ({
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-between gap-2 mb-0.5">
           <span className="text-2xs uppercase font-bold text-teal-600 dark:text-teal-400 tracking-wider">
-            Biofeedback Auditivo Physi IA
+            {t('frtms.auditoryBiofeedback')}
           </span>
           {/* Ondas sonoras animadas */}
           <div className="flex items-center gap-0.5 h-3">
@@ -296,7 +302,7 @@ export const VoiceFeedbackWaveHUD: React.FC<VoiceFeedbackWaveHUDProps> = ({
           </div>
         </div>
         <p className="text-xs font-bold text-on-surface truncate">
-          &ldquo;{instructionText}&rdquo;
+          &ldquo;{instruction}&rdquo;
         </p>
       </div>
     </motion.div>
@@ -313,6 +319,7 @@ export const CameraFramingGuideHUD: React.FC<CameraFramingGuideHUDProps> = ({
   framingStatus = 'ok',
   className,
 }) => {
+  const { t } = useTranslation();
   const [status, setStatus] = useState(framingStatus);
 
   const cycleStatus = () => {
@@ -337,10 +344,10 @@ export const CameraFramingGuideHUD: React.FC<CameraFramingGuideHUDProps> = ({
         </div>
         <div>
           <span className="text-xs font-bold text-on-surface block">
-            Encuadre Óptimo AR
+            {t('frtms.framingTitle')}
           </span>
           <span className="text-2xs text-on-surface-variant">
-            Distancia ideal: 2.1 metros
+            {t('frtms.idealDistance')}
           </span>
         </div>
       </div>
@@ -354,7 +361,7 @@ export const CameraFramingGuideHUD: React.FC<CameraFramingGuideHUDProps> = ({
         )}
       >
         <span className={cn("size-1.5 rounded-full", status === 'ok' ? "bg-emerald-500" : "bg-amber-500 animate-ping")} />
-        {status === 'ok' ? 'Cuerpo Completo OK' : 'Ajustar Posición'}
+        {status === 'ok' ? t('frtms.bodyComplete') : t('frtms.adjustPosition')}
       </span>
     </motion.div>
   );
@@ -372,16 +379,17 @@ export const RepCadenceMetronome: React.FC<RepCadenceMetronomeProps> = ({
   durationSeconds = 2.0,
   className,
 }) => {
+  const { t } = useTranslation();
   const [currentPhase, setCurrentPhase] = useState(phase);
 
   const getPhaseData = () => {
     switch (currentPhase) {
       case 'concentric':
-        return { name: 'Fase Concéntrica (Subida)', time: 2, color: 'from-teal-500 to-cyan-400' };
+        return { name: t('frtms.concentricPhase'), time: 2, color: 'from-teal-500 to-cyan-400' };
       case 'isometric':
-        return { name: 'Fase Isométrica (Pausa)', time: 1, color: 'from-amber-400 to-orange-400' };
+        return { name: t('frtms.isometricPhase'), time: 1, color: 'from-amber-400 to-orange-400' };
       case 'eccentric':
-        return { name: 'Fase Excéntrica (Bajada Controlada)', time: 3, color: 'from-emerald-400 to-teal-500' };
+        return { name: t('frtms.eccentricPhase'), time: 3, color: 'from-emerald-400 to-teal-500' };
     }
   };
 
@@ -409,9 +417,9 @@ export const RepCadenceMetronome: React.FC<RepCadenceMetronomeProps> = ({
           </div>
           <div>
             <span className="text-xs font-bold text-on-surface block">
-              Metrónomo de Cadencia
+              {t('frtms.cadenceMetronome')}
             </span>
-            <span className="text-2xs text-on-surface-variant">Ritmo 2-1-3</span>
+            <span className="text-2xs text-on-surface-variant">{t('frtms.rhythm')}</span>
           </div>
         </div>
         <button
@@ -419,7 +427,7 @@ export const RepCadenceMetronome: React.FC<RepCadenceMetronomeProps> = ({
           onClick={nextPhase}
           className="text-xs font-mono font-bold text-teal-600 dark:text-teal-400 bg-teal-500/15 border border-teal-500/30 px-2.5 py-0.5 rounded-full hover:bg-teal-500/25 transition-colors"
         >
-          {data.time}s • Cambiar
+          {data.time}s • {t('frtms.change')}
         </button>
       </div>
 
@@ -447,9 +455,11 @@ export interface AIBiomechanicalSummaryBadgeProps {
 
 export const AIBiomechanicalSummaryBadge: React.FC<AIBiomechanicalSummaryBadgeProps> = ({
   score = 94,
-  summaryText = 'Excelente control lumbopélvico con 0 compensaciones escapulares durante las 3 series.',
+  summaryText,
   className,
 }) => {
+  const { t } = useTranslation();
+  const summary = summaryText ?? t('frtms.aiSummary');
   return (
     <motion.div
       whileHover={{ y: -3, scale: 1.01 }}
@@ -466,9 +476,9 @@ export const AIBiomechanicalSummaryBadge: React.FC<AIBiomechanicalSummaryBadgePr
           </div>
           <div>
             <span className="text-xs font-bold text-primary block">
-              Evaluación Rápida Physi IA
+              {t('frtms.rapidEvaluation')}
             </span>
-            <span className="text-2xs text-on-surface-variant">Análisis cinemático automático</span>
+            <span className="text-2xs text-on-surface-variant">{t('frtms.automaticAnalysis')}</span>
           </div>
         </div>
         <span className="text-xs font-mono font-black text-teal-600 dark:text-teal-400 bg-teal-500/15 border border-teal-500/30 px-3 py-1 rounded-full">
@@ -476,7 +486,7 @@ export const AIBiomechanicalSummaryBadge: React.FC<AIBiomechanicalSummaryBadgePr
         </span>
       </div>
       <p className="text-xs text-on-surface leading-relaxed font-medium">
-        {summaryText}
+        {summary}
       </p>
     </motion.div>
   );
@@ -490,17 +500,18 @@ export interface SkeletonJointSelectorHUDProps {
 }
 
 export const SkeletonJointSelectorHUD: React.FC<SkeletonJointSelectorHUDProps> = ({
-  selectedJoint = 'Rodilla',
+  selectedJoint,
   onSelect,
   className,
 }) => {
-  const [active, setActive] = useState(selectedJoint);
+  const { t } = useTranslation();
+  const [active, setActive] = useState(selectedJoint ?? t('joints.rodilla'));
   const joints = [
-    { name: 'Hombro', rom: '165°' },
-    { name: 'Codo', rom: '145°' },
-    { name: 'Cadera', rom: '115°' },
-    { name: 'Rodilla', rom: '135°' },
-    { name: 'Tobillo', rom: '45°' },
+    { name: t('joints.hombro'), rom: '165°' },
+    { name: t('joints.codo'), rom: '145°' },
+    { name: t('joints.cadera'), rom: '115°' },
+    { name: t('joints.rodilla'), rom: '135°' },
+    { name: t('joints.tobillo'), rom: '45°' },
   ];
 
   return (
@@ -514,7 +525,7 @@ export const SkeletonJointSelectorHUD: React.FC<SkeletonJointSelectorHUDProps> =
     >
       <div className="flex items-center gap-2 text-xs font-bold text-on-surface dark:text-white">
         <UserCheck className="w-4 h-4 text-primary" />
-        <span>Articulación Focal MediaPipe</span>
+        <span>{t('frtms.focalJoint')}</span>
       </div>
       <div className="flex flex-wrap gap-1.5">
         {joints.map((j) => {
@@ -559,6 +570,7 @@ export const HoldDurationTimerRing: React.FC<HoldDurationTimerRingProps> = ({
   totalSeconds = 10,
   className,
 }) => {
+  const { t } = useTranslation();
   const [seconds, setSeconds] = useState(secondsLeft);
   const [running, setRunning] = useState(false);
 
@@ -595,10 +607,10 @@ export const HoldDurationTimerRing: React.FC<HoldDurationTimerRingProps> = ({
         </button>
         <div>
           <span className="text-xs font-bold text-on-surface dark:text-white block">
-            Sostenimiento Isométrico
+            {t('frtms.holdIsometric')}
           </span>
           <span className="text-2xs text-on-surface-variant">
-            {running ? 'Contando contracción fija...' : 'Toca para iniciar cuenta'}
+            {running ? t('frtms.countingHold') : t('frtms.tapToStart')}
           </span>
         </div>
       </div>
@@ -619,6 +631,7 @@ export const SessionQualityScoreTile: React.FC<SessionQualityScoreTileProps> = (
   score = 92,
   className,
 }) => {
+  const { t } = useTranslation();
   return (
     <motion.div
       whileHover={{ y: -3, scale: 1.01 }}
@@ -634,10 +647,10 @@ export const SessionQualityScoreTile: React.FC<SessionQualityScoreTileProps> = (
         </div>
         <div>
           <span className="text-xs font-bold text-on-surface dark:text-white block">
-            Índice de Calidad Biomecánica
+            {t('frtms.qualityIndex')}
           </span>
           <span className="text-2xs text-on-surface-variant">
-            Simetría 94% • Cadencia 92% • Rango 90%
+            {t('frtms.qualityMetrics')}
           </span>
         </div>
       </div>

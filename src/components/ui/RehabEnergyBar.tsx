@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { BatteryCharging, Flame, Zap, ShieldAlert } from 'lucide-react';
@@ -20,6 +21,7 @@ export const RehabEnergyBar: React.FC<RehabEnergyBarProps> = ({
   className,
 }) => {
   const clampedEnergy = Math.max(0, Math.min(100, currentEnergy));
+  const { t } = useTranslation();
   const isLowEnergy = clampedEnergy < 30;
   const isHighFatigue = fatigueScore >= 7;
 
@@ -57,10 +59,10 @@ export const RehabEnergyBar: React.FC<RehabEnergyBarProps> = ({
           </div>
           <div>
             <h4 className="text-sm font-semibold text-on-surface dark:text-white flex items-center gap-1.5">
-              Energía Muscular de Rehabilitación
+              {t('rebTitle')}
             </h4>
             <p className="text-xs text-on-surface-variant">
-              {repsCompleted} de {totalTargetReps} repeticiones completadas
+              {t('rebReps', { completed: repsCompleted, total: totalTargetReps })}
             </p>
           </div>
         </div>
@@ -71,7 +73,7 @@ export const RehabEnergyBar: React.FC<RehabEnergyBarProps> = ({
             {Math.round(clampedEnergy)}%
           </div>
           <span className="text-2xs uppercase font-semibold tracking-wider text-on-surface-variant">
-            {isLowEnergy ? 'Fatiga Alta' : clampedEnergy < 60 ? 'Moderada' : 'Óptima'}
+            {isLowEnergy ? t('rebHighFatigue') : clampedEnergy < 60 ? t('rebModerate') : t('rebOptimal')}
           </span>
         </div>
       </div>
@@ -100,7 +102,7 @@ export const RehabEnergyBar: React.FC<RehabEnergyBarProps> = ({
       <div className="grid grid-cols-2 gap-3 mt-4 pt-3 border-t border-outline-variant/15 dark:border-white/5 text-xs">
         <div className="flex items-center gap-1.5 text-on-surface-variant">
           <Flame className="w-3.5 h-3.5 text-amber-500" />
-          <span>Índice de Fatiga:</span>
+          <span>{t('rebFatigueIndex')}</span>
           <span className="font-mono font-bold text-on-surface dark:text-white">{fatigueScore.toFixed(1)} / 10</span>
         </div>
 
@@ -108,10 +110,10 @@ export const RehabEnergyBar: React.FC<RehabEnergyBarProps> = ({
           {isHighFatigue ? (
             <span className="flex items-center gap-1 text-rose-500 font-medium">
               <ShieldAlert className="w-3.5 h-3.5" />
-              Recomendado descansar
+              {t('rebRestAdvised')}
             </span>
           ) : (
-            <span className="text-emerald-500 font-medium">Ritmo muscular seguro</span>
+            <span className="text-emerald-500 font-medium">{t('rebSafePace')}</span>
           )}
         </div>
       </div>

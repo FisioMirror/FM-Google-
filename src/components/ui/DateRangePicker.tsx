@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useRef, useEffect } from "react";
+import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from "framer-motion";
 import { Calendar as CalendarIcon, ChevronLeft, ChevronRight, ChevronDown, Check, X } from "lucide-react";
 import { cn } from "../../lib/utils";
@@ -119,12 +120,13 @@ export function DateRangePicker({
 
 export function DateRangePickerTrigger({
   className,
-  placeholder = "Seleccionar rango clínico...",
+  placeholder,
 }: {
   className?: string;
   placeholder?: string;
 }) {
   const { value, toggle, isOpen } = useDateRangePicker();
+  const { t } = useTranslation();
 
   const formatDate = (d: Date | null) => {
     if (!d) return "";
@@ -134,8 +136,8 @@ export function DateRangePickerTrigger({
   const displayText = value.start
     ? value.end
       ? `${formatDate(value.start)} — ${formatDate(value.end)}`
-      : `${formatDate(value.start)} — (Seleccionar fin)`
-    : placeholder;
+      : `${formatDate(value.start)} — (${t('drp.selectEnd')})`
+    : placeholder ?? t('drp.selectClinicalRange');
 
   return (
     <button
@@ -302,6 +304,7 @@ function RangeCalendarStandalone({
 
 export function RangeCalendarHeader({ children, className }: { children?: React.ReactNode; className?: string }) {
   const { currentMonth, setCurrentMonth } = useDateRangePicker();
+  const { t } = useTranslation();
 
   const handlePrevMonth = () => {
     setCurrentMonth((prev) => new Date(prev.getFullYear(), prev.getMonth() - 1, 1));
@@ -331,7 +334,7 @@ export function RangeCalendarHeader({ children, className }: { children?: React.
         type="button"
         onClick={handlePrevMonth}
         className="p-1.5 rounded-lg text-muted hover:text-foreground hover:bg-surface border border-transparent hover:border-border/50 transition-colors"
-        aria-label="Mes anterior"
+        aria-label={t('drp.previousMonth')}
       >
         <ChevronLeft className="size-4" />
       </button>
@@ -342,7 +345,7 @@ export function RangeCalendarHeader({ children, className }: { children?: React.
         type="button"
         onClick={handleNextMonth}
         className="p-1.5 rounded-lg text-muted hover:text-foreground hover:bg-surface border border-transparent hover:border-border/50 transition-colors"
-        aria-label="Mes siguiente"
+        aria-label={t('drp.nextMonth')}
       >
         <ChevronRight className="size-4" />
       </button>
@@ -362,6 +365,7 @@ export function RangeCalendarNavButton({
   onClick?: () => void;
 }) {
   const { setCurrentMonth } = useDateRangePicker();
+  const { t } = useTranslation();
 
   const handleClick = () => {
     if (onClick) {
@@ -379,7 +383,7 @@ export function RangeCalendarNavButton({
     <button
       type="button"
       onClick={handleClick}
-      aria-label={slot === "previous" ? "Anterior" : "Siguiente"}
+      aria-label={slot === "previous" ? t('common.previous') : t('common.next')}
       className={cn(
         "p-1.5 rounded-lg text-muted hover:text-foreground hover:bg-surface border border-border/40 hover:border-border/80 transition-colors",
         className
@@ -416,9 +420,10 @@ export function RangeCalendarGridHeader({
   className?: string;
 }) {
   const { firstDayOfWeek } = useDateRangePicker();
+  const { t } = useTranslation();
   const days = firstDayOfWeek === "sun"
-    ? ["Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sá"]
-    : ["Lu", "Ma", "Mi", "Ju", "Vi", "Sá", "Do"];
+    ? [t('drp.sun'), t('drp.mon'), t('drp.tue'), t('drp.wed'), t('drp.thu'), t('drp.fri'), t('drp.sat')]
+    : [t('drp.mon'), t('drp.tue'), t('drp.wed'), t('drp.thu'), t('drp.fri'), t('drp.sat'), t('drp.sun')];
 
   if (typeof children === "function") {
     return (
@@ -677,7 +682,8 @@ export function SelectTrigger({ children, className }: { children?: React.ReactN
 
 export function SelectValue({ className }: { className?: string }) {
   const ctx = useContext(SelectContext);
-  return <span className={cn("capitalize", className)}>{ctx?.value || "Seleccionar"}</span>;
+  const { t } = useTranslation();
+  return <span className={cn("capitalize", className)}>{ctx?.value || t('common.select')}</span>;
 }
 
 export function SelectIndicator({ className }: { className?: string }) {
@@ -765,8 +771,9 @@ ListBox.ItemIndicator = ListBoxItemIndicator;
 
 // 1. Vista Básica de Rango (Exacta especificación del usuario)
 export function BasicRangeCalendar() {
+  const { t } = useTranslation();
   return (
-    <RangeCalendar aria-label="Trip dates" firstDayOfWeek="mon">
+    <RangeCalendar aria-label={t('drp.tripDates')} firstDayOfWeek="mon">
       <RangeCalendar.Header>
         <RangeCalendar.Heading />
         <RangeCalendar.NavButton slot="previous" />
@@ -786,28 +793,29 @@ export function BasicRangeCalendar() {
 
 // 2. Vista Dinámica por Semanas (WeekView - Exacta especificación del usuario)
 const weekOptions = [
-  { id: "1", name: "1 semana" },
-  { id: "2", name: "2 semanas" },
-  { id: "3", name: "3 semanas" },
-  { id: "4", name: "4 semanas" },
-  { id: "5", name: "5 semanas" },
-  { id: "6", name: "6 semanas" },
-  { id: "8", name: "8 semanas" },
+  { id: "1", name: "drp.week1" },
+  { id: "2", name: "drp.week2" },
+  { id: "3", name: "drp.week3" },
+  { id: "4", name: "drp.week4" },
+  { id: "5", name: "drp.week5" },
+  { id: "6", name: "drp.week6" },
+  { id: "8", name: "drp.week8" },
 ] as const;
 
 export function WeekViewRangeCalendar() {
+  const { t } = useTranslation();
   const [weeks, setWeeks] = useState(2);
 
   return (
     <div className="flex flex-col items-center gap-6 w-full max-w-sm">
       <div className="w-full flex items-center justify-between">
-        <span className="text-xs font-bold text-on-surface">Semanas a visualizar:</span>
+        <span className="text-xs font-bold text-on-surface">{t('drp.weeksToDisplay')}</span>
         <Select
           className="w-40"
           value={String(weeks)}
           onChange={(value) => value && setWeeks(Number(value))}
         >
-          <Label className="sr-only">Visible weeks</Label>
+          <Label className="sr-only">{t('drp.visibleWeeks')}</Label>
           <Select.Trigger>
             <Select.Value />
             <Select.Indicator />
@@ -815,8 +823,8 @@ export function WeekViewRangeCalendar() {
           <Select.Popover>
             <ListBox>
               {weekOptions.map((option) => (
-                <ListBox.Item key={option.id} id={option.id} textValue={option.name}>
-                  {option.name}
+                <ListBox.Item key={option.id} id={option.id} textValue={t(option.name)}>
+                  {t(option.name)}
                   <ListBox.ItemIndicator />
                 </ListBox.Item>
               ))}
@@ -827,7 +835,7 @@ export function WeekViewRangeCalendar() {
 
       <RangeCalendar
         key={weeks}
-        aria-label="Trip dates"
+        aria-label={t('drp.tripDates')}
         visibleDuration={{ weeks }}
         className="w-full"
       >
@@ -856,6 +864,7 @@ export function parseDate(dateStr: string): Date {
 }
 
 export function DefaultValueRangeCalendar() {
+  const { t } = useTranslation();
   const defaultValue = {
     start: parseDate("2026-02-03"),
     end: parseDate("2026-02-12"),
@@ -863,7 +872,7 @@ export function DefaultValueRangeCalendar() {
 
   return (
     <RangeCalendar
-      aria-label="Rango de rehabilitación predeterminado"
+      aria-label={t('drp.defaultRehabRange')}
       defaultValue={defaultValue}
       className="w-full max-w-sm"
     >
@@ -888,6 +897,7 @@ export function DefaultValueRangeCalendar() {
  * DateRangePickerDemo con presets clínicos (Últimos 7 días, 30 días, etc.)
  */
 export function DateRangePickerDemo() {
+  const { t } = useTranslation();
   const today = new Date();
   const past7Days = new Date();
   past7Days.setDate(today.getDate() - 7);
@@ -918,28 +928,28 @@ export function DateRangePickerDemo() {
                   onClick={() => setPreset(7)}
                   className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-surface dark:bg-slate-800 hover:bg-primary/10 border border-border/50 text-muted hover:text-primary transition-colors"
                 >
-                  7 días
+                  {t('drp.last7Days')}
                 </button>
                 <button
                   type="button"
                   onClick={() => setPreset(14)}
                   className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-surface dark:bg-slate-800 hover:bg-primary/10 border border-border/50 text-muted hover:text-primary transition-colors"
                 >
-                  14 días
+                  {t('drp.last14Days')}
                 </button>
                 <button
                   type="button"
                   onClick={() => setPreset(30)}
                   className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-surface dark:bg-slate-800 hover:bg-primary/10 border border-border/50 text-muted hover:text-primary transition-colors"
                 >
-                  30 días
+                  {t('drp.last30Days')}
                 </button>
                 <button
                   type="button"
                   onClick={() => setRange({ start: null, end: null })}
                   className="px-2.5 py-1 rounded-lg text-xs font-semibold text-rose-500 hover:bg-rose-500/10 border border-rose-500/20 ml-auto transition-colors"
                 >
-                  Limpiar
+                  {t('common.clear')}
                 </button>
               </div>
 
@@ -953,9 +963,9 @@ export function DateRangePickerDemo() {
 
               {range.start && range.end && (
                 <div className="pt-2 border-t border-border/40 flex items-center justify-between text-xs">
-                  <span className="text-muted">Total sesiones seleccionadas:</span>
+                  <span className="text-muted">{t('drp.totalSessionsSelected')}</span>
                   <span className="font-bold text-primary">
-                    {Math.round((range.end.getTime() - range.start.getTime()) / (1000 * 60 * 60 * 24))} días de evolución
+                    {t('drp.daysOfEvolution', { n: Math.round((range.end.getTime() - range.start.getTime()) / (1000 * 60 * 60 * 24)) })}
                   </span>
                 </div>
               )}
@@ -967,7 +977,7 @@ export function DateRangePickerDemo() {
       {/* Subsección interactiva demostrando WeekViewRangeCalendar y BasicRangeCalendar */}
       <div className="pt-4 border-t border-slate-200/80 dark:border-slate-800/80">
         <p className="text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-3">
-          Vista Multisemana (visibleDuration dinámico):
+          {t('drp.multiWeekView')}
         </p>
         <WeekViewRangeCalendar />
       </div>

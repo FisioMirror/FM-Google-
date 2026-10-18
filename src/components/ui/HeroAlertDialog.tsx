@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AlertCircle, ShieldAlert, X } from 'lucide-react';
 import { cn } from '../../lib/utils';
@@ -84,6 +85,7 @@ export function AlertDialogDialog({ children, className }: { children: React.Rea
 
 export function AlertDialogCloseTrigger({ className }: { className?: string }) {
   const { setOpen } = useContext(AlertDialogContext);
+  const { t } = useTranslation();
 
   return (
     <button
@@ -92,7 +94,7 @@ export function AlertDialogCloseTrigger({ className }: { className?: string }) {
         'absolute top-4 right-4 p-1.5 rounded-xl text-on-surface-variant hover:text-on-surface-variant dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors',
         className
       )}
-      aria-label="Cerrar diálogo"
+      aria-label={t('hadCloseDialog')}
     >
       <X className="w-4 h-4" />
     </button>
@@ -150,11 +152,12 @@ AlertDialog.Body = AlertDialogBody;
 AlertDialog.Footer = AlertDialogFooter;
 
 export function DeleteProjectDialogDemo() {
+  const { t } = useTranslation();
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
         <Button variant="destructive" size="sm" icon={<AlertCircle className="w-4 h-4" />}>
-          Eliminar Registro Clínico
+          {t('hadDeleteRecord')}
         </Button>
       </AlertDialogTrigger>
       <AlertDialog.Backdrop>
@@ -164,21 +167,21 @@ export function DeleteProjectDialogDemo() {
             <AlertDialog.Header>
               <AlertDialog.Icon status="danger" />
               <div>
-                <AlertDialog.Heading>¿Eliminar este registro permanentemente?</AlertDialog.Heading>
-                <span className="text-2xs text-rose-600 dark:text-rose-400 font-bold uppercase tracking-wider">Operación Irreversible</span>
+                <AlertDialog.Heading>{t('hadConfirmTitle')}</AlertDialog.Heading>
+                <span className="text-2xs text-rose-600 dark:text-rose-400 font-bold uppercase tracking-wider">{t('hadIrreversible')}</span>
               </div>
             </AlertDialog.Header>
             <AlertDialog.Body>
               <p>
-                Esta acción eliminará todos los datos asociados de la base de datos de Supabase y de la memoria local, incluyendo métricas biomecánicas y notas médicas.
+                {t('hadDeleteDesc')}
               </p>
             </AlertDialog.Body>
             <AlertDialog.Footer>
               <Button slot="close" variant="outline" size="sm">
-                Cancelar
+                {t('common.cancel')}
               </Button>
               <Button slot="close" variant="destructive" size="sm">
-                Confirmar y Eliminar
+                {t('hadConfirmDelete')}
               </Button>
             </AlertDialog.Footer>
           </AlertDialog.Dialog>

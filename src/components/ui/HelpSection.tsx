@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import { ChevronDown, HelpCircle, Search, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -11,59 +12,64 @@ interface FAQItem {
   routes?: string[];
 }
 
-const FAQ_DATABASE: FAQItem[] = [
+function buildFAQDatabase(t: (k: string) => string): FAQItem[] {
+  return [
   {
     id: 'faq-1',
-    question: '¿Cómo inicio una sesión en el Espejo AR?',
-    answer: 'Dirígete a "Modo AR" o selecciona un ejercicio de tu rutina activa y pulsa "Iniciar con IA". Concede permiso de cámara y colócate a una distancia de 1.5 a 2 metros de modo que tu cuerpo sea visible por completo.',
+    question: t('hs.faqArSessionQ'),
+    answer: t('hs.faqArSessionA'),
     category: 'ar',
     routes: ['/paciente', '/paciente/ejercicios', '/ar-mirror'],
   },
   {
     id: 'faq-2',
-    question: '¿Cómo creo y asigno una rutina a un paciente?',
-    answer: 'Ve a la sección "Pacientes", pulsa sobre el paciente deseado y haz clic en "Reasignar Rutina" o ve a "Biblioteca de Ejercicios" para añadir ejercicios a su plan con series, repeticiones y descansos personalizados.',
+    question: t('hs.faqAssignRoutineQ'),
+    answer: t('hs.faqAssignRoutineA'),
     category: 'fisio',
     routes: ['/dashboard', '/pacientes', '/ejercicios'],
   },
   {
     id: 'faq-3',
-    question: '¿Cómo funciona la sincronización sin conexión (Offline)?',
-    answer: 'FisioMirror guarda tu rutina y ejercicios localmente en IndexedDB. Si pierdes la conexión WiFi, puedes continuar tus sesiones y los progresos se sincronizarán en cuanto vuelvas a tener red.',
+    question: t('hs.faqOfflineQ'),
+    answer: t('hs.faqOfflineA'),
     category: 'general',
   },
   {
     id: 'faq-4',
-    question: '¿Mis datos y grabaciones de cámara están seguros?',
-    answer: 'Totalmente. El procesamiento de visión artificial MediaPipe se ejecuta 100% de forma local en tu navegador. Ningún video ni imagen de tu cámara se envía ni se almacena en servidores externos.',
+    question: t('hs.faqCameraDataQ'),
+    answer: t('hs.faqCameraDataA'),
     category: 'security',
   },
   {
     id: 'faq-5',
-    question: '¿Cómo contacto directamente a mi fisioterapeuta?',
-    answer: 'En tu barra superior o menú de paciente dispones del botón de llamada, SMS y WhatsApp directo (+58 412 4081077) para consultas clínicas inmediatas.',
+    question: t('hs.faqContactDirectQ'),
+    answer: t('hs.faqContactDirectA'),
     category: 'patient',
     routes: ['/paciente', '/paciente/perfil'],
   },
   {
     id: 'faq-6',
-    question: '¿Cómo cambio entre MediaPipe Pose y Holistic?',
-    answer: 'En la sección de "Configuración", busca el selector de "Modelo AR". Puedes elegir "Automático" para que el sistema detecte la potencia de tu dispositivo, o forzar Pose para máxima fluidez.',
+    question: t('hs.faqMediapipeQ'),
+    answer: t('hs.faqMediapipeA'),
     category: 'ar',
     routes: ['/configuracion', '/ar-mirror'],
   },
-];
+  ];
+}
 
 export function HelpSection({ className }: { className?: string }) {
   const location = useLocation();
+  const { t } = useTranslation();
   const [openId, setOpenId] = useState<string | null>(null);
   const [search, setSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
 
+  const faqDatabase = useMemo(() => buildFAQDatabase(t), [t]);
+
   const currentRoute = location.pathname;
 
   const filteredFAQs = useMemo(() => {
-    return FAQ_DATABASE.filter((item) => {
+    return faqDatabase.filter((item) => {
       const matchSearch =
         item.question.toLowerCase().includes(search.toLowerCase()) ||
         item.answer.toLowerCase().includes(search.toLowerCase());
@@ -72,11 +78,11 @@ export function HelpSection({ className }: { className?: string }) {
 
       return matchSearch && matchCategory;
     });
-  }, [search, selectedCategory]);
+  }, [search, selectedCategory, faqDatabase]);
 
   const contextualSuggestions = useMemo(() => {
-    return FAQ_DATABASE.filter((item) => item.routes && item.routes.some((r) => currentRoute.startsWith(r)));
-  }, [currentRoute]);
+    return faqDatabase.filter((item) => item.routes && item.routes.some((r) => currentRoute.startsWith(r)));
+  }, [currentRoute, faqDatabase]);
 
   const toggleItem = (id: string) => {
     setOpenId((prev) => (prev === id ? null : id));
@@ -89,9 +95,9 @@ export function HelpSection({ className }: { className?: string }) {
         <div>
           <h2 className="text-xl font-bold text-on-surface flex items-center gap-2">
             <HelpCircle className="size-5 text-primary" />
-            Centro de Ayuda & FAQ
+            {t('hs.title')}
           </h2>
-          <p className="text-xs text-on-surface-variant">Preguntas frecuentes y soporte contextual</p>
+          <p className="text-xs text-on-surface-variant">{t('hs.subtitle')}</p>
         </div>
 
         <div className="relative w-full sm:w-72">
@@ -100,7 +106,7 @@ export function HelpSection({ className }: { className?: string }) {
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Buscar en preguntas frecuentes..."
+            placeholder={t('hs.searchPlaceholder')}
             className="w-full pl-9 pr-4 py-2 text-sm rounded-xl bg-surface-container-high border border-outline/20 focus:outline-none focus:ring-2 focus:ring-primary/20 text-on-surface placeholder:text-on-surface-variant/50"
           />
         </div>
@@ -111,7 +117,7 @@ export function HelpSection({ className }: { className?: string }) {
         <div className="p-4 rounded-2xl bg-primary/5 border border-primary/15">
           <div className="flex items-center gap-2 text-xs font-semibold text-primary uppercase tracking-wider mb-2">
             <Sparkles className="size-3.5" />
-            Sugerencias para esta pantalla
+            {t('hs.suggestionsTitle')}
           </div>
           <div className="flex flex-wrap gap-2">
             {contextualSuggestions.map((item) => (
@@ -130,12 +136,12 @@ export function HelpSection({ className }: { className?: string }) {
       {/* Filtros de Categoría */}
       <div className="flex flex-wrap gap-2">
         {[
-          { id: 'all', label: 'Todas' },
-          { id: 'general', label: 'General' },
-          { id: 'ar', label: 'Espejo AR' },
-          { id: 'fisio', label: 'Fisioterapeuta' },
-          { id: 'patient', label: 'Paciente' },
-          { id: 'security', label: 'Seguridad' },
+          { id: 'all', label: t('tools.tabAll') },
+          { id: 'general', label: t('hs.catGeneral') },
+          { id: 'ar', label: t('navigation.arMirror') },
+          { id: 'fisio', label: t('common.therapist') },
+          { id: 'patient', label: t('common.patient') },
+          { id: 'security', label: t('set.security') },
         ].map((cat) => (
           <button
             key={cat.id}
@@ -195,7 +201,7 @@ export function HelpSection({ className }: { className?: string }) {
 
         {filteredFAQs.length === 0 && (
           <div className="text-center py-8 text-sm text-outline">
-            No se encontraron respuestas para tu búsqueda.
+            {t('hs.emptyState')}
           </div>
         )}
       </div>

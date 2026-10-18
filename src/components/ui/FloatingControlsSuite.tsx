@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import {
@@ -31,12 +32,16 @@ export interface JointAnatomyTooltipProps {
 }
 
 export const JointAnatomyTooltip: React.FC<JointAnatomyTooltipProps> = ({
-  jointName = 'Tendón Rotuliano',
-  agonists = 'Cuádriceps femoral, Vasto medial y lateral',
-  precautions = 'Evitar flexión forzada > 90° en fase inflamatoria aguda',
+  jointName,
+  agonists,
+  precautions,
   className,
 }) => {
+  const { t } = useTranslation();
   const [visible, setVisible] = useState(false);
+  const joint = jointName ?? t('ffcs.patellarTendon');
+  const agonistList = agonists ?? t('ffcs.agonistsDefault');
+  const precautionText = precautions ?? t('ffcs.precautionsDefault');
 
   return (
     <div className={cn("relative inline-block", className)}>
@@ -51,7 +56,7 @@ export const JointAnatomyTooltip: React.FC<JointAnatomyTooltipProps> = ({
         <span className="p-1 rounded-lg bg-teal-500/20 text-teal-600 dark:text-teal-400">
           <HelpCircle className="w-3.5 h-3.5" />
         </span>
-        <span>Anatomía: {jointName}</span>
+        <span>{t('ffcs.anatomyLabel', { name: joint })}</span>
       </motion.button>
 
       <AnimatePresence>
@@ -66,22 +71,22 @@ export const JointAnatomyTooltip: React.FC<JointAnatomyTooltipProps> = ({
             <div className="flex items-center justify-between pb-1 border-b border-slate-200 dark:border-white/10">
               <span className="font-black text-teal-600 dark:text-teal-400 flex items-center gap-1.5">
                 <Layers className="w-3.5 h-3.5" />
-                {jointName}
+                {joint}
               </span>
               <button
                 type="button"
                 onClick={() => setVisible(false)}
                 className="text-on-surface-variant hover:text-on-surface dark:hover:text-white text-2xs cursor-pointer"
               >
-                Cerrar
+                {t('common.close')}
               </button>
             </div>
             <p className="text-xs text-on-surface-variant leading-relaxed">
-              <strong className="text-on-surface">Músculos Agonistas:</strong> {agonists}
+              <strong className="text-on-surface">{t('ffcs.agonistMuscles')}</strong> {agonistList}
             </p>
             <div className="p-2 rounded-xl bg-amber-500/15 border border-amber-500/30 text-2xs text-amber-300 flex items-start gap-1.5">
               <ShieldAlert className="w-3.5 h-3.5 shrink-0 text-amber-400 mt-0.5" />
-              <span>{precautions}</span>
+              <span>{precautionText}</span>
             </div>
           </motion.div>
         )}
@@ -98,17 +103,18 @@ export interface ARCameraFilterDropdownProps {
 }
 
 export const ARCameraFilterDropdown: React.FC<ARCameraFilterDropdownProps> = ({
-  currentFilter = 'Malla 3D Completa',
+  currentFilter,
   onFilterChange,
   className,
 }) => {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
-  const [selected, setSelected] = useState(currentFilter);
+  const [selected, setSelected] = useState(currentFilter ?? t('ffcs.mesh3d'));
   const filters = [
-    { id: 'Malla 3D Completa', desc: 'Superficie volumétrica AR' },
-    { id: 'Esqueleto Minimalista', desc: 'Líneas biomecánicas puras' },
-    { id: 'Puntos Articulares', desc: '33 landmarks MediaPipe' },
-    { id: 'Silueta Clínica', desc: 'Contraste alto para postura' },
+    { id: t('ffcs.mesh3d'), desc: t('ffcs.mesh3dDesc') },
+    { id: t('ffcs.skeletonMinimal'), desc: t('ffcs.skeletonMinimalDesc') },
+    { id: t('ffcs.jointPoints'), desc: '33 landmarks MediaPipe' },
+    { id: t('ffcs.clinicalSilhouette'), desc: t('ffcs.clinicalSilhouetteDesc') },
   ];
 
   return (
@@ -182,12 +188,13 @@ export const RapidToleranceAdjuster: React.FC<RapidToleranceAdjusterProps> = ({
   onToleranceChange,
   className,
 }) => {
+  const { t } = useTranslation();
   const [val, setVal] = useState(toleranceDegrees);
 
   const getModeLabel = () => {
-    if (val <= 4) return { text: 'Estricto', color: 'text-rose-500 bg-rose-500/10 border-rose-500/20' };
-    if (val <= 8) return { text: 'Estándar Clínico', color: 'text-teal-600 dark:text-teal-400 bg-teal-500/10 border-teal-500/20' };
-    return { text: 'Permisivo', color: 'text-amber-500 bg-amber-500/10 border-amber-500/20' };
+    if (val <= 4) return { text: t('arMirror.strict'), color: 'text-rose-500 bg-rose-500/10 border-rose-500/20' };
+    if (val <= 8) return { text: t('arMirror.clinicalStandard'), color: 'text-teal-600 dark:text-teal-400 bg-teal-500/10 border-teal-500/20' };
+    return { text: t('arMirror.permissive'), color: 'text-amber-500 bg-amber-500/10 border-amber-500/20' };
   };
 
   const mode = getModeLabel();
@@ -203,7 +210,7 @@ export const RapidToleranceAdjuster: React.FC<RapidToleranceAdjusterProps> = ({
         <SlidersHorizontal className="w-3.5 h-3.5" />
       </div>
       <div>
-        <span className="text-2xs font-bold text-on-surface-variant uppercase tracking-wider block">Tolerancia ROM</span>
+        <span className="text-2xs font-bold text-on-surface-variant uppercase tracking-wider block">{t('ffcs.toleranceRom')}</span>
         <div className="flex items-center gap-2">
           <span className={cn("text-2xs font-bold px-1.5 py-0.2 rounded border", mode.color)}>
             {mode.text}
@@ -253,6 +260,7 @@ export const AudioMuteFloatingPill: React.FC<AudioMuteFloatingPillProps> = ({
   onToggle,
   className,
 }) => {
+  const { t } = useTranslation();
   const [muted, setMuted] = useState(initialMuted);
 
   return (
@@ -276,7 +284,7 @@ export const AudioMuteFloatingPill: React.FC<AudioMuteFloatingPillProps> = ({
       <div className={cn("p-1 rounded-lg", muted ? "bg-rose-500/20" : "bg-teal-500/20")}>
         {muted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
       </div>
-      <span>{muted ? 'Audio Silenciado' : 'Biofeedback Activo'}</span>
+      <span>{muted ? t('ffcs.audioMuted') : t('ffcs.biofeedbackActive')}</span>
       {!muted && (
         <span className="size-2 rounded-full bg-emerald-500 animate-ping ml-1" />
       )}
@@ -293,12 +301,14 @@ export interface ExerciseSwitchFloatingMenuProps {
 }
 
 export const ExerciseSwitchFloatingMenu: React.FC<ExerciseSwitchFloatingMenuProps> = ({
-  exercises = ['Sentadilla Asistida', 'Puente Glúteo', 'Elevación Lateral'],
-  currentExercise = 'Sentadilla Asistida',
+  exercises,
+  currentExercise,
   onSelect,
   className,
 }) => {
-  const [active, setActive] = useState(currentExercise);
+  const { t } = useTranslation();
+  const [active, setActive] = useState(currentExercise ?? t('ffcs.assistedSquat'));
+  const exerciseOptions = exercises ?? [t('ffcs.assistedSquat'), t('ffcs.gluteBridge'), t('ffcs.lateralRaise')];
 
   return (
     <div
@@ -307,7 +317,7 @@ export const ExerciseSwitchFloatingMenu: React.FC<ExerciseSwitchFloatingMenuProp
         className
       )}
     >
-      {exercises.map((ex) => {
+      {exerciseOptions.map((ex) => {
         const isCurrent = active === ex;
         return (
           <motion.button
@@ -342,9 +352,11 @@ export interface PhysioNoteAnnotationBubbleProps {
 
 export const PhysioNoteAnnotationBubble: React.FC<PhysioNoteAnnotationBubbleProps> = ({
   author = 'Dra. Ramos',
-  noteText = 'Vigilar no compensar con basculación pélvica lateral en el descenso.',
+  noteText,
   className,
 }) => {
+  const { t } = useTranslation();
+  const note = noteText ?? t('ffcs.noteDefault');
   return (
     <motion.div
       whileHover={{ y: -2 }}
@@ -358,7 +370,7 @@ export const PhysioNoteAnnotationBubble: React.FC<PhysioNoteAnnotationBubbleProp
       </div>
       <div>
         <span className="font-bold text-amber-600 dark:text-amber-400 block">{author}:</span>
-        <span className="truncate max-w-[220px] font-medium">{noteText}</span>
+        <span className="truncate max-w-[220px] font-medium">{note}</span>
       </div>
     </motion.div>
   );
@@ -370,6 +382,7 @@ export interface QuickPrescriptionModalButtonProps {
 }
 
 export const QuickPrescriptionModalButton: React.FC<QuickPrescriptionModalButtonProps> = ({ className }) => {
+  const { t } = useTranslation();
   const [series, setSeries] = useState(3);
   const [reps, setReps] = useState(12);
 
@@ -384,9 +397,9 @@ export const QuickPrescriptionModalButton: React.FC<QuickPrescriptionModalButton
         <ClipboardPen className="w-3.5 h-3.5" />
       </div>
       <div>
-        <span className="text-2xs font-bold text-on-surface-variant uppercase tracking-wider block">Prescripción Rápida</span>
+        <span className="text-2xs font-bold text-on-surface-variant uppercase tracking-wider block">{t('ffcs.quickPrescription')}</span>
         <span className="font-mono font-bold text-teal-600 dark:text-teal-400">
-          {series} Series × {reps} Repeticiones
+          {t('ffcs.seriesReps', { series, reps })}
         </span>
       </div>
       <button
@@ -394,7 +407,7 @@ export const QuickPrescriptionModalButton: React.FC<QuickPrescriptionModalButton
         onClick={() => setReps((r) => (r >= 20 ? 8 : r + 2))}
         className="text-2xs font-bold text-primary hover:underline ml-1"
       >
-        Ajustar
+        {t('ffcs.adjust')}
       </button>
     </div>
   );
@@ -407,10 +420,12 @@ export interface BiomechanicalTagSelectorProps {
 }
 
 export const BiomechanicalTagSelector: React.FC<BiomechanicalTagSelectorProps> = ({
-  tags = ['LCA', 'Menisco', 'Post-Op', 'Cadena Cerrada', 'Propiocepción'],
+  tags,
   className,
 }) => {
-  const [selected, setSelected] = useState<string[]>(['LCA', 'Post-Op']);
+  const { t } = useTranslation();
+  const allTags = tags ?? [t('ffcs.acl'), t('ffcs.meniscus'), t('tools.tPostOp'), t('ffcs.closedChain'), t('shw.proprioception')];
+  const [selected, setSelected] = useState<string[]>([t('ffcs.acl'), t('tools.tPostOp')]);
 
   const toggle = (t: string) => {
     setSelected((prev) => (prev.includes(t) ? prev.filter((x) => x !== t) : [...prev, t]));
@@ -418,7 +433,7 @@ export const BiomechanicalTagSelector: React.FC<BiomechanicalTagSelectorProps> =
 
   return (
     <div className={cn("flex flex-wrap gap-1.5", className)}>
-      {tags.map((t) => {
+      {allTags.map((t) => {
         const isSelected = selected.includes(t);
         return (
           <motion.button
@@ -454,6 +469,7 @@ export const CalibrationCompass: React.FC<CalibrationCompassProps> = ({
   roll = 1,
   className,
 }) => {
+  const { t } = useTranslation();
   return (
     <motion.div
       whileHover={{ y: -2 }}
@@ -466,9 +482,9 @@ export const CalibrationCompass: React.FC<CalibrationCompassProps> = ({
         <Compass className="w-5 h-5 animate-spin" style={{ animationDuration: '24s' }} />
       </div>
       <div>
-        <span className="font-bold text-on-surface dark:text-white block">Giroscopio Sagital AR</span>
+        <span className="font-bold text-on-surface dark:text-white block">{t('ffcs.gyroscope')}</span>
         <span className="text-2xs text-teal-600 dark:text-teal-400 font-mono font-bold">
-          Pitch: {pitch}° • Roll: {roll}° (Nivelado)
+          Pitch: {pitch}° • Roll: {roll}° ({t('ffcs.leveled')})
         </span>
       </div>
     </motion.div>
@@ -481,6 +497,7 @@ export interface FloatingMiniStopwatchProps {
 }
 
 export const FloatingMiniStopwatch: React.FC<FloatingMiniStopwatchProps> = ({ className }) => {
+  const { t } = useTranslation();
   const [seconds, setSeconds] = useState(45);
   const [active, setActive] = useState(false);
 
@@ -499,7 +516,7 @@ export const FloatingMiniStopwatch: React.FC<FloatingMiniStopwatchProps> = ({ cl
         {active ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
       </button>
       <div>
-        <span className="text-2xs uppercase font-bold text-on-surface-variant block tracking-wider">Descanso Restante</span>
+        <span className="text-2xs uppercase font-bold text-on-surface-variant block tracking-wider">{t('ffcs.restRemaining')}</span>
         <span className="font-mono font-black text-on-surface text-sm">
           00:{seconds < 10 ? `0${seconds}` : seconds}s
         </span>

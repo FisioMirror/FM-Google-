@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { cn } from '../../lib/utils';
 
 interface AvatarContextType {
@@ -79,27 +80,28 @@ Avatar.Image = AvatarImage;
 Avatar.Fallback = AvatarFallback;
 
 export function AvatarDemo() {
+  const { t } = useTranslation();
   return (
     <div className="flex flex-wrap items-center gap-4">
       <div className="flex items-center gap-2.5">
         <Avatar size="lg">
-          <Avatar.Image alt="Dra. Fisioterapeuta" src="/physi.png" />
+          <Avatar.Image alt={t('avatarTherapistAlt')} src="/physi.png" />
           <Avatar.Fallback>FM</Avatar.Fallback>
         </Avatar>
         <div>
           <p className="text-xs font-bold text-on-surface">Dra. Elena Ramos</p>
-          <p className="text-xs text-teal-600 dark:text-teal-400">Fisioterapeuta Titular</p>
+          <p className="text-xs text-teal-600 dark:text-teal-400">{t('avatarRole')}</p>
         </div>
       </div>
 
       <div className="flex items-center gap-2.5">
         <Avatar size="md">
-          <Avatar.Image alt="Paciente" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" />
+          <Avatar.Image alt={t('common.patient')} src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" />
           <Avatar.Fallback>CR</Avatar.Fallback>
         </Avatar>
         <div>
           <p className="text-xs font-bold text-on-surface">Carlos Romero</p>
-          <p className="text-xs text-on-surface-variant">Paciente Activo • Rodilla</p>
+          <p className="text-xs text-on-surface-variant">{t('avatarPatientStatus')}</p>
         </div>
       </div>
 
@@ -109,7 +111,7 @@ export function AvatarDemo() {
         </Avatar>
         <div>
           <p className="text-xs font-bold text-on-surface">Jorge Ramírez</p>
-          <p className="text-xs text-on-surface-variant">Token Pendiente (Sin foto)</p>
+          <p className="text-xs text-on-surface-variant">{t('avatarTokenPending')}</p>
         </div>
       </div>
     </div>

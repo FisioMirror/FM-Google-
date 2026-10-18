@@ -1,4 +1,5 @@
 import { useState, useEffect, type ReactNode, useRef, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { cn } from '../../lib/utils';
@@ -24,11 +25,12 @@ interface CommandPaletteProps {
 
 export function CommandPalette({
   items,
-  placeholder = 'Buscar pacientes por nombre, condición o ejercicios... (⌘K)',
+  placeholder,
   className,
   onEnterFallback,
 }: CommandPaletteProps) {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [query, setQuery] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -78,11 +80,11 @@ export function CommandPalette({
         if (!error && data && data.length > 0) {
           const results: CommandItem[] = data.map((p) => ({
             id: `db-pat-${p.id}`,
-            label: p.full_name || 'Paciente',
-            subtitle: `${p.diagnostico || p.patologia || 'Expediente clínico'}${p.email && !p.email.includes('@fisiomirror.paciente') ? ` • ${p.email}` : ''}`,
+            label: p.full_name || t('common.patient'),
+            subtitle: `${p.diagnostico || p.patologia || t('cpRecord')}${p.email && !p.email.includes('@fisiomirror.paciente') ? ` • ${p.email}` : ''}`,
             category: 'Pacientes',
             icon: <User className="size-4 text-teal-600 dark:text-teal-400" />,
-            badge: 'Base de Datos',
+            badge: t('cpDatabase'),
             onSelect: () => navigate(`/paciente/${p.id}`),
           }));
           setDbItems(results);
@@ -172,7 +174,7 @@ export function CommandPalette({
         <input
           ref={inputRef}
           type="text"
-          placeholder={placeholder}
+          placeholder={placeholder ?? t('cpPlaceholder')}
           value={query}
           onFocus={() => setIsOpen(true)}
           onBlur={() => {
@@ -223,7 +225,7 @@ export function CommandPalette({
           >
             {filtered.length === 0 && !isSearchingDb ? (
               <div className="px-5 py-4 text-center">
-                <p className="text-xs font-medium text-on-surface-variant">Sin resultados inmediatos para "{query}"</p>
+                <p className="text-xs font-medium text-on-surface-variant">{t('cpNoResults', { query })}</p>
                 {onEnterFallback && (
                   <button
                     type="button"
@@ -234,7 +236,7 @@ export function CommandPalette({
                     className="mt-2 text-xs font-bold text-teal-600 dark:text-teal-400 hover:underline inline-flex items-center gap-1"
                   >
                     <Search className="size-3" />
-                    Buscar "{query}" en el Directorio Completo →
+                    {t('cpSearchDirectory', { query })}
                   </button>
                 )}
               </div>

@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Mail,
@@ -43,11 +44,12 @@ export function SendTokenModal({
 }: SendTokenModalProps) {
   const isModalOpen = open ?? isOpen ?? false;
   const toast = useToast();
+  const { t } = useTranslation();
   const user = useAuthStore((s) => s.user);
 
   const [channel, setChannel] = useState<'email' | 'whatsapp' | 'sms'>('email');
   const [recipientName, setRecipientName] = useState(
-    propRecipientName || propPatientName || 'Paciente'
+    propRecipientName || propPatientName || t('common.patient')
   );
   const [email, setEmail] = useState(initialEmail || '');
   const [phone, setPhone] = useState(initialPhone || '');
@@ -89,8 +91,8 @@ export function SendTokenModal({
             .maybeSingle();
 
           if (patProf) {
-            if (!recipientName || recipientName === 'Paciente') {
-              setRecipientName(patProf.full_name || 'Paciente');
+            if (!recipientName || recipientName === t('common.patient')) {
+              setRecipientName(patProf.full_name || t('common.patient'));
             }
             if (!email && patProf.email && !patProf.email.includes('@fisiomirror.paciente')) {
               setEmail(patProf.email);
@@ -116,37 +118,34 @@ export function SendTokenModal({
   useEffect(() => {
     if (initialEmail && !email) setEmail(initialEmail);
     if (initialPhone && !phone) setPhone(initialPhone);
-    if ((propRecipientName || propPatientName) && recipientName === 'Paciente') {
-      setRecipientName(propRecipientName || propPatientName || 'Paciente');
+    if ((propRecipientName || propPatientName) && recipientName === t('common.patient')) {
+      setRecipientName(propRecipientName || propPatientName || t('common.patient'));
     }
   }, [initialEmail, initialPhone, propRecipientName, propPatientName, email, phone, recipientName]);
 
   const activationLink = `${window.location.origin}/registro-paciente?token=${encodeURIComponent(token)}`;
-  const senderName = user?.full_name || 'Fisioterapeuta';
+  const senderName = user?.full_name || t('common.therapist');
   const senderEmail = user?.email || '';
   const effectiveSenderPhone = therapistPhone || (user as any)?.telefono || '';
 
-  const emailSubject = `FisioMirror — Token de acceso para tu rehabilitación (${token})`;
-  const messageBody = `Hola ${recipientName || 'paciente'},
+  const emailSubject = t('stm.emailSubject', { token });
+  const contactLines = (senderEmail ? t('stm.contactEmail', { email: senderEmail }) + '\n' : '') + (effectiveSenderPhone ? t('stm.contactPhone', { phone: effectiveSenderPhone }) + '\n' : '');
+  const messageBody = t('stm.mailBody', {
+    name: recipientName || t('common.patient'),
+    sender: senderName,
+    token,
+    link: activationLink,
+    contactLines,
+    nl: '\n',
+  });
 
-Tu fisioterapeuta ${senderName} te ha asignado un plan de rehabilitación personalizado en FisioMirror.
-
---------------------------------------------------
-TU TOKEN DE ACTIVACIÓN: ${token}
---------------------------------------------------
-
-Instrucciones para comenzar:
-1. Entra a este enlace: ${activationLink}
-2. Ingresa tu token (${token}) para vincular tu expediente.
-3. Configura tu acceso y comienza tus ejercicios guiados por biofeedback en tiempo real.
-
-Datos del Profesional Tratante:
-• Fisioterapeuta: ${senderName}
-${senderEmail ? `• Correo de contacto: ${senderEmail}\n` : ''}${effectiveSenderPhone ? `• Teléfono de consulta: ${effectiveSenderPhone}\n` : ''}
-Saludos cordiales,
-Equipo FisioMirror`;
-
-  const smsText = `FisioMirror: Hola ${recipientName || 'paciente'}, ${senderName} te asigno tu rutina. Tu TOKEN es: ${token}. Activa tu plan en: ${activationLink} ${effectiveSenderPhone ? `(Contacto Dr: ${effectiveSenderPhone})` : ''}`;
+  const smsText = t('stm.smsBody', {
+    name: recipientName || t('common.patient'),
+    sender: senderName,
+    token,
+    link: activationLink,
+    contact: effectiveSenderPhone ? t('stm.smsContact', { phone: effectiveSenderPhone }) : '',
+  });
 
   const triggerLink = (url: string, target = '_self') => {
     try {
@@ -168,14 +167,14 @@ Equipo FisioMirror`;
     const textToCopy = channel === 'sms' ? smsText : messageBody;
     navigator.clipboard.writeText(textToCopy);
     setCopied(true);
-    toast.success('Mensaje copiado al portapapeles');
+    toast.success(t('stm.messageCopied'));
     setTimeout(() => setCopied(false), 2000);
   };
 
   // 1. Abrir en gestor de correo del dispositivo (mailto:)
   const handleOpenNativeMail = () => {
     if (!email.trim() || !email.includes('@')) {
-      toast.error('Por favor ingresa un correo electrónico válido para el paciente');
+      toast.error(t('stm.invalidPatientEmail'));
       return;
     }
 
@@ -186,8 +185,8 @@ Equipo FisioMirror`;
 
     triggerLink(mailtoUrl);
 
-    toast.success(`Abriendo aplicación de correo para ${email}`, {
-      description: 'Se preparó el mensaje con el token y las instrucciones de acceso.',
+    toast.success(t('stm.openingMailApp', { email }), {
+      description: t('stm.mailMessageReady'),
     });
     onClose();
   };
@@ -195,7 +194,7 @@ Equipo FisioMirror`;
   // 2. Envío Automático Inteligente (Resend Dominio Verificado -> Respaldo SMTP)
   const handleSendUnifiedEmail = async () => {
     if (!email.trim() || !email.includes('@')) {
-      toast.error('Por favor ingresa un correo electrónico válido para el paciente');
+      toast.error(t('stm.invalidPatientEmail'));
       return;
     }
 
@@ -235,7 +234,7 @@ Equipo FisioMirror`;
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             email: cleanEmail,
-            name: recipientName || 'Paciente',
+            name: recipientName || t('common.patient'),
             token,
             therapistName: senderName,
             therapistEmail: senderEmail,
@@ -263,7 +262,7 @@ Equipo FisioMirror`;
             body: JSON.stringify({
               email: cleanEmail,
               token,
-              patientName: recipientName || 'Paciente',
+              patientName: recipientName || t('common.patient'),
               therapistName: senderName,
               therapistEmail: senderEmail,
               therapistPhone: effectiveSenderPhone,
@@ -275,7 +274,7 @@ Equipo FisioMirror`;
           if (res.ok && data.success) {
             delivered = true;
           } else {
-            errorReason = data.error || errorReason || 'Fallo de entrega';
+            errorReason = data.error || errorReason || t('stm.deliveryFailed');
           }
         } catch (smtpErr: any) {
           errorReason = smtpErr?.message || errorReason;
@@ -287,25 +286,25 @@ Equipo FisioMirror`;
         if (user?.id) {
           notifyTokenCreated({
             therapistId: user.id,
-            patientName: recipientName || 'Paciente',
+            patientName: recipientName || t('common.patient'),
             token,
           }).catch(() => {});
         }
 
-        toast.success(`¡Invitación enviada a ${cleanEmail}!`, {
-          description: 'Se enviaron las credenciales. Indica al paciente que revise su bandeja principal o carpeta de spam si no lo ve de inmediato.',
+        toast.success(t('stm.invitationSent', { email: cleanEmail }), {
+          description: t('stm.invitationSentDesc'),
         });
         onClose();
       } else {
-        toast.error(`No se pudo completar el envío automático`, {
+        toast.error(t('stm.autoSendFailed'), {
           description: errorReason
-            ? `${errorReason}. Puedes usar el botón "Abrir en mi app de correo" o WhatsApp para enviarlo de inmediato.`
-            : 'Puedes abrir tu aplicación de correo o compartir el mensaje por WhatsApp.',
+            ? t('stm.sendFailedDetail', { error: errorReason })
+            : t('stm.sendFailedManual'),
         });
       }
     } catch {
-      toast.error('Error de conexión', {
-        description: 'Puedes utilizar la opción "Abrir en mi app de correo" o copiar el mensaje.',
+      toast.error(t('common.connError'), {
+        description: t('stm.copyOrMailHint'),
       });
     } finally {
       setSendingEmail(false);
@@ -319,14 +318,14 @@ Equipo FisioMirror`;
       ? `https://wa.me/${cleanPhone}?text=${encodeURIComponent(messageBody)}`
       : `https://wa.me/?text=${encodeURIComponent(messageBody)}`;
     triggerLink(waUrl, '_blank');
-    toast.success('Abriendo WhatsApp con el mensaje estructurado');
+    toast.success(t('stm.whatsappOpening'));
     onClose();
   };
 
   // 4. Enviar por SMS nativo
   const handleSendSMS = () => {
     if (!phone.trim()) {
-      toast.error('Por favor ingresa un número de teléfono para el paciente');
+      toast.error(t('stm.invalidPatientPhone'));
       return;
     }
     const cleanPhone = phone.replace(/[^0-9+]/g, '');
@@ -335,7 +334,7 @@ Equipo FisioMirror`;
     const smsUrl = `sms:${cleanPhone}${sep}body=${encodeURIComponent(smsText)}`;
 
     triggerLink(smsUrl);
-    toast.success(`Abriendo aplicación de SMS para ${phone}`);
+    toast.success(t('stm.smsOpening', { phone }));
     onClose();
   };
 
@@ -364,7 +363,7 @@ Equipo FisioMirror`;
                 </div>
                 <div>
                   <h3 className="font-extrabold text-base text-on-surface">
-                    Enviar Llave de Acceso
+                    {t('stm.title')}
                   </h3>
                   <p className="text-xs text-on-surface-variant">
                     Token:{' '}
@@ -377,7 +376,7 @@ Equipo FisioMirror`;
               <button
                 onClick={onClose}
                 className="p-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-on-surface-variant hover:text-on-surface-variant dark:hover:text-slate-200 transition-colors"
-                aria-label="Cerrar ventana"
+                aria-label={t('stm.closeWindow')}
               >
                 <X size={18} />
               </button>
@@ -388,11 +387,11 @@ Equipo FisioMirror`;
               <div className="p-3 rounded-2xl bg-teal-50/70 dark:bg-teal-950/30 border border-teal-200/60 dark:border-teal-800/40">
                 <div className="flex items-center gap-1.5 text-teal-700 dark:text-teal-300 font-bold uppercase tracking-wider text-2xs mb-1">
                   <Stethoscope size={13} />
-                  <span>Fisio Remitente</span>
+                  <span>{t('stm.therapistSender')}</span>
                 </div>
                 <p className="font-bold text-on-surface dark:text-white truncate">{senderName}</p>
                 <p className="text-xs text-on-surface-variant truncate">
-                  {senderEmail || 'Email registrado'}
+                  {senderEmail || t('stm.emailRegistered')}
                 </p>
                 <div className="mt-1 flex items-center gap-1">
                   <Phone size={10} className="text-teal-600" />
@@ -400,7 +399,7 @@ Equipo FisioMirror`;
                     type="tel"
                     value={therapistPhone}
                     onChange={(e) => setTherapistPhone(e.target.value)}
-                    placeholder="Teléfono del fisio"
+                    placeholder={t('stm.therapistPhonePlaceholder')}
                     className="w-full text-2xs bg-transparent border-b border-teal-300 dark:border-teal-700 font-mono text-teal-700 dark:text-teal-300 outline-none placeholder:text-teal-400"
                   />
                 </div>
@@ -409,20 +408,20 @@ Equipo FisioMirror`;
               <div className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/80 dark:border-slate-700/60">
                 <div className="flex items-center gap-1.5 text-on-surface-variant font-bold uppercase tracking-wider text-2xs mb-1">
                   <UserCheck size={13} />
-                  <span>Paciente Destinatario</span>
+                  <span>{t('stm.patientRecipient')}</span>
                 </div>
                 <input
                   type="text"
                   value={recipientName}
                   onChange={(e) => setRecipientName(e.target.value)}
-                  placeholder="Nombre del paciente"
+                  placeholder={t('stm.patientNamePlaceholder')}
                   className="font-bold text-on-surface dark:text-white bg-transparent border-b border-transparent hover:border-slate-300 focus:border-teal-500 outline-none w-full truncate"
                 />
                 <p className="text-xs text-on-surface-variant truncate">
-                  {channel === 'email' ? email || 'Ingresa el correo' : phone || 'Ingresa el teléfono'}
+                  {channel === 'email' ? email || t('stm.enterEmail') : phone || t('stm.enterPhone')}
                 </p>
                 <span className="inline-block mt-0.5 text-2xs px-1.5 py-0.2 bg-teal-500/10 text-teal-600 dark:text-teal-400 rounded font-semibold">
-                  Vinculación directa
+                  {t('stm.directLink')}
                 </span>
               </div>
             </div>
@@ -439,7 +438,7 @@ Equipo FisioMirror`;
                 }`}
               >
                 <Mail size={15} />
-                <span>Correo Email</span>
+                <span>{t('stm.emailChannel')}</span>
               </button>
 
               <button
@@ -474,7 +473,7 @@ Equipo FisioMirror`;
               <div className="space-y-3">
                 <div>
                   <label className="block text-xs font-bold text-on-surface mb-1">
-                    Correo electrónico del paciente
+                    {t('stm.patientEmailLabel')}
                   </label>
                   <div className="relative">
                     <Mail size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant" />
@@ -482,7 +481,7 @@ Equipo FisioMirror`;
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      placeholder="paciente@correo.com"
+                      placeholder={t('stm.emailPlaceholder')}
                       className="w-full pl-10 pr-4 py-2.5 rounded-xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-on-surface outline-none focus:border-teal-600 focus:ring-2 focus:ring-teal-600/20"
                     />
                   </div>
@@ -492,19 +491,19 @@ Equipo FisioMirror`;
                 <div className="p-3 rounded-2xl bg-teal-50/70 dark:bg-teal-950/30 border border-teal-200/70 dark:border-teal-800/50 space-y-1.5">
                   <div className="flex items-center gap-1.5 text-xs font-bold text-teal-900 dark:text-teal-200">
                     <Sparkles size={14} className="text-teal-600 dark:text-teal-400" />
-                    <span>Envío Oficial FisioMirror</span>
+                    <span>{t('stm.officialSend')}</span>
                   </div>
                   <p className="text-xs text-teal-800/90 dark:text-teal-300/90 leading-relaxed">
-                    El paciente recibirá una plantilla profesional con su token de acceso rápido y botón de activación directa.
+                    {t('stm.emailTemplateDesc')}
                   </p>
                   <p className="text-2xs text-on-surface-variant leading-snug pt-1 border-t border-teal-200/50 dark:border-teal-800/40">
-                    Incluye recordatorio automático para revisar la carpeta de <em>Spam / Correo no deseado</em>.
+                    {t('stm.spamReminderPrefix')} <em>{t('stm.spamFolder')}</em>{t('stm.spamReminderSuffix')}
                   </p>
                 </div>
 
                 <div>
                   <label className="block text-xs font-bold text-on-surface mb-1">
-                    Vista previa del mensaje
+                    {t('stm.messagePreview')}
                   </label>
                   <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700 text-xs font-mono leading-relaxed text-on-surface max-h-24 overflow-y-auto whitespace-pre-wrap">
                     {messageBody}
@@ -518,7 +517,7 @@ Equipo FisioMirror`;
               <div className="space-y-3">
                 <div>
                   <label className="block text-xs font-bold text-on-surface mb-1">
-                    Teléfono de WhatsApp del paciente
+                    {t('stm.whatsappPhoneLabel')}
                   </label>
                   <div className="relative">
                     <Phone size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant" />
@@ -534,7 +533,7 @@ Equipo FisioMirror`;
 
                 <div>
                   <label className="block text-xs font-bold text-on-surface mb-1">
-                    Vista previa de mensaje estructurado
+                    {t('stm.structuredPreview')}
                   </label>
                   <div className="p-3 rounded-xl bg-emerald-50/50 dark:bg-emerald-950/20 border border-emerald-200/60 dark:border-emerald-800/40 text-xs font-mono leading-relaxed text-emerald-950 dark:text-emerald-200 max-h-28 overflow-y-auto whitespace-pre-wrap">
                     {messageBody}
@@ -548,7 +547,7 @@ Equipo FisioMirror`;
               <div className="space-y-3">
                 <div>
                   <label className="block text-xs font-bold text-on-surface mb-1">
-                    Número telefónico registrado del paciente
+                    {t('stm.smsNumberLabel')}
                   </label>
                   <div className="relative">
                     <Phone size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant" />
@@ -564,7 +563,7 @@ Equipo FisioMirror`;
 
                 <div>
                   <label className="block text-xs font-bold text-on-surface mb-1">
-                    Texto del SMS (conciso)
+                    {t('stm.smsTextLabel')}
                   </label>
                   <div className="p-3 rounded-xl bg-blue-50/50 dark:bg-blue-950/20 border border-blue-200/60 dark:border-blue-800/40 text-xs font-mono leading-relaxed text-blue-950 dark:text-blue-200 max-h-28 overflow-y-auto whitespace-pre-wrap">
                     {smsText}
@@ -588,7 +587,7 @@ Equipo FisioMirror`;
                     ) : (
                       <Send size={14} />
                     )}
-                    <span>{sendingEmail ? 'Enviando invitación...' : 'Enviar Correo de Invitación'}</span>
+                    <span>{sendingEmail ? t('stm.sendingInvitation') : t('stm.sendInvitationEmail')}</span>
                   </button>
 
                   <button
@@ -597,7 +596,7 @@ Equipo FisioMirror`;
                     className="w-full py-2 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200/80 dark:border-slate-700 text-on-surface font-semibold text-xs transition-all flex items-center justify-center gap-1.5"
                   >
                     <ExternalLink size={13} />
-                    <span>Abrir en mi gestor de correo</span>
+                    <span>{t('stm.openInMailApp')}</span>
                   </button>
                 </>
               )}
@@ -609,7 +608,7 @@ Equipo FisioMirror`;
                   className="w-full py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 active:scale-98 text-white font-bold text-xs transition-all flex items-center justify-center gap-1.5 shadow-sm shadow-emerald-600/20"
                 >
                   <ExternalLink size={14} />
-                  <span>Abrir en WhatsApp</span>
+                  <span>{t('stm.openInWhatsApp')}</span>
                 </button>
               )}
 
@@ -620,7 +619,7 @@ Equipo FisioMirror`;
                   className="w-full py-2.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 active:scale-98 text-white font-bold text-xs transition-all flex items-center justify-center gap-1.5 shadow-sm shadow-blue-600/20"
                 >
                   <Send size={14} />
-                  <span>Enviar por SMS</span>
+                  <span>{t('stm.sendBySms')}</span>
                 </button>
               )}
 
@@ -630,7 +629,7 @@ Equipo FisioMirror`;
                 className="w-full py-2 px-3 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-on-surface-variant font-semibold text-xs transition-all flex items-center justify-center gap-1.5"
               >
                 {copied ? <Check size={13} className="text-emerald-500" /> : <Copy size={13} />}
-                <span>{copied ? 'Copiado al Portapapeles' : 'Copiar Mensaje Completo'}</span>
+                <span>{copied ? t('stm.copiedToClipboard') : t('stm.copyFullMessage')}</span>
               </button>
             </div>
           </motion.div>

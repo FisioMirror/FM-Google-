@@ -1,4 +1,5 @@
 import { useEffect, type ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 import { cn } from '../../lib/utils';
@@ -22,6 +23,7 @@ export function GlassModal({
   size = 'md',
   dismissable = true,
 }: GlassModalProps) {
+  const { t } = useTranslation();
   useEffect(() => {
     if (!isOpen) return;
 
@@ -80,7 +82,7 @@ export function GlassModal({
               <button
                 onClick={onClose}
                 className="absolute top-4 right-4 sm:top-6 sm:right-6 size-9 rounded-2xl bg-surface-container-high/60 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest transition-colors flex items-center justify-center cursor-pointer"
-                aria-label="Cerrar modal"
+                aria-label={t('glassCloseModal')}
               >
                 <X className="size-4" />
               </button>

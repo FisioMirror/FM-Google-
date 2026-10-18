@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { AnimatePresence, motion } from 'framer-motion';
 import { RotateCcw, Send } from 'lucide-react';
 import { cn } from '../../lib/utils';
@@ -13,7 +14,7 @@ export interface ChatMessage {
 
 interface ChatMessagesProps {
   /** Mensajes a mostrar. */
-  messages: ChatMessage[];
+  messages?: ChatMessage[];
   /** Reproduce automáticamente la conversación al montar. */
   autoPlay?: boolean;
   /** Retardo entre mensajes en ms. */
@@ -29,25 +30,25 @@ interface ChatMessagesProps {
   onSend?: (text: string) => void;
 }
 
-const DEFAULT_MESSAGES: ChatMessage[] = [
-  { id: 1, text: '¡Hola! Soy Physi, tu asistente de fisioterapia.', sender: 'assistant' },
-  { id: 2, text: '¿Qué puedo hacer por ti hoy?', sender: 'assistant' },
-  { id: 3, text: 'Tengo dolor en el hombro derecho al levantar el brazo', sender: 'user' },
+const getDefaultMessages = (t: (key: string) => string): ChatMessage[] => [
+  { id: 1, text: t('cmsg.greeting'), sender: 'assistant' },
+  { id: 2, text: t('cmsg.introQuestion'), sender: 'assistant' },
+  { id: 3, text: t('cmsg.rightShoulderPain'), sender: 'user' },
   {
     id: 4,
-    text: 'Entiendo. Vamos a valorarlo juntos. ¿Podrías describir cuándo empezó el dolor?',
+    text: t('cmsg.letsAssessTogether'),
     sender: 'assistant',
   },
-  { id: 5, text: 'Empezó hace tres días, después de entrenar', sender: 'user' },
+  { id: 5, text: t('cmsg.startedThreeDaysAgo'), sender: 'user' },
   {
     id: 6,
-    text: 'Perfecto, te prepararé una rutina de movilidad suave para el hombro.',
+    text: t('cmsg.gentleRoutine'),
     sender: 'assistant',
   },
 ];
 
 export function ChatMessages({
-  messages = DEFAULT_MESSAGES,
+  messages: messagesProp,
   autoPlay = true,
   autoPlayDelay = 1200,
   typingDuration = 1500,
@@ -56,6 +57,8 @@ export function ChatMessages({
   className,
   onSend,
 }: ChatMessagesProps) {
+  const { t } = useTranslation();
+  const messages = useMemo(() => messagesProp ?? getDefaultMessages(t), [messagesProp, t]);
   const [visibleMessages, setVisibleMessages] = useState<ChatMessage[]>([]);
   const [isTyping, setIsTyping] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -176,7 +179,7 @@ export function ChatMessages({
           <div className="flex flex-col">
             <span className="text-sm font-semibold text-on-surface">Physi</span>
             <span className="text-xs text-on-surface-variant">
-              {isTyping ? 'escribiendo…' : 'asistente virtual'}
+              {isTyping ? t('cmsg.typing') : t('cmsg.virtualAssistant')}
             </span>
           </div>
         </div>
@@ -186,10 +189,10 @@ export function ChatMessages({
             type="button"
             onClick={replay}
             className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-medium text-on-surface-variant transition-colors hover:bg-surface-variant/40 hover:text-on-surface"
-            aria-label="Repetir conversación"
+            aria-label={t('cmsg.repeatConversation')}
           >
             <RotateCcw className="h-3.5 w-3.5" />
-            Repetir
+            {t('cmsg.replay')}
           </button>
         )}
       </div>
@@ -265,7 +268,7 @@ export function ChatMessages({
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Escribe un mensaje…"
+            placeholder={t('cmsg.typeMessage')}
             className="flex-1 rounded-xl bg-surface-variant/30 px-3.5 py-2 text-sm text-on-surface placeholder:text-on-surface-variant/60 focus:outline-none focus:ring-2 focus:ring-primary/30"
           />
           <button
@@ -273,7 +276,7 @@ export function ChatMessages({
             onClick={handleSend}
             disabled={!input.trim()}
             className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-on-primary transition-colors hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-40"
-            aria-label="Enviar mensaje"
+            aria-label={t('cmsg.sendMessage')}
           >
             <Send className="h-4 w-4" />
           </button>

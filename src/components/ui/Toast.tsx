@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import React, {
   createContext,
   useContext,
@@ -177,6 +178,7 @@ export interface ToastItemComponentProps {
 
 export const ToastItemComponent = React.forwardRef<HTMLDivElement, ToastItemComponentProps>(
   ({ toast: item, onClose }, ref) => {
+    const { t } = useTranslation();
     const getIcon = () => {
       if (item.indicator) {
         return item.indicator;
@@ -257,7 +259,7 @@ export const ToastItemComponent = React.forwardRef<HTMLDivElement, ToastItemComp
         <button
           type="button"
           onClick={onClose}
-          aria-label="Cerrar notificación"
+          aria-label={t('toastCloseNotification')}
           className="size-6 rounded-lg shrink-0 flex items-center justify-center text-on-surface-variant hover:text-white hover:bg-white/10 transition-colors"
         >
           <X className="size-3.5" />

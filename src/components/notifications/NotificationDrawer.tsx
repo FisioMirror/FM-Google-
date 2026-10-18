@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Bell,
@@ -25,7 +26,7 @@ interface NotificationDrawerProps {
   userId?: string;
 }
 
-function timeAgo(dateString: string): string {
+function timeAgo(dateString: string, t: (key: string, options?: any) => any): string {
   try {
     const date = new Date(dateString);
     const now = new Date();
@@ -35,14 +36,14 @@ function timeAgo(dateString: string): string {
     const diffHour = Math.floor(diffMin / 60);
     const diffDay = Math.floor(diffHour / 24);
 
-    if (diffSec < 60) return 'Hace un momento';
-    if (diffMin < 60) return `Hace ${diffMin} min`;
-    if (diffHour < 24) return `Hace ${diffHour} h`;
-    if (diffDay === 1) return 'Ayer';
-    if (diffDay < 7) return `Hace ${diffDay} días`;
+    if (diffSec < 60) return t('nd.momentAgo');
+    if (diffMin < 60) return t('nd.minutesAgo', { min: diffMin });
+    if (diffHour < 24) return t('nd.hoursAgo', { hours: diffHour });
+    if (diffDay === 1) return t('demo.la6');
+    if (diffDay < 7) return t('nd.daysAgo', { days: diffDay });
     return date.toLocaleDateString();
   } catch {
-    return 'Reciente';
+    return t('nd.recent');
   }
 }
 
@@ -96,12 +97,13 @@ export function NotificationDrawer({ isOpen, onClose, userId }: NotificationDraw
     markAllRead,
     removeNotification,
   } = useRealtimeNotifications(userId);
+  const { t } = useTranslation();
 
   const filters: { id: NotificationFilter; label: string; count?: number }[] = [
-    { id: 'todas', label: 'Todas' },
-    { id: 'no_leidas', label: 'No leídas', count: unreadCount },
-    { id: 'clinica', label: 'Clínica' },
-    { id: 'seguridad', label: 'Seguridad' },
+    { id: 'todas', label: t('tools.tabAll') },
+    { id: 'no_leidas', label: t('nd.unread'), count: unreadCount },
+    { id: 'clinica', label: t('nd.clinic') },
+    { id: 'seguridad', label: t('set.security') },
   ];
 
   const handleOpenLink = (notif: AppNotification) => {
@@ -144,16 +146,16 @@ export function NotificationDrawer({ isOpen, onClose, userId }: NotificationDraw
                 <div>
                   <div className="flex items-center gap-2">
                     <h2 className="text-sm sm:text-base font-bold text-on-surface">
-                      Centro de Notificaciones
+                      {t('nd.title')}
                     </h2>
                     {unreadCount > 0 && (
                       <span className="px-2 py-0.5 rounded-full text-2xs font-bold bg-primary text-on-primary shadow-xs">
-                        {unreadCount} nuevas
+                        {t('nd.newCount', { count: unreadCount })}
                       </span>
                     )}
                   </div>
                   <p className="text-xs text-on-surface-variant">
-                    Sincronización clínica en tiempo real
+                    {t('nd.realtimeSync')}
                   </p>
                 </div>
               </div>
@@ -163,13 +165,13 @@ export function NotificationDrawer({ isOpen, onClose, userId }: NotificationDraw
                   id="btn-toggle-sound"
                   type="button"
                   onClick={toggleSound}
-                  title={soundMuted ? 'Activar sonido de alertas' : 'Silenciar sonido de alertas'}
+                  title={soundMuted ? t('nd.enableAlertSound') : t('nd.muteAlertSound')}
                   className={`p-2 rounded-xl transition-colors ${
                     soundMuted
                       ? 'text-on-surface-variant hover:text-on-surface-variant dark:hover:text-slate-200'
                       : 'text-teal-600 dark:text-teal-400 bg-teal-50 dark:bg-teal-950/40'
                   }`}
-                  aria-label="Alternar sonido"
+                  aria-label={t('nd.toggleSound')}
                 >
                   {soundMuted ? <VolumeX size={17} /> : <Volume2 size={17} />}
                 </button>
@@ -179,7 +181,7 @@ export function NotificationDrawer({ isOpen, onClose, userId }: NotificationDraw
                   type="button"
                   onClick={onClose}
                   className="p-2 rounded-xl text-on-surface-variant hover:text-on-surface-variant dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-                  aria-label="Cerrar notificaciones"
+                  aria-label={t('nd.closeNotifications')}
                 >
                   <X size={18} />
                 </button>
@@ -224,7 +226,7 @@ export function NotificationDrawer({ isOpen, onClose, userId }: NotificationDraw
                   className="text-xs font-bold text-teal-600 dark:text-teal-400 hover:underline flex items-center gap-1 shrink-0 px-2 py-1 rounded-lg hover:bg-teal-50 dark:hover:bg-teal-950/30 transition-colors"
                 >
                   <CheckCheck size={13} />
-                  <span className="hidden sm:inline">Marcar todas</span>
+                  <span className="hidden sm:inline">{t('nd.markAll')}</span>
                 </button>
               )}
             </div>
@@ -238,12 +240,12 @@ export function NotificationDrawer({ isOpen, onClose, userId }: NotificationDraw
                   </div>
                   <div>
                     <h3 className="text-sm font-bold text-on-surface">
-                      Sin notificaciones
+                      {t('nd.emptyTitle')}
                     </h3>
                     <p className="text-xs text-on-surface-variant mt-1 max-w-xs">
                       {activeFilter === 'no_leidas'
-                        ? 'No tienes notificaciones pendientes de leer.'
-                        : 'No hay registros en esta categoría.'}
+                        ? t('nd.emptyUnread')
+                        : t('nd.emptyCategory')}
                     </p>
                   </div>
                 </div>
@@ -280,7 +282,7 @@ export function NotificationDrawer({ isOpen, onClose, userId }: NotificationDraw
                               {notif.title}
                             </h4>
                             <span className="text-2xs text-on-surface-variant shrink-0 font-medium">
-                              {timeAgo(notif.created_at)}
+                              {timeAgo(notif.created_at, t)}
                             </span>
                           </div>
 
@@ -296,7 +298,7 @@ export function NotificationDrawer({ isOpen, onClose, userId }: NotificationDraw
                                 onClick={() => handleOpenLink(notif)}
                                 className="px-2.5 py-1 rounded-lg bg-primary hover:bg-primary/90 text-on-primary text-2xs font-bold transition-all flex items-center gap-1 shadow-xs"
                               >
-                                <span>Ver detalle</span>
+                                <span>{t('nd.viewDetail')}</span>
                                 <ExternalLink size={11} />
                               </button>
                             )}
@@ -308,7 +310,7 @@ export function NotificationDrawer({ isOpen, onClose, userId }: NotificationDraw
                                 className="text-2xs font-semibold text-teal-700 dark:text-teal-300 hover:underline flex items-center gap-1"
                               >
                                 <Check size={12} />
-                                <span>Marcar leída</span>
+                                <span>{t('nd.markRead')}</span>
                               </button>
                             ) : null}
 
@@ -317,8 +319,8 @@ export function NotificationDrawer({ isOpen, onClose, userId }: NotificationDraw
                                 type="button"
                                 onClick={() => removeNotification(notif.id)}
                                 className="p-1 rounded-lg text-on-surface-variant hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/40 transition-colors"
-                                title="Eliminar notificación"
-                                aria-label="Eliminar"
+                                title={t('nd.deleteNotification')}
+                                aria-label={t('common.delete')}
                               >
                                 <Trash2 size={13} />
                               </button>
@@ -340,7 +342,7 @@ export function NotificationDrawer({ isOpen, onClose, userId }: NotificationDraw
             {/* Footer */}
             <div className="p-3 border-t border-slate-100 dark:border-slate-800 text-center bg-slate-50/50 dark:bg-slate-900/50">
               <p className="text-2xs text-on-surface-variant">
-                FisioMirror Realtime • Avisos de sesiones, videoconsultas y seguridad
+                {t('nd.footer')}
               </p>
             </div>
           </motion.div>

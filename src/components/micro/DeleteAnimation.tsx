@@ -1,10 +1,12 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { FileText, Trash2, Undo2, RotateCcw } from 'lucide-react';
 
 type ItemState = 'exists' | 'deleting' | 'gone';
 
 const DeleteAnimation = () => {
   const [itemState, setItemState] = useState<ItemState>('exists');
+  const { t } = useTranslation();
   const handleToggle = () => {
     if (itemState === 'gone') setItemState('exists');
     else if (itemState === 'exists') { setItemState('deleting'); setTimeout(() => setItemState('gone'), 500); }
@@ -18,9 +20,9 @@ const DeleteAnimation = () => {
         </span>
       )}
       <button className="flex items-center gap-1.5 px-5 py-2 border border-slate-300 dark:border-slate-600 text-red-500 rounded-full font-semibold hover:bg-red-50 dark:hover:bg-red-900/20 transition text-sm" onClick={handleToggle}>
-        {itemState === 'exists' && <><Trash2 size={16} /> <span>Eliminar</span></>}
-        {itemState === 'deleting' && <><Undo2 size={16} /> <span>Deshacer</span></>}
-        {itemState === 'gone' && <><RotateCcw size={16} /> <span>Restaurar</span></>}
+        {itemState === 'exists' && <><Trash2 size={16} /> <span>{t('common.delete')}</span></>}
+        {itemState === 'deleting' && <><Undo2 size={16} /> <span>{t('delUndo')}</span></>}
+        {itemState === 'gone' && <><RotateCcw size={16} /> <span>{t('delRestore')}</span></>}
       </button>
     </div>
   );

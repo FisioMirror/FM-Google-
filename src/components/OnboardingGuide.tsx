@@ -1,49 +1,49 @@
 import { useEffect, useState, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Heart, Dumbbell, Camera, MessageCircle, TrendingUp, X } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../stores/authStore';
 
-interface OnboardingStep {
+type TFn = (key: string) => string;
+
+type OnboardingStep = {
   icon: typeof Heart;
   title: string;
   description: string;
-}
+};
 
-const steps: OnboardingStep[] = [
+const getSteps = (t: TFn): OnboardingStep[] => [
   {
     icon: Heart,
-    title: 'Bienvenido a FisioMirror',
-    description:
-      'Tu compañero de recuperación. Aquí podrás realizar tus ejercicios, recibir feedback en tiempo real y seguir tu progreso día a día.',
+    title: t('auth.welcomeTitle'),
+    description: t('og.welcomeDesc'),
   },
   {
     icon: Dumbbell,
-    title: 'Tus Ejercicios',
-    description:
-      'En la sección "Ejercicios" encontrarás la rutina que tu fisioterapeuta ha asignado para ti, con series, repeticiones y guía paso a paso.',
+    title: t('og.exercisesTitle'),
+    description: t('og.exercisesDesc'),
   },
   {
     icon: Camera,
-    title: 'Espejo AR',
-    description:
-      'Inicia una sesión AR y tu cámara analizará tu movimiento en tiempo real, corrigiendo tu postura y midiendo tus ángulos articulares.',
+    title: t('navigation.arMirror'),
+    description: t('og.arMirrorDesc'),
   },
   {
     icon: MessageCircle,
     title: 'Physi',
-    description:
-      '¿Tienes dudas sobre tu recuperación? Chatea con Physi para resolver preguntas sobre tus ejercicios, dolor y progreso.',
+    description: t('og.physiDesc'),
   },
   {
     icon: TrendingUp,
-    title: 'Tu Progreso',
-    description:
-      'Visualiza tu racha de días, sesiones completadas y minutos de práctica. Mantén la constancia para alcanzar tus objetivos.',
+    title: t('og.progressTitle'),
+    description: t('og.progressDesc'),
   },
 ];
 
 export function OnboardingGuide() {
+  const { t } = useTranslation();
+  const steps = getSteps(t);
   const user = useAuthStore((s) => s.user);
 
   const [show, setShow] = useState(false);
@@ -153,7 +153,7 @@ export function OnboardingGuide() {
               onClick={handleSkip}
               disabled={completing}
               className="absolute top-4 right-4 w-9 h-9 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-primary/10 hover:text-primary transition-colors disabled:opacity-50"
-              aria-label="Saltar guía"
+              aria-label={t('og.skipGuide')}
             >
               <X size={20} />
             </button>
@@ -206,7 +206,7 @@ export function OnboardingGuide() {
                 disabled={completing}
                 className="px-4 py-3 rounded-2xl text-on-surface-variant font-label-md text-label-md hover:bg-on-surface-variant/10 transition-colors disabled:opacity-50"
               >
-                Saltar
+                {t('common.skip')}
               </button>
 
               {isLast ? (
@@ -216,7 +216,7 @@ export function OnboardingGuide() {
                   whileTap={{ scale: 0.96 }}
                   className="premium-btn bg-primary text-on-primary font-bold px-8 py-3 rounded-2xl shadow-card shadow-primary/20 flex items-center gap-2 disabled:opacity-60"
                 >
-                  {completing ? 'Guardando…' : 'Entendido'}
+                  {completing ? t('og.saving') : t('common.understood')}
                 </motion.button>
               ) : (
                 <motion.button
@@ -224,7 +224,7 @@ export function OnboardingGuide() {
                   whileTap={{ scale: 0.96 }}
                   className="premium-btn bg-primary text-on-primary font-bold px-8 py-3 rounded-2xl shadow-card shadow-primary/20 flex items-center gap-2"
                 >
-                  Siguiente
+                  {t('common.next')}
                 </motion.button>
               )}
             </div>

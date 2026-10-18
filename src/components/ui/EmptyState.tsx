@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { Icon } from './Icon';
 import { ArrowRight } from 'lucide-react';
 import { cn } from '../../lib/utils';
@@ -17,44 +18,44 @@ interface EmptyStateProps {
 const CONFIG: Record<string, { icon: string; title: string; message: string; color: string }> = {
   patients: {
     icon: 'group',
-    title: 'Aún no tienes pacientes',
-    message: 'Cada gran recuperación comienza con el primer vínculo terapéutico. Genera un token para invitar a tu primer paciente.',
+    title: 'empty.noPatientsYet',
+    message: 'empty.patientsMessage',
     color: 'text-teal-600 dark:text-teal-400',
   },
   exercises: {
     icon: 'fitness_center',
-    title: 'Sin ejercicios asignados',
-    message: 'Aún no hay ejercicios registrados. ¡Es un buen momento para empezar tu recuperación!',
+    title: 'empty.noExercisesAssigned',
+    message: 'empty.exercisesMessage',
     color: 'text-cyan-600 dark:text-cyan-400',
   },
   notifications: {
     icon: 'notifications_none',
-    title: 'Estás al día',
-    message: 'No tienes notificaciones pendientes. ¡Vuelve pronto!',
+    title: 'empty.allCaughtUp',
+    message: 'empty.notificationsMessage',
     color: 'text-secondary',
   },
   sessions: {
     icon: 'event_busy',
-    title: 'Sin sesiones registradas',
-    message: 'Cuando completes tu primera sesión, aparecerá aquí tu historial de progreso biomecánico.',
+    title: 'dashboard.noSessions',
+    message: 'empty.sessionsMessage',
     color: 'text-teal-600 dark:text-teal-400',
   },
   tokens: {
     icon: 'key',
-    title: 'No has generado tokens',
-    message: 'Genera tu primer token de activación para vincular un paciente a tu clínica.',
+    title: 'empty.noTokens',
+    message: 'empty.tokensMessage',
     color: 'text-amber-500',
   },
   achievements: {
     icon: 'emoji_events',
-    title: 'Aún no has desbloqueado logros',
-    message: 'Completa tus primeras sesiones y mantén la constancia para empezar a ganar insignias clínicas.',
+    title: 'empty.noAchievements',
+    message: 'empty.achievementsMessage',
     color: 'text-teal-500',
   },
   generic: {
     icon: 'inbox',
-    title: 'Sin resultados',
-    message: 'No se encontraron elementos para mostrar.',
+    title: 'empty.noResults',
+    message: 'empty.noItemsFound',
     color: 'text-on-surface-variant',
   },
 };
@@ -73,9 +74,10 @@ export function EmptyState({
   className = '',
 }: EmptyStateProps) {
   const config = (type && CONFIG[type]) ? CONFIG[type] : CONFIG.generic;
+  const { t } = useTranslation();
   const finalIcon = icon || config.icon;
-  const finalTitle = title || config.title;
-  const finalMessage = description || message || config.message;
+  const finalTitle = title || t(config.title);
+  const finalMessage = description || message || t(config.message);
   const finalColor = config.color;
 
   return (

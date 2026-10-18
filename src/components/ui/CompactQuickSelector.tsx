@@ -102,7 +102,7 @@ export function CompactRomStepper({
   max = 180,
   step = 5,
   unit = '°',
-  label = 'Meta de Rango (ROM)',
+  label,
   className,
 }: {
   value: number;
@@ -114,6 +114,7 @@ export function CompactRomStepper({
   label?: string;
   className?: string;
 }) {
+  const { t } = useTranslation();
   const increment = () => onChange(Math.min(max, value + step));
   const decrement = () => onChange(Math.max(min, value - step));
 
@@ -126,7 +127,7 @@ export function CompactRomStepper({
     >
       <div className="min-w-0">
         <span className="text-2xs uppercase font-bold text-on-surface-variant block leading-tight truncate">
-          {label}
+          {label || t('cqs.romGoal')}
         </span>
         <div className="flex items-baseline gap-1 mt-0.5">
           <span className="text-xl sm:text-2xl font-black text-on-surface tabular-nums tracking-tight">
@@ -145,7 +146,7 @@ export function CompactRomStepper({
           disabled={value <= min}
           whileTap={{ scale: 0.9 }}
           transition={springBouncy}
-          aria-label="Disminuir valor"
+          aria-label={t('cqs.decreaseValue')}
           className="size-9 rounded-xl bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-on-surface flex items-center justify-center font-bold shadow-xs disabled:opacity-30 disabled:pointer-events-none active:bg-slate-100 dark:active:bg-slate-600"
         >
           <Minus className="size-4" />
@@ -157,7 +158,7 @@ export function CompactRomStepper({
           disabled={value >= max}
           whileTap={{ scale: 0.9 }}
           transition={springBouncy}
-          aria-label="Aumentar valor"
+          aria-label={t('cqs.increaseValue')}
           className="size-9 rounded-xl bg-primary text-on-primary flex items-center justify-center font-bold shadow-xs shadow-teal-600/30 disabled:opacity-30 disabled:pointer-events-none active:bg-teal-700"
         >
           <Plus className="size-4" />
@@ -181,25 +182,26 @@ export function CompactToleranceDropdown({
   onChange: (t: 'strict' | 'standard' | 'relaxed') => void;
   className?: string;
 }) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
 
   const options = [
     {
       id: 'strict' as const,
-      label: 'Estricta (±3°)',
-      desc: 'Atletas y post-rehabilitación avanzada',
+      label: t('cqs.toleranceStrict'),
+      desc: t('cqs.strictDesc'),
       badge: 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border-emerald-500/30',
     },
     {
       id: 'standard' as const,
-      label: 'Estándar (±7°)',
-      desc: 'Rutina clínica recomendada',
+      label: t('cqs.toleranceStandard'),
+      desc: t('cqs.standardDesc'),
       badge: 'bg-teal-500/15 text-teal-700 dark:text-teal-300 border-teal-500/30',
     },
     {
       id: 'relaxed' as const,
-      label: 'Asistida (±12°)',
-      desc: 'Movilidad inicial y adultos mayores',
+      label: t('cqs.toleranceRelaxed'),
+      desc: t('cqs.relaxedDesc'),
       badge: 'bg-sky-500/15 text-sky-700 dark:text-sky-300 border-sky-500/30',
     },
   ];
@@ -219,7 +221,7 @@ export function CompactToleranceDropdown({
           </div>
           <div className="min-w-0">
             <span className="text-2xs uppercase font-bold text-on-surface-variant block leading-none">
-              Tolerancia IA
+              {t('cqs.aiTolerance')}
             </span>
             <span className="text-xs font-bold text-on-surface truncate block mt-0.5">
               {current.label}

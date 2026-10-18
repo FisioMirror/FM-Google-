@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useCallback, type ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Bot, X, Send, RotateCcw, Volume2, VolumeX, Sparkles, User, Mic } from 'lucide-react';
@@ -15,30 +16,28 @@ interface Message {
   timestamp?: string;
 }
 
-const WELCOME =
-  '¡Hola! Soy Physi, tu asistente y guía interactivo en FisioMirror. Puedes hacerme cualquier consulta sobre tus ejercicios, pacientes, análisis biomecánico o la plataforma. ¡Te responderé con voz alta natural y en tiempo real!';
+const getWelcome = (t: (k: string) => string): string => t('pg.welcome');
 
-const NO_MATCH =
-  'No he entendido tu pregunta. Prueba con términos como paciente, rutina, rango articular o contacta a soporte: fisiomirror@proton.me';
+const getNoMatch = (t: (k: string) => string): string => t('pg.noMatch');
 
 /** Preguntas frecuentes según la ruta actual */
-function getFAQs(pathname: string): string[] {
+function getFAQs(pathname: string, t: (k: string) => string): string[] {
   if (pathname.includes('dashboard')) {
-    return ['¿Cómo veo mis pacientes activos?', '¿Qué significa cada color en el dashboard?'];
+    return [t('pg.faqViewActivePatients'), t('pg.faqDashboardColors')];
   }
   if (pathname.includes('exercise')) {
-    return ['¿Cómo creo una rutina de ejercicios?', '¿Cómo asigno ejercicios a un paciente?'];
+    return [t('pg.faqCreateExerciseRoutine'), t('pg.faqAssignExercises')];
   }
   if (pathname.includes('setting')) {
-    return ['¿Cómo cambio mi contraseña?', '¿Cómo activo el modo oscuro?'];
+    return [t('pg.faqChangePassword'), t('pg.faqEnableDarkMode')];
   }
   if (pathname.includes('assistant')) {
-    return ['¿Cómo uso las herramientas de IA?', '¿Cómo calibro el rango articular?'];
+    return [t('pg.faqUseAiTools'), t('pg.faqCalibrateJointRange')];
   }
   if (pathname.includes('mirror')) {
-    return ['¿Cómo uso el modo espejo AR?', '¿Qué hago si la cámara no detecta articulaciones?'];
+    return [t('pg.faqUseArMirror'), t('pg.faqCameraNoJoints')];
   }
-  return ['¿Qué puedo hacer en FisioMirror?', '¿Cómo contacto a soporte?'];
+  return [t('pg.faqWhatCanIDo'), t('pg.faqContactSupport')];
 }
 
 /** Quita acentos y pasa a minúsculas para comparar de forma tolerante. */
@@ -144,6 +143,7 @@ export function PhysiGuide({
 }: PhysiGuideProps) {
   const [internalOpen, setInternalOpen] = useState(false);
   const user = useAuthStore((s) => s.user);
+  const { t } = useTranslation();
   const isFisio = user?.role === 'fisioterapeuta';
 
   const isControlled = controlledOpen !== undefined || isOpen !== undefined;
@@ -171,8 +171,8 @@ export function PhysiGuide({
     {
       id: 'welcome',
       role: 'assistant',
-      text: WELCOME,
-      timestamp: 'Ahora',
+      text: getWelcome(t),
+      timestamp: t('common.now'),
     },
   ]);
   const [input, setInput] = useState('');
@@ -191,7 +191,7 @@ export function PhysiGuide({
   const scrollRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  const faqs = getFAQs(location.pathname);
+  const faqs = getFAQs(location.pathname, t);
   const showFAQs = messages.length <= 1 && !loading;
 
   // Persistir preferencia de autoVoice
@@ -329,11 +329,11 @@ export function PhysiGuide({
       }
 
       setTimeout(() => {
-        const replyText = faqAnswer || NO_MATCH;
+        const replyText = faqAnswer || getNoMatch(t);
         finishAndSpeak(replyText);
       }, 350);
     },
-    [loading, isFisio, autoVoice, voiceGender]
+    [loading, isFisio, autoVoice, voiceGender, t]
   );
 
   const handleSend = () => sendMessage(input);
@@ -345,8 +345,8 @@ export function PhysiGuide({
       {
         id: 'welcome',
         role: 'assistant',
-        text: WELCOME,
-        timestamp: 'Ahora',
+        text: getWelcome(t),
+        timestamp: t('common.now'),
       },
     ]);
     setInput('');
@@ -362,7 +362,7 @@ export function PhysiGuide({
           onClick={() => setOpen(!open)}
           whileTap={{ scale: 0.92 }}
           whileHover={{ scale: 1.05 }}
-          aria-label={open ? 'Cerrar guía de Physi' : 'Abrir guía de Physi'}
+          aria-label={open ? t('pg.closeGuide') : t('pg.openGuide')}
           aria-expanded={open}
           className="fixed bottom-24 left-4 lg:bottom-8 lg:left-8 z-[120] flex items-center justify-center w-14 h-14 rounded-full min-h-[56px] min-w-[56px] touch-manipulation active:scale-95 pb-[env(safe-area-inset-bottom)] relative group cursor-pointer"
         >
@@ -379,7 +379,7 @@ export function PhysiGuide({
           />
           {!open && (
             <span className="absolute -top-1 -right-1 bg-kinetic text-on-surface text-2xs font-black px-1.5 py-0.5 rounded-full shadow-sm z-10">
-              IA
+              {t('pg.aiBadge')}
             </span>
           )}
           <motion.div
@@ -414,11 +414,11 @@ export function PhysiGuide({
                       Physi IA
                     </h3>
                     <span className="text-2xs px-1.5 py-0.2 rounded-full font-bold bg-teal-500/15 text-teal-700 dark:text-teal-300">
-                      {voiceGender === 'male' ? 'Voz Masculina' : 'Voz Femenina'}
+                      {voiceGender === 'male' ? t('pg.maleVoice') : t('pg.femaleVoice')}
                     </span>
                   </div>
                   <p className="text-xs text-on-surface-variant truncate">
-                    Asistente clínico y bio-feedback
+                    {t('pg.subtitle')}
                   </p>
                 </div>
               </div>
@@ -437,8 +437,8 @@ export function PhysiGuide({
                 {/* Toggle de AutoVoice */}
                 <button
                   onClick={toggleAutoVoice}
-                  aria-label={autoVoice ? 'Silenciar voz' : 'Activar voz automática'}
-                  title={autoVoice ? 'Voz automática activada' : 'Voz silenciada'}
+                  aria-label={autoVoice ? t('pg.muteVoice') : t('pg.enableAutomaticVoice')}
+                  title={autoVoice ? t('pg.automaticVoiceEnabled') : t('pg.voiceMuted')}
                   className={`p-1.5 rounded-xl transition-all cursor-pointer border ${
                     autoVoice
                       ? 'bg-teal-500/15 border-teal-500/30 text-teal-600 dark:text-teal-300'
@@ -451,8 +451,8 @@ export function PhysiGuide({
                 {/* Reset Chat */}
                 <button
                   onClick={resetChat}
-                  aria-label="Reiniciar conversación"
-                  title="Reiniciar chat"
+                  aria-label={t('pg.restartConversation')}
+                  title={t('pg.restartChat')}
                   className="text-on-surface-variant hover:text-teal-600 transition-colors p-1.5 rounded-xl hover:bg-surface-container-high cursor-pointer"
                 >
                   <RotateCcw size={15} />
@@ -461,8 +461,8 @@ export function PhysiGuide({
                 {/* Cerrar */}
                 <button
                   onClick={() => setOpen(false)}
-                  aria-label="Cerrar ventana"
-                  title="Cerrar"
+                  aria-label={t('pg.closeWindow')}
+                  title={t('common.close')}
                   className="text-on-surface-variant hover:text-rose-500 transition-colors p-1.5 rounded-xl hover:bg-rose-500/10 cursor-pointer"
                 >
                   <X size={17} />
@@ -498,7 +498,7 @@ export function PhysiGuide({
                         }`}
                       >
                         {msg.role === 'user' ? (
-                          <span className="text-2xs font-bold">Tú</span>
+                          <span className="text-2xs font-bold">{t('pg.you')}</span>
                         ) : (
                           <Bot size={15} />
                         )}
@@ -517,7 +517,7 @@ export function PhysiGuide({
                         {/* Botón de reproducción de voz para respuestas de Physi */}
                         {msg.role === 'assistant' && (
                           <div className="mt-2.5 pt-2 border-t border-outline-variant/15 dark:border-white/5 flex items-center justify-between text-xs text-on-surface-variant">
-                            <span className="text-2xs opacity-75">{msg.timestamp || 'Ahora'}</span>
+                            <span className="text-2xs opacity-75">{msg.timestamp || t('common.now')}</span>
                             <button
                               onClick={() => toggleSpeakMessage(msg.id, msg.text)}
                               className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
@@ -525,17 +525,17 @@ export function PhysiGuide({
                                   ? 'bg-teal-500/20 text-teal-700 dark:text-teal-300 ring-1 ring-teal-500/40 animate-pulse'
                                   : 'hover:bg-teal-500/10 text-teal-600 dark:text-teal-400'
                               }`}
-                              title={isSpeaking ? 'Detener voz' : 'Escuchar respuesta en voz alta'}
+                              title={isSpeaking ? t('patientDashboard.stopVoice') : t('pg.listenToAnswerAloud')}
                             >
                               {isSpeaking ? (
                                 <>
                                   <VolumeX size={13} className="text-rose-500" />
-                                  <span className="text-rose-600 dark:text-rose-400 font-bold">Detener</span>
+                                  <span className="text-rose-600 dark:text-rose-400 font-bold">{t('ai.stop')}</span>
                                 </>
                               ) : (
                                 <>
                                   <Volume2 size={13} />
-                                  <span>Escuchar</span>
+                                  <span>{t('pg.listen')}</span>
                                 </>
                               )}
                             </button>
@@ -583,7 +583,7 @@ export function PhysiGuide({
               <div className="px-3.5 pb-2 shrink-0">
                 <p className="text-2xs font-bold uppercase tracking-wider text-on-surface-variant mb-1.5 flex items-center gap-1">
                   <Sparkles size={11} className="text-teal-500" />
-                  <span>Sugerencias para empezar</span>
+                  <span>{t('pg.suggestionsToGetStarted')}</span>
                 </p>
                 <div className="flex flex-wrap gap-1.5 max-h-20 overflow-y-auto scrollbar-thin">
                   {faqs.map((faq, i) => (
@@ -616,7 +616,7 @@ export function PhysiGuide({
                       handleSend();
                     }
                   }}
-                  placeholder="Pregúntale a Physi..."
+                  placeholder={t('pg.askPhysi')}
                   rows={1}
                   className="flex-1 resize-none rounded-xl border border-outline-variant/30 dark:border-white/10 bg-surface/90 dark:bg-surface-container/60 px-3 py-2 text-xs sm:text-sm text-on-surface outline-none focus:ring-2 focus:ring-primary focus:border-primary/50 transition-all placeholder:text-on-surface-variant/50 max-h-24"
                 />
@@ -624,7 +624,7 @@ export function PhysiGuide({
                   onClick={handleSend}
                   disabled={!input.trim() || loading}
                   className="size-10 rounded-xl bg-primary text-on-primary flex items-center justify-center shrink-0 hover:bg-teal-500 disabled:opacity-40 disabled:cursor-not-allowed transition-all active:scale-95 shadow-sm shadow-teal-900/15 cursor-pointer"
-                  aria-label="Enviar mensaje"
+                  aria-label={t('pg.sendMessage')}
                 >
                   <Send size={16} />
                 </button>

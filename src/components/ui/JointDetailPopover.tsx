@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { Crosshair, Info, TrendingUp, AlertTriangle, X } from 'lucide-react';
@@ -19,17 +20,20 @@ export interface JointDetailPopoverProps {
 }
 
 export const JointDetailPopover: React.FC<JointDetailPopoverProps> = ({
-  metrics = {
-    jointName: 'Rodilla Derecha (Flexión)',
+  metrics: metricsProp,
+  className,
+  triggerLabel: triggerLabelProp,
+}) => {
+  const { t } = useTranslation();
+  const metrics = metricsProp ?? {
+    jointName: t('shw.rightKneeFlexion'),
     currentRom: 124,
     maxHistoricalRom: 135,
     angularVelocity: 42,
     asymmetryPercentage: 8,
-    status: 'normal',
-  },
-  className,
-  triggerLabel = 'Inspeccionar Articulación',
-}) => {
+    status: 'normal' as const,
+  };
+  const triggerLabel = triggerLabelProp ?? t('jdp.inspectJoint');
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -74,7 +78,7 @@ export const JointDetailPopover: React.FC<JointDetailPopoverProps> = ({
                   <h4 className="text-xs font-bold text-on-surface dark:text-white">
                     {metrics.jointName}
                   </h4>
-                  <span className="text-2xs text-on-surface-variant">Telemetría Asistida por MediaPipe</span>
+                  <span className="text-2xs text-on-surface-variant">{t('jdp.mediaPipeTelemetry')}</span>
                 </div>
               </div>
 
@@ -91,32 +95,32 @@ export const JointDetailPopover: React.FC<JointDetailPopoverProps> = ({
             <div className="grid grid-cols-2 gap-3 py-3">
               <div className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800/60 border border-black/5 dark:border-white/5">
                 <span className="text-2xs uppercase font-bold text-on-surface-variant block mb-0.5">
-                  ROM Actual
+                  {t('jdp.currentRom')}
                 </span>
                 <span className="text-xl font-bold font-mono text-on-surface dark:text-white tabular-nums">
                   {metrics.currentRom}°
                 </span>
                 <span className="text-2xs text-emerald-500 block">
-                  Meta: {metrics.maxHistoricalRom}°
+                  {t('jdp.goal', { value: metrics.maxHistoricalRom })}
                 </span>
               </div>
 
               <div className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800/60 border border-black/5 dark:border-white/5">
                 <span className="text-2xs uppercase font-bold text-on-surface-variant block mb-0.5">
-                  Velocidad Angular
+                  {t('jdp.angularVelocity')}
                 </span>
                 <span className="text-xl font-bold font-mono text-on-surface dark:text-white tabular-nums">
                   {metrics.angularVelocity}
                   <span className="text-xs text-on-surface-variant ml-0.5 font-normal">°/s</span>
                 </span>
-                <span className="text-2xs text-on-surface-variant block">Control motor suave</span>
+                <span className="text-2xs text-on-surface-variant block">{t('jdp.smoothMotorControl')}</span>
               </div>
             </div>
 
             {/* Asymmetry Bar */}
             <div className="p-3 rounded-xl bg-slate-100/70 dark:bg-slate-800/40 border border-black/5 dark:border-white/5">
               <div className="flex items-center justify-between text-xs mb-1">
-                <span className="text-on-surface-variant">Asimetría Contralateral</span>
+                <span className="text-on-surface-variant">{t('jdp.contralateralAsymmetry')}</span>
                 <span className="font-mono font-bold text-on-surface dark:text-white">
                   {metrics.asymmetryPercentage}%
                 </span>
@@ -131,7 +135,7 @@ export const JointDetailPopover: React.FC<JointDetailPopoverProps> = ({
                 />
               </div>
               <span className="text-2xs text-on-surface-variant mt-1 block">
-                {metrics.asymmetryPercentage <= 10 ? 'Balance biomecánico normal' : 'Requiere ajuste unilateral'}
+                {metrics.asymmetryPercentage <= 10 ? t('jdp.balanceNormal') : t('jdp.requiresAdjustment')}
               </span>
             </div>
           </motion.div>

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import {
@@ -38,13 +39,16 @@ export const ARFloatingDock: React.FC<ARFloatingDockProps> = ({
   currentJoint = 'Rodilla',
 }) => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const { t } = useTranslation();
   const [audioMuted, setAudioMuted] = useState(false);
   const [activeJoint, setActiveJoint] = useState(currentJoint);
+
+  const jointKeys: Record<string, string> = { Rodilla: 'joints.rodilla', Hombro: 'joints.hombro', Cadera: 'joints.cadera' };
 
   const defaultItems: DockItem[] = [
     {
       id: 'calibrate',
-      label: 'Calibrar Cámara',
+      label: t('afd.calibrateCamera'),
       icon: <Camera className="w-5 h-5" />,
       onClick: () => {
         onCalibrate?.();
@@ -52,7 +56,7 @@ export const ARFloatingDock: React.FC<ARFloatingDockProps> = ({
     },
     {
       id: 'target',
-      label: `Articulación: ${activeJoint}`,
+      label: t('afd.jointLabel', { joint: t(jointKeys[activeJoint] ?? 'joints.rodilla') }),
       icon: <Target className="w-5 h-5 text-teal-400" />,
       isActive: true,
       onClick: () => {
@@ -64,7 +68,7 @@ export const ARFloatingDock: React.FC<ARFloatingDockProps> = ({
     },
     {
       id: 'audio',
-      label: audioMuted ? 'Activar Voz IA' : 'Silenciar Voz IA',
+      label: audioMuted ? t('afd.enableAiVoice') : t('afd.muteAiVoice'),
       icon: audioMuted ? <VolumeX className="w-5 h-5 text-rose-400" /> : <Volume2 className="w-5 h-5 text-emerald-400" />,
       onClick: () => {
         const next = !audioMuted;
@@ -74,19 +78,19 @@ export const ARFloatingDock: React.FC<ARFloatingDockProps> = ({
     },
     {
       id: 'reset',
-      label: 'Reiniciar Repeticiones',
+      label: t('afd.resetReps'),
       icon: <RotateCcw className="w-5 h-5" />,
       onClick: () => {},
     },
     {
       id: 'biofeedback',
-      label: 'Filtro Biomecánico',
+      label: t('afd.biomechanicalFilter'),
       icon: <Sparkles className="w-5 h-5 text-lime-400" />,
       onClick: () => {},
     },
     {
       id: 'settings',
-      label: 'Sensibilidad MediaPipe',
+      label: t('afd.mediapipeSensitivity'),
       icon: <Sliders className="w-5 h-5" />,
       onClick: () => {},
     },
@@ -94,7 +98,7 @@ export const ARFloatingDock: React.FC<ARFloatingDockProps> = ({
 
   return (
     <nav
-      aria-label="Controles rápidos de realidad aumentada"
+      aria-label={t('afd.quickControls')}
       className={cn(
         'relative inline-flex items-center gap-2 p-2 rounded-2xl',
         'bg-slate-900/80 dark:bg-slate-950/85 backdrop-blur-2xl',

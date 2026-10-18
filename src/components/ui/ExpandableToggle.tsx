@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
 import { cn } from '../../lib/utils';
 
@@ -13,11 +14,12 @@ interface ExpandableToggleProps {
 export function ExpandableToggle({
   onExpand,
   onCollapse,
-  expandLabel = 'Más opciones',
-  collapseLabel = 'Cerrar',
+  expandLabel,
+  collapseLabel,
   className,
 }: ExpandableToggleProps) {
   const [toggle, setToggle] = useState(false);
+  const { t } = useTranslation();
 
   return (
     <div className={cn('flex h-full w-full items-center justify-center', className)}>
@@ -70,7 +72,7 @@ export function ExpandableToggle({
         }}
         className="glass-panel absolute bottom-8 my-8 rounded-full px-6 py-1.5 text-on-surface-variant font-label-sm text-label-sm active:scale-95 transition-transform"
       >
-        {toggle ? collapseLabel : expandLabel}
+        {toggle ? (collapseLabel ?? t('common.close')) : (expandLabel ?? t('etMoreOptions'))}
       </button>
     </div>
   );

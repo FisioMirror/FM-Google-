@@ -1,4 +1,5 @@
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { Icon } from './Icon';
 
@@ -9,6 +10,7 @@ interface BackButtonProps {
 
 export function BackButton({ className = '', fallback }: BackButtonProps) {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const location = useLocation();
 
   const handleBack = () => {
@@ -27,7 +29,7 @@ export function BackButton({ className = '', fallback }: BackButtonProps) {
       whileTap={{ scale: 0.95 }}
       onClick={handleBack}
       className={`flex items-center justify-center w-10 h-10 rounded-xl glass-panel text-on-surface-variant hover:text-primary transition-colors ${className}`}
-      aria-label="Volver atrás"
+      aria-label={t('backGoBack')}
     >
       <Icon name="arrow_back" size={20} />
     </motion.button>

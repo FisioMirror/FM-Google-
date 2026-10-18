@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { MoreHorizontal, Plus } from 'lucide-react';
 
 export interface RoutineCardData {
@@ -24,6 +25,7 @@ export interface AssignmentProgressCardProps {
 }
 
 export const AssignmentProgressCard: React.FC<AssignmentProgressCardProps> = ({ data, className = '', onAction }) => {
+  const { t } = useTranslation();
   const {
     colorClass = '',
     date,
@@ -54,7 +56,7 @@ export const AssignmentProgressCard: React.FC<AssignmentProgressCardProps> = ({ 
         <button
           onClick={onAction}
           className="p-1 rounded-lg text-on-surface-variant hover:text-on-surface dark:hover:text-slate-200 transition-colors"
-          aria-label="Más opciones"
+          aria-label={t('apcMoreOptions')}
         >
           <MoreHorizontal className="w-5 h-5" />
         </button>
@@ -70,7 +72,7 @@ export const AssignmentProgressCard: React.FC<AssignmentProgressCardProps> = ({ 
 
         {/* Progress Bar */}
         <div className="flex items-center gap-2.5 mt-3.5">
-          <span className="text-xs font-semibold text-on-surface-variant">Progreso</span>
+          <span className="text-xs font-semibold text-on-surface-variant">{t('apcProgress')}</span>
           <div className="flex-1 h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
             <div
               className="h-full bg-gradient-to-r from-teal-500 to-emerald-500 rounded-full transition-all duration-300"
@@ -90,7 +92,7 @@ export const AssignmentProgressCard: React.FC<AssignmentProgressCardProps> = ({ 
             <li>
               <img
                 src={imgSrc1}
-                alt={imgAlt1 || 'Fisioterapeuta asignado'}
+                alt={imgAlt1 || t('apcTherapistAlt')}
                 className="w-7 h-7 rounded-full border-2 border-white dark:border-slate-900 object-cover"
               />
             </li>
@@ -99,7 +101,7 @@ export const AssignmentProgressCard: React.FC<AssignmentProgressCardProps> = ({ 
             <li>
               <img
                 src={imgSrc2}
-                alt={imgAlt2 || 'Paciente'}
+                alt={imgAlt2 || t('common.patient')}
                 className="w-7 h-7 rounded-full border-2 border-white dark:border-slate-900 object-cover"
               />
             </li>
@@ -107,7 +109,7 @@ export const AssignmentProgressCard: React.FC<AssignmentProgressCardProps> = ({ 
           <li>
             <span
               className="flex items-center justify-center w-7 h-7 rounded-full bg-slate-100 dark:bg-slate-800 text-on-surface-variant text-xs border-2 border-white dark:border-slate-900 font-semibold"
-              title="Añadir terapeuta o nota"
+              title={t('apcAddTherapist')}
             >
               <Plus className="w-3.5 h-3.5" />
             </span>

@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useRef } from "react";
+import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
 import { Rocket } from "@gravity-ui/icons";
@@ -154,6 +155,7 @@ export function ModalDialog({
 
 export function ModalCloseTrigger({ className }: { className?: string }) {
   const { close } = useContext(ModalContext);
+  const { t } = useTranslation();
 
   return (
     <button
@@ -165,7 +167,7 @@ export function ModalCloseTrigger({ className }: { className?: string }) {
         "border border-border/50 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary/40",
         className
       )}
-      aria-label="Cerrar modal"
+      aria-label={t('modalCloseModal')}
     >
       <X className="size-4.5" />
     </button>
@@ -253,12 +255,13 @@ Modal.Footer = ModalFooter;
  * CustomModalDemo con lógica interactiva real
  */
 export function CustomModalDemo() {
+  const { t } = useTranslation();
   const [sensitivity, setSensitivity] = useState(85);
   const [arOverlays, setArOverlays] = useState(true);
   const [savedStatus, setSavedStatus] = useState<string | null>(null);
 
   const handleSave = () => {
-    setSavedStatus(`Parámetros calibrados: Sensibilidad ${sensitivity}%, AR ${arOverlays ? "Activado" : "Desactivado"}`);
+    setSavedStatus(t('modalCalibrated', { pct: sensitivity, state: arOverlays ? t('modalArOn') : t('modalArOff') }));
     setTimeout(() => setSavedStatus(null), 3500);
   };
 
@@ -267,7 +270,7 @@ export function CustomModalDemo() {
       <Modal>
         <Modal.Trigger asChild>
           <Button variant="secondary" className="shadow-xs hover:border-primary/50">
-            Abrir Modal de Configuración
+            {t('modalOpenConfig')}
           </Button>
         </Modal.Trigger>
         <Modal.Backdrop>
@@ -278,17 +281,17 @@ export function CustomModalDemo() {
                 <Modal.Icon className="bg-primary/10 text-primary">
                   <Rocket className="size-5" />
                 </Modal.Icon>
-                <Modal.Heading>Configuración de FisioMirror</Modal.Heading>
+                <Modal.Heading>{t('modalConfigTitle')}</Modal.Heading>
               </Modal.Header>
               <Modal.Body>
                 <p className="text-sm text-on-surface-variant">
-                  Ajusta los parámetros del análisis biomecánico en tiempo real y la sensibilidad de la cámara para la sesión activa.
+                  {t('modalConfigDesc')}
                 </p>
 
                 <div className="p-3.5 rounded-xl bg-surface/80 dark:bg-slate-800/60 border border-border/60 space-y-3 mt-4">
                   <div>
                     <div className="flex justify-between text-xs font-semibold mb-1 text-on-surface">
-                      <span>Sensibilidad MediaPipe</span>
+                      <span>{t('modalSensitivity')}</span>
                       <span className="text-primary font-bold">{sensitivity}%</span>
                     </div>
                     <input
@@ -303,7 +306,7 @@ export function CustomModalDemo() {
 
                   <label className="flex items-center justify-between cursor-pointer pt-1">
                     <span className="text-xs font-medium text-on-surface">
-                      Superposición de Malla Biomecánica
+                      {t('modalOverlay')}
                     </span>
                     <input
                       type="checkbox"
@@ -316,7 +319,7 @@ export function CustomModalDemo() {
               </Modal.Body>
               <Modal.Footer>
                 <Button className="w-full" slot="close" onClick={handleSave}>
-                  Guardar Cambios
+                  {t('modalSaveChanges')}
                 </Button>
               </Modal.Footer>
             </Modal.Dialog>

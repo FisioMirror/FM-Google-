@@ -1,4 +1,5 @@
 import { createContext, type ReactNode, useContext, useEffect } from "react"
+import { useTranslation } from 'react-i18next';
 import { cn } from "@/lib/utils"
 import { motion, AnimatePresence } from "framer-motion"
 import { X } from "lucide-react"
@@ -32,6 +33,8 @@ export function Dialog({
   glassEffect = true,
   showCloseButton = true,
 }: DialogProps) {
+  const { t } = useTranslation();
+
   const maxWidth = {
     sm: "max-w-sm",
     md: "max-w-md",
@@ -74,7 +77,7 @@ export function Dialog({
                   type="button"
                   className="absolute top-5 right-5 p-2 rounded-xl text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary cursor-pointer"
                   onClick={() => onOpenChange(false)}
-                  aria-label="Cerrar modal"
+                  aria-label={t('dlguCloseModal')}
                 >
                   <X className="h-4 w-4" />
                 </button>
@@ -118,10 +121,10 @@ type ButtonVariantType = VariantProps<typeof buttonVariants>["variant"]
 export function ConfirmDialog({
   open,
   onOpenChange,
-  title = "Confirmar",
+  title,
   description,
-  confirmText = "Confirmar",
-  cancelText = "Cancelar",
+  confirmText,
+  cancelText,
   onConfirm,
   onCancel,
   confirmVariant = "default",
@@ -138,18 +141,19 @@ export function ConfirmDialog({
   confirmVariant?: ButtonVariantType
   cancelVariant?: ButtonVariantType
 }) {
+  const { t } = useTranslation();
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogHeader>
-        <DialogTitle>{title}</DialogTitle>
+        <DialogTitle>{title ?? t('common.confirm')}</DialogTitle>
         {description && <DialogDescription>{description}</DialogDescription>}
       </DialogHeader>
       <DialogFooter>
         <Button variant={cancelVariant} onClick={() => onCancel ? onCancel() : onOpenChange(false)}>
-          {cancelText}
+          {cancelText ?? t('common.cancel')}
         </Button>
         <Button variant={confirmVariant} onClick={onConfirm}>
-          {confirmText}
+          {confirmText ?? t('common.confirm')}
         </Button>
       </DialogFooter>
     </Dialog>

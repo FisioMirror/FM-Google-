@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { useEffect, useState } from 'react';
 import { cn } from '../../lib/utils';
 
@@ -12,6 +13,7 @@ export function WaveformVisualizer({ isActive: externalActive, onToggle, classNa
   const bars = 7;
   const getRandomHeights = () => Array.from({ length: bars }, () => Math.random() * 0.8 + 0.2);
   const [heights, setHeights] = useState(getRandomHeights());
+  const { t } = useTranslation();
   const [internalActive, setInternalActive] = useState(false);
   const isActive = externalActive ?? internalActive;
 
@@ -34,7 +36,7 @@ export function WaveformVisualizer({ isActive: externalActive, onToggle, classNa
         isActive && 'ring-2 ring-primary/30',
         className,
       )}
-      aria-label={isActive ? 'Detener grabación' : 'Iniciar grabación de voz'}
+      aria-label={isActive ? t('wvStopRecording') : t('wvStartRecording')}
     >
       {heights.map((h, i) => (
         <motion.div

@@ -1,4 +1,5 @@
 import { forwardRef, useCallback, type ButtonHTMLAttributes, type ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 import confetti from 'canvas-confetti';
 import { cn } from '../../lib/utils';
 
@@ -203,6 +204,7 @@ export interface ConfettiSideCannonsProps extends ButtonHTMLAttributes<HTMLButto
  */
 export const ConfettiSideCannons = forwardRef<HTMLButtonElement, ConfettiSideCannonsProps>(
   ({ children, className, durationMs = 2500, colors, onClick, ...buttonProps }, ref) => {
+  const { t } = useTranslation();
     const handleClick = useCallback(
       (event: React.MouseEvent<HTMLButtonElement>) => {
         fireSideCannons({ durationMs, colors });
@@ -226,7 +228,7 @@ export const ConfettiSideCannons = forwardRef<HTMLButtonElement, ConfettiSideCan
         onClick={handleClick}
         {...buttonProps}
       >
-        {children ?? 'Disparar Celebración'}
+        {children ?? t('confettiFire')}
       </button>
     );
   },

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /**
  * Tipos de animación de la mascota Physi.
@@ -48,18 +49,18 @@ interface MascotAnimationProps {
 /** Mapa de tipo → archivo webp + texto alternativo por defecto */
 const MASCOT_CONFIG: Record<
   MascotType,
-  { src: string; alt: string }
+  { src: string; altKey: string }
 > = {
-  idle:         { src: '/animations/mascot/idle.webp',         alt: 'Mascota Physi en reposo' },
-  greeting:     { src: '/animations/mascot/saludo.webp',       alt: 'Mascota Physi saludando' },
-  success:      { src: '/animations/mascot/exito.webp',        alt: 'Mascota Physi celebrando el éxito' },
-  error:        { src: '/animations/mascot/error.webp',        alt: 'Mascota Physi con error' },
-  loading:      { src: '/animations/mascot/cargando.webp',     alt: 'Mascota Physi cargando' },
-  scanning:     { src: '/animations/mascot/escaneando.webp',   alt: 'Mascota Physi escaneando' },
-  speaking:     { src: '/animations/mascot/consejo.webp', alt: 'Mascota Physi hablando' },
-  achievement:  { src: '/animations/mascot/racha.webp',        alt: 'Mascota Physi celebrando un logro' },
-  notification: { src: '/animations/mascot/notificacion.webp', alt: 'Mascota Physi con notificaciones' },
-  goodbye:      { src: '/animations/mascot/despedida.webp',    alt: 'Mascota Physi despidiéndose' },
+  idle:         { src: '/animations/mascot/idle.webp',         altKey: 'mascotIdle' },
+  greeting:     { src: '/animations/mascot/saludo.webp',       altKey: 'mascotGreeting' },
+  success:      { src: '/animations/mascot/exito.webp',        altKey: 'mascotSuccess' },
+  error:        { src: '/animations/mascot/error.webp',        altKey: 'mascotError' },
+  loading:      { src: '/animations/mascot/cargando.webp',     altKey: 'mascotLoading' },
+  scanning:     { src: '/animations/mascot/escaneando.webp',   altKey: 'mascotScanning' },
+  speaking:     { src: '/animations/mascot/consejo.webp', altKey: 'mascotSpeaking' },
+  achievement:  { src: '/animations/mascot/racha.webp',        altKey: 'mascotAchievement' },
+  notification: { src: '/animations/mascot/notificacion.webp', altKey: 'mascotNotification' },
+  goodbye:      { src: '/animations/mascot/despedida.webp',    altKey: 'mascotGoodbye' },
 };
 
 /**
@@ -82,6 +83,7 @@ export function MascotAnimation({
   className = '',
 }: MascotAnimationProps) {
   const [visible, setVisible] = useState(true);
+  const { t } = useTranslation();
   const config = MASCOT_CONFIG[type];
   const preset = SIZE_PRESETS[size];
 
@@ -93,7 +95,7 @@ export function MascotAnimation({
     >
       <img
         src={config.src}
-        alt={alt ?? config.alt}
+        alt={alt ?? t(config.altKey)}
         className="w-full h-full object-cover rounded-full animate-breathe will-change-transform"
         onError={() => setVisible(false)}
         draggable={false}

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import {
@@ -31,19 +32,21 @@ export interface MuscleTargetRadarCardProps {
 
 export const MuscleTargetRadarCard: React.FC<MuscleTargetRadarCardProps> = ({
   className,
-  targets = [
-    { muscle: 'Cuádriceps', activation: 88, color: '#00A389' },
-    { muscle: 'Isquiotibiales', activation: 65, color: '#06b6d4' },
-    { muscle: 'Glúteo Mayor', activation: 74, color: '#8b5cf6' },
-    { muscle: 'Gemelos', activation: 52, color: '#f59e0b' },
-    { muscle: 'Core / Abdominal', activation: 82, color: '#10b981' },
-  ],
+  targets,
 }) => {
+  const { t } = useTranslation();
   const [selectedMuscle, setSelectedMuscle] = useState<string | null>(null);
+  const radarTargets = targets ?? [
+    { muscle: t('facs.quadriceps'), activation: 88, color: '#00A389' },
+    { muscle: t('facs.hamstrings'), activation: 65, color: '#06b6d4' },
+    { muscle: t('facs.gluteusMaximus'), activation: 74, color: '#8b5cf6' },
+    { muscle: t('facs.calves'), activation: 52, color: '#f59e0b' },
+    { muscle: t('facs.coreAbdominal'), activation: 82, color: '#10b981' },
+  ];
   const size = 190;
   const center = size / 2;
   const radius = 68;
-  const total = targets.length;
+  const total = radarTargets.length;
 
   const getCoordinates = (index: number, val: number) => {
     const angle = ((Math.PI * 2) / total) * index - Math.PI / 2;
@@ -54,7 +57,7 @@ export const MuscleTargetRadarCard: React.FC<MuscleTargetRadarCardProps> = ({
     };
   };
 
-  const points = targets
+  const points = radarTargets
     .map((t, i) => {
       const { x, y } = getCoordinates(i, t.activation);
       return `${x},${y}`;
@@ -81,14 +84,14 @@ export const MuscleTargetRadarCard: React.FC<MuscleTargetRadarCardProps> = ({
           </div>
           <div>
             <h4 className="text-xs font-bold uppercase tracking-wider text-on-surface">
-              Activación Muscular
+              {t('facs.muscleActivation')}
             </h4>
-            <span className="text-2xs text-on-surface-variant">Mapa de esfuerzo EMG</span>
+            <span className="text-2xs text-on-surface-variant">{t('facs.emgEffortMap')}</span>
           </div>
         </div>
         <span className="text-2xs font-mono font-bold text-teal-700 dark:text-teal-300 bg-teal-500/15 border border-teal-500/30 px-2.5 py-0.5 rounded-full shadow-xs flex items-center gap-1">
           <span className="size-1.5 rounded-full bg-teal-500 animate-ping" />
-          EMG Estimado
+          {t('facs.estimatedEmg')}
         </span>
       </div>
 
@@ -111,7 +114,7 @@ export const MuscleTargetRadarCard: React.FC<MuscleTargetRadarCardProps> = ({
             {[0.33, 0.66, 1].map((rFactor, idx) => (
               <polygon
                 key={idx}
-                points={targets
+                points={radarTargets
                   .map((_, i) => {
                     const { x, y } = getCoordinates(i, rFactor * 100);
                     return `${x},${y}`;
@@ -126,7 +129,7 @@ export const MuscleTargetRadarCard: React.FC<MuscleTargetRadarCardProps> = ({
             ))}
 
             {/* Radios desde el centro */}
-            {targets.map((_, i) => {
+            {radarTargets.map((_, i) => {
               const { x, y } = getCoordinates(i, 100);
               return (
                 <line
@@ -161,7 +164,7 @@ export const MuscleTargetRadarCard: React.FC<MuscleTargetRadarCardProps> = ({
             />
 
             {/* Nodos de activación interactivos */}
-            {targets.map((t, i) => {
+            {radarTargets.map((t, i) => {
               const { x, y } = getCoordinates(i, t.activation);
               const isSelected = selectedMuscle === t.muscle;
               return (
@@ -193,7 +196,7 @@ export const MuscleTargetRadarCard: React.FC<MuscleTargetRadarCardProps> = ({
         </div>
 
         <div className="space-y-1.5 w-full sm:w-auto text-xs min-w-[130px]">
-          {targets.map((t) => {
+          {radarTargets.map((t) => {
             const isSelected = selectedMuscle === t.muscle;
             return (
               <button
@@ -235,6 +238,7 @@ export const PainScaleInteractiveCard: React.FC<PainScaleInteractiveCardProps> =
   className,
   onPainChange,
 }) => {
+  const { t } = useTranslation();
   const [pain, setPain] = useState(initialPain);
 
   const getFace = () => {
@@ -245,11 +249,11 @@ export const PainScaleInteractiveCard: React.FC<PainScaleInteractiveCardProps> =
   };
 
   const getLabel = () => {
-    if (pain === 0) return 'Sin Dolor (Confort Absoluto)';
-    if (pain <= 3) return 'Dolor Leve Tolerable (Zona Segura)';
-    if (pain <= 6) return 'Dolor Moderado (Atención Biomecánica)';
-    if (pain <= 8) return 'Dolor Intenso (Límite Articular)';
-    return 'Dolor Máximo Inhabilitante (Detener Inmediatamente)';
+    if (pain === 0) return t('facs.painNone');
+    if (pain <= 3) return t('facs.painMild');
+    if (pain <= 6) return t('facs.painModerate');
+    if (pain <= 8) return t('facs.painSevere');
+    return t('facs.painMax');
   };
 
   const getAccentGradient = () => {
@@ -280,7 +284,7 @@ export const PainScaleInteractiveCard: React.FC<PainScaleInteractiveCardProps> =
             <Activity className="w-4 h-4" />
           </div>
           <span className="text-xs font-bold uppercase tracking-wider text-on-surface">
-            Escala Analógica Visual (EVA)
+            {t('facs.vasTitle')}
           </span>
         </div>
         <motion.span
@@ -289,7 +293,7 @@ export const PainScaleInteractiveCard: React.FC<PainScaleInteractiveCardProps> =
           animate={{ scale: 1 }}
           className={cn("text-xs font-mono font-black px-3 py-1 rounded-full border shadow-xs", getBadgeColor())}
         >
-          {pain} / 10 EVA
+          {t('facs.vasScore', { n: pain })}
         </motion.span>
       </div>
 
@@ -306,7 +310,7 @@ export const PainScaleInteractiveCard: React.FC<PainScaleInteractiveCardProps> =
         <div className="flex-1 min-w-0">
           <div className="text-sm font-black text-on-surface mb-0.5 truncate">{getLabel()}</div>
           <p className="text-xs text-on-surface-variant">
-            Ajusta el slider táctil según la sensación percibida al final del rango de movimiento.
+            {t('facs.painHint')}
           </p>
         </div>
       </div>
@@ -327,9 +331,9 @@ export const PainScaleInteractiveCard: React.FC<PainScaleInteractiveCardProps> =
           />
         </div>
         <div className="flex justify-between text-2xs font-mono font-bold text-on-surface-variant">
-          <span className="text-emerald-500">0 (Confort)</span>
-          <span className="text-amber-500">5 (Moderado)</span>
-          <span className="text-rose-500">10 (Crítico)</span>
+          <span className="text-emerald-500">{t('facs.painScale0')}</span>
+          <span className="text-amber-500">{t('facs.painScale5')}</span>
+          <span className="text-rose-500">{t('facs.painScale10')}</span>
         </div>
       </div>
     </motion.div>
@@ -350,6 +354,7 @@ export const GaitSymmetryCard: React.FC<GaitSymmetryCardProps> = ({
   cadenceSteps = 108,
   className,
 }) => {
+  const { t } = useTranslation();
   const [isSimulating, setIsSimulating] = useState(false);
   const [left, setLeft] = useState(leftRatio);
   const [right, setRight] = useState(rightRatio);
@@ -381,7 +386,7 @@ export const GaitSymmetryCard: React.FC<GaitSymmetryCardProps> = ({
             <Footprints className="w-4 h-4 animate-bounce" />
           </div>
           <h4 className="text-xs font-bold uppercase tracking-wider text-on-surface">
-            Simetría de Apoyo Plantar
+            {t('facs.gaitSymmetry')}
           </h4>
         </div>
         <span
@@ -393,17 +398,17 @@ export const GaitSymmetryCard: React.FC<GaitSymmetryCardProps> = ({
           )}
         >
           <span className={cn("size-1.5 rounded-full", isSymmetric ? "bg-emerald-500" : "bg-amber-500 animate-ping")} />
-          {isSymmetric ? 'Marcha Equilibrada' : 'Asimetría Leve'}
+          {isSymmetric ? t('facs.gaitBalanced') : t('facs.gaitAsymmetry')}
         </span>
       </div>
 
       <div className="grid grid-cols-2 gap-3 my-2">
         <div className="p-3 rounded-2xl bg-teal-500/10 dark:bg-teal-500/15 border border-teal-500/20 text-center">
-          <span className="text-2xs uppercase font-bold text-teal-600 dark:text-teal-400 block mb-0.5">Pie Izquierdo</span>
+          <span className="text-2xs uppercase font-bold text-teal-600 dark:text-teal-400 block mb-0.5">{t('facs.leftFoot')}</span>
           <span className="text-2xl font-black font-mono text-on-surface tabular-nums">{left}%</span>
         </div>
         <div className="p-3 rounded-2xl bg-cyan-500/10 dark:bg-cyan-500/15 border border-cyan-500/20 text-center">
-          <span className="text-2xs uppercase font-bold text-cyan-600 dark:text-cyan-400 block mb-0.5">Pie Derecho</span>
+          <span className="text-2xs uppercase font-bold text-cyan-600 dark:text-cyan-400 block mb-0.5">{t('facs.rightFoot')}</span>
           <span className="text-2xl font-black font-mono text-on-surface tabular-nums">{right}%</span>
         </div>
       </div>
@@ -425,7 +430,7 @@ export const GaitSymmetryCard: React.FC<GaitSymmetryCardProps> = ({
 
       <div className="flex items-center justify-between text-xs text-on-surface-variant mt-2">
         <span className="flex items-center gap-1">
-          Cadencia: <strong className="font-mono text-on-surface dark:text-white">{cadenceSteps}</strong> ppm
+          {t('facs.cadenceValue', { n: cadenceSteps })}
         </span>
         <button
           type="button"
@@ -433,7 +438,7 @@ export const GaitSymmetryCard: React.FC<GaitSymmetryCardProps> = ({
           className="text-2xs font-bold text-cyan-600 dark:text-cyan-400 hover:underline flex items-center gap-1"
         >
           <RotateCcw className="w-3 h-3" />
-          {isSimulating ? 'Restaurar' : 'Simular Carga'}
+          {isSimulating ? t('facs.restore') : t('facs.simulateLoad')}
         </button>
       </div>
     </motion.div>
@@ -452,6 +457,7 @@ export const TremorFrequencyCard: React.FC<TremorFrequencyCardProps> = ({
   amplitudeMm = 0.9,
   className,
 }) => {
+  const { t } = useTranslation();
   return (
     <motion.div
       whileHover={{ y: -3, scale: 1.01 }}
@@ -467,11 +473,11 @@ export const TremorFrequencyCard: React.FC<TremorFrequencyCardProps> = ({
             <Waves className="w-4 h-4" />
           </div>
           <h4 className="text-xs font-bold uppercase tracking-wider text-on-surface">
-            Estabilidad Isométrica
+            {t('facs.isometricStability')}
           </h4>
         </div>
         <span className="text-2xs font-mono font-bold text-cyan-600 dark:text-cyan-400 bg-cyan-500/15 border border-cyan-500/30 px-2.5 py-0.5 rounded-full">
-          Frecuencia: {frequencyHz} Hz
+          {t('facs.frequencyHz', { n: frequencyHz })}
         </span>
       </div>
 
@@ -499,9 +505,9 @@ export const TremorFrequencyCard: React.FC<TremorFrequencyCardProps> = ({
       <div className="flex items-center justify-between text-xs text-on-surface-variant pt-2 border-t border-black/5 dark:border-white/5">
         <span className="flex items-center gap-1">
           <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
-          Micro-oscilaciones:
+          {t('facs.microOscillations')}
         </span>
-        <span className="font-mono font-bold text-on-surface">±{amplitudeMm} mm (Estable)</span>
+        <span className="font-mono font-bold text-on-surface">{t('facs.amplitudeMm', { n: amplitudeMm })}</span>
       </div>
     </motion.div>
   );
@@ -521,6 +527,7 @@ export const PostureStabilityCard: React.FC<PostureStabilityCardProps> = ({
   centerShiftY = -3,
   className,
 }) => {
+  const { t } = useTranslation();
   const [shiftX, setShiftX] = useState(centerShiftX);
   const [shiftY, setShiftY] = useState(centerShiftY);
 
@@ -539,7 +546,7 @@ export const PostureStabilityCard: React.FC<PostureStabilityCardProps> = ({
             <Crosshair className="w-4 h-4 animate-spin" style={{ animationDuration: '16s' }} />
           </div>
           <h4 className="text-xs font-bold uppercase tracking-wider text-on-surface">
-            Centro de Presión & Gravedad
+            {t('facs.centerOfPressure')}
           </h4>
         </div>
         <span className="text-xs font-mono font-black text-emerald-600 dark:text-emerald-400 bg-emerald-500/15 border border-emerald-500/30 px-2.5 py-0.5 rounded-full">
@@ -587,7 +594,7 @@ export const PostureStabilityCard: React.FC<PostureStabilityCardProps> = ({
       </div>
 
       <p className="text-xs text-center text-on-surface-variant">
-        Desviación coronal: <strong className="font-mono text-emerald-500">{shiftX}°</strong> | Sagital:{' '}
+        {t('facs.coronalDeviation')} <strong className="font-mono text-emerald-500">{shiftX}°</strong> | {t('facs.sagittal')}{' '}
         <strong className="font-mono text-emerald-500">{shiftY}°</strong>
       </p>
     </motion.div>
@@ -606,6 +613,7 @@ export const CardioEffortPillCard: React.FC<CardioEffortPillCardProps> = ({
   heartRateEstimated = 104,
   className,
 }) => {
+  const { t } = useTranslation();
   const percent = Math.min(100, Math.max(0, ((borgLevel - 6) / 14) * 100));
 
   return (
@@ -627,7 +635,7 @@ export const CardioEffortPillCard: React.FC<CardioEffortPillCardProps> = ({
             <HeartPulse className="w-4 h-4" />
           </motion.div>
           <h4 className="text-xs font-bold uppercase tracking-wider text-on-surface">
-            Esfuerzo Cardiovascular (Borg)
+            {t('facs.cardioEffort')}
           </h4>
         </div>
         <span className="text-2xs font-mono font-bold text-rose-600 dark:text-rose-400 bg-rose-500/15 border border-rose-500/30 px-2.5 py-0.5 rounded-full">
@@ -643,7 +651,7 @@ export const CardioEffortPillCard: React.FC<CardioEffortPillCardProps> = ({
           <span className="text-xs font-semibold text-rose-500 ml-1.5">BPM est.</span>
         </div>
         <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
-          Zona Aeróbica Terapéutica
+          {t('facs.aerobicZone')}
         </span>
       </div>
 
@@ -656,9 +664,9 @@ export const CardioEffortPillCard: React.FC<CardioEffortPillCardProps> = ({
       </div>
 
       <div className="flex justify-between text-2xs font-mono text-on-surface-variant">
-        <span>6 (Reposo)</span>
-        <span>12 (Moderado)</span>
-        <span>20 (Máximo)</span>
+        <span>{t('facs.borgRepose')}</span>
+        <span>{t('facs.borgModerate')}</span>
+        <span>{t('facs.borgMax')}</span>
       </div>
     </motion.div>
   );
@@ -674,11 +682,12 @@ export const RehabPhaseStepCard: React.FC<RehabPhaseStepCardProps> = ({
   currentPhaseIndex = 1,
   className,
 }) => {
+  const { t } = useTranslation();
   const [activeStep, setActiveStep] = useState(currentPhaseIndex);
   const phases = [
-    { title: 'Fase 1: Analgesia & Isometría', detail: 'Reducción de dolor y activación refleja' },
-    { title: 'Fase 2: Movilidad & ROM Activo', detail: 'Recuperación de grados y propiocepción' },
-    { title: 'Fase 3: Carga & Retorno Deportivo', detail: 'Fuerza excéntrica y pliometría controlada' },
+    { title: t('facs.phase1Title'), detail: t('facs.phase1Detail') },
+    { title: t('facs.phase2Title'), detail: t('facs.phase2Detail') },
+    { title: t('facs.phase3Title'), detail: t('facs.phase3Detail') },
   ];
 
   return (
@@ -696,11 +705,11 @@ export const RehabPhaseStepCard: React.FC<RehabPhaseStepCardProps> = ({
             <Milestone className="w-4 h-4" />
           </div>
           <h4 className="text-xs font-bold uppercase tracking-wider text-on-surface">
-            Fase de Recuperación Clínica
+            {t('facs.clinicalRecoveryPhase')}
           </h4>
         </div>
         <span className="text-2xs font-mono font-bold text-primary bg-primary/10 border border-primary/20 px-2 py-0.5 rounded-full">
-          Paso {activeStep + 1} de 3
+          {t('facs.stepOf', { n: activeStep + 1 })}
         </span>
       </div>
 
@@ -728,7 +737,7 @@ export const RehabPhaseStepCard: React.FC<RehabPhaseStepCardProps> = ({
                   <span>{p.title}</span>
                   {isCurrent && (
                     <span className="text-2xs uppercase font-black tracking-wider bg-teal-500 text-white px-1.5 py-0.2 rounded-full">
-                      En Curso
+                      {t('facs.inProgress')}
                     </span>
                   )}
                 </div>
@@ -757,6 +766,7 @@ export const EdemaAssessmentCard: React.FC<EdemaAssessmentCardProps> = ({
   perimeterMm = 38.5,
   className,
 }) => {
+  const { t } = useTranslation();
   const [grade, setGrade] = useState(foveaGrade);
   const [tested, setTested] = useState(false);
 
@@ -776,15 +786,15 @@ export const EdemaAssessmentCard: React.FC<EdemaAssessmentCardProps> = ({
     >
       <div className="flex items-center justify-between mb-2">
         <h4 className="text-xs font-bold uppercase tracking-wider text-on-surface">
-          Control de Edema & Signo de Fóvea
+          {t('facs.edemaTitle')}
         </h4>
         <span className="text-xs font-mono font-bold text-teal-600 dark:text-teal-400 bg-teal-500/15 border border-teal-500/30 px-2.5 py-0.5 rounded-full">
-          Grado {grade}+ / 4+
+          {t('facs.edemaGrade', { n: grade })}
         </span>
       </div>
 
       <div className="my-2 p-3 rounded-2xl bg-slate-100/70 dark:bg-slate-800/60 flex items-center justify-between text-xs">
-        <span className="text-on-surface-variant">Perímetro Articular:</span>
+        <span className="text-on-surface-variant">{t('facs.jointPerimeter')}</span>
         <span className="font-mono font-bold text-on-surface text-sm">{perimeterMm} cm</span>
       </div>
 
@@ -800,12 +810,12 @@ export const EdemaAssessmentCard: React.FC<EdemaAssessmentCardProps> = ({
           )}
         >
           <Play className="w-3 h-3" />
-          {tested ? 'Rebote Elástico < 2s' : 'Test de Godet Rápido'}
+          {tested ? t('facs.edemaElastic') : t('facs.godetTest')}
         </button>
       </div>
 
       <p className="text-xs text-on-surface-variant">
-        Recuperación elástica rápida. Inflamación periarticular en resolución progresiva.
+        {t('facs.edemaHint')}
       </p>
     </motion.div>
   );
@@ -823,6 +833,7 @@ export const StrengthProgressionCard: React.FC<StrengthProgressionCardProps> = (
   velocityMs = 0.68,
   className,
 }) => {
+  const { t } = useTranslation();
   return (
     <motion.div
       whileHover={{ y: -3, scale: 1.01 }}
@@ -838,7 +849,7 @@ export const StrengthProgressionCard: React.FC<StrengthProgressionCardProps> = (
             <TrendingUp className="w-4 h-4" />
           </div>
           <h4 className="text-xs font-bold uppercase tracking-wider text-on-surface">
-            Fuerza en Velocidad (VBT)
+            {t('facs.vbtTitle')}
           </h4>
         </div>
         <span className="text-2xs font-mono text-primary bg-primary/15 border border-primary/30 px-2.5 py-0.5 rounded-full font-bold">
@@ -854,13 +865,13 @@ export const StrengthProgressionCard: React.FC<StrengthProgressionCardProps> = (
           <span className="text-xs text-on-surface-variant ml-1 font-bold">kg 1RM Est.</span>
         </div>
         <span className="text-xs font-bold text-teal-600 dark:text-teal-400 bg-teal-500/10 px-2 py-0.5 rounded-full">
-          Velocidad de ejecución óptima
+          {t('facs.optimalVelocity')}
         </span>
       </div>
 
       <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-600 dark:text-emerald-400 mt-2 p-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
         <Sparkles className="w-3.5 h-3.5 shrink-0" />
-        <span>+4.2% de fuerza útil respecto a la semana anterior</span>
+        <span>{t('facs.strengthGain')}</span>
       </div>
     </motion.div>
   );
@@ -874,8 +885,9 @@ export interface PatientAdherenceHeatmapCardProps {
 export const PatientAdherenceHeatmapCard: React.FC<PatientAdherenceHeatmapCardProps> = ({
   className,
 }) => {
+  const { t } = useTranslation();
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
-  const days = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
+  const days = [t('facs.mon'), t('facs.tue'), t('facs.wed'), t('facs.thu'), t('facs.fri'), t('facs.sat'), t('facs.sun')];
   const adherence = [2, 3, 3, 1, 3, 2, 0];
   const minutes = [25, 40, 45, 15, 45, 30, 0];
 
@@ -894,12 +906,12 @@ export const PatientAdherenceHeatmapCard: React.FC<PatientAdherenceHeatmapCardPr
             <Calendar className="w-4 h-4" />
           </div>
           <h4 className="text-xs font-bold uppercase tracking-wider text-on-surface">
-            Adherencia Semanal
+            {t('shw.weeklyAdherence')}
           </h4>
         </div>
         <div className="flex items-center gap-1 text-xs font-bold text-teal-600 dark:text-teal-400 bg-teal-500/15 border border-teal-500/30 px-2.5 py-0.5 rounded-full">
           <Flame className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
-          <span>86% Cumplimiento</span>
+          <span>{t('facs.compliancePct', { n: 86 })}</span>
         </div>
       </div>
 
@@ -909,7 +921,7 @@ export const PatientAdherenceHeatmapCard: React.FC<PatientAdherenceHeatmapCardPr
           const isSelected = selectedDay === i;
           return (
             <button
-              key={d}
+              key={i}
               type="button"
               onClick={() => setSelectedDay(isSelected ? null : i)}
               className="space-y-1.5 group/day"
@@ -942,8 +954,8 @@ export const PatientAdherenceHeatmapCard: React.FC<PatientAdherenceHeatmapCardPr
             exit={{ opacity: 0, height: 0 }}
             className="mt-3 p-2 rounded-xl bg-teal-500/10 border border-teal-500/20 text-xs text-on-surface-variant flex items-center justify-between"
           >
-            <span>Día {days[selectedDay]}: <strong>{minutes[selectedDay]} minutos</strong> de rutina</span>
-            <span className="font-bold text-teal-600 dark:text-teal-400">100% postura validada</span>
+            <span>{t('facs.dayLabel')} {days[selectedDay]}: <strong>{minutes[selectedDay]} {t('common.minutes')}</strong> {t('facs.ofRoutine')}</span>
+            <span className="font-bold text-teal-600 dark:text-teal-400">{t('facs.postureValidated')}</span>
           </motion.div>
         )}
       </AnimatePresence>

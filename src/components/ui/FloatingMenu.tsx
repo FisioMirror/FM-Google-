@@ -1,4 +1,5 @@
 import { useState, type ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Plus } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '../../lib/utils';
@@ -17,8 +18,9 @@ interface FloatingMenuProps {
   className?: string;
 }
 
-export function FloatingMenu({ items, ariaLabel = 'Acciones rápidas', className }: FloatingMenuProps) {
+export function FloatingMenu({ items, ariaLabel, className }: FloatingMenuProps) {
   const [open, setOpen] = useState(false);
+  const { t } = useTranslation();
 
   return (
     <div className={cn('flex flex-col items-end gap-3 safe-area-bottom', className)}>
@@ -43,7 +45,7 @@ export function FloatingMenu({ items, ariaLabel = 'Acciones rápidas', className
         whileTap={{ scale: 0.9 }}
         whileHover={{ scale: 1.05 }}
         onClick={() => setOpen(!open)}
-        aria-label={open ? `Cerrar ${ariaLabel}` : `Abrir ${ariaLabel}`}
+        aria-label={open ? t('fmCloseLabel', { label: ariaLabel ?? t('fmQuickActions') }) : t('fmOpenLabel', { label: ariaLabel ?? t('fmQuickActions') })}
         aria-expanded={open}
         className="flex h-14 w-14 items-center justify-center rounded-full bg-primary text-on-primary shadow-elevated shadow-primary/20 min-h-[56px] min-w-[56px] touch-manipulation"
       >

@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { User, Stethoscope } from 'lucide-react';
 import type { ExerciseDefinition, CharacterRole, JointRotationAxis } from '../../types/character.types';
 import { KidModel3D } from '../characters3d/KidModel3D';
@@ -11,6 +12,7 @@ interface SkeletonDemoProps {
 
 export const SkeletonDemo: React.FC<SkeletonDemoProps> = ({ exercise, userRole = 'patient' }) => {
   const [progress, setProgress] = useState(0);
+  const { t } = useTranslation();
   const [selectedRole, setSelectedRole] = useState<CharacterRole>(
     userRole === 'physio' ? 'physio' : 'patient'
   );
@@ -69,14 +71,14 @@ export const SkeletonDemo: React.FC<SkeletonDemoProps> = ({ exercise, userRole =
           style={{ backgroundColor: `${overallStatusColor}15`, color: overallStatusColor }}
         >
           <span className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: overallStatusColor }} />
-          {progress >= 0.85 ? 'Rango Óptimo' : 'En Ejecución'}
+          {progress >= 0.85 ? t('skdOptimalRange') : t('skdInProgress')}
         </div>
       </div>
 
       {/* Dynamic movement indicator bar */}
       <div className="w-full mb-3">
         <div className="flex justify-between items-center text-2xs font-bold text-on-surface-variant mb-1">
-          <span>Ciclo Biomecánico</span>
+          <span>{t('skdCycle')}</span>
           <span className="text-teal-600 dark:text-teal-400 font-mono">{Math.round(progress * 100)}% ROM</span>
         </div>
         <div className="h-1.5 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
@@ -87,7 +89,7 @@ export const SkeletonDemo: React.FC<SkeletonDemoProps> = ({ exercise, userRole =
         </div>
       </div>
 
-      <div className="flex bg-slate-100/80 dark:bg-slate-800/80 p-1 rounded-xl w-full mb-3" aria-label="Seleccionar personaje">
+      <div className="flex bg-slate-100/80 dark:bg-slate-800/80 p-1 rounded-xl w-full mb-3" aria-label={t('skdSelectCharacter')}>
         <button
           type="button"
           onClick={() => setSelectedRole('patient')}
@@ -99,7 +101,7 @@ export const SkeletonDemo: React.FC<SkeletonDemoProps> = ({ exercise, userRole =
           }`}
         >
           <User size={14} />
-          Niño
+          {t('skdChild')}
         </button>
         <button
           type="button"
@@ -112,7 +114,7 @@ export const SkeletonDemo: React.FC<SkeletonDemoProps> = ({ exercise, userRole =
           }`}
         >
           <Stethoscope size={14} />
-          Fisioterapeuta
+          {t('common.therapist')}
         </button>
       </div>
 
@@ -153,13 +155,13 @@ export const SkeletonDemo: React.FC<SkeletonDemoProps> = ({ exercise, userRole =
         </div>
         <div className="flex justify-between text-xs text-on-surface-variant px-1 pt-1 border-t border-outline/15">
           <span>
-            Series: <strong className="text-on-surface">{exercise.sets}</strong>
+            {t('skdSeries')} <strong className="text-on-surface">{exercise.sets}</strong>
           </span>
           <span>
-            Repeticiones: <strong className="text-on-surface">{exercise.reps}</strong>
+            {t('skdReps')} <strong className="text-on-surface">{exercise.reps}</strong>
           </span>
           <span>
-            Sostener: <strong className="text-on-surface">{exercise.holdDurationSec}s</strong>
+            {t('skdHold')} <strong className="text-on-surface">{exercise.holdDurationSec}s</strong>
           </span>
         </div>
       </div>

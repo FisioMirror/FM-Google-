@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { 
@@ -43,30 +44,31 @@ export function MobileFixedDock({
   className,
 }: MobileFixedDockProps) {
   const location = useLocation();
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   // Rutas adaptadas según el rol del usuario
   const fisioTabs: MobileDockTab[] = [
-    { id: 'home', label: 'Inicio', path: '/dashboard-fisio', icon: Home },
-    { id: 'patients', label: 'Pacientes', path: '/patients', icon: Users },
-    { id: 'exercises', label: 'Ejercicios', path: '/exercises', icon: Dumbbell },
-    { id: 'reports', label: 'Estadísticas', path: '/stats', icon: BarChart3 },
+    { id: 'home', label: t('navigation.dashboard'), path: '/dashboard-fisio', icon: Home },
+    { id: 'patients', label: t('navigation.patients'), path: '/patients', icon: Users },
+    { id: 'exercises', label: t('navigation.exercises'), path: '/exercises', icon: Dumbbell },
+    { id: 'reports', label: t('navigation.stats'), path: '/stats', icon: BarChart3 },
     { id: 'ai', label: 'Physi IA', path: '/ai-assistant', icon: Sparkles },
   ];
 
   const patientTabs: MobileDockTab[] = [
-    { id: 'home', label: 'Inicio', path: '/patient-dashboard', icon: Home },
-    { id: 'exercises', label: 'Rutina', path: '/patient-exercises', icon: Dumbbell },
-    { id: 'progress', label: 'Progreso', path: '/stats', icon: BarChart3 },
-    { id: 'ai', label: 'Asistente', path: '/ai-assistant', icon: Sparkles },
-    { id: 'profile', label: 'Mi Perfil', path: '/paciente-perfil', icon: User },
+    { id: 'home', label: t('navigation.dashboard'), path: '/patient-dashboard', icon: Home },
+    { id: 'exercises', label: t('mfd.routine'), path: '/patient-exercises', icon: Dumbbell },
+    { id: 'progress', label: t('patients.progress'), path: '/stats', icon: BarChart3 },
+    { id: 'ai', label: t('mfd.assistant'), path: '/ai-assistant', icon: Sparkles },
+    { id: 'profile', label: t('profile.title'), path: '/paciente-perfil', icon: User },
   ];
 
   const tabs = role === 'paciente' ? patientTabs : fisioTabs;
 
   // Centro de acción rápida (AR Mirror o Calibración)
   const defaultActionRoute = role === 'paciente' ? '/calibration' : '/ar-mirror';
-  const defaultActionText = actionLabel || (role === 'paciente' ? 'Sesión AR' : 'Espejo AR');
+  const defaultActionText = actionLabel || (role === 'paciente' ? t('arm.sessionAR') : t('navigation.arMirror'));
 
   const handleHeroAction = () => {
     if (onActionClick) {
@@ -85,7 +87,7 @@ export function MobileFixedDock({
 
   return (
     <aside
-      aria-label="Navegación móvil fija"
+      aria-label={t('mfd.fixedMobileNav')}
       className={cn(
         'lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/90 dark:bg-slate-900/90 backdrop-blur-2xl border-t border-slate-200/80 dark:border-slate-800/80 shadow-[0_-8px_32px_rgba(0,0,0,0.08)] dark:shadow-[0_-8px_32px_rgba(0,0,0,0.4)] select-none pb-safe',
         className

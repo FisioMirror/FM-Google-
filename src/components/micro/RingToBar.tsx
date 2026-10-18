@@ -1,10 +1,12 @@
 import { useState, useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Download, Loader2, CheckCircle2, RotateCcw } from 'lucide-react';
 
 const CIRCUMFERENCE = 314.16;
 
 const RingToBar = () => {
   const [progress, setProgress] = useState(0);
+  const { t } = useTranslation();
   const [progressState, setProgressState] = useState<'idle' | 'running' | 'complete'>('idle');
   const intervalRef = useRef<number | null>(null);
   const ringRef = useRef<SVGCircleElement>(null);
@@ -44,13 +46,13 @@ const RingToBar = () => {
         <div className="h-full bg-gradient-to-r from-teal-500 to-emerald-500 rounded-full transition-all duration-100" style={{ width: `${progress}%` }} />
       </div>
       <button className="flex items-center gap-2 px-6 py-3 bg-teal-500 text-white rounded-full font-semibold disabled:opacity-50" onClick={startSimulation} disabled={progressState === 'running'}>
-        {progressState === 'idle' && <><Download size={18} /> <span>Simular Descarga</span></>}
-        {progressState === 'running' && <><Loader2 size={18} className="animate-spin" /> <span>Descargando...</span></>}
-        {progressState === 'complete' && <><CheckCircle2 size={18} /> <span>Descarga Completa</span></>}
+        {progressState === 'idle' && <><Download size={18} /> <span>{t('ringSimulate')}</span></>}
+        {progressState === 'running' && <><Loader2 size={18} className="animate-spin" /> <span>{t('ringDownloading')}</span></>}
+        {progressState === 'complete' && <><CheckCircle2 size={18} /> <span>{t('ringComplete')}</span></>}
       </button>
       {progressState === 'complete' && (
         <button className="flex items-center gap-2 px-4 py-2 border border-slate-300 dark:border-slate-600 text-on-surface-variant rounded-full text-sm font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" onClick={resetProgress}>
-          <RotateCcw size={16} /> <span>Reiniciar</span>
+          <RotateCcw size={16} /> <span>{t('ringRestart')}</span>
         </button>
       )}
     </div>

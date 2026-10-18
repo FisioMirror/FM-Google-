@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useRef, useEffect } from "react";
+import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "../../lib/utils";
 import { Button } from "./Button";
@@ -204,31 +205,32 @@ Popover.Heading = PopoverHeading;
  */
 export function PopoverMetricDemo() {
   const [selectedJoint, setSelectedJoint] = useState<"rodilla" | "hombro" | "codo">("rodilla");
+  const { t } = useTranslation();
 
   const jointData = {
     rodilla: {
-      name: "Flexión de Rodilla",
+      name: t('cat.ex1'),
       currentAngle: "88°",
       optimalRange: "85° - 90°",
-      status: "Excelente",
+      status: t('pop.excellent'),
       badgeColor: "text-emerald-500 bg-emerald-500/10 border-emerald-500/20",
-      description: "Postura correcta detectada por MediaPipe. Distribución simétrica de carga patelar.",
+      description: t('pop.correctPostureDetected'),
     },
     hombro: {
-      name: "Abducción Escapular",
+      name: t('pop.scapularAbduction'),
       currentAngle: "112°",
       optimalRange: "110° - 120°",
-      status: "En Rango",
+      status: t('pop.inRange'),
       badgeColor: "text-teal-500 bg-teal-500/10 border-teal-500/20",
-      description: "Compensación de trapecio mínima. Rango biomecánico fisiológico alcanzado.",
+      description: t('pop.minimalTrapeziusCompensation'),
     },
     codo: {
-      name: "Extensión de Codo",
+      name: t('pop.elbowExtension'),
       currentAngle: "172°",
       optimalRange: "175° - 180°",
-      status: "Ligero Déficit",
+      status: t('pop.slightDeficit'),
       badgeColor: "text-amber-500 bg-amber-500/10 border-amber-500/20",
-      description: "Ligera flexión residual de 8°. Realizar fase excéntrica con ritmo controlado.",
+      description: t('pop.residualFlexion'),
     },
   };
 
@@ -248,7 +250,7 @@ export function PopoverMetricDemo() {
                 : "text-muted hover:text-foreground hover:bg-slate-200/50 dark:hover:bg-slate-700/50"
             )}
           >
-            {joint}
+            {t(`joints.${joint}`)}
           </button>
         ))}
       </div>
@@ -256,7 +258,7 @@ export function PopoverMetricDemo() {
       <Popover>
         <Button variant="secondary" className="gap-2 shadow-xs border-primary/20 hover:border-primary/50">
           <Activity className="size-4 text-primary" />
-          <span>Ver Ángulo ({current.currentAngle})</span>
+          <span>{t('pop.viewAngle', { angle: current.currentAngle })}</span>
         </Button>
         <Popover.Content className="w-72">
           <Popover.Dialog>
@@ -268,11 +270,11 @@ export function PopoverMetricDemo() {
             </div>
             <div className="space-y-2">
               <div className="flex justify-between items-center text-xs">
-                <span className="text-muted">Ángulo actual:</span>
+                <span className="text-muted">{t('pop.currentAngle')}</span>
                 <span className="font-bold text-on-surface text-sm">{current.currentAngle}</span>
               </div>
               <div className="flex justify-between items-center text-xs">
-                <span className="text-muted">Rango óptimo:</span>
+                <span className="text-muted">{t('pop.optimalRange')}</span>
                 <span className="font-semibold text-primary">{current.optimalRange}</span>
               </div>
               <p className="mt-2 text-xs text-on-surface-variant leading-relaxed bg-slate-50 dark:bg-slate-850 p-2.5 rounded-lg border border-border/40">

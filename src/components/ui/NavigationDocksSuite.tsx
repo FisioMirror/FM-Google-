@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '../../lib/utils';
 import {
@@ -30,6 +31,7 @@ export const CurvedMobileDock: React.FC<CurvedMobileDockProps> = ({
   onProgressClick,
   currentTab,
 }) => {
+  const { t } = useTranslation();
   const [internalTab, setInternalTab] = useState<'ejercicios' | 'scan' | 'progreso'>('scan');
   const activeTab = currentTab || internalTab;
 
@@ -54,7 +56,7 @@ export const CurvedMobileDock: React.FC<CurvedMobileDockProps> = ({
             : "text-on-surface-variant hover:text-teal-700 dark:hover:text-white"
         )}
       >
-        Ejercicios
+        {t('navigation.exercises')}
       </motion.button>
 
       {/* Central Action Button con ondas expansivas */}
@@ -68,7 +70,7 @@ export const CurvedMobileDock: React.FC<CurvedMobileDockProps> = ({
             onScanClick?.();
           }}
           className="size-14 rounded-2xl bg-gradient-to-tr from-teal-600 via-teal-500 to-cyan-400 text-white flex items-center justify-center shadow-elevated shadow-teal-500/40 border-2 border-white dark:border-slate-950 cursor-pointer"
-          title="Iniciar Escaneo / Sesión AR"
+          title={t('fnds.startScan')}
         >
           <Sparkles className="w-6 h-6 animate-pulse" />
         </motion.button>
@@ -89,7 +91,7 @@ export const CurvedMobileDock: React.FC<CurvedMobileDockProps> = ({
             : "text-on-surface-variant hover:text-teal-700 dark:hover:text-white"
         )}
       >
-        Progreso
+        {t('patients.progress')}
       </motion.button>
     </div>
   );
@@ -107,6 +109,7 @@ export const TherapistSidebarMini: React.FC<TherapistSidebarMiniProps> = ({
   activeId = 'grid',
   onSelect,
 }) => {
+  const { t } = useTranslation();
   const [internalActive, setInternalActive] = useState(activeId);
   const active = activeId || internalActive;
 
@@ -119,8 +122,8 @@ export const TherapistSidebarMini: React.FC<TherapistSidebarMiniProps> = ({
     >
       {[
         { id: 'grid', icon: LayoutGrid, label: 'Dashboard' },
-        { id: 'users', icon: Users, label: 'Pacientes' },
-        { id: 'video', icon: Video, label: 'Teleterapia' },
+        { id: 'users', icon: Users, label: t('navigation.patients') },
+        { id: 'video', icon: Video, label: t('fnds.teletherapy') },
       ].map((item) => {
         const isCurrent = active === item.id;
         const IconComponent = item.icon;
@@ -164,20 +167,23 @@ export interface QuickPatientSwitcherBarProps {
 }
 
 export const QuickPatientSwitcherBar: React.FC<QuickPatientSwitcherBarProps> = ({
-  patients = ['Carlos R. (En vivo)', 'Lucía M.', 'Andrés G.', 'Sofía V.'],
-  activePatient = 'Carlos R. (En vivo)',
+  patients,
+  activePatient,
   onSelect,
   className,
 }) => {
-  const [active, setActive] = useState(activePatient);
+  const { t } = useTranslation();
+  const defaultPatients = [t('fnds.carlosLive'), 'Lucía M.', 'Andrés G.', 'Sofía V.'];
+  const patientList = patients ?? defaultPatients;
+  const [active, setActive] = useState(activePatient ?? t('fnds.carlosLive'));
 
   useEffect(() => {
-    setActive(activePatient);
-  }, [activePatient]);
+    setActive(activePatient ?? t('fnds.carlosLive'));
+  }, [activePatient, t]);
 
   return (
     <div className={cn("flex items-center gap-2 overflow-x-auto p-1 hide-scrollbar", className)}>
-      {patients.map((item, idx) => {
+      {patientList.map((item, idx) => {
         const name = typeof item === 'string' ? item : item.name;
         const value = typeof item === 'string' ? item : item.id;
         const isCurrent = active === name || active === value;
@@ -219,8 +225,9 @@ export const SessionStateBreadcrumb: React.FC<SessionStateBreadcrumbProps> = ({
   className,
   onStepClick,
 }) => {
+  const { t } = useTranslation();
   const [step, setStep] = useState(currentStep);
-  const steps = ['Calibración Inicial', 'Rutina AR Guiada', 'Reporte Clínico'];
+  const steps = [t('fnds.stepCalibration'), t('fnds.stepGuidedRoutine'), t('fnds.stepClinicalReport')];
 
   useEffect(() => {
     setStep(currentStep);
@@ -276,6 +283,7 @@ export const SplitViewPerspectiveToggle: React.FC<SplitViewPerspectiveToggleProp
   onChange,
   className,
 }) => {
+  const { t } = useTranslation();
   const [val, setVal] = useState(mode);
 
   useEffect(() => {
@@ -307,7 +315,7 @@ export const SplitViewPerspectiveToggle: React.FC<SplitViewPerspectiveToggleProp
                 : "text-on-surface-variant hover:text-on-surface dark:text-on-surface-variant dark:hover:text-white"
             )}
           >
-            {m === 'front' ? 'Frontal 2D' : m === 'side' ? 'Sagital 90°' : 'Dual Split'}
+            {m === 'front' ? 'Frontal 2D' : m === 'side' ? t('fnds.sagittalView') : 'Dual Split'}
           </motion.button>
         );
       })}
@@ -322,6 +330,7 @@ export interface FloatingHelpBeaconProps {
 }
 
 export const FloatingHelpBeacon: React.FC<FloatingHelpBeaconProps> = ({ className, onClick }) => {
+  const { t } = useTranslation();
   return (
     <motion.button
       type="button"
@@ -334,7 +343,7 @@ export const FloatingHelpBeacon: React.FC<FloatingHelpBeaconProps> = ({ classNam
       )}
     >
       <LifeBuoy className="w-4 h-4 animate-spin text-teal-600 dark:text-teal-400" style={{ animationDuration: '10s' }} />
-      <span>Guía Clínica Asistida</span>
+      <span>{t('fnds.guidedClinical')}</span>
       <span className="size-2 rounded-full bg-emerald-500 animate-ping" />
     </motion.button>
   );
@@ -352,6 +361,7 @@ export const ErgonomicHandModeSwitcher: React.FC<ErgonomicHandModeSwitcherProps>
   onChange,
   className,
 }) => {
+  const { t } = useTranslation();
   const [currentHand, setCurrentHand] = useState(hand);
 
   useEffect(() => {
@@ -373,10 +383,10 @@ export const ErgonomicHandModeSwitcher: React.FC<ErgonomicHandModeSwitcherProps>
         "inline-flex items-center gap-2.5 p-2 px-3.5 rounded-2xl bg-white/90 dark:bg-slate-800/90 border border-teal-500/30 text-xs font-bold text-on-surface shadow-sm cursor-pointer transition-colors",
         className
       )}
-      title="Alternar mano dominante para la rutina"
+      title={t('fnds.toggleHand')}
     >
       <Hand className="w-4 h-4 text-teal-600 dark:text-teal-400" />
-      <span>Modo {currentHand === 'right' ? 'Diestro' : 'Zurdo'}</span>
+      <span>{t('fnds.handMode', { hand: currentHand === 'right' ? t('fnds.rightHanded') : t('fnds.leftHanded') })}</span>
     </motion.button>
   );
 };
@@ -392,13 +402,15 @@ export interface CompactTelehealthBarProps {
 }
 
 export const CompactTelehealthBar: React.FC<CompactTelehealthBarProps> = ({
-  therapistName = 'Dra. Ramos (En línea)',
+  therapistName,
   status,
   latencyMs = 38,
   onQuickCall,
   onQuickMessage,
   className,
 }) => {
+  const { t } = useTranslation();
+  const therapist = therapistName ?? t('fnds.therapistLive');
   return (
     <div
       className={cn(
@@ -409,7 +421,7 @@ export const CompactTelehealthBar: React.FC<CompactTelehealthBarProps> = ({
       <div className="flex items-center gap-2.5 min-w-0">
         <span className="size-2 rounded-full bg-emerald-500 shrink-0 animate-ping" />
         <div className="truncate">
-          <p className="font-bold truncate text-on-surface">{therapistName}</p>
+          <p className="font-bold truncate text-on-surface">{therapist}</p>
           {status && <p className="text-2xs text-on-surface-variant truncate">{status}</p>}
         </div>
       </div>
@@ -423,9 +435,9 @@ export const CompactTelehealthBar: React.FC<CompactTelehealthBarProps> = ({
           <button
             type="button"
             onClick={onQuickCall}
-            aria-label="Llamar al terapeuta"
+            aria-label={t('fnds.callTherapist')}
             className="p-1.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white transition-all shadow-sm active:scale-95 cursor-pointer"
-            title="Llamada directa"
+            title={t('fnds.directCall')}
           >
             <Phone className="w-3.5 h-3.5" />
           </button>
@@ -435,9 +447,9 @@ export const CompactTelehealthBar: React.FC<CompactTelehealthBarProps> = ({
           <button
             type="button"
             onClick={onQuickMessage}
-            aria-label="Mensaje al asistente"
+            aria-label={t('fnds.messageAssistant')}
             className="p-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-teal-500/20 text-on-surface transition-all border border-slate-200 dark:border-white/10 active:scale-95 cursor-pointer"
-            title="Chat clínico"
+            title={t('fnds.clinicalChat')}
           >
             <MessageSquare className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400" />
           </button>
@@ -509,13 +521,15 @@ export interface ContextualActionIslandProps {
 }
 
 export const ContextualActionIsland: React.FC<ContextualActionIslandProps> = ({
-  message = 'MediaPipe: Calibración Óptima a 60 FPS',
+  message,
   fps = 60,
   gpuPercent = 14,
   latencyMs = 18,
   landmarksCount = 33,
   className,
 }) => {
+  const { t } = useTranslation();
+  const messageText = message ?? t('fnds.calibrationOptimal');
   const [expanded, setExpanded] = useState(false);
 
   return (
@@ -530,7 +544,7 @@ export const ContextualActionIsland: React.FC<ContextualActionIslandProps> = ({
     >
       <div className="flex items-center gap-2">
         <span className="size-2 rounded-full bg-teal-500 animate-ping" />
-        <span className="font-bold text-on-surface">{message}</span>
+        <span className="font-bold text-on-surface">{messageText}</span>
       </div>
 
       <AnimatePresence>
@@ -541,7 +555,7 @@ export const ContextualActionIsland: React.FC<ContextualActionIslandProps> = ({
             exit={{ opacity: 0, height: 0 }}
             className="flex items-center gap-4 text-2xs font-mono text-on-surface-variant border-t border-slate-200 dark:border-white/10 pt-2"
           >
-            <span>Latencia: {latencyMs}ms</span>
+            <span>{t('fnds.latencyLabel', { n: latencyMs })}</span>
             <span>FPS: {fps}</span>
             <span>GPU: {gpuPercent}%</span>
             <span>Landmarks: {landmarksCount}/33</span>

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   ChevronDown,
@@ -31,21 +32,23 @@ import { cn } from '../../lib/utils';
 // 1. Accordion (HeroUI Fluid Accordion)
 // ==========================================
 export const CustomAccordion = ({
-  items = [
-    { title: '¿Cómo creo un paciente?', content: 'Ve a la sección Pacientes y pulsa en "Nuevo paciente" para ingresar sus datos clínicos y generar su token seguro de activación.' },
-    { title: '¿Cómo asigno una rutina?', content: 'Desde la biblioteca de ejercicios o el perfil del paciente, pulsa "Reasignar rutina" y selecciona los ejercicios terapéuticos.' },
-    { title: '¿Cómo uso el modo AR?', content: 'Accede a la sección Modo AR, concede permiso a tu cámara y sigue las instrucciones en pantalla con bio-feedback biomecánico.' },
-  ],
+  items,
   className,
 }: {
   items?: { title: string; content: string }[];
   className?: string;
 }) => {
+  const { t } = useTranslation();
   const [openIdx, setOpenIdx] = useState<number | null>(0);
+  const faqItems = items ?? [
+    { title: t('fhero.faqCreatePatient'), content: t('fhero.faqCreatePatientA') },
+    { title: t('fhero.faqAssignRoutine'), content: t('fhero.faqAssignRoutineA') },
+    { title: t('fhero.faqUseAr'), content: t('fhero.faqUseArA') },
+  ];
 
   return (
     <div className={cn('w-full max-w-md rounded-3xl border border-outline/15 bg-surface/80 backdrop-blur-md overflow-hidden divide-y divide-outline/15 shadow-sm', className)}>
-      {items.map((item, idx) => {
+      {faqItems.map((item, idx) => {
         const isOpen = openIdx === idx;
         return (
           <div key={idx} className="transition-colors group">
@@ -90,6 +93,7 @@ export const CustomAccordion = ({
 // 2. Alert (Basic HeroUI Glass Alerts)
 // ==========================================
 export const BasicAlert = ({ className }: { className?: string }) => {
+  const { t } = useTranslation();
   return (
     <div className={cn('grid gap-3 max-w-xl w-full', className)}>
       <motion.div
@@ -100,8 +104,8 @@ export const BasicAlert = ({ className }: { className?: string }) => {
           <CheckCircle2 className="size-4 text-emerald-600 dark:text-emerald-400" />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-xs sm:text-sm font-bold">Paciente guardado correctamente</p>
-          <p className="text-xs sm:text-xs opacity-80 mt-0.5">El expediente se sincronizó y se generó el token de un solo uso.</p>
+          <p className="text-xs sm:text-sm font-bold">{t('fhero.patientSaved')}</p>
+          <p className="text-xs sm:text-xs opacity-80 mt-0.5">{t('fhero.patientSavedDesc')}</p>
         </div>
       </motion.div>
 
@@ -113,8 +117,8 @@ export const BasicAlert = ({ className }: { className?: string }) => {
           <XCircle className="size-4 text-rose-600 dark:text-rose-400" />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-xs sm:text-sm font-bold">Error al procesar documento</p>
-          <p className="text-xs sm:text-xs opacity-80 mt-0.5">Revisa la iluminación y el formato del archivo médico (PDF/JPG).</p>
+          <p className="text-xs sm:text-sm font-bold">{t('fhero.docError')}</p>
+          <p className="text-xs sm:text-xs opacity-80 mt-0.5">{t('fhero.docErrorDesc')}</p>
         </div>
       </motion.div>
 
@@ -126,8 +130,8 @@ export const BasicAlert = ({ className }: { className?: string }) => {
           <Info className="size-4 text-teal-600 dark:text-teal-400" />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-xs sm:text-sm font-bold">Procesando prescripción con Physi IA</p>
-          <p className="text-xs sm:text-xs opacity-80 mt-0.5">Extrayendo ejercicios sugeridos y calibrando rangos articulares...</p>
+          <p className="text-xs sm:text-sm font-bold">{t('fhero.processingPrescription')}</p>
+          <p className="text-xs sm:text-xs opacity-80 mt-0.5">{t('fhero.processingPrescriptionDesc')}</p>
         </div>
       </motion.div>
     </div>
@@ -139,14 +143,17 @@ export const BasicAlert = ({ className }: { className?: string }) => {
 // ==========================================
 export const DeleteDialog = ({
   onConfirm,
-  title = '¿Eliminar paciente?',
-  description = 'Esta acción no se puede deshacer y archivará el historial clínico completo del expediente.',
+  title,
+  description,
 }: {
   onConfirm?: () => void;
   title?: string;
   description?: string;
 }) => {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
+  const dialogTitle = title ?? t('fhero.deletePatientTitle');
+  const dialogDescription = description ?? t('fhero.deletePatientDesc');
 
   return (
     <div>
@@ -155,7 +162,7 @@ export const DeleteDialog = ({
         className="inline-flex items-center gap-2 rounded-2xl bg-rose-500/10 text-rose-600 hover:bg-rose-500/20 border border-rose-500/20 px-4 py-2.5 text-xs font-bold transition-all cursor-pointer active:scale-95"
       >
         <Trash2 className="size-3.5" />
-        Eliminar paciente
+        {t('fhero.deletePatient')}
       </button>
 
       <AnimatePresence>
@@ -180,8 +187,8 @@ export const DeleteDialog = ({
                   <ShieldAlert className="size-6" />
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-on-surface">{title}</h3>
-                  <p className="text-xs text-on-surface-variant leading-relaxed mt-1">{description}</p>
+                  <h3 className="text-base font-bold text-on-surface">{dialogTitle}</h3>
+                  <p className="text-xs text-on-surface-variant leading-relaxed mt-1">{dialogDescription}</p>
                 </div>
               </div>
 
@@ -190,7 +197,7 @@ export const DeleteDialog = ({
                   onClick={() => setIsOpen(false)}
                   className="px-4 py-2 rounded-xl text-xs font-bold text-on-surface-variant hover:bg-surface-container-high transition-colors"
                 >
-                  Cancelar
+                  {t('common.cancel')}
                 </button>
                 <button
                   onClick={() => {
@@ -199,7 +206,7 @@ export const DeleteDialog = ({
                   }}
                   className="px-4 py-2 rounded-xl text-xs font-bold bg-rose-600 text-white hover:bg-rose-700 shadow-sm shadow-rose-600/20 transition-all active:scale-95 cursor-pointer"
                 >
-                  Confirmar eliminación
+                  {t('fhero.confirmDeletion')}
                 </button>
               </div>
             </motion.div>
@@ -289,19 +296,21 @@ export const AvatarWithBadge = ({
 // 6. Breadcrumbs (HeroUI Clean Breadcrumbs)
 // ==========================================
 export const CustomBreadcrumbs = ({
-  items = [
-    { label: 'Inicio', href: '/' },
-    { label: 'Pacientes', href: '/pacientes' },
-    { label: 'María Rodríguez' },
-  ],
+  items,
   separator = '/',
 }: {
   items?: { label: string; href?: string }[];
   separator?: React.ReactNode;
 }) => {
+  const { t } = useTranslation();
+  const crumbs = items ?? [
+    { label: t('navigation.dashboard'), href: '/' },
+    { label: t('navigation.patients'), href: '/pacientes' },
+    { label: 'María Rodríguez' },
+  ];
   return (
     <nav className="flex items-center gap-2 text-xs font-semibold text-on-surface-variant">
-      {items.map((item, idx) => (
+      {crumbs.map((item, idx) => (
         <React.Fragment key={idx}>
           {item.href ? (
             <a
@@ -315,7 +324,7 @@ export const CustomBreadcrumbs = ({
               {item.label}
             </span>
           )}
-          {idx < items.length - 1 && <span className="opacity-30">{separator}</span>}
+          {idx < crumbs.length - 1 && <span className="opacity-30">{separator}</span>}
         </React.Fragment>
       ))}
     </nav>
@@ -326,19 +335,20 @@ export const CustomBreadcrumbs = ({
 // 7. Button with Icons (HeroUI Ripple Buttons)
 // ==========================================
 export const IconButtons = () => {
+  const { t } = useTranslation();
   return (
     <div className="flex flex-wrap gap-2.5">
       <button className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-primary text-on-primary text-xs font-bold hover:bg-teal-500 transition-all active:scale-95 shadow-sm shadow-teal-600/20 cursor-pointer">
-        <Globe className="size-3.5" /> Buscar
+        <Globe className="size-3.5" /> {t('common.search')}
       </button>
       <button className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-teal-500/10 text-teal-600 dark:text-teal-400 border border-teal-500/20 text-xs font-bold hover:bg-teal-500/20 transition-all active:scale-95 cursor-pointer">
-        <Plus className="size-3.5" /> Agregar
+        <Plus className="size-3.5" /> {t('fhero.add')}
       </button>
       <button className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-surface-container-high text-on-surface text-xs font-bold hover:bg-surface-container-highest transition-all active:scale-95 cursor-pointer">
-        <Mail className="size-3.5" /> Enviar
+        <Mail className="size-3.5" /> {t('common.send')}
       </button>
       <button className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-rose-500/10 text-rose-600 border border-rose-500/20 text-xs font-bold hover:bg-rose-500/20 transition-all active:scale-95 cursor-pointer">
-        <Trash2 className="size-3.5" /> Eliminar
+        <Trash2 className="size-3.5" /> {t('common.delete')}
       </button>
     </div>
   );
@@ -371,10 +381,11 @@ export const ButtonGroupDropdown = ({
 }: {
   onSelect?: (filter: string) => void;
 }) => {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
-  const [selected, setSelected] = useState('Hoy');
+  const [selected, setSelected] = useState(() => t('fhero.today'));
 
-  const options = ['Hoy', 'Esta semana', 'Este mes', 'Histórico completo'];
+  const options = [t('fhero.today'), t('fhero.thisWeek'), t('fhero.thisMonth'), t('fhero.fullHistory')];
 
   return (
     <div className="relative inline-flex rounded-2xl bg-surface border border-outline/20 shadow-sm">
@@ -382,7 +393,7 @@ export const ButtonGroupDropdown = ({
         onClick={() => onSelect?.(selected)}
         className="px-4 py-2 text-xs font-bold text-on-surface hover:bg-surface-container-high rounded-l-2xl transition-colors cursor-pointer"
       >
-        Filtrar: <span className="text-teal-600 dark:text-teal-400">{selected}</span>
+        {t('common.filter')}: <span className="text-teal-600 dark:text-teal-400">{selected}</span>
       </button>
       <button
         onClick={() => setIsOpen(!isOpen)}
@@ -429,24 +440,26 @@ export const ButtonGroupDropdown = ({
 // ==========================================
 export const CardWithAvatar = ({
   name = 'María Rodríguez',
-  subtitle = '3 sesiones completadas esta semana',
+  subtitle,
   therapist = 'Dra. Demo',
 }: {
   name?: string;
   subtitle?: string;
   therapist?: string;
 }) => {
+  const { t } = useTranslation();
+  const cardSubtitle = subtitle ?? t('fhero.sessionsThisWeek');
   return (
     <div className="w-full max-w-[260px] rounded-3xl border border-outline/15 bg-surface p-5 shadow-sm hover:shadow-elevated hover:-translate-y-1 transition-all duration-300">
       <div className="flex items-center gap-3.5 mb-3.5">
         <BasicAvatar fallback={name.split(' ').map(n => n[0]).join('').slice(0, 2)} size="md" />
         <div className="min-w-0 flex-1">
           <h4 className="text-xs sm:text-sm font-bold text-on-surface truncate">{name}</h4>
-          <p className="text-xs text-on-surface-variant truncate mt-0.5">{subtitle}</p>
+          <p className="text-xs text-on-surface-variant truncate mt-0.5">{cardSubtitle}</p>
         </div>
       </div>
       <div className="pt-3 border-t border-outline/15 flex items-center justify-between text-xs">
-        <span className="text-outline">Fisio: {therapist}</span>
+        <span className="text-outline">{t('fhero.therapistLabel', { name: therapist })}</span>
         <span className="font-extrabold text-teal-600 dark:text-teal-400 bg-teal-500/10 px-2 py-0.5 rounded-full">
           85% Adh.
         </span>
@@ -459,8 +472,8 @@ export const CardWithAvatar = ({
 // 11. Card with Images (HeroUI Media Card)
 // ==========================================
 export const CardWithImage = ({
-  title = 'Ejercicio de Hombro',
-  category = 'Manguito Rotador',
+  title,
+  category,
   onAction,
 }: {
   title?: string;
@@ -468,6 +481,9 @@ export const CardWithImage = ({
   onAction?: () => void;
   className?: string;
 }) => {
+  const { t } = useTranslation();
+  const imageTitle = title ?? t('fhero.shoulderExercise');
+  const imageCategory = category ?? t('shw.rotatorCuff');
   return (
     <div className="relative min-h-[190px] w-full max-w-sm rounded-3xl overflow-hidden shadow-card group border border-teal-500/20 bg-gradient-to-br from-teal-950 via-slate-900 to-slate-950 p-6 flex flex-col justify-between">
       {/* Background glow mesh */}
@@ -475,9 +491,9 @@ export const CardWithImage = ({
 
       <div className="relative z-10">
         <span className="text-2xs font-black uppercase tracking-wider px-2.5 py-1 rounded-full bg-teal-500/20 text-teal-300 border border-teal-500/30">
-          {category}
+          {imageCategory}
         </span>
-        <h4 className="text-base sm:text-lg font-extrabold text-white mt-2.5 tracking-tight">{title}</h4>
+        <h4 className="text-base sm:text-lg font-extrabold text-white mt-2.5 tracking-tight">{imageTitle}</h4>
       </div>
 
       <div className="relative z-10 flex items-center justify-between pt-4 border-t border-white/10">
@@ -486,7 +502,7 @@ export const CardWithImage = ({
           onClick={onAction}
           className="px-3.5 py-1.5 rounded-xl bg-white text-on-surface text-xs font-bold hover:bg-teal-100 transition-all shadow cursor-pointer active:scale-95"
         >
-          Ver demostración
+          {t('fhero.viewDemo')}
         </button>
       </div>
     </div>
@@ -497,9 +513,9 @@ export const CardWithImage = ({
 // 12. PremiumCard (HeroUI Plan Pro)
 // ==========================================
 export const PremiumCard = ({
-  title = 'Plan Clínico Pro',
-  description = 'Para consultorios y clínicas de tele-rehabilitación',
-  features = ['Informes biomecánicos avanzados en PDF', 'Soporte prioritario 24/7', 'Acceso a Physi Asistente IA sin límites', 'Seguimiento de hasta 50 pacientes'],
+  title,
+  description,
+  features,
   onUpgrade,
 }: {
   title?: string;
@@ -507,6 +523,10 @@ export const PremiumCard = ({
   features?: string[];
   onUpgrade?: () => void;
 }) => {
+  const { t } = useTranslation();
+  const planTitle = title ?? t('fhero.planProTitle');
+  const planDescription = description ?? t('fhero.planProDesc');
+  const planFeatures = features ?? [t('fhero.planProF1'), t('fhero.planProF2'), t('fhero.planProF3'), t('fhero.planProF4')];
   return (
     <div className="relative w-full max-w-md rounded-3xl overflow-hidden border border-teal-500/30 bg-gradient-to-br from-teal-500/10 via-surface to-emerald-500/5 p-7 shadow-elevated">
       <div className="flex items-center gap-3.5 mb-5">
@@ -514,13 +534,13 @@ export const PremiumCard = ({
           <Star className="size-6" />
         </div>
         <div>
-          <h3 className="text-base font-bold text-on-surface">{title}</h3>
-          <p className="text-xs text-on-surface-variant mt-0.5">{description}</p>
+          <h3 className="text-base font-bold text-on-surface">{planTitle}</h3>
+          <p className="text-xs text-on-surface-variant mt-0.5">{planDescription}</p>
         </div>
       </div>
 
       <ul className="space-y-3 py-4 border-y border-outline/15 my-4">
-        {features.map((f, i) => (
+        {planFeatures.map((f, i) => (
           <li key={i} className="flex items-center gap-2.5 text-xs font-medium text-on-surface">
             <div className="size-5 rounded-full bg-teal-500/15 text-teal-600 flex items-center justify-center shrink-0">
               <Check className="size-3" />
@@ -534,7 +554,7 @@ export const PremiumCard = ({
         onClick={onUpgrade}
         className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white font-bold text-xs uppercase tracking-wider shadow-card shadow-teal-600/25 active:scale-[0.98] transition-all cursor-pointer"
       >
-        Actualizar plan
+        {t('fhero.upgradePlan')}
       </button>
     </div>
   );
@@ -544,19 +564,20 @@ export const PremiumCard = ({
 // 13. StatusChips (HeroUI Chips)
 // ==========================================
 export const StatusChips = () => {
+  const { t } = useTranslation();
   return (
     <div className="flex flex-wrap gap-2">
       <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
-        <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" /> Activo
+        <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" /> {t('common.active')}
       </span>
       <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
-        <span className="size-1.5 rounded-full bg-amber-500" /> Pendiente
+        <span className="size-1.5 rounded-full bg-amber-500" /> {t('common.pending')}
       </span>
       <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20">
-        <span className="size-1.5 rounded-full bg-rose-500" /> Inactivo
+        <span className="size-1.5 rounded-full bg-rose-500" /> {t('common.inactive')}
       </span>
       <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-teal-500/10 text-teal-600 dark:text-teal-400 border border-teal-500/20">
-        <Sparkles className="size-3" /> Nuevo
+        <Sparkles className="size-3" /> {t('fhero.new')}
       </span>
     </div>
   );
@@ -566,6 +587,7 @@ export const StatusChips = () => {
 // 14. Disclosure Group (HeroUI Disclosures)
 // ==========================================
 export const DisclosureConfig = () => {
+  const { t } = useTranslation();
   const [expanded, setExpanded] = useState<string | null>('profile');
 
   return (
@@ -575,12 +597,12 @@ export const DisclosureConfig = () => {
           onClick={() => setExpanded(expanded === 'profile' ? null : 'profile')}
           className="w-full flex items-center justify-between p-3 rounded-2xl text-xs font-bold text-on-surface hover:bg-surface-container-high transition-colors cursor-pointer"
         >
-          <span>Perfil & Preferencias</span>
+          <span>{t('fhero.profilePreferences')}</span>
           <ChevronDown className={cn('size-4 transition-transform duration-200', expanded === 'profile' && 'rotate-180')} />
         </button>
         {expanded === 'profile' && (
           <div className="p-3 text-xs text-on-surface-variant leading-relaxed">
-            Configura el nombre de tu consultorio, contacto directo de soporte y alertas de sesiones en vivo.
+            {t('fhero.profilePreferencesDesc')}
           </div>
         )}
       </div>
@@ -590,12 +612,12 @@ export const DisclosureConfig = () => {
           onClick={() => setExpanded(expanded === 'security' ? null : 'security')}
           className="w-full flex items-center justify-between p-3 rounded-2xl text-xs font-bold text-on-surface hover:bg-surface-container-high transition-colors cursor-pointer"
         >
-          <span>Seguridad & Tokens de Activación</span>
+          <span>{t('fhero.securityTokens')}</span>
           <ChevronDown className={cn('size-4 transition-transform duration-200', expanded === 'security' && 'rotate-180')} />
         </button>
         {expanded === 'security' && (
           <div className="p-3 text-xs text-on-surface-variant leading-relaxed">
-            Generación y revocación de tokens criptográficos de un solo uso para enrolar pacientes de forma segura.
+            {t('fhero.securityTokensDesc')}
           </div>
         )}
       </div>
@@ -613,6 +635,7 @@ export const NavigationDrawer = ({
   isOpen?: boolean;
   onClose?: () => void;
 }) => {
+  const { t } = useTranslation();
   const [internalOpen, setInternalOpen] = useState(false);
   const open = isOpen ?? internalOpen;
   const setOpen = onClose ?? (() => setInternalOpen(false));
@@ -623,7 +646,7 @@ export const NavigationDrawer = ({
         onClick={() => setInternalOpen(true)}
         className="px-4 py-2 rounded-2xl bg-surface-container-high text-on-surface hover:text-teal-600 transition-colors flex items-center gap-2 text-xs font-bold cursor-pointer"
       >
-        <Menu className="size-4" /> Menú Lateral
+        <Menu className="size-4" /> {t('fhero.sideMenu')}
       </button>
 
       <AnimatePresence>
@@ -652,10 +675,10 @@ export const NavigationDrawer = ({
                 </div>
                 <nav className="space-y-1.5 mt-5">
                   {[
-                    { label: 'Dashboard Clínico', icon: Home, href: '/dashboard-fisio' },
-                    { label: 'Pacientes & Tokens', icon: User, href: '/patients' },
-                    { label: 'Biblioteca de Ejercicios', icon: Star, href: '/fisio-exercises' },
-                    { label: 'Estadísticas Biomecánicas', icon: Globe, href: '/fisio-stats' },
+                    { label: t('fhero.dashboardClinical'), icon: Home, href: '/dashboard-fisio' },
+                    { label: t('fhero.patientsTokens'), icon: User, href: '/patients' },
+                    { label: t('fhero.exerciseLibrary'), icon: Star, href: '/fisio-exercises' },
+                    { label: t('fhero.biomechanicalStats'), icon: Globe, href: '/fisio-stats' },
                   ].map((item) => (
                     <a
                       key={item.label}
@@ -668,7 +691,7 @@ export const NavigationDrawer = ({
                   ))}
                 </nav>
               </div>
-              <p className="text-2xs font-semibold text-outline text-center">FisioMirror • Tele-rehabilitación v3</p>
+              <p className="text-2xs font-semibold text-outline text-center">{t('fhero.footerBrand')}</p>
             </motion.div>
           </div>
         )}
@@ -681,6 +704,7 @@ export const NavigationDrawer = ({
 // 16. Dropdown with Descriptions (HeroUI Actions)
 // ==========================================
 export const ActionDropdown = () => {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -689,7 +713,7 @@ export const ActionDropdown = () => {
         onClick={() => setIsOpen(!isOpen)}
         className="px-4 py-2.5 rounded-2xl bg-primary text-on-primary text-xs font-bold hover:bg-teal-500 transition-all flex items-center gap-2 shadow-sm shadow-teal-600/20 cursor-pointer active:scale-95"
       >
-        <span>Acciones Rápidas</span>
+        <span>{t('dashboard.quickActions')}</span>
         <ChevronDown className="size-3.5" />
       </button>
 
@@ -710,8 +734,8 @@ export const ActionDropdown = () => {
                 <FilePlus className="size-4" />
               </div>
               <div>
-                <p className="text-xs font-bold text-on-surface">Nuevo paciente</p>
-                <p className="text-2xs text-on-surface-variant">Generar expediente y token de activación</p>
+                <p className="text-xs font-bold text-on-surface">{t('navigation.newPatient')}</p>
+                <p className="text-2xs text-on-surface-variant">{t('fhero.generateRecordToken')}</p>
               </div>
             </button>
             <button
@@ -722,8 +746,8 @@ export const ActionDropdown = () => {
                 <FolderOpen className="size-4" />
               </div>
               <div>
-                <p className="text-xs font-bold text-on-surface">Abrir biblioteca</p>
-                <p className="text-2xs text-on-surface-variant">Explorar +50 ejercicios preconfigurados</p>
+                <p className="text-xs font-bold text-on-surface">{t('fhero.openLibrary')}</p>
+                <p className="text-2xs text-on-surface-variant">{t('fhero.exploreExercises50')}</p>
               </div>
             </button>
           </motion.div>
@@ -737,6 +761,7 @@ export const ActionDropdown = () => {
 // 17. Popover Simple
 // ==========================================
 export const SimplePopover = () => {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -757,9 +782,9 @@ export const SimplePopover = () => {
             transition={{ type: 'spring', damping: 20, stiffness: 350 }}
             className="absolute left-0 mt-2 w-56 rounded-3xl bg-surface border border-outline/20 p-4 shadow-elevated z-30"
           >
-            <h5 className="text-xs font-bold text-on-surface mb-1">Opciones Rápidas</h5>
+            <h5 className="text-xs font-bold text-on-surface mb-1">{t('fhero.quickOptions')}</h5>
             <p className="text-xs text-on-surface-variant leading-relaxed">
-              Exporta informes de progreso biomecánico o comparte rutinas directamente.
+              {t('fhero.quickOptionsDesc')}
             </p>
           </motion.div>
         )}
@@ -772,11 +797,12 @@ export const SimplePopover = () => {
 // 18. ProgressBar Sizes (HeroUI Striped Progress)
 // ==========================================
 export const ProgressSizes = ({ value = 75 }: { value?: number }) => {
+  const { t } = useTranslation();
   return (
     <div className="flex flex-col gap-4 w-full max-w-sm">
       <div>
         <div className="flex justify-between text-xs font-bold text-outline mb-1">
-          <span>Rango inicial (sm)</span>
+          <span>{t('fhero.initialRangeSm')}</span>
           <span>{value}%</span>
         </div>
         <div className="h-1.5 w-full rounded-full bg-surface-container-high overflow-hidden">
@@ -786,7 +812,7 @@ export const ProgressSizes = ({ value = 75 }: { value?: number }) => {
 
       <div>
         <div className="flex justify-between text-xs font-bold text-outline mb-1">
-          <span>Adherencia estándar (md)</span>
+          <span>{t('fhero.standardAdherenceMd')}</span>
           <span>{value}%</span>
         </div>
         <div className="h-2.5 w-full rounded-full bg-surface-container-high overflow-hidden">
@@ -796,7 +822,7 @@ export const ProgressSizes = ({ value = 75 }: { value?: number }) => {
 
       <div>
         <div className="flex justify-between text-xs font-bold text-outline mb-1">
-          <span>Precisión AR (lg)</span>
+          <span>{t('fhero.arPrecisionLg')}</span>
           <span>{value}%</span>
         </div>
         <div className="h-4 w-full rounded-full bg-surface-container-high overflow-hidden p-0.5">
@@ -817,19 +843,20 @@ export const DateRange = ({
   startDate?: string;
   endDate?: string;
 }) => {
+  const { t } = useTranslation();
   return (
     <div className="p-5 rounded-3xl bg-surface border border-outline/15 max-w-sm shadow-sm space-y-3">
       <div className="flex items-center justify-between pb-3 border-b border-outline/15 text-xs font-bold text-on-surface">
         <span className="flex items-center gap-2">
-          <Calendar className="size-4 text-teal-600" /> Marzo 2026
+          <Calendar className="size-4 text-teal-600" /> {t('fhero.march2026')}
         </span>
         <span className="px-2.5 py-0.5 rounded-full bg-teal-500/10 text-teal-700 dark:text-teal-300 font-extrabold text-2xs">
           {startDate} - {endDate}
         </span>
       </div>
       <div className="grid grid-cols-7 gap-1 text-center text-xs">
-        {['L', 'M', 'X', 'J', 'V', 'S', 'D'].map((d) => (
-          <span key={d} className="font-extrabold text-outline text-2xs py-1">{d}</span>
+        {[t('fhero.dowMon'), t('fhero.dowTue'), t('fhero.dowWed'), t('fhero.dowThu'), t('fhero.dowFri'), t('fhero.dowSat'), t('fhero.dowSun')].map((d, i) => (
+          <span key={i} className="font-extrabold text-outline text-2xs py-1">{d}</span>
         ))}
         {Array.from({ length: 31 }).map((_, i) => {
           const day = i + 1;
@@ -860,13 +887,14 @@ export const DateRange = ({
 // 20. ScrollShadow (HeroUI Scroll Shadows)
 // ==========================================
 export const ScrollableList = ({ itemsCount = 8 }: { itemsCount?: number }) => {
+  const { t } = useTranslation();
   return (
     <div className="w-full max-w-sm rounded-3xl bg-surface border border-outline/15 p-5 overflow-hidden shadow-sm">
-      <h4 className="text-xs font-bold uppercase tracking-wider text-outline mb-3">Historial con Scroll Suave</h4>
+      <h4 className="text-xs font-bold uppercase tracking-wider text-outline mb-3">{t('fhero.scrollHistory')}</h4>
       <div className="max-h-52 overflow-y-auto space-y-2 pr-1.5 scrollbar-thin">
         {Array.from({ length: itemsCount }).map((_, i) => (
           <div key={i} className="p-3 rounded-2xl bg-surface-container-low text-xs text-on-surface flex items-center justify-between hover:bg-surface-container transition-colors">
-            <span className="font-medium">Sesión #{i + 1} de rehabilitación</span>
+            <span className="font-medium">{t('fhero.sessionOfRehab', { n: i + 1 })}</span>
             <span className="text-2xs text-teal-600 dark:text-teal-400 font-bold bg-teal-500/10 px-2 py-0.5 rounded-full">
               92% ROM
             </span>
@@ -881,6 +909,7 @@ export const ScrollableList = ({ itemsCount = 8 }: { itemsCount?: number }) => {
 // 21. Toast Variants (HeroUI Toasts)
 // ==========================================
 export const ToastVariants = () => {
+  const { t } = useTranslation();
   const [toastMsg, setToastMsg] = useState<string | null>(null);
 
   const trigger = (msg: string) => {
@@ -890,14 +919,14 @@ export const ToastVariants = () => {
 
   return (
     <div className="flex flex-wrap gap-2 relative">
-      <button onClick={() => trigger('Paciente guardado exitosamente')} className="px-4 py-2 rounded-2xl bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 text-xs font-bold hover:bg-emerald-500/25 transition-all cursor-pointer">
-        Toast Éxito
+      <button onClick={() => trigger(t('fhero.patientSavedToast'))} className="px-4 py-2 rounded-2xl bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 text-xs font-bold hover:bg-emerald-500/25 transition-all cursor-pointer">
+        {t('fhero.toastSuccess')}
       </button>
-      <button onClick={() => trigger('Advertencia: Ángulo fuera del rango seguro')} className="px-4 py-2 rounded-2xl bg-amber-500/15 text-amber-600 dark:text-amber-400 text-xs font-bold hover:bg-amber-500/25 transition-all cursor-pointer">
-        Toast Alerta
+      <button onClick={() => trigger(t('fhero.angleWarningToast'))} className="px-4 py-2 rounded-2xl bg-amber-500/15 text-amber-600 dark:text-amber-400 text-xs font-bold hover:bg-amber-500/25 transition-all cursor-pointer">
+        {t('fhero.toastAlert')}
       </button>
-      <button onClick={() => trigger('Error de calibración en la cámara')} className="px-4 py-2 rounded-2xl bg-rose-500/15 text-rose-600 dark:text-rose-400 text-xs font-bold hover:bg-rose-500/25 transition-all cursor-pointer">
-        Toast Error
+      <button onClick={() => trigger(t('fhero.cameraCalibrationToast'))} className="px-4 py-2 rounded-2xl bg-rose-500/15 text-rose-600 dark:text-rose-400 text-xs font-bold hover:bg-rose-500/25 transition-all cursor-pointer">
+        {t('fhero.toastError')}
       </button>
 
       <AnimatePresence>
@@ -921,27 +950,29 @@ export const ToastVariants = () => {
 // 22. PatientsTable (HeroUI Interactive Table)
 // ==========================================
 export const PatientsTable = ({
-  users = [
-    { id: 1, name: 'María Rodríguez', email: 'maria@fisio.com', status: 'Activo', adherence: 94 },
-    { id: 2, name: 'Carlos Gómez', email: 'carlos@fisio.com', status: 'Pendiente', adherence: 68 },
-    { id: 3, name: 'Lucía Fernández', email: 'lucia@fisio.com', status: 'Inactivo', adherence: 42 },
-  ],
+  users,
 }: {
   users?: { id: number; name: string; email: string; status: string; adherence: number }[];
 }) => {
+  const { t } = useTranslation();
+  const rows = users ?? [
+    { id: 1, name: 'María Rodríguez', email: 'maria@fisio.com', status: t('common.active'), adherence: 94 },
+    { id: 2, name: 'Carlos Gómez', email: 'carlos@fisio.com', status: t('common.pending'), adherence: 68 },
+    { id: 3, name: 'Lucía Fernández', email: 'lucia@fisio.com', status: t('common.inactive'), adherence: 42 },
+  ];
   return (
     <div className="w-full overflow-x-auto rounded-3xl border border-outline/15 bg-surface shadow-sm">
       <table className="w-full text-left text-xs">
         <thead className="border-b border-outline/15 bg-surface-container-low text-on-surface-variant font-extrabold uppercase tracking-wider text-2xs">
           <tr>
-            <th className="p-4">Paciente</th>
-            <th className="p-4">Adherencia</th>
-            <th className="p-4">Estado</th>
-            <th className="p-4 text-right">Acción</th>
+            <th className="p-4">{t('common.patient')}</th>
+            <th className="p-4">{t('shw.adherence')}</th>
+            <th className="p-4">{t('common.status')}</th>
+            <th className="p-4 text-right">{t('fhero.action')}</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-outline/15">
-          {users.map((u) => (
+          {rows.map((u) => (
             <tr key={u.id} className="hover:bg-teal-500/5 transition-colors">
               <td className="p-4">
                 <div className="flex items-center gap-3">
@@ -964,9 +995,9 @@ export const PatientsTable = ({
                 <span
                   className={cn(
                     'px-2.5 py-0.5 rounded-full text-2xs font-bold',
-                    u.status === 'Activo'
+                    u.status === t('common.active')
                       ? 'bg-emerald-500/10 text-emerald-600 border border-emerald-500/20'
-                      : u.status === 'Pendiente'
+                      : u.status === t('common.pending')
                       ? 'bg-amber-500/10 text-amber-600 border border-amber-500/20'
                       : 'bg-rose-500/10 text-rose-600 border border-rose-500/20'
                   )}
@@ -991,12 +1022,15 @@ export const PatientsTable = ({
 // 23. CustomAlert (HeroUI Warning Notice)
 // ==========================================
 export const CustomAlert = ({
-  title = 'Tu plan está por vencer',
-  description = 'Actualiza tu suscripción clínica para evitar interrupciones en la atención de pacientes.',
+  title,
+  description,
 }: {
   title?: string;
   description?: string;
 }) => {
+  const { t } = useTranslation();
+  const alertTitle = title ?? t('fhero.planExpiringTitle');
+  const alertDescription = description ?? t('fhero.planExpiringDesc');
   return (
     <div className="relative overflow-hidden rounded-3xl border border-amber-500/30 bg-gradient-to-br from-amber-500/15 via-surface to-amber-500/5 p-5 shadow-sm">
       <div className="pointer-events-none absolute -top-8 -right-8 size-28 rounded-full bg-amber-500/15 blur-2xl" />
@@ -1005,11 +1039,11 @@ export const CustomAlert = ({
           <AlertTriangle className="size-5" />
         </div>
         <div className="flex-1">
-          <h4 className="text-xs sm:text-sm font-bold text-on-surface">{title}</h4>
-          <p className="text-xs sm:text-xs text-on-surface-variant mt-0.5 leading-relaxed">{description}</p>
+          <h4 className="text-xs sm:text-sm font-bold text-on-surface">{alertTitle}</h4>
+          <p className="text-xs sm:text-xs text-on-surface-variant mt-0.5 leading-relaxed">{alertDescription}</p>
         </div>
         <button className="px-3.5 py-1.5 rounded-xl bg-amber-500 text-white text-xs font-bold hover:bg-amber-600 transition-colors shrink-0 shadow-sm cursor-pointer">
-          Actualizar
+          {t('common.update')}
         </button>
       </div>
     </div>
@@ -1034,16 +1068,17 @@ export const ChipVariants = () => {
 // 25. Chip Statuses
 // ==========================================
 export const ChipStatuses = () => {
+  const { t } = useTranslation();
   return (
     <div className="flex flex-wrap gap-2">
       <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">
-        <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" /> Activo
+        <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" /> {t('common.active')}
       </span>
       <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-amber-500/10 text-amber-600 border border-amber-500/20">
-        <span className="size-1.5 rounded-full bg-amber-500" /> En revisión
+        <span className="size-1.5 rounded-full bg-amber-500" /> {t('fhero.underReview')}
       </span>
       <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-rose-500/10 text-rose-600 border border-rose-500/20">
-        <span className="size-1.5 rounded-full bg-rose-500" /> Suspendido
+        <span className="size-1.5 rounded-full bg-rose-500" /> {t('fhero.suspended')}
       </span>
     </div>
   );
@@ -1055,14 +1090,16 @@ export const ChipStatuses = () => {
 export const PopoverInteractive = ({
   name = 'Sarah Johnson',
   handle = '@sarahj',
-  bio = 'Paciente en rehabilitación de hombro. 3 semanas de progreso constante con biofeedback AR.',
+  bio,
 }: {
   name?: string;
   handle?: string;
   bio?: string;
 }) => {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [following, setFollowing] = useState(false);
+  const bioText = bio ?? t('fhero.patientBio');
 
   return (
     <div className="relative inline-block">
@@ -1096,14 +1133,14 @@ export const PopoverInteractive = ({
                   following ? 'bg-surface-container-high text-on-surface' : 'bg-primary text-on-primary shadow-sm'
                 )}
               >
-                {following ? 'Siguiendo' : 'Seguir'}
+                {following ? t('fhero.following') : t('fhero.follow')}
               </button>
             </div>
-            <p className="text-xs text-on-surface-variant leading-relaxed">{bio}</p>
+            <p className="text-xs text-on-surface-variant leading-relaxed">{bioText}</p>
             <div className="pt-3 border-t border-outline/15 flex items-center justify-between text-xs font-semibold">
-              <span className="text-on-surface">12 Sesiones Realizadas</span>
+              <span className="text-on-surface">{t('fhero.sessionsCompleted', { n: 12 })}</span>
               <span className="text-teal-600 dark:text-teal-400 font-bold bg-teal-500/10 px-2 py-0.5 rounded-full">
-                88% Adherencia
+                {t('fhero.adherencePct', { n: 88 })}
               </span>
             </div>
           </motion.div>
@@ -1117,10 +1154,11 @@ export const PopoverInteractive = ({
 // 27. Drawer Placements
 // ==========================================
 export const Placements = () => {
+  const { t } = useTranslation();
   return (
     <div className="flex flex-wrap gap-2">
-      {['Izquierda', 'Derecha', 'Superior', 'Inferior'].map((p) => (
-        <span key={p} className="px-3.5 py-1.5 rounded-xl bg-surface-container-high text-xs font-bold text-on-surface">
+      {[t('fhero.left'), t('fhero.right'), t('fhero.top'), t('fhero.bottom')].map((p, i) => (
+        <span key={i} className="px-3.5 py-1.5 rounded-xl bg-surface-container-high text-xs font-bold text-on-surface">
           {p}
         </span>
       ))}

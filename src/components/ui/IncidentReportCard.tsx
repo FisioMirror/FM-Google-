@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import {
   AreaChart,
@@ -69,9 +70,9 @@ const DownTrendIcon: React.FC<{ baseColor: string; strokeColor: string; classNam
 
 // FisioMirror Medical Palette
 const LEGEND_ITEMS = [
-  { name: 'Rango Articular (ROM)', color: '#14b8a6' }, // Teal
-  { name: 'Precisión Postural AR', color: '#3a5f94' }, // Slate Blue
-  { name: 'Adherencia Terapéutica', color: '#a3e635' }, // Kinetic Lime
+  { name: 'irc.rangeOfMotion', color: '#14b8a6' }, // Teal
+  { name: 'irc.arPosturalAccuracy', color: '#3a5f94' }, // Slate Blue
+  { name: 'dashboard.adherence', color: '#a3e635' }, // Kinetic Lime
 ];
 
 const now = new Date();
@@ -146,8 +147,8 @@ const METRICS_DATA: MetricInfo[] = [
   {
     id: 'mttd',
     Icon: DiamondAlertIcon,
-    label: 'Rango Máximo Logrado (ROM)',
-    tooltip: 'Mayor grado articular alcanzado en sesión',
+    label: 'irc.maxRangeAchieved',
+    tooltip: 'irc.highestJointDegree',
     value: '138°',
     TrendIcon: UpTrendIcon,
     trendBaseColor: '#14b8a6',
@@ -157,8 +158,8 @@ const METRICS_DATA: MetricInfo[] = [
   {
     id: 'irt',
     Icon: CircleAlertIcon,
-    label: 'Precisión Biomecánica AR',
-    tooltip: 'Porcentaje de ejecución sin compensaciones posturales',
+    label: 'irc.arBiomechanicalAccuracy',
+    tooltip: 'irc.executionPercentage',
     value: '94.2%',
     TrendIcon: UpTrendIcon,
     trendBaseColor: '#3a5f94',
@@ -168,8 +169,8 @@ const METRICS_DATA: MetricInfo[] = [
   {
     id: 'ier',
     Icon: TriangleAlertIcon,
-    label: 'Tasa de Compensación Lesiva',
-    tooltip: 'Reducción de movimientos de sobrecarga detectados por MediaPipe',
+    label: 'irc.harmfulCompensationRate',
+    tooltip: 'irc.overloadMovementsReduction',
     value: '3.8%',
     TrendIcon: DownTrendIcon,
     trendBaseColor: '#10b981',
@@ -180,6 +181,7 @@ const METRICS_DATA: MetricInfo[] = [
 
 export const IncidentReportCard: React.FC<{ className?: string }> = ({ className = '' }) => {
   const validatedChartData = useMemo(() => validateChartData(initialChartData), []);
+  const { t } = useTranslation();
 
   return (
     <div
@@ -190,13 +192,13 @@ export const IncidentReportCard: React.FC<{ className?: string }> = ({ className
           <span className="text-2xs font-extrabold uppercase tracking-widest text-teal-600 dark:text-teal-400 bg-teal-500/10 px-2.5 py-0.5 rounded-full border border-teal-500/20">
             Reaviz Analytics 2.0
           </span>
-          <span className="text-2xs text-on-surface-variant">Últimos 7 días</span>
+          <span className="text-2xs text-on-surface-variant">{t('stats.range7d')}</span>
         </div>
         <h3 className="fm-title text-on-surface">
-          Evolución Biomecánica
+          {t('irc.biomechanicalEvolution')}
         </h3>
         <p className="text-xs text-on-surface-variant mt-0.5">
-          Tendencia clínica de movilidad y adherencia del paciente
+          {t('irc.clinicalTrend')}
         </p>
       </div>
 
@@ -205,7 +207,7 @@ export const IncidentReportCard: React.FC<{ className?: string }> = ({ className
         {LEGEND_ITEMS.map((item) => (
           <div key={item.name} className="flex gap-1.5 items-center">
             <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} />
-            <span className="text-on-surface-variant text-xs font-semibold">{item.name}</span>
+            <span className="text-on-surface-variant text-xs font-semibold">{t(item.name)}</span>
           </div>
         ))}
       </div>
@@ -275,8 +277,8 @@ export const IncidentReportCard: React.FC<{ className?: string }> = ({ className
           >
             <div className="flex items-center gap-2.5 text-xs text-on-surface-variant">
               <metric.Icon />
-              <span className="font-semibold" title={metric.tooltip}>
-                {metric.label}
+              <span className="font-semibold" title={t(metric.tooltip)}>
+                {t(metric.label)}
               </span>
             </div>
             <div className="flex items-center gap-2">

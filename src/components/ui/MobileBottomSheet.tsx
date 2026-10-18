@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence, type PanInfo } from 'framer-motion';
 import { X, ChevronUp, ChevronDown } from 'lucide-react';
@@ -53,6 +54,7 @@ export function MobileBottomSheet({
     controlledSnap || (allowedSnapPoints.includes('medium') ? 'medium' : allowedSnapPoints[0])
   );
   const activeSnap = controlledSnap !== undefined ? controlledSnap : internalSnap;
+  const { t } = useTranslation();
   const sheetRef = useRef<HTMLDivElement>(null);
 
   // Sync internal state when controlled changes
@@ -204,7 +206,7 @@ export function MobileBottomSheet({
                         type="button"
                         onClick={() => cycleSnap('up')}
                         disabled={activeSnap === 'full'}
-                        aria-label="Expandir cajón"
+                        aria-label={t('mbsExpand')}
                         className="p-1 rounded-md text-on-surface-variant hover:text-teal-600 dark:hover:text-teal-400 disabled:opacity-30 disabled:pointer-events-none"
                       >
                         <ChevronUp className="size-4" />
@@ -212,7 +214,7 @@ export function MobileBottomSheet({
                       <button
                         type="button"
                         onClick={() => cycleSnap('down')}
-                        aria-label="Reducir cajón"
+                        aria-label={t('mbsReduce')}
                         className="p-1 rounded-md text-on-surface-variant hover:text-teal-600 dark:hover:text-teal-400"
                       >
                         <ChevronDown className="size-4" />
@@ -223,7 +225,7 @@ export function MobileBottomSheet({
                   <button
                     type="button"
                     onClick={onClose}
-                    aria-label="Cerrar cajón"
+                    aria-label={t('mbsClose')}
                     className="size-8 rounded-full bg-slate-100 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-700 text-on-surface-variant flex items-center justify-center transition-colors"
                   >
                     <X className="size-4" />

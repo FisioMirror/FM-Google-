@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { X, Sparkles, ArrowRight } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { Button } from './Button';
@@ -16,14 +17,20 @@ export interface PromoCardProps {
 
 export function PromoCardDemo({
   imageSrc = '/physi.png',
-  imageAlt = 'Banner FisioMirror IA',
-  title = '¡Nuevo módulo de IA disponible!',
-  description = 'Optimiza tus análisis biomecánicos con la nueva integración de modelos avanzados de visión artificial y corrección postural por voz.',
-  tag = 'Actualización del sistema',
-  ctaText = 'Explorar Módulo',
+  imageAlt,
+  title,
+  description,
+  tag,
+  ctaText,
   onCtaClick,
   className = '',
 }: PromoCardProps) {
+  const { t } = useTranslation();
+  const finalImageAlt = imageAlt ?? t('hpc.fisioMirrorAiBanner');
+  const finalTitle = title ?? t('hpc.newAiModule');
+  const finalDescription = description ?? t('hpc.description');
+  const finalTag = tag ?? t('hpc.systemUpdate');
+  const finalCtaText = ctaText ?? t('hpc.exploreModule');
   const [visible, setVisible] = useState(true);
 
   if (!visible) return null;
@@ -41,7 +48,7 @@ export function PromoCardDemo({
       {/* Media Box */}
       <div className="relative h-[140px] w-full shrink-0 overflow-hidden rounded-2xl sm:h-[120px] sm:w-[130px] bg-gradient-to-tr from-teal-900 to-slate-900 flex items-center justify-center border border-teal-500/20">
         <img
-          alt={imageAlt}
+          alt={finalImageAlt}
           className="h-full w-full object-cover object-center group-hover:scale-105 transition-transform duration-300"
           src={imageSrc}
           onError={(e) => {
@@ -58,27 +65,27 @@ export function PromoCardDemo({
         <div>
           <div className="flex items-start justify-between gap-3">
             <h4 className="text-sm sm:text-base font-extrabold text-on-surface tracking-tight">
-              {title}
+              {finalTitle}
             </h4>
             <button
               onClick={() => setVisible(false)}
-              aria-label="Cerrar banner"
+              aria-label={t('hpc.closeBanner')}
               className="p-1 rounded-xl text-on-surface-variant hover:text-on-surface-variant dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors shrink-0"
             >
               <X className="w-4 h-4" />
             </button>
           </div>
           <p className="text-xs text-on-surface-variant mt-1 leading-relaxed">
-            {description}
+            {finalDescription}
           </p>
         </div>
 
         <div className="mt-2 flex justify-between items-center pt-2 border-t border-slate-100 dark:border-slate-800/80">
           <span className="text-xs font-semibold text-teal-600 dark:text-teal-400 bg-teal-500/10 px-2 py-0.5 rounded-full border border-teal-500/20">
-            {tag}
+            {finalTag}
           </span>
           <Button size="sm" variant="glow" glowEffect onClick={onCtaClick} icon={<ArrowRight className="w-3.5 h-3.5" />} iconPosition="right">
-            {ctaText}
+            {finalCtaText}
           </Button>
         </div>
       </div>

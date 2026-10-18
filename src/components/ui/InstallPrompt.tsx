@@ -1,4 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { X, Download, Smartphone } from 'lucide-react';
 import { useState } from 'react';
 import { useInstall } from '../../lib/installContext';
@@ -23,13 +24,14 @@ function Toast({ message, onDone }: { message: string; onDone: () => void }) {
 
 export function InstallModal() {
   const { modalOpen, closeModal, triggerInstall, isInstallable } = useInstall();
+  const { t } = useTranslation();
   const [toast, setToast] = useState<string | null>(null);
   const [showToast, setShowToast] = useState(false);
 
   const handleInstall = async () => {
     if (!isInstallable) {
       closeModal();
-      setToast('Abrí el menú del navegador y tocá "Agregar a pantalla principal" o "Instalar app".');
+      setToast(t('instFallbackHint'));
       setShowToast(true);
       setTimeout(() => setShowToast(false), 5000);
       return;
@@ -80,28 +82,28 @@ export function InstallModal() {
                 </div>
 
                 <h2 className="text-xl font-bold text-primary-800 dark:text-slate-100">
-                  Instalá FisioMirror
+                  {t('instTitle')}
                 </h2>
                 <p className="mt-1 text-sm text-primary-500 dark:text-on-surface-variant font-medium">
-                  Tele-rehabilitación inteligente
+                  {t('instTagline')}
                 </p>
               </div>
 
               {/* Body */}
               <div className="px-6 pb-2">
                 <p className="text-sm text-primary-600 dark:text-slate-300 text-center leading-relaxed">
-                  FisioMirror te permite hacer ejercicios de tele-rehabilitación guiados por IA.
-                  Instalala en tu dispositivo para acceder más rápido, incluso sin conexión.
+                  {t('instBody1')}
+                  {t('instBody2')}
                 </p>
 
                 <div className="mt-4 flex flex-col gap-2">
                   <div className="flex items-center gap-2 text-xs text-primary-500 dark:text-on-surface-variant">
                     <Smartphone className="w-4 h-4 text-accent flex-shrink-0" />
-                    Acceso directo desde tu pantalla de inicio
+                    {t('instFeature1')}
                   </div>
                   <div className="flex items-center gap-2 text-xs text-primary-500 dark:text-on-surface-variant">
                     <Download className="w-4 h-4 text-accent flex-shrink-0" />
-                    Disponible sin conexión a internet
+                    {t('instFeature2')}
                   </div>
                 </div>
               </div>
@@ -113,13 +115,13 @@ export function InstallModal() {
                   className="w-full py-3 px-4 rounded-2xl bg-gradient-to-r from-primary-600 to-accent text-white font-semibold text-sm shadow-card hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
                 >
                   <Download className="w-4 h-4" />
-                  Instalar ahora
+                  {t('instInstallNow')}
                 </button>
                 <button
                   onClick={closeModal}
                   className="w-full py-3 px-4 rounded-2xl text-primary-500 dark:text-on-surface-variant font-medium text-sm hover:bg-white/20 active:scale-[0.98] transition-all"
                 >
-                  Ahora no
+                  {t('instLater')}
                 </button>
               </div>
             </motion.div>

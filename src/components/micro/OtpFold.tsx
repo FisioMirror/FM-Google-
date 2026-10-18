@@ -1,8 +1,10 @@
 import { useState, useRef, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Check } from 'lucide-react';
 
 const OtpFold = () => {
   const [values, setValues] = useState(['', '', '', '']);
+  const { t } = useTranslation();
   const [isFolded, setIsFolded] = useState(false);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
@@ -40,7 +42,7 @@ const OtpFold = () => {
           <Check size={28} />
         </div>
       </div>
-      <p className="text-sm text-on-surface-variant">Escribe el código de 4 dígitos</p>
+      <p className="text-sm text-on-surface-variant">{t('otpPrompt')}</p>
     </div>
   );
 };

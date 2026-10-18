@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Check, AlertTriangle, AlertCircle, Circle, Sparkles } from 'lucide-react';
 import { cn } from '../../lib/utils';
 
@@ -50,31 +51,32 @@ export function ChipLabel({ children, className = '' }: { children: React.ReactN
 Chip.Label = ChipLabel;
 
 export function ChipStatusesDemo() {
+  const { t } = useTranslation();
   return (
     <div className="flex flex-wrap items-center gap-2.5">
       <Chip color="success" variant="primary">
         <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />
-        <Chip.Label>Activo</Chip.Label>
+        <Chip.Label>{t('common.active')}</Chip.Label>
       </Chip>
 
       <Chip color="warning" variant="primary">
         <AlertTriangle className="size-3" />
-        <Chip.Label>Pendiente</Chip.Label>
+        <Chip.Label>{t('common.pending')}</Chip.Label>
       </Chip>
 
       <Chip color="danger" variant="primary">
         <AlertCircle className="size-3" />
-        <Chip.Label>Supervisión Requerida</Chip.Label>
+        <Chip.Label>{t('hcSupervisionReq')}</Chip.Label>
       </Chip>
 
       <Chip color="primary" variant="primary">
         <Sparkles className="size-3" />
-        <Chip.Label>Módulo IA Activo</Chip.Label>
+        <Chip.Label>{t('hcAiActive')}</Chip.Label>
       </Chip>
 
       <Chip color="neutral" variant="primary">
         <Circle className="size-2.5 fill-current opacity-40" />
-        <Chip.Label>Alta Médica</Chip.Label>
+        <Chip.Label>{t('hcDischarged')}</Chip.Label>
       </Chip>
     </div>
   );
