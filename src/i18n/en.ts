@@ -2210,6 +2210,38 @@ export const en: typeof es = {
     home: 'Home',
   },
 
+  layout: {
+    sessionClosed: 'Session closed',
+    noActiveSession: 'No active session',
+    installHint: 'To install the app, use your browser menu: Add to Home Screen',
+    appInstalled: 'App installed successfully',
+    installApp: 'Install App',
+    inConsultation: 'In session',
+    expandMenu: 'Expand menu',
+    collapseMenu: 'Collapse menu',
+    openChatbot: 'Open Physi AI Chatbot',
+    noPatientsLinked: 'You don\'t have any linked patients yet.',
+    loadNewPatient: 'Load new patient',
+    selectVideoPatient: 'Select the patient you want to start the video call with.',
+    startVideoCall: 'Start video call',
+    videoCallStarted: 'Video call started. Notification sent in real time.',
+    videoCallStartedWith: 'Video call started with {{name}}. Notification sent in real time.',
+    videoCallError: 'Could not start the video call',
+    noTherapistAssigned: 'You don\'t have an assigned physiotherapist',
+    noPhone: 'No phone number registered',
+    noWhatsapp: 'No WhatsApp number registered',
+    call: 'Call',
+    message: 'Message',
+    navMenu: 'Navigation menu',
+    activePatient: 'Active Patient',
+    confirmSignOut: 'Confirm sign out',
+    informedConsent: 'Informed Consent',
+    termsOfService: 'Terms of Service',
+    dataPrivacy: 'Data Privacy',
+    privacyPolicy: 'Privacy Policy',
+    tokenReentryDesc: 'You\'ll need to re-enter your token to access.',
+  },
+
 } as const;
 
 export default en;

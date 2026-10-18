@@ -2210,6 +2210,38 @@ export const pt: typeof es = {
     home: 'Início',
   },
 
+  layout: {
+    sessionClosed: 'Sessão encerrada',
+    noActiveSession: 'Nenhuma sessão ativa',
+    installHint: 'Para instalar o app, use o menu do navegador: Adicionar à tela inicial',
+    appInstalled: 'App instalado com sucesso',
+    installApp: 'Instalar App',
+    inConsultation: 'Em atendimento',
+    expandMenu: 'Expandir menu',
+    collapseMenu: 'Recolher menu',
+    openChatbot: 'Abrir Chatbot IA Physi',
+    noPatientsLinked: 'Você ainda não tem pacientes vinculados.',
+    loadNewPatient: 'Carregar novo paciente',
+    selectVideoPatient: 'Selecione o paciente com quem deseja iniciar a chamada de vídeo.',
+    startVideoCall: 'Iniciar chamada de vídeo',
+    videoCallStarted: 'Chamada de vídeo iniciada. Notificação enviada em tempo real.',
+    videoCallStartedWith: 'Chamada de vídeo iniciada com {{name}}. Notificação enviada em tempo real.',
+    videoCallError: 'Não foi possível iniciar a chamada de vídeo',
+    noTherapistAssigned: 'Você não tem um fisioterapeuta atribuído',
+    noPhone: 'Nenhum número de telefone registrado',
+    noWhatsapp: 'Nenhum número de WhatsApp registrado',
+    call: 'Ligação',
+    message: 'Mensagem',
+    navMenu: 'Menu de navegação',
+    activePatient: 'Paciente Ativo',
+    confirmSignOut: 'Confirmar encerramento de sessão',
+    informedConsent: 'Consentimento Informado',
+    termsOfService: 'Termos de Serviço',
+    dataPrivacy: 'Privacidade de Dados',
+    privacyPolicy: 'Política de Privacidade',
+    tokenReentryDesc: 'Você precisará inserir seu token novamente para acessar.',
+  },
+
 } as const;
 
 export default pt;

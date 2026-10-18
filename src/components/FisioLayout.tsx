@@ -132,7 +132,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
 
   const handleSignOut = () => {
     signOut();
-    toast.info('Sesión cerrada');
+    toast.info(t('layout.sessionClosed'));
     navigate('/login');
   };
 
@@ -228,7 +228,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
 
   // --- FAB: Videollamada con paciente ---
   const abrirSelectorPaciente = async () => {
-    if (!user?.id) { toast.info('No hay sesión activa'); return; }
+    if (!user?.id) { toast.info(t('layout.noActiveSession')); return; }
     setShowVideoModal(true);
     setVideoLoading(true);
     try {
@@ -292,10 +292,10 @@ export function FisioLayout({ children }: FisioLayoutProps) {
         // Edge function opcional
       }
 
-      toast.success(`Videollamada iniciada con ${paciente.name}. Notificación enviada en tiempo real.`);
+      toast.success(t('layout.videoCallStartedWith', { name: paciente.name }));
       setShowVideoModal(false);
     } catch {
-      toast.error('No se pudo iniciar la videollamada');
+      toast.error(t('layout.videoCallError'));
     } finally {
       setVideoStarting(false);
     }
@@ -369,9 +369,9 @@ export function FisioLayout({ children }: FisioLayoutProps) {
           onClick={async () => {
             const result = await triggerInstall();
             if (result === 'unavailable') {
-              toast.info('Para instalar la app, usa el menú de tu navegador: Agregar a pantalla de inicio');
+              toast.info(t('layout.installHint'));
             } else if (result === 'accepted') {
-              toast.success('App instalada correctamente');
+              toast.success(t('layout.appInstalled'));
             }
           }}
           className={cn(
@@ -381,7 +381,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
           title={collapsed ? 'Instalar App' : undefined}
         >
           <Download size={18} className="shrink-0 text-sky-600 dark:text-sky-400" />
-          {!collapsed && <span className="text-sm font-medium">Instalar App</span>}
+          {!collapsed && <span className="text-sm font-medium">{t('layout.installApp')}</span>}
         </button>
       )}
       {!collapsed && (
@@ -398,7 +398,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
             <p className="font-bold text-sm text-on-surface truncate">{user?.full_name || 'Fisioterapeuta'}</p>
             <div className="flex items-center gap-1.5 mt-0.5">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              <p className="text-2xs text-sky-600 dark:text-sky-400 uppercase tracking-wider font-semibold">En consulta</p>
+              <p className="text-2xs text-sky-600 dark:text-sky-400 uppercase tracking-wider font-semibold">{t('layout.inConsultation')}</p>
             </div>
           </div>
         </div>
@@ -406,14 +406,14 @@ export function FisioLayout({ children }: FisioLayoutProps) {
       <div className={cn(collapsed ? 'flex flex-col items-center gap-2' : 'flex items-center justify-between px-1')}>
         <button
           onClick={toggleTheme}
-          aria-label="Cambiar tema"
+          aria-label={t('common.changeTheme')}
           className="p-2 rounded-xl text-on-surface-variant hover:bg-sky-50 dark:hover:bg-slate-800 hover:text-sky-600 dark:hover:text-sky-400 transition-colors"
         >
           {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
         </button>
         <button
           onClick={() => { onNavAway?.(); setShowNotifications(true); }}
-          aria-label="Notificaciones"
+          aria-label={t('navigation.notifications')}
           className="relative p-2 rounded-xl text-on-surface-variant hover:bg-sky-50 dark:hover:bg-slate-800 hover:text-sky-600 dark:hover:text-sky-400 transition-colors"
         >
           <Bell size={18} />
@@ -425,7 +425,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
         </button>
         <button
           onClick={() => { onNavAway?.(); setShowLogout(true); }}
-          aria-label="Cerrar sesión"
+          aria-label={t('common.logout')}
           className="p-2 rounded-xl text-on-surface-variant hover:bg-red-50 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 transition-colors"
         >
           <LogOut size={18} />
@@ -442,7 +442,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
             <img src="/logo.png" alt="FisioMirror" className="h-9 w-9 min-w-[36px] min-h-[36px] object-contain shrink-0 aspect-square" />
             <div className="flex flex-col min-w-0">
               <h1 className="text-base font-extrabold text-on-surface tracking-tight leading-tight whitespace-nowrap">FisioMirror</h1>
-              <p className="text-2xs uppercase tracking-wider text-sky-600 dark:text-sky-400 font-bold whitespace-nowrap">Edición Clínica</p>
+              <p className="text-2xs uppercase tracking-wider text-sky-600 dark:text-sky-400 font-bold whitespace-nowrap">{t('navigation.clinicalEdition')}</p>
             </div>
           </div>
         ) : (
@@ -453,7 +453,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
         {opts?.showToggle && (
           <button
             onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-            aria-label={sidebarCollapsed ? 'Expandir menú' : 'Colapsar menú'}
+            aria-label={sidebarCollapsed ? t('layout.expandMenu') : t('layout.collapseMenu')}
             className="hidden lg:flex absolute top-1/2 -translate-y-1/2 right-2 w-6 h-6 rounded-full bg-sky-500 text-white items-center justify-center text-xs shadow-sm hover:scale-110 transition-transform z-10"
           >
             {sidebarCollapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
@@ -513,13 +513,13 @@ export function FisioLayout({ children }: FisioLayoutProps) {
                   <img src="/logo.png" alt="FisioMirror" className="h-9 w-9 object-contain shrink-0" />
                   <div>
                     <h2 className="text-base font-extrabold text-on-surface leading-tight">FisioMirror</h2>
-                    <p className="text-2xs uppercase tracking-wider text-sky-600 dark:text-sky-400 font-bold">Edición Clínica</p>
+                    <p className="text-2xs uppercase tracking-wider text-sky-600 dark:text-sky-400 font-bold">{t('navigation.clinicalEdition')}</p>
                   </div>
                 </div>
                 <button
                   onClick={() => setSidebarOpen(false)}
                   className="p-2 rounded-xl text-on-surface-variant hover:text-on-surface dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-                  aria-label="Cerrar menú"
+                  aria-label={t('navigation.closeMenu')}
                 >
                   <X size={20} />
                 </button>
@@ -539,7 +539,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
           <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
             <button
               onClick={() => setSidebarOpen(true)}
-              aria-label="Abrir menú"
+              aria-label={t('navigation.openMenu')}
               className="lg:hidden text-primary shrink-0 p-1.5 rounded-lg hover:bg-primary/10 transition-colors"
             >
               <Icon name="menu" size={22} />
@@ -552,7 +552,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
             </div>
             {/* Desktop breadcrumb */}
             <div className="hidden lg:flex items-center text-outline text-label-sm gap-2 min-w-0 truncate">
-              <span onClick={() => navigate('/dashboard-fisio')} className="hover:text-primary cursor-pointer shrink-0">Inicio</span>
+              <span onClick={() => navigate('/dashboard-fisio')} className="hover:text-primary cursor-pointer shrink-0">{t('navigation.dashboard')}</span>
               <Icon name="chevron_right" size={14} className="shrink-0" />
               <span className="text-on-surface font-bold truncate">{currentCrumb}</span>
             </div>
@@ -608,7 +608,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
             <button
               onClick={() => setPhysiGuideOpen(true)}
               className="p-2 rounded-xl text-on-surface-variant hover:text-primary hover:bg-primary/5 transition-colors active-scale flex items-center gap-1.5"
-              aria-label="Abrir Chatbot IA Physi"
+              aria-label={t('layout.openChatbot')}
               title="Chatbot IA Physi"
             >
               <Bot size={20} className="text-primary" />
@@ -620,7 +620,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
             <button
               onClick={toggleTheme}
               className="text-on-surface-variant hover:text-primary transition-colors active-scale"
-              aria-label="Cambiar tema"
+              aria-label={t('common.changeTheme')}
             >
               <Icon name={theme === 'dark' ? 'light_mode' : 'dark_mode'} size={20} />
             </button>
@@ -639,7 +639,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
             <button
               onClick={() => setShowLogout(true)}
               className="text-on-surface-variant hover:text-error transition-colors active-scale"
-              aria-label="Cerrar sesión"
+              aria-label={t('common.logout')}
             >
               <Icon name="logout" size={20} />
             </button>
@@ -650,11 +650,11 @@ export function FisioLayout({ children }: FisioLayoutProps) {
         <div className="p-4 sm:p-6 lg:p-8 pb-28 lg:pb-10 flex-1 bg-teal-50/20 dark:bg-slate-950/20">{children}</div>
 
         <footer className="pt-6 pb-6 px-4 sm:px-8 flex flex-col md:flex-row justify-between text-outline text-xs gap-4 border-t border-white/10">
-          <span>&copy; 2026 FisioMirror S.A. · Edición Clínica</span>
+          <span>&copy; 2026 FisioMirror S.A. · {t('navigation.clinicalEdition')}</span>
           <div className="flex gap-4">
-            <button onClick={() => setLegalModal('consent')} className="text-outline hover:text-primary transition-colors">Consentimiento Informado</button>
-            <button onClick={() => setLegalModal('terms')} className="text-outline hover:text-primary transition-colors">Términos de Servicio</button>
-            <button onClick={() => setLegalModal('privacy')} className="text-outline hover:text-primary transition-colors">Privacidad de Datos</button>
+            <button onClick={() => setLegalModal('consent')} className="text-outline hover:text-primary transition-colors">{t('layout.informedConsent')}</button>
+            <button onClick={() => setLegalModal('terms')} className="text-outline hover:text-primary transition-colors">{t('layout.termsOfService')}</button>
+            <button onClick={() => setLegalModal('privacy')} className="text-outline hover:text-primary transition-colors">{t('layout.dataPrivacy')}</button>
           </div>
         </footer>
       </main>
@@ -688,17 +688,17 @@ export function FisioLayout({ children }: FisioLayoutProps) {
                   <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
                     <Video size={22} />
                   </div>
-                  <h3 className="fm-section-title">Iniciar videollamada</h3>
+                  <h3 className="fm-section-title">{t('layout.startVideoCall')}</h3>
                 </div>
                 <button
                   onClick={() => !videoStarting && setShowVideoModal(false)}
-                  aria-label="Cerrar"
+                  aria-label={t('common.close')}
                   className="text-outline hover:text-error transition-colors p-2 min-h-[44px] min-w-[44px] flex items-center justify-center"
                 >
                   <Icon name="close" size={20} />
                 </button>
               </div>
-              <p className="text-on-surface-variant text-sm mb-4">Selecciona el paciente con quien quieres iniciar la videollamada.</p>
+              <p className="text-on-surface-variant text-sm mb-4">{t('layout.selectVideoPatient')}</p>
 
               {videoLoading ? (
                 <div className="flex items-center justify-center py-10">
@@ -706,12 +706,12 @@ export function FisioLayout({ children }: FisioLayoutProps) {
                 </div>
               ) : videoPatients.length === 0 ? (
                 <div className="text-center py-8">
-                  <p className="text-on-surface-variant text-sm mb-4">No tienes pacientes vinculados todavía.</p>
+                  <p className="text-on-surface-variant text-sm mb-4">{t('layout.noPatientsLinked')}</p>
                   <button
                     onClick={() => { setShowVideoModal(false); navigate('/ocr-scanner'); }}
                     className="px-5 py-3 rounded-xl bg-primary text-on-primary font-bold text-sm hover:scale-[0.98] transition-all min-h-[48px]"
                   >
-                    Cargar nuevo paciente
+                    {t('layout.loadNewPatient')}
                   </button>
                 </div>
               ) : (

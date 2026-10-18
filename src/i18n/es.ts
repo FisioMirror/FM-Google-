@@ -2214,6 +2214,38 @@ export const es = {
     home: 'Inicio',
   },
 
+  layout: {
+    sessionClosed: 'Sesión cerrada',
+    noActiveSession: 'No hay sesión activa',
+    installHint: 'Para instalar la app, usa el menú de tu navegador: Agregar a pantalla de inicio',
+    appInstalled: 'App instalada correctamente',
+    installApp: 'Instalar App',
+    inConsultation: 'En consulta',
+    expandMenu: 'Expandir menú',
+    collapseMenu: 'Colapsar menú',
+    openChatbot: 'Abrir Chatbot IA Physi',
+    noPatientsLinked: 'No tienes pacientes vinculados todavía.',
+    loadNewPatient: 'Cargar nuevo paciente',
+    selectVideoPatient: 'Selecciona el paciente con quien quieres iniciar la videollamada.',
+    startVideoCall: 'Iniciar videollamada',
+    videoCallStarted: 'Videollamada iniciada. Notificación enviada en tiempo real.',
+    videoCallStartedWith: 'Videollamada iniciada con {{name}}. Notificación enviada en tiempo real.',
+    videoCallError: 'No se pudo iniciar la videollamada',
+    noTherapistAssigned: 'No tienes un fisioterapeuta asignado',
+    noPhone: 'No hay número de teléfono registrado',
+    noWhatsapp: 'No hay número de WhatsApp registrado',
+    call: 'Llamada',
+    message: 'Mensaje',
+    navMenu: 'Menú de navegación',
+    activePatient: 'Paciente Activo',
+    confirmSignOut: 'Confirmar cierre de sesión',
+    informedConsent: 'Consentimiento Informado',
+    termsOfService: 'Términos de Servicio',
+    dataPrivacy: 'Privacidad de Datos',
+    privacyPolicy: 'Política de Privacidad',
+    tokenReentryDesc: 'Tendrás que volver a ingresar tu token para acceder.',
+  },
+
 } as const;
 
 export default es;

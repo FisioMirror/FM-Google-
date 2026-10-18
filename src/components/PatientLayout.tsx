@@ -92,7 +92,7 @@ export function PatientLayout({ children }: PatientLayoutProps) {
   }, [sidebarCollapsed]);
 
   const sidebarWidth = sidebarCollapsed ? 64 : 256;
-  const currentCrumb = breadcrumbMap[location.pathname] || 'Inicio';
+  const currentCrumb = breadcrumbMap[location.pathname] || t('navigation.dashboard');
 
   useEffect(() => {
     loadTherapistPhone();
@@ -159,16 +159,16 @@ export function PatientLayout({ children }: PatientLayoutProps) {
 
   const handleSignOut = () => {
     signOut();
-    toast.info('Sesión cerrada');
+    toast.info(t('layout.sessionClosed'));
     navigate('/login');
   };
 
   const quickActionItems: FloatingMenuItem[] = [
     {
-      label: 'Videollamada',
+      label: t('navigation.videoCall'),
       icon: <Video size={20} className="text-primary" />,
       onClick: async () => {
-        if (!user?.id) { toast.info('No hay sesión activa'); return; }
+        if (!user?.id) { toast.info(t('layout.noActiveSession')); return; }
         try {
           const { data: vinculacion } = await supabase
             .from('pacientes_terapeutas')
@@ -176,7 +176,7 @@ export function PatientLayout({ children }: PatientLayoutProps) {
             .eq('paciente_id', user.id)
             .maybeSingle();
           if (!vinculacion?.terapeuta_id) {
-            toast.error('No tienes un fisioterapeuta asignado');
+            toast.error(t('layout.noTherapistAssigned'));
             return;
           }
           const fisioId = vinculacion.terapeuta_id;
@@ -212,20 +212,20 @@ export function PatientLayout({ children }: PatientLayoutProps) {
           } catch {
             // opcional
           }
-          toast.success('Videollamada iniciada. Notificación enviada en tiempo real.');
+          toast.success(t('layout.videoCallStarted'));
         } catch {
-          toast.error('No se pudo iniciar la videollamada');
+          toast.error(t('layout.videoCallError'));
         }
       },
     },
     {
-      label: 'Llamada',
+      label: t('layout.call'),
       icon: <Phone size={20} className="text-primary" />,
       onClick: () => {
         if (therapistPhone) {
           window.location.href = `tel:${therapistPhone}`;
         } else {
-          toast.info('No hay número de teléfono registrado');
+          toast.info(t('layout.noPhone'));
         }
       },
     },
@@ -237,18 +237,18 @@ export function PatientLayout({ children }: PatientLayoutProps) {
           const clean = therapistPhone.replace(/\D/g, '');
           window.open(`https://wa.me/${clean}`, '_blank');
         } else {
-          toast.info('No hay número de WhatsApp registrado');
+          toast.info(t('layout.noWhatsapp'));
         }
       },
     },
     {
-      label: 'Mensaje',
+      label: t('layout.message'),
       icon: <Mail size={20} className="text-primary" />,
       onClick: () => {
         if (therapistPhone) {
           window.location.href = `sms:${therapistPhone}`;
         } else {
-          toast.info('No hay número de teléfono registrado');
+          toast.info(t('layout.noPhone'));
         }
       },
     },
@@ -270,7 +270,7 @@ export function PatientLayout({ children }: PatientLayoutProps) {
             <p className="font-bold text-sm text-on-surface truncate">{user?.full_name || 'Paciente'}</p>
             <div className="flex items-center gap-1.5 mt-0.5">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              <p className="text-2xs text-teal-600 dark:text-teal-400 uppercase tracking-wider font-semibold">Paciente Activo</p>
+              <p className="text-2xs text-teal-600 dark:text-teal-400 uppercase tracking-wider font-semibold">{t('layout.activePatient')}</p>
             </div>
           </div>
         </div>
@@ -279,7 +279,7 @@ export function PatientLayout({ children }: PatientLayoutProps) {
         <button
           onClick={toggleTheme}
           className="p-2 rounded-xl text-on-surface-variant hover:bg-teal-50 dark:hover:bg-slate-800 hover:text-teal-600 dark:hover:text-teal-400 transition-colors"
-          aria-label="Cambiar tema"
+          aria-label={t('common.changeTheme')}
         >
           {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
         </button>
@@ -298,7 +298,7 @@ export function PatientLayout({ children }: PatientLayoutProps) {
         <button
           onClick={() => { onNavAway?.(); setShowLogout(true); }}
           className="p-2 rounded-xl text-on-surface-variant hover:bg-red-50 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 transition-colors"
-          aria-label="Cerrar sesión"
+          aria-label={t('common.logout')}
         >
           <LogOut size={18} />
         </button>
@@ -314,7 +314,7 @@ export function PatientLayout({ children }: PatientLayoutProps) {
             <img src="/logo.png" alt="FisioMirror" className="h-9 w-9 min-w-[36px] min-h-[36px] object-contain shrink-0 aspect-square" />
             <div className="flex flex-col min-w-0">
               <h1 className="text-base font-extrabold text-on-surface tracking-tight leading-tight whitespace-nowrap">FisioMirror</h1>
-              <p className="text-2xs uppercase tracking-wider text-teal-600 dark:text-teal-400 font-bold whitespace-nowrap">Portal Paciente</p>
+              <p className="text-2xs uppercase tracking-wider text-teal-600 dark:text-teal-400 font-bold whitespace-nowrap">{t('navigation.patientPortal')}</p>
             </div>
           </div>
         ) : (
@@ -325,7 +325,7 @@ export function PatientLayout({ children }: PatientLayoutProps) {
         {opts?.showToggle && (
           <button
             onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-            aria-label={sidebarCollapsed ? 'Expandir menú' : 'Colapsar menú'}
+            aria-label={sidebarCollapsed ? t('layout.expandMenu') : t('layout.collapseMenu')}
             className="hidden lg:flex absolute top-1/2 -translate-y-1/2 right-2 w-6 h-6 rounded-full bg-primary text-on-primary items-center justify-center text-xs shadow-sm hover:scale-110 transition-transform z-10"
           >
             <Icon name={sidebarCollapsed ? 'chevron_right' : 'chevron_left'} size={14} />
@@ -420,7 +420,7 @@ export function PatientLayout({ children }: PatientLayoutProps) {
               onClick={(e) => e.stopPropagation()}
               role="dialog"
               aria-modal="true"
-              aria-label="Menú de navegación"
+              aria-label={t('layout.navMenu')}
               className="h-full w-72 max-w-[85vw] flex flex-col bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl border-r border-teal-200/50 dark:border-slate-800 text-on-surface rounded-r-3xl shadow-elevated overflow-hidden"
             >
               <div className="p-4 flex items-center justify-between border-b border-teal-100/60 dark:border-slate-800">
@@ -428,13 +428,13 @@ export function PatientLayout({ children }: PatientLayoutProps) {
                   <img src="/logo.png" alt="FisioMirror" className="h-9 w-9 object-contain shrink-0" />
                   <div>
                     <h2 className="text-base font-extrabold text-on-surface leading-tight">FisioMirror</h2>
-                    <p className="text-2xs uppercase tracking-wider text-teal-600 dark:text-teal-400 font-bold">Portal Paciente</p>
+                    <p className="text-2xs uppercase tracking-wider text-teal-600 dark:text-teal-400 font-bold">{t('navigation.patientPortal')}</p>
                   </div>
                 </div>
                 <button
                   onClick={() => setSidebarOpen(false)}
                   className="p-2 rounded-xl text-on-surface-variant hover:text-on-surface dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-                  aria-label="Cerrar menú"
+                  aria-label={t('navigation.closeMenu')}
                 >
                   <X size={20} />
                 </button>
@@ -478,7 +478,7 @@ export function PatientLayout({ children }: PatientLayoutProps) {
           <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
             <button
               onClick={() => setSidebarOpen(true)}
-              aria-label="Abrir menú"
+              aria-label={t('navigation.openMenu')}
               className="lg:hidden text-primary shrink-0 p-1.5 rounded-lg hover:bg-primary/10 transition-colors"
             >
               <Icon name="menu" size={22} />
@@ -491,7 +491,7 @@ export function PatientLayout({ children }: PatientLayoutProps) {
             </div>
             {/* Desktop breadcrumb */}
             <div className="hidden lg:flex items-center text-outline text-label-sm gap-2 min-w-0 truncate">
-              <span onClick={() => navigate('/dashboard-paciente')} className="hover:text-primary cursor-pointer shrink-0">Inicio</span>
+              <span onClick={() => navigate('/dashboard-paciente')} className="hover:text-primary cursor-pointer shrink-0">{t('navigation.dashboard')}</span>
               <Icon name="chevron_right" size={14} className="shrink-0" />
               <span className="text-on-surface font-bold truncate">{currentCrumb}</span>
             </div>
@@ -516,14 +516,14 @@ export function PatientLayout({ children }: PatientLayoutProps) {
             <button
               onClick={toggleTheme}
               className="text-on-surface-variant hover:text-primary transition-colors active-scale p-2 rounded-full"
-              aria-label="Cambiar tema"
+              aria-label={t('common.changeTheme')}
             >
               <Icon name={theme === 'dark' ? 'light_mode' : 'dark_mode'} size={20} />
             </button>
             <button
               onClick={() => setPhysiChatOpen(true)}
               className="p-2 rounded-xl text-on-surface-variant hover:text-primary hover:bg-primary/5 transition-colors active-scale flex items-center gap-1.5"
-              aria-label="Abrir Chatbot IA Physi"
+              aria-label={t('layout.openChatbot')}
               title="Chatbot IA Physi"
             >
               <Bot size={20} className="text-primary" />
@@ -534,7 +534,7 @@ export function PatientLayout({ children }: PatientLayoutProps) {
             <button
               onClick={() => setShowLogout(true)}
               className="text-on-surface-variant hover:text-error transition-colors active-scale p-2 rounded-full"
-              aria-label="Cerrar sesión"
+              aria-label={t('common.logout')}
             >
               <Icon name="logout" size={20} />
             </button>
@@ -547,9 +547,9 @@ export function PatientLayout({ children }: PatientLayoutProps) {
         <footer className="hidden lg:flex pt-6 pb-6 px-8 justify-between text-outline text-xs border-t divider-teal shrink-0">
           <span>&copy; 2026 FisioMirror</span>
           <div className="flex gap-4">
-            <button onClick={() => setLegalModal('consent')} className="transition-colors hover:text-primary">Consentimiento Informado</button>
-            <button onClick={() => setLegalModal('terms')} className="transition-colors hover:text-primary">Términos de Servicio</button>
-            <button onClick={() => setLegalModal('privacy')} className="transition-colors hover:text-primary">Privacidad de Datos</button>
+            <button onClick={() => setLegalModal('consent')} className="transition-colors hover:text-primary">{t('layout.informedConsent')}</button>
+            <button onClick={() => setLegalModal('terms')} className="transition-colors hover:text-primary">{t('layout.termsOfService')}</button>
+            <button onClick={() => setLegalModal('privacy')} className="transition-colors hover:text-primary">{t('layout.dataPrivacy')}</button>
           </div>
         </footer>
       </main>
@@ -604,12 +604,12 @@ export function PatientLayout({ children }: PatientLayoutProps) {
               onClick={(e) => e.stopPropagation()}
               role="dialog"
               aria-modal="true"
-              aria-label="Confirmar cierre de sesión"
+              aria-label={t('layout.confirmSignOut')}
               className="glass-panel rounded-3xl p-8 max-w-sm w-full mx-4 text-center max-h-[90dvh] overflow-y-auto"
             >
               <MascotAnimation type="goodbye" size="md" className="mx-auto mb-4" />
               <h3 className="fm-section-title gradient-text-editorial mb-2">{t('navigation.logoutConfirm', '¿Cerrar sesión?')}</h3>
-              <p className="text-on-surface-variant text-sm mb-6">{t('navigation.logoutConfirmDesc', 'Tendrás que volver a ingresar tu token para acceder.')}</p>
+              <p className="text-on-surface-variant text-sm mb-6">{t('layout.tokenReentryDesc')}</p>
               <div className="flex gap-3">
                 <button
                   onClick={() => setShowLogout(false)}
