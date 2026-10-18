@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Icon } from '../components/ui/Icon';
@@ -91,8 +92,9 @@ export function ARMirrorPage() {
   const [searchParams] = useSearchParams();
   const toast = useToast();
   const user = useAuthStore((s) => s.user);
+  const { t } = useTranslation();
 
-  const exerciseName = searchParams.get('ejercicio') || 'Sesión AR';
+  const exerciseName = searchParams.get('ejercicio') || t('arm.sessionAR');
 
   const {
     videoRef,
@@ -142,7 +144,7 @@ export function ARMirrorPage() {
   const [hudVisible, setHudVisible] = useState(true);
   const [hudMode, setHudMode] = useState<'full' | 'minimal' | 'camera'>('full');
   const [showModel3D, setShowModel3D] = useState<boolean>(true);
-  const aiFeedbackRef = useRef<string>('Buen ritmo. Mantén la postura erguida y completa el rango de movimiento.');
+  const aiFeedbackRef = useRef<string>(t('arm.goodRhythm'));
   const lastSpokenRef = useRef<number>(0);
 
   const speak = (text: string) => {
@@ -218,14 +220,14 @@ export function ARMirrorPage() {
         const torsoLean = Math.abs(((leftShoulder.x + rightShoulder.x) / 2) - ((leftHip.x + rightHip.x) / 2));
 
         if (hipTilt > 0.08) {
-          detectedCompensation = 'Compensación detectada: cadera desalineada. Nivela las caderas.';
-          speak('Nivela las caderas');
+          detectedCompensation = t('arm.compensationHip');
+          speak(t('arm.levelHips'));
         } else if (shoulderTilt > 0.08) {
-          detectedCompensation = 'Compensación detectada: hombros desalineados. Mantén los hombros nivelados.';
-          speak('Mantén los hombros nivelados');
+          detectedCompensation = t('arm.compensationShoulders');
+          speak(t('arm.levelShoulders'));
         } else if (torsoLean > 0.15) {
-          detectedCompensation = 'Compensación detectada: torso inclinado. Mantén el torso erguido.';
-          speak('Mantén el torso erguido');
+          detectedCompensation = t('arm.compensationTorso');
+          speak(t('arm.keepTorsoUpright'));
         }
       }
 
@@ -233,11 +235,11 @@ export function ARMirrorPage() {
 
       if (!detectedCompensation) {
         if (poseData.postureScore > 80) {
-          aiFeedbackRef.current = 'Excelente postura. Mantén la alineación corporal.';
+          aiFeedbackRef.current = t('arm.excellentPosture');
         } else if (poseData.postureScore > 50) {
-          aiFeedbackRef.current = 'Buen esfuerzo. Intenta extender más los brazos para mejor detección.';
+          aiFeedbackRef.current = t('arm.goodEffort');
         } else {
-          aiFeedbackRef.current = 'No detecto tu cuerpo claramente. Asegúrate de estar a 2 metros de la cámara.';
+          aiFeedbackRef.current = t('arm.bodyNotDetected');
         }
       } else {
         aiFeedbackRef.current = detectedCompensation;
@@ -254,13 +256,13 @@ export function ARMirrorPage() {
         setRestCountdown(REST_DURATION);
         toast.success(`Serie ${currentSet} completada!`);
         repParticleBurst();
-        speak('Serie completada. Descansa.');
+        speak(t('arm.setCompletedRest'));
       } else {
         setState('finished');
         setShowPainReport(true);
         celebrateSession();
         repParticleBurst();
-        speak('Sesión completada. Excelente trabajo.');
+        speak(t('arm.sessionCompletedGreatWork'));
       }
     }
   }, [repCount, state, currentSet, volumeLevel]);
@@ -275,8 +277,8 @@ export function ARMirrorPage() {
       setCurrentSet((s) => s + 1);
       setState('active');
       resetReps();
-      toast.info('Serie reanudada');
-      speak('Comienza la siguiente serie.');
+      toast.info(t('arm.setResumed'));
+      speak(t('arm.startNextSet'));
     }
   }, [state, restCountdown, resetReps]);
 
@@ -341,7 +343,7 @@ export function ARMirrorPage() {
           if (link?.terapeuta_id) {
             notifySessionCompleted({
               therapistId: link.terapeuta_id,
-              patientName: user.full_name || 'Paciente',
+              patientName: user.full_name || t('common.patient'),
               exerciseTitle: exerciseName,
               precision: qualityScore,
               durationSeconds: timer,
@@ -353,8 +355,8 @@ export function ARMirrorPage() {
             createNotification({
               userId: user.id,
               type: 'logro',
-              title: '¡Sesión de rehabilitación completada!',
-              message: `Lograste ${Math.round(qualityScore)}% de precisión en "${exerciseName}" con ${repCount} repeticiones completadas.`,
+              title: t('arm.achievementTitle'),
+              message: t('arm.achievementMessage', { score: Math.round(qualityScore), name: exerciseName, reps: repCount }),
               link: '/stats',
             });
           }
@@ -388,13 +390,13 @@ export function ARMirrorPage() {
         }
       }
 
-      toast.success('Sesión guardada correctamente');
+      toast.success(t('arm.sessionSaved'));
       sessionStorage.removeItem('ar_session_backup');
       setShowPainReport(false);
       setShowFinishModal(true);
     } catch (e) {
       console.error('Error saving session:', (e as Error).message);
-      toast.error('Error al guardar la sesión: ' + (e as Error).message);
+      toast.error(t('arm.saveSessionError', { msg: (e as Error).message }));
     }
   };
 
@@ -412,7 +414,7 @@ export function ARMirrorPage() {
         setIsFullscreen(false);
       }
     } catch {
-      toast.error('No se pudo cambiar a pantalla completa');
+      toast.error(t('arm.fullscreenError'));
     }
   };
 
@@ -456,8 +458,8 @@ export function ARMirrorPage() {
           <div className="flex items-center gap-1.5 sm:gap-2 pointer-events-auto shrink-0">
             <button
               onClick={() => navigate('/dashboard-paciente')}
-              title="Volver al panel"
-              aria-label="Volver al panel de paciente"
+              title={t('arm.backToPanel')}
+              aria-label={t('arm.backToPatientPanel')}
               className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-slate-900/80 hover:bg-slate-900 text-white/80 hover:text-white flex items-center justify-center border border-white/15 backdrop-blur-xl transition-all shadow-sm active:scale-95"
             >
               <Icon name="arrow_back" size={18} />
@@ -465,11 +467,11 @@ export function ARMirrorPage() {
 
             <div
               className="rounded-full px-2 sm:px-2.5 py-1 flex items-center gap-1.5 bg-slate-900/80 backdrop-blur-xl border border-white/15 shadow-sm"
-              title={poseData?.isTracking ? 'Seguimiento corporal activo' : 'Buscando postura corporal'}
+              title={poseData?.isTracking ? t('arm.bodyTrackingActive') : t('arm.searchingBodyPosture')}
             >
               <span className={`w-2 h-2 rounded-full ${poseData?.isTracking ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'}`} />
               <span className="text-white/80 text-2xs font-bold uppercase tracking-wider hidden xs:inline">
-                {poseData?.isTracking ? 'AR' : 'Buscando'}
+                {poseData?.isTracking ? 'AR' : t('arm.searching')}
               </span>
             </div>
           </div>
@@ -515,7 +517,7 @@ export function ARMirrorPage() {
               <div className="w-px h-3.5 bg-white/20 shrink-0 hidden xs:block" />
 
               {/* Cronómetro de Sesión */}
-              <span className="font-mono text-2xs sm:text-xs text-white/90 font-medium shrink-0 hidden xs:inline" title="Tiempo transcurrido">
+              <span className="font-mono text-2xs sm:text-xs text-white/90 font-medium shrink-0 hidden xs:inline" title={t('arm.elapsedTime')}>
                 {formatTime(timer)}
               </span>
             </div>
@@ -525,16 +527,16 @@ export function ARMirrorPage() {
           <div className="flex items-center gap-1 sm:gap-1.5 pointer-events-auto shrink-0">
             <button
               onClick={toggleFacingMode}
-              title={facingMode === 'user' ? 'Cámara trasera' : 'Cámara frontal'}
-              aria-label="Alternar cámara"
+              title={facingMode === 'user' ? t('arm.backCamera') : t('arm.frontCamera')}
+              aria-label={t('arm.toggleCamera')}
               className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-slate-900/80 hover:bg-slate-900 text-white/80 hover:text-white flex items-center justify-center border border-white/15 backdrop-blur-xl transition-all shadow-sm active:scale-95"
             >
               <Icon name="flip_camera_ios" size={17} />
             </button>
             <button
               onClick={() => setIsMirrored((prev) => !prev)}
-              title={isMirrored ? 'Desactivar efecto espejo' : 'Activar efecto espejo'}
-              aria-label="Modo espejo"
+              title={isMirrored ? t('arm.disableMirrorEffect') : t('arm.enableMirrorEffect')}
+              aria-label={t('arm.mirrorMode')}
               className={cn(
                 'w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-slate-900/80 hover:bg-slate-900 flex items-center justify-center border backdrop-blur-xl transition-all shadow-sm active:scale-95',
                 isMirrored ? 'text-teal-300 border-teal-500/50' : 'text-white/60 border-white/15'
@@ -544,8 +546,8 @@ export function ARMirrorPage() {
             </button>
             <button
               onClick={() => setHudMode((prev) => (prev === 'full' ? 'minimal' : 'full'))}
-              title={hudMode === 'minimal' ? 'Modo Esencial Activo. Toca para Modo Completo.' : 'Modo Completo. Toca para Modo Esencial.'}
-              aria-label={hudMode === 'minimal' ? 'Cambiar a modo completo' : 'Cambiar a modo esencial'}
+              title={hudMode === 'minimal' ? t('arm.essentialModeActiveTapFull') : t('arm.fullModeTapEssential')}
+              aria-label={hudMode === 'minimal' ? t('arm.switchToFullMode') : t('arm.switchToEssentialMode')}
               className={cn(
                 'px-2.5 sm:px-3 h-8 sm:h-9 rounded-full flex items-center gap-1 border backdrop-blur-xl transition-all shadow-sm active:scale-95 text-2xs sm:text-xs font-bold uppercase tracking-wider',
                 hudMode === 'minimal'
@@ -554,7 +556,7 @@ export function ARMirrorPage() {
               )}
             >
               <Icon name={hudMode === 'minimal' ? 'auto_awesome' : 'visibility'} size={16} />
-              <span className="hidden sm:inline">{hudMode === 'minimal' ? 'Esencial' : 'Completo'}</span>
+              <span className="hidden sm:inline">{hudMode === 'minimal' ? t('arm.essential') : t('arm.full')}</span>
             </button>
           </div>
         </header>
@@ -564,12 +566,12 @@ export function ARMirrorPage() {
       {isSimulated && isReady && (
         <div className="fixed top-12 sm:top-14 left-1/2 -translate-x-1/2 z-[34] flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/20 border border-amber-400/40 backdrop-blur-xl text-amber-200 text-2xs sm:text-xs font-semibold shadow-card">
           <Icon name="sensors" size={13} className="text-amber-400 shrink-0" />
-          <span>Simulación Biomecánica</span>
+          <span>{t('arm.biomechanicalSimulation')}</span>
           <button
             onClick={reconnectCamera}
             className="ml-1 px-1.5 py-0.5 rounded bg-amber-400/30 hover:bg-amber-400/50 text-white font-bold uppercase tracking-wider text-2xs transition-colors cursor-pointer"
           >
-            Reconectar
+            {t('arm.reconnect')}
           </button>
         </div>
       )}
@@ -578,7 +580,7 @@ export function ARMirrorPage() {
       {!isReady && (
         <div className="absolute inset-0 flex flex-col items-center justify-center gap-4">
           <MascotAnimation type="scanning" size="md" />
-          <p className="text-white/60 text-sm">Inicializando cámara y MediaPipe...</p>
+          <p className="text-white/60 text-sm">{t('arm.initializingCamera')}</p>
         </div>
       )}
       {error && (
@@ -590,13 +592,13 @@ export function ARMirrorPage() {
               onClick={reconnectCamera}
               className="px-5 py-2.5 bg-teal-500 hover:bg-teal-400 text-white rounded-xl font-bold transition-all text-sm cursor-pointer shadow-card shadow-teal-500/25 active:scale-95"
             >
-              Reintentar Cámara
+              {t('arm.retryCamera')}
             </button>
             <button
               onClick={() => navigate('/dashboard-paciente')}
               className="px-5 py-2.5 bg-white/10 text-white rounded-xl hover:bg-white/20 transition-all font-semibold text-sm cursor-pointer"
             >
-              Volver
+              {t('common.back')}
             </button>
           </div>
         </div>
@@ -607,13 +609,13 @@ export function ARMirrorPage() {
         <div className="absolute inset-0 z-30 flex flex-col items-center justify-center gap-4 px-6 text-center">
           <MascotAnimation type="greeting" size="md" />
           <TypewriterText
-            text="Ajusta tu postura frente a la cámara..."
+            text={t('arm.adjustPosture')}
             className="text-white text-lg md:text-xl font-medium max-w-md"
           />
           {!calibrated && (
             <div className="mt-2 max-w-md rounded-2xl bg-amber-500/15 border border-amber-400/40 px-4 py-3 text-amber-200 text-sm flex items-center gap-2">
               <Icon name="warning" filled size={18} />
-              <span>Modo sin calibrar: la precisión del seguimiento puede ser menor.</span>
+              <span>{t('arm.uncalibratedWarning')}</span>
             </div>
           )}
         </div>
@@ -633,7 +635,7 @@ export function ARMirrorPage() {
               animate={{ scale: 1 }}
               className="text-white text-4xl font-bold mb-4"
             >
-              Descanso
+              {t('arm.rest')}
             </motion.h2>
             <motion.span
               key={restCountdown}
@@ -643,9 +645,9 @@ export function ARMirrorPage() {
             >
               {restCountdown}
             </motion.span>
-            <p className="text-white/60 mt-4">Serie {currentSet} completada</p>
+            <p className="text-white/60 mt-4">{t('arm.setCompleted', { set: currentSet })}</p>
             <button onClick={() => setRestCountdown(0)} className="mt-8 px-6 py-3 rounded-full bg-white/20 text-white font-bold hover:bg-white/30 active:scale-95 transition-all">
-              Saltar descanso
+              {t('arm.skipRest')}
             </button>
           </motion.div>
         )}
@@ -678,13 +680,13 @@ export function ARMirrorPage() {
                   animate={{ opacity: 1, x: 0 }}
                   className="rounded-2xl p-3.5 w-48 bg-slate-900/80 backdrop-blur-xl border border-white/15 text-white shadow-elevated"
                 >
-                  <p className="text-white/60 text-2xs uppercase font-bold tracking-wider mb-1">Series del Ejercicio</p>
+                  <p className="text-white/60 text-2xs uppercase font-bold tracking-wider mb-1">{t('arm.exerciseSets')}</p>
                   <div className="flex items-baseline gap-2">
                     <span className="text-white text-3xl font-black">{currentSet}</span>
                     <span className="text-white/40 text-base">/ {TOTAL_SETS}</span>
                   </div>
                   <div className="mt-2 pt-2 border-t border-white/10 flex items-center justify-between text-xs">
-                    <span className="text-white/60">Repeticiones</span>
+                    <span className="text-white/60">{t('arm.repetitions')}</span>
                     <span className="text-teal-300 font-bold">{repCount} / {TARGET_REPS}</span>
                   </div>
                 </motion.div>
@@ -748,7 +750,7 @@ export function ARMirrorPage() {
             >
               <VoiceFeedbackWaveHUD
                 isSpeaking={Boolean(aiFeedbackRef.current)}
-                instructionText={aiFeedbackRef.current || 'Postura adecuada. Mantén la velocidad y respira naturalmente.'}
+                instructionText={aiFeedbackRef.current || t('arm.goodPostureKeepPace')}
                 className="bg-slate-900/85 backdrop-blur-xl border-white/15 text-white py-1.5 px-3 text-xs"
               />
             </motion.div>
@@ -762,20 +764,20 @@ export function ARMirrorPage() {
                 <button
                   onClick={() => setState('paused')}
                   className="rounded-xl px-3 sm:px-4 py-2 sm:py-2.5 bg-white/10 hover:bg-white/15 text-white flex items-center gap-1.5 hover:scale-105 active:scale-95 transition-all cursor-pointer font-bold text-xs sm:text-sm min-h-[40px] sm:min-h-[44px]"
-                  aria-label="Pausar ejercicio"
+                  aria-label={t('arm.pauseExercise')}
                 >
                   <Icon name="pause" size={18} />
-                  <span>Pausar</span>
+                  <span>{t('arm.pause')}</span>
                 </button>
 
                 {/* Finalizar */}
                 <button
                   onClick={() => { setState('finished'); setShowPainReport(true); }}
                   className="rounded-xl px-3 sm:px-4 py-2 sm:py-2.5 bg-red-500/80 hover:bg-red-500 text-white flex items-center gap-1.5 hover:scale-105 active:scale-95 transition-all cursor-pointer font-bold text-xs sm:text-sm min-h-[40px] sm:min-h-[44px]"
-                  aria-label="Finalizar ejercicio"
+                  aria-label={t('arm.finishExercise')}
                 >
                   <Icon name="stop" size={18} />
-                  <span>Finalizar</span>
+                  <span>{t('arm.finish')}</span>
                 </button>
 
                 <div className="w-px h-6 bg-white/15 my-auto" />
@@ -783,43 +785,43 @@ export function ARMirrorPage() {
                 {/* Botón Particular Modelo 3D (Elemento Esencial y Clínico) */}
                 <button
                   onClick={() => setShowModel3D((prev) => !prev)}
-                  aria-label={showModel3D ? 'Ocultar modelo 3D demostrador' : 'Mostrar modelo 3D demostrador'}
+                  aria-label={showModel3D ? t('arm.hideDemo3dModel') : t('arm.showDemo3dModel')}
                   className={cn(
                     "rounded-xl px-2.5 sm:px-3 py-2 sm:py-2.5 flex items-center gap-1.5 hover:scale-105 active:scale-95 transition-all cursor-pointer min-h-[40px] sm:min-h-[44px]",
                     showModel3D
                       ? "bg-teal-500/30 text-teal-300 border border-teal-400/50 shadow-sm shadow-teal-500/20"
                       : "bg-white/5 text-white/70 hover:text-white"
                   )}
-                  title={showModel3D ? 'Guía 3D Activa (Toca para ocultar)' : 'Mostrar Guía 3D de ejercicio'}
+                  title={showModel3D ? t('arm.guide3dActiveTapHide') : t('arm.showExercise3dGuide')}
                 >
                   <Icon name="view_in_ar" size={18} />
                   <span className="text-xs font-bold hidden sm:inline">
-                    {showModel3D ? 'Guía 3D ON' : 'Guía 3D'}
+                    {showModel3D ? t('arm.guide3dOn') : t('arm.guide3d')}
                   </span>
                 </button>
 
                 {/* Modo Esencial / Completo */}
                 <button
                   onClick={() => setHudMode((prev) => (prev === 'full' ? 'minimal' : 'full'))}
-                  aria-label={hudMode === 'minimal' ? 'Cambiar a modo completo' : 'Cambiar a modo esencial'}
+                  aria-label={hudMode === 'minimal' ? t('arm.switchToFullMode') : t('arm.switchToEssentialMode')}
                   className={cn(
                     "rounded-xl px-2.5 sm:px-3 py-2 sm:py-2.5 flex items-center gap-1.5 hover:scale-105 active:scale-95 transition-all cursor-pointer min-h-[40px] sm:min-h-[44px]",
                     hudMode === 'minimal'
                       ? "bg-amber-500/25 text-amber-300 border border-amber-400/50"
                       : "bg-white/5 text-white/70 hover:text-white"
                   )}
-                  title={hudMode === 'minimal' ? 'Modo Esencial Activo' : 'Modo Completo Activo'}
+                  title={hudMode === 'minimal' ? t('arm.essentialModeActive') : t('arm.fullModeActive')}
                 >
                   <Icon name={hudMode === 'minimal' ? 'auto_awesome' : 'dashboard'} size={18} />
                   <span className="text-xs font-bold hidden sm:inline">
-                    {hudMode === 'minimal' ? 'Esencial' : 'Completo'}
+                    {hudMode === 'minimal' ? t('arm.essential') : t('arm.full')}
                   </span>
                 </button>
 
                 {/* Pantalla completa (oculto en móviles estrechos) */}
                 <button
                   onClick={toggleFullscreen}
-                  aria-label={isFullscreen ? 'Salir de pantalla completa' : 'Pantalla completa'}
+                  aria-label={isFullscreen ? t('arm.exitFullscreen') : t('arm.fullscreen')}
                   className="rounded-xl p-2 sm:p-2.5 bg-white/5 hover:bg-white/10 text-white/70 hover:text-white hover:scale-105 active:scale-95 transition-all cursor-pointer hidden xs:flex items-center justify-center min-h-[40px] sm:min-h-[44px] min-w-[40px]"
                 >
                   <Icon name={isFullscreen ? 'fullscreen_exit' : 'fullscreen'} size={18} />
@@ -833,7 +835,7 @@ export function ARMirrorPage() {
                     setVolumeLevel(states[(idx + 1) % 3]);
                   }}
                   className="rounded-xl p-2 sm:p-2.5 bg-white/5 hover:bg-white/10 text-white/70 hover:text-white hover:scale-105 active:scale-95 transition-all cursor-pointer flex items-center justify-center min-h-[40px] sm:min-h-[44px] min-w-[40px]"
-                  aria-label="Cambiar volumen de audio"
+                  aria-label={t('arm.changeVolume')}
                   title={`Volumen: ${volumeLevel}`}
                 >
                   <Icon name={volumeLevel === 'muted' ? 'volume_off' : volumeLevel === 'low' ? 'volume_down' : 'volume_up'} size={18} />
@@ -842,7 +844,7 @@ export function ARMirrorPage() {
                 {/* Configuración */}
                 <button
                   onClick={() => setShowSettings(true)}
-                  aria-label="Abrir ajustes"
+                  aria-label={t('arm.openSettings')}
                   className="rounded-xl p-2 sm:p-2.5 bg-white/5 hover:bg-white/10 text-white/70 hover:text-white hover:scale-105 active:scale-95 transition-all cursor-pointer flex items-center justify-center min-h-[40px] sm:min-h-[44px] min-w-[40px]"
                 >
                   <Icon name="settings" size={18} />
@@ -858,19 +860,19 @@ export function ARMirrorPage() {
                   onClick={() => setState('active')}
                   className="bg-teal-600 hover:bg-teal-500 rounded-xl px-4 sm:px-6 py-2 sm:py-2.5 text-white flex items-center gap-2 cursor-pointer font-bold text-xs sm:text-sm min-h-[40px] sm:min-h-[44px]"
                 >
-                  <Icon name="play_arrow" size={18} /> Reanudar
+                  <Icon name="play_arrow" size={18} /> {t('arm.resume')}
                 </PulsatingButton>
                 <button
                   onClick={handleRestart}
                   className="rounded-xl px-3 sm:px-4 py-2 sm:py-2.5 bg-white/10 hover:bg-white/15 text-white flex items-center gap-1.5 hover:scale-105 active:scale-95 transition-all cursor-pointer font-bold text-xs sm:text-sm min-h-[40px] sm:min-h-[44px]"
                 >
-                  <Icon name="refresh" size={18} /> Reiniciar
+                  <Icon name="refresh" size={18} /> {t('arm.restart')}
                 </button>
                 <button
                   onClick={() => { setState('finished'); setShowPainReport(true); }}
                   className="rounded-xl px-3 sm:px-4 py-2 sm:py-2.5 bg-red-500/80 hover:bg-red-500 text-white flex items-center gap-1.5 hover:scale-105 active:scale-95 transition-all cursor-pointer font-bold text-xs sm:text-sm min-h-[40px] sm:min-h-[44px]"
                 >
-                  <Icon name="stop" size={18} /> Abandonar
+                  <Icon name="stop" size={18} /> {t('arm.abandon')}
                 </button>
               </>
             )}
@@ -888,7 +890,7 @@ export function ARMirrorPage() {
                 <Modal.Icon className="bg-teal-500/20 text-teal-300">
                   <Icon name="settings" size={20} />
                 </Modal.Icon>
-                <Modal.Heading className="text-white">Configuración del Espejo</Modal.Heading>
+                <Modal.Heading className="text-white">{t('arm.mirrorSettings')}</Modal.Heading>
               </Modal.Header>
               <Modal.Body className="space-y-3">
                 <button
@@ -896,7 +898,7 @@ export function ARMirrorPage() {
                   onClick={() => { setVolumeLevel(volumeLevel === 'muted' ? 'high' : 'muted'); }}
                   className="w-full flex items-center justify-between p-3 rounded-xl bg-white/10 hover:bg-white/15 text-white transition-colors"
                 >
-                  <span className="text-sm font-semibold">Audio de Guía</span>
+                  <span className="text-sm font-semibold">{t('arm.guideAudio')}</span>
                   <Icon name={volumeLevel !== 'muted' ? 'toggle_on' : 'toggle_off'} size={28} className={volumeLevel !== 'muted' ? 'text-teal-300' : 'text-white/40'} />
                 </button>
                 <button
@@ -904,7 +906,7 @@ export function ARMirrorPage() {
                   onClick={toggleFacingMode}
                   className="w-full flex items-center justify-between p-3 rounded-xl bg-white/10 hover:bg-white/15 text-white transition-colors"
                 >
-                  <span className="text-sm font-semibold">Cámara ({facingMode === 'user' ? 'Frontal' : 'Trasera'})</span>
+                  <span className="text-sm font-semibold">{t('arm.cameraLabel')} ({facingMode === 'user' ? t('arm.front') : t('arm.back2')})</span>
                   <Icon name="flip_camera_ios" size={20} className="text-[#8ad3cf]" />
                 </button>
                 <button
@@ -912,7 +914,7 @@ export function ARMirrorPage() {
                   onClick={() => setIsMirrored((prev) => !prev)}
                   className="w-full flex items-center justify-between p-3 rounded-xl bg-white/10 hover:bg-white/15 text-white transition-colors"
                 >
-                  <span className="text-sm font-semibold">Modo Espejo Invertido</span>
+                  <span className="text-sm font-semibold">{t('arm.mirroredModeLabel')}</span>
                   <Icon name={isMirrored ? 'toggle_on' : 'toggle_off'} size={28} className={isMirrored ? 'text-teal-300' : 'text-white/40'} />
                 </button>
                 <button
@@ -920,7 +922,7 @@ export function ARMirrorPage() {
                   onClick={() => setShowModel3D((prev) => !prev)}
                   className="w-full flex items-center justify-between p-3 rounded-xl bg-white/10 hover:bg-white/15 text-white transition-colors"
                 >
-                  <span className="text-sm font-semibold">Demostrador 3D en Vivo (PiP)</span>
+                  <span className="text-sm font-semibold">{t('arm.live3dDemoPip')}</span>
                   <Icon name={showModel3D ? 'toggle_on' : 'toggle_off'} size={28} className={showModel3D ? 'text-teal-300' : 'text-white/40'} />
                 </button>
                 <button
@@ -928,7 +930,7 @@ export function ARMirrorPage() {
                   onClick={() => { handleRestart(); setShowSettings(false); }}
                   className="w-full flex items-center justify-between p-3 rounded-xl bg-white/10 hover:bg-white/15 text-white transition-colors"
                 >
-                  <span className="text-sm font-semibold">Reiniciar sesión actual</span>
+                  <span className="text-sm font-semibold">{t('arm.restartSession')}</span>
                   <Icon name="refresh" size={20} className="text-teal-300" />
                 </button>
               </Modal.Body>
@@ -939,7 +941,7 @@ export function ARMirrorPage() {
                   onClick={() => setShowSettings(false)}
                   className="w-full py-2.5 px-4 rounded-xl bg-teal-500/25 hover:bg-teal-500/35 text-teal-200 font-bold border border-teal-500/40 transition-colors"
                 >
-                  Listo
+                  {t('arm.ready')}
                 </button>
               </Modal.Footer>
             </Modal.Dialog>
@@ -963,8 +965,8 @@ export function ARMirrorPage() {
               className="glass-modal glass-panel rounded-3xl p-6 md:p-8 max-w-md w-full"
               style={{ background: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(32px)', border: '1px solid rgba(255,255,255,0.2)' }}
             >
-              <h2 className="text-white text-2xl font-bold mb-2">Reporte Post-Sesión</h2>
-              <p className="text-white/60 text-sm mb-4">Tu fisioterapeuta necesita esta información para ajustar tu rutina.</p>
+              <h2 className="text-white text-2xl font-bold mb-2">{t('arm.postSessionReport')}</h2>
+              <p className="text-white/60 text-sm mb-4">{t('arm.therapistNeedsInfo')}</p>
 
               <SessionQualityScoreTile
                 score={Math.min(99, Math.max(76, Math.round(85 + (repCount >= TARGET_REPS ? 10 : 0) - (compensation ? 8 : 0))))}
@@ -973,17 +975,17 @@ export function ARMirrorPage() {
 
               <div className="space-y-5">
                 <div>
-                  <label className="text-white/80 text-sm font-bold">Dolor antes de la sesión (0-10)</label>
+                  <label className="text-white/80 text-sm font-bold">{t('arm.painBefore')}</label>
                   <input type="range" min={0} max={10} value={painBefore} onChange={(e) => setPainBefore(Number(e.target.value))} className="w-full mt-2 accent-[#8ad3cf]" />
                   <div className="flex justify-between text-white/40 text-xs mt-1"><span>0</span><span className="text-white font-bold text-base">{painBefore}</span><span>10</span></div>
                 </div>
                 <div>
-                  <label className="text-white/80 text-sm font-bold">Dolor después de la sesión (0-10)</label>
+                  <label className="text-white/80 text-sm font-bold">{t('arm.painAfter')}</label>
                   <input type="range" min={0} max={10} value={painAfter} onChange={(e) => setPainAfter(Number(e.target.value))} className="w-full mt-2 accent-[#8ad3cf]" />
                   <div className="flex justify-between text-white/40 text-xs mt-1"><span>0</span><span className="text-white font-bold text-base">{painAfter}</span><span>10</span></div>
                 </div>
                 <div>
-                  <label className="text-white/80 text-sm font-bold">Nivel de fatiga (1-5)</label>
+                  <label className="text-white/80 text-sm font-bold">{t('arm.fatigueLevel')}</label>
                   <div className="flex gap-2 mt-2">
                     {[1, 2, 3, 4, 5].map((n) => (
                       <button key={n} onClick={() => setFatigueLevel(n)} className={`flex-1 py-2 rounded-xl font-bold transition-all ${fatigueLevel === n ? 'bg-[#8ad3cf] text-[#001514]' : 'bg-white/10 text-white/60'}`}>{n}</button>
@@ -991,20 +993,20 @@ export function ARMirrorPage() {
                   </div>
                 </div>
                 <div>
-                  <label className="text-white/80 text-sm font-bold">Comentario (opcional)</label>
-                  <textarea value={painComment} onChange={(e) => setPainComment(e.target.value)} placeholder="Describe cómo te sentiste durante la sesión..." className="w-full mt-2 p-3 rounded-xl bg-white/10 text-white placeholder-white/30 border border-white/10 focus:border-[#8ad3cf] outline-none resize-none" rows={2} />
+                  <label className="text-white/80 text-sm font-bold">{t('arm.commentOptional')}</label>
+                  <textarea value={painComment} onChange={(e) => setPainComment(e.target.value)} placeholder={t('arm.describeFeeling')} className="w-full mt-2 p-3 rounded-xl bg-white/10 text-white placeholder-white/30 border border-white/10 focus:border-[#8ad3cf] outline-none resize-none" rows={2} />
                 </div>
               </div>
 
               <div className="flex gap-3 mt-6">
                 <button onClick={() => saveSession({ dolor_antes: painBefore, dolor_despues: painAfter, fatiga: fatigueLevel, comentario: painComment })} className="premium-btn flex-1 py-4 bg-[#8ad3cf] text-[#001514] rounded-2xl font-bold hover:scale-[1.02] active:scale-95 transition-all">
-                  Enviar Reporte
+                  {t('arm.sendReport')}
                 </button>
                 <button onClick={() => {
                   setShowPainReport(false);
                   saveSession();
                 }} className="flex-1 py-4 bg-white/10 text-white rounded-2xl font-bold hover:bg-white/20 transition-all">
-                  Omitir
+                  {t('arm.skip')}
                 </button>
               </div>
             </motion.div>
@@ -1035,19 +1037,19 @@ export function ARMirrorPage() {
               >
                 <MascotAnimation type="success" size="md" className="w-full h-full" />
               </motion.div>
-              <h2 className="text-white text-3xl font-bold mb-2">¡Sesión Completada!</h2>
-              <p className="text-white/60 mb-6">Has completado {currentSet} series con {repCount} repeticiones.</p>
+              <h2 className="text-white text-3xl font-bold mb-2">{t('arm.sessionCompleted')}</h2>
+              <p className="text-white/60 mb-6">{t('arm.finishSummary', { sets: currentSet, reps: repCount })}</p>
               <div className="grid grid-cols-3 gap-4 mb-6">
-                <div><p className="text-white/40 text-xs">Tiempo</p><p className="text-white text-xl font-bold">{formatTime(timer)}</p></div>
-                <div><p className="text-white/40 text-xs">Repeticiones</p><p className="text-white text-xl font-bold">{repCount}</p></div>
-                <div><p className="text-white/40 text-xs">Calidad</p><p className="text-white text-xl font-bold">{qualityScore}%</p></div>
+                <div><p className="text-white/40 text-xs">{t('arm.time')}</p><p className="text-white text-xl font-bold">{formatTime(timer)}</p></div>
+                <div><p className="text-white/40 text-xs">{t('arm.repetitions')}</p><p className="text-white text-xl font-bold">{repCount}</p></div>
+                <div><p className="text-white/40 text-xs">{t('arm.quality')}</p><p className="text-white text-xl font-bold">{qualityScore}%</p></div>
               </div>
 
               {isSpiritualModeEnabled() && finishVerse && (
                 <div className="mb-6 p-4 rounded-2xl bg-white/10 border border-white/15 text-left">
                   <div className="flex items-center gap-1.5 mb-1.5 text-xs font-bold uppercase tracking-wider text-teal-300">
                     <BookOpen className="size-3.5" />
-                    <span>Palabra de Sanidad & Fortaleza</span>
+                    <span>{t('arm.wordOfHealing')}</span>
                   </div>
                   <p className="text-xs text-white/95 italic font-medium leading-relaxed">
                     «{finishVerse.texto}»
@@ -1060,10 +1062,10 @@ export function ARMirrorPage() {
 
               <div className="flex gap-3">
                 <button onClick={() => navigate('/stats')} className="premium-btn flex-1 py-4 bg-primary text-on-primary rounded-2xl font-bold hover:scale-[1.02] active:scale-95 transition-all">
-                  Ver Progreso
+                  {t('arm.viewProgress')}
                 </button>
                 <button onClick={() => navigate('/dashboard-paciente')} className="flex-1 py-4 bg-white/10 text-white rounded-2xl font-bold hover:bg-white/20 transition-all">
-                  Inicio
+                  {t('arm.home')}
                 </button>
               </div>
             </motion.div>
