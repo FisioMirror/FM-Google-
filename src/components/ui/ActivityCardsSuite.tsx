@@ -245,7 +245,7 @@ export const PainScaleInteractiveCard: React.FC<PainScaleInteractiveCardProps> =
     if (pain === 0) return <Smile className="w-8 h-8 text-emerald-400 animate-pulse" />;
     if (pain <= 3) return <Smile className="w-8 h-8 text-teal-400" />;
     if (pain <= 6) return <Meh className="w-8 h-8 text-warning animate-wiggle" />;
-    return <Frown className="w-8 h-8 text-danger animate-bounce" />;
+    return <Frown className="w-8 h-8 text-danger" />;
   };
 
   const getLabel = () => {
@@ -383,7 +383,7 @@ export const GaitSymmetryCard: React.FC<GaitSymmetryCardProps> = ({
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <div className="p-1.5 rounded-xl bg-info/15 text-info dark:text-info">
-            <Footprints className="w-4 h-4 animate-bounce" />
+            <Footprints className="w-4 h-4 animate-pulse" />
           </div>
           <h4 className="text-xs font-bold uppercase tracking-wider text-on-surface">
             {t('facs.gaitSymmetry')}

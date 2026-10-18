@@ -472,7 +472,7 @@ export const AIBiomechanicalSummaryBadge: React.FC<AIBiomechanicalSummaryBadgePr
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <div className="p-1.5 rounded-xl bg-teal-500/20 text-teal-600 dark:text-teal-400">
-            <Bot className="w-4 h-4 animate-bounce" />
+            <Bot className="w-4 h-4 animate-pulse" />
           </div>
           <div>
             <span className="text-xs font-bold text-primary block">
