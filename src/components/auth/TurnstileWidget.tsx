@@ -114,7 +114,7 @@ export const TurnstileWidget = forwardRef<TurnstileWidgetRef, TurnstileWidgetPro
               if (!isMounted) return;
               console.warn('Turnstile challenge error:', code);
               setStatus('error');
-              setErrorMsg(t('twRetryHint'));
+              setErrorMsg(t('uix.twRetryHint'));
               onError?.(code);
             },
           });
@@ -177,11 +177,11 @@ export const TurnstileWidget = forwardRef<TurnstileWidgetRef, TurnstileWidgetPro
         <div className="flex items-center justify-between text-xs text-on-surface-variant mb-1.5 px-0.5">
           <span className="flex items-center gap-1.5 font-medium">
             <ShieldCheck size={13} className={status === 'verified' ? 'text-teal-500' : 'text-on-surface-variant'} />
-            {t('twProtection')}
+            {t('uix.twProtection')}
           </span>
           {status === 'verified' && (
             <span className="text-teal-600 dark:text-teal-400 font-semibold text-2xs bg-teal-50 dark:bg-teal-950/60 px-1.5 py-0.5 rounded-full border border-teal-200 dark:border-teal-800">
-              {t('twVerified')}
+              {t('uix.twVerified')}
             </span>
           )}
         </div>
@@ -195,7 +195,7 @@ export const TurnstileWidget = forwardRef<TurnstileWidgetRef, TurnstileWidgetPro
           <div className="mt-1.5 flex items-center justify-between text-xs text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/40 p-2 rounded-lg border border-red-200 dark:border-red-800/50">
             <span className="flex items-center gap-1.5 text-xs">
               <AlertCircle size={13} />
-              {errorMsg || t('twCaptchaError')}
+              {errorMsg || t('uix.twCaptchaError')}
             </span>
             <button
               type="button"

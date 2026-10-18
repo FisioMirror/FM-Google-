@@ -16,26 +16,29 @@ interface ExportCalendarButtonProps {
 }
 
 export function ExportCalendarButton({
-  title = 'Sesión de Fisioterapia - FisioMirror',
-  description = 'Sesión guiada de rehabilitación postural y ejercicios terapéuticos en FisioMirror.',
+  title,
+  description,
   startDate,
   durationMinutes = 30,
-  location = 'FisioMirror Web App / En Casa',
+  location,
   className,
   variant = 'secondary',
   size = 'md',
 }: ExportCalendarButtonProps) {
   const [exported, setExported] = useState(false);
   const { t } = useTranslation();
+  const eventTitle = title ?? t('uix.ecbEventTitle');
+  const eventDesc = description ?? t('uix.ecbEventDesc');
+  const eventLocation = location ?? t('uix.ecbLocation');
 
   const handleExport = () => {
     const sessionDate = startDate || new Date(Date.now() + 1000 * 60 * 60 * 24); // Mañana por defecto si no se pasa
     const url = generateGoogleCalendarUrl({
-      title,
-      description,
+      title: eventTitle,
+      description: eventDesc,
       startDate: sessionDate,
       durationMinutes,
-      location,
+      location: eventLocation,
     });
 
     window.open(url, '_blank', 'noopener,noreferrer');
@@ -66,12 +69,12 @@ export function ExportCalendarButton({
         variantClasses[variant],
         className
       )}
-      title={t('ecbTitle')}
+      title={t('uix.ecbTitle')}
     >
       {exported ? (
         <>
           <Check className="size-4 text-emerald-500" />
-          <span>{t('ecbScheduled')}</span>
+          <span>{t('uix.ecbScheduled')}</span>
         </>
       ) : (
         <>

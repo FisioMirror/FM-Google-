@@ -81,10 +81,10 @@ export function VersiculoCard({
     try {
       await navigator.clipboard.writeText(`"${versiculo.texto}" — ${versiculo.cita}`);
       setCopied(true);
-      toast.success(t('vcCopied'));
+      toast.success(t('uix.vcCopied'));
       setTimeout(() => setCopied(false), 2000);
     } catch {
-      toast.error(t('vcCopyError'));
+      toast.error(t('uix.vcCopyError'));
     }
   };
 
@@ -120,7 +120,7 @@ export function VersiculoCard({
           className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold text-teal-700 dark:text-teal-300 bg-teal-500/10 hover:bg-teal-500/15 border border-teal-500/20 transition-all hover:scale-[1.02]"
         >
           <BookOpen className="size-3.5" />
-          <span>{t('vcFaithWord')}</span>
+          <span>{t('uix.vcFaithWord')}</span>
         </button>
       </motion.div>
     );
@@ -175,15 +175,15 @@ export function VersiculoCard({
           <div>
             <div className="flex items-center gap-2">
               <span className="text-xs font-black uppercase tracking-wider text-teal-700 dark:text-teal-300">
-                {contextTitle || t('vcFaithWord')}
+                {contextTitle || t('uix.vcFaithWord')}
               </span>
               <span className="inline-flex items-center gap-1 text-2xs px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-700 dark:text-teal-300 border border-teal-500/20 font-bold">
                 <Sparkles className="size-2.5" />
-                {CATEGORIAS_METADATA[categoria]?.label || t('vcReflection')}
+                {CATEGORIAS_METADATA[categoria]?.label || t('uix.vcReflection')}
               </span>
             </div>
             <p className="text-xs text-on-surface-variant font-medium">
-              {t('vcInspiration')}
+              {t('uix.vcInspiration')}
             </p>
           </div>
         </div>
@@ -194,8 +194,8 @@ export function VersiculoCard({
             onClick={handleCopy}
             disabled={!versiculo}
             className="size-8 rounded-xl bg-surface-container/60 hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface flex items-center justify-center transition-colors"
-            title={t('vcCopyVerse')}
-            aria-label={t('vcCopyVerse')}
+            title={t('uix.vcCopyVerse')}
+            aria-label={t('uix.vcCopyVerse')}
           >
             {copied ? <Check className="size-4 text-teal-600" /> : <Copy className="size-4" />}
           </button>
@@ -204,8 +204,8 @@ export function VersiculoCard({
             onClick={() => cargarVersiculo(categoria)}
             disabled={loading}
             className="size-8 rounded-xl bg-surface-container/60 hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface flex items-center justify-center transition-colors"
-            title={t('vcAnotherWord')}
-            aria-label={t('vcAnotherWord')}
+            title={t('uix.vcAnotherWord')}
+            aria-label={t('uix.vcAnotherWord')}
           >
             <RefreshCw className={cn('size-4', loading && 'animate-spin text-teal-600')} />
           </button>
@@ -213,8 +213,8 @@ export function VersiculoCard({
           <button
             onClick={handleDismiss}
             className="size-8 rounded-xl bg-surface-container/60 hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface flex items-center justify-center transition-colors"
-            title={t('vcMinimize')}
-            aria-label={t('vcMinimize')}
+            title={t('uix.vcMinimize')}
+            aria-label={t('uix.vcMinimize')}
           >
             <X className="size-4" />
           </button>
@@ -238,7 +238,7 @@ export function VersiculoCard({
                     : 'bg-surface-container-low/80 text-on-surface-variant hover:bg-surface-container hover:text-on-surface'
                 )}
               >
-                {cat === 'general' ? t('vcGeneral') : meta?.label.split(' ')[0]}
+                {cat === 'general' ? t('uix.vcGeneral') : meta?.label.split(' ')[0]}
               </button>
             );
           })}
@@ -257,7 +257,7 @@ export function VersiculoCard({
               className="py-4 text-center text-xs text-outline flex items-center justify-center gap-2"
             >
               <RefreshCw className="size-3.5 animate-spin text-teal-600" />
-              <span>{t('vcSearching')}</span>
+              <span>{t('uix.vcSearching')}</span>
             </motion.div>
           ) : versiculo ? (
             <motion.div
@@ -290,14 +290,14 @@ export function VersiculoCard({
       {/* Footer bar */}
       <div className="relative z-10 mt-4 pt-3 border-t border-outline/15 flex items-center justify-between">
         <p className="text-xs text-on-surface-variant">
-          {t('vcPersevere')}
+          {t('uix.vcPersevere')}
         </p>
         <button
           onClick={() => cargarVersiculo(categoria)}
           disabled={loading}
           className="text-xs font-bold text-teal-600 dark:text-teal-400 hover:text-teal-800 dark:hover:text-teal-200 transition-colors inline-flex items-center gap-1 shrink-0 ml-3"
         >
-          <span>{t('vcRenew')}</span>
+          <span>{t('uix.vcRenew')}</span>
           <RefreshCw className={cn('size-3', loading && 'animate-spin')} />
         </button>
       </div>

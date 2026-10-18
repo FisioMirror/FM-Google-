@@ -66,17 +66,17 @@ export function ChipStatusesDemo() {
 
       <Chip color="danger" variant="primary">
         <AlertCircle className="size-3" />
-        <Chip.Label>{t('hcSupervisionReq')}</Chip.Label>
+        <Chip.Label>{t('uix.hcSupervisionReq')}</Chip.Label>
       </Chip>
 
       <Chip color="primary" variant="primary">
         <Sparkles className="size-3" />
-        <Chip.Label>{t('hcAiActive')}</Chip.Label>
+        <Chip.Label>{t('uix.hcAiActive')}</Chip.Label>
       </Chip>
 
       <Chip color="neutral" variant="primary">
         <Circle className="size-2.5 fill-current opacity-40" />
-        <Chip.Label>{t('hcDischarged')}</Chip.Label>
+        <Chip.Label>{t('uix.hcDischarged')}</Chip.Label>
       </Chip>
     </div>
   );

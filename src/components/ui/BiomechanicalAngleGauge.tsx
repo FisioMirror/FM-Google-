@@ -51,9 +51,9 @@ export const BiomechanicalAngleGauge: React.FC<BiomechanicalAngleGaugeProps> = (
   // Status calculation
   const delta = Math.abs(currentAngle - targetAngle);
   const status = useMemo(() => {
-    if (delta <= safeTolerance) return { label: t('bagOptimal'), color: 'emerald', hex: '#10b981' };
-    if (delta <= safeTolerance * 2) return { label: t('bagMild'), color: 'amber', hex: '#f59e0b' };
-    return { label: t('bagOut'), color: 'rose', hex: '#f43f5e' };
+    if (delta <= safeTolerance) return { label: t('uix.bagOptimal'), color: 'emerald', hex: '#10b981' };
+    if (delta <= safeTolerance * 2) return { label: t('uix.bagMild'), color: 'amber', hex: '#f59e0b' };
+    return { label: t('uix.bagOut'), color: 'rose', hex: '#f43f5e' };
   }, [delta, safeTolerance, t]);
 
   return (
@@ -68,13 +68,13 @@ export const BiomechanicalAngleGauge: React.FC<BiomechanicalAngleGaugeProps> = (
       )}
       style={{ width: size + 40 }}
       role="region"
-      aria-label={t('bagAria', { joint: jointName ?? t('bagJointDefault') })}
+      aria-label={t('uix.bagAria', { joint: jointName ?? t('uix.bagJointDefault') })}
     >
       {/* Header Info */}
       <div className="w-full flex items-center justify-between mb-2 px-1">
         <div className="flex items-center gap-1.5 text-xs font-semibold text-on-surface-variant dark:text-slate-300">
           <Activity className="w-3.5 h-3.5 text-primary" />
-          <span className="truncate max-w-[130px]">{jointName ?? t('bagJointDefault')}</span>
+          <span className="truncate max-w-[130px]">{jointName ?? t('uix.bagJointDefault')}</span>
         </div>
         <span
           className={cn(
@@ -156,7 +156,7 @@ export const BiomechanicalAngleGauge: React.FC<BiomechanicalAngleGaugeProps> = (
               <span className="text-xl font-normal text-on-surface-variant ml-0.5">{unit}</span>
             </div>
             <div className="text-xs font-medium text-on-surface-variant mt-0.5">
-              {t('bagTarget')} <span className="font-mono font-bold text-primary dark:text-teal-400">{targetAngle}{unit}</span>
+              {t('uix.bagTarget')} <span className="font-mono font-bold text-primary dark:text-teal-400">{targetAngle}{unit}</span>
             </div>
           </motion.div>
         </div>

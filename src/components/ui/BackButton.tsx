@@ -29,7 +29,7 @@ export function BackButton({ className = '', fallback }: BackButtonProps) {
       whileTap={{ scale: 0.95 }}
       onClick={handleBack}
       className={`flex items-center justify-center w-10 h-10 rounded-xl glass-panel text-on-surface-variant hover:text-primary transition-colors ${className}`}
-      aria-label={t('backGoBack')}
+      aria-label={t('uix.backGoBack')}
     >
       <Icon name="arrow_back" size={20} />
     </motion.button>

@@ -36,7 +36,7 @@ export function WaveformVisualizer({ isActive: externalActive, onToggle, classNa
         isActive && 'ring-2 ring-primary/30',
         className,
       )}
-      aria-label={isActive ? t('wvStopRecording') : t('wvStartRecording')}
+      aria-label={isActive ? t('uix.wvStopRecording') : t('uix.wvStartRecording')}
     >
       {heights.map((h, i) => (
         <motion.div

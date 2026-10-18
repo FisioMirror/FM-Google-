@@ -50,7 +50,7 @@ export function ScrollToTop() {
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           onClick={scrollToTop}
-          aria-label={t('sttBackToTop')}
+          aria-label={t('uix.sttBackToTop')}
           className="fixed bottom-6 right-6 z-40 w-12 h-12 rounded-full bg-gradient-to-br from-secondary-400 to-accent text-white shadow-glass flex items-center justify-center"
         >
           <ArrowUp className="w-5 h-5" />

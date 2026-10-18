@@ -131,8 +131,8 @@ export function CheckboxPreferencesDemo() {
   const { t } = useTranslation();
   return (
     <Surface className="w-full max-w-lg">
-      <Label>{t('cbTitle')}</Label>
-      <Description>{t('cbDesc')}</Description>
+      <Label>{t('uix.cbTitle')}</Label>
+      <Description>{t('uix.cbDesc')}</Description>
       <CheckboxGroup name="notifications">
         <Checkbox value="email">
           <Checkbox.Content>
@@ -140,9 +140,9 @@ export function CheckboxPreferencesDemo() {
               <Checkbox.Indicator />
             </Checkbox.Control>
             <div>
-              <p className="font-bold text-on-surface">{t('cbEmail')}</p>
+              <p className="font-bold text-on-surface">{t('uix.cbEmail')}</p>
               <p className="text-xs font-normal text-on-surface-variant">
-                {t('cbEmailDesc')}
+                {t('uix.cbEmailDesc')}
               </p>
             </div>
           </Checkbox.Content>
@@ -154,9 +154,9 @@ export function CheckboxPreferencesDemo() {
               <Checkbox.Indicator />
             </Checkbox.Control>
             <div>
-              <p className="font-bold text-on-surface">{t('cbPush')}</p>
+              <p className="font-bold text-on-surface">{t('uix.cbPush')}</p>
               <p className="text-xs font-normal text-on-surface-variant">
-                {t('cbPushDesc')}
+                {t('uix.cbPushDesc')}
               </p>
             </div>
           </Checkbox.Content>
@@ -168,9 +168,9 @@ export function CheckboxPreferencesDemo() {
               <Checkbox.Indicator />
             </Checkbox.Control>
             <div>
-              <p className="font-bold text-on-surface">{t('cbSms')}</p>
+              <p className="font-bold text-on-surface">{t('uix.cbSms')}</p>
               <p className="text-xs font-normal text-on-surface-variant">
-                {t('cbSmsDesc')}
+                {t('uix.cbSmsDesc')}
               </p>
             </div>
           </Checkbox.Content>

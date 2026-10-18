@@ -228,7 +228,7 @@ export const ConfettiSideCannons = forwardRef<HTMLButtonElement, ConfettiSideCan
         onClick={handleClick}
         {...buttonProps}
       >
-        {children ?? t('confettiFire')}
+        {children ?? t('uix.confettiFire')}
       </button>
     );
   },

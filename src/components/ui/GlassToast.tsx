@@ -89,7 +89,7 @@ export function GlassToastProvider({ children }: { children: ReactNode }) {
               <button
                 onClick={() => dismiss(toast.id)}
                 className="size-6 rounded-lg shrink-0 flex items-center justify-center text-on-surface-variant hover:text-white hover:bg-white/10 transition-colors"
-                aria-label={t('gtCloseNotification')}
+                aria-label={t('uix.gtCloseNotification')}
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <line x1="18" y1="6" x2="6" y2="18" />

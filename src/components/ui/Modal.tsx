@@ -167,7 +167,7 @@ export function ModalCloseTrigger({ className }: { className?: string }) {
         "border border-border/50 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary/40",
         className
       )}
-      aria-label={t('modalCloseModal')}
+      aria-label={t('uix.modalCloseModal')}
     >
       <X className="size-4.5" />
     </button>
@@ -261,7 +261,7 @@ export function CustomModalDemo() {
   const [savedStatus, setSavedStatus] = useState<string | null>(null);
 
   const handleSave = () => {
-    setSavedStatus(t('modalCalibrated', { pct: sensitivity, state: arOverlays ? t('modalArOn') : t('modalArOff') }));
+    setSavedStatus(t('uix.modalCalibrated', { pct: sensitivity, state: arOverlays ? t('uix.modalArOn') : t('uix.modalArOff') }));
     setTimeout(() => setSavedStatus(null), 3500);
   };
 
@@ -270,7 +270,7 @@ export function CustomModalDemo() {
       <Modal>
         <Modal.Trigger asChild>
           <Button variant="secondary" className="shadow-xs hover:border-primary/50">
-            {t('modalOpenConfig')}
+            {t('uix.modalOpenConfig')}
           </Button>
         </Modal.Trigger>
         <Modal.Backdrop>
@@ -281,17 +281,17 @@ export function CustomModalDemo() {
                 <Modal.Icon className="bg-primary/10 text-primary">
                   <Rocket className="size-5" />
                 </Modal.Icon>
-                <Modal.Heading>{t('modalConfigTitle')}</Modal.Heading>
+                <Modal.Heading>{t('uix.modalConfigTitle')}</Modal.Heading>
               </Modal.Header>
               <Modal.Body>
                 <p className="text-sm text-on-surface-variant">
-                  {t('modalConfigDesc')}
+                  {t('uix.modalConfigDesc')}
                 </p>
 
                 <div className="p-3.5 rounded-xl bg-surface/80 dark:bg-slate-800/60 border border-border/60 space-y-3 mt-4">
                   <div>
                     <div className="flex justify-between text-xs font-semibold mb-1 text-on-surface">
-                      <span>{t('modalSensitivity')}</span>
+                      <span>{t('uix.modalSensitivity')}</span>
                       <span className="text-primary font-bold">{sensitivity}%</span>
                     </div>
                     <input
@@ -306,7 +306,7 @@ export function CustomModalDemo() {
 
                   <label className="flex items-center justify-between cursor-pointer pt-1">
                     <span className="text-xs font-medium text-on-surface">
-                      {t('modalOverlay')}
+                      {t('uix.modalOverlay')}
                     </span>
                     <input
                       type="checkbox"
@@ -319,7 +319,7 @@ export function CustomModalDemo() {
               </Modal.Body>
               <Modal.Footer>
                 <Button className="w-full" slot="close" onClick={handleSave}>
-                  {t('modalSaveChanges')}
+                  {t('uix.modalSaveChanges')}
                 </Button>
               </Modal.Footer>
             </Modal.Dialog>

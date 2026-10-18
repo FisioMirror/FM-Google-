@@ -45,7 +45,7 @@ export function FloatingMenu({ items, ariaLabel, className }: FloatingMenuProps)
         whileTap={{ scale: 0.9 }}
         whileHover={{ scale: 1.05 }}
         onClick={() => setOpen(!open)}
-        aria-label={open ? t('fmCloseLabel', { label: ariaLabel ?? t('fmQuickActions') }) : t('fmOpenLabel', { label: ariaLabel ?? t('fmQuickActions') })}
+        aria-label={open ? t('uix.fmCloseLabel', { label: ariaLabel ?? t('uix.fmQuickActions') }) : t('uix.fmOpenLabel', { label: ariaLabel ?? t('uix.fmQuickActions') })}
         aria-expanded={open}
         className="flex h-14 w-14 items-center justify-center rounded-full bg-primary text-on-primary shadow-elevated shadow-primary/20 min-h-[56px] min-w-[56px] touch-manipulation"
       >

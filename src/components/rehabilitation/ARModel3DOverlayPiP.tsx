@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   User,
@@ -44,26 +45,28 @@ export const ARModel3DOverlayPiP: React.FC<ARModel3DOverlayPiPProps> = ({
 }) => {
   // Estados de control de la ventana PiP
   const [isMinimized, setIsMinimized] = useState(false);
+  const { t } = useTranslation();
   const [isExpanded, setIsExpanded] = useState(false);
   const [characterRole, setCharacterRole] = useState<CharacterRole>('physio');
   const [perspective, setPerspective] = useState<PerspectiveAngle>(defaultPerspective);
   const [playbackSpeed, setPlaybackSpeed] = useState<number>(1.0);
   const [isPlaying, setIsPlaying] = useState<boolean>(true);
   const [progress, setProgress] = useState<number>(0);
-  const [phaseText, setPhaseText] = useState<'Concéntrica' | 'Sostén (Hold)' | 'Excéntrica' | 'Neutro'>('Neutro');
+  const [phaseText, setPhaseText] = useState<'concentric' | 'hold' | 'eccentric' | 'neutral'>('neutral');
+  const phaseLabel = { concentric: t('apip.phaseConcentric'), hold: t('apip.phaseHold'), eccentric: t('apip.phaseEccentric'), neutral: t('apip.phaseNeutral') }[phaseText];
 
   // Construir definición clínica real del ejercicio basada en el nombre
   const exerciseDef = useMemo<ExerciseDefinition>(() => {
     return buildExerciseDefinition(
       'ar-exercise-pip',
-      exerciseName || 'Flexión articular',
+      exerciseName || t('apip.defaultExercise'),
       3,
       12,
       undefined,
       undefined,
       targetAngle
     );
-  }, [exerciseName, targetAngle]);
+  }, [exerciseName, targetAngle, t]);
 
   // Generar mapa de rotaciones y ejes articulares
   const jointAxes = useMemo<Partial<Record<string, JointRotationAxis>>>(() => {
@@ -90,7 +93,7 @@ export const ARModel3DOverlayPiP: React.FC<ARModel3DOverlayPiPProps> = ({
         // Si estamos en pausa isométrica (Hold en pico de rango)
         if (holdCounterRef.current > 0) {
           holdCounterRef.current -= dt * playbackSpeed;
-          setPhaseText('Sostén (Hold)');
+          setPhaseText('hold');
         } else {
           const step = (dt * 0.45 * playbackSpeed) * directionRef.current;
           progressRef.current += step;
@@ -99,14 +102,14 @@ export const ARModel3DOverlayPiP: React.FC<ARModel3DOverlayPiPProps> = ({
             progressRef.current = 1;
             directionRef.current = -1;
             holdCounterRef.current = 1.0; // 1 segundo de contracción isométrica
-            setPhaseText('Sostén (Hold)');
+            setPhaseText('hold');
           } else if (progressRef.current <= 0) {
             progressRef.current = 0;
             directionRef.current = 1;
             holdCounterRef.current = 0.5; // Breve pausa antes de la siguiente rep
-            setPhaseText('Neutro');
+            setPhaseText('neutral');
           } else {
-            setPhaseText(directionRef.current > 0 ? 'Concéntrica' : 'Excéntrica');
+            setPhaseText(directionRef.current > 0 ? 'concentric' : 'eccentric');
           }
           setProgress(progressRef.current);
         }
@@ -165,7 +168,7 @@ export const ARModel3DOverlayPiP: React.FC<ARModel3DOverlayPiPProps> = ({
         <button
           onClick={() => setIsMinimized(false)}
           className="group flex items-center gap-2.5 px-4 py-2.5 rounded-2xl bg-slate-900/90 dark:bg-slate-900/90 backdrop-blur-xl border border-teal-500/40 text-white shadow-elevated hover:bg-slate-800 transition-all active:scale-95 cursor-pointer"
-          title="Restaurar visualizador 3D"
+          title={t('apip.restoreViewer')}
         >
           <div className="relative flex items-center justify-center">
             <span className="w-2.5 h-2.5 rounded-full bg-teal-400 animate-pulse" />
@@ -173,7 +176,7 @@ export const ARModel3DOverlayPiP: React.FC<ARModel3DOverlayPiPProps> = ({
           </div>
           <div className="text-left">
             <div className="flex items-center gap-1.5">
-              <span className="text-xs font-black tracking-wide text-teal-300">GUÍA 3D</span>
+              <span className="text-xs font-black tracking-wide text-teal-300">{t('apip.guide3d')}</span>
               <span className="text-2xs text-white/60 font-mono">{primaryJointAngle}°</span>
             </div>
             <p className="text-2xs text-white/70 max-w-[120px] truncate">{exerciseName}</p>
@@ -204,9 +207,9 @@ export const ARModel3DOverlayPiP: React.FC<ARModel3DOverlayPiPProps> = ({
           </div>
           <div className="min-w-0">
             <div className="flex items-center gap-1">
-              <span className="text-2xs sm:text-2xs font-black uppercase tracking-wider text-teal-400">Guía 3D</span>
+              <span className="text-2xs sm:text-2xs font-black uppercase tracking-wider text-teal-400">{t('apip.guide3d')}</span>
               <span className="text-2xs sm:text-2xs px-1 py-0.1 rounded-full bg-white/10 text-white/80 font-mono">
-                {phaseText}
+                {phaseLabel}
               </span>
             </div>
             <h4 className="text-xs sm:text-xs font-bold text-white truncate leading-tight" title={exerciseName}>
@@ -220,14 +223,14 @@ export const ARModel3DOverlayPiP: React.FC<ARModel3DOverlayPiPProps> = ({
           <button
             onClick={() => setIsExpanded(!isExpanded)}
             className="p-1 rounded-lg text-white/60 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
-            title={isExpanded ? 'Tamaño compacto' : 'Expandir ventana'}
+            title={isExpanded ? t('apip.compactSize') : t('apip.expandWindow')}
           >
             {isExpanded ? <Minimize2 className="size-3 sm:size-3.5" /> : <Maximize2 className="size-3 sm:size-3.5" />}
           </button>
           <button
             onClick={() => setIsMinimized(true)}
             className="p-1 rounded-lg text-white/60 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
-            title="Minimizar a píldora"
+            title={t('apip.minimizeToPill')}
           >
             <ChevronDown className="size-3.5 sm:size-4" />
           </button>
@@ -235,7 +238,7 @@ export const ARModel3DOverlayPiP: React.FC<ARModel3DOverlayPiPProps> = ({
             <button
               onClick={onClose}
               className="p-1 rounded-lg text-white/60 hover:text-red-400 hover:bg-red-500/10 transition-colors cursor-pointer"
-              title="Ocultar modelo 3D"
+              title={t('apip.hideModel3d')}
             >
               <X className="size-3.5 sm:size-4" />
             </button>
@@ -303,10 +306,10 @@ export const ARModel3DOverlayPiP: React.FC<ARModel3DOverlayPiPProps> = ({
           <button
             onClick={() => setIsPlaying(!isPlaying)}
             className="flex items-center gap-1 px-1.5 py-0.5 rounded-lg bg-teal-500/20 hover:bg-teal-500/30 text-teal-300 border border-teal-500/40 text-2xs font-bold transition-all active:scale-95 cursor-pointer shrink-0"
-            title={isPlaying ? 'Pausar demostración' : 'Reanudar'}
+            title={isPlaying ? t('apip.pauseDemo') : t('apip.resume')}
           >
             {isPlaying ? <Pause className="size-2.5 sm:size-3" /> : <Play className="size-2.5 sm:size-3" />}
-            <span className="hidden xs:inline">{isPlaying ? 'Pausa' : 'Play'}</span>
+            <span className="hidden xs:inline">{isPlaying ? t('apip.pauseShort') : 'Play'}</span>
           </button>
 
           {/* Selector de Velocidad */}
@@ -335,7 +338,7 @@ export const ARModel3DOverlayPiP: React.FC<ARModel3DOverlayPiPProps> = ({
                   ? 'bg-primary text-on-primary shadow-xs'
                   : 'text-white/60 hover:text-white'
               }`}
-              title="Avatar Fisioterapeuta"
+              title={t('apip.avatarPhysio')}
             >
               <Stethoscope className="size-3" />
             </button>
@@ -346,7 +349,7 @@ export const ARModel3DOverlayPiP: React.FC<ARModel3DOverlayPiPProps> = ({
                   ? 'bg-primary text-on-primary shadow-xs'
                   : 'text-white/60 hover:text-white'
               }`}
-              title="Avatar Paciente"
+              title={t('apip.avatarPatient')}
             >
               <User className="size-3" />
             </button>
@@ -355,8 +358,8 @@ export const ARModel3DOverlayPiP: React.FC<ARModel3DOverlayPiPProps> = ({
 
         {/* Guía rápida de postura */}
         <div className="text-2xs text-white/60 flex items-center justify-between px-1">
-          <span className="truncate">Sigue el movimiento</span>
-          <span className="text-teal-400 font-bold shrink-0">En vivo</span>
+          <span className="truncate">{t('apip.followMovement')}</span>
+          <span className="text-teal-400 font-bold shrink-0">{t('apip.live')}</span>
         </div>
       </div>
     </motion.div>

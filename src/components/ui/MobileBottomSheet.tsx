@@ -206,7 +206,7 @@ export function MobileBottomSheet({
                         type="button"
                         onClick={() => cycleSnap('up')}
                         disabled={activeSnap === 'full'}
-                        aria-label={t('mbsExpand')}
+                        aria-label={t('uix.mbsExpand')}
                         className="p-1 rounded-md text-on-surface-variant hover:text-teal-600 dark:hover:text-teal-400 disabled:opacity-30 disabled:pointer-events-none"
                       >
                         <ChevronUp className="size-4" />
@@ -214,7 +214,7 @@ export function MobileBottomSheet({
                       <button
                         type="button"
                         onClick={() => cycleSnap('down')}
-                        aria-label={t('mbsReduce')}
+                        aria-label={t('uix.mbsReduce')}
                         className="p-1 rounded-md text-on-surface-variant hover:text-teal-600 dark:hover:text-teal-400"
                       >
                         <ChevronDown className="size-4" />
@@ -225,7 +225,7 @@ export function MobileBottomSheet({
                   <button
                     type="button"
                     onClick={onClose}
-                    aria-label={t('mbsClose')}
+                    aria-label={t('uix.mbsClose')}
                     className="size-8 rounded-full bg-slate-100 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-700 text-on-surface-variant flex items-center justify-center transition-colors"
                   >
                     <X className="size-4" />

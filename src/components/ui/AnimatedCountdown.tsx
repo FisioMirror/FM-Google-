@@ -44,7 +44,7 @@ export function AnimatedCountdown({ initialCount = 60, onComplete, className }: 
       </div>
       <div className="flex w-fit items-center gap-2 mt-4">
         <motion.button
-          aria-label={isPaused ? t('acResume') : t('acPause')}
+          aria-label={isPaused ? t('uix.acResume') : t('uix.acPause')}
           onClick={() => setIsPaused((p) => !p)}
           whileTap={{ scale: 0.9 }}
           className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-on-primary transition-colors hover:opacity-80"
@@ -78,11 +78,11 @@ export function AnimatedCountdown({ initialCount = 60, onComplete, className }: 
           </AnimatePresence>
         </motion.button>
         <button
-          aria-label={t('acRestart')}
+          aria-label={t('uix.acRestart')}
           onClick={() => { setResetTrigger((prev) => prev + 1); setIsPaused(false); }}
           className="glass-panel rounded-full px-4 py-1.5 text-sm text-on-surface-variant hover:bg-white/60 transition-colors"
         >
-          {t('acRestart')}
+          {t('uix.acRestart')}
         </button>
       </div>
     </div>

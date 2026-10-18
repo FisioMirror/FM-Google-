@@ -85,12 +85,12 @@ export function AvatarDemo() {
     <div className="flex flex-wrap items-center gap-4">
       <div className="flex items-center gap-2.5">
         <Avatar size="lg">
-          <Avatar.Image alt={t('avatarTherapistAlt')} src="/physi.png" />
+          <Avatar.Image alt={t('uix.avatarTherapistAlt')} src="/physi.png" />
           <Avatar.Fallback>FM</Avatar.Fallback>
         </Avatar>
         <div>
           <p className="text-xs font-bold text-on-surface">Dra. Elena Ramos</p>
-          <p className="text-xs text-teal-600 dark:text-teal-400">{t('avatarRole')}</p>
+          <p className="text-xs text-teal-600 dark:text-teal-400">{t('uix.avatarRole')}</p>
         </div>
       </div>
 
@@ -101,7 +101,7 @@ export function AvatarDemo() {
         </Avatar>
         <div>
           <p className="text-xs font-bold text-on-surface">Carlos Romero</p>
-          <p className="text-xs text-on-surface-variant">{t('avatarPatientStatus')}</p>
+          <p className="text-xs text-on-surface-variant">{t('uix.avatarPatientStatus')}</p>
         </div>
       </div>
 
@@ -111,7 +111,7 @@ export function AvatarDemo() {
         </Avatar>
         <div>
           <p className="text-xs font-bold text-on-surface">Jorge Ramírez</p>
-          <p className="text-xs text-on-surface-variant">{t('avatarTokenPending')}</p>
+          <p className="text-xs text-on-surface-variant">{t('uix.avatarTokenPending')}</p>
         </div>
       </div>
     </div>

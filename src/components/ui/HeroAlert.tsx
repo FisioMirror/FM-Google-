@@ -106,7 +106,7 @@ export function AlertCloseButton({ className, onClick }: { className?: string; o
         'size-7 rounded-lg flex items-center justify-center text-on-surface-variant hover:text-on-surface dark:hover:text-slate-200 hover:bg-black/5 dark:hover:bg-white/5 transition-colors shrink-0',
         className
       )}
-      aria-label={t('haCloseAlert')}
+      aria-label={t('uix.haCloseAlert')}
     >
       <X className="size-4" />
     </button>
@@ -126,9 +126,9 @@ export function BasicAlertsDemo() {
       <Alert status="accent">
         <Alert.Indicator />
         <Alert.Content>
-          <Alert.Title>{t('haTitle1')}</Alert.Title>
+          <Alert.Title>{t('uix.haTitle1')}</Alert.Title>
           <Alert.Description>
-            {t('haDesc1')}
+            {t('uix.haDesc1')}
           </Alert.Description>
         </Alert.Content>
         <Alert.CloseButton />
@@ -137,9 +137,9 @@ export function BasicAlertsDemo() {
       <Alert status="danger">
         <Alert.Indicator />
         <Alert.Content>
-          <Alert.Title>{t('haTitle2')}</Alert.Title>
+          <Alert.Title>{t('uix.haTitle2')}</Alert.Title>
           <Alert.Description>
-            {t('haDesc2')}
+            {t('uix.haDesc2')}
           </Alert.Description>
         </Alert.Content>
         <button className="px-3 py-1.5 rounded-xl bg-rose-600 text-white text-xs font-bold shadow-sm shrink-0 active:scale-95">
@@ -150,8 +150,8 @@ export function BasicAlertsDemo() {
       <Alert status="success">
         <Alert.Indicator />
         <Alert.Content>
-          <Alert.Title>{t('haTitle3')}</Alert.Title>
-          <Alert.Description>{t('haDesc3')}</Alert.Description>
+          <Alert.Title>{t('uix.haTitle3')}</Alert.Title>
+          <Alert.Description>{t('uix.haDesc3')}</Alert.Description>
         </Alert.Content>
         <Alert.CloseButton />
       </Alert>
@@ -159,8 +159,8 @@ export function BasicAlertsDemo() {
       <Alert status="warning">
         <Alert.Indicator />
         <Alert.Content>
-          <Alert.Title>{t('haTitle4')}</Alert.Title>
-          <Alert.Description>{t('haDesc4')}</Alert.Description>
+          <Alert.Title>{t('uix.haTitle4')}</Alert.Title>
+          <Alert.Description>{t('uix.haDesc4')}</Alert.Description>
         </Alert.Content>
         <Alert.CloseButton />
       </Alert>

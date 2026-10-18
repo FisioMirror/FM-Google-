@@ -31,7 +31,7 @@ export function InstallModal() {
   const handleInstall = async () => {
     if (!isInstallable) {
       closeModal();
-      setToast(t('instFallbackHint'));
+      setToast(t('uix.instFallbackHint'));
       setShowToast(true);
       setTimeout(() => setShowToast(false), 5000);
       return;
@@ -82,28 +82,28 @@ export function InstallModal() {
                 </div>
 
                 <h2 className="text-xl font-bold text-primary-800 dark:text-slate-100">
-                  {t('instTitle')}
+                  {t('uix.instTitle')}
                 </h2>
                 <p className="mt-1 text-sm text-primary-500 dark:text-on-surface-variant font-medium">
-                  {t('instTagline')}
+                  {t('uix.instTagline')}
                 </p>
               </div>
 
               {/* Body */}
               <div className="px-6 pb-2">
                 <p className="text-sm text-primary-600 dark:text-slate-300 text-center leading-relaxed">
-                  {t('instBody1')}
-                  {t('instBody2')}
+                  {t('uix.instBody1')}
+                  {t('uix.instBody2')}
                 </p>
 
                 <div className="mt-4 flex flex-col gap-2">
                   <div className="flex items-center gap-2 text-xs text-primary-500 dark:text-on-surface-variant">
                     <Smartphone className="w-4 h-4 text-accent flex-shrink-0" />
-                    {t('instFeature1')}
+                    {t('uix.instFeature1')}
                   </div>
                   <div className="flex items-center gap-2 text-xs text-primary-500 dark:text-on-surface-variant">
                     <Download className="w-4 h-4 text-accent flex-shrink-0" />
-                    {t('instFeature2')}
+                    {t('uix.instFeature2')}
                   </div>
                 </div>
               </div>
@@ -115,13 +115,13 @@ export function InstallModal() {
                   className="w-full py-3 px-4 rounded-2xl bg-gradient-to-r from-primary-600 to-accent text-white font-semibold text-sm shadow-card hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
                 >
                   <Download className="w-4 h-4" />
-                  {t('instInstallNow')}
+                  {t('uix.instInstallNow')}
                 </button>
                 <button
                   onClick={closeModal}
                   className="w-full py-3 px-4 rounded-2xl text-primary-500 dark:text-on-surface-variant font-medium text-sm hover:bg-white/20 active:scale-[0.98] transition-all"
                 >
-                  {t('instLater')}
+                  {t('uix.instLater')}
                 </button>
               </div>
             </motion.div>

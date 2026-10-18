@@ -3419,6 +3419,9 @@ export const pt: typeof es = {
   },
 
   uix: {
+    ecbLocation: 'FisioMirror Web App / Em Casa',
+    ecbEventDesc: 'Sessão guiada de reabilitação postural e exercícios terapêuticos no FisioMirror.',
+    ecbEventTitle: 'Sessão de Fisioterapia - FisioMirror',
     delUndo: 'Desfazer',
     delRestore: 'Restaurar',
     ddrHint: 'Arraste um arquivo ou clique',
@@ -3582,6 +3585,27 @@ export const pt: typeof es = {
 
   pd: {
     specialties: 'Especialidades',
+  },
+
+  apip: {
+    phaseConcentric: 'Concêntrica',
+    phaseHold: 'Sustentação (Hold)',
+    phaseEccentric: 'Excêntrica',
+    phaseNeutral: 'Neutro',
+    defaultExercise: 'Flexão articular',
+    guide3d: 'Guia 3D',
+    restoreViewer: 'Restaurar visualizador 3D',
+    compactSize: 'Tamanho compacto',
+    expandWindow: 'Expandir janela',
+    minimizeToPill: 'Minimizar para pílula',
+    hideModel3d: 'Ocultar modelo 3D',
+    pauseDemo: 'Pausar demonstração',
+    resume: 'Retomar',
+    pauseShort: 'Pausa',
+    avatarPhysio: 'Avatar fisioterapeuta',
+    avatarPatient: 'Avatar paciente',
+    followMovement: 'Siga o movimento',
+    live: 'Ao vivo',
   },
 
 } as const;

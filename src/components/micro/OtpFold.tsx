@@ -42,7 +42,7 @@ const OtpFold = () => {
           <Check size={28} />
         </div>
       </div>
-      <p className="text-sm text-on-surface-variant">{t('otpPrompt')}</p>
+      <p className="text-sm text-on-surface-variant">{t('uix.otpPrompt')}</p>
     </div>
   );
 };

@@ -46,13 +46,13 @@ const RingToBar = () => {
         <div className="h-full bg-gradient-to-r from-teal-500 to-emerald-500 rounded-full transition-all duration-100" style={{ width: `${progress}%` }} />
       </div>
       <button className="flex items-center gap-2 px-6 py-3 bg-teal-500 text-white rounded-full font-semibold disabled:opacity-50" onClick={startSimulation} disabled={progressState === 'running'}>
-        {progressState === 'idle' && <><Download size={18} /> <span>{t('ringSimulate')}</span></>}
-        {progressState === 'running' && <><Loader2 size={18} className="animate-spin" /> <span>{t('ringDownloading')}</span></>}
-        {progressState === 'complete' && <><CheckCircle2 size={18} /> <span>{t('ringComplete')}</span></>}
+        {progressState === 'idle' && <><Download size={18} /> <span>{t('uix.ringSimulate')}</span></>}
+        {progressState === 'running' && <><Loader2 size={18} className="animate-spin" /> <span>{t('uix.ringDownloading')}</span></>}
+        {progressState === 'complete' && <><CheckCircle2 size={18} /> <span>{t('uix.ringComplete')}</span></>}
       </button>
       {progressState === 'complete' && (
         <button className="flex items-center gap-2 px-4 py-2 border border-slate-300 dark:border-slate-600 text-on-surface-variant rounded-full text-sm font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" onClick={resetProgress}>
-          <RotateCcw size={16} /> <span>{t('ringRestart')}</span>
+          <RotateCcw size={16} /> <span>{t('uix.ringRestart')}</span>
         </button>
       )}
     </div>

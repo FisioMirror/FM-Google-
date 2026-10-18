@@ -27,15 +27,15 @@ export class ErrorBoundary extends Component<Props, State> {
         <div className="min-h-[100dvh] flex items-center justify-center p-6">
           <div className="glass-card max-w-md w-full p-8 text-center">
             <MascotAnimation type="error" size="md" className="mx-auto mb-4" />
-            <h2 className="text-xl font-semibold text-primary-800 mb-2">{i18n.t('ebTitle')}</h2>
+            <h2 className="text-xl font-semibold text-primary-800 mb-2">{i18n.t('uix.ebTitle')}</h2>
             <p className="text-sm text-primary-500 mb-4">
-              {this.state.error?.message ?? i18n.t('ebUnexpected')}
+              {this.state.error?.message ?? i18n.t('uix.ebUnexpected')}
             </p>
             <button
               onClick={() => window.location.reload()}
               className="px-4 py-2 rounded-xl bg-primary-700 text-on-primary text-sm font-medium hover:bg-primary-800"
             >
-              {i18n.t('ebReload')}
+              {i18n.t('uix.ebReload')}
             </button>
           </div>
         </div>

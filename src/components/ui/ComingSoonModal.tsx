@@ -46,8 +46,8 @@ export function ComingSoonModal({
               <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center">
                 <Sparkles size={32} className="text-primary animate-pulse" />
               </div>
-              <h3 className="text-lg font-bold text-on-surface">{title ?? t('csTitle')}</h3>
-              <p className="text-sm text-on-surface-variant leading-relaxed">{description ?? t('csDesc')}</p>
+              <h3 className="text-lg font-bold text-on-surface">{title ?? t('uix.csTitle')}</h3>
+              <p className="text-sm text-on-surface-variant leading-relaxed">{description ?? t('uix.csDesc')}</p>
               <button
                 onClick={onClose}
                 className="mt-2 px-6 py-2.5 rounded-xl bg-primary text-on-primary font-semibold text-sm hover:bg-primary/90 transition-colors"

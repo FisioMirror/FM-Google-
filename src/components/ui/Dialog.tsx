@@ -77,7 +77,7 @@ export function Dialog({
                   type="button"
                   className="absolute top-5 right-5 p-2 rounded-xl text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary cursor-pointer"
                   onClick={() => onOpenChange(false)}
-                  aria-label={t('dlguCloseModal')}
+                  aria-label={t('uix.dlguCloseModal')}
                 >
                   <X className="h-4 w-4" />
                 </button>

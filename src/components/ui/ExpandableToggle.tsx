@@ -72,7 +72,7 @@ export function ExpandableToggle({
         }}
         className="glass-panel absolute bottom-8 my-8 rounded-full px-6 py-1.5 text-on-surface-variant font-label-sm text-label-sm active:scale-95 transition-transform"
       >
-        {toggle ? (collapseLabel ?? t('common.close')) : (expandLabel ?? t('etMoreOptions'))}
+        {toggle ? (collapseLabel ?? t('common.close')) : (expandLabel ?? t('uix.etMoreOptions'))}
       </button>
     </div>
   );

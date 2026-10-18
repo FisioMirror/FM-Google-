@@ -94,7 +94,7 @@ export function AlertDialogCloseTrigger({ className }: { className?: string }) {
         'absolute top-4 right-4 p-1.5 rounded-xl text-on-surface-variant hover:text-on-surface-variant dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors',
         className
       )}
-      aria-label={t('hadCloseDialog')}
+      aria-label={t('uix.hadCloseDialog')}
     >
       <X className="w-4 h-4" />
     </button>
@@ -157,7 +157,7 @@ export function DeleteProjectDialogDemo() {
     <AlertDialog>
       <AlertDialogTrigger asChild>
         <Button variant="destructive" size="sm" icon={<AlertCircle className="w-4 h-4" />}>
-          {t('hadDeleteRecord')}
+          {t('uix.hadDeleteRecord')}
         </Button>
       </AlertDialogTrigger>
       <AlertDialog.Backdrop>
@@ -167,13 +167,13 @@ export function DeleteProjectDialogDemo() {
             <AlertDialog.Header>
               <AlertDialog.Icon status="danger" />
               <div>
-                <AlertDialog.Heading>{t('hadConfirmTitle')}</AlertDialog.Heading>
-                <span className="text-2xs text-rose-600 dark:text-rose-400 font-bold uppercase tracking-wider">{t('hadIrreversible')}</span>
+                <AlertDialog.Heading>{t('uix.hadConfirmTitle')}</AlertDialog.Heading>
+                <span className="text-2xs text-rose-600 dark:text-rose-400 font-bold uppercase tracking-wider">{t('uix.hadIrreversible')}</span>
               </div>
             </AlertDialog.Header>
             <AlertDialog.Body>
               <p>
-                {t('hadDeleteDesc')}
+                {t('uix.hadDeleteDesc')}
               </p>
             </AlertDialog.Body>
             <AlertDialog.Footer>
@@ -181,7 +181,7 @@ export function DeleteProjectDialogDemo() {
                 {t('common.cancel')}
               </Button>
               <Button slot="close" variant="destructive" size="sm">
-                {t('hadConfirmDelete')}
+                {t('uix.hadConfirmDelete')}
               </Button>
             </AlertDialog.Footer>
           </AlertDialog.Dialog>

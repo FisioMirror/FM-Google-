@@ -81,10 +81,10 @@ export function CommandPalette({
           const results: CommandItem[] = data.map((p) => ({
             id: `db-pat-${p.id}`,
             label: p.full_name || t('common.patient'),
-            subtitle: `${p.diagnostico || p.patologia || t('cpRecord')}${p.email && !p.email.includes('@fisiomirror.paciente') ? ` • ${p.email}` : ''}`,
+            subtitle: `${p.diagnostico || p.patologia || t('uix.cpRecord')}${p.email && !p.email.includes('@fisiomirror.paciente') ? ` • ${p.email}` : ''}`,
             category: 'Pacientes',
             icon: <User className="size-4 text-teal-600 dark:text-teal-400" />,
-            badge: t('cpDatabase'),
+            badge: t('uix.cpDatabase'),
             onSelect: () => navigate(`/paciente/${p.id}`),
           }));
           setDbItems(results);
@@ -174,7 +174,7 @@ export function CommandPalette({
         <input
           ref={inputRef}
           type="text"
-          placeholder={placeholder ?? t('cpPlaceholder')}
+          placeholder={placeholder ?? t('uix.cpPlaceholder')}
           value={query}
           onFocus={() => setIsOpen(true)}
           onBlur={() => {
@@ -225,7 +225,7 @@ export function CommandPalette({
           >
             {filtered.length === 0 && !isSearchingDb ? (
               <div className="px-5 py-4 text-center">
-                <p className="text-xs font-medium text-on-surface-variant">{t('cpNoResults', { query })}</p>
+                <p className="text-xs font-medium text-on-surface-variant">{t('uix.cpNoResults', { query })}</p>
                 {onEnterFallback && (
                   <button
                     type="button"
@@ -236,7 +236,7 @@ export function CommandPalette({
                     className="mt-2 text-xs font-bold text-teal-600 dark:text-teal-400 hover:underline inline-flex items-center gap-1"
                   >
                     <Search className="size-3" />
-                    {t('cpSearchDirectory', { query })}
+                    {t('uix.cpSearchDirectory', { query })}
                   </button>
                 )}
               </div>

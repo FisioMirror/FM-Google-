@@ -59,10 +59,10 @@ export const RehabEnergyBar: React.FC<RehabEnergyBarProps> = ({
           </div>
           <div>
             <h4 className="text-sm font-semibold text-on-surface dark:text-white flex items-center gap-1.5">
-              {t('rebTitle')}
+              {t('uix.rebTitle')}
             </h4>
             <p className="text-xs text-on-surface-variant">
-              {t('rebReps', { completed: repsCompleted, total: totalTargetReps })}
+              {t('uix.rebReps', { completed: repsCompleted, total: totalTargetReps })}
             </p>
           </div>
         </div>
@@ -73,7 +73,7 @@ export const RehabEnergyBar: React.FC<RehabEnergyBarProps> = ({
             {Math.round(clampedEnergy)}%
           </div>
           <span className="text-2xs uppercase font-semibold tracking-wider text-on-surface-variant">
-            {isLowEnergy ? t('rebHighFatigue') : clampedEnergy < 60 ? t('rebModerate') : t('rebOptimal')}
+            {isLowEnergy ? t('uix.rebHighFatigue') : clampedEnergy < 60 ? t('uix.rebModerate') : t('uix.rebOptimal')}
           </span>
         </div>
       </div>
@@ -102,7 +102,7 @@ export const RehabEnergyBar: React.FC<RehabEnergyBarProps> = ({
       <div className="grid grid-cols-2 gap-3 mt-4 pt-3 border-t border-outline-variant/15 dark:border-white/5 text-xs">
         <div className="flex items-center gap-1.5 text-on-surface-variant">
           <Flame className="w-3.5 h-3.5 text-amber-500" />
-          <span>{t('rebFatigueIndex')}</span>
+          <span>{t('uix.rebFatigueIndex')}</span>
           <span className="font-mono font-bold text-on-surface dark:text-white">{fatigueScore.toFixed(1)} / 10</span>
         </div>
 
@@ -110,10 +110,10 @@ export const RehabEnergyBar: React.FC<RehabEnergyBarProps> = ({
           {isHighFatigue ? (
             <span className="flex items-center gap-1 text-rose-500 font-medium">
               <ShieldAlert className="w-3.5 h-3.5" />
-              {t('rebRestAdvised')}
+              {t('uix.rebRestAdvised')}
             </span>
           ) : (
-            <span className="text-emerald-500 font-medium">{t('rebSafePace')}</span>
+            <span className="text-emerald-500 font-medium">{t('uix.rebSafePace')}</span>
           )}
         </div>
       </div>
