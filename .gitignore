@@ -29,3 +29,4 @@ package-lock.json
 
 # MCP config local (contiene API keys)
 mcp.json
+.opencode/

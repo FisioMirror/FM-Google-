@@ -4,19 +4,45 @@
     "shadcn": {
       "type": "local",
       "command": [
-        "npx",
-        "-y",
-        "shadcn@latest",
-        "mcp",
-        "-c",
-        "/public/projects/main"
+        "node",
+        "/public/.local/share/opencode-mcp/node_modules/shadcn/dist/index.js",
+        "mcp"
       ],
-      "enabled": true
+      "cwd": "/storage/7E87-1615/Documents/Proyectos/FM-Google-dev",
+      "enabled": true,
+      "timeout": 300000
+    },
+    "heroui-react": {
+      "type": "local",
+      "command": [
+        "node",
+        "/public/.local/share/opencode-mcp/node_modules/@heroui/react-mcp/dist/stdio.js"
+      ],
+      "enabled": true,
+      "timeout": 120000
+    },
+    "magicui": {
+      "type": "local",
+      "command": [
+        "node",
+        "/public/.local/share/opencode-mcp/node_modules/@magicuidesign/mcp/dist/server.js"
+      ],
+      "enabled": true,
+      "timeout": 120000
+    },
+    "motion": {
+      "type": "remote",
+      "url": "https://mcp.motion.dev",
+      "enabled": true,
+      "oauth": false,
+      "timeout": 15000
     },
     "21st": {
       "type": "remote",
       "url": "https://21st.dev/api/mcp",
       "enabled": true,
+      "oauth": false,
+      "timeout": 15000,
       "headers": {
         "x-api-key": "{env:MAGIC_API_KEY}"
       }
