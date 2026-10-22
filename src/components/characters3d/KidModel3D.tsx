@@ -15,8 +15,8 @@ const JOINT_LIMITS: Record<string, { min: number; max: number }> = {
   muñeca_derecha: { min: -80, max: 80 },
   cadera_izquierda: { min: -120, max: 120 },
   cadera_derecha: { min: -120, max: 120 },
-  rodilla_izquierda: { min: -135, max: 0 },
-  rodilla_derecha: { min: -135, max: 0 },
+  rodilla_izquierda: { min: 0, max: 135 },
+  rodilla_derecha: { min: 0, max: 135 },
   tobillo_izquierdo: { min: -40, max: 30 },
   tobillo_derecho: { min: -40, max: 30 },
 };
@@ -399,8 +399,11 @@ export const KidModel3D: React.FC<KidModel3DProps> = ({
         Object.entries(currentAngles).forEach(([jointName, degAngle]) => {
           if (joints[jointName] && typeof degAngle === 'number') {
             const axis: JointRotationAxis = currentAxes[jointName] ?? 'x';
+            // Presets express flexion as a positive angle. The elbow group
+            // rotates in the negative X direction, while the knee uses positive X.
+            const anatomicalDeg = jointName.startsWith('codo_') && degAngle > 0 ? -degAngle : degAngle;
             // Aplicar límites anatómicos realistas antes de convertir a radianes.
-            const clampedDeg = clampAngle(jointName, degAngle);
+            const clampedDeg = clampAngle(jointName, anatomicalDeg);
             const rad = THREE.MathUtils.degToRad(clampedDeg);
             // Invertir el signo para el lado derecho en el eje Z (abducción)
             // para que ambos brazos/piernas se abran hacia afuera simétricamente.

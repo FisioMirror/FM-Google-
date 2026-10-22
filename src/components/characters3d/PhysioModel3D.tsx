@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
-import type { JointRotationAxis } from '../../types/character.types';
+import type { JointRotationAxis, ExercisePosition } from '../../types/character.types';
 
 export interface PhysioModel3DProps {
   jointAngles?: Partial<Record<string, number>>;
@@ -9,7 +9,39 @@ export interface PhysioModel3DProps {
   statusColor?: string;
   autoAnimate?: boolean;
   className?: string;
+  /** Posición corporal del ejercicio. Por defecto 'pie' (de pie). */
+  position?: ExercisePosition;
 }
+
+const JOINT_LIMITS: Record<string, { min: number; max: number }> = {
+  cabeza: { min: -45, max: 45 },
+  cuello: { min: -45, max: 45 },
+  hombro_izquierdo: { min: -180, max: 180 },
+  hombro_derecho: { min: -180, max: 180 },
+  codo_izquierdo: { min: -150, max: 0 },
+  codo_derecho: { min: -150, max: 0 },
+  muñeca_izquierda: { min: -80, max: 80 },
+  muñeca_derecha: { min: -80, max: 80 },
+  cadera_izquierda: { min: -120, max: 120 },
+  cadera_derecha: { min: -120, max: 120 },
+  rodilla_izquierda: { min: 0, max: 135 },
+  rodilla_derecha: { min: 0, max: 135 },
+  tobillo_izquierdo: { min: -40, max: 30 },
+  tobillo_derecho: { min: -40, max: 30 },
+};
+
+const clampAngle = (joint: string, deg: number): number => {
+  const limit = JOINT_LIMITS[joint];
+  if (!limit) return deg;
+  return Math.max(limit.min, Math.min(limit.max, deg));
+};
+
+const POSITION_TARGETS: Record<ExercisePosition, { rotX: number; rotY: number; rotZ: number; posY: number }> = {
+  pie: { rotX: 0, rotY: 0, rotZ: 0, posY: 0 },
+  sentado: { rotX: 0, rotY: 0, rotZ: 0, posY: -0.18 },
+  acostado: { rotX: -Math.PI / 2, rotY: 0, rotZ: 0, posY: -0.55 },
+  decubito_lateral: { rotX: 0, rotY: 0, rotZ: Math.PI / 2, posY: -0.55 },
+};
 
 export const PhysioModel3D: React.FC<PhysioModel3DProps> = ({
   jointAngles = {},
@@ -17,6 +49,7 @@ export const PhysioModel3D: React.FC<PhysioModel3DProps> = ({
   statusColor,
   autoAnimate = false,
   className = 'w-full h-full min-h-[320px]',
+  position = 'pie',
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const jointsRef = useRef<Record<string, THREE.Group>>({});
@@ -25,13 +58,18 @@ export const PhysioModel3D: React.FC<PhysioModel3DProps> = ({
   const axesRef = useRef(jointAxes);
   const statusColorRef = useRef(statusColor);
   const autoAnimateRef = useRef(autoAnimate);
+  const positionRef = useRef(position);
+  const poseRef = useRef({ rotX: 0, rotY: 0, rotZ: 0, posY: 0 });
+  const poseGroupRef = useRef<THREE.Group | null>(null);
+  const lastElapsedRef = useRef(0);
 
   useEffect(() => {
     anglesRef.current = jointAngles;
     axesRef.current = jointAxes;
     statusColorRef.current = statusColor;
     autoAnimateRef.current = autoAnimate;
-  }, [jointAngles, jointAxes, statusColor, autoAnimate]);
+    positionRef.current = position;
+  }, [jointAngles, jointAxes, statusColor, autoAnimate, position]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -134,9 +172,13 @@ export const PhysioModel3D: React.FC<PhysioModel3DProps> = ({
     container.addEventListener('pointerup', onPointerUp);
     container.addEventListener('pointercancel', onPointerUp);
 
+    const poseGroup = new THREE.Group();
+    orbitGroup.add(poseGroup);
+    poseGroupRef.current = poseGroup;
+
     const pelvis = new THREE.Group();
     pelvis.position.set(0, 1.15, 0);
-    orbitGroup.add(pelvis);
+    poseGroup.add(pelvis);
     joints['tronco_pelvis'] = pelvis;
     const pMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.19, 0.17, 0.15, 16), matPants);
     pMesh.castShadow = true;
@@ -317,7 +359,10 @@ export const PhysioModel3D: React.FC<PhysioModel3DProps> = ({
         Object.entries(currentAngles).forEach(([jointName, degAngle]) => {
           if (joints[jointName] && typeof degAngle === 'number') {
             const axis: JointRotationAxis = currentAxes[jointName] ?? 'x';
-            const rad = THREE.MathUtils.degToRad(degAngle);
+            // Presets use positive flexion; the elbow group rotates negatively.
+            const anatomicalDeg = jointName.startsWith('codo_') && degAngle > 0 ? -degAngle : degAngle;
+            const clampedDeg = clampAngle(jointName, anatomicalDeg);
+            const rad = THREE.MathUtils.degToRad(clampedDeg);
             let signedRad = rad;
             if (axis === 'z' && jointName.includes('derecho')) {
               signedRad = -rad;
@@ -331,6 +376,23 @@ export const PhysioModel3D: React.FC<PhysioModel3DProps> = ({
         if (joints['codo_izquierdo']) joints['codo_izquierdo'].rotation.x = -0.55;
         if (joints['hombro_derecho']) joints['hombro_derecho'].rotation.x = 0.35 - Math.sin(t) * 0.06;
         if (joints['codo_derecho']) joints['codo_derecho'].rotation.x = -0.55;
+      }
+
+      // Posición corporal (de pie / sentado / acostado / decúbito lateral)
+      const poseGroup = poseGroupRef.current;
+      if (poseGroup) {
+        const elapsed = clock.getElapsedTime();
+        const delta = Math.min(0.05, Math.max(0, elapsed - lastElapsedRef.current));
+        lastElapsedRef.current = elapsed;
+        const target = POSITION_TARGETS[positionRef.current];
+        const k = 1 - Math.pow(0.001, delta / 0.4);
+        const pose = poseRef.current;
+        pose.rotX += (target.rotX - pose.rotX) * k;
+        pose.rotY += (target.rotY - pose.rotY) * k;
+        pose.rotZ += (target.rotZ - pose.rotZ) * k;
+        pose.posY += (target.posY - pose.posY) * k;
+        poseGroup.rotation.set(pose.rotX, pose.rotY, pose.rotZ);
+        poseGroup.position.y = pose.posY;
       }
 
       // Suavizado inercial de la rotación orbital
@@ -364,6 +426,7 @@ export const PhysioModel3D: React.FC<PhysioModel3DProps> = ({
         renderer.domElement.parentNode.removeChild(renderer.domElement);
       }
       renderer.dispose();
+      poseGroupRef.current = null;
       scene.clear();
     };
   }, []);

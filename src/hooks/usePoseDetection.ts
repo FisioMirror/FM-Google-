@@ -25,6 +25,23 @@ export interface PoseData {
   isTracking: boolean;
 }
 
+export type RepJoint = 'elbow' | 'knee' | 'shoulder' | 'hip';
+
+export interface UsePoseDetectionOptions {
+  /** Joint used to count repetitions. Defaults to elbow. */
+  repJoint?: RepJoint;
+  /** Exercise name used to infer the rep joint when repJoint is omitted. */
+  exerciseName?: string;
+}
+
+function inferRepJoint(exerciseName?: string): RepJoint {
+  const name = (exerciseName || '').toLowerCase();
+  if (/(sentadilla|squat|rodilla|knee|prensa|leg press|zancada|lunge)/.test(name)) return 'knee';
+  if (/(hombro|shoulder|elevaci|abducci|press militar|overhead)/.test(name)) return 'shoulder';
+  if (/(cadera|hip|puente|bridge|gluteo|glúteo)/.test(name)) return 'hip';
+  return 'elbow';
+}
+
 export interface UsePoseDetectionResult {
   videoRef: React.RefObject<HTMLVideoElement | null>;
   canvasRef: React.RefObject<HTMLCanvasElement | null>;
@@ -93,7 +110,7 @@ function calculateAngle(a: PoseLandmark, b: PoseLandmark, c: PoseLandmark): numb
   return Math.round(angle);
 }
 
-export function usePoseDetection(): UsePoseDetectionResult {
+export function usePoseDetection(options: UsePoseDetectionOptions = {}): UsePoseDetectionResult {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const poseRef = useRef<any>(null);
@@ -113,6 +130,8 @@ export function usePoseDetection(): UsePoseDetectionResult {
 
   const repPhaseRef = useRef<'up' | 'down'>('down');
   const targetAngleRef = useRef<number>(90);
+  const repJointRef = useRef<RepJoint>(options.repJoint ?? inferRepJoint(options.exerciseName));
+  repJointRef.current = options.repJoint ?? inferRepJoint(options.exerciseName);
 
   const resetReps = useCallback(() => {
     setRepCount(0);
@@ -260,10 +279,11 @@ export function usePoseDetection(): UsePoseDetectionResult {
         const rightAngle = Math.round(115 + angleCycle * 50);
         const leftAngle = 160;
 
-        // Rep counting logic
+        // Rep counting logic (simulation mirrors the selected joint thresholds)
+        const simulatedDownThreshold = repJointRef.current === 'knee' ? 100 : repJointRef.current === 'shoulder' ? 70 : repJointRef.current === 'hip' ? 110 : 60;
         if (rightAngle > 155 && repPhaseRef.current === 'down') {
           repPhaseRef.current = 'up';
-        } else if (rightAngle < 75 && repPhaseRef.current === 'up') {
+        } else if (rightAngle < simulatedDownThreshold && repPhaseRef.current === 'up') {
           repPhaseRef.current = 'down';
           setRepCount((r) => r + 1);
         }
@@ -450,11 +470,44 @@ export function usePoseDetection(): UsePoseDetectionResult {
 
               drawOverlay(ctx, landmarks, postureColor, canvas.width, canvas.height);
 
-              // Rep counting driven by the dominant elbow angle
-              const currentAngle = Math.max(leftArmAngle, rightArmAngle);
-              if (currentAngle > 160 && repPhaseRef.current === 'down') {
+              // Rep counting driven by the joint that matches the exercise.
+              const leftKneeAngle =
+                landmarks[LM.LEFT_HIP] && landmarks[LM.LEFT_KNEE] && landmarks[LM.LEFT_ANKLE]
+                  ? calculateAngle(landmarks[LM.LEFT_HIP], landmarks[LM.LEFT_KNEE], landmarks[LM.LEFT_ANKLE])
+                  : 0;
+              const rightKneeAngle =
+                landmarks[LM.RIGHT_HIP] && landmarks[LM.RIGHT_KNEE] && landmarks[LM.RIGHT_ANKLE]
+                  ? calculateAngle(landmarks[LM.RIGHT_HIP], landmarks[LM.RIGHT_KNEE], landmarks[LM.RIGHT_ANKLE])
+                  : 0;
+              const leftShoulderAngle =
+                landmarks[LM.LEFT_HIP] && landmarks[LM.LEFT_SHOULDER] && landmarks[LM.LEFT_ELBOW]
+                  ? calculateAngle(landmarks[LM.LEFT_HIP], landmarks[LM.LEFT_SHOULDER], landmarks[LM.LEFT_ELBOW])
+                  : 0;
+              const rightShoulderAngle =
+                landmarks[LM.RIGHT_HIP] && landmarks[LM.RIGHT_SHOULDER] && landmarks[LM.RIGHT_ELBOW]
+                  ? calculateAngle(landmarks[LM.RIGHT_HIP], landmarks[LM.RIGHT_SHOULDER], landmarks[LM.RIGHT_ELBOW])
+                  : 0;
+              const leftHipAngle =
+                landmarks[LM.LEFT_SHOULDER] && landmarks[LM.LEFT_HIP] && landmarks[LM.LEFT_KNEE]
+                  ? calculateAngle(landmarks[LM.LEFT_SHOULDER], landmarks[LM.LEFT_HIP], landmarks[LM.LEFT_KNEE])
+                  : 0;
+              const rightHipAngle =
+                landmarks[LM.RIGHT_SHOULDER] && landmarks[LM.RIGHT_HIP] && landmarks[LM.RIGHT_KNEE]
+                  ? calculateAngle(landmarks[LM.RIGHT_SHOULDER], landmarks[LM.RIGHT_HIP], landmarks[LM.RIGHT_KNEE])
+                  : 0;
+              const repJoint = repJointRef.current;
+              const currentAngle =
+                repJoint === 'knee'
+                  ? Math.max(leftKneeAngle, rightKneeAngle)
+                  : repJoint === 'shoulder'
+                    ? Math.max(leftShoulderAngle, rightShoulderAngle)
+                    : repJoint === 'hip'
+                      ? Math.max(leftHipAngle, rightHipAngle)
+                      : Math.max(leftArmAngle, rightArmAngle);
+              const downThreshold = repJoint === 'knee' ? 100 : repJoint === 'shoulder' ? 70 : repJoint === 'hip' ? 110 : 60;
+              if (currentAngle > 155 && repPhaseRef.current === 'down') {
                 repPhaseRef.current = 'up';
-              } else if (currentAngle < 60 && repPhaseRef.current === 'up') {
+              } else if (currentAngle < downThreshold && repPhaseRef.current === 'up') {
                 repPhaseRef.current = 'down';
                 setRepCount((r) => r + 1);
               }
