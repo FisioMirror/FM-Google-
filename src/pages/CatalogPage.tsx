@@ -1,6 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useSearchParams } from 'react-router-dom';
 import {
+  Search,
+  X,
   Sparkles,
   LayoutGrid,
   Layers,
@@ -74,9 +77,84 @@ import {
 } from '../components/heroui';
 import { cn } from '../lib/utils';
 
+/** Secciones reales del catálogo. `keywords` es lo que busca el buscador (además del título). */
+type CatalogSectionId = 'megasuite' | 'estelar' | 'magic' | 'aceternity' | 'heroui' | 'shadcn' | '21st';
+
+const CATALOG_SECTIONS: ReadonlyArray<{
+  id: CatalogSectionId;
+  labelKey: string;
+  title: string;
+  keywords: string;
+}> = [
+  {
+    id: 'megasuite',
+    labelKey: 'cat.fMega',
+    title: 'Macro Suite FisioMirror (50 Componentes Modulares)',
+    keywords:
+      'megasuite macro suite 50 diagnostico dolor escala marcha temblor postura cardio fase edema fuerza adherencia mediapipe ia tiempo real confianza velocidad rom hud voz camara repeticiones metronomo resumen selector esqueleto isometria calidad gamificacion racha nivel logro quest trofeo puntos heroe dock navegacion ergonomia teleconsulta timeline',
+  },
+  {
+    id: 'estelar',
+    labelKey: 'cat.fStar',
+    title: 'Suite Estelar de Innovación Biomecánica',
+    keywords:
+      'estelar goniometro angulo rom resortes repeticiones energia fatiga medalla badge banner compensacion postural dock ar terapeuta toolbar bottom sheet rodilla hombro',
+  },
+  {
+    id: 'magic',
+    labelKey: 'cat.fMagic',
+    title: 'Magic UI — Number Ticker, Bento Grid, Dock & Marquee',
+    keywords: 'magic ui marquee bento grid dock stat card ticker resorte marquee recomendaciones metricas',
+  },
+  {
+    id: 'aceternity',
+    labelKey: 'cat.fAceternity',
+    title: 'Aceternity UI — Tactile Cards & Tracing Beam',
+    keywords: 'aceternity spotlight card halo cursor borde animado tracing beam criptografia token seguridad',
+  },
+  {
+    id: 'heroui',
+    labelKey: 'cat.fHero',
+    title: 'Suite Completa HeroUI (28 Componentes)',
+    keywords:
+      'heroui accordion acordeon alert alerta dialog avatar breadcrumbs botones cards chips disclosure drawer progreso progress calendar fecha toasts scroll tabla table pacientes',
+  },
+  {
+    id: 'shadcn',
+    labelKey: 'cat.fShadcn',
+    title: 'Shadcn UI — Clinical Sliders, Toggles & Action Buttons',
+    keywords: 'shadcn slider rom rango toggle interruptor tooltip botones action button variantes',
+  },
+  {
+    id: '21st',
+    labelKey: 'cat.f21',
+    title: 'Bloque A — 21st.dev',
+    keywords: '21st chat mensajes loader carga light rays hypertext scramble tipografia ia',
+  },
+];
+
+const CATALOG_TABS: ReadonlyArray<{ id: 'all' | CatalogSectionId; labelKey: string }> = [
+  { id: 'all', labelKey: 'cat.fAll' },
+  ...CATALOG_SECTIONS.map((s) => ({ id: s.id, labelKey: s.labelKey })),
+];
+
+const normalize = (value: string) =>
+  value
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '');
+
 export function CatalogPage() {
   const { t } = useTranslation();
-  const [activeTab, setActiveTab] = useState<'all' | 'megasuite' | 'estelar' | 'magic' | 'aceternity' | 'heroui' | 'shadcn' | '21st'>('all');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const suiteParam = searchParams.get('suite');
+  const itemParam = searchParams.get('item');
+  const [activeTab, setActiveTab] = useState<'all' | CatalogSectionId>(() =>
+    CATALOG_TABS.some((tab) => tab.id === suiteParam) ? (suiteParam as CatalogSectionId) : 'all'
+  );
+  const [query, setQuery] = useState('');
+  const [highlight, setHighlight] = useState<CatalogSectionId | null>(null);
+
   const [sliderAngle, setSliderAngle] = useState(120);
   const [toggleState, setToggleState] = useState(true);
   const [gaugeAngle, setGaugeAngle] = useState(95);
@@ -84,6 +162,51 @@ export function CatalogPage() {
   const [energyLevel, setEnergyLevel] = useState(85);
   const [selectedJoint, setSelectedJoint] = useState('rodilla');
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
+
+  // --- Buscador + deep-link (?suite= / ?item=) ---
+  const filteredIds = useMemo(() => {
+    const q = normalize(query.trim());
+    return CATALOG_SECTIONS.filter((section) => {
+      if (activeTab !== 'all' && section.id !== activeTab) return false;
+      if (!q) return true;
+      return normalize(`${section.title} ${section.labelKey} ${section.keywords}`).includes(q);
+    }).map((section) => section.id);
+  }, [query, activeTab]);
+
+  const isVisible = (id: CatalogSectionId) => filteredIds.includes(id);
+
+  const selectTab = (id: 'all' | CatalogSectionId) => {
+    setActiveTab(id);
+    const next = new URLSearchParams(searchParams);
+    if (id === 'all') next.delete('suite');
+    else next.set('suite', id);
+    next.delete('item');
+    setSearchParams(next, { replace: true });
+  };
+
+  useEffect(() => {
+    if (suiteParam && CATALOG_TABS.some((tab) => tab.id === suiteParam)) {
+      setActiveTab(suiteParam as CatalogSectionId);
+    } else if (!suiteParam) {
+      setActiveTab('all');
+    }
+  }, [suiteParam]);
+
+  useEffect(() => {
+    if (!itemParam) return;
+    const target = CATALOG_SECTIONS.find((section) => section.id === itemParam);
+    if (!target) return;
+    setActiveTab('all');
+    setHighlight(target.id);
+    const scrollTimer = window.setTimeout(() => {
+      document.getElementById(`cat-${target.id}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 140);
+    const clearTimer = window.setTimeout(() => setHighlight(null), 3200);
+    return () => {
+      window.clearTimeout(scrollTimer);
+      window.clearTimeout(clearTimer);
+    };
+  }, [itemParam]);
 
   return (
     <div className="fm-page">
@@ -126,37 +249,64 @@ export function CatalogPage() {
           </div>
         </div>
 
-        {/* Filter Tabs */}
-        <div className="mt-8 pt-6 border-t border-outline/15 flex flex-wrap gap-2">
-          {[
-            { id: 'all', labelKey: 'cat.fAll' },
-            { id: 'megasuite', labelKey: 'cat.fMega' },
-            { id: 'estelar', labelKey: 'cat.fStar' },
-            { id: 'heroui', labelKey: 'cat.fHero' },
-            { id: 'magic', labelKey: 'cat.fMagic' },
-            { id: 'aceternity', labelKey: 'cat.fAceternity' },
-            { id: 'shadcn', labelKey: 'cat.fShadcn' },
-            { id: '21st', labelKey: 'cat.f21' },
-          ].map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id as any)}
-              className={cn(
-                'px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer',
-                activeTab === tab.id
-                  ? 'bg-primary text-on-primary shadow-sm shadow-teal-600/20'
-                  : 'bg-surface-container hover:bg-surface-container-high text-on-surface-variant'
+        {/* Buscador + Filter Tabs */}
+        <div className="mt-8 pt-6 border-t border-outline/15 space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+            <div className="relative flex-1 max-w-xl">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-on-surface-variant pointer-events-none" />
+              <input
+                type="search"
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+                placeholder={t('cat.search', 'Buscar componente, articulación o suite…')}
+                aria-label={t('cat.search', 'Buscar componente, articulación o suite…')}
+                className="w-full rounded-xl bg-surface-container border border-outline/20 pl-10 pr-10 py-2.5 text-xs sm:text-sm text-on-surface placeholder:text-on-surface-variant/70 outline-none focus:border-primary/50 focus:ring-2 focus:ring-primary/20 transition-colors"
+              />
+              {query && (
+                <button
+                  type="button"
+                  onClick={() => setQuery('')}
+                  aria-label={t('cat.searchClear', 'Limpiar búsqueda')}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors"
+                >
+                  <X className="size-3.5" />
+                </button>
               )}
-            >
-              {t(tab.labelKey)}
-            </button>
-          ))}
+            </div>
+            <span className="text-2xs font-bold uppercase tracking-wider text-on-surface-variant">
+              {t('cat.searchCount', '{{shown}} de {{total}} secciones', {
+                shown: filteredIds.length,
+                total: CATALOG_SECTIONS.length,
+              })}
+            </span>
+          </div>
+
+          <div className="flex flex-wrap gap-2">
+            {CATALOG_TABS.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => selectTab(tab.id)}
+                aria-pressed={activeTab === tab.id}
+                className={cn(
+                  'px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer',
+                  activeTab === tab.id
+                    ? 'bg-primary text-on-primary shadow-sm shadow-teal-600/20'
+                    : 'bg-surface-container hover:bg-surface-container-high text-on-surface-variant'
+                )}
+              >
+                {t(tab.labelKey)}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
       {/* BLOQUE ACETERNITY UI */}
-      {(activeTab === 'all' || activeTab === 'aceternity') && (
-        <section className="space-y-6">
+      {isVisible('aceternity') && (
+        <section
+          id="cat-aceternity"
+          className={cn('space-y-6 scroll-mt-24', highlight === 'aceternity' && 'ring-2 ring-primary/50 rounded-3xl p-2')}
+        >
           <div className="flex items-center gap-3 border-b border-outline/15 pb-3">
             <div className="p-2.5 rounded-2xl bg-teal-500/10 text-teal-600">
               <Zap className="size-5" />
@@ -217,8 +367,11 @@ export function CatalogPage() {
       )}
 
       {/* BLOQUE MAGIC UI */}
-      {(activeTab === 'all' || activeTab === 'magic') && (
-        <section className="space-y-6">
+      {isVisible('magic') && (
+        <section
+          id="cat-magic"
+          className={cn('space-y-6 scroll-mt-24', highlight === 'magic' && 'ring-2 ring-primary/50 rounded-3xl p-2')}
+        >
           <div className="flex items-center gap-3 border-b border-outline/15 pb-3">
             <div className="p-2.5 rounded-2xl bg-teal-500/10 text-teal-600">
               <Sparkles className="size-5" />
@@ -334,8 +487,11 @@ export function CatalogPage() {
       )}
 
       {/* BLOQUE SHADCN UI */}
-      {(activeTab === 'all' || activeTab === 'shadcn') && (
-        <section className="space-y-6">
+      {isVisible('shadcn') && (
+        <section
+          id="cat-shadcn"
+          className={cn('space-y-6 scroll-mt-24', highlight === 'shadcn' && 'ring-2 ring-primary/50 rounded-3xl p-2')}
+        >
           <div className="flex items-center gap-3 border-b border-outline/15 pb-3">
             <div className="p-2.5 rounded-2xl bg-teal-500/10 text-teal-600">
               <Sliders className="size-5" />
@@ -411,8 +567,11 @@ export function CatalogPage() {
       )}
 
       {/* BLOQUE HEROUI (28 SUITE) */}
-      {(activeTab === 'all' || activeTab === 'heroui') && (
-        <section className="space-y-6">
+      {isVisible('heroui') && (
+        <section
+          id="cat-heroui"
+          className={cn('space-y-6 scroll-mt-24', highlight === 'heroui' && 'ring-2 ring-primary/50 rounded-3xl p-2')}
+        >
           <div className="flex items-center gap-3 border-b border-outline/15 pb-3">
             <div className="p-2.5 rounded-2xl bg-emerald-500/10 text-emerald-600">
               <LayoutGrid className="size-5" />
@@ -567,8 +726,11 @@ export function CatalogPage() {
       )}
 
       {/* BLOQUE 21ST DEV */}
-      {(activeTab === 'all' || activeTab === '21st') && (
-        <section className="space-y-6">
+      {isVisible('21st') && (
+        <section
+          id="cat-21st"
+          className={cn('space-y-6 scroll-mt-24', highlight === '21st' && 'ring-2 ring-primary/50 rounded-3xl p-2')}
+        >
           <div className="flex items-center gap-3 border-b border-outline/15 pb-3">
             <div className="p-2.5 rounded-2xl bg-teal-500/10 text-teal-600">
               <Layers className="size-5" />
@@ -628,8 +790,11 @@ export function CatalogPage() {
       )}
 
       {/* BLOQUE MACRO SUITE (50 COMPONENTES DE ÉLITE) */}
-      {(activeTab === 'all' || activeTab === 'megasuite') && (
-        <section className="space-y-8 p-6 sm:p-8 rounded-3xl bg-gradient-to-b from-info/10 via-surface/60 to-surface border border-info/25 shadow-elevated">
+      {isVisible('megasuite') && (
+        <section
+          id="cat-megasuite"
+          className={cn('space-y-8 p-6 sm:p-8 rounded-3xl bg-gradient-to-b from-info/10 via-surface/60 to-surface border border-info/25 shadow-elevated scroll-mt-24', highlight === 'megasuite' && 'ring-2 ring-primary/50 rounded-3xl p-2')}
+        >
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-info/20">
             <div className="space-y-1">
               <div className="flex items-center gap-2">
@@ -778,8 +943,11 @@ export function CatalogPage() {
       )}
 
       {/* BLOQUE SUITE ESTELAR BIOMECÁNICA & HERRAMIENTAS CLÍNICAS */}
-      {(activeTab === 'all' || activeTab === 'estelar') && (
-        <section className="space-y-8 p-6 sm:p-8 rounded-3xl bg-gradient-to-b from-teal-500/10 via-surface/60 to-surface border border-teal-500/30 shadow-elevated">
+      {isVisible('estelar') && (
+        <section
+          id="cat-estelar"
+          className={cn('space-y-8 p-6 sm:p-8 rounded-3xl bg-gradient-to-b from-teal-500/10 via-surface/60 to-surface border border-teal-500/30 shadow-elevated scroll-mt-24', highlight === 'estelar' && 'ring-2 ring-primary/50 rounded-3xl p-2')}
+        >
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-teal-500/20">
             <div className="space-y-1">
               <div className="flex items-center gap-2">
@@ -938,6 +1106,29 @@ export function CatalogPage() {
             </div>
           </div>
         </section>
+      )}
+
+      {/* Estado vacío del buscador */}
+      {filteredIds.length === 0 && (
+        <div className="rounded-3xl border border-dashed border-outline/25 bg-surface/60 p-10 text-center space-y-3">
+          <Search className="size-8 mx-auto text-on-surface-variant" />
+          <h2 className="text-base font-bold text-on-surface">
+            {t('cat.searchEmptyTitle', 'Sin resultados')}
+          </h2>
+          <p className="text-xs text-on-surface-variant">
+            {t('cat.searchEmpty', 'No hay componentes que coincidan con «{{q}}».', { q: query })}
+          </p>
+          <button
+            type="button"
+            onClick={() => {
+              setQuery('');
+              selectTab('all');
+            }}
+            className="px-4 py-2 rounded-xl bg-primary text-on-primary text-xs font-bold hover:opacity-90 transition-opacity"
+          >
+            {t('cat.searchReset', 'Ver todo el catálogo')}
+          </button>
+        </div>
       )}
 
       {/* Modal BottomSheet interactivo de demostración */}
