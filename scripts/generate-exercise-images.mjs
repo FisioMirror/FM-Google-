@@ -39,6 +39,8 @@ const LIMIT = num('--limit', Infinity);
 const WIDTH = num('--width', 768);
 const HEIGHT = num('--height', 768);
 const DELAY_MS = num('--delay', 2500);
+const RETRIES = num('--retries', 4);
+const BACKOFF_MS = num('--backoff', 20_000);
 
 const STYLE = [
   'clean clinical physiotherapy illustration',
@@ -133,10 +135,39 @@ async function main() {
 
     process.stdout.write(`[${index + 1}/${picked.length}] get   ${slug} ... `);
     try {
-      const res = await fetch(url, { signal: AbortSignal.timeout(90_000) });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const buf = Buffer.from(await res.arrayBuffer());
-      if (buf.length < 1024) throw new Error(`respuesta demasiado chica (${buf.length} B)`);
+      // Pollinations degrada a 402/429 cuando se piden imágenes en ráfaga: reintentar con
+      // backoff exponencial es la forma fiable de bajar las 12 imágenes sin cuenta.
+      let lastErr = null;
+      let buf = null;
+      for (let attempt = 0; attempt < RETRIES && !buf; attempt++) {
+        if (attempt > 0) {
+          const wait = BACKOFF_MS * attempt;
+          process.stdout.write(`reintento ${attempt} en ${Math.round(wait / 1000)}s ... `);
+          await sleep(wait);
+        }
+        const res = await fetch(url, {
+          signal: AbortSignal.timeout(90_000),
+          // Pollinations devuelve 402 con el UA por defecto de node/undici; con UA de navegador responde 200
+          headers: {
+            'User-Agent':
+              'Mozilla/5.0 (Linux; Android 13) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0 Mobile Safari/537.36',
+            Accept: 'image/*',
+          },
+        });
+        if (!res.ok) {
+          lastErr = new Error(`HTTP ${res.status}`);
+          // 4xx distintos de 429 no se arreglan reintentando
+          if (res.status !== 402 && res.status !== 429) break;
+          continue;
+        }
+        const body = Buffer.from(await res.arrayBuffer());
+        if (body.length < 1024) {
+          lastErr = new Error(`respuesta demasiado chica (${body.length} B)`);
+          continue;
+        }
+        buf = body;
+      }
+      if (!buf) throw lastErr || new Error('sin respuesta');
       await writeFile(file, buf);
       console.log(`ok (${Math.round(buf.length / 1024)} KB)`);
       manifest[slug] = { name, file: `exercises/${slug}.jpg`, prompt };
