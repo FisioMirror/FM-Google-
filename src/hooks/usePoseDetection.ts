@@ -32,6 +32,13 @@ export interface UsePoseDetectionOptions {
   repJoint?: RepJoint;
   /** Exercise name used to infer the rep joint when repJoint is omitted. */
   exerciseName?: string;
+  /**
+   * Complejidad del modelo MediaPipe: 0 lite, 1 full, 2 heavy.
+   * Si se omite se elige según el hardware (2 en equipos capaces, 1 en móvil).
+   */
+  modelComplexity?: 0 | 1 | 2;
+  /** Techo de análisis por segundo (ahorra batería y reduce latencia percibida). */
+  maxFps?: number;
 }
 
 function inferRepJoint(exerciseName?: string): RepJoint {
@@ -103,11 +110,20 @@ function getPostureColor(score: number): string {
   return COLOR_BAD;
 }
 
+/**
+ * Ángulo articular en 3D (incluye el eje Z de MediaPipe).
+ * En 2D se subestima el rango en planos sagitales (sentadilla de perfil,
+ * flexión de hombro, extensión de rodilla), justo donde se mide la repetición.
+ */
 function calculateAngle(a: PoseLandmark, b: PoseLandmark, c: PoseLandmark): number {
-  const radians = Math.atan2(c.y - b.y, c.x - b.x) - Math.atan2(a.y - b.y, a.x - b.x);
-  let angle = Math.abs((radians * 180) / Math.PI);
-  if (angle > 180) angle = 360 - angle;
-  return Math.round(angle);
+  const abx = a.x - b.x, aby = a.y - b.y, abz = (a.z ?? 0) - (b.z ?? 0);
+  const cbx = c.x - b.x, cby = c.y - b.y, cbz = (c.z ?? 0) - (b.z ?? 0);
+  const dot = abx * cbx + aby * cby + abz * cbz;
+  const magA = Math.sqrt(abx * abx + aby * aby + abz * abz);
+  const magC = Math.sqrt(cbx * cbx + cby * cby + cbz * cbz);
+  if (magA === 0 || magC === 0) return 0;
+  const cos = Math.max(-1, Math.min(1, dot / (magA * magC)));
+  return Math.round((Math.acos(cos) * 180) / Math.PI);
 }
 
 export function usePoseDetection(options: UsePoseDetectionOptions = {}): UsePoseDetectionResult {
@@ -412,12 +428,19 @@ export function usePoseDetection(options: UsePoseDetectionOptions = {}): UsePose
               `https://cdn.jsdelivr.net/npm/@mediapipe/pose@0.5.1675469404/${file}`,
           });
 
+          // Complejidad adaptativa: heavy en equipos capaces, full en móvil.
+          // El landmark smoothing nativo se mantiene; el EMA manual se afina abajo.
+          const cores = (typeof navigator !== 'undefined' && navigator.hardwareConcurrency) || 4;
+          const mem = (typeof navigator !== 'undefined' && (navigator as any).deviceMemory) || 4;
+          const autoComplexity: 0 | 1 | 2 = options.modelComplexity ?? (cores >= 8 && mem >= 4 ? 2 : 1);
+
           pose.setOptions({
-            modelComplexity: 1, // Balanced complexity: high accuracy + 60fps real-time speed
+            modelComplexity: autoComplexity,
             smoothLandmarks: true,
             enableSegmentation: false,
-            minDetectionConfidence: 0.5,
-            minTrackingConfidence: 0.5,
+            minDetectionConfidence: 0.55,
+            minTrackingConfidence: 0.55,
+            selfieMode: facingMode === 'user',
           });
 
           pose.onResults((results: any) => {
@@ -440,10 +463,13 @@ export function usePoseDetection(options: UsePoseDetectionOptions = {}): UsePose
 
               // Exponential smoothing for stability without lag
               if (lastLandmarksRef.current) {
-                const alpha = 0.5;
                 landmarks = landmarks.map((lm, i) => {
                   const prev = lastLandmarksRef.current![i];
                   if (!prev) return lm;
+                  // EMA adaptativa: sigue rápido los movimientos amplios y
+                  // estabiliza cuando el paciente está quieto (menos lag, menos jitter).
+                  const dist = Math.sqrt((lm.x - prev.x) ** 2 + (lm.y - prev.y) ** 2);
+                  const alpha = dist > 0.04 ? 0.85 : 0.62;
                   return {
                     x: prev.x + alpha * (lm.x - prev.x),
                     y: prev.y + alpha * (lm.y - prev.y),
@@ -533,10 +559,16 @@ export function usePoseDetection(options: UsePoseDetectionOptions = {}): UsePose
 
         // 4) Direct frame loop (without window.Camera) using requestVideoFrameCallback or requestAnimationFrame
         // This avoids any second getUserMedia call that could cause NotReadableError!
+        const maxFps = Math.max(10, options.maxFps ?? 30);
+        const minFrameMs = 1000 / maxFps;
+        let lastFrameTs = 0;
+
         const onFrame = async () => {
           if (!mounted) return;
           const vid = videoRef.current;
-          if (vid && vid.readyState >= 2 && !vid.paused && poseRef.current && !isProcessingFrame) {
+          const now = performance.now();
+          if (vid && vid.readyState >= 2 && !vid.paused && poseRef.current && !isProcessingFrame && now - lastFrameTs >= minFrameMs) {
+            lastFrameTs = now;
             isProcessingFrame = true;
             try {
               await poseRef.current.send({ image: vid });

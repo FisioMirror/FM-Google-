@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
-import type { JointRotationAxis, ExercisePosition } from '../../types/character.types';
+import type { JointRotationAxis, ExercisePosition, JointAngleConfig } from '../../types/character.types';
+import { getExercisePreset } from '../../data/exercisePresets';
 
 export interface PhysioModel3DProps {
   jointAngles?: Partial<Record<string, number>>;
@@ -11,6 +12,10 @@ export interface PhysioModel3DProps {
   className?: string;
   /** Posición corporal del ejercicio. Por defecto 'pie' (de pie). */
   position?: ExercisePosition;
+  /** Nombre del ejercicio: la animación automática se deriva de su preset clínico. */
+  exerciseName?: string;
+  /** Articulación principal ('hombro' | 'codo' | 'rodilla' | 'cadera' | 'tobillo' | 'cervical'). */
+  articulacion?: string;
 }
 
 const JOINT_LIMITS: Record<string, { min: number; max: number }> = {
@@ -36,6 +41,26 @@ const clampAngle = (joint: string, deg: number): number => {
   return Math.max(limit.min, Math.min(limit.max, deg));
 };
 
+/**
+ * Las extremidades cuelgan del pivote en -Y, por lo que una flexión anatómica
+ * positiva (muslo/brazo hacia adelante, +Z) exige rotación NEGATIVA en X.
+ * Sin esto la sentadilla y la elevación de brazo se mostraban al revés.
+ */
+const FLEXION_FORWARD_JOINTS = ['codo_', 'cadera_', 'hombro_'];
+
+const toSignedRotation = (joint: string, deg: number, axis: JointRotationAxis): number => {
+  const clamped = clampAngle(joint, deg);
+  let rad = THREE.MathUtils.degToRad(clamped);
+  if (axis === 'x' && deg > 0 && FLEXION_FORWARD_JOINTS.some((p) => joint.startsWith(p))) {
+    rad = -rad;
+  }
+  // Abducción (eje Z): el lado derecho del paciente se dibuja en -X.
+  if (axis === 'z' && (joint.includes('derecho') || joint.includes('derecha'))) {
+    rad = -rad;
+  }
+  return rad;
+};
+
 const POSITION_TARGETS: Record<ExercisePosition, { rotX: number; rotY: number; rotZ: number; posY: number }> = {
   pie: { rotX: 0, rotY: 0, rotZ: 0, posY: 0 },
   sentado: { rotX: 0, rotY: 0, rotZ: 0, posY: -0.18 },
@@ -50,6 +75,8 @@ export const PhysioModel3D: React.FC<PhysioModel3DProps> = ({
   autoAnimate = false,
   className = 'w-full h-full min-h-[320px]',
   position = 'pie',
+  exerciseName,
+  articulacion,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const jointsRef = useRef<Record<string, THREE.Group>>({});
@@ -59,6 +86,7 @@ export const PhysioModel3D: React.FC<PhysioModel3DProps> = ({
   const statusColorRef = useRef(statusColor);
   const autoAnimateRef = useRef(autoAnimate);
   const positionRef = useRef(position);
+  const animJointsRef = useRef<JointAngleConfig[]>([]);
   const poseRef = useRef({ rotX: 0, rotY: 0, rotZ: 0, posY: 0 });
   const poseGroupRef = useRef<THREE.Group | null>(null);
   const lastElapsedRef = useRef(0);
@@ -69,7 +97,9 @@ export const PhysioModel3D: React.FC<PhysioModel3DProps> = ({
     statusColorRef.current = statusColor;
     autoAnimateRef.current = autoAnimate;
     positionRef.current = position;
-  }, [jointAngles, jointAxes, statusColor, autoAnimate, position]);
+    const preset = getExercisePreset(exerciseName ?? '', articulacion);
+    animJointsRef.current = preset.targetJoints;
+  }, [jointAngles, jointAxes, statusColor, autoAnimate, position, exerciseName, articulacion]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -359,23 +389,24 @@ export const PhysioModel3D: React.FC<PhysioModel3DProps> = ({
         Object.entries(currentAngles).forEach(([jointName, degAngle]) => {
           if (joints[jointName] && typeof degAngle === 'number') {
             const axis: JointRotationAxis = currentAxes[jointName] ?? 'x';
-            // Presets use positive flexion; the elbow group rotates negatively.
-            const anatomicalDeg = jointName.startsWith('codo_') && degAngle > 0 ? -degAngle : degAngle;
-            const clampedDeg = clampAngle(jointName, anatomicalDeg);
-            const rad = THREE.MathUtils.degToRad(clampedDeg);
-            let signedRad = rad;
-            if (axis === 'z' && jointName.includes('derecho')) {
-              signedRad = -rad;
-            }
-            joints[jointName].rotation[axis] = signedRad;
+            joints[jointName].rotation[axis] = toSignedRotation(jointName, degAngle, axis);
           }
         });
       } else if (autoAnimateRef.current) {
-        const t = clock.getElapsedTime() * 2.0;
-        if (joints['hombro_izquierdo']) joints['hombro_izquierdo'].rotation.x = 0.35 + Math.sin(t) * 0.06;
-        if (joints['codo_izquierdo']) joints['codo_izquierdo'].rotation.x = -0.55;
-        if (joints['hombro_derecho']) joints['hombro_derecho'].rotation.x = 0.35 - Math.sin(t) * 0.06;
-        if (joints['codo_derecho']) joints['codo_derecho'].rotation.x = -0.55;
+        // Ciclo clínico derivado del preset del ejercicio (sentadilla, hombro, codo…).
+        // Oscila entre neutralAngle y targetAngle con easing coseno: nunca inventa rangos.
+        const t = clock.getElapsedTime();
+        const phase = (1 - Math.cos(t * 2.0)) / 2;
+        Object.values(joints).forEach((grp) => {
+          grp.rotation.set(0, 0, 0);
+        });
+        animJointsRef.current.forEach(({ joint, targetAngle, neutralAngle, axis }) => {
+          const grp = joints[joint];
+          if (!grp) return;
+          const ax: JointRotationAxis = axis ?? 'x';
+          const deg = neutralAngle + (targetAngle - neutralAngle) * phase;
+          grp.rotation[ax] = toSignedRotation(joint, deg, ax);
+        });
       }
 
       // Posición corporal (de pie / sentado / acostado / decúbito lateral)

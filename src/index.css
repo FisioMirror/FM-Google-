@@ -132,14 +132,13 @@
   /* ── Navy (legacy) ── */
   --c-navy: #0a1919;
 
-  /* ── Glass surfaces (Light Mode) ── */
-  --glass-surface: rgba(255, 255, 255, 0.82);
-  --glass-card: rgba(255, 255, 255, 0.72);
-  --glass-panel: rgba(255, 255, 255, 0.85);
+  /* ── Glass surfaces (Light Mode) ──
+     Single source of truth: the material lives in the UNIFIED GLASS SYSTEM
+     at the end of this file. Only the modal payload is kept as a direct
+     variable because .glass-modal reads it with a fallback. */
   --glass-modal: rgba(255, 255, 255, 0.92);
-  --glass-highlight: rgba(255, 255, 255, 0.60);
-  --glass-border: rgba(15, 23, 42, 0.10);
-  --glass-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.65), 0 8px 28px rgba(15, 23, 42, 0.06);
+  --glass-border: var(--glass-edge);
+  --glass-shadow: var(--glass-elev);
 
   /* ── Mesh gradient colors ── */
   --mesh-1: rgba(138, 211, 207, 0.35);
@@ -283,14 +282,11 @@
   /* ── Navy ── */
   --c-navy: #020617;
 
-  /* ── Glass surfaces (Warm charcoal optical clarity) ── */
-  --glass-surface: rgba(21, 18, 16, 0.78);
-  --glass-card: rgba(27, 23, 21, 0.72);
-  --glass-panel: rgba(21, 18, 16, 0.86);
+  /* ── Glass surfaces (Warm charcoal optical clarity) ──
+     Border and shadow are aliased to the UNIFIED GLASS SYSTEM below. */
   --glass-modal: rgba(15, 13, 12, 0.94);
-  --glass-highlight: rgba(255, 245, 235, 0.06);
-  --glass-border: rgba(214, 196, 178, 0.15);
-  --glass-shadow: inset 0 1px 0 0 rgba(255, 245, 235, 0.05), 0 10px 30px rgba(0, 0, 0, 0.42);
+  --glass-border: var(--glass-edge);
+  --glass-shadow: var(--glass-elev);
 
   /* ── Mesh gradient colors (warm charcoal + muted teal ambience) ── */
   --mesh-1: rgba(111, 179, 170, 0.08);
@@ -1991,18 +1987,34 @@ input, textarea, select, button {
    Niveles: 14px (pequeña) · 16px (normal) · 18px (grande) · 20px (extra)
    ═══════════════════════════════════════════════════════════════ */
 :root { --font-size-base: 16px; }
-html { font-size: var(--font-size-base, 16px); }
+html {
+  font-size: var(--font-size-base, 16px);
+  /* Evita que Android (Chrome) infle el texto por su cuenta y rompa la escala. */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
 
 /* ═══════════════════════════════════════════════════════════════
-   ZOOM DE INTERFAZ — escala todo #app-root sin márgenes blancos
-   Se usa --app-scale (1 = 100%). El contenedor se ensancha y
-   eleva su min-height con 100vh/scale para que nunca quede hueco.
+   ZOOM DE INTERFAZ — escala real de la UI
+   `zoom` se usa cuando está disponible porque, a diferencia de
+   `transform: scale()`, NO rompe `position: fixed` (modales, docks,
+   toasts) ni crea problemas de hit-testing en móvil.
+   Fallback a transform para navegadores sin soporte.
    ═══════════════════════════════════════════════════════════════ */
 #app-root {
-  transform: scale(var(--app-scale, 1));
-  transform-origin: top left;
-  width: calc(100% / var(--app-scale, 1));
-  min-height: calc(100vh / var(--app-scale, 1));
+  zoom: var(--app-scale, 1);
+  width: 100%;
+  min-height: 100dvh;
+  min-height: 100vh;
+}
+
+@supports not (zoom: 1) {
+  #app-root {
+    transform: scale(var(--app-scale, 1));
+    transform-origin: top left;
+    width: calc(100% / var(--app-scale, 1));
+    min-height: calc(100dvh / var(--app-scale, 1));
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -2293,6 +2305,16 @@ html { font-size: var(--font-size-base, 16px); }
 }
 .dark .sidebar-rail-divider {
   opacity: 0.45;
+}
+
+/* Motion is decoration here: opt out when the OS asks for less motion */
+@media (prefers-reduced-motion: reduce) {
+  .glass-card {
+    transition: none;
+  }
+  .glass-card:hover {
+    transform: none;
+  }
 }
 
 /* Warm dark canvas: kill the legacy slate-blue body that fought the charcoal */
