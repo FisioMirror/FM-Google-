@@ -14,6 +14,7 @@ import { AchievementShowcase, AchievementUnlockModal } from '../components/Achie
 import { CollapsibleSection } from '../components/ui/CollapsibleSection';
 import { PRIMARY_DEMO_PATIENT } from '../data/unifiedDemoData';
 import { isValidUUID } from '../lib/utils';
+import { isDemoAccount } from '../lib/demoAuth';
 import { BorderBeam } from '../components/ui/BorderBeam';
 import { CardSpotlight } from '../components/ui/CardSpotlight';
 import { PulsatingButton } from '../components/ui/PulsatingButton';
@@ -92,12 +93,7 @@ export function PatientDashboard() {
   const [weekActivity, setWeekActivity] = useState<WeekActivity[]>(weekDays.map((d) => ({ day: d, minutes: 0 })));
   const [allSessionDates, setAllSessionDates] = useState<Date[]>([]);
   const [loading, setLoading] = useState(true);
-  const [evolution] = useState<EvolutionWeek[] | null>([
-    { label: '1', pct: 45 },
-    { label: '2', pct: 58 },
-    { label: '3', pct: 67 },
-    { label: '4', pct: 78 },
-  ]);
+  const [evolution, setEvolution] = useState<EvolutionWeek[] | null>(null); // TODO: conectar con evolución/ROM real del paciente
   const [recommendation, setRecommendation] = useState<string | null>(null);
   const [recLoading, setRecLoading] = useState(false);
   const [isSpeakingCopilot, setIsSpeakingCopilot] = useState(false);
@@ -449,36 +445,47 @@ export function PatientDashboard() {
       {/* Patient Recovery & Wellness Hub */}
       <PatientRecoveryHub />
 
-      {/* Gamificación Interactiva & Registro del Umbral de Dolor */}
-      <div className="space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-3xl bg-surface/80 dark:bg-surface-container/60 border border-outline/15 shadow-sm">
-          <LevelProgressRibbon currentLevel={3} currentXp={380} nextLevelXp={500} className="w-full sm:w-auto" />
-          <span className="text-xs font-bold text-teal-600 dark:text-teal-400">
-            Fase de Recuperación Articular • Nivel 3
-          </span>
-        </div>
+        {/* Gamificación Interactiva & Registro del Umbral de Dolor */}
+        <div className="space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-3xl bg-surface/80 dark:bg-surface-container/60 border border-outline/15 shadow-sm">
+            {gamification.currentLevel ? (
+              <LevelProgressRibbon
+                currentLevel={gamification.currentLevel.level}
+                currentXp={gamification.points}
+                nextLevelXp={gamification.nextLevel ? gamification.nextLevel.minPoints : gamification.currentLevel.maxPoints}
+                className="w-full sm:w-auto"
+              />
+            ) : (
+              <LevelProgressRibbon className="w-full sm:w-auto" />
+            )}
+            {gamification.currentLevel && (
+              <span className="text-xs font-bold text-teal-600 dark:text-teal-400">
+                {gamification.currentLevel.title} • {t('common.level', 'Nivel')} {gamification.currentLevel.level}
+              </span>
+            )}
+          </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div>
-            <StreakFlameCounter currentStreak={kpi.streak || 4} bestStreak={7} />
-          </div>
-          <div>
-            <MobilityQuestCard
-              questTitle={t('gamification.mobilityQuest')}
-              targetExercises={2}
-              completedExercises={1}
-              xpReward={120}
-            />
-          </div>
-          <div>
-            <DailyHealthPointsWidget
-              points={380}
-              dailyGoal={500}
-              burnStreakMultiplier={1.5}
-            />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div>
+              <StreakFlameCounter streakDays={kpi.streak || 0} />
+            </div>
+            <div>
+              <MobilityQuestCard
+                questTitle={t('gamification.mobilityQuest')}
+                progressText={
+                  isDemoAccount(user)
+                    ? '1 / 2'
+                    : `0 / ${exercises.length || 0}`
+                }
+                xpReward={isDemoAccount(user) ? 120 : 0}
+              />
+            </div>
+            <div>
+              {/* DailyHealthPointsWidget solo acepta `points`: el objetivo y el multiplicador los calcula internamente */}
+              <DailyHealthPointsWidget points={gamification.points} />
+            </div>
           </div>
         </div>
-      </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left 2 Cols: Daily Routine & Primary Action */}
@@ -644,8 +651,8 @@ export function PatientDashboard() {
             )}
           </CollapsibleSection>
 
-          {/* Registro del Umbral de Dolor */}
-          <PainScaleInteractiveCard initialPain={2} />
+          {/* Registro del Umbral de Dolor — TODO: conectar con el registro de dolor real del paciente */}
+          <PainScaleInteractiveCard initialPain={isDemoAccount(user) ? 2 : undefined} />
 
           {/* AI Physi Recommendation Card */}
           <div className="p-6 rounded-3xl bg-surface/80 dark:bg-surface-container-low/60 border border-outline/15 space-y-4">
@@ -753,20 +760,21 @@ export function PatientDashboard() {
             <AchievementShowcase achievements={gamification.achievements} compact={false} />
 
             {/* Medallas 3D Gamificadas de FisioMirror */}
+            {/* TODO: conectar xpPoints con los logros reales; progressPct de precisión con forma/ROM real */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6 pt-6 border-t border-outline/15">
               <GamifiedBadgeCard
                 title={t('gamification.badgeStreakTitle')}
                 description={t('gamification.badgeStreakDesc')}
                 tier="gold"
-                xpPoints={250}
-                progressPct={Math.min(100, Math.round(((kpi.streak || 4) / 5) * 100))}
+                xpPoints={isDemoAccount(user) ? 250 : 0}
+                progressPct={Math.min(100, Math.round(((kpi.streak || 0) / 5) * 100))}
               />
               <GamifiedBadgeCard
                 title={t('gamification.badgePrecisionTitle')}
                 description={t('gamification.badgePrecisionDesc')}
                 tier="diamond"
-                xpPoints={500}
-                progressPct={88}
+                xpPoints={isDemoAccount(user) ? 500 : 0}
+                progressPct={isDemoAccount(user) ? 88 : 0}
               />
             </div>
           </div>
