@@ -56,7 +56,7 @@ export function GlassModal({
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-[120] flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
+        <div className="fixed inset-0 z-[120] flex items-end sm:items-center justify-center p-0 sm:p-6 overflow-y-auto">
           {/* Aceternity blurred backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
@@ -78,7 +78,7 @@ export function GlassModal({
             role="dialog"
             aria-modal="true"
             className={cn(
-              'relative w-full max-h-[90vh] overflow-y-auto overflow-x-hidden rounded-3xl border border-outline-variant/60 bg-surface/95 p-6 sm:p-8 shadow-elevated backdrop-blur-xl z-10 dark:border-outline-variant/60',
+              'relative w-full max-h-[92dvh] sm:max-h-[90vh] overflow-y-auto overflow-x-hidden rounded-t-3xl sm:rounded-3xl border border-outline-variant/60 bg-surface/95 p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] sm:p-8 sm:pb-8 shadow-elevated backdrop-blur-xl z-10 dark:border-outline-variant/60',
               sizeClasses[size]
             )}
           >

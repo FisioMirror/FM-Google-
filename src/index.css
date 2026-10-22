@@ -2004,8 +2004,10 @@ html {
 #app-root {
   zoom: var(--app-scale, 1);
   width: 100%;
-  min-height: 100dvh;
+  /* Orden intencional: 100vh como fallback, 100dvh gana donde existe
+     (evita el hueco de la barra del navegador en Android). */
   min-height: 100vh;
+  min-height: 100dvh;
 }
 
 @supports not (zoom: 1) {
