@@ -441,7 +441,8 @@ export const KidModel3D: React.FC<KidModel3DProps> = ({
           const grp = joints[joint];
           if (!grp) return;
           const ax: JointRotationAxis = axis ?? 'x';
-          const deg = neutralAngle + (targetAngle - neutralAngle) * phase;
+          const neutral = neutralAngle ?? 0;
+          const deg = neutral + (targetAngle - neutral) * phase;
           grp.rotation[ax] = toSignedRotation(joint, deg, ax);
         });
       } else if (autoAnimateRef.current) {

@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 import { cn } from '../../lib/utils';
+import { useFocusTrap } from '../../hooks/useFocusTrap';
 
 interface GlassModalProps {
   isOpen: boolean;
@@ -23,6 +24,8 @@ export function GlassModal({
   size = 'md',
   dismissable = true,
 }: GlassModalProps) {
+  const trapRef = useFocusTrap<HTMLDivElement>(isOpen);
+
   const { t } = useTranslation();
   useEffect(() => {
     if (!isOpen) return;
@@ -61,12 +64,13 @@ export function GlassModal({
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
             onClick={() => dismissable && onClose()}
-            className="fixed inset-0 bg-slate-950/60 backdrop-blur-md"
+            className="fixed inset-0 bg-black/55 backdrop-blur-sm"
             aria-hidden="true"
           />
 
           {/* Modal content dialog */}
           <motion.div
+            ref={trapRef}
             initial={{ opacity: 0, scale: 0.94, y: 16 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 12 }}
@@ -74,14 +78,14 @@ export function GlassModal({
             role="dialog"
             aria-modal="true"
             className={cn(
-              'relative w-full max-h-[90vh] overflow-y-auto overflow-x-hidden rounded-3xl border border-outline/20 bg-surface/95 p-6 sm:p-8 shadow-elevated backdrop-blur-2xl z-10 dark:border-outline/15',
+              'relative w-full max-h-[90vh] overflow-y-auto overflow-x-hidden rounded-3xl border border-outline-variant/60 bg-surface/95 p-6 sm:p-8 shadow-elevated backdrop-blur-xl z-10 dark:border-outline-variant/60',
               sizeClasses[size]
             )}
           >
             {dismissable && (
               <button
                 onClick={onClose}
-                className="absolute top-4 right-4 sm:top-6 sm:right-6 size-9 rounded-2xl bg-surface-container-high/60 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest transition-colors flex items-center justify-center cursor-pointer"
+                className="absolute top-4 right-4 sm:top-6 sm:right-6 size-11 min-h-[44px] min-w-[44px] rounded-2xl bg-surface-container-high/60 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest transition-colors flex items-center justify-center cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
                 aria-label={t('uix.glassCloseModal')}
               >
                 <X className="size-4" />
