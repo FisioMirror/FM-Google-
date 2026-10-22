@@ -19,7 +19,6 @@ import { ChatMessages } from '../components/ui/ChatMessages';
 import { AILoader } from '../components/ui/AILoader';
 import { AnimatedThemeToggler } from '../components/ui/AnimatedThemeToggler';
 import { AuroraText } from '../components/ui/AuroraText';
-import { BorderBeam } from '../components/ui/BorderBeam';
 import { ConfettiButton } from '../components/ui/ConfettiButton';
 import { DiaTextReveal } from '../components/ui/DiaTextReveal';
 import { HyperText } from '../components/ui/HyperText';
@@ -90,7 +89,6 @@ export function CatalogPage() {
     <div className="fm-page">
       {/* Header Banner */}
       <div className="relative rounded-3xl p-8 overflow-hidden border border-outline/15 bg-gradient-to-br from-surface-container-low via-surface to-surface-container shadow-elevated">
-        <BorderBeam size={130} duration={8} colorFrom="#14b8a6" colorTo="#0ea5e9" />
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-2 max-w-2xl">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-500/10 border border-teal-500/25 text-teal-600 dark:text-teal-400 text-xs font-bold">
@@ -109,6 +107,10 @@ export function CatalogPage() {
               <strong className="text-on-surface font-semibold">Aceternity UI</strong> y{' '}
               <strong className="text-on-surface font-semibold">Shadcn UI</strong> adaptados exclusivamente a la tele-rehabilitación.
             </p>
+            <div className="inline-flex items-center gap-2 rounded-xl border border-amber-500/25 bg-amber-500/10 px-3 py-1.5 text-2xs font-bold uppercase tracking-wider text-amber-700 dark:text-amber-300">
+              <Sparkles className="size-3.5" />
+              Vista previa de componentes · datos de ejemplo, no clínicos
+            </div>
           </div>
 
           <div className="flex flex-wrap items-center gap-2.5 shrink-0">
@@ -188,7 +190,7 @@ export function CatalogPage() {
               </div>
               <h3 className="text-base font-bold text-on-surface">Calibración Goniométrica</h3>
               <p className="text-xs text-on-surface-variant leading-relaxed">
-                Ángulo objetivo de flexión evaluado en 165° con compensación escapular mitigada mediante IA.
+                Ángulo objetivo de flexión evaluado en 165° con corrección postural guiada durante la calibración.
               </p>
               <div className="pt-2 flex items-center justify-between text-xs font-mono font-bold text-info dark:text-info">
                 <span>{t('exs.mdRom')}: 165°</span>
@@ -298,11 +300,11 @@ export function CatalogPage() {
                 cta="Ver demostración"
               />
               <BentoCard
-                name="Asistente Clínico Physi IA"
-                description="Generador inteligente de resúmenes de evolución y rutinas personalizadas según el diagnóstico."
+                name="Asistente Clínico Physi IA (vista previa)"
+                description="Vista previa del generador de resúmenes de evolución y rutinas personalizadas. La versión funcional está en Herramientas."
                 Icon={Sparkles}
-                badge="Inteligencia Artificial"
-                cta="Consultar IA"
+                badge="IA · vista previa"
+                cta="Ver en Herramientas"
               />
               <BentoCard
                 name="Informes Biomecánicos en PDF"

@@ -71,6 +71,8 @@ interface ChatMessage {
   text: string;
   images?: string[];
   timestamp?: string;
+  /** Distingue una respuesta real del modelo de un aviso local de respaldo. */
+  source?: 'ai' | 'fallback' | 'welcome';
 }
 
 export function AIAssistantPage() {
@@ -82,6 +84,7 @@ export function AIAssistantPage() {
       role: 'assistant',
       text: '¡Hola! Soy Physi, tu asistente personal de rehabilitación en FisioMirror. Estoy aquí para acompañar tu recuperación, resolver dudas sobre tus ejercicios asignados y analizar tu progreso. ¿Cómo te sientes hoy?',
       timestamp: 'Ahora',
+      source: 'welcome',
     },
   ]);
   const [input, setInput] = useState('');
@@ -332,6 +335,7 @@ Pregunta del paciente: ${messageText}`;
           });
 
       let assistantText: string;
+      let source: 'ai' | 'fallback' = 'ai';
       if (aiResult.success && aiResult.result) {
         assistantText = aiResult.result;
         try {
@@ -343,8 +347,9 @@ Pregunta del paciente: ${messageText}`;
           // Normal text
         }
       } else {
+        source = 'fallback';
         assistantText =
-          'He revisado tu consulta. Recuerda mantener un rango de movimiento suave y constante sin forzar la articulación. Para recomendaciones específicas sobre tu plan, consulta la sección de ejercicios asignados.';
+          'No pude conectar con el servicio de IA en este momento. Mientras se restablece, mantén un rango de movimiento suave y constante sin forzar la articulación. Para recomendaciones específicas sobre tu plan, consulta la sección de ejercicios asignados.';
       }
 
       const assistantMsg: ChatMessage = {
@@ -352,6 +357,7 @@ Pregunta del paciente: ${messageText}`;
         role: 'assistant',
         text: assistantText,
         timestamp: new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }),
+        source,
       };
 
       setMessages((prev) => [...prev, assistantMsg]);
@@ -365,7 +371,7 @@ Pregunta del paciente: ${messageText}`;
         });
       }
 
-      if (isRealUser) {
+      if (isRealUser && source === 'ai') {
         await supabase.from('ai_conversations').insert({
           user_id: user?.id,
           role: 'assistant',
@@ -380,6 +386,7 @@ Pregunta del paciente: ${messageText}`;
           role: 'assistant',
           text: 'No pude conectar en este momento. Por favor intenta nuevamente.',
           timestamp: 'Ahora',
+          source: 'fallback',
         },
       ]);
       toast.error(t('ai.consultError'));
@@ -495,7 +502,19 @@ Pregunta del paciente: ${messageText}`;
                   {/* Actions for assistant message */}
                   {msg.role === 'assistant' && (
                     <div className="mt-3 pt-3 border-t border-outline/15 flex items-center justify-between text-outline text-xs">
-                      <span className="italic">{msg.timestamp || 'Hoy'}</span>
+                      <span className="flex items-center gap-2 italic">
+                        {msg.source === 'ai' && (
+                          <span className="rounded-md bg-teal-500/10 px-1.5 py-0.5 text-2xs font-bold uppercase tracking-wider not-italic text-teal-700 dark:text-teal-300">
+                            IA
+                          </span>
+                        )}
+                        {msg.source === 'fallback' && (
+                          <span className="rounded-md bg-amber-500/10 px-1.5 py-0.5 text-2xs font-bold uppercase tracking-wider not-italic text-amber-700 dark:text-amber-300">
+                            Sin conexión IA
+                          </span>
+                        )}
+                        <span>{msg.timestamp || 'Hoy'}</span>
+                      </span>
                       <div className="flex items-center gap-2">
                         <button
                           onClick={() => handleSpeakToggle(msg.id, msg.text)}

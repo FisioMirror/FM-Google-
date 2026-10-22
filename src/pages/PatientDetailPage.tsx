@@ -315,7 +315,7 @@ export function PatientDetailPage() {
         sessions: sessions.slice(0, 10),
       });
       const result = await runAIJob('insights', {
-        userPrompt: `Basado en este insight clínico: "${aiInsight}", genera una recomendación de ajuste de rutina concisa. Responde en ${i18n.language}.`,
+        userPrompt: `Basado en estos datos clínicos reales: ${dataContext}, genera un insight conciso sobre la evolución del paciente y una recomendación de ajuste de rutina. Responde en ${i18n.language}.`,
       });
       if (result.success && result.result) setAiInsight(result.result);
       else setAiInsight(t('dashboard.noInsightNow'));

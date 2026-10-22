@@ -657,6 +657,13 @@ export function PatientDashboard() {
                 <h4 className="text-xs font-bold uppercase tracking-wider text-on-surface">{t('patientDashboard.physiCopilot')}</h4>
                 <p className="text-xs text-outline">{t('patientDashboard.kinesiologyTip')}</p>
               </div>
+              <span className={`ml-auto rounded-md px-1.5 py-0.5 text-2xs font-bold uppercase tracking-wider ${
+                recommendation
+                  ? 'bg-teal-500/10 text-teal-700 dark:text-teal-300'
+                  : 'bg-surface-variant/25 text-on-surface-variant'
+              }`}>
+                {recommendation ? 'IA' : 'Consejo local'}
+              </span>
             </div>
 
             <div className="p-3.5 rounded-2xl bg-surface-container/50 text-xs text-on-surface-variant leading-relaxed italic border border-outline/5">

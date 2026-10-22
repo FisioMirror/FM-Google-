@@ -981,7 +981,7 @@ export function OCRScannerPage() {
                         .filter((ex) => ex.nombre.toLowerCase().includes(prescriptionSearch.toLowerCase()))
                         .map((ex, i) => (
                       <div key={ex.id || i} className={`glass-panel rounded-3xl overflow-hidden group transition-all card-glow-hover ${i < 2 ? 'border-2 border-primary/20 relative' : ''}`}>
-                        {i < 2 && <div className="absolute top-3 right-3 z-10 px-3 py-1 rounded-full bg-primary text-on-primary text-2xs font-bold uppercase tracking-widest flex items-center gap-1 shadow-card"><Icon name="auto_awesome" size={12} /> IA Recomendado</div>}
+                        {i < 2 && <div className="absolute top-3 right-3 z-10 px-3 py-1 rounded-full bg-primary text-on-primary text-2xs font-bold uppercase tracking-widest flex items-center gap-1 shadow-card"><Icon name="lightbulb" size={12} /> Sugerido</div>}
                         <div className="relative h-40 bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center">
                           <MedicalIcon name="gymnastics" size={48} className="text-primary/30 animate-breathe-icon" />
                           {ex.fase_recuperacion && <div className="absolute top-3 left-3 px-3 py-1 rounded-full bg-primary text-on-primary text-2xs font-bold uppercase tracking-widest">{ex.fase_recuperacion}</div>}

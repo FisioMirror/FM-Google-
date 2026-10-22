@@ -14,6 +14,8 @@ interface Message {
   role: 'user' | 'assistant';
   text: string;
   timestamp?: string;
+  /** Origen real de la respuesta: modelo de IA o guía rápida local. */
+  source?: 'ai' | 'faq' | 'welcome';
 }
 
 const getWelcome = (t: (k: string) => string): string => t('pg.welcome');
@@ -173,6 +175,7 @@ export function PhysiGuide({
       role: 'assistant',
       text: getWelcome(t),
       timestamp: t('common.now'),
+      source: 'welcome',
     },
   ]);
 
@@ -293,7 +296,7 @@ export function PhysiGuide({
       const roleMatch = matchGlobalFAQ(trimmed, isFisio);
       const faqAnswer = roleMatch?.answer || localMatch?.answer || null;
 
-      const finishAndSpeak = (replyText: string) => {
+      const finishAndSpeak = (replyText: string, source: 'ai' | 'faq') => {
         const assistantId = `a-${Date.now()}`;
         setMessages((prev) => [
           ...prev,
@@ -302,6 +305,7 @@ export function PhysiGuide({
             role: 'assistant',
             text: replyText,
             timestamp: new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }),
+            source,
           },
         ]);
         setLoading(false);
@@ -318,29 +322,28 @@ export function PhysiGuide({
 
       if (navigator.onLine) {
         try {
-          const aiJobPromise = runAIJob('text_generation', {
-            userPrompt: `Eres Physi, la guía rápida interactiva de la aplicación FisioMirror. Responde de forma clara, directa y estructurada a la siguiente consulta sobre la plataforma o rehabilitación: "${trimmed}". Si hay pasos concretos, usa listas cortas.`,
-            context: { role: isFisio ? 'Fisioterapeuta' : 'Paciente' },
-          });
-
-          const timeoutPromise = new Promise<{ result?: string }>((resolve) =>
-            setTimeout(() => resolve({}), 3500)
+          // Esperamos la respuesta real del modelo. El timeout corto anterior
+          // (3,5 s) hacía que casi siempre ganara la FAQ y la UI pareciera IA.
+          const res = await runAIJob(
+            'text_generation',
+            {
+              userPrompt: `Eres Physi, la guía rápida interactiva de la aplicación FisioMirror. Responde de forma clara, directa y estructurada a la siguiente consulta sobre la plataforma o rehabilitación: "${trimmed}". Si hay pasos concretos, usa listas cortas.`,
+              context: { role: isFisio ? 'Fisioterapeuta' : 'Paciente' },
+            },
+            30_000
           );
 
-          const res = await Promise.race([aiJobPromise, timeoutPromise]);
-          if (res && 'result' in res && res.result && res.result.trim()) {
-            finishAndSpeak(res.result.trim());
+          if (res.success && res.result && res.result.trim()) {
+            finishAndSpeak(res.result.trim(), 'ai');
             return;
           }
         } catch {
-          // fallback a FAQ
+          // Sin conexión con el modelo: caemos a la guía local.
         }
       }
 
-      setTimeout(() => {
-        const replyText = faqAnswer || getNoMatch(t);
-        finishAndSpeak(replyText);
-      }, 350);
+      const replyText = faqAnswer || getNoMatch(t);
+      finishAndSpeak(replyText, 'faq');
     },
     [loading, isFisio, autoVoice, voiceGender, t]
   );
@@ -526,7 +529,19 @@ export function PhysiGuide({
                         {/* Botón de reproducción de voz para respuestas de Physi */}
                         {msg.role === 'assistant' && (
                           <div className="mt-2.5 pt-2 border-t border-outline-variant/15 dark:border-white/5 flex items-center justify-between text-xs text-on-surface-variant">
-                            <span className="text-2xs opacity-75">{msg.timestamp || t('common.now')}</span>
+                            <span className="flex items-center gap-1.5 text-2xs opacity-75">
+                              {msg.source === 'ai' && (
+                                <span className="rounded-md bg-teal-500/10 px-1.5 py-0.5 font-bold uppercase tracking-wider text-teal-700 dark:text-teal-300">
+                                  IA
+                                </span>
+                              )}
+                              {msg.source === 'faq' && (
+                                <span className="rounded-md bg-surface-variant/25 px-1.5 py-0.5 font-bold uppercase tracking-wider text-on-surface-variant">
+                                  Guía rápida
+                                </span>
+                              )}
+                              <span>{msg.timestamp || t('common.now')}</span>
+                            </span>
                             <button
                               onClick={() => toggleSpeakMessage(msg.id, msg.text)}
                               className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
