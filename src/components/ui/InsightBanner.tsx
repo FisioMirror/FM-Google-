@@ -2,7 +2,6 @@ import { useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, X } from 'lucide-react';
-import { BorderBeam } from './BorderBeam';
 import { cn } from '../../lib/utils';
 
 interface InsightBannerProps {
@@ -15,7 +14,7 @@ interface InsightBannerProps {
 }
 
 /**
- * InsightBanner (Elevated with Magic UI BorderBeam & Glassmorphism)
+ * InsightBanner (Elevated glass banner)
  */
 export function InsightBanner({
   title,
@@ -47,7 +46,6 @@ export function InsightBanner({
             className
           )}
         >
-          <BorderBeam size={100} duration={8} colorFrom="#14b8a6" colorTo="#0ea5e9" />
 
           <div className="relative z-10 flex items-start sm:items-center justify-between gap-4">
             <div className="flex items-start sm:items-center gap-4">
@@ -71,10 +69,10 @@ export function InsightBanner({
 
             <button
               onClick={handleDismiss}
-              className="size-8 rounded-xl bg-white/10 hover:bg-white/20 text-white/70 hover:text-white transition-colors flex items-center justify-center shrink-0 cursor-pointer"
+              className="size-11 rounded-xl bg-white/10 hover:bg-white/20 text-white/70 hover:text-white transition-colors flex items-center justify-center shrink-0 cursor-pointer min-h-[44px] min-w-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
               aria-label={t('uix.ibCloseNotification')}
             >
-              <X className="size-4" />
+              <X className="size-5" />
             </button>
           </div>
         </motion.div>

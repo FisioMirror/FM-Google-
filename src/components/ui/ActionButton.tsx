@@ -62,6 +62,8 @@ export function ActionButton({
       className={cn(
         'group relative inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold tracking-wide transition-all duration-300 select-none cursor-pointer',
         'disabled:opacity-50 disabled:pointer-events-none disabled:cursor-not-allowed',
+        'min-h-[44px] min-w-[44px]',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface',
         variantClasses[variant],
         className
       )}

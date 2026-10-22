@@ -260,9 +260,9 @@ export const ToastItemComponent = React.forwardRef<HTMLDivElement, ToastItemComp
           type="button"
           onClick={onClose}
           aria-label={t('uix.toastCloseNotification')}
-          className="size-6 rounded-lg shrink-0 flex items-center justify-center text-on-surface-variant hover:text-white hover:bg-white/10 transition-colors"
+          className="size-11 rounded-lg shrink-0 flex items-center justify-center text-on-surface-variant hover:text-white hover:bg-white/10 transition-colors min-h-[44px] min-w-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
         >
-          <X className="size-3.5" />
+          <X className="size-5" />
         </button>
       </motion.div>
     );

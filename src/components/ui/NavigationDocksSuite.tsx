@@ -198,7 +198,8 @@ export const QuickPatientSwitcherBar: React.FC<QuickPatientSwitcherBarProps> = (
               onSelect?.(name);
             }}
             className={cn(
-              "px-3.5 py-1.5 rounded-2xl text-xs font-bold whitespace-nowrap transition-all border flex items-center gap-1.5 cursor-pointer",
+              "px-3.5 py-1.5 rounded-2xl text-xs font-bold whitespace-nowrap transition-all border flex items-center gap-1.5 cursor-pointer min-h-[44px]",
+              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface",
               isCurrent
                 ? "bg-primary text-on-primary border-teal-600 shadow-sm shadow-teal-600/30"
                 : "bg-white/80 dark:bg-slate-800/80 border-slate-200 dark:border-white/10 text-on-surface-variant hover:text-on-surface dark:hover:text-white hover:border-teal-500/40"
@@ -252,7 +253,8 @@ export const SessionStateBreadcrumb: React.FC<SessionStateBreadcrumbProps> = ({
                 onStepClick?.(idx);
               }}
               className={cn(
-                "flex items-center gap-1 transition-colors cursor-pointer",
+                "flex items-center gap-1 transition-colors cursor-pointer min-h-[44px] px-2 py-1",
+                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface",
                 isCurrent
                   ? "text-teal-600 dark:text-teal-400 font-black"
                   : isDone
@@ -290,37 +292,38 @@ export const SplitViewPerspectiveToggle: React.FC<SplitViewPerspectiveToggleProp
     setVal(mode);
   }, [mode]);
 
-  return (
-    <div
-      className={cn(
-        "inline-flex p-1.5 rounded-2xl bg-slate-100 dark:bg-slate-900 border border-teal-500/20 dark:border-teal-500/30 text-xs font-bold shadow-sm transition-colors",
-        className
-      )}
-    >
-      {(['front', 'side', 'split'] as const).map((m) => {
-        const isSelected = val === m;
-        return (
-          <motion.button
-            key={m}
-            type="button"
-            whileTap={{ scale: 0.95 }}
-            onClick={() => {
-              setVal(m);
-              onChange?.(m);
-            }}
-            className={cn(
-              "px-3 py-1.5 rounded-xl transition-all capitalize cursor-pointer",
-              isSelected
-                ? "bg-primary text-on-primary shadow-sm shadow-teal-600/30 font-extrabold"
-                : "text-on-surface-variant hover:text-on-surface dark:text-on-surface-variant dark:hover:text-white"
-            )}
-          >
-            {m === 'front' ? 'Frontal 2D' : m === 'side' ? t('fnds.sagittalView') : 'Dual Split'}
-          </motion.button>
-        );
-      })}
-    </div>
-  );
+return (
+      <div
+        className={cn(
+          "inline-flex p-1.5 rounded-2xl bg-slate-100 dark:bg-slate-900 border border-teal-500/20 dark:border-teal-500/30 text-xs font-bold shadow-sm transition-colors",
+          className
+        )}
+      >
+        {(['front', 'side', 'split'] as const).map((m) => {
+          const isSelected = val === m;
+          return (
+            <motion.button
+              key={m}
+              type="button"
+              whileTap={{ scale: 0.95 }}
+              onClick={() => {
+                setVal(m);
+                onChange?.(m);
+              }}
+              className={cn(
+                "px-3 py-1.5 rounded-xl transition-all capitalize cursor-pointer min-h-[44px]",
+                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface",
+                isSelected
+                  ? "bg-primary text-on-primary shadow-sm shadow-teal-600/30 font-extrabold"
+                  : "text-on-surface-variant hover:text-on-surface dark:text-on-surface-variant dark:hover:text-white"
+              )}
+            >
+              {m === 'front' ? 'Frontal 2D' : m === 'side' ? t('fnds.sagittalView') : 'Dual Split'}
+            </motion.button>
+          );
+        })}
+      </div>
+    );
 };
 
 /* 46. FloatingHelpBeacon */
@@ -338,7 +341,8 @@ export const FloatingHelpBeacon: React.FC<FloatingHelpBeaconProps> = ({ classNam
       whileTap={{ scale: 0.95 }}
       onClick={onClick}
       className={cn(
-        "inline-flex items-center gap-2.5 p-2.5 px-4 rounded-2xl bg-teal-500/15 text-teal-800 dark:text-teal-300 border border-teal-500/35 text-xs font-bold hover:bg-teal-500/25 transition-all shadow-sm cursor-pointer",
+        "inline-flex items-center gap-2.5 p-2.5 px-4 rounded-2xl bg-teal-500/15 text-teal-800 dark:text-teal-300 border border-teal-500/35 text-xs font-bold hover:bg-teal-500/25 transition-all shadow-sm cursor-pointer min-h-[44px]",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface",
         className
       )}
     >
@@ -380,7 +384,8 @@ export const ErgonomicHandModeSwitcher: React.FC<ErgonomicHandModeSwitcherProps>
       whileTap={{ scale: 0.95 }}
       onClick={toggleHand}
       className={cn(
-        "inline-flex items-center gap-2.5 p-2 px-3.5 rounded-2xl bg-white/90 dark:bg-slate-800/90 border border-teal-500/30 text-xs font-bold text-on-surface shadow-sm cursor-pointer transition-colors",
+        "inline-flex items-center gap-2.5 p-2 px-3.5 rounded-2xl bg-white/90 dark:bg-slate-800/90 border border-teal-500/30 text-xs font-bold text-on-surface shadow-sm cursor-pointer transition-colors min-h-[44px]",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface",
         className
       )}
       title={t('fnds.toggleHand')}
@@ -436,10 +441,10 @@ export const CompactTelehealthBar: React.FC<CompactTelehealthBarProps> = ({
             type="button"
             onClick={onQuickCall}
             aria-label={t('fnds.callTherapist')}
-            className="p-1.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white transition-all shadow-sm active:scale-95 cursor-pointer"
+            className="p-2.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white transition-all shadow-sm active:scale-95 cursor-pointer min-h-[44px] min-w-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
             title={t('fnds.directCall')}
           >
-            <Phone className="w-3.5 h-3.5" />
+            <Phone className="w-5 h-5" />
           </button>
         )}
 
@@ -448,10 +453,10 @@ export const CompactTelehealthBar: React.FC<CompactTelehealthBarProps> = ({
             type="button"
             onClick={onQuickMessage}
             aria-label={t('fnds.messageAssistant')}
-            className="p-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-teal-500/20 text-on-surface transition-all border border-slate-200 dark:border-white/10 active:scale-95 cursor-pointer"
+            className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-teal-500/20 text-on-surface transition-all border border-slate-200 dark:border-white/10 active:scale-95 cursor-pointer min-h-[44px] min-w-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
             title={t('fnds.clinicalChat')}
           >
-            <MessageSquare className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400" />
+            <MessageSquare className="w-5 h-5 text-teal-600 dark:text-teal-400" />
           </button>
         )}
       </div>

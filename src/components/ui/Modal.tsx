@@ -162,14 +162,16 @@ export function ModalCloseTrigger({ className }: { className?: string }) {
       type="button"
       onClick={close}
       className={cn(
-        "absolute top-5 right-5 p-2 rounded-xl text-muted hover:text-foreground",
+        "absolute top-5 right-5 p-2.5 rounded-xl text-muted hover:text-foreground",
         "bg-surface/60 dark:bg-slate-800/60 hover:bg-surface dark:hover:bg-slate-800",
-        "border border-border/50 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary/40",
+        "border border-border/50 transition-colors duration-200",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface",
+        "min-h-[44px] min-w-[44px]",
         className
       )}
       aria-label={t('uix.modalCloseModal')}
     >
-      <X className="size-4.5" />
+      <X className="size-5" />
     </button>
   );
 }

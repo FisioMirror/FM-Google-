@@ -111,7 +111,7 @@ export function ARMirrorPage() {
     toggleFacingMode,
     isSimulated,
     reconnectCamera,
-  } = usePoseDetection();
+  } = usePoseDetection({ exerciseName });
   const vRef = videoRef as React.RefObject<HTMLVideoElement>;
   const cRef = canvasRef as React.RefObject<HTMLCanvasElement>;
 
@@ -460,7 +460,7 @@ export function ARMirrorPage() {
               onClick={() => navigate('/dashboard-paciente')}
               title={t('arm.backToPanel')}
               aria-label={t('arm.backToPatientPanel')}
-              className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-slate-900/80 hover:bg-slate-900 text-white/80 hover:text-white flex items-center justify-center border border-white/15 backdrop-blur-xl transition-all shadow-sm active:scale-95"
+              className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-slate-900/80 hover:bg-slate-900 text-white/80 hover:text-white flex items-center justify-center border border-white/15 backdrop-blur-xl transition-all shadow-sm active:scale-95 min-h-[44px] min-w-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
             >
               <Icon name="arrow_back" size={18} />
             </button>
@@ -529,7 +529,7 @@ export function ARMirrorPage() {
               onClick={toggleFacingMode}
               title={facingMode === 'user' ? t('arm.backCamera') : t('arm.frontCamera')}
               aria-label={t('arm.toggleCamera')}
-              className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-slate-900/80 hover:bg-slate-900 text-white/80 hover:text-white flex items-center justify-center border border-white/15 backdrop-blur-xl transition-all shadow-sm active:scale-95"
+              className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-slate-900/80 hover:bg-slate-900 text-white/80 hover:text-white flex items-center justify-center border border-white/15 backdrop-blur-xl transition-all shadow-sm active:scale-95 min-h-[44px] min-w-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
             >
               <Icon name="flip_camera_ios" size={17} />
             </button>
@@ -538,7 +538,7 @@ export function ARMirrorPage() {
               title={isMirrored ? t('arm.disableMirrorEffect') : t('arm.enableMirrorEffect')}
               aria-label={t('arm.mirrorMode')}
               className={cn(
-                'w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-slate-900/80 hover:bg-slate-900 flex items-center justify-center border backdrop-blur-xl transition-all shadow-sm active:scale-95',
+                'w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-slate-900/80 hover:bg-slate-900 flex items-center justify-center border backdrop-blur-xl transition-all shadow-sm active:scale-95 min-h-[44px] min-w-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface',
                 isMirrored ? 'text-teal-300 border-teal-500/50' : 'text-white/60 border-white/15'
               )}
             >
@@ -763,7 +763,7 @@ export function ARMirrorPage() {
                 {/* Pausar */}
                 <button
                   onClick={() => setState('paused')}
-                  className="rounded-xl px-3 sm:px-4 py-2 sm:py-2.5 bg-white/10 hover:bg-white/15 text-white flex items-center gap-1.5 hover:scale-105 active:scale-95 transition-all cursor-pointer font-bold text-xs sm:text-sm min-h-[40px] sm:min-h-[44px]"
+                  className="rounded-xl px-3 sm:px-4 py-2 sm:py-2.5 bg-white/10 hover:bg-white/15 text-white flex items-center gap-1.5 hover:scale-105 active:scale-95 transition-all cursor-pointer font-bold text-xs sm:text-sm min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
                   aria-label={t('arm.pauseExercise')}
                 >
                   <Icon name="pause" size={18} />
@@ -773,7 +773,7 @@ export function ARMirrorPage() {
                 {/* Finalizar */}
                 <button
                   onClick={() => { setState('finished'); setShowPainReport(true); }}
-                  className="rounded-xl px-3 sm:px-4 py-2 sm:py-2.5 bg-danger/80 hover:bg-danger text-white flex items-center gap-1.5 hover:scale-105 active:scale-95 transition-all cursor-pointer font-bold text-xs sm:text-sm min-h-[40px] sm:min-h-[44px]"
+                  className="rounded-xl px-3 sm:px-4 py-2 sm:py-2.5 bg-danger/80 hover:bg-danger text-white flex items-center gap-1.5 hover:scale-105 active:scale-95 transition-all cursor-pointer font-bold text-xs sm:text-sm min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
                   aria-label={t('arm.finishExercise')}
                 >
                   <Icon name="stop" size={18} />
@@ -787,7 +787,7 @@ export function ARMirrorPage() {
                   onClick={() => setShowModel3D((prev) => !prev)}
                   aria-label={showModel3D ? t('arm.hideDemo3dModel') : t('arm.showDemo3dModel')}
                   className={cn(
-                    "rounded-xl px-2.5 sm:px-3 py-2 sm:py-2.5 flex items-center gap-1.5 hover:scale-105 active:scale-95 transition-all cursor-pointer min-h-[40px] sm:min-h-[44px]",
+                    "rounded-xl px-2.5 sm:px-3 py-2 sm:py-2.5 flex items-center gap-1.5 hover:scale-105 active:scale-95 transition-all cursor-pointer min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface",
                     showModel3D
                       ? "bg-teal-500/30 text-teal-300 border border-teal-400/50 shadow-sm shadow-teal-500/20"
                       : "bg-white/5 text-white/70 hover:text-white"
@@ -805,7 +805,7 @@ export function ARMirrorPage() {
                   onClick={() => setHudMode((prev) => (prev === 'full' ? 'minimal' : 'full'))}
                   aria-label={hudMode === 'minimal' ? t('arm.switchToFullMode') : t('arm.switchToEssentialMode')}
                   className={cn(
-                    "rounded-xl px-2.5 sm:px-3 py-2 sm:py-2.5 flex items-center gap-1.5 hover:scale-105 active:scale-95 transition-all cursor-pointer min-h-[40px] sm:min-h-[44px]",
+                    "rounded-xl px-2.5 sm:px-3 py-2 sm:py-2.5 flex items-center gap-1.5 hover:scale-105 active:scale-95 transition-all cursor-pointer min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface",
                     hudMode === 'minimal'
                       ? "bg-warning/25 text-warning border border-warning/50"
                       : "bg-white/5 text-white/70 hover:text-white"
@@ -822,7 +822,7 @@ export function ARMirrorPage() {
                 <button
                   onClick={toggleFullscreen}
                   aria-label={isFullscreen ? t('arm.exitFullscreen') : t('arm.fullscreen')}
-                  className="rounded-xl p-2 sm:p-2.5 bg-white/5 hover:bg-white/10 text-white/70 hover:text-white hover:scale-105 active:scale-95 transition-all cursor-pointer hidden xs:flex items-center justify-center min-h-[40px] sm:min-h-[44px] min-w-[40px]"
+                  className="rounded-xl p-2 sm:p-2.5 bg-white/5 hover:bg-white/10 text-white/70 hover:text-white hover:scale-105 active:scale-95 transition-all cursor-pointer hidden xs:flex items-center justify-center min-h-[44px] min-w-[40px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
                 >
                   <Icon name={isFullscreen ? 'fullscreen_exit' : 'fullscreen'} size={18} />
                 </button>
@@ -834,7 +834,7 @@ export function ARMirrorPage() {
                     const idx = states.indexOf(volumeLevel);
                     setVolumeLevel(states[(idx + 1) % 3]);
                   }}
-                  className="rounded-xl p-2 sm:p-2.5 bg-white/5 hover:bg-white/10 text-white/70 hover:text-white hover:scale-105 active:scale-95 transition-all cursor-pointer flex items-center justify-center min-h-[40px] sm:min-h-[44px] min-w-[40px]"
+                  className="rounded-xl p-2 sm:p-2.5 bg-white/5 hover:bg-white/10 text-white/70 hover:text-white hover:scale-105 active:scale-95 transition-all cursor-pointer flex items-center justify-center min-h-[44px] min-w-[40px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
                   aria-label={t('arm.changeVolume')}
                   title={`Volumen: ${volumeLevel}`}
                 >
@@ -845,7 +845,7 @@ export function ARMirrorPage() {
                 <button
                   onClick={() => setShowSettings(true)}
                   aria-label={t('arm.openSettings')}
-                  className="rounded-xl p-2 sm:p-2.5 bg-white/5 hover:bg-white/10 text-white/70 hover:text-white hover:scale-105 active:scale-95 transition-all cursor-pointer flex items-center justify-center min-h-[40px] sm:min-h-[44px] min-w-[40px]"
+                  className="rounded-xl p-2 sm:p-2.5 bg-white/5 hover:bg-white/10 text-white/70 hover:text-white hover:scale-105 active:scale-95 transition-all cursor-pointer flex items-center justify-center min-h-[44px] min-w-[40px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
                 >
                   <Icon name="settings" size={18} />
                 </button>

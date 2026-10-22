@@ -91,12 +91,14 @@ export function AlertDialogCloseTrigger({ className }: { className?: string }) {
     <button
       onClick={() => setOpen(false)}
       className={cn(
-        'absolute top-4 right-4 p-1.5 rounded-xl text-on-surface-variant hover:text-on-surface-variant dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors',
+        'absolute top-4 right-4 p-2.5 rounded-xl text-on-surface-variant hover:text-on-surface-variant dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors',
+        'min-h-[44px] min-w-[44px]',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface',
         className
       )}
       aria-label={t('uix.hadCloseDialog')}
     >
-      <X className="w-4 h-4" />
+      <X className="size-5" />
     </button>
   );
 }
