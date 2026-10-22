@@ -43,14 +43,14 @@ export function SpotlightCard({
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       className={cn(
-        'relative overflow-hidden rounded-3xl border border-outline/15 bg-surface p-6 shadow-sm transition-all duration-300 hover:shadow-elevated dark:border-outline/15',
+        'relative overflow-hidden rounded-3xl border border-outline-variant/50 bg-card p-6 shadow-sm transition-all duration-300 hover:shadow-elevated',
         className
       )}
       {...props}
     >
       {/* Dynamic Cursor Spotlight Layer */}
       <div
-        className="pointer-events-none absolute -inset-px transition-opacity duration-300"
+        className="pointer-events-none absolute -inset-px transition-opacity duration-300 hidden md:block"
         style={{
           opacity,
           background: `radial-gradient(600px circle at ${position.x}px ${position.y}px, ${spotlightColor}, transparent 40%)`,

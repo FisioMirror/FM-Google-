@@ -30,3 +30,7 @@ package-lock.json
 # MCP config local (contiene API keys)
 mcp.json
 .opencode/
+
+# restos de instalaciones abortadas
+node_modules.bun-partial*/
+/opencode

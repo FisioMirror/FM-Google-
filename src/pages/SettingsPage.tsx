@@ -1,10 +1,9 @@
 import { useState, useEffect, type ReactNode } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { Mail, FileText, Shield, Code2, Palette, Heart, BookOpen, Smartphone, MessageCircle, Phone, Globe, Cpu } from 'lucide-react';
+import { Mail, FileText, Shield, Code2, Palette, Heart, BookOpen, Smartphone, MessageCircle, Phone, Globe } from 'lucide-react';
 import { useTheme, FONT_SIZE_LEVELS } from '../context/ThemeContext';
 import { useAuthStore } from '../stores/authStore';
-import { useMediaPipeModel, type ModelPreference } from '../hooks/useMediaPipeModel';
 import { changeAppLanguage } from '../i18n';
 import { talkBack } from '../lib/talkback';
 import { speakHumanVoice, stopHumanVoice, getVoiceMode, setVoiceMode, type VoiceMode } from '../lib/humanVoice';
@@ -62,7 +61,6 @@ export function SettingsPage() {
   const { show } = useGlassToast();
   const { t, i18n } = useTranslation();
   const [currentLang, setCurrentLang] = useState<string>(() => i18n.language || (typeof window !== 'undefined' ? localStorage.getItem('fisio_language') : 'es') || 'es');
-  const { preference: arPreference, setPreference: setArPreference, activeModel: currentArModel } = useMediaPipeModel();
 
   useEffect(() => {
     const handleLangChange = (e: Event) => {
@@ -381,49 +379,6 @@ export function SettingsPage() {
         </div>
       </GlassPanel>
 
-      {/* Modelo de Visión AR Adaptativo */}
-      <GlassPanel className="p-6 rounded-2xl relative overflow-hidden">
-        <div className="blob-teal absolute -top-12 -right-12 w-32 h-32 opacity-20 pointer-events-none" />
-        <div className="relative">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 rounded-xl bg-teal-500/10 flex items-center justify-center">
-              <Cpu size={24} className="text-primary" />
-            </div>
-            <div>
-              <p className="font-semibold text-on-surface">{t('set.arVisionEngine')}</p>
-              <p className="text-sm text-on-surface-variant">
-                {t('set.arModeActive')}: <span className="font-bold text-primary capitalize">{currentArModel}</span> ({t('set.fpsOptimal')})
-              </p>
-            </div>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-            {[
-              { id: 'auto', titleKey: 'set.arAutoTitle', descKey: 'set.arAutoDesc' },
-              { id: 'pose', titleKey: 'set.arPoseTitle', descKey: 'set.arPoseDesc' },
-              { id: 'holistic', titleKey: 'set.arHolTitle', descKey: 'set.arHolDesc' },
-            ].map((m) => (
-              <button
-                key={m.id}
-                onClick={() => {
-                  setArPreference(m.id as ModelPreference);
-                  show(t('set.arModelSet', { model: t(m.titleKey) }), 'success');
-                }}
-                className={cn(
-                  'flex flex-col items-start p-3.5 rounded-xl text-left transition-all border',
-                  arPreference === m.id
-                    ? 'bg-primary text-on-primary border-primary shadow-glow-primary'
-                    : 'bg-surface-container-low text-on-surface border-outline-variant/30 hover:bg-surface-container-high'
-                )}
-              >
-                <span className="font-semibold text-sm">{t(m.titleKey)}</span>
-                <span className={cn('text-xs mt-0.5', arPreference === m.id ? 'text-on-primary/80' : 'text-on-surface-variant')}>
-                  {t(m.descKey)}
-                </span>
-              </button>
-            ))}
-          </div>
-        </div>
-      </GlassPanel>
     </div>
   );
 

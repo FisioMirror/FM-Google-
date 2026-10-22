@@ -67,7 +67,7 @@ export function MagicCard(props: MagicCardProps) {
   const glowOpacity = isOrbMode(props) ? (props.glowOpacity ?? 0.85) : 0.85
 
   const themeContext = useThemeSafe()
-  const isDarkTheme = themeContext ? themeContext.theme === "dark" : true
+  const isDarkTheme = themeContext ? themeContext.theme === "dark" : false
 
   const mouseX = useMotionValue(-gradientSize)
   const mouseY = useMotionValue(-gradientSize)
@@ -160,7 +160,7 @@ export function MagicCard(props: MagicCardProps) {
   return (
     <motion.div
       className={cn(
-        "group relative isolate overflow-hidden rounded-3xl border border-outline-variant/20 dark:border-white/10 shadow-sm transition-all duration-300",
+        "group relative isolate overflow-hidden rounded-3xl border border-outline-variant/50 dark:border-outline-variant/60 shadow-sm transition-all duration-300",
         className
       )}
       onPointerMove={handlePointerMove}
@@ -171,7 +171,7 @@ export function MagicCard(props: MagicCardProps) {
       }}
     >
       {/* Background layer */}
-      <div className="bg-surface/90 dark:bg-slate-900/90 backdrop-blur-xl absolute inset-px z-20 rounded-[inherit]" />
+      <div className="bg-surface/90 dark:bg-surface-container/90 backdrop-blur-xl absolute inset-px z-20 rounded-[inherit]" />
 
       {/* Mode Gradient: Dynamic subtle cursor illumination */}
       {mode === "gradient" && (

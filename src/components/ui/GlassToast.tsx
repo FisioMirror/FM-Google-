@@ -62,15 +62,15 @@ export function GlassToastProvider({ children }: { children: ReactNode }) {
                 if (Math.abs(info.offset.x) > 80) dismiss(toast.id);
               }}
               className={cn(
-                'flex items-center gap-3 p-3.5 sm:p-4 rounded-2xl backdrop-blur-2xl',
-                'shadow-elevated shadow-black/40 min-w-[280px] max-w-[380px] w-full pointer-events-auto',
-                'bg-slate-900/95 dark:bg-slate-950/95 text-white border border-white/10',
+                'flex items-center gap-3 p-3.5 sm:p-4 rounded-2xl backdrop-blur-xl',
+                'shadow-elevated shadow-black/25 min-w-[280px] max-w-[380px] w-full pointer-events-auto',
+                'bg-surface-container-high/95 dark:bg-surface-container-high/95 text-on-surface border border-outline-variant/60',
               )}
             >
               <div
                 className={cn(
                   'p-2 rounded-xl shrink-0 border flex items-center justify-center',
-                  toast.type === 'success' && 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30',
+                  toast.type === 'success' && 'bg-success/15 text-success border-success/30',
                   toast.type === 'error' && 'bg-danger/15 text-danger border-danger/30',
                   toast.type === 'warning' && 'bg-warning/15 text-warning border-warning/30',
                   toast.type === 'info' && 'bg-info/15 text-info border-info/30',
@@ -83,12 +83,12 @@ export function GlassToastProvider({ children }: { children: ReactNode }) {
                   {iconMap[toast.type]}
                 </span>
               </div>
-              <span className="text-xs sm:text-sm font-semibold flex-1 leading-snug text-white">
+              <span className="text-xs sm:text-sm font-semibold flex-1 leading-snug text-on-surface">
                 {toast.message}
               </span>
               <button
                 onClick={() => dismiss(toast.id)}
-                className="size-6 rounded-lg shrink-0 flex items-center justify-center text-on-surface-variant hover:text-white hover:bg-white/10 transition-colors"
+                className="size-8 min-h-[44px] min-w-[44px] rounded-lg shrink-0 flex items-center justify-center text-on-surface-variant hover:text-on-surface hover:bg-on-surface/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                 aria-label={t('uix.gtCloseNotification')}
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">

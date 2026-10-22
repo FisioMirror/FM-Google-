@@ -42,7 +42,6 @@ import { Input } from '../components/ui/Input';
 import { OtpInput } from '../components/ui/OtpInput';
 import { Tooltip } from '../components/ui/Tooltip';
 import { CardSpotlight } from '../components/ui/CardSpotlight';
-import { BorderBeam } from '../components/ui/BorderBeam';
 import { NumberTicker } from '../components/ui/NumberTicker';
 import { ShimmerButton } from '../components/ui/ShimmerButton';
 import { ClinicalSlider } from '../components/ui/ClinicalSlider';
@@ -3296,14 +3295,13 @@ export function UIShowcasePage() {
               </CardSpotlight>
 
               <div className="relative p-6 rounded-2xl border border-outline/15 bg-surface-container-low/70 overflow-hidden group shadow-sm flex flex-col justify-between">
-                <BorderBeam size={90} duration={6} colorFrom="#14b8a6" colorTo="#C1FF72" />
                 <div>
                   <div className="flex items-center justify-between mb-4">
                     <div className="p-3 rounded-2xl bg-kinetic/10 text-kinetic dark:text-kinetic">
                       <Sparkles className="w-6 h-6" />
                     </div>
                     <span className="text-2xs font-bold text-kinetic bg-kinetic/10 px-2.5 py-1 rounded-full border border-kinetic/20">
-                      Magic UI BorderBeam
+                      Borde orbital
                     </span>
                   </div>
                   <h3 className="text-lg font-bold text-on-surface mb-1">

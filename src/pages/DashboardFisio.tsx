@@ -390,18 +390,44 @@ export function DashboardFisio() {
       const { data: profs } = await queryProfs.limit(50);
 
       if (profs && profs.length > 0) {
+        const since = new Date(Date.now() - 14 * 86400000).toISOString();
+        const { data: recentPatientSessions } = await supabase
+          .from('sesiones_completadas')
+          .select('paciente_id, fecha, calidad_ejecucion')
+          .in('paciente_id', profs.map((p) => p.id))
+          .gte('fecha', since)
+          .order('fecha', { ascending: false });
+
+        const statsByPatient = new Map<string, { days: Set<string>; count: number; quality: number; last: string | null }>();
+        (recentPatientSessions || []).forEach((s: any) => {
+          if (!s.paciente_id) return;
+          const entry = statsByPatient.get(s.paciente_id) || { days: new Set<string>(), count: 0, quality: 0, last: null };
+          entry.days.add(String(s.fecha).slice(0, 10));
+          entry.count += 1;
+          entry.quality += s.calidad_ejecucion || 0;
+          if (!entry.last || s.fecha > entry.last) entry.last = s.fecha;
+          statsByPatient.set(s.paciente_id, entry);
+        });
+
         setDisplayedPatients(
-          profs.map((p) => ({
-            id: p.id,
-            name: p.full_name || 'Paciente',
-            diagnosis: p.diagnostico || p.patologia || 'En evaluación',
-            status: 'Activo',
-            adherence: 80,
-            progress: 60,
-            sessionsCompleted: 1,
-            sessionsTotal: 10,
-            routine: 'Plan prescrito',
-          }))
+          profs.map((p) => {
+            const stats = statsByPatient.get(p.id);
+            const activeDays = stats?.days.size ?? 0;
+            const avgQuality = stats && stats.count > 0 ? Math.round(stats.quality / stats.count) : 0;
+            const daysSinceLast = stats?.last ? (Date.now() - new Date(stats.last).getTime()) / 86400000 : null;
+            return {
+              id: p.id,
+              name: p.full_name || 'Paciente',
+              diagnosis: p.diagnostico || p.patologia || 'En evaluación',
+              status: daysSinceLast !== null && daysSinceLast <= 7 ? 'Activo' : 'En pausa',
+              adherence: Math.min(100, Math.round((activeDays / 14) * 100)),
+              progress: avgQuality,
+              sessionsCompleted: stats?.count ?? 0,
+              sessionsTotal: null,
+              lastSessionAt: stats?.last ?? null,
+              routine: p.diagnostico || p.patologia || '',
+            };
+          })
         );
 
         const searchList = profs.map((p) => ({
@@ -1121,8 +1147,8 @@ export function DashboardFisio() {
                 <p className="text-on-surface-variant text-sm">{t('dashboard.remoteMonitorSubtitle')}</p>
               </div>
               <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-ping" />
-                <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 tracking-wider">EN VIVO</span>
+                <span className="w-2.5 h-2.5 bg-emerald-500 rounded-full" />
+                <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 tracking-wider uppercase">{t('dashboard.monitoring')}</span>
               </div>
             </div>
 
@@ -1157,7 +1183,7 @@ export function DashboardFisio() {
                   description: t('dashboard.telemetryDesc', { n: displayedPatients.length }),
                   time: t('common.now'),
                   icon: <Icon name="sync" size={16} className="text-teal-500" />,
-                  badge: 'MediaPipe Live',
+                  badge: t('dashboard.clinicalTelemetry'),
                   category: 'sesion',
                   color: 'bg-teal-500/10 text-teal-600 dark:text-teal-400 border-teal-500/20',
                 }}
@@ -1244,9 +1270,11 @@ export function DashboardFisio() {
             {filteredPatients.slice(0, 3).map((p) => {
               const patientName = p.name || t('common.patientDefault');
               const initials = patientName.split(' ').filter(Boolean).map((n: string) => n[0]).join('').slice(0, 2) || 'PA';
-              const isOnline = p.status === 'Activo';
+              const isOnline = p.lastSessionAt
+                ? (Date.now() - new Date(p.lastSessionAt).getTime()) / 3600000 <= 24
+                : false;
               const isWarning = p.status === 'Requiere Revisión' || p.status === 'En pausa';
-              const adherenceVal = p.adherence || p.progress || 0;
+              const adherenceVal = p.adherence ?? 0;
 
               return (
                 <motion.div
@@ -1305,7 +1333,7 @@ export function DashboardFisio() {
                     {/* Adherence Progress Bar with Shimmer */}
                     <div className="space-y-2 mt-4 pt-3 border-t border-outline-variant/15 text-xs">
                       <div className="flex justify-between items-center text-on-surface-variant">
-                        <span className="font-semibold text-xs">{t('dashboard.treatmentAdherence')}</span>
+                        <span className="font-semibold text-xs">{t('dashboard.adherence14d')}</span>
                         <span className="font-extrabold text-sm text-teal-700 dark:text-teal-300">{adherenceVal}%</span>
                       </div>
                       <div className="h-2.5 w-full rounded-full bg-slate-200/80 dark:bg-slate-700/60 overflow-hidden relative">
@@ -1317,8 +1345,8 @@ export function DashboardFisio() {
                         </div>
                       </div>
                       <div className="flex justify-between items-center text-xs text-outline font-medium pt-0.5">
-                        <span>{t('dashboard.sessionsFraction', { a: p.sessionsCompleted || 1, b: p.sessionsTotal || 10 })}</span>
-                        <span>{t(DEMO_T[String(p.routine)] || String(p.routine || 'dashboard.activePlan'))}</span>
+                        <span>{t('dashboard.sessionsRecorded', { n: p.sessionsCompleted })}</span>
+                        <span>{p.routine ? t(DEMO_T[String(p.routine)] || String(p.routine)) : t('dashboard.noPlanAssigned')}</span>
                       </div>
                     </div>
                   </div>

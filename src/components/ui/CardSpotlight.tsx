@@ -44,14 +44,14 @@ export function CardSpotlight({
         mouseY.set(-1000);
       }}
       className={cn(
-        'group relative overflow-hidden rounded-2xl border border-outline/15 bg-surface-container-low/70 transition-all duration-300 hover:border-outline/30 hover:shadow-card',
+        'group relative overflow-hidden rounded-2xl border border-outline-variant/50 bg-card transition-all duration-300 hover:border-outline-variant hover:shadow-card',
         className
       )}
       {...props}
     >
       {/* Luz focal animada en hover */}
       <motion.div
-        className="pointer-events-none absolute -inset-px rounded-2xl opacity-0 transition-opacity duration-300 group-hover:opacity-100 z-0"
+        className="pointer-events-none absolute -inset-px rounded-2xl opacity-0 transition-opacity duration-300 group-hover:opacity-100 z-0 hidden md:block"
         style={{
           background: spotlightBackground,
         }}

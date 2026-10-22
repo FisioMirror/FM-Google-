@@ -176,11 +176,11 @@ export const TurnstileWidget = forwardRef<TurnstileWidgetRef, TurnstileWidgetPro
       <div className={`turnstile-wrapper my-2 ${className}`}>
         <div className="flex items-center justify-between text-xs text-on-surface-variant mb-1.5 px-0.5">
           <span className="flex items-center gap-1.5 font-medium">
-            <ShieldCheck size={13} className={status === 'verified' ? 'text-teal-500' : 'text-on-surface-variant'} />
+            <ShieldCheck size={13} className={status === 'verified' ? 'text-primary' : 'text-on-surface-variant'} />
             {t('uix.twProtection')}
           </span>
           {status === 'verified' && (
-            <span className="text-teal-600 dark:text-teal-400 font-semibold text-2xs bg-teal-50 dark:bg-teal-950/60 px-1.5 py-0.5 rounded-full border border-teal-200 dark:border-teal-800">
+            <span className="text-primary font-semibold text-2xs bg-primary/10 px-1.5 py-0.5 rounded-full border border-primary/25">
               {t('uix.twVerified')}
             </span>
           )}
@@ -188,14 +188,17 @@ export const TurnstileWidget = forwardRef<TurnstileWidgetRef, TurnstileWidgetPro
 
         <div
           ref={containerRef}
-          className="min-h-[65px] w-full flex items-center justify-center rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/60 overflow-hidden p-1 transition-all"
+          className="min-h-[65px] w-full flex items-center justify-center rounded-xl bg-surface-container/50 border border-border overflow-hidden p-1 transition-all"
         />
 
         {status === 'error' && (
-          <div className="mt-1.5 flex items-center justify-between text-xs text-danger dark:text-danger bg-danger dark:bg-danger/40 p-2 rounded-lg border border-danger dark:border-danger/50">
-            <span className="flex items-center gap-1.5 text-xs">
-              <AlertCircle size={13} />
-              {errorMsg || t('uix.twCaptchaError')}
+          <div
+            role="alert"
+            className="mt-1.5 flex flex-wrap items-start sm:items-center justify-between gap-2 text-xs text-danger bg-danger/10 p-2.5 rounded-lg border border-danger/40"
+          >
+            <span className="flex items-start gap-1.5 text-xs min-w-0 flex-1 leading-snug">
+              <AlertCircle size={13} className="shrink-0 mt-0.5" />
+              <span>{errorMsg || t('uix.twCaptchaError')}</span>
             </span>
             <button
               type="button"
@@ -206,7 +209,7 @@ export const TurnstileWidget = forwardRef<TurnstileWidgetRef, TurnstileWidgetPro
                   setErrorMsg(null);
                 }
               }}
-              className="flex items-center gap-1 text-xs font-bold underline hover:opacity-80 ml-2"
+              className="flex items-center gap-1 text-xs font-bold rounded-lg px-2 py-1 min-h-[32px] hover:bg-danger/10 transition-colors shrink-0"
             >
               <RefreshCw size={11} /> {t('common.retry')}
             </button>

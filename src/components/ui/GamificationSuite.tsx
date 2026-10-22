@@ -343,16 +343,28 @@ export const DailyHealthPointsWidget: React.FC<DailyHealthPointsWidgetProps> = (
 export interface RehabHeroAvatarCardProps {
   patientName?: string;
   rankTitle?: string;
+  level?: number;
+  adherence?: number;
+  initials?: string;
   className?: string;
 }
 
 export const RehabHeroAvatarCard: React.FC<RehabHeroAvatarCardProps> = ({
-  patientName = 'Carlos Rivera',
+  patientName = 'Paciente',
   rankTitle,
+  level = 5,
+  adherence = 86,
+  initials,
   className,
 }) => {
   const { t } = useTranslation();
   const heroRank = rankTitle ?? t('fgam.heroRank');
+  const heroInitials = initials ?? patientName
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase() ?? '')
+    .join('');
   return (
     <motion.div
       whileHover={{ y: -3, scale: 1.01 }}
@@ -363,13 +375,13 @@ export const RehabHeroAvatarCard: React.FC<RehabHeroAvatarCardProps> = ({
       )}
     >
       <div className="relative size-12 rounded-2xl bg-gradient-to-br from-teal-500 to-info text-white flex items-center justify-center font-black text-base shadow-sm shadow-teal-500/30 shrink-0">
-        CR
+        {heroInitials}
         <span className="absolute -bottom-1 -right-1 size-3.5 rounded-full bg-emerald-500 border-2 border-white dark:border-slate-900" />
       </div>
       <div>
         <h4 className="text-sm font-black text-on-surface">{patientName}</h4>
         <span className="text-xs text-primary font-bold">{heroRank}</span>
-        <span className="text-2xs text-on-surface-variant block">{t('gamification.level')} 5 • 86% {t('patients.columns.adherence')}</span>
+        <span className="text-2xs text-on-surface-variant block">{t('gamification.level')} {level} • {adherence}% {t('patients.columns.adherence')}</span>
       </div>
     </motion.div>
   );

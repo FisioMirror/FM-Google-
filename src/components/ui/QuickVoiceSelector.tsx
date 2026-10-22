@@ -128,7 +128,13 @@ export function QuickVoiceSelector({
             {gender === 'male' ? t('qvs.drMale') : t('qvs.drFemale')}
           </span>
           <span className="hidden sm:inline-block text-2xs px-1.5 py-0.5 rounded-full font-mono bg-teal-500/10 text-teal-700 dark:text-teal-300 border border-teal-500/20">
-            {provider === 'auto' ? t('qvs.neuralVoice') : provider === 'fish_audio' ? 'Fish Audio' : 'Offline'}
+            {provider === 'auto'
+              ? t('qvs.neuralVoice')
+              : provider === 'fish_audio'
+              ? 'Fish Audio'
+              : provider === 'neural'
+              ? 'Neural'
+              : t('qvs.localSynthesis')}
           </span>
         </div>
 

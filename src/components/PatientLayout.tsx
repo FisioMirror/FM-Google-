@@ -26,7 +26,6 @@ import { Icon } from './ui/Icon';
 import { BackButton } from './ui/BackButton';
 
 import { FloatingMenu, type FloatingMenuItem } from './ui/FloatingMenu';
-import { CurvedMobileDock } from './ui/NavigationDocksSuite';
 import { PhysiChatbot } from './ui/PhysiChatbot';
 import { LegalModal, type LegalDocType } from './ui/LegalModal';
 import { useAuthStore } from '../stores/authStore';
@@ -67,7 +66,10 @@ export function PatientLayout({ children }: PatientLayoutProps) {
     { to: '/settings', label: t('navigation.settings', 'Configuración'), icon: Settings, accent: 'teal' },
   ];
 
-  const navItems = [...primaryNavItems, ...secondaryNavItems];
+  const navGroups = [
+    { id: 'therapy', label: t('navigation.therapyGroup', 'Terapia'), items: primaryNavItems },
+    { id: 'account', label: t('navigation.accountGroup', 'Cuenta'), items: secondaryNavItems },
+  ];
 
   const breadcrumbMap: Record<string, string> = {
     '/dashboard-paciente': t('navigation.dashboard', 'Inicio'),
@@ -254,23 +256,95 @@ export function PatientLayout({ children }: PatientLayoutProps) {
     },
   ];
 
+  const renderNavItem = (
+    item: { to: string; label: string; icon: React.ElementType; accent: string },
+    collapsed: boolean,
+    onNavigate?: () => void
+  ) => {
+    const IconComp = item.icon;
+    return (
+      <NavLink
+        key={item.to}
+        to={item.to}
+        onClick={onNavigate}
+        className={({ isActive }) =>
+          cn(
+            'group relative sidebar-nav-item select-none',
+            collapsed ? 'justify-center px-2 my-1' : 'gap-3 px-3 my-1',
+            isActive
+              ? 'text-primary font-semibold'
+              : 'text-on-surface-variant font-medium hover:bg-on-surface/[0.04] hover:text-on-surface'
+          )
+        }
+        title={collapsed ? item.label : undefined}
+      >
+        {({ isActive }) => (
+          <>
+            {isActive && (
+              <motion.div
+                layoutId="active-patient-nav-indicator"
+                className="absolute inset-0 rounded-xl bg-primary/[0.08] border border-primary/20 -z-10"
+                transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+              />
+            )}
+            {isActive && !collapsed && (
+              <span className="absolute left-0 top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-full bg-primary" aria-hidden="true" />
+            )}
+            {isActive && collapsed && (
+              <span className="absolute left-0.5 top-1/2 h-6 w-[3px] -translate-y-1/2 rounded-full bg-primary" aria-hidden="true" />
+            )}
+            <div
+              className={cn(
+                'w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-all duration-200 group-hover:scale-[1.04]',
+                isActive
+                  ? 'bg-primary text-on-primary shadow-sm shadow-primary/20'
+                  : 'bg-on-surface/[0.04] text-on-surface-variant group-hover:bg-primary/10 group-hover:text-primary'
+              )}
+            >
+              <IconComp size={18} />
+            </div>
+            {!collapsed && <span className="text-sm truncate flex-1">{item.label}</span>}
+          </>
+        )}
+      </NavLink>
+    );
+  };
+
+  const renderNavList = (collapsed: boolean, onNavigate?: () => void) => (
+    <>
+      {navGroups.map((group, index) => (
+        <div
+          key={group.id}
+          className={cn(
+            'space-y-0.5',
+            index > 0 && 'mt-2 pt-2 border-t border-outline-variant/40'
+          )}
+        >
+          {!collapsed && <p className="sidebar-group-label">{group.label}</p>}
+          {collapsed && index > 0 && <div className="sidebar-rail-divider" />}
+          {group.items.map((item) => renderNavItem(item, collapsed, onNavigate))}
+        </div>
+      ))}
+    </>
+  );
+
   const renderBottomActions = (collapsed: boolean, onNavAway?: () => void) => (
-    <div className={cn('shrink-0 border-t border-teal-100 dark:border-slate-800 p-3', collapsed ? 'flex flex-col items-center gap-2' : 'space-y-3')}>
+    <div className={cn('shrink-0 border-t border-outline-variant/50 p-3', collapsed ? 'flex flex-col items-center gap-2' : 'space-y-3')}>
       {!collapsed && (
-        <div className="rounded-2xl bg-teal-50/80 dark:bg-slate-800/80 p-3 flex items-center gap-3 border border-teal-100/50 dark:border-slate-700/50">
-          <div className="w-10 h-10 rounded-full bg-teal-500 flex items-center justify-center text-white font-bold text-sm overflow-hidden shrink-0 shadow-xs relative">
+        <div className="rounded-2xl bg-surface-container/60 p-3 flex items-center gap-3 border border-outline-variant/50">
+          <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-on-primary font-bold text-sm overflow-hidden shrink-0 shadow-xs relative">
             {user?.avatar_url ? (
               <img src={user.avatar_url} alt="" className="w-full h-full object-cover" />
             ) : (
               user?.full_name?.charAt(0) || 'P'
             )}
-            <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-white dark:border-slate-900" />
+            <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-surface-container" />
           </div>
           <div className="min-w-0">
             <p className="font-bold text-sm text-on-surface truncate">{user?.full_name || 'Paciente'}</p>
             <div className="flex items-center gap-1.5 mt-0.5">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              <p className="text-2xs text-teal-600 dark:text-teal-400 uppercase tracking-wider font-semibold">{t('layout.activePatient')}</p>
+              <p className="text-2xs text-primary uppercase tracking-wider font-semibold">{t('layout.activePatient')}</p>
             </div>
           </div>
         </div>
@@ -278,14 +352,14 @@ export function PatientLayout({ children }: PatientLayoutProps) {
       <div className={cn(collapsed ? 'flex flex-col items-center gap-2' : 'flex items-center justify-between px-1')}>
         <button
           onClick={toggleTheme}
-          className="p-2 rounded-xl text-on-surface-variant hover:bg-teal-50 dark:hover:bg-slate-800 hover:text-teal-600 dark:hover:text-teal-400 transition-colors"
+          className="p-2 min-h-[44px] min-w-[44px] inline-flex items-center justify-center rounded-xl text-on-surface-variant hover:bg-primary/10 hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
           aria-label={t('common.changeTheme')}
         >
           {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
         </button>
         <button
           onClick={() => { onNavAway?.(); setShowNotifications((v) => !v); }}
-          className="relative p-2 rounded-xl text-on-surface-variant hover:bg-teal-50 dark:hover:bg-slate-800 hover:text-teal-600 dark:hover:text-teal-400 transition-colors"
+          className="relative p-2 min-h-[44px] min-w-[44px] inline-flex items-center justify-center rounded-xl text-on-surface-variant hover:bg-primary/10 hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
           aria-label={`Notificaciones, ${unreadCount} sin leer`}
         >
           <Bell size={18} />
@@ -297,7 +371,7 @@ export function PatientLayout({ children }: PatientLayoutProps) {
         </button>
         <button
           onClick={() => { onNavAway?.(); setShowLogout(true); }}
-          className="p-2 rounded-xl text-on-surface-variant hover:bg-danger/10 dark:hover:bg-danger/30 hover:text-danger dark:hover:text-danger transition-colors"
+          className="p-2 min-h-[44px] min-w-[44px] inline-flex items-center justify-center rounded-xl text-on-surface-variant hover:bg-danger/10 hover:text-danger transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-danger focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
           aria-label={t('common.logout')}
         >
           <LogOut size={18} />
@@ -308,13 +382,13 @@ export function PatientLayout({ children }: PatientLayoutProps) {
 
   const sidebarContent = (collapsed: boolean, opts?: { onNavigate?: () => void; showToggle?: boolean }) => (
     <>
-      <div className="flex items-center px-4 h-16 border-b border-teal-100/60 dark:border-slate-800/80 shrink-0 relative">
+      <div className="flex items-center px-4 h-16 border-b border-outline-variant/50 shrink-0 relative">
         {!collapsed ? (
           <div className="flex items-center gap-3 min-w-0 pr-6">
             <img src="/logo.png" alt="FisioMirror" className="h-9 w-9 min-w-[36px] min-h-[36px] object-contain shrink-0 aspect-square" />
             <div className="flex flex-col min-w-0">
               <h1 className="text-base font-extrabold text-on-surface tracking-tight leading-tight whitespace-nowrap">FisioMirror</h1>
-              <p className="text-2xs uppercase tracking-wider text-teal-600 dark:text-teal-400 font-bold whitespace-nowrap">{t('navigation.patientPortal')}</p>
+              <p className="text-2xs uppercase tracking-wider text-primary font-bold whitespace-nowrap">{t('navigation.patientPortal')}</p>
             </div>
           </div>
         ) : (
@@ -332,50 +406,8 @@ export function PatientLayout({ children }: PatientLayoutProps) {
           </button>
         )}
       </div>
-      <nav className="flex-1 flex flex-col gap-1 p-2.5 overflow-y-auto overflow-x-hidden">
-        {navItems.map((item) => {
-          const IconComp = item.icon;
-          return (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              onClick={opts?.onNavigate}
-              className={({ isActive }) =>
-                cn(
-                  'group relative flex items-center rounded-xl transition-all duration-200 select-none',
-                  collapsed ? 'justify-center p-2.5 my-1' : 'gap-3 px-3.5 py-2.5 my-0.5',
-                  isActive
-                    ? 'text-teal-700 dark:text-teal-300 font-bold'
-                    : 'text-on-surface-variant font-medium hover:text-on-surface dark:hover:text-white'
-                )
-              }
-              title={collapsed ? item.label : undefined}
-            >
-              {({ isActive }) => (
-                <>
-                  {isActive && (
-                    <motion.div
-                      layoutId="active-patient-nav-indicator"
-                      className="absolute inset-0 rounded-xl bg-gradient-to-r from-teal-500/15 via-emerald-500/10 to-transparent border border-teal-400/30 dark:border-teal-500/30 -z-10 shadow-xs"
-                      transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-                    />
-                  )}
-                  <div
-                    className={cn(
-                      'w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-transform duration-200 group-hover:scale-105',
-                      isActive
-                        ? 'bg-teal-500 text-white shadow-sm shadow-teal-500/25'
-                        : 'bg-slate-100 dark:bg-slate-800/80 text-on-surface-variant group-hover:bg-teal-50 dark:group-hover:bg-slate-700/80 group-hover:text-teal-600 dark:group-hover:text-teal-400'
-                    )}
-                  >
-                    <IconComp size={18} />
-                  </div>
-                  {!collapsed && <span className="text-sm truncate flex-1">{item.label}</span>}
-                </>
-              )}
-            </NavLink>
-          );
-        })}
+      <nav className="flex-1 px-2.5 py-3 overflow-y-auto overflow-x-hidden">
+        {renderNavList(collapsed, opts?.onNavigate)}
       </nav>
       {renderBottomActions(collapsed, opts?.onNavigate)}
     </>
@@ -383,7 +415,7 @@ export function PatientLayout({ children }: PatientLayoutProps) {
 
   const desktopSidebar = (
     <aside
-      className="fixed left-0 top-0 h-[100dvh] z-40 flex flex-col bg-gradient-to-b from-white/90 via-teal-50/30 to-surface/90 dark:from-slate-900 dark:via-slate-900/95 dark:to-slate-950 border-r border-teal-200/50 dark:border-slate-800 text-on-surface dark:text-slate-200 transition-all duration-300 overflow-hidden backdrop-blur-xl"
+      className="sidebar-surface fixed left-0 top-0 h-[100dvh] z-40 flex flex-col text-on-surface transition-[width] duration-300 overflow-hidden"
       style={{ width: `${sidebarWidth}px` }}
     >
       {sidebarContent(sidebarCollapsed, { showToggle: true })}
@@ -394,9 +426,9 @@ export function PatientLayout({ children }: PatientLayoutProps) {
     <div className="flex flex-col lg:flex-row h-[100dvh] overflow-hidden bg-background text-on-surface relative" style={{ ['--patient-sidebar-w' as string]: `${sidebarWidth}px` }}>
       {/* Ambient Clinical Pastel Mesh Glow (Celeste, Menta y Lavanda suave) */}
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-        <div className="absolute -top-32 left-1/4 w-96 h-96 rounded-full bg-teal-400/10 dark:bg-teal-500/10 blur-[110px]" />
-        <div className="absolute top-1/3 -right-20 w-80 h-80 rounded-full bg-info/10 dark:bg-info/10 blur-[100px]" />
-        <div className="absolute -bottom-24 left-1/3 w-96 h-96 rounded-full bg-secondary/8 dark:bg-secondary/8 blur-[120px]" />
+        <div className="absolute -top-32 left-1/4 w-96 h-96 rounded-full bg-teal-400/10 dark:bg-teal-500/[0.05] blur-[110px]" />
+        <div className="absolute top-1/3 -right-20 w-80 h-80 rounded-full bg-info/10 dark:bg-info/[0.05] blur-[100px]" />
+        <div className="absolute -bottom-24 left-1/3 w-96 h-96 rounded-full bg-secondary/[0.08] dark:bg-secondary/[0.04] blur-[120px]" />
       </div>
 
       {/* Desktop sidebar navigation */}
@@ -410,7 +442,7 @@ export function PatientLayout({ children }: PatientLayoutProps) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setSidebarOpen(false)}
-            className="fixed inset-0 bg-slate-950/50 backdrop-blur-sm z-50 lg:hidden flex"
+            className="fixed inset-0 bg-black/45 backdrop-blur-sm z-50 lg:hidden flex"
           >
             <motion.div
               initial={{ x: '-100%' }}
@@ -421,48 +453,26 @@ export function PatientLayout({ children }: PatientLayoutProps) {
               role="dialog"
               aria-modal="true"
               aria-label={t('layout.navMenu')}
-              className="h-full w-72 max-w-[85vw] flex flex-col bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl border-r border-teal-200/50 dark:border-slate-800 text-on-surface rounded-r-3xl shadow-elevated overflow-hidden"
+              className="sidebar-surface h-full w-72 max-w-[85vw] flex flex-col text-on-surface rounded-r-3xl overflow-hidden"
             >
-              <div className="p-4 flex items-center justify-between border-b border-teal-100/60 dark:border-slate-800">
+              <div className="p-4 flex items-center justify-between border-b border-outline-variant/50">
                 <div className="flex items-center gap-3">
                   <img src="/logo.png" alt="FisioMirror" className="h-9 w-9 object-contain shrink-0" />
                   <div>
                     <h2 className="text-base font-extrabold text-on-surface leading-tight">FisioMirror</h2>
-                    <p className="text-2xs uppercase tracking-wider text-teal-600 dark:text-teal-400 font-bold">{t('navigation.patientPortal')}</p>
+                    <p className="text-2xs uppercase tracking-wider text-primary font-bold">{t('navigation.patientPortal')}</p>
                   </div>
                 </div>
                 <button
                   onClick={() => setSidebarOpen(false)}
-                  className="p-2 rounded-xl text-on-surface-variant hover:text-on-surface dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                  className="p-2.5 min-h-[44px] min-w-[44px] rounded-xl text-on-surface-variant hover:text-on-surface hover:bg-on-surface/[0.06] transition-colors"
                   aria-label={t('navigation.closeMenu')}
                 >
                   <X size={20} />
                 </button>
               </div>
-              <nav className="flex-1 px-3 py-3 space-y-1 overflow-y-auto">
-                {navItems.map((item) => {
-                  const IconComp = item.icon;
-                  return (
-                    <NavLink
-                      key={item.to}
-                      to={item.to}
-                      onClick={() => setSidebarOpen(false)}
-                      className={({ isActive }) =>
-                        cn(
-                          'group relative flex items-center gap-3 px-3.5 py-2.5 my-0.5 rounded-xl transition-all duration-200 select-none',
-                          isActive
-                            ? 'text-teal-700 dark:text-teal-300 font-bold bg-teal-500/10'
-                            : 'text-on-surface-variant font-medium hover:text-on-surface dark:hover:text-white hover:bg-slate-100/60 dark:hover:bg-slate-800/60'
-                        )
-                      }
-                    >
-                      <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 bg-slate-100 dark:bg-slate-800 text-on-surface-variant">
-                        <IconComp size={18} />
-                      </div>
-                      <span className="text-sm truncate flex-1">{item.label}</span>
-                    </NavLink>
-                  );
-                })}
+              <nav className="flex-1 px-3 py-3 overflow-y-auto">
+                {renderNavList(false, () => setSidebarOpen(false))}
               </nav>
               {renderBottomActions(false, () => setSidebarOpen(false))}
             </motion.div>
@@ -479,19 +489,14 @@ export function PatientLayout({ children }: PatientLayoutProps) {
             <button
               onClick={() => setSidebarOpen(true)}
               aria-label={t('navigation.openMenu')}
-              className="lg:hidden text-primary shrink-0 p-1.5 rounded-lg hover:bg-primary/10 transition-colors"
+              className="lg:hidden text-primary shrink-0 p-2.5 min-h-[44px] min-w-[44px] rounded-lg hover:bg-primary/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
             >
               <Icon name="menu" size={22} />
             </button>
             <BackButton />
-            {/* Mobile title & logo */}
-            <div className="flex items-center gap-2 lg:hidden min-w-0">
-              <img src="/logo.png" alt="FisioMirror" className="h-8 w-8 min-w-[32px] min-h-[32px] object-contain shrink-0 aspect-square" />
-              <span className="text-on-surface font-bold text-sm truncate max-w-[130px] sm:max-w-[180px]">{currentCrumb}</span>
-            </div>
             {/* Desktop breadcrumb */}
             <div className="hidden lg:flex items-center text-outline text-label-sm gap-2 min-w-0 truncate">
-              <span onClick={() => navigate('/dashboard-paciente')} className="hover:text-primary cursor-pointer shrink-0">{t('navigation.dashboard')}</span>
+              <span onClick={() => navigate('/dashboard-paciente')} role="link" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') navigate('/dashboard-paciente'); }} className="hover:text-primary cursor-pointer shrink-0 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary">{t('navigation.dashboard')}</span>
               <Icon name="chevron_right" size={14} className="shrink-0" />
               <span className="text-on-surface font-bold truncate">{currentCrumb}</span>
             </div>
@@ -541,7 +546,7 @@ export function PatientLayout({ children }: PatientLayoutProps) {
           </div>
         </header>
         {/* Scrollable content with clean spacing (bottom padding clears the mobile dock / FAB) */}
-        <div className="flex-1 overflow-y-auto px-4 sm:px-6 pt-8 pb-28 md:pb-24 space-y-8 max-w-md mx-auto lg:px-0 lg:max-w-none lg:mx-0 lg:p-10 bg-teal-50/20 dark:bg-slate-950/20">{children}</div>
+        <div className="flex-1 overflow-y-auto px-4 sm:px-6 pt-8 pb-28 md:pb-24 space-y-8 max-w-md mx-auto lg:px-0 lg:max-w-none lg:mx-0 lg:p-10 bg-surface/30 dark:bg-transparent">{children}</div>
 
         {/* Desktop footer */}
         <footer className="hidden lg:flex pt-6 pb-6 px-8 justify-between text-outline text-xs border-t divider-teal shrink-0">
@@ -554,30 +559,13 @@ export function PatientLayout({ children }: PatientLayoutProps) {
         </footer>
       </main>
 
-      {/* Mobile Fixed Curved Navigation Dock (MegaSuite 41) */}
+      {/* Acción flotante — visible en móvil y desktop; oculta solo en el chat de Physi */}
       {location.pathname !== '/ai-assistant' && (
-        <div className="md:hidden fixed bottom-4 inset-x-4 z-40 flex justify-center pointer-events-auto">
-          <CurvedMobileDock
-            className="w-full max-w-sm shadow-elevated"
-            currentTab={
-              location.pathname === '/exercises' ? 'ejercicios' : location.pathname === '/stats' ? 'progreso' : 'scan'
-            }
-            onExercisesClick={() => navigate('/exercises')}
-            onScanClick={() => navigate('/ar-mirror')}
-            onProgressClick={() => navigate('/stats')}
-          />
-        </div>
-      )}
-
-      {/* Botón de acción flotante — oculto en móvil donde está el CurvedMobileDock y en la página de chat de Physi */}
-      {location.pathname !== '/ai-assistant' && (
-        <div className="hidden md:block">
-          <FloatingMenu
-            items={quickActionItems}
-            ariaLabel="Acciones del paciente"
-            className="fixed right-4 sm:right-6 z-40 bottom-[calc(1.25rem+env(safe-area-inset-bottom))]"
-          />
-        </div>
+        <FloatingMenu
+          items={quickActionItems}
+          ariaLabel="Acciones del paciente"
+          className="fixed right-4 sm:right-6 z-40 bottom-[calc(1.25rem+env(safe-area-inset-bottom))]"
+        />
       )}
 
       {/* Centro de Notificaciones Clínico Avanzado */}

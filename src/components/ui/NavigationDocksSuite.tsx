@@ -38,7 +38,7 @@ export const CurvedMobileDock: React.FC<CurvedMobileDockProps> = ({
   return (
     <div
       className={cn(
-        "relative p-2 px-6 rounded-3xl bg-white/95 dark:bg-slate-950/95 text-on-surface dark:text-white border border-teal-500/25 dark:border-teal-500/30 shadow-elevated backdrop-blur-2xl flex items-center justify-between gap-6 transition-colors",
+        "relative p-2 px-6 rounded-3xl bg-surface/95 dark:bg-surface-container/95 text-on-surface border border-primary/25 dark:border-primary/30 shadow-elevated backdrop-blur-2xl flex items-center justify-between gap-6 transition-colors",
         className
       )}
     >
@@ -69,7 +69,7 @@ export const CurvedMobileDock: React.FC<CurvedMobileDockProps> = ({
             setInternalTab('scan');
             onScanClick?.();
           }}
-          className="size-14 rounded-2xl bg-gradient-to-tr from-teal-600 via-teal-500 to-info text-white flex items-center justify-center shadow-elevated shadow-teal-500/40 border-2 border-white dark:border-slate-950 cursor-pointer"
+          className="size-14 rounded-2xl bg-gradient-to-tr from-primary via-primary/85 to-info text-on-primary flex items-center justify-center shadow-elevated shadow-primary/40 border-2 border-surface cursor-pointer"
           title={t('fnds.startScan')}
         >
           <Sparkles className="w-6 h-6 animate-pulse" />
@@ -116,7 +116,7 @@ export const TherapistSidebarMini: React.FC<TherapistSidebarMiniProps> = ({
   return (
     <div
       className={cn(
-        "inline-flex flex-col gap-2 p-2 rounded-2xl bg-white/90 dark:bg-slate-900/90 border border-teal-500/25 dark:border-teal-500/30 shadow-card backdrop-blur-2xl transition-colors",
+        "inline-flex flex-col gap-2 p-2 rounded-2xl bg-surface/90 dark:bg-surface-container/90 text-on-surface border border-primary/25 dark:border-primary/30 shadow-card backdrop-blur-2xl transition-colors",
         className
       )}
     >
@@ -141,7 +141,7 @@ export const TherapistSidebarMini: React.FC<TherapistSidebarMiniProps> = ({
               "p-2.5 rounded-xl transition-all relative group cursor-pointer",
               isCurrent
                 ? "bg-primary text-on-primary shadow-sm shadow-teal-600/30"
-                : "text-on-surface-variant hover:text-on-surface dark:text-on-surface-variant dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5"
+                : "text-on-surface-variant hover:text-on-surface hover:bg-on-surface/5 dark:hover:bg-on-surface/5"
             )}
             title={item.label}
           >
@@ -202,7 +202,7 @@ export const QuickPatientSwitcherBar: React.FC<QuickPatientSwitcherBarProps> = (
               "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface",
               isCurrent
                 ? "bg-primary text-on-primary border-teal-600 shadow-sm shadow-teal-600/30"
-                : "bg-white/80 dark:bg-slate-800/80 border-slate-200 dark:border-white/10 text-on-surface-variant hover:text-on-surface dark:hover:text-white hover:border-teal-500/40"
+                : "bg-surface/80 dark:bg-surface-container-high/80 border-outline-variant/50 text-on-surface-variant hover:text-on-surface hover:border-primary/40"
             )}
           >
             {isCurrent && <span className="size-1.5 rounded-full bg-kinetic animate-ping" />}
@@ -237,7 +237,7 @@ export const SessionStateBreadcrumb: React.FC<SessionStateBreadcrumbProps> = ({
   return (
     <div
       className={cn(
-        "inline-flex items-center gap-2 p-2 px-3 rounded-2xl bg-white/95 dark:bg-slate-800/90 border border-teal-500/25 text-xs font-bold shadow-sm transition-colors",
+        "inline-flex items-center gap-2 p-2 px-3 rounded-2xl bg-surface/95 dark:bg-surface-container-high/90 border border-primary/25 text-xs font-bold shadow-sm transition-colors",
         className
       )}
     >
@@ -259,13 +259,13 @@ export const SessionStateBreadcrumb: React.FC<SessionStateBreadcrumbProps> = ({
                   ? "text-teal-600 dark:text-teal-400 font-black"
                   : isDone
                   ? "text-emerald-600 dark:text-emerald-400 font-semibold"
-                  : "text-on-surface-variant hover:text-on-surface-variant dark:hover:text-slate-200"
+                  : "text-on-surface-variant hover:text-on-surface"
               )}
             >
               {isDone && <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />}
               <span>{s}</span>
             </button>
-            {idx < steps.length - 1 && <ChevronRight className="w-3.5 h-3.5 text-slate-300 dark:text-on-surface-variant" />}
+            {idx < steps.length - 1 && <ChevronRight className="w-3.5 h-3.5 text-outline" />}
           </React.Fragment>
         );
       })}
@@ -295,7 +295,7 @@ export const SplitViewPerspectiveToggle: React.FC<SplitViewPerspectiveToggleProp
 return (
       <div
         className={cn(
-          "inline-flex p-1.5 rounded-2xl bg-slate-100 dark:bg-slate-900 border border-teal-500/20 dark:border-teal-500/30 text-xs font-bold shadow-sm transition-colors",
+          "inline-flex p-1.5 rounded-2xl bg-surface-container-high/60 dark:bg-surface-container border border-primary/20 dark:border-primary/30 text-xs font-bold shadow-sm transition-colors",
           className
         )}
       >
@@ -384,7 +384,7 @@ export const ErgonomicHandModeSwitcher: React.FC<ErgonomicHandModeSwitcherProps>
       whileTap={{ scale: 0.95 }}
       onClick={toggleHand}
       className={cn(
-        "inline-flex items-center gap-2.5 p-2 px-3.5 rounded-2xl bg-white/90 dark:bg-slate-800/90 border border-teal-500/30 text-xs font-bold text-on-surface shadow-sm cursor-pointer transition-colors min-h-[44px]",
+        "inline-flex items-center gap-2.5 p-2 px-3.5 rounded-2xl bg-surface/90 dark:bg-surface-container-high/90 border border-primary/30 text-xs font-bold text-on-surface shadow-sm cursor-pointer transition-colors min-h-[44px]",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface",
         className
       )}
@@ -453,10 +453,10 @@ export const CompactTelehealthBar: React.FC<CompactTelehealthBarProps> = ({
             type="button"
             onClick={onQuickMessage}
             aria-label={t('fnds.messageAssistant')}
-            className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-teal-500/20 text-on-surface transition-all border border-slate-200 dark:border-white/10 active:scale-95 cursor-pointer min-h-[44px] min-w-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
+            className="p-2.5 rounded-xl bg-surface-container-high/70 hover:bg-primary/20 text-on-surface transition-all border border-outline-variant/50 active:scale-95 cursor-pointer min-h-[44px] min-w-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
             title={t('fnds.clinicalChat')}
           >
-            <MessageSquare className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+            <MessageSquare className="w-5 h-5 text-primary" />
           </button>
         )}
       </div>
@@ -504,7 +504,7 @@ export const ExerciseTimelineScrubber: React.FC<ExerciseTimelineScrubberProps> =
           setSec(newSec);
           onSeek?.(newSec);
         }}
-        className="w-full h-2.5 rounded-full bg-slate-200 dark:bg-slate-800 overflow-hidden cursor-pointer p-0.5 border border-slate-300/40 dark:border-white/5"
+        className="w-full h-2.5 rounded-full bg-surface-container-high overflow-hidden cursor-pointer p-0.5 border border-outline-variant/40"
       >
         <motion.div
           animate={{ width: `${(sec / totalSeconds) * 100}%` }}
@@ -542,7 +542,7 @@ export const ContextualActionIsland: React.FC<ContextualActionIslandProps> = ({
       layout
       onClick={() => setExpanded(!expanded)}
       className={cn(
-        "inline-flex flex-col rounded-3xl bg-white/95 dark:bg-slate-950/95 text-on-surface dark:text-white border border-teal-500/30 dark:border-teal-500/40 shadow-elevated text-xs font-semibold cursor-pointer select-none backdrop-blur-2xl transition-all",
+        "inline-flex flex-col rounded-3xl bg-surface/95 dark:bg-surface-container/95 text-on-surface border border-teal-500/30 dark:border-teal-500/40 shadow-elevated text-xs font-semibold cursor-pointer select-none backdrop-blur-2xl transition-all",
         expanded ? "p-3 px-5 gap-2" : "p-2 px-4 flex-row items-center gap-2.5",
         className
       )}
@@ -558,7 +558,7 @@ export const ContextualActionIsland: React.FC<ContextualActionIslandProps> = ({
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="flex items-center gap-4 text-2xs font-mono text-on-surface-variant border-t border-slate-200 dark:border-white/10 pt-2"
+            className="flex items-center gap-4 text-2xs font-mono text-on-surface-variant border-t border-outline-variant/50 pt-2"
           >
             <span>{t('fnds.latencyLabel', { n: latencyMs })}</span>
             <span>FPS: {fps}</span>

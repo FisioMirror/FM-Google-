@@ -53,7 +53,7 @@ export function AlertDialogBackdrop({ children }: { children: React.ReactNode })
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setOpen(false)}
-            className="fixed inset-0 bg-slate-950/60 backdrop-blur-md"
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm"
           />
           {children}
         </div>
@@ -74,7 +74,7 @@ export function AlertDialogDialog({ children, className }: { children: React.Rea
       exit={{ opacity: 0, scale: 0.94, y: 16 }}
       transition={{ type: 'spring', damping: 25, stiffness: 350 }}
       className={cn(
-        'relative w-full max-w-md rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200 dark:border-slate-800 p-6 sm:p-7 shadow-elevated space-y-4 max-h-[90vh] overflow-y-auto',
+        'relative w-full max-w-md rounded-3xl bg-surface border border-outline-variant/60 dark:border-outline-variant/60 p-6 sm:p-7 shadow-elevated space-y-4 max-h-[90vh] overflow-y-auto',
         className
       )}
     >
@@ -91,7 +91,7 @@ export function AlertDialogCloseTrigger({ className }: { className?: string }) {
     <button
       onClick={() => setOpen(false)}
       className={cn(
-        'absolute top-4 right-4 p-2.5 rounded-xl text-on-surface-variant hover:text-on-surface-variant dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors',
+        'absolute top-4 right-4 p-2.5 rounded-xl text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors',
         'min-h-[44px] min-w-[44px]',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface',
         className
@@ -108,9 +108,15 @@ export function AlertDialogHeader({ children, className }: { children: React.Rea
 }
 
 export function AlertDialogIcon({ status = 'danger' }: { status?: 'danger' | 'warning' | 'info' }) {
+  const tone = {
+    danger: 'bg-danger/15 text-danger border-danger/25',
+    warning: 'bg-warning/15 text-warning border-warning/25',
+    info: 'bg-info/15 text-info border-info/25',
+  }[status];
+
   return (
-    <div className="p-3 rounded-2xl bg-danger/15 text-danger border border-danger/20 shrink-0">
-      <ShieldAlert className="size-6" />
+    <div className={cn('p-3 rounded-2xl border shrink-0', tone)}>
+      {status === 'danger' ? <ShieldAlert className="size-6" /> : <AlertCircle className="size-6" />}
     </div>
   );
 }
@@ -127,7 +133,7 @@ export function AlertDialogFooter({ children, className }: { children: React.Rea
   const { setOpen } = useContext(AlertDialogContext);
 
   return (
-    <div className={cn('flex items-center justify-end gap-2.5 pt-4 border-t border-slate-100 dark:border-slate-800/80', className)}>
+    <div className={cn('flex items-center justify-end gap-2.5 pt-4 border-t border-outline-variant/40', className)}>
       {React.Children.map(children, (child) => {
         if (React.isValidElement(child) && (child.props as { slot?: string }).slot === 'close') {
           return React.cloneElement(child as React.ReactElement<{ onClick?: () => void }>, {

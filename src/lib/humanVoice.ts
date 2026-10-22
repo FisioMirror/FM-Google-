@@ -63,6 +63,12 @@ export function getVoiceMode(): VoiceMode {
 export function setVoiceMode(mode: VoiceMode): void {
   if (typeof localStorage !== 'undefined') {
     localStorage.setItem('fisio_voice_mode', mode);
+    const current = localStorage.getItem('fisio_voice_provider');
+    if (mode === 'device') {
+      localStorage.setItem('fisio_voice_provider', 'device');
+    } else if (!current || current === 'device') {
+      localStorage.setItem('fisio_voice_provider', 'auto');
+    }
   }
 }
 
@@ -89,8 +95,10 @@ export function setVoiceGender(gender: VoiceGender): void {
  */
 export function getVoiceProvider(): VoiceProvider {
   if (typeof localStorage === 'undefined') return 'auto';
+  if (localStorage.getItem('fisio_voice_mode') === 'device') return 'device';
   const stored = localStorage.getItem('fisio_voice_provider') as VoiceProvider;
-  if (stored && ['auto', 'neural', 'fish_audio', 'device'].includes(stored)) {
+  if (stored === 'device') return 'auto';
+  if (stored && ['auto', 'neural', 'fish_audio'].includes(stored)) {
     return stored;
   }
   return 'auto';
@@ -102,6 +110,7 @@ export function getVoiceProvider(): VoiceProvider {
 export function setVoiceProvider(provider: VoiceProvider): void {
   if (typeof localStorage !== 'undefined') {
     localStorage.setItem('fisio_voice_provider', provider);
+    localStorage.setItem('fisio_voice_mode', provider === 'device' ? 'device' : 'humanized');
   }
 }
 

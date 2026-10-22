@@ -11,9 +11,7 @@ import { supabase } from '../lib/supabase';
 import { cn } from '../lib/utils';
 import { SparkleEffect } from '../components/auth/SparkleEffect';
 import { TurnstileWidget, type TurnstileWidgetRef } from '../components/auth/TurnstileWidget';
-import { BorderBeam } from '../components/ui/BorderBeam';
 import { AuroraText } from '../components/ui/AuroraText';
-import { LightRays } from '../components/ui/LightRays';
 import { ShimmerButton } from '../components/ui/ShimmerButton';
 import { useTranslation } from 'react-i18next';
 import { LanguageSelector } from '../components/ui/LanguageSelector';
@@ -784,7 +782,7 @@ export function Login() {
   };
 
   return (
-    <div className="min-h-[100dvh] w-full flex font-sans text-on-surface relative overflow-hidden bg-[#f9f9fc] dark:bg-slate-950">
+    <div className="min-h-[100dvh] w-full flex font-sans text-on-surface relative overflow-hidden bg-background">
       {/* ── MESH BACKGROUND GRADIENT ── */}
       <div
         className="pointer-events-none absolute inset-0 z-0"
@@ -793,7 +791,6 @@ export function Login() {
             'radial-gradient(at 0% 0%, rgba(0, 80, 77, 0.12) 0px, transparent 50%), radial-gradient(at 100% 0%, rgba(14, 165, 233, 0.09) 0px, transparent 50%), radial-gradient(at 100% 100%, rgba(13, 148, 136, 0.15) 0px, transparent 50%), radial-gradient(at 0% 100%, rgba(6, 182, 212, 0.10) 0px, transparent 50%)',
         }}
       />
-      <LightRays className="opacity-25 pointer-events-none" />
       {/* Ambient glowing orbs */}
       <div className="pointer-events-none absolute -left-12 top-16 h-72 w-72 rounded-full bg-[#00504d]/10 dark:bg-teal-500/10 blur-[90px]" />
       <div className="pointer-events-none absolute bottom-10 right-0 h-64 w-64 rounded-full bg-info/10 blur-[90px]" />
@@ -806,7 +803,7 @@ export function Login() {
         <div className="w-full max-w-[480px] flex items-center justify-between mb-5">
           <div className="flex items-center gap-2.5">
             <img src="/logo.png" alt="FisioMirror Logo" className="h-10 w-auto shrink-0 drop-shadow-sm" />
-            <span className="font-extrabold text-2xl tracking-tight text-[#00504d] dark:text-[#8ad3cf]">
+            <span className="font-extrabold text-2xl tracking-tight text-primary">
               FisioMirror
             </span>
           </div>
@@ -815,7 +812,7 @@ export function Login() {
             <button
               onClick={toggleTheme}
               aria-label={t('common.changeTheme')}
-              className="p-2.5 rounded-full border border-slate-200/80 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 backdrop-blur-md hover:scale-105 transition-all text-[#00504d] dark:text-[#8ad3cf] shadow-sm hover:shadow cursor-pointer"
+              className="p-2.5 rounded-full border border-slate-200/80 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 backdrop-blur-md hover:scale-105 transition-all text-primary shadow-sm hover:shadow cursor-pointer"
             >
               <Icon name={theme === 'dark' ? 'light_mode' : 'dark_mode'} size={18} />
             </button>
@@ -832,7 +829,6 @@ export function Login() {
             isFisio && isRegister ? 'max-w-2xl gap-y-5' : 'max-w-[480px] gap-y-5'
           )}
         >
-          <BorderBeam size={220} duration={12} colorFrom="#0284c7" colorTo="#10b981" />
 
           {/* Internal ambient color spots */}
           <div className="pointer-events-none absolute -top-12 -right-12 h-40 w-40 rounded-full bg-teal-500/15 blur-2xl" />
@@ -842,7 +838,7 @@ export function Login() {
           {isFisio && isRegister && (
             <div className="hidden md:flex items-center justify-between border-b border-slate-200/60 dark:border-slate-800 pb-3">
               <div>
-                <span className="font-extrabold text-xl text-[#00504d] dark:text-[#8ad3cf]">
+                <span className="font-extrabold text-xl text-primary">
                   FisioMirror Profesional
                 </span>
                 <p className="text-xs text-on-surface-variant mt-0.5">
@@ -856,7 +852,7 @@ export function Login() {
                     style={{ width: fisioStep === 1 ? '50%' : '100%' }}
                   />
                 </div>
-                <span className="text-xs font-bold text-[#00504d] dark:text-[#8ad3cf] whitespace-nowrap">
+                <span className="text-xs font-bold text-primary whitespace-nowrap">
                   Paso {fisioStep}/2
                 </span>
               </div>
@@ -895,7 +891,7 @@ export function Login() {
                 className={cn(
                   'relative flex-1 py-3 text-sm font-bold z-10 transition-colors flex items-center justify-center gap-2 rounded-xl',
                   isFisio
-                    ? 'text-[#00504d] dark:text-[#8ad3cf] font-extrabold'
+                    ? 'text-primary font-extrabold'
                     : 'text-on-surface-variant hover:text-on-surface dark:hover:text-slate-200'
                 )}
               >
@@ -924,10 +920,10 @@ export function Login() {
           {isFisio && isRegister && (
             <div className="md:hidden">
               <div className="flex items-center justify-between mb-1.5">
-                <h2 className="font-extrabold text-xl text-[#00504d] dark:text-[#8ad3cf]">
+                <h2 className="font-extrabold text-xl text-primary">
                   Registro Profesional
                 </h2>
-                <span className="px-2.5 py-1 bg-[#00504d]/10 dark:bg-teal-500/20 text-[#00504d] dark:text-[#8ad3cf] rounded-full text-xs font-bold">
+                <span className="px-2.5 py-1 bg-[#00504d]/10 dark:bg-teal-500/20 text-primary rounded-full text-xs font-bold">
                   Etapa {fisioStep}/2
                 </span>
               </div>
@@ -1003,7 +999,7 @@ export function Login() {
                     <button
                       type="button"
                       onClick={() => setShowResetModal(true)}
-                      className="text-xs font-semibold text-[#00504d] dark:text-[#8ad3cf] hover:underline"
+                      className="text-xs font-semibold text-primary hover:underline"
                     >
                       ¿Olvidaste tu contraseña?
                     </button>
@@ -1013,7 +1009,7 @@ export function Login() {
                     <motion.div
                       initial={{ opacity: 0, y: -4 }}
                       animate={errorShake ? { x: [-8, 8, -6, 6, 0] } : { y: 0 }}
-                      className="p-3 rounded-xl bg-danger/10 border border-danger/30 text-danger dark:bg-danger/40 dark:border-danger/50 dark:text-danger text-xs font-bold text-center"
+                      className="p-3 rounded-xl bg-danger/10 border border-danger/30 text-danger dark:bg-red-950/40 dark:border-red-500/30 dark:text-red-200 text-xs font-bold text-center"
                     >
                       {error}
                     </motion.div>
@@ -1049,7 +1045,7 @@ export function Login() {
                       <button
                         type="button"
                         onClick={() => switchMode('register')}
-                        className="font-bold text-[#00504d] dark:text-[#8ad3cf] hover:underline"
+                        className="font-bold text-primary hover:underline"
                       >
                         Crear Cuenta / Registrarse
                       </button>
@@ -1168,7 +1164,7 @@ export function Login() {
                     <motion.div
                       initial={{ opacity: 0, y: -4 }}
                       animate={errorShake ? { x: [-8, 8, -6, 6, 0] } : { y: 0 }}
-                      className="p-3 rounded-xl bg-danger/10 border border-danger/30 text-danger dark:bg-danger/40 dark:border-danger/50 dark:text-danger text-xs font-bold text-center"
+                      className="p-3 rounded-xl bg-danger/10 border border-danger/30 text-danger dark:bg-red-950/40 dark:border-red-500/30 dark:text-red-200 text-xs font-bold text-center"
                     >
                       {error}
                     </motion.div>
@@ -1201,7 +1197,7 @@ export function Login() {
                     <button
                       type="button"
                       onClick={() => switchMode('login')}
-                      className="font-bold text-[#00504d] dark:text-[#8ad3cf] hover:underline"
+                      className="font-bold text-primary hover:underline"
                     >
                       Iniciar Sesión
                     </button>
@@ -1271,7 +1267,7 @@ export function Login() {
                     <button
                       type="button"
                       onClick={() => setShowResetModal(true)}
-                      className="text-xs font-semibold text-[#00504d] dark:text-[#8ad3cf] hover:underline"
+                      className="text-xs font-semibold text-primary hover:underline"
                     >
                       ¿Olvidaste tu contraseña?
                     </button>
@@ -1281,7 +1277,7 @@ export function Login() {
                     <motion.div
                       initial={{ opacity: 0, y: -4 }}
                       animate={errorShake ? { x: [-8, 8, -6, 6, 0] } : { y: 0 }}
-                      className="p-3 rounded-xl bg-danger/10 border border-danger/30 text-danger dark:bg-danger/40 dark:border-danger/50 dark:text-danger text-xs font-bold text-center"
+                      className="p-3 rounded-xl bg-danger/10 border border-danger/30 text-danger dark:bg-red-950/40 dark:border-red-500/30 dark:text-red-200 text-xs font-bold text-center"
                     >
                       {error}
                     </motion.div>
@@ -1314,7 +1310,7 @@ export function Login() {
                     <button
                       type="button"
                       onClick={() => switchMode('register')}
-                      className="font-bold text-[#00504d] dark:text-[#8ad3cf] hover:underline"
+                      className="font-bold text-primary hover:underline"
                     >
                       Crear Cuenta Profesional
                     </button>
@@ -1568,7 +1564,7 @@ export function Login() {
                                     className="max-h-28 rounded-lg shadow-sm"
                                   />
                                 ) : (
-                                  <div className="flex items-center gap-2 text-[#00504d] dark:text-[#8ad3cf]">
+                                  <div className="flex items-center gap-2 text-primary">
                                     <Icon name="description" size={30} />
                                     <span className="text-xs font-bold">{credencialFile?.name}</span>
                                   </div>
@@ -1579,10 +1575,10 @@ export function Login() {
                               </div>
                             ) : (
                               <div className="flex flex-col items-center gap-2">
-                                <div className="w-12 h-12 rounded-full bg-[#00504d]/10 dark:bg-teal-500/20 flex items-center justify-center text-[#00504d] dark:text-[#8ad3cf]">
+                                <div className="w-12 h-12 rounded-full bg-[#00504d]/10 dark:bg-teal-500/20 flex items-center justify-center text-primary">
                                   <Icon name="upload_file" size={26} />
                                 </div>
-                                <span className="font-bold text-sm text-[#00504d] dark:text-[#8ad3cf]">
+                                <span className="font-bold text-sm text-primary">
                                   Cédula Profesional o Título
                                 </span>
                                 <p className="text-xs text-on-surface-variant">
@@ -1635,7 +1631,7 @@ export function Login() {
                                 toast.success(t('auth.accountCreatedOk'));
                               }
                             }}
-                            className="text-xs font-semibold text-[#00504d] dark:text-[#8ad3cf] hover:underline"
+                            className="text-xs font-semibold text-primary hover:underline"
                           >
                             Omitir por ahora →
                           </button>
@@ -1648,7 +1644,7 @@ export function Login() {
                     <motion.div
                       initial={{ opacity: 0, y: -4 }}
                       animate={errorShake ? { x: [-8, 8, -6, 6, 0] } : { y: 0 }}
-                      className="p-3 rounded-xl bg-danger/10 border border-danger/30 text-danger dark:bg-danger/40 dark:border-danger/50 dark:text-danger text-xs font-bold text-center"
+                      className="p-3 rounded-xl bg-danger/10 border border-danger/30 text-danger dark:bg-red-950/40 dark:border-red-500/30 dark:text-red-200 text-xs font-bold text-center"
                     >
                       {error}
                     </motion.div>
@@ -1688,7 +1684,7 @@ export function Login() {
                     <button
                       type="button"
                       onClick={() => switchMode('login')}
-                      className="font-bold text-[#00504d] dark:text-[#8ad3cf] hover:underline"
+                      className="font-bold text-primary hover:underline"
                     >
                       Iniciar Sesión
                     </button>
@@ -1801,7 +1797,7 @@ export function Login() {
                       'text-xs font-bold tracking-wide',
                       isPaciente
                         ? 'text-info dark:text-info'
-                        : 'text-[#00504d] dark:text-[#8ad3cf]'
+                        : 'text-primary'
                     )}
                   >
                     {statusMessage}
@@ -1819,36 +1815,19 @@ export function Login() {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.3 }}
-                className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-slate-900/60 backdrop-blur-md z-30"
+                className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-background/75 backdrop-blur-sm z-30"
               >
-                <Spinner size={44} className="text-teal-400 animate-spin" />
-                <p className="text-white font-bold text-lg tracking-wide">
+                <Spinner size={44} className="text-primary animate-spin" />
+                <p className="text-on-surface font-bold text-lg tracking-wide">
                   Preparando tu espacio...
                 </p>
               </motion.div>
             )}
           </AnimatePresence>
 
-          {/* Error Flash Overlay */}
-          <AnimatePresence>
-            {error && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="absolute inset-0 flex items-center justify-center pointer-events-none z-30"
-              >
-                <div className="rounded-2xl bg-danger/15 backdrop-blur-md px-8 py-4 border border-danger/40 shadow-elevated">
-                  <div className="flex items-center gap-3 text-danger">
-                    <Icon name="error" filled size={24} />
-                    <span className="text-sm font-bold">
-                      Revisa tus credenciales e intenta de nuevo
-                    </span>
-                  </div>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+          {/* Errors are rendered inline next to the field that caused them.
+              No full-card flash: it used to cover the Turnstile widget and
+              show "revisa tus credenciales" even for unrelated failures. */}
         </motion.div>
       </div>
 
@@ -1877,7 +1856,7 @@ export function Login() {
               <div className="w-12 h-12 bg-teal-50 dark:bg-teal-950/60 rounded-full flex items-center justify-center mx-auto mb-3 text-[#00504d] dark:text-teal-400">
                 <Icon name="lock_reset" filled size={24} />
               </div>
-              <h3 className="font-extrabold text-xl text-center text-[#00504d] dark:text-[#8ad3cf] mb-1">
+              <h3 className="font-extrabold text-xl text-center text-primary mb-1">
                 Recuperar Contraseña
               </h3>
               <p className="text-xs text-on-surface-variant text-center mb-5 leading-relaxed">
@@ -1957,7 +1936,7 @@ export function Login() {
               <div className="w-16 h-16 bg-teal-50 dark:bg-teal-950/60 rounded-full flex items-center justify-center mx-auto text-[#00504d] dark:text-teal-400 shadow-inner">
                 <Icon name="check_circle" filled size={38} />
               </div>
-              <h3 className="font-extrabold text-2xl text-[#00504d] dark:text-[#8ad3cf]">
+              <h3 className="font-extrabold text-2xl text-primary">
                 ¡Cuenta Creada con Éxito!
               </h3>
               <p className="text-sm text-on-surface-variant leading-relaxed">

@@ -21,6 +21,7 @@ import {
 import { ErgonomicHandModeSwitcher } from '../components/ui/NavigationDocksSuite';
 
 export function ProfilePage() {
+  const { t } = useTranslation();
   const user = useAuthStore((s) => s.user);
   const { theme, toggleTheme } = useTheme();
   const toast = useToast();
@@ -359,10 +360,10 @@ export function ProfilePage() {
           <div className="w-full mt-4 space-y-3">
             <RecoveryRankBadge rank={isFisio ? t('pf.rankClinicExpert') : t('pf.rankSteady')} className="w-full justify-center" />
             <RehabHeroAvatarCard
-              name={user?.full_name?.split(' ')[0] || t('st.user')}
-              roleTitle={isFisio ? t('pf.kinesiologist') : t('pf.patientInRehab')}
+              patientName={user?.full_name || t('st.user')}
+              rankTitle={isFisio ? t('pf.kinesiologist') : t('pf.patientInRehab')}
               level={isFisio ? 12 : 4}
-              powerScore={88}
+              adherence={88}
             />
           </div>
         </motion.div>

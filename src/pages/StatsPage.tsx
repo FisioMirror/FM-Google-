@@ -289,7 +289,7 @@ export function StatsPage() {
           .select('fecha, ejercicio_nombre, duracion_segundos, repeticiones, calidad_ejecucion')
           .eq('paciente_id', user.id)
           .order('fecha', { ascending: false });
-        const s = (allSessions && allSessions.length > 0 ? allSessions : PRIMARY_DEMO_PATIENT.sessions) as unknown as SessionRow[];
+        const s = (allSessions || []) as unknown as SessionRow[];
         setSessions(s);
         setTotalSessions(s.length);
         setTotalMinutes(Math.round(s.reduce((sum, r) => sum + (r.duracion_segundos || 0), 0) / 60));
@@ -298,12 +298,17 @@ export function StatsPage() {
         loadWeekChart(s);
       }
     } catch {
-      if (isFisio) {
+      if (isFisio && isDemo) {
         setPatients(demoPw);
         setTotalPatients(demoPw.length);
         setActivePatients(demoPw.filter(p => p.sessionCount > 0).length);
         applyFisioFilter(demoAllSessions, demoPw, '');
-      } else {
+      } else if (isFisio) {
+        setPatients([]);
+        setTotalPatients(0);
+        setActivePatients(0);
+        applyFisioFilter([], [], '');
+      } else if (isDemo) {
         const s = PRIMARY_DEMO_PATIENT.sessions as unknown as SessionRow[];
         setSessions(s);
         setTotalSessions(s.length);
@@ -311,6 +316,14 @@ export function StatsPage() {
         setAvgPrecision(s.length > 0 ? Math.round(s.reduce((sum, r) => sum + (r.calidad_ejecucion || 0), 0) / s.length) : 0);
         setStreak(computeStreak(s.map(x => x.fecha)));
         loadWeekChart(s);
+      } else {
+        setSessions([]);
+        setTotalSessions(0);
+        setTotalMinutes(0);
+        setAvgPrecision(0);
+        setStreak(0);
+        loadWeekChart([]);
+        loadDailyChart([]);
       }
     } finally {
       setLoading(false);
