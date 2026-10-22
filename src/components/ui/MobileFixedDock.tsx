@@ -51,17 +51,17 @@ export function MobileFixedDock({
   const fisioTabs: MobileDockTab[] = [
     { id: 'home', label: t('navigation.dashboard'), path: '/dashboard-fisio', icon: Home },
     { id: 'patients', label: t('navigation.patients'), path: '/patients', icon: Users },
-    { id: 'exercises', label: t('navigation.exercises'), path: '/exercises', icon: Dumbbell },
-    { id: 'reports', label: t('navigation.stats'), path: '/stats', icon: BarChart3 },
+    { id: 'exercises', label: t('navigation.exercises'), path: '/fisio-exercises', icon: Dumbbell },
+    { id: 'reports', label: t('navigation.stats'), path: '/fisio-stats', icon: BarChart3 },
     { id: 'ai', label: 'Physi IA', path: '/ai-assistant', icon: Sparkles },
   ];
 
   const patientTabs: MobileDockTab[] = [
-    { id: 'home', label: t('navigation.dashboard'), path: '/patient-dashboard', icon: Home },
-    { id: 'exercises', label: t('mfd.routine'), path: '/patient-exercises', icon: Dumbbell },
+    { id: 'home', label: t('navigation.dashboard'), path: '/dashboard-paciente', icon: Home },
+    { id: 'exercises', label: t('mfd.routine'), path: '/exercises', icon: Dumbbell },
     { id: 'progress', label: t('patients.progress'), path: '/stats', icon: BarChart3 },
     { id: 'ai', label: t('mfd.assistant'), path: '/ai-assistant', icon: Sparkles },
-    { id: 'profile', label: t('profile.title'), path: '/paciente-perfil', icon: User },
+    { id: 'profile', label: t('profile.title'), path: '/profile', icon: User },
   ];
 
   const tabs = role === 'paciente' ? patientTabs : fisioTabs;
@@ -79,7 +79,7 @@ export function MobileFixedDock({
   };
 
   const isCurrentActive = (path: string) => {
-    if (path === '/dashboard-fisio' || path === '/patient-dashboard') {
+    if (path === '/dashboard-fisio' || path === '/dashboard-paciente') {
       return location.pathname === path;
     }
     return location.pathname.startsWith(path);

@@ -19,14 +19,14 @@ function buildFAQDatabase(t: (k: string) => string): FAQItem[] {
     question: t('hs.faqArSessionQ'),
     answer: t('hs.faqArSessionA'),
     category: 'ar',
-    routes: ['/paciente', '/paciente/ejercicios', '/ar-mirror'],
+    routes: ['/dashboard-paciente', '/exercises', '/ar-mirror'],
   },
   {
     id: 'faq-2',
     question: t('hs.faqAssignRoutineQ'),
     answer: t('hs.faqAssignRoutineA'),
     category: 'fisio',
-    routes: ['/dashboard', '/pacientes', '/ejercicios'],
+    routes: ['/dashboard-fisio', '/patients', '/fisio-exercises'],
   },
   {
     id: 'faq-3',
@@ -45,14 +45,14 @@ function buildFAQDatabase(t: (k: string) => string): FAQItem[] {
     question: t('hs.faqContactDirectQ'),
     answer: t('hs.faqContactDirectA'),
     category: 'patient',
-    routes: ['/paciente', '/paciente/perfil'],
+    routes: ['/dashboard-paciente', '/profile'],
   },
   {
     id: 'faq-6',
     question: t('hs.faqMediapipeQ'),
     answer: t('hs.faqMediapipeA'),
     category: 'ar',
-    routes: ['/configuracion', '/ar-mirror'],
+    routes: ['/settings', '/fisio-settings', '/ar-mirror'],
   },
   ];
 }

@@ -171,7 +171,7 @@ function AppRoutes() {
       <Route path="/fisio-settings" element={<ProtectedRoute role="fisioterapeuta"><FisioLayout><Suspense fallback={<PageLoader />}><SettingsPage /></Suspense></FisioLayout></ProtectedRoute>} />
       <Route path="/catalogo" element={<ProtectedRoute role="fisioterapeuta"><FisioLayout><Suspense fallback={<PageLoader />}><CatalogPage /></Suspense></FisioLayout></ProtectedRoute>} />
       <Route path="/ui-catalog" element={<ProtectedRoute role="fisioterapeuta"><FisioLayout><Suspense fallback={<PageLoader />}><CatalogPage /></Suspense></FisioLayout></ProtectedRoute>} />
-      <Route path="/ar-mirror" element={<ProtectedRoute role="paciente"><PatientLayout><Suspense fallback={<PageLoader />}><ARMirrorPage /></Suspense></PatientLayout></ProtectedRoute>} />
+      <Route path="/ar-mirror" element={<ProtectedRoute role={['paciente', 'fisioterapeuta']}><ARMirrorRoute /></ProtectedRoute>} />
 
       {/* Paciente routes */}
       <Route path="/dashboard-paciente" element={<ProtectedRoute role="paciente"><PatientLayout><Suspense fallback={<PageLoader />}><PatientDashboard /></Suspense></PatientLayout></ProtectedRoute>} />
@@ -205,6 +205,18 @@ function AIAssistantRoute() {
   const page = (
     <Suspense fallback={<PageLoader />}>
       <AIAssistantPage />
+    </Suspense>
+  );
+
+  return isFisio ? <FisioLayout>{page}</FisioLayout> : <PatientLayout>{page}</PatientLayout>;
+}
+
+function ARMirrorRoute() {
+  const user = useAuthStore((s) => s.user);
+  const isFisio = user?.role === 'fisioterapeuta';
+  const page = (
+    <Suspense fallback={<PageLoader />}>
+      <ARMirrorPage />
     </Suspense>
   );
 

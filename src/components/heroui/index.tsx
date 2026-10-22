@@ -305,7 +305,7 @@ export const CustomBreadcrumbs = ({
   const { t } = useTranslation();
   const crumbs = items ?? [
     { label: t('navigation.dashboard'), href: '/' },
-    { label: t('navigation.patients'), href: '/pacientes' },
+    { label: t('navigation.patients'), href: '/patients' },
     { label: 'María Rodríguez' },
   ];
   return (
