@@ -483,7 +483,7 @@ export function PatientLayout({ children }: PatientLayoutProps) {
       {/* Main content area with sticky header */}
       <main className="flex-1 flex flex-col overflow-hidden lg:ml-[var(--patient-sidebar-w)]" data-scroll-root>
         {/* Sticky header — mobile (hamburger + title + actions) and desktop (breadcrumb + actions) */}
-        <header className="glass-panel sticky top-0 z-30 flex items-center justify-between px-3 sm:px-6 h-16 border-b divider-teal shrink-0 gap-2">
+        <header className="glass-panel sticky top-0 z-30 flex items-center justify-between px-3 sm:px-6 h-[calc(4rem+env(safe-area-inset-top,0px))] pt-[env(safe-area-inset-top,0px)] border-b divider-teal shrink-0 gap-2">
           {/* Left: hamburger (mobile) + breadcrumb (desktop) */}
           <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
             <button

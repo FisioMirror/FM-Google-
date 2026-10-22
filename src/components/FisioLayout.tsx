@@ -583,7 +583,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
 
       {/* Main content */}
       <main className="flex-1 flex flex-col h-full overflow-y-auto lg:ml-[var(--fisio-sidebar-w)]" data-scroll-root>
-        <header className="h-16 glass-panel sticky top-0 z-30 flex items-center justify-between px-3 sm:px-6 gap-2">
+        <header className="h-[calc(4rem+env(safe-area-inset-top,0px))] pt-[env(safe-area-inset-top,0px)] glass-panel sticky top-0 z-30 flex items-center justify-between px-3 sm:px-6 gap-2">
           <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
             <button
               onClick={() => setSidebarOpen(true)}
