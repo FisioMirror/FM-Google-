@@ -43,43 +43,47 @@ Deno.serve(async (req: Request) => {
       cleanText = cleanText.substring(0, 397) + "...";
     }
 
-    // 1. Fish Audio API
-    const fishKey = Deno.env.get("FISH_AUDIO_API_KEY") || Deno.env.get("OPENROUTER_API_KEY");
-    if (fishKey) {
+    // 1. OpenRouter (Fish Speech via gateway)
+    const openRouterKey = Deno.env.get("OPENROUTER_API_KEY");
+    if (openRouterKey) {
       try {
-        const fishRes = await fetch("https://api.fish.audio/v1/tts", {
+        const orRes = await fetch("https://openrouter.ai/api/v1/audio/speech", {
           method: "POST",
           headers: {
-            Authorization: `Bearer ${fishKey}`,
+            Authorization: `Bearer ${openRouterKey}`,
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            text: cleanText,
-            format: "mp3",
+            model: "fish-audio/fish-speech-1.5",
+            input: cleanText,
+            voice: "es-female-1",
+            response_format: "mp3",
           }),
         });
 
-        if (fishRes.ok) {
-          const ab = await fishRes.arrayBuffer();
+        if (orRes.ok) {
+          const ab = await orRes.arrayBuffer();
           if (ab.byteLength > 100) {
             const b64 = btoa(String.fromCharCode(...new Uint8Array(ab)));
             return new Response(
               JSON.stringify({
                 success: true,
-                provider: "Fish Audio S2.1 Pro",
+                provider: "OpenRouter Fish Speech 1.5",
                 mimeType: "audio/mp3",
                 audioBase64: `data:audio/mp3;base64,${b64}`,
               }),
               { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
             );
           }
+        } else {
+          console.warn("OpenRouter error:", orRes.status, await orRes.text());
         }
       } catch (e) {
-        console.warn("Fish Audio edge error:", e);
+        console.warn("OpenRouter edge error:", e);
       }
     }
 
-    // 2. Neural Audio Stream
+    // 2. Neural Audio Stream (Google TTS)
     try {
       const ttsUrl = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(cleanText)}&tl=${encodeURIComponent(lang)}&client=tw-ob`;
       const res = await fetch(ttsUrl, {

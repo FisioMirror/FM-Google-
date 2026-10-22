@@ -231,7 +231,7 @@ BEGIN
       v_effective_actor_id := auth.uid();
     EXCEPTION WHEN OTHERS THEN
       v_effective_actor_id := NULL;
-    END IF;
+    END;
   END IF;
 
   -- Validar severidad permitida
