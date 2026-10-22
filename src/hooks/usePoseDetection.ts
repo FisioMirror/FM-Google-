@@ -145,6 +145,7 @@ export function usePoseDetection(options: UsePoseDetectionOptions = {}): UsePose
   const [retryKey, setRetryKey] = useState(0);
 
   const repPhaseRef = useRef<'up' | 'down'>('down');
+  const lastRepTsRef = useRef<number>(0);
   const targetAngleRef = useRef<number>(90);
   const repJointRef = useRef<RepJoint>(options.repJoint ?? inferRepJoint(options.exerciseName));
   repJointRef.current = options.repJoint ?? inferRepJoint(options.exerciseName);
@@ -152,6 +153,7 @@ export function usePoseDetection(options: UsePoseDetectionOptions = {}): UsePose
   const resetReps = useCallback(() => {
     setRepCount(0);
     repPhaseRef.current = 'down';
+    lastRepTsRef.current = 0;
   }, []);
 
   const toggleFacingMode = useCallback(() => {
@@ -480,15 +482,22 @@ export function usePoseDetection(options: UsePoseDetectionOptions = {}): UsePose
               }
               lastLandmarksRef.current = landmarks;
 
+              // Ángulo sólo si los tres puntos son visibles: evita valores
+              // basura (0,0) cuando la persona sale del encuadre.
+              const angleOf = (a: number, b: number, c: number): number | null => {
+                const la = landmarks[a];
+                const lb = landmarks[b];
+                const lc = landmarks[c];
+                if (!la || !lb || !lc) return null;
+                if ((la.visibility ?? 0) < 0.5 || (lb.visibility ?? 0) < 0.5 || (lc.visibility ?? 0) < 0.5) {
+                  return null;
+                }
+                return calculateAngle(la, lb, lc);
+              };
+
               // Joint angles for AR HUD
-              const leftArmAngle =
-                landmarks[LM.LEFT_SHOULDER] && landmarks[LM.LEFT_ELBOW] && landmarks[LM.LEFT_WRIST]
-                  ? calculateAngle(landmarks[LM.LEFT_SHOULDER], landmarks[LM.LEFT_ELBOW], landmarks[LM.LEFT_WRIST])
-                  : 0;
-              const rightArmAngle =
-                landmarks[LM.RIGHT_SHOULDER] && landmarks[LM.RIGHT_ELBOW] && landmarks[LM.RIGHT_WRIST]
-                  ? calculateAngle(landmarks[LM.RIGHT_SHOULDER], landmarks[LM.RIGHT_ELBOW], landmarks[LM.RIGHT_WRIST])
-                  : 0;
+              const leftArmAngle = angleOf(LM.LEFT_SHOULDER, LM.LEFT_ELBOW, LM.LEFT_WRIST);
+              const rightArmAngle = angleOf(LM.RIGHT_SHOULDER, LM.RIGHT_ELBOW, LM.RIGHT_WRIST);
 
               const visibleCount = landmarks.filter((lm) => lm.visibility > 0.5).length;
               const postureScore = Math.round((visibleCount / 33) * 100);
@@ -496,54 +505,51 @@ export function usePoseDetection(options: UsePoseDetectionOptions = {}): UsePose
 
               drawOverlay(ctx, landmarks, postureColor, canvas.width, canvas.height);
 
-              // Rep counting driven by the joint that matches the exercise.
-              const leftKneeAngle =
-                landmarks[LM.LEFT_HIP] && landmarks[LM.LEFT_KNEE] && landmarks[LM.LEFT_ANKLE]
-                  ? calculateAngle(landmarks[LM.LEFT_HIP], landmarks[LM.LEFT_KNEE], landmarks[LM.LEFT_ANKLE])
-                  : 0;
-              const rightKneeAngle =
-                landmarks[LM.RIGHT_HIP] && landmarks[LM.RIGHT_KNEE] && landmarks[LM.RIGHT_ANKLE]
-                  ? calculateAngle(landmarks[LM.RIGHT_HIP], landmarks[LM.RIGHT_KNEE], landmarks[LM.RIGHT_ANKLE])
-                  : 0;
-              const leftShoulderAngle =
-                landmarks[LM.LEFT_HIP] && landmarks[LM.LEFT_SHOULDER] && landmarks[LM.LEFT_ELBOW]
-                  ? calculateAngle(landmarks[LM.LEFT_HIP], landmarks[LM.LEFT_SHOULDER], landmarks[LM.LEFT_ELBOW])
-                  : 0;
-              const rightShoulderAngle =
-                landmarks[LM.RIGHT_HIP] && landmarks[LM.RIGHT_SHOULDER] && landmarks[LM.RIGHT_ELBOW]
-                  ? calculateAngle(landmarks[LM.RIGHT_HIP], landmarks[LM.RIGHT_SHOULDER], landmarks[LM.RIGHT_ELBOW])
-                  : 0;
-              const leftHipAngle =
-                landmarks[LM.LEFT_SHOULDER] && landmarks[LM.LEFT_HIP] && landmarks[LM.LEFT_KNEE]
-                  ? calculateAngle(landmarks[LM.LEFT_SHOULDER], landmarks[LM.LEFT_HIP], landmarks[LM.LEFT_KNEE])
-                  : 0;
-              const rightHipAngle =
-                landmarks[LM.RIGHT_SHOULDER] && landmarks[LM.RIGHT_HIP] && landmarks[LM.RIGHT_KNEE]
-                  ? calculateAngle(landmarks[LM.RIGHT_SHOULDER], landmarks[LM.RIGHT_HIP], landmarks[LM.RIGHT_KNEE])
-                  : 0;
+              // Conteo de repeticiones con visibilidad validada + histéresis.
+              // Sin cooldown, un frame ruidoso cuenta una repetición fantasma.
+              const leftKneeAngle = angleOf(LM.LEFT_HIP, LM.LEFT_KNEE, LM.LEFT_ANKLE);
+              const rightKneeAngle = angleOf(LM.RIGHT_HIP, LM.RIGHT_KNEE, LM.RIGHT_ANKLE);
+              const leftShoulderAngle = angleOf(LM.LEFT_HIP, LM.LEFT_SHOULDER, LM.LEFT_ELBOW);
+              const rightShoulderAngle = angleOf(LM.RIGHT_HIP, LM.RIGHT_SHOULDER, LM.RIGHT_ELBOW);
+              const leftHipAngle = angleOf(LM.LEFT_SHOULDER, LM.LEFT_HIP, LM.LEFT_KNEE);
+              const rightHipAngle = angleOf(LM.RIGHT_SHOULDER, LM.RIGHT_HIP, LM.RIGHT_KNEE);
+
               const repJoint = repJointRef.current;
-              const currentAngle =
+              const candidates =
                 repJoint === 'knee'
-                  ? Math.max(leftKneeAngle, rightKneeAngle)
+                  ? [leftKneeAngle, rightKneeAngle]
                   : repJoint === 'shoulder'
-                    ? Math.max(leftShoulderAngle, rightShoulderAngle)
+                    ? [leftShoulderAngle, rightShoulderAngle]
                     : repJoint === 'hip'
-                      ? Math.max(leftHipAngle, rightHipAngle)
-                      : Math.max(leftArmAngle, rightArmAngle);
-              const downThreshold = repJoint === 'knee' ? 100 : repJoint === 'shoulder' ? 70 : repJoint === 'hip' ? 110 : 60;
-              if (currentAngle > 155 && repPhaseRef.current === 'down') {
-                repPhaseRef.current = 'up';
-              } else if (currentAngle < downThreshold && repPhaseRef.current === 'up') {
-                repPhaseRef.current = 'down';
-                setRepCount((r) => r + 1);
+                      ? [leftHipAngle, rightHipAngle]
+                      : [leftArmAngle, rightArmAngle];
+              const validAngles = candidates.filter((v): v is number => typeof v === 'number');
+              const currentAngle = validAngles.length ? Math.max(...validAngles) : null;
+
+              if (currentAngle !== null) {
+                const now = performance.now();
+                const downThreshold =
+                  repJoint === 'knee' ? 100 : repJoint === 'shoulder' ? 70 : repJoint === 'hip' ? 110 : 60;
+
+                if (currentAngle > 155 && repPhaseRef.current === 'down') {
+                  repPhaseRef.current = 'up';
+                } else if (
+                  currentAngle < downThreshold &&
+                  repPhaseRef.current === 'up' &&
+                  now - lastRepTsRef.current > 500
+                ) {
+                  repPhaseRef.current = 'down';
+                  lastRepTsRef.current = now;
+                  setRepCount((r) => r + 1);
+                }
               }
 
               setPoseData({
                 landmarks,
-                leftArmAngle,
-                rightArmAngle,
-                leftElbowAngle: leftArmAngle,
-                rightElbowAngle: rightArmAngle,
+                leftArmAngle: leftArmAngle ?? 0,
+                rightArmAngle: rightArmAngle ?? 0,
+                leftElbowAngle: leftArmAngle ?? 0,
+                rightElbowAngle: rightArmAngle ?? 0,
                 postureScore,
                 isTracking: true,
               });
