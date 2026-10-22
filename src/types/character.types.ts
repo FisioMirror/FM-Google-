@@ -76,6 +76,8 @@ export interface ExerciseDefinition {
   reps: number;
   holdDurationSec: number;
   position?: ExercisePosition;
+  /** Articulación principal del ejercicio (para derivar el preset 3D). */
+  articulacion?: string;
 }
 
 export interface JointAngle {

@@ -126,6 +126,7 @@ export const SkeletonDemo: React.FC<SkeletonDemoProps> = ({ exercise, userRole =
             jointAxes={jointAxes}
             position={exercise.position ?? 'pie'}
             exerciseName={exercise.name}
+            articulacion={exercise.articulacion}
             statusColor={overallStatusColor}
             className="w-full h-full min-h-0"
           />
@@ -136,6 +137,7 @@ export const SkeletonDemo: React.FC<SkeletonDemoProps> = ({ exercise, userRole =
             jointAxes={jointAxes}
             position={exercise.position ?? 'pie'}
             exerciseName={exercise.name}
+            articulacion={exercise.articulacion}
             statusColor={overallStatusColor}
             className="w-full h-full min-h-0"
           />

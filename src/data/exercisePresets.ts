@@ -369,6 +369,7 @@ export function buildExerciseDefinition(
   const targetJoints = ensureAxis(filterByLado(preset.targetJoints, lado));
 
   return {
+    articulacion,
     id,
     name,
     description: detailedDescription || preset.description,
