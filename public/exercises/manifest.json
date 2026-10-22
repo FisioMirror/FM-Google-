@@ -1,0 +1,70 @@
+{
+  "generatedAt": "2026-10-22T20:35:56.317Z",
+  "style": "clean clinical physiotherapy illustration, single full-body figure, correct anatomical alignment, flat vector style with soft shading, teal, mint and warm off-white palette, plain light neutral background, soft studio light, centered composition, generous margins, no text, no letters, no watermark, no logo, no UI",
+  "items": {
+    "abduccion-de-hombro": {
+      "name": "Abducción de Hombro",
+      "file": "exercises/abduccion-de-hombro.jpg",
+      "prompt": "clean clinical physiotherapy illustration, single full-body figure, correct anatomical alignment, flat vector style with soft shading, teal, mint and warm off-white palette, plain light neutral background, soft studio light, centered composition, generous margins, no text, no letters, no watermark, no logo, no UI, showing the exercise \"Abducción de Hombro\", front view, three-quarter angle",
+      "cached": true
+    },
+    "circunduccion-de-hombro": {
+      "name": "Circunducción de Hombro",
+      "file": "exercises/circunduccion-de-hombro.jpg",
+      "prompt": "clean clinical physiotherapy illustration, single full-body figure, correct anatomical alignment, flat vector style with soft shading, teal, mint and warm off-white palette, plain light neutral background, soft studio light, centered composition, generous margins, no text, no letters, no watermark, no logo, no UI, showing the exercise \"Circunducción de Hombro\", front view, three-quarter angle"
+    },
+    "equilibrio-sobre-una-pierna": {
+      "name": "Equilibrio sobre una Pierna",
+      "file": "exercises/equilibrio-sobre-una-pierna.jpg",
+      "prompt": "clean clinical physiotherapy illustration, single full-body figure, correct anatomical alignment, flat vector style with soft shading, teal, mint and warm off-white palette, plain light neutral background, soft studio light, centered composition, generous margins, no text, no letters, no watermark, no logo, no UI, showing the exercise \"Equilibrio sobre una Pierna\", full body standing, three-quarter angle"
+    },
+    "estiramiento-de-trapecio": {
+      "name": "Estiramiento de Trapecio",
+      "file": "exercises/estiramiento-de-trapecio.jpg",
+      "prompt": "clean clinical physiotherapy illustration, single full-body figure, correct anatomical alignment, flat vector style with soft shading, teal, mint and warm off-white palette, plain light neutral background, soft studio light, centered composition, generous margins, no text, no letters, no watermark, no logo, no UI, showing the exercise \"Estiramiento de Trapecio\", upper body, three-quarter angle",
+      "cached": true
+    },
+    "extension-de-rodilla": {
+      "name": "Extensión de Rodilla",
+      "file": "exercises/extension-de-rodilla.jpg",
+      "prompt": "clean clinical physiotherapy illustration, single full-body figure, correct anatomical alignment, flat vector style with soft shading, teal, mint and warm off-white palette, plain light neutral background, soft studio light, centered composition, generous margins, no text, no letters, no watermark, no logo, no UI, showing the exercise \"Extensión de Rodilla\", side view of the leg, three-quarter angle",
+      "cached": true
+    },
+    "flexion-de-codo": {
+      "name": "Flexión de Codo",
+      "file": "exercises/flexion-de-codo.jpg",
+      "prompt": "clean clinical physiotherapy illustration, single full-body figure, correct anatomical alignment, flat vector style with soft shading, teal, mint and warm off-white palette, plain light neutral background, soft studio light, centered composition, generous margins, no text, no letters, no watermark, no logo, no UI, showing the exercise \"Flexión de Codo\", side view of the arm, three-quarter angle"
+    },
+    "flexion-de-hombro": {
+      "name": "Flexión de Hombro",
+      "file": "exercises/flexion-de-hombro.jpg",
+      "prompt": "clean clinical physiotherapy illustration, single full-body figure, correct anatomical alignment, flat vector style with soft shading, teal, mint and warm off-white palette, plain light neutral background, soft studio light, centered composition, generous margins, no text, no letters, no watermark, no logo, no UI, showing the exercise \"Flexión de Hombro\", front view, three-quarter angle"
+    },
+    "flexion-de-rodilla-en-pie": {
+      "name": "Flexión de Rodilla en Pie",
+      "file": "exercises/flexion-de-rodilla-en-pie.jpg",
+      "prompt": "clean clinical physiotherapy illustration, single full-body figure, correct anatomical alignment, flat vector style with soft shading, teal, mint and warm off-white palette, plain light neutral background, soft studio light, centered composition, generous margins, no text, no letters, no watermark, no logo, no UI, showing the exercise \"Flexión de Rodilla en Pie\", side view of the arm, three-quarter angle"
+    },
+    "movilidad-cervical": {
+      "name": "Movilidad Cervical",
+      "file": "exercises/movilidad-cervical.jpg",
+      "prompt": "clean clinical physiotherapy illustration, single full-body figure, correct anatomical alignment, flat vector style with soft shading, teal, mint and warm off-white palette, plain light neutral background, soft studio light, centered composition, generous margins, no text, no letters, no watermark, no logo, no UI, showing the exercise \"Movilidad Cervical\", upper body, three-quarter angle"
+    },
+    "puente-de-gluteos": {
+      "name": "Puente de Glúteos",
+      "file": "exercises/puente-de-gluteos.jpg",
+      "prompt": "clean clinical physiotherapy illustration, single full-body figure, correct anatomical alignment, flat vector style with soft shading, teal, mint and warm off-white palette, plain light neutral background, soft studio light, centered composition, generous margins, no text, no letters, no watermark, no logo, no UI, showing the exercise \"Puente de Glúteos\", side view, three-quarter angle"
+    },
+    "rotacion-externa-de-hombro": {
+      "name": "Rotación Externa de Hombro",
+      "file": "exercises/rotacion-externa-de-hombro.jpg",
+      "prompt": "clean clinical physiotherapy illustration, single full-body figure, correct anatomical alignment, flat vector style with soft shading, teal, mint and warm off-white palette, plain light neutral background, soft studio light, centered composition, generous margins, no text, no letters, no watermark, no logo, no UI, showing the exercise \"Rotación Externa de Hombro\", front view, three-quarter angle"
+    },
+    "sentadilla-parcial": {
+      "name": "Sentadilla Parcial",
+      "file": "exercises/sentadilla-parcial.jpg",
+      "prompt": "clean clinical physiotherapy illustration, single full-body figure, correct anatomical alignment, flat vector style with soft shading, teal, mint and warm off-white palette, plain light neutral background, soft studio light, centered composition, generous margins, no text, no letters, no watermark, no logo, no UI, showing the exercise \"Sentadilla Parcial\", side view, three-quarter angle",
+      "cached": true
+    }
+  }
+}
