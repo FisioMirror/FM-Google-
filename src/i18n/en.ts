@@ -1383,6 +1383,8 @@ export const en: typeof es = {
     glassmorphism: 'Glassmorphism',
     glassDesc: 'Frosted glass effects on surfaces',
     resetDefaults: 'Reset defaults (100% / 16px)',
+    resetTypography: 'Reset typography',
+    resetZoom: 'Reset zoom',
     uiZoom: 'UI Zoom',
     uiZoomDesc: 'Scale the entire interface up or down',
     voiceHumaTitle: 'Humanized Voice On',

@@ -81,70 +81,27 @@ function CharacterSpotlight({
 
   return (
     <div className="absolute inset-0 pointer-events-none z-10 overflow-hidden select-none">
-      {/* ── LUMINOUS CHARACTER AURA (mix-blend-mode: screen preserves 100% natural colors, adding only pure light) ── */}
-      {/* Fisioterapeuta Spotlight (Left Side) */}
-      <motion.div
-        className="absolute top-0 left-0 w-1/2 h-full pointer-events-none"
-        animate={{
-          opacity: isFisio ? (phase === 'pulse' ? 1 : 0.88) : 0.05,
-          scale: isFisio ? 1 : 0.96,
+      {/* ── AURA ESTÁTICA POR ROL ──
+          Antes eran dos motion.div con mix-blend-mode:screen + blur(30px)/blur(20px)
+          animados: eso repintaba dos capas grandes en cada frame y competía con el
+          captcha. Ahora es un gradiente radial sin blur ni blend, con transición CSS
+          de opacidad: mismo efecto visual, coste de render casi nulo. */}
+      <div
+        className="absolute top-0 left-0 w-1/2 h-full pointer-events-none transition-opacity duration-500"
+        style={{
+          opacity: isFisio ? (phase === 'error' ? 0.3 : 1) : 0.05,
+          background:
+            'radial-gradient(ellipse 60% 70% at 38% 46%, rgba(16, 185, 129, 0.34) 0%, rgba(13, 148, 136, 0.16) 35%, rgba(16, 185, 129, 0.05) 55%, transparent 75%)',
         }}
-        transition={{ duration: 0.6, ease: 'easeOut' }}
-        style={{ mixBlendMode: 'screen' }}
-      >
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              'radial-gradient(ellipse 60% 70% at 38% 46%, rgba(16, 185, 129, 0.42) 0%, rgba(13, 148, 136, 0.20) 35%, rgba(16, 185, 129, 0.06) 55%, transparent 75%)',
-            filter: 'blur(30px)',
-          }}
-        />
-        <div
-          className="absolute"
-          style={{
-            left: '24%',
-            top: '30%',
-            width: '42%',
-            height: '42%',
-            borderRadius: '9999px',
-            background: 'radial-gradient(circle, rgba(52, 211, 153, 0.30) 0%, transparent 70%)',
-            filter: 'blur(20px)',
-          }}
-        />
-      </motion.div>
-
-      {/* Paciente Spotlight (Right Side) */}
-      <motion.div
-        className="absolute top-0 right-0 w-1/2 h-full pointer-events-none"
-        animate={{
-          opacity: isPaciente ? (phase === 'pulse' ? 1 : 0.88) : 0.05,
-          scale: isPaciente ? 1 : 0.96,
+      />
+      <div
+        className="absolute top-0 right-0 w-1/2 h-full pointer-events-none transition-opacity duration-500"
+        style={{
+          opacity: isPaciente ? (phase === 'error' ? 0.3 : 1) : 0.05,
+          background:
+            'radial-gradient(ellipse 60% 70% at 62% 48%, rgba(14, 165, 233, 0.34) 0%, rgba(2, 132, 199, 0.16) 35%, rgba(14, 165, 233, 0.05) 55%, transparent 75%)',
         }}
-        transition={{ duration: 0.6, ease: 'easeOut' }}
-        style={{ mixBlendMode: 'screen' }}
-      >
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              'radial-gradient(ellipse 60% 70% at 62% 48%, rgba(14, 165, 233, 0.42) 0%, rgba(2, 132, 199, 0.20) 35%, rgba(14, 165, 233, 0.06) 55%, transparent 75%)',
-            filter: 'blur(30px)',
-          }}
-        />
-        <div
-          className="absolute"
-          style={{
-            right: '24%',
-            top: '32%',
-            width: '42%',
-            height: '42%',
-            borderRadius: '9999px',
-            background: 'radial-gradient(circle, rgba(56, 189, 248, 0.30) 0%, transparent 70%)',
-            filter: 'blur(20px)',
-          }}
-        />
-      </motion.div>
+      />
 
       {/* ── INTERACTIVE CHARACTER HOTSPOTS & HUD BEACONS ── */}
       {/* Left Character: Fisioterapeuta */}

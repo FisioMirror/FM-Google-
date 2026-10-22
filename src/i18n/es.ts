@@ -1387,6 +1387,8 @@ export const es = {
     glassmorphism: 'Glassmorfismo',
     glassDesc: 'Efectos de vidrio esmerilado en las superficies',
     resetDefaults: 'Restablecer predeterminados (100% / 16px)',
+    resetTypography: 'Restablecer tipografía',
+    resetZoom: 'Restablecer zoom',
     uiZoom: 'Zoom de Interfaz',
     uiZoomDesc: 'Amplía o reduce el tamaño de toda la interfaz',
     voiceHumaTitle: 'Voz Humanizada Activada',

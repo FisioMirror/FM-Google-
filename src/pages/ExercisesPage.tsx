@@ -48,7 +48,7 @@ import { celebrateAchievement } from '../lib/confetti';
 import { GlassModal } from '../components/ui/GlassModal';
 import { SpotlightCard } from '../components/ui/SpotlightCard';
 import { ExerciseImage } from '../components/ui/ExerciseImage';
-import { getExerciseImage } from '../data/exerciseImages';
+import { getExerciseImage, EXERCISE_IMAGE_CATALOG, normalizeExerciseName } from '../data/exerciseImages';
 import { SkeletonDemo } from '../components/rehabilitation/SkeletonDemo';
 import { buildExerciseDefinition, getExerciseDescription } from '../data/exercisePresets';
 import { UNIFIED_DEMO_PATIENTS } from '../data/unifiedDemoData';
@@ -339,6 +339,30 @@ export function ExercisesPage() {
             if (!merged.some((m) => m.nombre.toLowerCase() === def.nombre.toLowerCase())) {
               merged.push(def);
             }
+          }
+          // Sembrar los 18 ejercicios que tienen imagen local: el catálogo de Supabase usa
+          // UUIDs y los DEFAULT usan `ex-N`, así que sin esto las fotos nunca aparecen.
+          const seen = new Set(merged.map((m) => normalizeExerciseName(m.nombre || '')));
+          for (const entry of EXERCISE_IMAGE_CATALOG) {
+            const key = normalizeExerciseName(entry.nombre);
+            if (seen.has(key)) continue;
+            seen.add(key);
+            merged.push({
+              id: `img-${entry.slug}`,
+              nombre: entry.nombre,
+              descripcion: null,
+              detailed_description: null,
+              articulacion: entry.articulacion,
+              grupo_muscular: entry.grupo_muscular,
+              series: entry.series,
+              repeticiones: entry.repeticiones,
+              duracion_segundos: 60,
+              angulo_objetivo: entry.angulo_objetivo,
+              fase_recuperacion: 'intermedia',
+              lado: 'bilateral',
+              categoria: entry.categoria,
+              complejidad: 'media',
+            } as Exercise);
           }
           setExercises(merged);
         } else {
@@ -892,7 +916,7 @@ export function ExercisesPage() {
                   {/* Image container */}
                   <div className="relative rounded-2xl overflow-hidden mb-3.5 bg-slate-100 dark:bg-slate-800">
                     <ExerciseImage
-                      src={getExerciseImage(ex.id)}
+                      src={getExerciseImage(ex.id, ex.nombre)}
                       name={ex.nombre}
                       articulacion={ex.articulacion}
                       categoria={ex.categoria}

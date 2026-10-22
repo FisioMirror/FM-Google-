@@ -232,7 +232,22 @@ export function SettingsPage() {
         <div className="relative">
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-semibold text-on-surface gradient-text-blue">{t('st.fontTypography')}</h3>
-            <span className="font-bold text-primary">{fontSize}px</span>
+            <div className="flex items-center gap-2">
+              <span className="font-bold text-primary">{fontSize}px</span>
+              <button
+                onClick={() => setFontSize(16)}
+                disabled={fontSize === 16}
+                title={t('set.resetTypography', 'Restablecer tipografía')}
+                className={cn(
+                  'p-1.5 rounded-lg border transition-colors',
+                  fontSize === 16
+                    ? 'opacity-40 cursor-not-allowed border-outline-variant/20 text-on-surface-variant'
+                    : 'border-outline-variant/40 text-on-surface-variant hover:bg-surface-container-high'
+                )}
+              >
+                <Icon name="restart_alt" size={16} />
+              </button>
+            </div>
           </div>
           <div className="flex gap-2 flex-wrap mb-4">
             {FONT_SIZE_LEVELS.map((size) => (
@@ -262,7 +277,25 @@ export function SettingsPage() {
       <GlassPanel className="p-6 rounded-2xl relative overflow-hidden">
         <div className="blob-cyan absolute -top-12 -right-12 w-32 h-32 opacity-20 pointer-events-none" />
         <div className="relative">
-          <h3 className="font-semibold text-on-surface gradient-text-cyan mb-2">{t('set.uiZoom')}</h3>
+          <div className="flex items-center justify-between mb-2">
+            <h3 className="font-semibold text-on-surface gradient-text-cyan">{t('set.uiZoom')}</h3>
+            <div className="flex items-center gap-2">
+              <span className="font-bold text-primary">{zoom}%</span>
+              <button
+                onClick={() => setZoom(100)}
+                disabled={zoom === 100}
+                title={t('set.resetZoom', 'Restablecer zoom')}
+                className={cn(
+                  'p-1.5 rounded-lg border transition-colors',
+                  zoom === 100
+                    ? 'opacity-40 cursor-not-allowed border-outline-variant/20 text-on-surface-variant'
+                    : 'border-outline-variant/40 text-on-surface-variant hover:bg-surface-container-high'
+                )}
+              >
+                <Icon name="restart_alt" size={16} />
+              </button>
+            </div>
+          </div>
           <p className="text-sm text-on-surface-variant mb-4">{t('set.uiZoomDesc')}</p>
           <div className="flex gap-2 flex-wrap">
             {zoomOptions.map((z) => (
