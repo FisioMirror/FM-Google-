@@ -41,7 +41,7 @@ export const RehabEnergyBar: React.FC<RehabEnergyBarProps> = ({
       className={cn(
         'flex flex-col p-5 rounded-2xl border transition-all duration-300',
         'bg-surface/85 dark:bg-surface-container/65 backdrop-blur-xl',
-        'border-outline-variant/30 dark:border-white/10 shadow-sm',
+        'border-outline-variant/30 dark:border-outline-variant/60 shadow-sm',
         isHighFatigue && 'ring-2 ring-danger/40 border-danger/50',
         className
       )}
@@ -79,7 +79,7 @@ export const RehabEnergyBar: React.FC<RehabEnergyBarProps> = ({
       </div>
 
       {/* Progress Track */}
-      <div className="relative w-full h-4 rounded-full bg-slate-200/80 dark:bg-slate-800/80 overflow-hidden p-0.5 border border-slate-300/40 dark:border-white/5">
+      <div className="relative w-full h-4 rounded-full bg-slate-200/80 dark:bg-slate-800/80 overflow-hidden p-0.5 border border-slate-300/40 dark:border-outline-variant/40">
         <motion.div
           initial={{ width: 0 }}
           animate={{ width: `${clampedEnergy}%` }}
@@ -99,7 +99,7 @@ export const RehabEnergyBar: React.FC<RehabEnergyBarProps> = ({
       </div>
 
       {/* Footer Metrics */}
-      <div className="grid grid-cols-2 gap-3 mt-4 pt-3 border-t border-outline-variant/15 dark:border-white/5 text-xs">
+      <div className="grid grid-cols-2 gap-3 mt-4 pt-3 border-t border-outline-variant/15 dark:border-outline-variant/40 text-xs">
         <div className="flex items-center gap-1.5 text-on-surface-variant">
           <Flame className="w-3.5 h-3.5 text-warning" />
           <span>{t('uix.rebFatigueIndex')}</span>

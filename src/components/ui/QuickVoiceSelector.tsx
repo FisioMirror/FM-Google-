@@ -162,10 +162,10 @@ export function QuickVoiceSelector({
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 8, scale: 0.95 }}
               transition={{ duration: 0.2, ease: 'easeOut' }}
-              className="absolute right-0 top-full mt-2 w-80 sm:w-96 rounded-3xl bg-surface/95 dark:bg-surface-container/95 backdrop-blur-2xl border border-teal-500/30 dark:border-white/10 shadow-elevated p-4 sm:p-5 z-[150] text-on-surface"
+              className="absolute right-0 top-full mt-2 w-80 sm:w-96 rounded-3xl bg-surface/95 dark:bg-surface-container/95 backdrop-blur-2xl border border-teal-500/30 dark:border-outline-variant/60 shadow-elevated p-4 sm:p-5 z-[150] text-on-surface"
             >
               {/* Header */}
-              <div className="flex items-center justify-between pb-3 border-b border-outline-variant/20 dark:border-white/10">
+              <div className="flex items-center justify-between pb-3 border-b border-outline-variant/20 dark:border-outline-variant/60">
                 <div className="flex items-center gap-2">
                   <div className="size-7 rounded-xl bg-teal-500/20 text-teal-600 dark:text-teal-400 flex items-center justify-center">
                     <Sparkles className="size-4" />
@@ -373,7 +373,7 @@ export function QuickVoiceSelector({
               </div>
 
               {/* Footer Actions: Test audio & Done */}
-              <div className="mt-5 pt-3 border-t border-outline-variant/20 dark:border-white/10 flex items-center justify-between gap-2">
+              <div className="mt-5 pt-3 border-t border-outline-variant/20 dark:border-outline-variant/60 flex items-center justify-between gap-2">
                 <button
                   type="button"
                   onClick={toggleTestAudio}

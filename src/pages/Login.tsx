@@ -782,7 +782,7 @@ export function Login() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
           className={cn(
-            'w-full rounded-5xl border border-white/60 dark:border-slate-800/80 bg-white/45 dark:bg-slate-900/50 backdrop-blur-2xl shadow-[0_12px_40px_rgba(0,0,0,0.06)] dark:shadow-[0_12px_40px_rgba(0,0,0,0.3)] p-6 sm:p-9 flex flex-col relative overflow-hidden',
+            'w-full rounded-5xl border border-outline-variant/40 dark:border-slate-800/80 bg-white/45 dark:bg-slate-900/50 backdrop-blur-2xl shadow-[0_12px_40px_rgba(0,0,0,0.06)] dark:shadow-[0_12px_40px_rgba(0,0,0,0.3)] p-6 sm:p-9 flex flex-col relative overflow-hidden',
             isFisio && isRegister ? 'max-w-2xl gap-y-5' : 'max-w-[480px] gap-y-5'
           )}
         >

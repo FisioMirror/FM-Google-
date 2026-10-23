@@ -32,7 +32,7 @@ export function WaveformVisualizer({ isActive: externalActive, onToggle, classNa
       }}
       whileTap={{ scale: 0.95 }}
       className={cn(
-        'flex items-center gap-1 rounded-full glass-panel p-3 border border-white/30 transition-all',
+        'flex items-center gap-1 rounded-full glass-panel p-3 border border-outline-variant/40 transition-all',
         isActive && 'ring-2 ring-primary/30',
         className,
       )}

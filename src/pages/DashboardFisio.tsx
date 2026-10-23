@@ -17,7 +17,6 @@ import { formatAIReport } from '../lib/formatReport';
 import { formatDayMonth, formatTime } from '../lib/format';
 import MascotAnimation from '../components/ui/MascotAnimation';
 import { AuroraText } from '../components/ui/AuroraText';
-import { BorderBeam } from '../components/ui/BorderBeam';
 import { ConfettiSideCannons } from '../components/ui/ConfettiButton';
 import { ClinicalActivityFeed, ClinicalNotificationCard } from '../components/ui/ClinicalActivityFeed';
 import { KineticText } from '../components/ui/KineticText';
@@ -1074,7 +1073,7 @@ export function DashboardFisio() {
                       className={`flex items-center gap-4 cursor-pointer p-4 rounded-2xl border transition-all duration-300 ${
                         checked
                           ? 'bg-gradient-to-r from-teal-50/80 via-surface/90 to-info/60 dark:from-teal-950/30 dark:via-surface-container/80 dark:to-info/20 border-teal-300/60 dark:border-teal-500/30 shadow-xs'
-                          : 'bg-gradient-to-r from-info/40 via-surface/90 to-surface dark:from-slate-900/60 dark:via-surface-container/70 dark:to-slate-900/60 border-info/60 dark:border-white/5 hover:border-teal-400/40'
+                          : 'bg-gradient-to-r from-info/40 via-surface/90 to-surface dark:from-slate-900/60 dark:via-surface-container/70 dark:to-slate-900/60 border-info/60 dark:border-outline-variant/40 hover:border-teal-400/40'
                       }`}
                     >
                       {/* Animated checkbox */}
@@ -1138,7 +1137,7 @@ export function DashboardFisio() {
       {/* Remote monitoring & live activity hub */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         <GlassPanel className="lg:col-span-5 p-8 rounded-3xl relative overflow-hidden hover-lift border-l-4 border-l-teal-400/60 dark:border-l-teal-600/40 shadow-[0_8px_30px_rgba(13,148,136,0.10)] flex flex-col justify-between h-full min-h-[380px]">
-          <BorderBeam size={130} duration={7} colorFrom="#14b8a6" colorTo="#06b6d4" />
+          
           <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent pointer-events-none" />
           <div className="relative z-10 space-y-4">
             <div className="flex justify-between items-start">

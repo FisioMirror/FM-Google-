@@ -33,11 +33,11 @@ export interface HarmonizedSurfaceProps extends Omit<HTMLMotionProps<"div">, "ch
 
 const variantStyles: Record<HarmonizedSurfaceVariant, string> = {
   // Contenedor principal de pantalla / sección / modal: rounded-3xl
-  panel: "rounded-3xl border border-outline-variant/30 dark:border-white/10 shadow-sm",
+  panel: "rounded-3xl border border-outline-variant/30 dark:border-outline-variant/60 shadow-sm",
   // Contenedor modular interactivo / tarjeta: rounded-2xl
-  card: "rounded-2xl border border-outline-variant/25 dark:border-white/10 shadow-sm",
+  card: "rounded-2xl border border-outline-variant/25 dark:border-outline-variant/60 shadow-sm",
   // Elemento interno anidado / subcontenedor: rounded-xl
-  subcontainer: "rounded-xl border border-outline-variant/15 dark:border-white/5",
+  subcontainer: "rounded-xl border border-outline-variant/15 dark:border-outline-variant/40",
   // Variantes Pastel Clínicas (Soft Sky, Mint/Teal, Lavender Blue)
   "pastel-sky": `rounded-2xl ${CLINICAL_PASTELS.sky.card}`,
   "pastel-mint": `rounded-2xl ${CLINICAL_PASTELS.mint.card}`,
@@ -49,7 +49,7 @@ const variantStyles: Record<HarmonizedSurfaceVariant, string> = {
 const glassStyles: Record<HarmonizedGlassTone, string> = {
   subtle: "bg-surface/85 dark:bg-surface-container/65 backdrop-blur-xl text-on-surface",
   prominent:
-    "bg-white/70 dark:bg-slate-900/60 backdrop-blur-2xl border-white/40 dark:border-white/15 text-on-surface shadow-sm",
+    "bg-white/70 dark:bg-slate-900/60 backdrop-blur-2xl border-white/40 dark:border-outline-variant/60 text-on-surface shadow-sm",
   flat: "bg-surface dark:bg-surface-container text-on-surface",
   "pastel-sky":
     "bg-sky-50/75 dark:bg-sky-950/25 backdrop-blur-xl border border-sky-200/60 dark:border-sky-500/30 text-sky-950 dark:text-sky-100",

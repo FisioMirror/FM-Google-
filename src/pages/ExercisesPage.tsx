@@ -735,7 +735,7 @@ export function ExercisesPage() {
   return (
     <div className="fm-page pb-16">
       {/* Header section with notification-like glass aesthetics */}
-      <div className="relative rounded-3xl p-6 sm:p-8 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border border-white/60 dark:border-teal-500/20 shadow-[0_8px_32px_rgba(0,80,77,0.06)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.35)] border-l-4 border-l-teal-600 dark:border-l-teal-400 overflow-hidden">
+      <div className="relative rounded-3xl p-6 sm:p-8 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border border-outline-variant/40 dark:border-teal-500/20 shadow-[0_8px_32px_rgba(0,80,77,0.06)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.35)] border-l-4 border-l-teal-600 dark:border-l-teal-400 overflow-hidden">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 relative z-10">
           <div className="space-y-2">
             <h1 className="fm-title text-on-surface">
@@ -793,7 +793,7 @@ export function ExercisesPage() {
       </div>
 
       {/* Search & Filter Bar (Design-Ref Styled with notification glass) */}
-      <div className="rounded-2xl p-3 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-white/60 dark:border-teal-500/20 shadow-xs flex flex-col md:flex-row items-stretch md:items-center gap-3">
+      <div className="rounded-2xl p-3 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-outline-variant/40 dark:border-teal-500/20 shadow-xs flex flex-col md:flex-row items-stretch md:items-center gap-3">
         {/* Search input */}
         <div className="relative flex-1">
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant size-4" />
@@ -1317,7 +1317,7 @@ export function ExercisesPage() {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              className="rounded-3xl p-6 sm:p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto bg-white dark:bg-slate-900 border border-white/60 dark:border-teal-500/20 shadow-elevated space-y-4"
+              className="rounded-3xl p-6 sm:p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto bg-white dark:bg-slate-900 border border-outline-variant/40 dark:border-teal-500/20 shadow-elevated space-y-4"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex justify-between items-center pb-3 border-b border-slate-200 dark:border-slate-800">

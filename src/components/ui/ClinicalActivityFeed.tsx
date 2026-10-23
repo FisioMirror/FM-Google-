@@ -90,7 +90,7 @@ export function ClinicalNotificationCard({ item }: { item: ClinicalFeedItem }) {
         // Light styles
         "bg-white/80 border border-outline-variant/30 [box-shadow:0_4px_20px_-4px_rgba(0,0,0,0.06)]",
         // Dark styles
-        "dark:bg-slate-900/60 dark:border-white/10 dark:backdrop-blur-xl dark:[box-shadow:0_-15px_60px_-15px_rgba(255,255,255,0.06)_inset]"
+        "dark:bg-slate-900/60 dark:border-outline-variant/60 dark:backdrop-blur-xl dark:[box-shadow:0_-15px_60px_-15px_rgba(255,255,255,0.06)_inset]"
       )}
     >
       <div className="flex flex-row items-center gap-3">
@@ -163,12 +163,12 @@ export function ClinicalActivityFeed({
     <div
       className={cn(
         "relative flex flex-col w-full max-w-xl mx-auto rounded-3xl p-5 sm:p-6",
-        "bg-surface/80 dark:bg-surface-container/60 backdrop-blur-xl border border-outline-variant/30 dark:border-white/10 shadow-sm",
+        "bg-surface/80 dark:bg-surface-container/60 backdrop-blur-xl border border-outline-variant/30 dark:border-outline-variant/60 shadow-sm",
         className
       )}
     >
       {/* Header */}
-      <div className="flex items-center justify-between pb-4 mb-2 border-b border-outline-variant/20 dark:border-white/10">
+      <div className="flex items-center justify-between pb-4 mb-2 border-b border-outline-variant/20 dark:border-outline-variant/60">
         <div className="flex items-center gap-2.5">
           <div className="relative flex size-3">
             <span className={cn("animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75", isPaused && "hidden")} />

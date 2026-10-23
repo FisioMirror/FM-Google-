@@ -146,7 +146,7 @@ export function PDFExportModal({ open, onClose, data, filename }: PDFModalProps)
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.94, opacity: 0, y: 16 }}
             transition={{ type: 'spring', damping: 25, stiffness: 350 }}
-            className="glass-panel rounded-3xl p-6 sm:p-7 max-w-lg w-full max-h-[92vh] overflow-y-auto shadow-elevated border border-white/20 dark:border-slate-800"
+            className="glass-panel rounded-3xl p-6 sm:p-7 max-w-lg w-full max-h-[92vh] overflow-y-auto shadow-elevated border border-outline-variant/40 dark:border-slate-800"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}

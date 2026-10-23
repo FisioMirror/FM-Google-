@@ -46,7 +46,7 @@ export const JointDetailPopover: React.FC<JointDetailPopoverProps> = ({
           'flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold transition-all duration-200 select-none border',
           isOpen
             ? 'bg-primary text-on-primary border-primary shadow-sm'
-            : 'bg-surface/90 dark:bg-slate-800/90 text-on-surface dark:text-slate-200 border-outline-variant/30 dark:border-white/10 hover:border-primary/50'
+            : 'bg-surface/90 dark:bg-slate-800/90 text-on-surface dark:text-slate-200 border-outline-variant/30 dark:border-outline-variant/60 hover:border-primary/50'
         )}
         aria-expanded={isOpen}
       >
@@ -65,11 +65,11 @@ export const JointDetailPopover: React.FC<JointDetailPopoverProps> = ({
             className={cn(
               'absolute left-0 top-full mt-2 z-50 w-80 p-5 rounded-2xl border shadow-elevated backdrop-blur-2xl',
               'bg-surface/95 dark:bg-slate-900/95',
-              'border-outline-variant/30 dark:border-white/10'
+              'border-outline-variant/30 dark:border-outline-variant/60'
             )}
           >
             {/* Header */}
-            <div className="flex items-center justify-between pb-3 border-b border-outline-variant/15 dark:border-white/10">
+            <div className="flex items-center justify-between pb-3 border-b border-outline-variant/15 dark:border-outline-variant/60">
               <div className="flex items-center gap-2">
                 <div className="p-1.5 rounded-lg bg-primary/10 text-primary">
                   <Info className="w-4 h-4" />
@@ -93,7 +93,7 @@ export const JointDetailPopover: React.FC<JointDetailPopoverProps> = ({
 
             {/* Metrics Grid */}
             <div className="grid grid-cols-2 gap-3 py-3">
-              <div className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800/60 border border-black/5 dark:border-white/5">
+              <div className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800/60 border border-black/5 dark:border-outline-variant/40">
                 <span className="text-2xs uppercase font-bold text-on-surface-variant block mb-0.5">
                   {t('jdp.currentRom')}
                 </span>
@@ -105,7 +105,7 @@ export const JointDetailPopover: React.FC<JointDetailPopoverProps> = ({
                 </span>
               </div>
 
-              <div className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800/60 border border-black/5 dark:border-white/5">
+              <div className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800/60 border border-black/5 dark:border-outline-variant/40">
                 <span className="text-2xs uppercase font-bold text-on-surface-variant block mb-0.5">
                   {t('jdp.angularVelocity')}
                 </span>
@@ -118,7 +118,7 @@ export const JointDetailPopover: React.FC<JointDetailPopoverProps> = ({
             </div>
 
             {/* Asymmetry Bar */}
-            <div className="p-3 rounded-xl bg-slate-100/70 dark:bg-slate-800/40 border border-black/5 dark:border-white/5">
+            <div className="p-3 rounded-xl bg-slate-100/70 dark:bg-slate-800/40 border border-black/5 dark:border-outline-variant/40">
               <div className="flex items-center justify-between text-xs mb-1">
                 <span className="text-on-surface-variant">{t('jdp.contralateralAsymmetry')}</span>
                 <span className="font-mono font-bold text-on-surface dark:text-white">

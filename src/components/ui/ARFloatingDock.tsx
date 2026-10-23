@@ -102,7 +102,7 @@ export const ARFloatingDock: React.FC<ARFloatingDockProps> = ({
       className={cn(
         'relative inline-flex items-center gap-2 p-2 rounded-2xl',
         'bg-slate-900/80 dark:bg-slate-950/85 backdrop-blur-2xl',
-        'border border-white/15 dark:border-white/10 shadow-[0_12px_40px_rgba(0,0,0,0.4)]',
+        'border border-white/15 dark:border-outline-variant/60 shadow-[0_12px_40px_rgba(0,0,0,0.4)]',
         'select-none',
         className
       )}

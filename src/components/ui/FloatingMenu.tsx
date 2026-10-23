@@ -34,7 +34,7 @@ export function FloatingMenu({ items, ariaLabel, className }: FloatingMenuProps)
             transition={{ delay: i * 0.05 }}
             onClick={() => { item.onClick(); setOpen(false); }}
             aria-label={item.label}
-            className="flex items-center gap-2 px-4 py-3 rounded-full glass-panel border border-white/30 text-sm font-medium text-on-surface hover:bg-white/60 active:scale-95 transition-all shadow-card min-h-[48px] min-w-[48px] max-w-[calc(100vw-2rem)]"
+            className="flex items-center gap-2 px-4 py-3 rounded-full glass-panel border border-outline-variant/40 text-sm font-medium text-on-surface hover:bg-white/60 active:scale-95 transition-all shadow-card min-h-[48px] min-w-[48px] max-w-[calc(100vw-2rem)]"
           >
             {item.icon}
             <span className="truncate">{item.label}</span>

@@ -45,7 +45,7 @@ export function GlassToastProvider({ children }: { children: ReactNode }) {
   return (
     <GlassToastContext.Provider value={{ show }}>
       {children}
-      <div className="fixed bottom-5 right-5 sm:bottom-6 sm:right-6 z-[250] flex flex-col-reverse gap-2.5 items-end pointer-events-none w-full max-w-sm px-4 sm:px-0">
+      <div className="fixed bottom-[calc(4.75rem+env(safe-area-inset-bottom))] left-4 right-4 sm:left-auto sm:right-6 sm:bottom-6 z-[250] flex flex-col-reverse gap-2.5 items-end pointer-events-none w-full sm:max-w-sm px-0">
         <AnimatePresence mode="popLayout">
           {toasts.map((toast) => (
             <motion.div
@@ -64,12 +64,12 @@ export function GlassToastProvider({ children }: { children: ReactNode }) {
               className={cn(
                 'flex items-center gap-3 p-3.5 sm:p-4 rounded-2xl backdrop-blur-xl',
                 'shadow-elevated shadow-black/25 min-w-[280px] max-w-[380px] w-full pointer-events-auto',
-                'bg-surface-container-high/95 dark:bg-surface-container-high/95 text-on-surface border border-outline-variant/60',
+                'glass-toast text-on-surface',
               )}
             >
               <div
                 className={cn(
-                  'p-2 rounded-xl shrink-0 border flex items-center justify-center',
+                  'p-2 rounded-xl shrink-0 border flex items-center justify-center border-outline-variant/40 dark:border-outline-variant/60',
                   toast.type === 'success' && 'bg-success/15 text-success border-success/30',
                   toast.type === 'error' && 'bg-danger/15 text-danger border-danger/30',
                   toast.type === 'warning' && 'bg-warning/15 text-warning border-warning/30',

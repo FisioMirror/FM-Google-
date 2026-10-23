@@ -273,7 +273,7 @@ export const PainScaleInteractiveCard: React.FC<PainScaleInteractiveCardProps> =
       whileHover={{ y: -3, scale: 1.01 }}
       transition={{ duration: 0.2 }}
       className={cn(
-        "relative p-5 rounded-3xl bg-gradient-to-br backdrop-blur-2xl border border-outline-variant/30 dark:border-white/10 shadow-card overflow-hidden transition-all",
+        "relative p-5 rounded-3xl bg-gradient-to-br backdrop-blur-2xl border border-outline-variant/30 dark:border-outline-variant/60 shadow-card overflow-hidden transition-all",
         getAccentGradient(),
         className
       )}
@@ -303,7 +303,7 @@ export const PainScaleInteractiveCard: React.FC<PainScaleInteractiveCardProps> =
           initial={{ scale: 0.7, rotate: -10 }}
           animate={{ scale: 1, rotate: 0 }}
           transition={{ type: 'spring', stiffness: 400, damping: 20 }}
-          className="p-3.5 rounded-2xl bg-surface/90 dark:bg-slate-800/90 shadow-sm border border-black/5 dark:border-white/10 shrink-0"
+          className="p-3.5 rounded-2xl bg-surface/90 dark:bg-slate-800/90 shadow-sm border border-black/5 dark:border-outline-variant/60 shrink-0"
         >
           {getFace()}
         </motion.div>
@@ -413,7 +413,7 @@ export const GaitSymmetryCard: React.FC<GaitSymmetryCardProps> = ({
         </div>
       </div>
 
-      <div className="relative w-full h-3 rounded-full bg-slate-200 dark:bg-slate-800 overflow-hidden flex my-2 p-0.5 border border-black/5 dark:border-white/5">
+      <div className="relative w-full h-3 rounded-full bg-slate-200 dark:bg-slate-800 overflow-hidden flex my-2 p-0.5 border border-black/5 dark:border-outline-variant/40">
         <motion.div
           animate={{ width: `${left}%` }}
           transition={{ type: 'spring', stiffness: 200, damping: 25 }}
@@ -482,7 +482,7 @@ export const TremorFrequencyCard: React.FC<TremorFrequencyCardProps> = ({
       </div>
 
       <div className="py-2">
-        <div className="h-16 flex items-center justify-center gap-1.5 px-2 bg-slate-100 dark:bg-slate-900/50 rounded-2xl border border-slate-200/80 dark:border-white/5 transition-colors">
+        <div className="h-16 flex items-center justify-center gap-1.5 px-2 bg-slate-100 dark:bg-slate-900/50 rounded-2xl border border-slate-200/80 dark:border-outline-variant/40 transition-colors">
           {[4, 9, 15, 7, 13, 24, 11, 18, 9, 5, 20, 10, 14, 7, 12, 18, 8].map((val, idx) => (
             <motion.div
               key={idx}
@@ -502,7 +502,7 @@ export const TremorFrequencyCard: React.FC<TremorFrequencyCardProps> = ({
         </div>
       </div>
 
-      <div className="flex items-center justify-between text-xs text-on-surface-variant pt-2 border-t border-black/5 dark:border-white/5">
+      <div className="flex items-center justify-between text-xs text-on-surface-variant pt-2 border-t border-black/5 dark:border-outline-variant/40">
         <span className="flex items-center gap-1">
           <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
           {t('facs.microOscillations')}
@@ -728,7 +728,7 @@ export const RehabPhaseStepCard: React.FC<RehabPhaseStepCardProps> = ({
                 isCurrent
                   ? "bg-teal-500/15 border-teal-500/40 text-teal-900 dark:text-teal-100 shadow-sm"
                   : isDone
-                  ? "bg-slate-100/60 dark:bg-slate-800/40 border-black/5 dark:border-white/5 text-on-surface-variant"
+                  ? "bg-slate-100/60 dark:bg-slate-800/40 border-black/5 dark:border-outline-variant/40 text-on-surface-variant"
                   : "bg-transparent border-dashed border-slate-300 dark:border-slate-800 text-on-surface-variant opacity-60"
               )}
             >

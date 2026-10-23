@@ -221,7 +221,7 @@ export function CommandPalette({
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 8 }}
-            className="absolute top-full mt-2 w-full rounded-2xl glass-panel shadow-elevated border border-white/40 dark:border-slate-800/80 overflow-hidden z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md max-h-80 overflow-y-auto"
+            className="absolute top-full mt-2 w-full rounded-2xl glass-panel shadow-elevated border border-outline-variant/40 dark:border-slate-800/80 overflow-hidden z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md max-h-80 overflow-y-auto"
           >
             {filtered.length === 0 && !isSearchingDb ? (
               <div className="px-5 py-4 text-center">

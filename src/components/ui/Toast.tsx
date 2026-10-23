@@ -225,10 +225,10 @@ export const ToastItemComponent = React.forwardRef<HTMLDivElement, ToastItemComp
         className={cn(
           "pointer-events-auto group relative",
           "flex items-start gap-3 p-3.5 sm:p-4 rounded-2xl",
-          "bg-slate-900/95 dark:bg-slate-950/95 text-white",
+          "glass-toast text-on-surface",
           "backdrop-blur-2xl border",
           "shadow-elevated shadow-black/40",
-          "min-w-[280px] max-w-[390px] w-full",
+          "min-w-[280px] w-full sm:max-w-[390px]",
           getBorderAndBg()
         )}
       >

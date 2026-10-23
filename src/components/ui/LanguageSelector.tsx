@@ -83,7 +83,7 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
         onClick={() => setIsOpen((prev) => !prev)}
         className={cn(
           'flex items-center gap-1.5 rounded-xl border transition-all duration-200 cursor-pointer text-xs font-semibold',
-          'bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-teal-500/30 dark:border-white/10',
+          'bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-teal-500/30 dark:border-outline-variant/60',
           'text-on-surface hover:border-teal-500/60 hover:bg-teal-50/40 dark:hover:bg-slate-800/80 shadow-xs',
           compact ? 'px-2 py-1.5' : 'px-2.5 sm:px-3 py-1.5'
         )}
@@ -115,7 +115,7 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
             transition={{ duration: 0.15, ease: 'easeOut' }}
             className={cn(
               'absolute top-full mt-1.5 z-50 w-44 rounded-2xl p-1.5 shadow-elevated',
-              'bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl border border-teal-500/20 dark:border-white/10 text-on-surface',
+              'bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl border border-teal-500/20 dark:border-outline-variant/60 text-on-surface',
               dropdownAlign === 'right' ? 'right-0' : 'left-0'
             )}
             role="menu"

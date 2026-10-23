@@ -56,7 +56,7 @@ function Toggle({ value, onChange, label }: { value: boolean; onChange: (v: bool
 
 /* ── Confirmation modal ───────────────────────────────────────── */
 export function SettingsPage() {
-  const { theme, toggleTheme, zoom, setZoom, fontSize, setFontSize, resetDefaults } = useTheme();
+  const { theme, toggleTheme, resetDefaults } = useTheme();
   const { user, signOut } = useAuthStore();
   const { show } = useGlassToast();
   const { t, i18n } = useTranslation();
@@ -164,7 +164,7 @@ export function SettingsPage() {
     if (largeTouch) { cl.add('large-touch'); } else { cl.remove('large-touch'); }
   }, [largeTouch]);
 
-  const zoomOptions = [80, 90, 100, 110, 120];
+  
 
   /* ── Handlers ───────────────────────────────────────────────── */
   const handlePasswordChange = async () => {
@@ -226,99 +226,19 @@ export function SettingsPage() {
         </div>
       </GlassPanel>
 
-      {/* Tamaño de fuente */}
-      <GlassPanel className="p-6 rounded-2xl relative overflow-hidden">
-        <div className="blob-blue absolute -top-12 -right-12 w-32 h-32 opacity-20 pointer-events-none" />
-        <div className="relative">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="font-semibold text-on-surface gradient-text-blue">{t('st.fontTypography')}</h3>
-            <div className="flex items-center gap-2">
-              <span className="font-bold text-primary">{fontSize}px</span>
-              <button
-                onClick={() => setFontSize(16)}
-                disabled={fontSize === 16}
-                title={t('set.resetTypography', 'Restablecer tipografía')}
-                className={cn(
-                  'p-1.5 rounded-lg border transition-colors',
-                  fontSize === 16
-                    ? 'opacity-40 cursor-not-allowed border-outline-variant/20 text-on-surface-variant'
-                    : 'border-outline-variant/40 text-on-surface-variant hover:bg-surface-container-high'
-                )}
-              >
-                <Icon name="restart_alt" size={16} />
-              </button>
-            </div>
-          </div>
-          <div className="flex gap-2 flex-wrap mb-4">
-            {FONT_SIZE_LEVELS.map((size) => (
-              <button
-                key={size}
-                onClick={() => setFontSize(size)}
-                className={cn(
-                  'px-5 py-2.5 rounded-xl font-semibold text-sm transition-all duration-200 hover:scale-105 active:scale-95',
-                  fontSize === size
-                    ? 'bg-primary text-on-primary shadow-glow-primary breathe-teal'
-                    : 'bg-surface-container-low text-on-surface-variant hover:bg-surface-container-high'
-                )}
-              >
-                {size === 14 ? t('set.fsSmall') : size === 16 ? t('pf.fsNormal') : size === 18 ? t('pf.fsLarge') : t('set.fsXL')}
-              </button>
-            ))}
-          </div>
-          <div className="mt-4 p-4 rounded-xl bg-surface-container-low/60 border border-outline-variant/20">
-            <p className="text-on-surface" style={{ fontSize: `${fontSize}px` }}>
-              Texto de ejemplo: "Tu próxima sesión de rehabilitación es mañana a las 10:00."
-            </p>
-          </div>
-        </div>
-      </GlassPanel>
-
-      {/* Zoom */}
       <GlassPanel className="p-6 rounded-2xl relative overflow-hidden">
         <div className="blob-cyan absolute -top-12 -right-12 w-32 h-32 opacity-20 pointer-events-none" />
         <div className="relative">
-          <div className="flex items-center justify-between mb-2">
-            <h3 className="font-semibold text-on-surface gradient-text-cyan">{t('set.uiZoom')}</h3>
-            <div className="flex items-center gap-2">
-              <span className="font-bold text-primary">{zoom}%</span>
-              <button
-                onClick={() => setZoom(100)}
-                disabled={zoom === 100}
-                title={t('set.resetZoom', 'Restablecer zoom')}
-                className={cn(
-                  'p-1.5 rounded-lg border transition-colors',
-                  zoom === 100
-                    ? 'opacity-40 cursor-not-allowed border-outline-variant/20 text-on-surface-variant'
-                    : 'border-outline-variant/40 text-on-surface-variant hover:bg-surface-container-high'
-                )}
-              >
-                <Icon name="restart_alt" size={16} />
-              </button>
-            </div>
-          </div>
+          <h3 className="font-semibold text-on-surface mb-2">{t('set.uiZoom')}</h3>
           <p className="text-sm text-on-surface-variant mb-4">{t('set.uiZoomDesc')}</p>
-          <div className="flex gap-2 flex-wrap">
-            {zoomOptions.map((z) => (
-              <button
-                key={z}
-                onClick={() => setZoom(z)}
-                className={cn(
-                  'px-5 py-2.5 rounded-xl font-semibold text-sm transition-all duration-200 hover:scale-105 active:scale-95',
-                  zoom === z
-                    ? 'bg-primary text-on-primary shadow-glow-primary breathe-teal'
-                    : 'bg-surface-container-low text-on-surface-variant hover:bg-surface-container-high'
-                )}
-              >
-                {z}%
-              </button>
-            ))}
-          </div>
           <button
             onClick={resetDefaults}
-            className="mt-4 w-full py-2.5 rounded-xl bg-surface-container-low text-on-surface-variant font-semibold text-sm hover:bg-surface-container-high transition-colors border border-outline-variant/20 flex items-center justify-center gap-2"
+            className="w-full py-2.5 rounded-xl bg-surface-container-low text-on-surface-variant font-semibold text-sm hover:bg-surface-container-high transition-colors border border-outline-variant/20 flex items-center justify-center gap-2"
           >
             <Icon name="restart_alt" size={18} /> {t('set.resetDefaults')}
           </button>
+        </div>
+      </GlassPanel>
         </div>
       </GlassPanel>
 

@@ -31,12 +31,12 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             ref={ref}
             className={cn(
               "flex h-11 w-full rounded-xl border px-3.5 py-2 text-base text-on-surface",
-              "bg-surface/90 dark:bg-surface-container/60 border-outline-variant/30 dark:border-white/10",
+              "bg-surface/90 dark:bg-surface-container/60 border-outline-variant/30 dark:border-outline-variant/60",
               "placeholder:text-on-surface-variant/50",
               "transition-all duration-300 ease-out",
               "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:border-primary/50",
               "disabled:cursor-not-allowed disabled:opacity-50",
-              glassEffect && "bg-surface/75 dark:bg-surface-container/40 backdrop-blur-xl border-outline-variant/40 dark:border-white/15",
+              glassEffect && "bg-surface/75 dark:bg-surface-container/40 backdrop-blur-xl border-outline-variant/40 dark:border-outline-variant/60",
               error
                 ? "border-destructive focus-visible:border-destructive focus-visible:ring-destructive/30"
                 : "",

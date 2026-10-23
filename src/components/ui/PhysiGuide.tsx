@@ -415,7 +415,7 @@ export function PhysiGuide({
             className="fixed bottom-24 left-4 right-4 sm:right-auto sm:left-4 sm:w-96 lg:left-8 lg:bottom-28 z-[120] w-[calc(100vw-2rem)] max-h-[62vh] flex flex-col rounded-3xl border border-teal-500/25 bg-surface/95 dark:bg-surface-container/95 backdrop-blur-2xl shadow-elevated overflow-hidden text-on-surface"
           >
             {/* Cabecera */}
-            <div className="flex items-center justify-between px-4 py-3 border-b border-outline-variant/20 dark:border-white/10 shrink-0 bg-teal-500/5">
+            <div className="flex items-center justify-between px-4 py-3 border-b border-outline-variant/20 dark:border-outline-variant/60 shrink-0 bg-teal-500/5">
               <div className="flex items-center gap-2.5 min-w-0">
                 <div className="size-9 rounded-2xl bg-teal-500/15 text-teal-600 dark:text-teal-400 border border-teal-500/25 flex items-center justify-center shrink-0">
                   <Bot size={20} />
@@ -521,14 +521,14 @@ export function PhysiGuide({
                         className={`p-3 rounded-2xl text-xs sm:text-sm leading-relaxed shadow-xs transition-all ${
                           msg.role === 'user'
                             ? 'bg-primary text-on-primary rounded-tr-none font-medium'
-                            : 'bg-surface dark:bg-surface-container-low border border-outline-variant/25 dark:border-white/10 text-on-surface rounded-tl-none'
+                            : 'bg-surface dark:bg-surface-container-low border border-outline-variant/25 dark:border-outline-variant/60 text-on-surface rounded-tl-none'
                         }`}
                       >
                         {msg.role === 'assistant' ? renderMarkdown(msg.text) : msg.text}
 
                         {/* Botón de reproducción de voz para respuestas de Physi */}
                         {msg.role === 'assistant' && (
-                          <div className="mt-2.5 pt-2 border-t border-outline-variant/15 dark:border-white/5 flex items-center justify-between text-xs text-on-surface-variant">
+                          <div className="mt-2.5 pt-2 border-t border-outline-variant/15 dark:border-outline-variant/40 flex items-center justify-between text-xs text-on-surface-variant">
                             <span className="flex items-center gap-1.5 text-2xs opacity-75">
                               {msg.source === 'ai' && (
                                 <span className="rounded-md bg-teal-500/10 px-1.5 py-0.5 font-bold uppercase tracking-wider text-teal-700 dark:text-teal-300">
@@ -628,7 +628,7 @@ export function PhysiGuide({
             )}
 
             {/* Entrada de texto */}
-            <div className="p-3 border-t border-outline-variant/20 dark:border-white/10 shrink-0 bg-surface/50">
+            <div className="p-3 border-t border-outline-variant/20 dark:border-outline-variant/60 shrink-0 bg-surface/50">
               <div className="flex gap-2 items-end">
                 <textarea
                   ref={textareaRef}
@@ -642,7 +642,7 @@ export function PhysiGuide({
                   }}
                   placeholder={t('pg.askPhysi')}
                   rows={1}
-                  className="flex-1 resize-none rounded-xl border border-outline-variant/30 dark:border-white/10 bg-surface/90 dark:bg-surface-container/60 px-3 py-2 text-xs sm:text-sm text-on-surface outline-none focus:ring-2 focus:ring-primary focus:border-primary/50 transition-all placeholder:text-on-surface-variant/50 max-h-24"
+                  className="flex-1 resize-none rounded-xl border border-outline-variant/30 dark:border-outline-variant/60 bg-surface/90 dark:bg-surface-container/60 px-3 py-2 text-xs sm:text-sm text-on-surface outline-none focus:ring-2 focus:ring-primary focus:border-primary/50 transition-all placeholder:text-on-surface-variant/50 max-h-24"
                 />
                 <button
                   onClick={handleSend}

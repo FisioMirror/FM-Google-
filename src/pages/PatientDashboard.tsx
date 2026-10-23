@@ -15,7 +15,6 @@ import { CollapsibleSection } from '../components/ui/CollapsibleSection';
 import { PRIMARY_DEMO_PATIENT } from '../data/unifiedDemoData';
 import { isValidUUID } from '../lib/utils';
 import { isDemoAccount } from '../lib/demoAuth';
-import { BorderBeam } from '../components/ui/BorderBeam';
 import { CardSpotlight } from '../components/ui/CardSpotlight';
 import { PulsatingButton } from '../components/ui/PulsatingButton';
 import { SparklesText } from '../components/ui/SparklesText';
@@ -492,7 +491,7 @@ export function PatientDashboard() {
         <div className="lg:col-span-2 space-y-6">
           {/* Featured AR Session Card con fondo pastel menta/celeste clínico */}
           <div className="relative overflow-hidden rounded-3xl p-6 lg:p-8 bg-gradient-to-br from-teal-50/80 via-surface/95 to-info/60 dark:from-teal-950/30 dark:via-surface-container/85 dark:to-info/20 border border-teal-200/60 dark:border-teal-500/30 shadow-card">
-            <BorderBeam size={120} duration={8} colorFrom="#14b8a6" colorTo="#38bdf8" />
+            
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 relative z-10">
               <div className="space-y-2 max-w-md">
                 <span className="inline-flex items-center gap-1.5 text-2xs font-black uppercase tracking-wider px-3 py-1 rounded-full bg-teal-500/15 text-teal-700 dark:text-teal-300 border border-teal-500/30">
