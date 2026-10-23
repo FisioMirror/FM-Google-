@@ -4,7 +4,7 @@ import React, {
   useState,
   type ComponentPropsWithoutRef,
 } from "react"
-import { AnimatePresence, motion, type MotionProps } from "framer-motion"
+import { AnimatePresence, motion, type MotionProps } from "motion/react"
 
 import { cn } from "@/lib/utils"
 
