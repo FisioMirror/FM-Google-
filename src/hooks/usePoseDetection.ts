@@ -440,8 +440,8 @@ export function usePoseDetection(options: UsePoseDetectionOptions = {}): UsePose
             modelComplexity: autoComplexity,
             smoothLandmarks: true,
             enableSegmentation: false,
-            minDetectionConfidence: 0.55,
-            minTrackingConfidence: 0.55,
+            minDetectionConfidence: 0.6,
+            minTrackingConfidence: 0.65,
             selfieMode: facingMode === 'user',
           });
 
@@ -471,7 +471,7 @@ export function usePoseDetection(options: UsePoseDetectionOptions = {}): UsePose
                   // EMA adaptativa: sigue rápido los movimientos amplios y
                   // estabiliza cuando el paciente está quieto (menos lag, menos jitter).
                   const dist = Math.sqrt((lm.x - prev.x) ** 2 + (lm.y - prev.y) ** 2);
-                  const alpha = dist > 0.04 ? 0.85 : 0.62;
+                  const alpha = dist > 0.04 ? 0.85 : 0.55;
                   return {
                     x: prev.x + alpha * (lm.x - prev.x),
                     y: prev.y + alpha * (lm.y - prev.y),
