@@ -1386,6 +1386,8 @@ export const es = {
     faithWord: 'Palabra de Fortaleza & Fe',
     glassmorphism: 'Glassmorfismo',
     glassDesc: 'Efectos de vidrio esmerilado en las superficies',
+    handedness: 'Mano dominante',
+    handednessDesc: 'Espeja la navegación y los controles flotantes para uso con la mano izquierda.',
     resetDefaults: 'Restablecer predeterminados (100% / 16px)',
     resetTypography: 'Restablecer tipografía',
     resetZoom: 'Restablecer zoom',

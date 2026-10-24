@@ -1382,6 +1382,8 @@ export const en: typeof es = {
     faithWord: 'Word of Strength & Faith',
     glassmorphism: 'Glassmorphism',
     glassDesc: 'Frosted glass effects on surfaces',
+    handedness: 'Dominant hand',
+    handednessDesc: 'Mirrors navigation and floating controls for left-handed use.',
     resetDefaults: 'Reset defaults (100% / 16px)',
     resetTypography: 'Reset typography',
     resetZoom: 'Reset zoom',

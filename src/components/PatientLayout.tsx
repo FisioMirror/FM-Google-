@@ -564,7 +564,7 @@ export function PatientLayout({ children }: PatientLayoutProps) {
         <FloatingMenu
           items={quickActionItems}
           ariaLabel="Acciones del paciente"
-          className="fixed right-4 sm:right-6 z-40 bottom-[calc(1.25rem+env(safe-area-inset-bottom))]"
+          className="fab-anchor fixed right-4 sm:right-6 z-40 bottom-[calc(1.25rem+env(safe-area-inset-bottom))]"
         />
       )}
 

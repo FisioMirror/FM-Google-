@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState, useCallback, useMemo, ReactNode } from 'react'
 
 type Theme = 'light' | 'dark'
+type Handedness = 'right' | 'left'
 
 export const ZOOM_LEVELS = [80, 90, 100, 110, 120] as const
 export const FONT_SIZE_LEVELS = [14, 16, 18, 20] as const
@@ -14,6 +15,9 @@ interface ThemeContextType {
   fontSize: number
   setFontSize: (fontSize: number) => void
   resetDefaults: () => void
+  handedness: Handedness
+  setHandedness: (h: Handedness) => void
+  toggleHandedness: () => void
 }
 
 export const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
@@ -34,6 +38,11 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       if (ZOOM_LEVELS.includes(val as any)) return val
     }
     return 100
+  })
+
+  const [handedness, setHandednessState] = useState<Handedness>(() => {
+    if (typeof window === 'undefined') return 'right'
+    return (localStorage.getItem('fisio-handedness') as Handedness) || 'right'
   })
 
   const [fontSize, setFontSizeState] = useState<number>(() => {
@@ -68,6 +77,18 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     localStorage.setItem('fisio-font-size', String(fontSize))
   }, [fontSize])
 
+  useEffect(() => {
+    const root = document.documentElement
+    root.setAttribute('data-hand', handedness)
+    localStorage.setItem('fisio-handedness', handedness)
+  }, [handedness])
+
+  const toggleHandedness = useCallback(() => {
+    setHandednessState(prev => prev === 'right' ? 'left' : 'right')
+  }, [])
+
+  const setHandedness = useCallback((h: Handedness) => setHandednessState(h), [])
+
   const resetDefaults = useCallback(() => {
     setZoomState(100)
     setFontSizeState(16)
@@ -81,7 +102,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   const setZoom = useCallback((newZoom: number) => setZoomState(newZoom), [])
   const setFontSize = useCallback((newFontSize: number) => setFontSizeState(newFontSize), [])
 
-  const value = useMemo(() => ({ theme, toggleTheme, setTheme, zoom, setZoom, fontSize, setFontSize, resetDefaults }), [theme, toggleTheme, setTheme, zoom, setZoom, fontSize, setFontSize, resetDefaults])
+  const value = useMemo(() => ({ theme, toggleTheme, setTheme, zoom, setZoom, fontSize, setFontSize, resetDefaults, handedness, setHandedness, toggleHandedness }), [theme, toggleTheme, setTheme, zoom, setZoom, fontSize, setFontSize, resetDefaults, handedness, setHandedness, toggleHandedness])
 
   return (
     <ThemeContext.Provider value={value}>

@@ -2327,3 +2327,21 @@ html {
   background-color: var(--c-background);
 }
 
+
+/* ── Modo zurdo: espeja navegación y controles flotantes ── */
+[data-hand="left"] aside[data-sidebar="left"] {
+  left: auto !important;
+  right: 0 !important;
+  border-left: 1px solid var(--glass-edge);
+  border-right: none;
+}
+
+/* Utilidad para FABs: en zurdo se anclan a la izquierda */
+[data-hand="left"] .fab-anchor {
+  right: auto !important;
+  left: 1rem !important;
+}
+[data-hand="left"] .toast-anchor {
+  left: 1rem !important;
+  right: auto !important;
+}

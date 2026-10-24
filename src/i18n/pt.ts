@@ -1382,6 +1382,8 @@ export const pt: typeof es = {
     faithWord: 'Palavra de Força e Fé',
     glassmorphism: 'Glassmorfismo',
     glassDesc: 'Efeitos de vidro fosco nas superfícies',
+    handedness: 'Mão dominante',
+    handednessDesc: 'Espelha a navegação e os controles flutuantes para uso com a mão esquerda.',
     resetDefaults: 'Restaurar padrões (100% / 16px)',
     resetTypography: 'Restaurar tipografia',
     resetZoom: 'Restaurar zoom',
