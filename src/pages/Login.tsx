@@ -1672,13 +1672,6 @@ export function Login() {
               <Icon name="person" size={15} className="text-info dark:text-info" />
               Demo Paciente
             </button>
-            <button
-              onClick={() => navigate('/ui-showcase')}
-              className="px-4 py-2 rounded-full border border-teal-500/30 bg-teal-500/10 hover:bg-teal-500/20 text-teal-700 dark:text-teal-300 text-xs font-bold shadow-sm transition-all flex items-center gap-1.5 active:scale-95"
-            >
-              <Icon name="palette" size={15} className="text-teal-600 dark:text-teal-400" />
-              Galería UI
-            </button>
           </div>
         </div>
       </div>

@@ -35,8 +35,6 @@ import { ArrowRight, ChevronRight, Sparkles } from 'lucide-react';
 import { isValidUUID } from '../lib/utils';
 import { isDemoAccount } from '../lib/demoAuth';
 import { staggerContainer, staggerItem, springTactile } from '../lib/motionVariants';
-import { Button } from '../components/ui/Button';
-import { Tooltip } from '../components/ui/Tooltip';
 import { DateRangePicker, RangeCalendar, type DateRange } from '../components/ui/DateRangePicker';
 import { ScrollShadow } from '../components/ui/ScrollShadow';
 import { toast } from '../components/ui/Toast';
@@ -693,15 +691,6 @@ export function DashboardFisio() {
       onSelect: () => navigate('/ocr-scanner'),
     });
 
-    list.push({
-      id: 'quick-ui-showcase',
-      label: t('dashboard.quickUIShowcase'),
-      subtitle: t('dashboard.quickUIShowcaseDesc'),
-      category: t('common.actions'),
-      icon: <Sparkles size={18} className="text-teal-500" />,
-      onSelect: () => navigate('/ui-showcase'),
-    });
-
     return list;
   }, [allPatientsForSearch, allExercisesForSearch, navigate, t]);
 
@@ -803,18 +792,6 @@ export function DashboardFisio() {
                 </DateRangePicker.Popover>
               </DateRangePicker>
             </div>
-            <Tooltip content="Ver la galería en vivo de los nuevos componentes de UI" side="bottom">
-              <Button
-                variant="glow"
-                glowEffect
-                size="sm"
-                onClick={() => navigate('/ui-showcase')}
-                icon={<Sparkles size={15} />}
-                className="hidden sm:inline-flex text-xs"
-              >
-                Componentes UI
-              </Button>
-            </Tooltip>
             <HelpGuideButton />
           </div>
         </div>
