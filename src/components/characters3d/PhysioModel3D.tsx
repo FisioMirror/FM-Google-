@@ -88,6 +88,7 @@ export const PhysioModel3D: React.FC<PhysioModel3DProps> = ({
   const positionRef = useRef(position);
   const animJointsRef = useRef<JointAngleConfig[]>([]);
   const poseRef = useRef({ rotX: 0, rotY: 0, rotZ: 0, posY: 0 });
+  const crouchRef = useRef(0);
   const poseGroupRef = useRef<THREE.Group | null>(null);
   const lastElapsedRef = useRef(0);
 
@@ -381,6 +382,8 @@ export const PhysioModel3D: React.FC<PhysioModel3DProps> = ({
         }
       });
 
+      const poseAngles: Record<string, number> = {};
+
       if (hasManualAngles) {
         const currentAxes = axesRef.current;
         Object.values(joints).forEach((grp) => {
@@ -390,6 +393,7 @@ export const PhysioModel3D: React.FC<PhysioModel3DProps> = ({
           if (joints[jointName] && typeof degAngle === 'number') {
             const axis: JointRotationAxis = currentAxes[jointName] ?? 'x';
             joints[jointName].rotation[axis] = toSignedRotation(jointName, degAngle, axis);
+            poseAngles[jointName] = degAngle;
           }
         });
       } else if (autoAnimateRef.current) {
@@ -407,8 +411,22 @@ export const PhysioModel3D: React.FC<PhysioModel3DProps> = ({
           const neutral = neutralAngle ?? 0;
           const deg = neutral + (targetAngle - neutral) * phase;
           grp.rotation[ax] = toSignedRotation(joint, deg, ax);
+          poseAngles[joint] = deg;
         });
       }
+
+      // Descenso del centro de masa: si rodillas y caderas flexionan, la pelvis baja
+      // (evita que los pies atraviesen el suelo en sentadillas y puentes).
+      const flexOf = (prefix: string) => {
+        const a = poseAngles[prefix + '_izquierda'];
+        const b = poseAngles[prefix + '_derecha'];
+        const vals = [a, b].filter((v): v is number => typeof v === 'number');
+        return vals.length ? Math.max(...vals) : 0;
+      };
+      const kneeFlex = flexOf('rodilla');
+      const hipFlex = flexOf('cadera');
+      const targetCrouch = 0.42 * (1 - Math.cos(THREE.MathUtils.degToRad(Math.min(90, Math.max(kneeFlex, hipFlex * 0.7)))));
+      crouchRef.current += (targetCrouch - crouchRef.current) * 0.15;
 
       // Posición corporal (de pie / sentado / acostado / decúbito lateral)
       const poseGroup = poseGroupRef.current;
@@ -424,7 +442,7 @@ export const PhysioModel3D: React.FC<PhysioModel3DProps> = ({
         pose.rotZ += (target.rotZ - pose.rotZ) * k;
         pose.posY += (target.posY - pose.posY) * k;
         poseGroup.rotation.set(pose.rotX, pose.rotY, pose.rotZ);
-        poseGroup.position.y = pose.posY;
+        poseGroup.position.y = pose.posY - crouchRef.current;
       }
 
       // Suavizado inercial de la rotación orbital
