@@ -2346,12 +2346,36 @@ html {
   border-right: none;
 }
 
-/* Utilidad para FABs: en zurdo se anclan a la izquierda */
+/* Preferencia de botones: izquierda/derecha */
 [data-hand="left"] .fab-anchor {
   right: auto !important;
   left: 1rem !important;
 }
+[data-hand="right"] .fab-anchor {
+  left: auto !important;
+  right: 1rem !important;
+}
 [data-hand="left"] .toast-anchor {
   left: 1rem !important;
   right: auto !important;
+  align-items: flex-start !important;
+}
+[data-hand="right"] .toast-anchor {
+  right: 1rem !important;
+  left: auto !important;
+  align-items: flex-end !important;
+}
+[data-hand="left"] .floating-menu-anchor {
+  left: 1rem !important;
+  right: auto !important;
+}
+[data-hand="right"] .floating-menu-anchor {
+  right: 1rem !important;
+  left: auto !important;
+}
+[data-hand="left"] .dock-anchor {
+  justify-content: flex-start !important;
+}
+[data-hand="right"] .dock-anchor {
+  justify-content: flex-end !important;
 }
