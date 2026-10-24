@@ -9,6 +9,7 @@ import { MedicalIcon } from '../components/ui/MedicalIcon';
 import { CommandPalette, type CommandItem } from '../components/ui/CommandPalette';
 import { InsightBanner } from '../components/ui/InsightBanner';
 import { HelpGuideButton } from '../components/ui/HelpGuideButton';
+import { BorderBeam } from '../components/ui/BorderBeam';
 import { OnboardingGuide } from '../components/OnboardingGuide';
 import { useAuthStore } from '../stores/authStore';
 import { supabase } from '../lib/supabase';
@@ -1114,7 +1115,7 @@ export function DashboardFisio() {
       {/* Remote monitoring & live activity hub */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         <GlassPanel className="lg:col-span-5 p-8 rounded-3xl relative overflow-hidden hover-lift border-l-4 border-l-teal-400/60 dark:border-l-teal-600/40 shadow-[0_8px_30px_rgba(13,148,136,0.10)] flex flex-col justify-between h-full min-h-[380px]">
-          
+          <BorderBeam size={70} duration={9} borderWidth={1.5} colorFrom="#14b8a6" colorTo="#22d3ee" />
           <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent pointer-events-none" />
           <div className="relative z-10 space-y-4">
             <div className="flex justify-between items-start">

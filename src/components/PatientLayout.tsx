@@ -546,7 +546,7 @@ export function PatientLayout({ children }: PatientLayoutProps) {
           </div>
         </header>
         {/* Scrollable content with clean spacing (bottom padding clears the mobile dock / FAB) */}
-        <div className="flex-1 overflow-y-auto px-4 sm:px-6 pt-8 pb-28 md:pb-24 space-y-8 max-w-md mx-auto lg:px-0 lg:max-w-none lg:mx-0 lg:p-10 bg-surface/30 dark:bg-transparent">{children}</div>
+        <div className="flex-1 overflow-y-auto px-3 sm:px-6 pt-5 sm:pt-8 pb-28 md:pb-24 space-y-5 sm:space-y-8 max-w-md mx-auto lg:px-0 lg:max-w-none lg:mx-0 lg:p-10 bg-surface/30 dark:bg-transparent">{children}</div>
 
         {/* Desktop footer */}
         <footer className="hidden lg:flex pt-6 pb-6 px-8 justify-between text-outline text-xs border-t divider-teal shrink-0">

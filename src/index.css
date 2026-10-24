@@ -2012,6 +2012,14 @@ html {
 }
 
 /* ═══════════════════════════════════════════════════════════════
+   DENSIDAD MÓVIL — en pantallas chicas la UI se compacta ~6% para
+   reducir scroll sin bajar de 44px los controles táctiles.
+   ═══════════════════════════════════════════════════════════════ */
+@media (max-width: 640px) {
+  html { font-size: calc(var(--font-size-base, 16px) * 0.94); }
+}
+
+/* ═══════════════════════════════════════════════════════════════
    ZOOM DE INTERFAZ — escala real de la UI
    `zoom` se usa cuando está disponible porque, a diferencia de
    `transform: scale()`, NO rompe `position: fixed` (modales, docks,

@@ -690,7 +690,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
         </header>
 
         {/* Main scrollable content with clean spacing (bottom padding leaves room for the FAB on mobile) */}
-        <div className="p-4 sm:p-6 lg:p-8 pb-28 lg:pb-10 flex-1 bg-transparent">{children}</div>
+        <div className="p-3 sm:p-6 lg:p-8 pb-28 lg:pb-10 flex-1 bg-transparent">{children}</div>
 
         <footer className="pt-6 pb-6 px-4 sm:px-8 flex flex-col md:flex-row justify-between text-outline text-xs gap-4 border-t border-outline-variant/40">
           <span>&copy; 2026 FisioMirror S.A. · {t('navigation.clinicalEdition')}</span>
