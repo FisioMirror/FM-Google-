@@ -12,7 +12,6 @@ import { cn } from '../lib/utils';
 import { SparkleEffect } from '../components/auth/SparkleEffect';
 import { TurnstileWidget, type TurnstileWidgetRef } from '../components/auth/TurnstileWidget';
 import { AuroraText } from '../components/ui/AuroraText';
-import { ShimmerButton } from '../components/ui/ShimmerButton';
 import { useTranslation } from 'react-i18next';
 import { LanguageSelector } from '../components/ui/LanguageSelector';
 
@@ -979,13 +978,13 @@ export function Login() {
                     onExpire={() => setTurnstileToken(null)}
                   />
 
-                  <ShimmerButton
+                  <button
                     type="submit"
                     disabled={loading || cooldown > 0}
-                    className="w-full py-3.5 text-sm font-bold text-white disabled:opacity-50"
+                    className="w-full py-3.5 text-sm font-bold text-on-primary bg-primary hover:bg-primary/90 rounded-xl shadow-sm transition-all disabled:opacity-50 flex items-center justify-center gap-2"
                   >
                     {loading ? (
-                      <Spinner size={18} className="text-white" />
+                      <Spinner size={18} className="text-on-primary" />
                     ) : cooldown > 0 ? (
                       `Espera ${cooldown}s`
                     ) : (
@@ -994,7 +993,7 @@ export function Login() {
                         <Icon name="arrow_forward" size={18} />
                       </span>
                     )}
-                  </ShimmerButton>
+                  </button>
 
                   <div className="pt-2 text-center text-xs text-on-surface-variant space-y-1.5">
                     <p>
