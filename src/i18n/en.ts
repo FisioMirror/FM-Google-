@@ -309,6 +309,8 @@ export const en: typeof es = {
     painLevel: 'Pain Level (VAS)',
   },
   patientDashboard: {
+    painSaved: 'Pain logged',
+    painSaveError: 'Could not save pain',
     myRoutine: 'My Rehabilitation Routine',
     startExercise: 'Start Exercises Now',
     sessionCompleted: "Today's session completed successfully!",

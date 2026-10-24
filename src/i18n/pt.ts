@@ -309,6 +309,8 @@ export const pt: typeof es = {
     painLevel: 'Nível de Dor (EVA)',
   },
   patientDashboard: {
+    painSaved: 'Dor registrada',
+    painSaveError: 'Não foi possível salvar a dor',
     myRoutine: 'Minha Rotina de Reabilitação',
     startExercise: 'Iniciar Exercícios Agora',
     sessionCompleted: 'Sessão de hoje concluída com sucesso!',

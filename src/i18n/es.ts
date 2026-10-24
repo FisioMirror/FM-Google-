@@ -313,6 +313,8 @@ export const es = {
     painLevel: 'Nivel de Dolor (EVA)',
   },
   patientDashboard: {
+    painSaved: 'Dolor registrado',
+    painSaveError: 'No se pudo guardar el dolor',
     myRoutine: 'Mi Rutina de Rehabilitación',
     startExercise: 'Comenzar Ejercicios Ahora',
     sessionCompleted: '¡Sesión de hoy completada con éxito!',

@@ -90,7 +90,9 @@ export function PatientDashboard() {
   const [weekActivity, setWeekActivity] = useState<WeekActivity[]>(weekDays.map((d) => ({ day: d, minutes: 0 })));
   const [allSessionDates, setAllSessionDates] = useState<Date[]>([]);
   const [loading, setLoading] = useState(true);
-  const [evolution, setEvolution] = useState<EvolutionWeek[] | null>(null); // TODO: conectar con evolución/ROM real del paciente
+  const [evolution, setEvolution] = useState<EvolutionWeek[] | null>(null);
+  const [lastPain, setLastPain] = useState<number | undefined>(undefined);
+  const [painSaving, setPainSaving] = useState(false);
   const [recommendation, setRecommendation] = useState<string | null>(null);
   const [recLoading, setRecLoading] = useState(false);
   const [isSpeakingCopilot, setIsSpeakingCopilot] = useState(false);
@@ -241,9 +243,42 @@ export function PatientDashboard() {
         );
       }
 
-      // Si no hay datos reales (cuenta demo), inyectar datos ficticios
+      // Evolución real: dolor registrado en reportes post-sesión (últimas 6 semanas)
+      const { data: reports } = await supabase
+        .from('post_session_reports')
+        .select('fecha, nivel_dolor_antes, nivel_dolor_despues, dolor_antes, dolor_despues')
+        .eq('paciente_id', user.id)
+        .order('fecha', { ascending: true })
+        .limit(60);
+
+      if (reports && reports.length > 0) {
+        const last = reports[reports.length - 1];
+        const painNow = last.nivel_dolor_despues ?? last.dolor_despues ?? last.nivel_dolor_antes ?? last.dolor_antes;
+        if (typeof painNow === 'number') setLastPain(Math.max(0, Math.min(10, Math.round(painNow))));
+
+        const buckets = new Map<string, number[]>();
+        for (const r of reports) {
+          const d = new Date(r.fecha ?? '');
+          if (isNaN(d.getTime())) continue;
+          const monday = new Date(d);
+          monday.setDate(d.getDate() - ((d.getDay() + 6) % 7));
+          const key = monday.toISOString().split('T')[0];
+          const pain = r.nivel_dolor_despues ?? r.dolor_despues ?? r.nivel_dolor_antes ?? r.dolor_antes;
+          if (typeof pain !== 'number') continue;
+          const arr = buckets.get(key) ?? [];
+          arr.push(pain);
+          buckets.set(key, arr);
+        }
+        const weeks = Array.from(buckets.entries()).slice(-6).map(([key, vals], idx) => {
+          const avg = vals.reduce((a, v) => a + v, 0) / vals.length;
+          return { week: `S${idx + 1}`, pct: Math.round((1 - avg / 10) * 100) };
+        });
+        if (weeks.length >= 2) setEvolution(weeks);
+      }
+
+      // Sin datos reales: solo las cuentas demo muestran datos de ejemplo
       const isEmpty = (sessions ?? 0) === 0 && weeklyMin === 0 && streak === 0;
-      if (isEmpty) {
+      if (isEmpty && isDemoAccount(user)) {
         setKpi({
           streak: 4,
           totalSessions: PRIMARY_DEMO_PATIENT.sessionsCompleted,
@@ -648,8 +683,34 @@ export function PatientDashboard() {
             )}
           </CollapsibleSection>
 
-          {/* Registro del Umbral de Dolor — TODO: conectar con el registro de dolor real del paciente */}
-          <PainScaleInteractiveCard initialPain={isDemoAccount(user) ? 2 : undefined} />
+          {/* Registro del Umbral de Dolor — persistido en post_session_reports */}
+          <PainScaleInteractiveCard
+            initialPain={lastPain ?? (isDemoAccount(user) ? 2 : 0)}
+            onPainChange={async (pain) => {
+              setLastPain(pain);
+              if (!user?.id || !isValidUUID(user.id) || painSaving) return;
+              setPainSaving(true);
+              try {
+                const today = new Date().toISOString().split('T')[0];
+                const { data: existing } = await supabase
+                  .from('post_session_reports')
+                  .select('id')
+                  .eq('paciente_id', user.id)
+                  .eq('fecha', today)
+                  .maybeSingle();
+                if (existing?.id) {
+                  await supabase.from('post_session_reports').update({ nivel_dolor_despues: pain, dolor_despues: pain }).eq('id', existing.id);
+                } else {
+                  await supabase.from('post_session_reports').insert({ paciente_id: user.id, fecha: today, nivel_dolor_despues: pain, dolor_despues: pain, notas: 'Registro de dolor desde panel del paciente' });
+                }
+                toast.success(t('patientDashboard.painSaved', 'Dolor registrado'));
+              } catch {
+                toast.error(t('patientDashboard.painSaveError', 'No se pudo guardar el dolor'));
+              } finally {
+                setPainSaving(false);
+              }
+            }}
+          />
 
           {/* AI Physi Recommendation Card */}
           <div className="p-6 rounded-3xl bg-surface/80 dark:bg-surface-container-low/60 border border-outline/15 space-y-4">
