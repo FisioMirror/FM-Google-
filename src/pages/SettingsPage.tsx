@@ -10,7 +10,7 @@ import { speakHumanVoice, stopHumanVoice, getVoiceMode, setVoiceMode, type Voice
 import { GlassPanel } from '../components/ui/Glass';
 import { Icon } from '../components/ui/Icon';
 import { AnimatedTabs } from '../components/ui/AnimatedTabs';
-import { useGlassToast } from '../components/ui/GlassToast';
+import { useToast } from '../components/ui/Toast';
 import { HelpSection } from '../components/ui/HelpSection';
 import { IOSInstallModal } from '../components/ui/IOSInstallModal';
 import { EmailSystemStatusCard } from '../components/ui/EmailSystemStatusCard';
@@ -58,7 +58,7 @@ function Toggle({ value, onChange, label }: { value: boolean; onChange: (v: bool
 export function SettingsPage() {
   const { theme, toggleTheme, resetDefaults, handedness, toggleHandedness } = useTheme();
   const { user, signOut } = useAuthStore();
-  const { show } = useGlassToast();
+  const { toast } = useToast();
   const { t, i18n } = useTranslation();
   const [currentLang, setCurrentLang] = useState<string>(() => i18n.language || (typeof window !== 'undefined' ? localStorage.getItem('fisio_language') : 'es') || 'es');
 
@@ -90,13 +90,12 @@ export function SettingsPage() {
   const handleVoiceModeChange = (mode: VoiceMode) => {
     setLocalVoiceMode(mode);
     setVoiceMode(mode);
-    show({
-      title: mode === 'humanized' ? t('set.voiceHumaTitle') : t('set.voiceDevTitle'),
-      message: mode === 'humanized'
-        ? t('set.voiceHumaMsg')
-        : t('set.voiceDevMsg'),
-      variant: 'success',
-    });
+    toast.success(
+      mode === 'humanized' ? t('set.voiceHumaTitle') : t('set.voiceDevTitle'),
+      {
+        description: mode === 'humanized' ? t('set.voiceHumaMsg') : t('set.voiceDevMsg'),
+      }
+    );
   };
 
   const handleTestVoice = () => {
@@ -168,28 +167,28 @@ export function SettingsPage() {
 
   /* ── Handlers ───────────────────────────────────────────────── */
   const handlePasswordChange = async () => {
-    if (!pwCurrent || !pwNew || !pwConfirm) { show(t('common.requiredFields'), 'warning'); return; }
-    if (pwNew !== pwConfirm) { show(t('reg.pwMismatch'), 'error'); return; }
-    if (pwNew.length < 6) { show(t('auth.minPassword6Ref'), 'warning'); return; }
+    if (!pwCurrent || !pwNew || !pwConfirm) { toast.warning(t('common.requiredFields')); return; }
+    if (pwNew !== pwConfirm) { toast.error(t('reg.pwMismatch')); return; }
+    if (pwNew.length < 6) { toast.warning(t('auth.minPassword6Ref')); return; }
     setPwLoading(true);
     try {
       const result = await useAuthStore.getState().updatePassword(pwCurrent, pwNew);
       if (!result.success) {
-        show(result.error || t('set.pwChangeError'), 'error');
+        toast.error(result.error || t('set.pwChangeError'));
         return;
       }
-      show(t('set.pwChangedOk'), 'success');
+      toast.success(t('set.pwChangedOk'));
       setPwCurrent(''); setPwNew(''); setPwConfirm('');
       setShowPasswordModal(false);
     } catch {
-      show(t('set.pwChangeConn'), 'error');
+      toast.error(t('set.pwChangeConn'));
     } finally {
       setPwLoading(false);
     }
   };
 
   const handleDeleteAccount = async () => {
-    if (!deletePassword) { show(t('set.delPwRequired'), 'warning'); return; }
+    if (!deletePassword) { toast.warning(t('set.delPwRequired')); return; }
     setDeleteLoading(true);
     try {
       const fnUrl = `${supabaseUrl}/functions/v1`;
@@ -198,10 +197,10 @@ export function SettingsPage() {
         body: JSON.stringify({ userId: user?.id, password: deletePassword }),
       });
       const data = await res.json().catch(() => ({}));
-      if (!res.ok || !data.success) { show(data.error || t('set.delAccountError'), 'error'); return; }
-      show(t('set.delAccountOk'), 'success');
+      if (!res.ok || !data.success) { toast.error(data.error || t('set.delAccountError')); return; }
+      toast.success(t('set.delAccountOk'));
       signOut();
-    } catch { show(t('common.connError'), 'error'); } finally { setDeleteLoading(false); }
+    } catch { toast.error(t('common.connError')); } finally { setDeleteLoading(false); }
   };
 
   /* ══════════════════════════════════════════════════════════════
@@ -294,7 +293,7 @@ export function SettingsPage() {
             onChange={(v) => {
               setSpiritualMode(v);
               setSpiritualModeEnabled(v);
-              show(v ? t('set.faithOn') : t('set.faithOff'), 'success');
+              toast.success(v ? t('set.faithOn') : t('set.faithOff'));
             }}
             label={t('set.faithWord')}
           />
@@ -325,7 +324,7 @@ export function SettingsPage() {
                 onClick={() => {
                   changeAppLanguage(lang.code as 'es' | 'en' | 'pt');
                   setCurrentLang(lang.code);
-                  show(t('settings.languageChanged'), 'success');
+                  toast.success(t('settings.languageChanged'));
                 }}
                 className={cn(
                   'flex items-center justify-center gap-2 py-3 rounded-xl font-semibold text-sm transition-all duration-200 border cursor-pointer',
