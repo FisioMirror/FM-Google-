@@ -94,6 +94,7 @@ export function PatientDashboard() {
   const [lastPain, setLastPain] = useState<number | undefined>(undefined);
   const [painSaving, setPainSaving] = useState(false);
   const [recommendation, setRecommendation] = useState<string | null>(null);
+  const [recGeneratedAt, setRecGeneratedAt] = useState<string | null>(null);
   const [recLoading, setRecLoading] = useState(false);
   const [isSpeakingCopilot, setIsSpeakingCopilot] = useState(false);
   const toast = useToast();
@@ -732,6 +733,13 @@ export function PatientDashboard() {
             </div>
 
             <div className="p-3.5 rounded-2xl bg-surface-container/50 text-xs text-on-surface-variant leading-relaxed italic border border-outline/5">
+              {recommendation && recGeneratedAt && (
+                <div className="flex items-center gap-1.5 mb-1.5 not-italic text-2xs text-on-surface-variant/80">
+                  <Sparkles className="size-3" />
+                  <span className="font-bold uppercase tracking-wider">{t('patientDashboard.aiGenerated', 'Generado por IA')}</span>
+                  <span className="tabular-nums">· {new Date(recGeneratedAt).toLocaleString(i18n.language, { dateStyle: 'short', timeStyle: 'short' })}</span>
+                </div>
+              )}
               {recLoading ? (
                 <span className="flex items-center gap-2">
                   <Activity className="size-3.5 animate-spin text-primary" /> {t('patientDashboard.analyzingProgress')}
@@ -785,6 +793,7 @@ export function PatientDashboard() {
                       });
                       if (result.success && result.result) {
                         setRecommendation(result.result);
+                        setRecGeneratedAt(new Date().toISOString());
                         toast.success(t('patientDashboard.tipUpdated'));
                       }
                     } catch {

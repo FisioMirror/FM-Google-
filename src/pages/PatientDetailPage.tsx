@@ -111,6 +111,7 @@ export function PatientDetailPage() {
   const [activeTab, setActiveTab] = useState<Tab>(initialTab);
   const [loading, setLoading] = useState(true);
   const [aiInsight, setAiInsight] = useState('');
+  const [aiGeneratedAt, setAiGeneratedAt] = useState<string | null>(null);
   const [aiLoading, setAiLoading] = useState(false);
   const [showRoutineModal, setShowRoutineModal] = useState(false);
   const [showPDFModal, setShowPDFModal] = useState(false);
@@ -319,8 +320,13 @@ export function PatientDetailPage() {
       const result = await runAIJob('insights', {
         userPrompt: `Basado en estos datos clínicos reales: ${dataContext}, genera un insight conciso sobre la evolución del paciente y una recomendación de ajuste de rutina. Responde en ${i18n.language}.`,
       });
-      if (result.success && result.result) setAiInsight(result.result);
-      else setAiInsight(t('dashboard.noInsightNow'));
+      if (result.success && result.result) {
+        setAiInsight(result.result);
+        setAiGeneratedAt(new Date().toISOString());
+      } else {
+        setAiInsight(t('dashboard.noInsightNow'));
+        setAiGeneratedAt(new Date().toISOString());
+      }
     } catch {
       setAiInsight(t('patientDetail.physiConnectError'));
     } finally {
@@ -660,6 +666,20 @@ export function PatientDetailPage() {
                   </div>
                 ) : aiInsight ? (
                   <div className="text-sm text-on-primary-container/90 leading-relaxed mt-2 bg-white/10 p-4 rounded-xl backdrop-blur-sm border border-white/10">
+                    <div className="flex flex-wrap items-center gap-2 mb-2 pb-2 border-b border-white/15">
+                      <span className="inline-flex items-center gap-1 text-2xs font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-white/20 text-on-primary-container">
+                        <Icon name="auto_awesome" size={11} />
+                        {t('patientDetail.aiGenerated', 'Generado por IA')}
+                      </span>
+                      {aiGeneratedAt && (
+                        <span className="text-2xs text-on-primary-container/70 tabular-nums">
+                          {new Date(aiGeneratedAt).toLocaleString(i18n.language, { dateStyle: 'short', timeStyle: 'short' })}
+                        </span>
+                      )}
+                      <span className="text-2xs text-on-primary-container/70">
+                        · {t('patientDetail.aiReviewHint', 'Revisar antes de aplicar')}
+                      </span>
+                    </div>
                     {formatAIReport(aiInsight)}
                   </div>
                 ) : (
