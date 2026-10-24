@@ -239,8 +239,6 @@ export function SettingsPage() {
           </button>
         </div>
       </GlassPanel>
-        </div>
-      </GlassPanel>
 
       {/* Glassmorfismo */}
       <GlassPanel className="p-6 rounded-2xl relative overflow-hidden">
