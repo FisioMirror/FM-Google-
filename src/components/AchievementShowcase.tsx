@@ -58,7 +58,7 @@ export function AchievementUnlockModal({ achievement, role, onClose }: Achieveme
                 </span>
               </div>
 
-              <h3 className="font-headline-md text-headline-md-mobile lg:text-headline-md gradient-text-editorial mb-2">
+              <h3 className="font-headline-md text-headline-md-mobile lg:text-headline-md text-on-surface mb-2">
                 {achievement.title}
               </h3>
               <p className="text-on-surface-variant font-body-lg mb-4">

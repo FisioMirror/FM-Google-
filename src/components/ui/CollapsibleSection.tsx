@@ -39,7 +39,7 @@ export function CollapsibleSection({
               <Icon name={icon} filled size={22} />
             </span>
           )}
-          <h3 className="fm-section-title gradient-text-editorial truncate">
+          <h3 className="fm-section-title text-on-surface truncate">
             {title}
           </h3>
         </div>

@@ -36,7 +36,7 @@ export const StreakFlameCounter: React.FC<StreakFlameCounterProps> = ({
       whileHover={{ y: -3, scale: 1.01 }}
       transition={{ duration: 0.2 }}
       className={cn(
-        "relative p-5 rounded-3xl bg-gradient-to-br from-warning/20 via-surface/90 to-warning/10 dark:from-warning/20 dark:via-slate-900/90 dark:to-warning/10 border border-warning/40 shadow-elevated overflow-hidden flex items-center gap-4 group",
+        "relative p-5 rounded-3xl bg-gradient-to-br from-warning/12 via-surface/95 to-warning/8 dark:from-warning/15 dark:via-surface-container/90 dark:to-warning/10 border border-warning/30 shadow-elevated overflow-hidden flex items-center gap-4 group",
         className
       )}
     >
@@ -49,7 +49,7 @@ export const StreakFlameCounter: React.FC<StreakFlameCounterProps> = ({
         >
           <Flame className="w-8 h-8 fill-warning" />
         </motion.div>
-        <span className="absolute -bottom-1.5 text-2xs font-black uppercase tracking-wider bg-gradient-to-r from-warning to-warning text-white px-2 py-0.5 rounded-full shadow-sm">
+        <span className="absolute -bottom-1.5 text-2xs font-black uppercase tracking-wider bg-warning text-on-warning px-2 py-0.5 rounded-full shadow-sm">
           {t('st.kpiStreak')}
         </span>
       </div>
@@ -59,12 +59,12 @@ export const StreakFlameCounter: React.FC<StreakFlameCounterProps> = ({
           <span className="text-3xl font-black font-mono text-on-surface tabular-nums">
             {streakDays}
           </span>
-          <span className="text-xs font-bold text-warning dark:text-warning uppercase tracking-wider">
+          <span className="text-xs font-bold text-on-surface-variant uppercase tracking-wider">
             {t('gamification.consecutiveDays')}
           </span>
         </div>
         <p className="text-xs text-on-surface-variant font-medium">
-          {t('fgam.constancyMessage')} {t('gamification.xpMultiplier')} <strong className="text-warning">{t('fgam.multiplierActive')}</strong>.
+          {t('fgam.constancyMessage')} {t('gamification.xpMultiplier')} <strong className="text-on-surface">{t('fgam.multiplierActive')}</strong>.
         </p>
       </div>
     </motion.div>

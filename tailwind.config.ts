@@ -129,6 +129,7 @@ export default {
 
         success: 'rgb(var(--c-success-rgb) / <alpha-value>)',
         warning: 'rgb(var(--c-warning-rgb) / <alpha-value>)',
+        'on-warning': 'var(--c-on-warning)',
         danger: 'rgb(var(--c-error-rgb) / <alpha-value>)',
         info: 'rgb(var(--c-info-rgb) / <alpha-value>)',
         kinetic: 'rgb(var(--c-kinetic-rgb) / <alpha-value>)',

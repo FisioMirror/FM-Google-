@@ -116,6 +116,7 @@
   /* ── Success / Warning ── */
   --c-success: #15803d;
   --c-warning: #c2410c;
+  --c-on-warning: #ffffff;
 
   /* ── Channel triplets (permite paréntesis de opacidad en Tailwind) ── */
   --c-success-rgb: 21 128 61;
@@ -266,6 +267,7 @@
   /* ── Success / Warning ── */
   --c-success: #34d399;
   --c-warning: #fbbf24;
+  --c-on-warning: #1a1200;
 
   /* ── Channel triplets (dark) ── */
   --c-success-rgb: 52 211 153;

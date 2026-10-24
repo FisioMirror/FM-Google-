@@ -196,7 +196,7 @@ const quickActions = [
     desc: 'Inicia un seguimiento remoto con biofeedback en tiempo real.',
     icon: 'videocam',
     color: 'bg-teal-600',
-    pastelBg: 'bg-gradient-to-br from-teal-50/70 via-surface/90 to-teal-50/30 dark:from-teal-950/25 dark:via-surface-container/80 dark:to-slate-900/90 border-teal-200/50 dark:border-teal-500/25',
+    pastelBg: 'bg-gradient-to-br from-surface/85 via-surface/95 to-surface/70 dark:from-surface-container/70 dark:via-surface-container/85 dark:to-surface-container-high/70 border-outline-variant/25 dark:border-outline-variant/40',
     cta: 'Comenzar ahora',
     route: '/patients'
   },
@@ -205,7 +205,7 @@ const quickActions = [
     desc: 'Sube historias clínicas o importa perfiles con OCR inteligente.',
     icon: 'person_add',
     color: 'bg-info',
-    pastelBg: 'bg-gradient-to-br from-info/70 via-surface/90 to-info/30 dark:from-info/25 dark:via-surface-container/80 dark:to-slate-900/90 border-info/50 dark:border-info/25',
+    pastelBg: 'bg-gradient-to-br from-surface/85 via-surface/95 to-surface/70 dark:from-surface-container/70 dark:via-surface-container/85 dark:to-surface-container-high/70 border-outline-variant/25 dark:border-outline-variant/40',
     cta: 'Importar',
     route: '/ocr-scanner'
   },
@@ -214,7 +214,7 @@ const quickActions = [
     desc: 'Gestión integral de pacientes, expedientes y tokens de vinculación.',
     icon: 'group',
     color: 'bg-secondary',
-    pastelBg: 'bg-gradient-to-br from-secondary/65 via-surface/90 to-secondary/30 dark:from-secondary/20 dark:via-surface-container/80 dark:to-slate-900/90 border-secondary/50 dark:border-secondary/25',
+    pastelBg: 'bg-gradient-to-br from-surface/85 via-surface/95 to-surface/70 dark:from-surface-container/70 dark:via-surface-container/85 dark:to-surface-container-high/70 border-outline-variant/25 dark:border-outline-variant/40',
     cta: 'Ver pacientes',
     route: '/patients'
   },
@@ -223,7 +223,7 @@ const quickActions = [
     desc: 'Explora ejercicios validados y ajusta rangos articulares.',
     icon: 'fitness_center',
     color: 'bg-emerald-600',
-    pastelBg: 'bg-gradient-to-br from-emerald-50/70 via-surface/90 to-emerald-50/30 dark:from-emerald-950/25 dark:via-surface-container/80 dark:to-slate-900/90 border-emerald-200/50 dark:border-emerald-500/25',
+    pastelBg: 'bg-gradient-to-br from-surface/85 via-surface/95 to-surface/70 dark:from-surface-container/70 dark:via-surface-container/85 dark:to-surface-container-high/70 border-outline-variant/25 dark:border-outline-variant/40',
     cta: 'Ver ejercicios',
     route: '/fisio-exercises'
   },

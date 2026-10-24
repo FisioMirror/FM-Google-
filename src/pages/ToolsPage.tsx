@@ -778,7 +778,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
             <div className="flex items-center gap-3 mb-6 relative">
               <div className="w-12 h-12 rounded-xl bg-error/10 flex items-center justify-center"><Icon name="picture_as_pdf" size={24} className="text-error animate-breathe-icon" /></div>
               <div>
-                <h3 className="fm-section-title gradient-text-editorial">{t('tools.exportPdf')}</h3>
+                <h3 className="fm-section-title text-on-surface">{t('tools.exportPdf')}</h3>
                 <p className="text-sm text-on-surface-variant">Genera un reporte clínico en PDF con datos reales del paciente</p>
               </div>
             </div>
@@ -817,7 +817,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
       <div className="flex flex-col xl:flex-row gap-6">
         <div className="flex-1 flex flex-col gap-6 min-w-0">
           <div>
-            <h1 className="fm-title gradient-text-editorial">{t('tools.pageTitle')}</h1>
+            <h1 className="fm-title text-on-surface">{t('tools.pageTitle')}</h1>
             <p className="text-on-surface-variant font-body-lg">Acelera tu flujo de trabajo con instrumentos clínicos de precisión potenciados por IA.</p>
           </div>
 

@@ -479,7 +479,7 @@ export function StatsPage() {
     { labelKey: 'st.kpiTotalSessions', value: totalSessions, icon: 'analytics', bg: 'bg-primary/10', color: 'text-primary', trendKey: 'st.plus12pct' },
     { labelKey: 'st.kpiTotalMinutes', value: totalMinutes, icon: 'timer', bg: 'bg-secondary/10', color: 'text-secondary', trendKey: 'st.plus4h' },
     { labelKey: 'st.kpiAvgPrecision', value: avgPrecision > 0 ? `${avgPrecision}%` : '—', icon: 'target', bg: 'bg-tertiary/10', color: 'text-tertiary', trendKey: 'st.optimal' },
-    { labelKey: 'st.kpiStreak', value: streak > 0 ? t('st.streakDays', { d: streak }) : '—', icon: 'local_fire_department', bg: 'bg-error/10', color: 'text-error', trendKey: 'st.active' },
+    { labelKey: 'st.kpiStreak', value: streak > 0 ? t('st.streakDays', { d: streak }) : '—', icon: 'local_fire_department', bg: 'bg-warning/15', color: 'text-warning', trendKey: 'st.active' },
   ];
 
   const kpiCards = isFisio ? fisioKpis : patientKpis;
@@ -767,7 +767,7 @@ export function StatsPage() {
                 <GlassPanel className="p-8 rounded-3xl flex flex-col card-glow-hover relative overflow-hidden">
                   <div className="blob-warm absolute -top-12 -right-12 w-32 h-32 opacity-20 pointer-events-none" />
                   <div className="flex justify-between items-center mb-4">
-                    <h3 className="fm-section-title gradient-text-editorial">Distribución de Calidad</h3>
+                    <h3 className="fm-section-title text-on-surface">Distribución de Calidad</h3>
                     <Icon name="pie_chart" size={24} className="text-tertiary" />
                   </div>
                   <div className="h-56 flex-1">
@@ -848,7 +848,7 @@ export function StatsPage() {
                   <div className="blob-warm absolute -top-12 -right-12 w-32 h-32 opacity-20 pointer-events-none" />
                   <div className="flex justify-between items-center mb-4">
                     <div>
-                      <h3 className="fm-section-title gradient-text-editorial">Sesiones por Diagnóstico</h3>
+                      <h3 className="fm-section-title text-on-surface">Sesiones por Diagnóstico</h3>
                       <p className="text-xs text-on-surface-variant mt-0.5">Distribución de carga clínica</p>
                     </div>
                     <Icon name="medical_information" size={24} className="text-secondary" />
@@ -894,7 +894,7 @@ export function StatsPage() {
               {patients.length > 0 && (
                 <GlassPanel className="p-8 rounded-3xl relative overflow-hidden">
                   <div className="blob-warm absolute -bottom-12 -right-12 w-32 h-32 opacity-15 pointer-events-none" />
-                  <h3 className="fm-section-title gradient-text-editorial mb-4">Resumen por Paciente</h3>
+                  <h3 className="fm-section-title text-on-surface mb-4">Resumen por Paciente</h3>
                   <div className="overflow-x-auto">
                     <table className="w-full text-sm">
                       <thead>
@@ -1013,7 +1013,7 @@ export function StatsPage() {
 
                 <GlassPanel className="p-8 rounded-3xl flex flex-col card-glow-hover relative overflow-hidden">
                   <div className="blob-blue absolute -top-12 -right-12 w-32 h-32 opacity-20 pointer-events-none" />
-                  <h3 className="fm-section-title gradient-text-editorial mb-4">Sesiones Recientes</h3>
+                  <h3 className="fm-section-title text-on-surface mb-4">Sesiones Recientes</h3>
                   <div className="space-y-4 flex-1 overflow-y-auto max-h-64">
                     {sessions.length === 0 ? (
                       <div className="empty-state-premium text-center py-4">
@@ -1081,7 +1081,7 @@ export function StatsPage() {
                 <GlassPanel className="p-8 rounded-3xl flex flex-col card-glow-hover relative overflow-hidden">
                   <div className="blob-warm absolute -top-12 -right-12 w-32 h-32 opacity-20 pointer-events-none" />
                   <div className="flex justify-between items-center mb-4">
-                    <h3 className="fm-section-title gradient-text-editorial">Distribución de Ejercicios</h3>
+                    <h3 className="fm-section-title text-on-surface">Distribución de Ejercicios</h3>
                     <Icon name="pie_chart" size={24} className="text-tertiary" />
                   </div>
                   <div className="h-56 flex-1">
