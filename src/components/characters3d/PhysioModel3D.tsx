@@ -23,8 +23,10 @@ const JOINT_LIMITS: Record<string, { min: number; max: number }> = {
   cuello: { min: -45, max: 45 },
   hombro_izquierdo: { min: -180, max: 180 },
   hombro_derecho: { min: -180, max: 180 },
-  codo_izquierdo: { min: -150, max: 0 },
-  codo_derecho: { min: -150, max: 0 },
+  // Flexión de codo se mide 0° (extendido) -> 150° (flexionado). El signo de
+  // rotación lo aplica toSignedRotation(); clampar en negativo anulaba la flexión.
+  codo_izquierdo: { min: 0, max: 150 },
+  codo_derecho: { min: 0, max: 150 },
   muñeca_izquierda: { min: -80, max: 80 },
   muñeca_derecha: { min: -80, max: 80 },
   cadera_izquierda: { min: -120, max: 120 },

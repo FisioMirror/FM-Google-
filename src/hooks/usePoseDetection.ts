@@ -145,6 +145,7 @@ export function usePoseDetection(options: UsePoseDetectionOptions = {}): UsePose
   const [retryKey, setRetryKey] = useState(0);
 
   const repPhaseRef = useRef<'up' | 'down'>('down');
+  const repAngleSmoothRef = useRef<number | null>(null);
   const lastRepTsRef = useRef<number>(0);
   const targetAngleRef = useRef<number>(90);
   const repJointRef = useRef<RepJoint>(options.repJoint ?? inferRepJoint(options.exerciseName));
@@ -153,6 +154,7 @@ export function usePoseDetection(options: UsePoseDetectionOptions = {}): UsePose
   const resetReps = useCallback(() => {
     setRepCount(0);
     repPhaseRef.current = 'down';
+    repAngleSmoothRef.current = null;
     lastRepTsRef.current = 0;
   }, []);
 
@@ -507,36 +509,62 @@ export function usePoseDetection(options: UsePoseDetectionOptions = {}): UsePose
 
               // Conteo de repeticiones con visibilidad validada + histéresis.
               // Sin cooldown, un frame ruidoso cuenta una repetición fantasma.
-              const leftKneeAngle = angleOf(LM.LEFT_HIP, LM.LEFT_KNEE, LM.LEFT_ANKLE);
-              const rightKneeAngle = angleOf(LM.RIGHT_HIP, LM.RIGHT_KNEE, LM.RIGHT_ANKLE);
-              const leftShoulderAngle = angleOf(LM.LEFT_HIP, LM.LEFT_SHOULDER, LM.LEFT_ELBOW);
-              const rightShoulderAngle = angleOf(LM.RIGHT_HIP, LM.RIGHT_SHOULDER, LM.RIGHT_ELBOW);
-              const leftHipAngle = angleOf(LM.LEFT_SHOULDER, LM.LEFT_HIP, LM.LEFT_KNEE);
-              const rightHipAngle = angleOf(LM.RIGHT_SHOULDER, LM.RIGHT_HIP, LM.RIGHT_KNEE);
-
               const repJoint = repJointRef.current;
-              const candidates =
-                repJoint === 'knee'
-                  ? [leftKneeAngle, rightKneeAngle]
-                  : repJoint === 'shoulder'
-                    ? [leftShoulderAngle, rightShoulderAngle]
-                    : repJoint === 'hip'
-                      ? [leftHipAngle, rightHipAngle]
-                      : [leftArmAngle, rightArmAngle];
-              const validAngles = candidates.filter((v): v is number => typeof v === 'number');
-              const currentAngle = validAngles.length ? Math.max(...validAngles) : null;
+              // Se elige el lado del cuerpo que el paciente está trabajando: el de
+              // mayor visibilidad de los 3 puntos. Antes se usaba Math.max() de
+              // ambos lados, así que un brazo quieto y extendido (170°) tapaba la
+              // flexión del otro y la repetición nunca se contaba.
+              const sideTriplets: Record<string, [number, number, number][]> = {
+                knee: [
+                  [LM.LEFT_HIP, LM.LEFT_KNEE, LM.LEFT_ANKLE],
+                  [LM.RIGHT_HIP, LM.RIGHT_KNEE, LM.RIGHT_ANKLE],
+                ],
+                shoulder: [
+                  [LM.LEFT_HIP, LM.LEFT_SHOULDER, LM.LEFT_ELBOW],
+                  [LM.RIGHT_HIP, LM.RIGHT_SHOULDER, LM.RIGHT_ELBOW],
+                ],
+                hip: [
+                  [LM.LEFT_SHOULDER, LM.LEFT_HIP, LM.LEFT_KNEE],
+                  [LM.RIGHT_SHOULDER, LM.RIGHT_HIP, LM.RIGHT_KNEE],
+                ],
+                elbow: [
+                  [LM.LEFT_SHOULDER, LM.LEFT_ELBOW, LM.LEFT_WRIST],
+                  [LM.RIGHT_SHOULDER, LM.RIGHT_ELBOW, LM.RIGHT_WRIST],
+                ],
+              };
+              const visibilityOf = (triplet: [number, number, number]): number => {
+                const vis = triplet.map((i) => landmarks[i]?.visibility ?? 0);
+                return Math.min(...vis);
+              };
+              const triplets = sideTriplets[repJoint] ?? sideTriplets.elbow;
+              const bestTriplet = triplets.reduce((best, cur) =>
+                visibilityOf(cur) > visibilityOf(best) ? cur : best
+              );
+              const rawAngle = angleOf(bestTriplet[0], bestTriplet[1], bestTriplet[2]);
+              const sideVisible = visibilityOf(bestTriplet) >= 0.5;
 
-              if (currentAngle !== null) {
+              if (rawAngle !== null && sideVisible) {
                 const now = performance.now();
+                // EMA corto sobre el ángulo de conteo: el jitter del landmark no
+                // debe disparar repeticiones fantasma ni perder las lentas.
+                const prevSmooth = repAngleSmoothRef.current;
+                const alpha = prevSmooth === null ? 1 : 0.45;
+                const currentAngle = prevSmooth === null ? rawAngle : prevSmooth + alpha * (rawAngle - prevSmooth);
+                repAngleSmoothRef.current = currentAngle;
+
                 const downThreshold =
                   repJoint === 'knee' ? 100 : repJoint === 'shoulder' ? 70 : repJoint === 'hip' ? 110 : 60;
+                // Umbral de extensión: mismo para todas las articulaciones porque
+                // el ángulo siempre se mide como apertura articular (0°=cerrado).
+                const upThreshold = 155;
+                const minRepMs = 700; // ~85 rpm como techo fisiológico razonable
 
-                if (currentAngle > 155 && repPhaseRef.current === 'down') {
+                if (currentAngle > upThreshold && repPhaseRef.current === 'down') {
                   repPhaseRef.current = 'up';
                 } else if (
                   currentAngle < downThreshold &&
                   repPhaseRef.current === 'up' &&
-                  now - lastRepTsRef.current > 500
+                  now - lastRepTsRef.current > minRepMs
                 ) {
                   repPhaseRef.current = 'down';
                   lastRepTsRef.current = now;
