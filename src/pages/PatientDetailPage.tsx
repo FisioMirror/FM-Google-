@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Icon } from '../components/ui/Icon';
 import { Spinner } from '../components/ui/Loader';
@@ -101,12 +101,14 @@ export function PatientDetailPage() {
   const { t, i18n } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const toast = useToast();
   const user = useAuthStore((s) => s.user);
   const [patient, setPatient] = useState<PatientProfile | null>(null);
   const [sessions, setSessions] = useState<SessionRow[]>([]);
   const [exercises, setExercises] = useState<ExerciseRow[]>([]);
-  const [activeTab, setActiveTab] = useState<Tab>('overview');
+  const initialTab = (searchParams.get('tab') as Tab | null) ?? 'overview';
+  const [activeTab, setActiveTab] = useState<Tab>(initialTab);
   const [loading, setLoading] = useState(true);
   const [aiInsight, setAiInsight] = useState('');
   const [aiLoading, setAiLoading] = useState(false);

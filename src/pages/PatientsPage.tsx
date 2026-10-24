@@ -11,6 +11,7 @@ import { UNIFIED_DEMO_PATIENTS } from '../data/unifiedDemoData';
 import { useToast } from '../components/ui/ToastProvider';
 import { EmailFeatureModal } from '../components/ui/EmailFeatureModal';
 import { SpotlightCard } from '../components/ui/SpotlightCard';
+import { GlassModal } from '../components/ui/GlassModal';
 import { isDemoAccount } from '../lib/demoAuth';
 import {
   Users,
@@ -96,6 +97,7 @@ export function PatientsPage() {
   const [viewMode, setViewMode] = useState<'cards' | 'list'>('cards');
   const [copiedToken, setCopiedToken] = useState<string | null>(null);
   const [emailModalToken, setEmailModalToken] = useState<TokenRow | null>(null);
+  const [quickFicha, setQuickFicha] = useState<PatientCard | null>(null);
   const [previewPatient, setPreviewPatient] = useState<PatientCard | null>(null);
 
   const { getUserStatus, onlineCount } = useRealtimePresence();
@@ -638,7 +640,7 @@ export function PatientsPage() {
                     variants={staggerItem}
                     whileHover={{ y: -4, scale: 1.015, transition: springTactile }}
                     whileTap={{ scale: 0.98 }}
-                    onClick={() => navigate(`/paciente/${p.id}`)}
+                    onClick={() => setQuickFicha(p)}
                     className="h-full"
                   >
                     <SpotlightCard className="p-6 rounded-2xl group cursor-pointer transition-all duration-300 relative flex flex-col justify-between h-full shadow-sm hover:shadow-elevated bg-gradient-to-br from-surface/95 via-surface to-info/30 dark:from-surface-container/85 dark:via-surface-container/70 dark:to-teal-950/20 border border-outline-variant/25 dark:border-white/10 hover:border-teal-500/35">
@@ -984,6 +986,127 @@ export function PatientsPage() {
           onClose={() => setEmailModalToken(null)}
         />
       )}
+
+      {/* GlassModal: Ficha rápida (click en tarjeta) */}
+      <GlassModal
+        isOpen={quickFicha !== null}
+        onClose={() => setQuickFicha(null)}
+        size="md"
+      >
+        {quickFicha && (
+          <div className="space-y-5">
+            <div className="flex items-start gap-4">
+              <div className={cn(
+                "w-14 h-14 rounded-2xl flex items-center justify-center font-extrabold text-lg border-2 shrink-0",
+                quickFicha.statusColor === 'red'
+                  ? "bg-danger/15 text-danger border-danger/60"
+                  : quickFicha.statusColor === 'green'
+                  ? "bg-teal-500/15 text-teal-700 dark:text-teal-300 border-teal-400/50"
+                  : "bg-info/15 text-info border-info/40"
+              )}>
+                {quickFicha.name.split(' ').map((n) => n[0]).filter(Boolean).slice(0, 2).join('').toUpperCase() || 'FM'}
+              </div>
+              <div className="min-w-0 flex-1">
+                <h2 className="text-lg font-bold text-on-surface leading-tight line-clamp-2">{quickFicha.name}</h2>
+                <p className="text-xs font-mono text-outline uppercase tracking-wider font-semibold mt-1">
+                  {quickFicha.fmId || `FM-${quickFicha.id.slice(0, 4).toUpperCase()}`}
+                </p>
+                <div className="flex flex-wrap items-center gap-2 mt-2">
+                  <span className={cn(
+                    "inline-flex items-center gap-1.5 text-2xs font-bold px-2.5 py-1 rounded-full border",
+                    quickFicha.statusColor === 'red'
+                      ? "bg-danger/10 text-danger border-danger/30"
+                      : quickFicha.statusColor === 'green'
+                      ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/30"
+                      : "bg-info/10 text-info border-info/30"
+                  )}>
+                    {quickFicha.statusColor === 'red' ? <AlertTriangle className="size-3" /> : <CheckCircle2 className="size-3" />}
+                    {quickFicha.status}
+                  </span>
+                  {getUserStatus(quickFicha.id) && (
+                    <span className="inline-flex items-center gap-1 text-2xs font-bold px-2.5 py-1 rounded-full bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                      {getUserStatus(quickFicha.id)?.status === 'en_ejercicio' ? 'En ejercicio' : 'En línea'}
+                    </span>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <div className="flex items-center justify-between mb-1.5">
+                <span className="text-2xs uppercase font-bold text-outline tracking-wider">{t('patients.globalProgress')}</span>
+                <span className="text-sm font-extrabold text-on-surface tabular-nums">{quickFicha.recoveryProgress}%</span>
+              </div>
+              <div className="h-2 rounded-full bg-surface-container-high overflow-hidden">
+                <div
+                  className={cn(
+                    "h-full rounded-full transition-all duration-500",
+                    quickFicha.statusColor === 'red' ? "bg-danger" : quickFicha.statusColor === 'green' ? "bg-emerald-500" : "bg-info"
+                  )}
+                  style={{ width: `${Math.min(100, Math.max(0, quickFicha.recoveryProgress))}%` }}
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <div className="p-3 rounded-xl bg-surface-container/60 border border-outline-variant/25">
+                <span className="text-2xs uppercase font-bold text-outline block">{t('patients.sessionsDone')}</span>
+                <p className="font-bold text-on-surface mt-0.5 tabular-nums">{quickFicha.sessionCount}</p>
+              </div>
+              <div className="p-3 rounded-xl bg-surface-container/60 border border-outline-variant/25">
+                <span className="text-2xs uppercase font-bold text-outline block">{t('patients.lastActivity')}</span>
+                <p className="font-semibold text-on-surface mt-0.5 text-xs">{quickFicha.lastSession}</p>
+              </div>
+              <div className="p-3 rounded-xl bg-surface-container/60 border border-outline-variant/25 col-span-2">
+                <span className="text-2xs uppercase font-bold text-outline block">{t('patients.diagnosisPathology')}</span>
+                <p className="font-semibold text-on-surface mt-0.5 text-sm">{quickFicha.condition}</p>
+                {quickFicha.patologia && (
+                  <p className="text-xs text-on-surface-variant mt-1">{quickFicha.patologia}</p>
+                )}
+              </div>
+              {typeof quickFicha.adherencia === 'number' && (
+                <div className="p-3 rounded-xl bg-surface-container/60 border border-outline-variant/25 col-span-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-2xs uppercase font-bold text-outline">{t('patients.adherence', 'Adherencia')}</span>
+                    <span className="text-xs font-extrabold text-on-surface tabular-nums">{quickFicha.adherencia}%</span>
+                  </div>
+                  <div className="h-1.5 rounded-full bg-surface-container-high overflow-hidden mt-2">
+                    <div className="h-full rounded-full bg-teal-500" style={{ width: `${Math.min(100, Math.max(0, quickFicha.adherencia))}%` }} />
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-2 pt-1">
+              <button
+                type="button"
+                onClick={() => {
+                  const id = quickFicha.id;
+                  setQuickFicha(null);
+                  navigate(`/paciente/${id}`);
+                }}
+                className="flex-1 py-3 px-4 rounded-xl bg-primary hover:bg-primary/90 text-on-primary font-bold text-sm shadow-sm transition-all flex items-center justify-center gap-2"
+              >
+                <Eye className="size-4" />
+                {t('patients.openFullRecord')}
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  const id = quickFicha.id;
+                  setQuickFicha(null);
+                  navigate(`/paciente/${id}?tab=routine`);
+                }}
+                className="flex-1 py-3 px-4 rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface font-bold text-sm border border-outline-variant/40 transition-all flex items-center justify-center gap-2"
+              >
+                <Calendar className="size-4" />
+                {t('patients.assignRoutine', 'Asignar rutina')}
+              </button>
+            </div>
+          </div>
+        )}
+      </GlassModal>
 
       {/* MobileBottomSheet: Ficha Rápida del Paciente */}
       <MobileBottomSheet
