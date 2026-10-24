@@ -127,7 +127,7 @@ export function EmailSystemStatusCard() {
   };
 
   return (
-    <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-6">
+    <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-outline-variant/60 dark:border-outline-variant/40 shadow-sm space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
@@ -158,7 +158,7 @@ export function EmailSystemStatusCard() {
       {/* Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* 1. Resend API (En pausa hasta verificar dominio) */}
-        <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/70 dark:border-slate-700/60 space-y-2.5 opacity-90">
+        <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-outline-variant/60 dark:border-outline-variant/40 space-y-2.5 opacity-90">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <span className="text-xs font-bold text-on-surface">Resend API</span>
@@ -178,7 +178,7 @@ export function EmailSystemStatusCard() {
         </div>
 
         {/* 2. Servidor SMTP */}
-        <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/70 dark:border-slate-700/60 space-y-2.5">
+        <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-outline-variant/60 dark:border-outline-variant/40 space-y-2.5">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Server size={14} className="text-teal-600 dark:text-teal-400" />
@@ -209,7 +209,7 @@ export function EmailSystemStatusCard() {
         </div>
 
         {/* 3. Seguridad y Auditoría */}
-        <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/70 dark:border-slate-700/60 space-y-2.5">
+        <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-outline-variant/60 dark:border-outline-variant/40 space-y-2.5">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <ShieldCheck size={14} className="text-teal-600 dark:text-teal-400" />

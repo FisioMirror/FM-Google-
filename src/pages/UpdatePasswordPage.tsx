@@ -147,7 +147,7 @@ export function UpdatePasswordPage() {
 
   return (
     <div className="min-h-[100dvh] w-full flex items-center justify-center p-4 sm:p-6 bg-slate-50 dark:bg-slate-950 relative overflow-hidden">
-      <div className="w-full max-w-md bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 shadow-elevated border border-slate-200 dark:border-slate-800 relative z-10">
+      <div className="w-full max-w-md bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 shadow-elevated border border-outline-variant/60 dark:border-outline-variant/40 relative z-10">
         <div className="text-center mb-6">
           <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-teal-600/10 text-teal-600 dark:text-teal-400 mb-3 shadow-inner">
             <KeyRound size={28} />
@@ -180,7 +180,7 @@ export function UpdatePasswordPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder={t('reset.min6Chars')}
-                className="w-full pl-10 pr-10 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs text-on-surface outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500"
+                className="w-full pl-10 pr-10 py-3 rounded-2xl border border-outline-variant/60 dark:border-outline-variant/40 bg-slate-50 dark:bg-slate-800 text-xs text-on-surface outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500"
               />
               <button
                 type="button"
@@ -205,7 +205,7 @@ export function UpdatePasswordPage() {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder={t('reset.repeatPassword')}
-                className="w-full pl-10 pr-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs text-on-surface outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500"
+                className="w-full pl-10 pr-4 py-3 rounded-2xl border border-outline-variant/60 dark:border-outline-variant/40 bg-slate-50 dark:bg-slate-800 text-xs text-on-surface outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500"
               />
             </div>
           </div>

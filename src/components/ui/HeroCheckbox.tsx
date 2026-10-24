@@ -18,7 +18,7 @@ export function Surface({ children, className = '' }: { children: React.ReactNod
   return (
     <div
       className={cn(
-        'w-full rounded-3xl p-6 bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm transition-colors',
+        'w-full rounded-3xl p-6 bg-white dark:bg-[#0e141d] border border-outline-variant/60 dark:border-outline-variant/40 shadow-sm transition-colors',
         className
       )}
     >
@@ -87,7 +87,7 @@ export function Checkbox({
           'flex items-center gap-3.5 p-3.5 rounded-2xl border transition-all cursor-pointer select-none',
           isChecked
             ? 'bg-teal-500/10 border-teal-500/30 text-teal-950 dark:text-teal-200'
-            : 'bg-slate-50 dark:bg-slate-800/40 border-slate-200/70 dark:border-slate-700/60 text-on-surface hover:bg-slate-100 dark:hover:bg-slate-800',
+            : 'bg-slate-50 dark:bg-slate-800/40 border-outline-variant/60 dark:border-outline-variant/40 text-on-surface hover:bg-slate-100 dark:hover:bg-slate-800',
           className
         )}
       >

@@ -126,7 +126,7 @@ export function MobileBottomSheet({
   };
 
   const variantStyles = {
-    default: 'bg-white/95 dark:bg-slate-900/95 border-slate-200/80 dark:border-slate-800',
+    default: 'bg-surface/95 dark:bg-surface-container/95 border-outline-variant/60 dark:border-outline-variant/40',
     'pastel-sky': cn('bg-gradient-to-b from-sky-50/95 via-white/95 to-white/95 dark:from-sky-950/80 dark:via-slate-900/95 dark:to-slate-900/95 border-sky-300/50 dark:border-sky-500/30'),
     'pastel-mint': cn('bg-gradient-to-b from-teal-50/95 via-white/95 to-white/95 dark:from-teal-950/80 dark:via-slate-900/95 dark:to-slate-900/95 border-teal-300/50 dark:border-teal-500/30'),
     'pastel-lavender': cn('bg-gradient-to-b from-secondary/95 via-white/95 to-white/95 dark:from-secondary/80 dark:via-slate-900/95 dark:to-slate-900/95 border-secondary/50 dark:border-secondary/30'),
@@ -201,7 +201,7 @@ export function MobileBottomSheet({
                 <div className="flex items-center gap-1.5 shrink-0">
                   {/* Snap point controls */}
                   {allowedSnapPoints.length > 1 && (
-                    <div className="flex items-center rounded-lg bg-slate-100 dark:bg-slate-800 p-0.5 border border-slate-200/60 dark:border-slate-700/60">
+                    <div className="flex items-center rounded-lg bg-slate-100 dark:bg-slate-800 p-0.5 border border-outline-variant/60 dark:border-outline-variant/40">
                       <button
                         type="button"
                         onClick={() => cycleSnap('up')}
@@ -241,7 +241,7 @@ export function MobileBottomSheet({
 
             {/* Optional Sticky Footer Actions */}
             {footerActions && (
-              <div className="px-5 sm:px-6 py-3.5 border-t border-slate-200/60 dark:border-slate-800/60 bg-white/60 dark:bg-slate-900/60 backdrop-blur-md shrink-0 flex items-center justify-end gap-3">
+              <div className="px-5 sm:px-6 py-3.5 border-t border-slate-200/60 dark:border-slate-800/60 bg-surface/90 dark:bg-surface-container/90 backdrop-blur-md shrink-0 flex items-center justify-end gap-3">
                 {footerActions}
               </div>
             )}

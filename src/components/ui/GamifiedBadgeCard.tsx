@@ -76,7 +76,7 @@ export const GamifiedBadgeCard: React.FC<GamifiedBadgeCardProps> = ({
       className={cn(
         'relative flex flex-col p-6 rounded-3xl transition-all duration-300 cursor-pointer select-none',
         'bg-surface/85 dark:bg-surface-container/65 backdrop-blur-xl',
-        'border border-outline-variant/30 dark:border-white/10 shadow-card',
+        'border border-outline-variant/30 dark:border-outline-variant/40 shadow-card',
         unlocked
           ? 'hover:shadow-[0_16px_40px_rgba(0,80,77,0.2)] hover:border-primary/50'
           : 'opacity-65 filter grayscale-[40%]',

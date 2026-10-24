@@ -26,7 +26,7 @@ export function Alert({ status = 'default', children, className, onClose, ...pro
   if (closed) return null;
 
   const statusStyles: Record<AlertStatus, string> = {
-    default: 'bg-slate-100/80 dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 text-on-surface',
+    default: 'bg-slate-100/80 dark:bg-slate-800/80 border-outline-variant/60 dark:border-outline-variant/40 text-on-surface',
     accent: 'bg-teal-500/10 border-teal-500/25 text-teal-950 dark:text-teal-200',
     success: 'bg-emerald-500/10 border-emerald-500/25 text-emerald-950 dark:text-emerald-200',
     warning: 'bg-warning/10 border-warning/25 text-warning dark:text-warning',

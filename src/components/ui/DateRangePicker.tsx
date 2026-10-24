@@ -177,7 +177,7 @@ export function DateRangePickerPopover({
           className={cn(
             "absolute z-50 mt-2 left-0 sm:left-auto right-0 sm:right-auto min-w-[320px] max-w-sm",
             "p-4 rounded-2xl md:rounded-3xl shadow-elevated shadow-slate-950/20",
-            "bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl",
+            "bg-surface/95 dark:bg-surface-container/95 backdrop-blur-2xl",
             "border border-slate-200/90 dark:border-slate-800/90 text-foreground",
             className
           )}
@@ -696,7 +696,7 @@ export function SelectPopover({ children, className }: { children: React.ReactNo
   return (
     <div
       className={cn(
-        "absolute z-50 mt-1.5 w-full min-w-[140px] rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-elevated p-1",
+        "absolute z-50 mt-1.5 w-full min-w-[140px] rounded-xl bg-white dark:bg-slate-900 border border-outline-variant/60 dark:border-outline-variant/40 shadow-elevated p-1",
         className
       )}
     >
@@ -975,7 +975,7 @@ export function DateRangePickerDemo() {
       </div>
 
       {/* Subsección interactiva demostrando WeekViewRangeCalendar y BasicRangeCalendar */}
-      <div className="pt-4 border-t border-slate-200/80 dark:border-slate-800/80">
+      <div className="pt-4 border-t border-outline-variant/60 dark:border-outline-variant/40/80">
         <p className="text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-3">
           {t('drp.multiWeekView')}
         </p>

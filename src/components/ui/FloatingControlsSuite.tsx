@@ -66,9 +66,9 @@ export const JointAnatomyTooltip: React.FC<JointAnatomyTooltipProps> = ({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 8, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            className="absolute left-0 bottom-full mb-2.5 z-50 w-72 p-4 rounded-3xl bg-white/95 dark:bg-slate-950/95 text-on-surface dark:text-white border border-teal-500/30 dark:border-teal-500/40 shadow-elevated text-xs space-y-2 backdrop-blur-2xl transition-colors"
+            className="absolute left-0 bottom-full mb-2.5 z-50 w-72 p-4 rounded-3xl bg-surface/95 dark:bg-surface-container-high/95 text-on-surface dark:text-white border border-teal-500/30 dark:border-teal-500/40 shadow-elevated text-xs space-y-2 backdrop-blur-2xl transition-colors"
           >
-            <div className="flex items-center justify-between pb-1 border-b border-slate-200 dark:border-white/10">
+            <div className="flex items-center justify-between pb-1 border-b border-slate-200 dark:border-outline-variant/40">
               <span className="font-black text-teal-600 dark:text-teal-400 flex items-center gap-1.5">
                 <Layers className="w-3.5 h-3.5" />
                 {joint}

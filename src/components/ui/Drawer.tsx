@@ -169,8 +169,8 @@ export function DrawerDialog({
       onClick={(e) => e.stopPropagation()}
       className={cn(
         "pointer-events-auto relative w-screen max-w-md h-full flex flex-col",
-        "bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl",
-        "border-slate-200/80 dark:border-slate-800/80 shadow-elevated shadow-slate-950/20",
+        "bg-surface/95 dark:bg-surface-container/95 backdrop-blur-2xl",
+        "border-outline-variant/60 dark:border-outline-variant/40/80 shadow-elevated shadow-slate-950/20",
         roundedClasses[placement],
         className
       )}

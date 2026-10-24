@@ -168,7 +168,7 @@ export function PopoverDialog({
       role="tooltip"
       className={cn(
         "p-4 rounded-xl md:rounded-2xl shadow-elevated shadow-slate-950/10 dark:shadow-teal-950/20",
-        "bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl",
+        "bg-surface/95 dark:bg-surface-container/95 backdrop-blur-xl",
         "border border-slate-200/90 dark:border-slate-800/90",
         "text-on-surface",
         className

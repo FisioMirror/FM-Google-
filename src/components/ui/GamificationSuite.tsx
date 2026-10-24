@@ -488,7 +488,7 @@ export const UnlockableExerciseLocker: React.FC<UnlockableExerciseLockerProps> =
         setTimeout(() => setJiggling(false), 500);
       }}
       className={cn(
-        "relative p-5 rounded-3xl bg-slate-100/70 dark:bg-slate-900/50 border border-dashed border-slate-300 dark:border-slate-800 flex items-center justify-between cursor-pointer group",
+        "relative p-5 rounded-3xl bg-slate-100/70 dark:bg-slate-900/50 border border-dashed border-outline-variant/60 dark:border-outline-variant/40 flex items-center justify-between cursor-pointer group",
         className
       )}
     >

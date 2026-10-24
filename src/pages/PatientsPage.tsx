@@ -643,7 +643,7 @@ export function PatientsPage() {
                     onClick={() => setQuickFicha(p)}
                     className="h-full"
                   >
-                    <SpotlightCard className="p-6 rounded-2xl group cursor-pointer transition-all duration-300 relative flex flex-col justify-between h-full shadow-sm hover:shadow-elevated bg-gradient-to-br from-surface/95 via-surface to-info/30 dark:from-surface-container/85 dark:via-surface-container/70 dark:to-teal-950/20 border border-outline-variant/25 dark:border-white/10 hover:border-teal-500/35">
+                    <SpotlightCard className="p-6 rounded-2xl group cursor-pointer transition-all duration-300 relative flex flex-col justify-between h-full shadow-sm hover:shadow-elevated bg-gradient-to-br from-surface/95 via-surface to-info/30 dark:from-surface-container/85 dark:via-surface-container/70 dark:to-teal-950/20 border border-outline-variant/25 dark:border-outline-variant/40 hover:border-teal-500/35">
                     <div>
                       {/* Top Header: Avatar/Badge + Name & ID + Status Tag */}
                       <div className="flex justify-between items-start mb-5">
@@ -755,7 +755,7 @@ export function PatientsPage() {
                           e.stopPropagation();
                           setPreviewPatient(p);
                         }}
-                        className="flex-1 py-2.5 px-3 rounded-xl bg-slate-100 dark:bg-slate-800/80 hover:bg-teal-50 dark:hover:bg-slate-700/80 text-on-surface hover:text-teal-700 dark:hover:text-teal-300 font-semibold transition-all text-xs flex items-center justify-center gap-1.5 border border-slate-200/60 dark:border-slate-700/60"
+                        className="flex-1 py-2.5 px-3 rounded-xl bg-slate-100 dark:bg-slate-800/80 hover:bg-teal-50 dark:hover:bg-slate-700/80 text-on-surface hover:text-teal-700 dark:hover:text-teal-300 font-semibold transition-all text-xs flex items-center justify-center gap-1.5 border border-outline-variant/60 dark:border-outline-variant/40"
                         title="Abrir vista previa rápida en modal o bottom sheet"
                       >
                         <Eye className="size-3.5 text-teal-600 dark:text-teal-400" />

@@ -21,7 +21,7 @@ export const FISIO_DESIGN_CONTRACT = {
   // 2. Superficies y Glassmorphism Sutil (Material 3 + iOS Clinical)
   surface: {
     /** Fondo estándar para tarjetas interactivas con glassmorphism sutil */
-    glassCard: 'bg-surface/85 dark:bg-surface-container-low/80 backdrop-blur-md border border-outline/15 dark:border-white/10 shadow-xs hover:border-teal-500/30',
+    glassCard: 'bg-surface/85 dark:bg-surface-container-low/80 backdrop-blur-md border border-outline/15 dark:border-outline-variant/40 shadow-xs hover:border-teal-500/30',
     /** Paneles contenedores profundos */
     panel: 'bg-surface-container-lowest/90 dark:bg-surface-container-low/60 border border-outline/15 shadow-2xs',
     /** Superficie elevada para modales y dropdowns flotantes */
@@ -45,7 +45,7 @@ export const FISIO_DESIGN_CONTRACT = {
       brand: 'text-teal-600 dark:text-teal-400',
     },
     border: {
-      subtle: 'border-outline/15 dark:border-white/10',
+      subtle: 'border-outline/15 dark:border-outline-variant/40',
       active: 'border-teal-500/40 dark:border-teal-400/40',
     },
   },
@@ -89,9 +89,9 @@ export const TAILWIND_HARMONIZATION_MAP: Record<string, string> = {
   'bg-black': 'bg-surface-container-lowest dark:bg-surface-container-lowest',
 
   // Discrepancias de Bordes
-  'border-gray-200': 'border-outline/15 dark:border-white/10',
+  'border-gray-200': 'border-outline/15 dark:border-outline-variant/40',
   'border-gray-300': 'border-outline/25 dark:border-white/15',
-  'border-slate-200': 'border-outline/15 dark:border-white/10',
+  'border-slate-200': 'border-outline/15 dark:border-outline-variant/40',
 
   // Discrepancias de Sombras Excesivas
   'shadow-elevated': 'shadow-sm dark:shadow-black/30',

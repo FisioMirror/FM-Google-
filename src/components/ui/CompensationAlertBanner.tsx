@@ -130,7 +130,7 @@ export const CompensationAlertBanner: React.FC<CompensationAlertBannerProps> = (
             exit={{ height: 0, opacity: 0 }}
             className="px-4 pb-4 pt-1 border-t border-black/5 dark:border-white/5"
           >
-            <div className="p-3 rounded-xl bg-white/60 dark:bg-black/40 border border-black/5 dark:border-white/10 mb-3">
+            <div className="p-3 rounded-xl bg-white/60 dark:bg-black/40 border border-black/5 dark:border-outline-variant/40 mb-3">
               <span className="text-xs font-semibold text-primary dark:text-teal-400 block mb-1">
                 {t('cab.immediateGuide')}
               </span>

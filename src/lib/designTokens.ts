@@ -31,9 +31,9 @@ export const FM_DESIGN_SYSTEM = {
 
   surfaces: {
     /** Glassmorphism premium translúcido con alto contraste accesible */
-    glass: "bg-surface/85 dark:bg-surface-container/65 backdrop-blur-xl border border-outline-variant/30 dark:border-white/10",
+    glass: "bg-surface/85 dark:bg-surface-container/65 backdrop-blur-xl border border-outline-variant/30 dark:border-outline-variant/40",
     /** Panel prominente blanco/carbón */
-    solid: "bg-white dark:bg-slate-900 border border-outline-variant/20 dark:border-white/10",
+    solid: "bg-white dark:bg-slate-900 border border-outline-variant/20 dark:border-outline-variant/40",
     /** Subsuperficie anidada para inputs y listas de datos */
     innerSurface: "bg-surface-container-low/40 dark:bg-slate-800/40 border border-outline-variant/20 dark:border-white/5",
   },
@@ -107,7 +107,7 @@ export const TAILWIND_HARMONIZATION_MAP = [
   {
     category: "Bordes - Superficies generales",
     find: "border-gray-200 | border-slate-200 | border-neutral-300",
-    replaceWith: "border-outline-variant/30 dark:border-white/10",
+    replaceWith: "border-outline-variant/30 dark:border-outline-variant/40",
     rationale: "Adapta automáticamente el borde entre modo claro y oscuro con variables semánticas.",
   },
 
@@ -192,7 +192,7 @@ export function getHarmonizedContainerClasses(
   variant: 'panel' | 'card' | 'subcontainer' | 'pastel-sky' | 'pastel-mint' | 'pastel-lavender' = 'card'
 ) {
   if (variant === 'panel') {
-    return "rounded-3xl bg-surface/85 dark:bg-surface-container/65 backdrop-blur-xl border border-outline-variant/30 dark:border-white/10 shadow-sm transition-all duration-300";
+    return "rounded-3xl bg-surface/85 dark:bg-surface-container/65 backdrop-blur-xl border border-outline-variant/30 dark:border-outline-variant/40 shadow-sm transition-all duration-300";
   }
   if (variant === 'subcontainer') {
     return "rounded-xl bg-surface-container-low/40 dark:bg-slate-800/40 border border-outline-variant/20 dark:border-white/5 transition-all duration-300";
@@ -206,5 +206,5 @@ export function getHarmonizedContainerClasses(
   if (variant === 'pastel-lavender') {
     return `rounded-2xl ${CLINICAL_PASTELS.lavender.card} backdrop-blur-xl transition-all duration-300`;
   }
-  return "rounded-2xl bg-surface/80 dark:bg-surface-container/60 backdrop-blur-lg border border-outline-variant/25 dark:border-white/10 shadow-sm transition-all duration-300";
+  return "rounded-2xl bg-surface/80 dark:bg-surface-container/60 backdrop-blur-lg border border-outline-variant/25 dark:border-outline-variant/40 shadow-sm transition-all duration-300";
 }

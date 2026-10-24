@@ -106,7 +106,7 @@ export const PixelImage = ({
   return (
     <div
       className={cn(
-        "relative h-64 w-64 md:h-80 md:w-80 select-none overflow-hidden rounded-3xl shadow-sm border border-outline-variant/30 dark:border-white/10",
+        "relative h-64 w-64 md:h-80 md:w-80 select-none overflow-hidden rounded-3xl shadow-sm border border-outline-variant/30 dark:border-outline-variant/40",
         className
       )}
     >

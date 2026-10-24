@@ -188,7 +188,7 @@ export function CommandPalette({
           onKeyDown={handleKeyDown}
           className={cn(
             'w-full pl-12 pr-12 py-3 rounded-2xl glass-input font-body-lg text-sm',
-            'bg-white/50 dark:bg-slate-900/50 border border-teal-500/20 text-on-surface',
+            'bg-surface/90 dark:bg-surface-container/90 border border-teal-500/20 text-on-surface',
             'placeholder-on-surface-variant/60 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all shadow-xs',
           )}
         />
@@ -208,7 +208,7 @@ export function CommandPalette({
               ✕
             </button>
           ) : (
-            <kbd className="hidden sm:inline-flex items-center gap-0.5 px-2 py-0.5 text-2xs font-semibold text-on-surface-variant bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-md shadow-xs">
+            <kbd className="hidden sm:inline-flex items-center gap-0.5 px-2 py-0.5 text-2xs font-semibold text-on-surface-variant bg-slate-100 dark:bg-slate-800 border border-outline-variant/60 dark:border-outline-variant/40 rounded-md shadow-xs">
               ⌘K
             </kbd>
           )}
@@ -221,7 +221,7 @@ export function CommandPalette({
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 8 }}
-            className="absolute top-full mt-2 w-full rounded-2xl glass-panel shadow-elevated border border-outline-variant/40 dark:border-slate-800/80 overflow-hidden z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md max-h-80 overflow-y-auto"
+            className="absolute top-full mt-2 w-full rounded-2xl glass-panel shadow-elevated border border-outline-variant/40 dark:border-slate-800/80 overflow-hidden z-40 bg-surface/95 dark:bg-surface-container/95 backdrop-blur-md max-h-80 overflow-y-auto"
           >
             {filtered.length === 0 && !isSearchingDb ? (
               <div className="px-5 py-4 text-center">

@@ -34,7 +34,7 @@ export const RepetitionCounterSpring: React.FC<RepetitionCounterSpringProps> = (
       className={cn(
         'relative flex flex-col items-center p-6 rounded-3xl border transition-all duration-300',
         'bg-surface/85 dark:bg-surface-container/65 backdrop-blur-xl',
-        'border-outline-variant/30 dark:border-white/10 shadow-card',
+        'border-outline-variant/30 dark:border-outline-variant/40 shadow-card',
         isGoalReached && 'ring-2 ring-emerald-500/40 border-emerald-500/50',
         className
       )}
@@ -103,7 +103,7 @@ export const RepetitionCounterSpring: React.FC<RepetitionCounterSpringProps> = (
         <button
           type="button"
           onClick={onReset}
-          className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl border border-outline-variant/30 dark:border-white/10 text-xs font-semibold text-on-surface-variant hover:bg-black/5 dark:hover:bg-white/5 transition-colors active:scale-95"
+          className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl border border-outline-variant/30 dark:border-outline-variant/40 text-xs font-semibold text-on-surface-variant hover:bg-black/5 dark:hover:bg-white/5 transition-colors active:scale-95"
         >
           <RotateCcw className="w-3.5 h-3.5" />
           <span>Reiniciar</span>

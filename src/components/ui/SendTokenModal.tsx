@@ -352,7 +352,7 @@ export function SendTokenModal({
             initial={{ scale: 0.94, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.94, opacity: 0 }}
-            className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-7 max-w-lg w-full shadow-elevated border border-slate-200 dark:border-slate-800 flex flex-col gap-4 text-on-surface max-h-[90vh] overflow-y-auto"
+            className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-7 max-w-lg w-full shadow-elevated border border-outline-variant/60 dark:border-outline-variant/40 flex flex-col gap-4 text-on-surface max-h-[90vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
@@ -405,7 +405,7 @@ export function SendTokenModal({
                 </div>
               </div>
 
-              <div className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/80 dark:border-slate-700/60">
+              <div className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-outline-variant/60 dark:border-outline-variant/40/60">
                 <div className="flex items-center gap-1.5 text-on-surface-variant font-bold uppercase tracking-wider text-2xs mb-1">
                   <UserCheck size={13} />
                   <span>{t('stm.patientRecipient')}</span>
@@ -482,7 +482,7 @@ export function SendTokenModal({
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder={t('stm.emailPlaceholder')}
-                      className="w-full pl-10 pr-4 py-2.5 rounded-xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-on-surface outline-none focus:border-teal-600 focus:ring-2 focus:ring-teal-600/20"
+                      className="w-full pl-10 pr-4 py-2.5 rounded-xl text-xs border border-outline-variant/60 dark:border-outline-variant/40 bg-slate-50 dark:bg-slate-800 text-on-surface outline-none focus:border-teal-600 focus:ring-2 focus:ring-teal-600/20"
                     />
                   </div>
                 </div>
@@ -505,7 +505,7 @@ export function SendTokenModal({
                   <label className="block text-xs font-bold text-on-surface mb-1">
                     {t('stm.messagePreview')}
                   </label>
-                  <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700 text-xs font-mono leading-relaxed text-on-surface max-h-24 overflow-y-auto whitespace-pre-wrap">
+                  <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-outline-variant/60 dark:border-outline-variant/40 text-xs font-mono leading-relaxed text-on-surface max-h-24 overflow-y-auto whitespace-pre-wrap">
                     {messageBody}
                   </div>
                 </div>
@@ -526,7 +526,7 @@ export function SendTokenModal({
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
                       placeholder="+34 612 345 678"
-                      className="w-full pl-10 pr-4 py-2.5 rounded-xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-on-surface outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20"
+                      className="w-full pl-10 pr-4 py-2.5 rounded-xl text-xs border border-outline-variant/60 dark:border-outline-variant/40 bg-slate-50 dark:bg-slate-800 text-on-surface outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20"
                     />
                   </div>
                 </div>
@@ -556,7 +556,7 @@ export function SendTokenModal({
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
                       placeholder="+34 612 345 678"
-                      className="w-full pl-10 pr-4 py-2.5 rounded-xl text-xs border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-on-surface outline-none focus:border-info focus:ring-2 focus:ring-info/20"
+                      className="w-full pl-10 pr-4 py-2.5 rounded-xl text-xs border border-outline-variant/60 dark:border-outline-variant/40 bg-slate-50 dark:bg-slate-800 text-on-surface outline-none focus:border-info focus:ring-2 focus:ring-info/20"
                     />
                   </div>
                 </div>
@@ -593,7 +593,7 @@ export function SendTokenModal({
                   <button
                     type="button"
                     onClick={handleOpenNativeMail}
-                    className="w-full py-2 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200/80 dark:border-slate-700 text-on-surface font-semibold text-xs transition-all flex items-center justify-center gap-1.5"
+                    className="w-full py-2 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-outline-variant/60 dark:border-outline-variant/40 text-on-surface font-semibold text-xs transition-all flex items-center justify-center gap-1.5"
                   >
                     <ExternalLink size={13} />
                     <span>{t('stm.openInMailApp')}</span>

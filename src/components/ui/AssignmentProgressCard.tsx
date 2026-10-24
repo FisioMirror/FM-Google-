@@ -42,7 +42,7 @@ export const AssignmentProgressCard: React.FC<AssignmentProgressCardProps> = ({ 
 
   return (
     <div
-      className={`card ${colorClass} p-5 rounded-3xl shadow-sm hover:shadow-elevated hover:-translate-y-1 transition-all duration-300 bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 ${className}`}
+      className={`card ${colorClass} p-5 rounded-3xl shadow-sm hover:shadow-elevated hover:-translate-y-1 transition-all duration-300 bg-white dark:bg-[#0e141d] border border-outline-variant/60 dark:border-outline-variant/40 ${className}`}
     >
       <div className="flex justify-between items-center mb-2.5">
         <div className="flex items-center gap-2">

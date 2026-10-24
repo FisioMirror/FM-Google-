@@ -132,7 +132,7 @@ function CharacterSpotlight({
                 <span className="w-3.5 h-3.5 rounded-full bg-emerald-500 shadow-[0_0_12px_#10b981] border-2 border-white dark:border-slate-900" />
               </div>
               {/* Glass status badge */}
-              <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/95 dark:bg-slate-900/90 backdrop-blur-md shadow-card border border-emerald-500/35 text-emerald-800 dark:text-emerald-300 text-xs font-extrabold tracking-tight">
+              <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface/95 dark:bg-surface-container/95 backdrop-blur-md shadow-card border border-emerald-500/35 text-emerald-800 dark:text-emerald-300 text-xs font-extrabold tracking-tight">
                 <Icon name="medical_services" size={13} className="text-emerald-600 dark:text-emerald-400" />
                 <span>{t('auth.rolePhysioBadge')}</span>
               </div>
@@ -143,7 +143,7 @@ function CharacterSpotlight({
         {/* Discreet hover indicator when inactive */}
         {!isFisio && (
           <div className="absolute top-[28%] left-[24%] opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none transform -translate-y-1 group-hover:translate-y-0">
-            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-md shadow-sm border border-slate-200/90 dark:border-slate-700 text-on-surface text-xs font-bold">
+            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface/90 dark:bg-surface-container/90 backdrop-blur-md shadow-sm border border-slate-200/90 dark:border-slate-700 text-on-surface text-xs font-bold">
               <Icon name="touch_app" size={12} />
               <span>{t('auth.viewPhysio')}</span>
             </div>
@@ -180,7 +180,7 @@ function CharacterSpotlight({
                 <span className="w-3.5 h-3.5 rounded-full bg-info shadow-[0_0_12px_#0ea5e9] border-2 border-white dark:border-slate-900" />
               </div>
               {/* Glass status badge */}
-              <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/95 dark:bg-slate-900/90 backdrop-blur-md shadow-card border border-info/35 text-info dark:text-info text-xs font-extrabold tracking-tight">
+              <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface/95 dark:bg-surface-container/95 backdrop-blur-md shadow-card border border-info/35 text-info dark:text-info text-xs font-extrabold tracking-tight">
                 <Icon name="person" size={13} className="text-info dark:text-info" />
                 <span>{t('auth.rolePatientBadge')}</span>
               </div>
@@ -191,7 +191,7 @@ function CharacterSpotlight({
         {/* Discreet hover indicator when inactive */}
         {!isPaciente && (
           <div className="absolute top-[32%] right-[24%] opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none transform -translate-y-1 group-hover:translate-y-0">
-            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-md shadow-sm border border-slate-200/90 dark:border-slate-700 text-on-surface text-xs font-bold">
+            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface/90 dark:bg-surface-container/90 backdrop-blur-md shadow-sm border border-slate-200/90 dark:border-slate-700 text-on-surface text-xs font-bold">
               <Icon name="touch_app" size={12} />
               <span>{t('auth.viewPatient')}</span>
             </div>
@@ -768,7 +768,7 @@ export function Login() {
             <button
               onClick={toggleTheme}
               aria-label={t('common.changeTheme')}
-              className="p-2.5 rounded-full border border-slate-200/80 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 backdrop-blur-md hover:scale-105 transition-all text-primary shadow-sm hover:shadow cursor-pointer"
+              className="p-2.5 rounded-full border border-outline-variant/60 dark:border-outline-variant/40 bg-surface/90 dark:bg-surface-container/90 backdrop-blur-md hover:scale-105 transition-all text-primary shadow-sm hover:shadow cursor-pointer"
             >
               <Icon name={theme === 'dark' ? 'light_mode' : 'dark_mode'} size={18} />
             </button>
@@ -781,7 +781,7 @@ export function Login() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
           className={cn(
-            'w-full rounded-5xl border border-outline-variant/40 dark:border-slate-800/80 bg-white/45 dark:bg-slate-900/50 backdrop-blur-2xl shadow-[0_12px_40px_rgba(0,0,0,0.06)] dark:shadow-[0_12px_40px_rgba(0,0,0,0.3)] p-6 sm:p-9 flex flex-col relative overflow-hidden',
+            'w-full rounded-5xl border border-outline-variant/40 dark:border-slate-800/80 bg-surface/90 dark:bg-surface-container/90 backdrop-blur-2xl shadow-[0_12px_40px_rgba(0,0,0,0.06)] dark:shadow-[0_12px_40px_rgba(0,0,0,0.3)] p-6 sm:p-9 flex flex-col relative overflow-hidden',
             isFisio && isRegister ? 'max-w-2xl gap-y-5' : 'max-w-[480px] gap-y-5'
           )}
         >
@@ -920,7 +920,7 @@ export function Login() {
                         aria-label={t('auth.email')}
                         autoComplete="email"
                         required
-                        className="w-full rounded-2xl border border-slate-200/80 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 pl-11 pr-4 py-3.5 text-sm text-on-surface placeholder-slate-400 outline-none transition-all focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20 dark:focus:border-teal-400 dark:focus:ring-teal-400/20 shadow-sm"
+                        className="w-full rounded-2xl border border-outline-variant/60 dark:border-outline-variant/40 bg-surface/90 dark:bg-surface-container/90 pl-11 pr-4 py-3.5 text-sm text-on-surface placeholder-slate-400 outline-none transition-all focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20 dark:focus:border-teal-400 dark:focus:ring-teal-400/20 shadow-sm"
                       />
                     </div>
 
@@ -938,7 +938,7 @@ export function Login() {
                         aria-label={t('auth.password')}
                         autoComplete="current-password"
                         required
-                        className="w-full rounded-2xl border border-slate-200/80 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 pl-11 pr-11 py-3.5 text-sm text-on-surface placeholder-slate-400 outline-none transition-all focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20 dark:focus:border-teal-400 dark:focus:ring-teal-400/20 shadow-sm"
+                        className="w-full rounded-2xl border border-outline-variant/60 dark:border-outline-variant/40 bg-surface/90 dark:bg-surface-container/90 pl-11 pr-11 py-3.5 text-sm text-on-surface placeholder-slate-400 outline-none transition-all focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20 dark:focus:border-teal-400 dark:focus:ring-teal-400/20 shadow-sm"
                       />
                       <button
                         type="button"
@@ -1049,7 +1049,7 @@ export function Login() {
                         placeholder={t('auth.patientEmailPlaceholder')}
                         autoComplete="email"
                         required
-                        className="w-full rounded-2xl border border-slate-200/80 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 pl-11 pr-4 py-3 text-sm text-on-surface placeholder-slate-400 outline-none transition-all focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20 dark:focus:border-teal-400 dark:focus:ring-teal-400/20 shadow-sm"
+                        className="w-full rounded-2xl border border-outline-variant/60 dark:border-outline-variant/40 bg-surface/90 dark:bg-surface-container/90 pl-11 pr-4 py-3 text-sm text-on-surface placeholder-slate-400 outline-none transition-all focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20 dark:focus:border-teal-400 dark:focus:ring-teal-400/20 shadow-sm"
                       />
                     </div>
 
@@ -1066,7 +1066,7 @@ export function Login() {
                         placeholder={t('auth.phCreatePassword')}
                         autoComplete="new-password"
                         required
-                        className="w-full rounded-2xl border border-slate-200/80 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 pl-11 pr-11 py-3 text-sm text-on-surface placeholder-slate-400 outline-none transition-all focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20 dark:focus:border-teal-400 dark:focus:ring-teal-400/20 shadow-sm"
+                        className="w-full rounded-2xl border border-outline-variant/60 dark:border-outline-variant/40 bg-surface/90 dark:bg-surface-container/90 pl-11 pr-11 py-3 text-sm text-on-surface placeholder-slate-400 outline-none transition-all focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20 dark:focus:border-teal-400 dark:focus:ring-teal-400/20 shadow-sm"
                       />
                       <button
                         type="button"
@@ -1091,10 +1091,10 @@ export function Login() {
                         autoComplete="new-password"
                         required
                         className={cn(
-                          'w-full rounded-2xl border bg-white/80 dark:bg-slate-800/80 pl-11 pr-4 py-3 text-sm text-on-surface placeholder-slate-400 outline-none transition-all shadow-sm',
+                          'w-full rounded-2xl border bg-surface/90 dark:bg-surface-container/90 pl-11 pr-4 py-3 text-sm text-on-surface placeholder-slate-400 outline-none transition-all shadow-sm',
                           confirmPassword && password !== confirmPassword
                             ? 'border-danger focus:ring-2 focus:ring-danger/20'
-                            : 'border-slate-200/80 dark:border-slate-700 focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20 dark:focus:border-teal-400'
+                            : 'border-outline-variant/60 dark:border-outline-variant/40 focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20 dark:focus:border-teal-400'
                         )}
                       />
                     </div>
@@ -1189,7 +1189,7 @@ export function Login() {
                         aria-label={t('auth.yourEmailProfessional')}
                         autoComplete="email"
                         required
-                        className="w-full rounded-2xl border border-slate-200/80 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 pl-11 pr-4 py-3.5 text-sm text-on-surface placeholder-slate-400 outline-none transition-all focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20 dark:focus:border-teal-400 dark:focus:ring-teal-400/20 shadow-sm"
+                        className="w-full rounded-2xl border border-outline-variant/60 dark:border-outline-variant/40 bg-surface/90 dark:bg-surface-container/90 pl-11 pr-4 py-3.5 text-sm text-on-surface placeholder-slate-400 outline-none transition-all focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20 dark:focus:border-teal-400 dark:focus:ring-teal-400/20 shadow-sm"
                       />
                     </div>
 
@@ -1207,7 +1207,7 @@ export function Login() {
                         aria-label={t('auth.password')}
                         autoComplete="current-password"
                         required
-                        className="w-full rounded-2xl border border-slate-200/80 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 pl-11 pr-11 py-3.5 text-sm text-on-surface placeholder-slate-400 outline-none transition-all focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20 dark:focus:border-teal-400 dark:focus:ring-teal-400/20 shadow-sm"
+                        className="w-full rounded-2xl border border-outline-variant/60 dark:border-outline-variant/40 bg-surface/90 dark:bg-surface-container/90 pl-11 pr-11 py-3.5 text-sm text-on-surface placeholder-slate-400 outline-none transition-all focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20 dark:focus:border-teal-400 dark:focus:ring-teal-400/20 shadow-sm"
                       />
                       <button
                         type="button"
@@ -1305,7 +1305,7 @@ export function Login() {
                               onChange={(e) => setFullName(e.target.value)}
                               placeholder={t('auth.phNameExample')}
                               required
-                              className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 px-3.5 py-2.5 text-sm text-on-surface outline-none focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20"
+                              className="w-full rounded-xl border border-outline-variant/60 dark:border-outline-variant/40 bg-surface/90 dark:bg-surface-container/90 px-3.5 py-2.5 text-sm text-on-surface outline-none focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20"
                             />
                           </div>
                           <div>
@@ -1318,7 +1318,7 @@ export function Login() {
                               onChange={(e) => setEmail(e.target.value)}
                               placeholder={t('auth.phEmailExample')}
                               required
-                              className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 px-3.5 py-2.5 text-sm text-on-surface outline-none focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20"
+                              className="w-full rounded-xl border border-outline-variant/60 dark:border-outline-variant/40 bg-surface/90 dark:bg-surface-container/90 px-3.5 py-2.5 text-sm text-on-surface outline-none focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20"
                             />
                           </div>
                           <div>
@@ -1331,7 +1331,7 @@ export function Login() {
                               onChange={(e) => setPassword(e.target.value)}
                               placeholder="••••••••"
                               required
-                              className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 px-3.5 py-2.5 text-sm text-on-surface outline-none focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20"
+                              className="w-full rounded-xl border border-outline-variant/60 dark:border-outline-variant/40 bg-surface/90 dark:bg-surface-container/90 px-3.5 py-2.5 text-sm text-on-surface outline-none focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20"
                             />
                           </div>
                           <div>
@@ -1345,10 +1345,10 @@ export function Login() {
                               placeholder="••••••••"
                               required
                               className={cn(
-                                'w-full rounded-xl border bg-white/80 dark:bg-slate-800/80 px-3.5 py-2.5 text-sm text-on-surface outline-none',
+                                'w-full rounded-xl border bg-surface/90 dark:bg-surface-container/90 px-3.5 py-2.5 text-sm text-on-surface outline-none',
                                 confirmPassword && password !== confirmPassword
                                   ? 'border-danger focus:ring-2 focus:ring-danger/20'
-                                  : 'border-slate-200 dark:border-slate-700 focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20'
+                                  : 'border-outline-variant/60 dark:border-outline-variant/40 focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20'
                               )}
                             />
                           </div>
@@ -1382,7 +1382,7 @@ export function Login() {
                               onChange={(e) => setCedula(e.target.value)}
                               placeholder="000000-F"
                               required
-                              className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 px-3.5 py-2.5 text-sm text-on-surface outline-none focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20"
+                              className="w-full rounded-xl border border-outline-variant/60 dark:border-outline-variant/40 bg-surface/90 dark:bg-surface-container/90 px-3.5 py-2.5 text-sm text-on-surface outline-none focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20"
                             />
                           </div>
                           <div>
@@ -1395,7 +1395,7 @@ export function Login() {
                               placeholder="+58 412-1234567"
                               inputMode="tel"
                               required
-                              className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 px-3.5 py-2.5 text-sm text-on-surface outline-none focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20"
+                              className="w-full rounded-xl border border-outline-variant/60 dark:border-outline-variant/40 bg-surface/90 dark:bg-surface-container/90 px-3.5 py-2.5 text-sm text-on-surface outline-none focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20"
                             />
                           </div>
                           <div>
@@ -1406,7 +1406,7 @@ export function Login() {
                               value={universidad}
                               onChange={(e) => setUniversidad(e.target.value)}
                               placeholder={t('auth.phInstitution')}
-                              className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 px-3.5 py-2.5 text-sm text-on-surface outline-none focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20"
+                              className="w-full rounded-xl border border-outline-variant/60 dark:border-outline-variant/40 bg-surface/90 dark:bg-surface-container/90 px-3.5 py-2.5 text-sm text-on-surface outline-none focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20"
                             />
                           </div>
                           <div>
@@ -1417,7 +1417,7 @@ export function Login() {
                               value={colegiadoId}
                               onChange={(e) => setColegiadoId(e.target.value)}
                               placeholder="Ej: COL-12345"
-                              className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 px-3.5 py-2.5 text-sm text-on-surface outline-none focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20"
+                              className="w-full rounded-xl border border-outline-variant/60 dark:border-outline-variant/40 bg-surface/90 dark:bg-surface-container/90 px-3.5 py-2.5 text-sm text-on-surface outline-none focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20"
                             />
                           </div>
                           <div>
@@ -1427,7 +1427,7 @@ export function Login() {
                             <select
                               value={anioEgreso}
                               onChange={(e) => setAnioEgreso(e.target.value)}
-                              className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 px-3.5 py-2.5 text-sm text-on-surface outline-none focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20 cursor-pointer"
+                              className="w-full rounded-xl border border-outline-variant/60 dark:border-outline-variant/40 bg-surface/90 dark:bg-surface-container/90 px-3.5 py-2.5 text-sm text-on-surface outline-none focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20 cursor-pointer"
                             >
                               <option value="">{t('auth.selectYear')}</option>
                               {[2026, 2025, 2024, 2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016, 2015].map((y) => (
@@ -1444,7 +1444,7 @@ export function Login() {
                           <label className="block text-xs font-bold text-on-surface mb-1">
                             {t('auth.clinicalSpecialties')}
                           </label>
-                          <div className="flex flex-wrap gap-2 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 min-h-[46px] items-center">
+                          <div className="flex flex-wrap gap-2 p-2.5 rounded-xl border border-outline-variant/60 dark:border-outline-variant/40 bg-surface/90 dark:bg-surface-container/90 min-h-[46px] items-center">
                             {especialidadesSel.map((esp) => (
                               <span
                                 key={esp}
@@ -1659,14 +1659,14 @@ export function Login() {
           <div className="flex flex-wrap justify-center gap-2.5">
             <button
               onClick={fillFisioDemo}
-              className="px-4 py-2 rounded-full border border-slate-200/80 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 backdrop-blur-md hover:bg-white dark:hover:bg-slate-800 text-on-surface hover:text-[#00504d] dark:hover:text-[#8ad3cf] text-xs font-bold shadow-sm transition-all flex items-center gap-1.5 active:scale-95"
+              className="px-4 py-2 rounded-full border border-outline-variant/60 dark:border-outline-variant/40 bg-surface/90 dark:bg-surface-container/90 backdrop-blur-md hover:bg-white dark:hover:bg-slate-800 text-on-surface hover:text-[#00504d] dark:hover:text-[#8ad3cf] text-xs font-bold shadow-sm transition-all flex items-center gap-1.5 active:scale-95"
             >
               <Icon name="medical_services" size={15} className="text-[#00504d] dark:text-teal-400" />
               Demo Fisio
             </button>
             <button
               onClick={fillPacienteDemo}
-              className="px-4 py-2 rounded-full border border-slate-200/80 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 backdrop-blur-md hover:bg-white dark:hover:bg-slate-800 text-on-surface hover:text-info dark:hover:text-info text-xs font-bold shadow-sm transition-all flex items-center gap-1.5 active:scale-95"
+              className="px-4 py-2 rounded-full border border-outline-variant/60 dark:border-outline-variant/40 bg-surface/90 dark:bg-surface-container/90 backdrop-blur-md hover:bg-white dark:hover:bg-slate-800 text-on-surface hover:text-info dark:hover:text-info text-xs font-bold shadow-sm transition-all flex items-center gap-1.5 active:scale-95"
             >
               <Icon name="person" size={15} className="text-info dark:text-info" />
               Demo Paciente
@@ -1729,7 +1729,7 @@ export function Login() {
               >
                 <div
                   className={cn(
-                    'rounded-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border px-6 py-2.5 shadow-elevated transition-all duration-300 flex items-center gap-2.5',
+                    'rounded-full bg-surface/90 dark:bg-surface-container/90 backdrop-blur-xl border px-6 py-2.5 shadow-elevated transition-all duration-300 flex items-center gap-2.5',
                     isPaciente
                       ? 'border-info/90 dark:border-info/60 shadow-info/10'
                       : 'border-teal-200/90 dark:border-teal-800/60 shadow-teal-500/10'
@@ -1799,7 +1799,7 @@ export function Login() {
               role="dialog"
               aria-modal="true"
               aria-label={t('auth.ariaResetPassword')}
-              className="bg-white dark:bg-slate-900 rounded-3xl p-7 max-w-sm w-full shadow-elevated border border-slate-200 dark:border-slate-800 max-h-[90dvh] overflow-y-auto"
+              className="bg-white dark:bg-slate-900 rounded-3xl p-7 max-w-sm w-full shadow-elevated border border-outline-variant/60 dark:border-outline-variant/40 max-h-[90dvh] overflow-y-auto"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="w-12 h-12 bg-teal-50 dark:bg-teal-950/60 rounded-full flex items-center justify-center mx-auto mb-3 text-[#00504d] dark:text-teal-400">
@@ -1823,7 +1823,7 @@ export function Login() {
                   value={resetEmail}
                   onChange={(e) => setResetEmail(e.target.value)}
                   placeholder={t('auth.phEmail')}
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl text-sm border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-on-surface outline-none focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20"
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl text-sm border border-outline-variant/60 dark:border-outline-variant/40 bg-slate-50 dark:bg-slate-800 text-on-surface outline-none focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20"
                 />
               </div>
 
@@ -1880,7 +1880,7 @@ export function Login() {
               role="dialog"
               aria-modal="true"
               aria-label={t('auth.ariaAccountCreated')}
-              className="max-w-md w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-8 rounded-5xl text-center space-y-5 shadow-elevated max-h-[90dvh] overflow-y-auto"
+              className="max-w-md w-full bg-white dark:bg-slate-900 border border-outline-variant/60 dark:border-outline-variant/40 p-8 rounded-5xl text-center space-y-5 shadow-elevated max-h-[90dvh] overflow-y-auto"
             >
               <div className="w-16 h-16 bg-teal-50 dark:bg-teal-950/60 rounded-full flex items-center justify-center mx-auto text-[#00504d] dark:text-teal-400 shadow-inner">
                 <Icon name="check_circle" filled size={38} />

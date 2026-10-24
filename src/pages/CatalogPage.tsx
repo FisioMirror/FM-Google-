@@ -973,7 +973,7 @@ export function CatalogPage() {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* 1. BiomechanicalAngleGauge */}
-            <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col items-center justify-center space-y-4">
+            <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-outline-variant/60 dark:border-outline-variant/40 shadow-sm flex flex-col items-center justify-center space-y-4">
               <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
                 1. Goniómetro Dinámico Circular (BiomechanicalAngleGauge)
               </h3>
@@ -999,7 +999,7 @@ export function CatalogPage() {
             </div>
 
             {/* 2. RepetitionCounterSpring */}
-            <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col items-center justify-center space-y-4">
+            <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-outline-variant/60 dark:border-outline-variant/40 shadow-sm flex flex-col items-center justify-center space-y-4">
               <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
                 2. Contador con Resortes Elásticos (RepetitionCounterSpring)
               </h3>
@@ -1027,7 +1027,7 @@ export function CatalogPage() {
             </div>
 
             {/* 3. RehabEnergyBar */}
-            <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
+            <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-outline-variant/60 dark:border-outline-variant/40 shadow-sm space-y-4">
               <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
                 3. Barra de Energía y Fatiga Muscular (RehabEnergyBar)
               </h3>
@@ -1052,7 +1052,7 @@ export function CatalogPage() {
             </div>
 
             {/* 4. GamifiedBadgeCard */}
-            <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
+            <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-outline-variant/60 dark:border-outline-variant/40 shadow-sm space-y-4">
               <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
                 4. Medalla 3D Gamificada (GamifiedBadgeCard)
               </h3>
@@ -1075,7 +1075,7 @@ export function CatalogPage() {
             </div>
 
             {/* 5. CompensationAlertBanner */}
-            <div className="lg:col-span-2 p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
+            <div className="lg:col-span-2 p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-outline-variant/60 dark:border-outline-variant/40 shadow-sm space-y-4">
               <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
                 5. Banner de Compensación Postural (CompensationAlertBanner)
               </h3>
@@ -1088,7 +1088,7 @@ export function CatalogPage() {
             </div>
 
             {/* 6 & 7. ARFloatingDock & TherapistQuickToolbar */}
-            <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4 flex flex-col items-center justify-center">
+            <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-outline-variant/60 dark:border-outline-variant/40 shadow-sm space-y-4 flex flex-col items-center justify-center">
               <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
                 6. Dock Flotante AR (ARFloatingDock)
               </h3>
@@ -1098,7 +1098,7 @@ export function CatalogPage() {
               />
             </div>
 
-            <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4 flex flex-col items-center justify-center">
+            <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-outline-variant/60 dark:border-outline-variant/40 shadow-sm space-y-4 flex flex-col items-center justify-center">
               <h3 className="text-sm font-bold uppercase tracking-wider text-on-surface">
                 7. Barra Rápida de Terapeuta (TherapistQuickToolbar)
               </h3>

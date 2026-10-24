@@ -60,7 +60,7 @@ export const SkeletonDemo: React.FC<SkeletonDemoProps> = ({ exercise, userRole =
   });
 
   return (
-    <div className="p-4 sm:p-5 rounded-2xl text-on-surface flex flex-col items-center w-full max-w-sm mx-auto bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border border-black/5 dark:border-teal-500/25 shadow-glass-lg border-l-4 border-l-teal-600 dark:border-l-teal-400 transition-all">
+    <div className="p-4 sm:p-5 rounded-2xl text-on-surface flex flex-col items-center w-full max-w-sm mx-auto bg-surface/95 dark:bg-surface-container/95 backdrop-blur-xl border border-black/5 dark:border-teal-500/25 shadow-glass-lg border-l-4 border-l-teal-600 dark:border-l-teal-400 transition-all">
       <div className="w-full flex justify-between items-start mb-3">
         <div className="pr-2 min-w-0 flex-1">
           <h4 className="text-sm sm:text-base font-bold text-primary-900 dark:text-white truncate">{exercise.name}</h4>

@@ -689,7 +689,7 @@ export function UIShowcasePage() {
       <div className="fm-page max-w-6xl">
         
         {/* Navigation & Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-200 dark:border-slate-800">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-outline-variant/60 dark:border-outline-variant/40">
           <div className="flex items-center gap-3">
             <BackButton onClick={() => navigate(-1)}>
               <ArrowLeft className="w-4 h-4 mr-1.5" />
@@ -731,7 +731,7 @@ export function UIShowcasePage() {
         </div>
 
         {/* System KPIs Bar */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 p-4 rounded-2xl bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 backdrop-blur-md shadow-xs">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 p-4 rounded-2xl bg-surface/90 dark:bg-surface-container/90 border border-outline-variant/60 dark:border-outline-variant/40 backdrop-blur-md shadow-xs">
           <div>
             <span className="text-2xs uppercase font-bold tracking-wider text-on-surface-variant">{t('shw.componentsUsed')}</span>
             <div className="text-xl sm:text-2xl font-black text-on-surface tabular-nums flex items-baseline gap-1">
@@ -763,7 +763,7 @@ export function UIShowcasePage() {
         </div>
 
         {/* Filter Tabs Navigation */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-2 border-b border-slate-200/80 dark:border-slate-800/80 hide-scrollbar">
+        <div className="flex items-center gap-2 overflow-x-auto pb-2 border-b border-outline-variant/60 dark:border-outline-variant/40/80 hide-scrollbar">
           {tabs.map((tab) => (
             <button
               key={tab.id}
@@ -771,7 +771,7 @@ export function UIShowcasePage() {
               className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all ${
                 activeTab === tab.id
                   ? 'bg-primary text-on-primary shadow-sm shadow-teal-600/30'
-                  : 'bg-white/60 dark:bg-slate-800/60 text-on-surface-variant hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-on-surface dark:hover:text-slate-100 border border-slate-200/60 dark:border-slate-700/60'
+                  : 'bg-surface/90 dark:bg-surface-container/90 text-on-surface-variant hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-on-surface dark:hover:text-slate-100 border border-outline-variant/60 dark:border-outline-variant/40'
               }`}
             >
               {tab.icon}
@@ -1010,7 +1010,7 @@ export function UIShowcasePage() {
                   </h3>
                 </div>
 
-                <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
+                <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-outline-variant/60 dark:border-outline-variant/40 shadow-sm space-y-4">
                   <p className="text-xs text-on-surface-variant leading-relaxed">
                     {t('shw.m1BiomechanicalGaugeDescription')}
                   </p>
@@ -1071,7 +1071,7 @@ export function UIShowcasePage() {
                               "px-2 py-1 rounded-lg text-2xs font-semibold border transition-all",
                               gaugeJoint === j
                                 ? "bg-primary text-on-primary border-primary"
-                                : "bg-white/60 dark:bg-slate-800 text-on-surface-variant border-slate-200 dark:border-slate-700"
+                                : "bg-surface/90 dark:bg-surface-container/90 text-on-surface-variant border-outline-variant/60 dark:border-outline-variant/40"
                             )}
                           >
                             {t(j)}
@@ -1092,7 +1092,7 @@ export function UIShowcasePage() {
                   </h3>
                 </div>
 
-                <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
+                <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-outline-variant/60 dark:border-outline-variant/40 shadow-sm space-y-4">
                   <p className="text-xs text-on-surface-variant leading-relaxed">
                     {t('shw.highVisibilityKineticCounterForArMirrorModeWithElast')}
                   </p>
@@ -1116,7 +1116,7 @@ export function UIShowcasePage() {
                   <span className="size-2 rounded-full bg-teal-500" />
                   {t('shw.m3ArFloatingDock')}
                 </h3>
-                <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4 flex flex-col items-center justify-center min-h-[190px]">
+                <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-outline-variant/60 dark:border-outline-variant/40 shadow-sm space-y-4 flex flex-col items-center justify-center min-h-[190px]">
                   <p className="text-xs text-on-surface-variant text-center max-w-md">
                     {t('shw.designedForTheLowerPartOfArMirrorModeMagnifiesIconsO')}
                   </p>
@@ -1134,7 +1134,7 @@ export function UIShowcasePage() {
                   <span className="size-2 rounded-full bg-teal-500" />
                   {t('shw.m4TherapistQuickToolbar')}
                 </h3>
-                <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4 flex flex-col items-center justify-center min-h-[190px]">
+                <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-outline-variant/60 dark:border-outline-variant/40 shadow-sm space-y-4 flex flex-col items-center justify-center min-h-[190px]">
                   <p className="text-xs text-on-surface-variant text-center max-w-md">
                     {t('shw.m4TherapistToolbarDescription')}
                   </p>
@@ -1152,7 +1152,7 @@ export function UIShowcasePage() {
                   <span className="size-2 rounded-full bg-teal-500" />
                   {t('shw.m5RehabEnergyBar')}
                 </h3>
-                <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
+                <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-outline-variant/60 dark:border-outline-variant/40 shadow-sm space-y-4">
                   <RehabEnergyBar
                     currentEnergy={energyLevel}
                     fatigueScore={fatigueLevel}
@@ -1217,7 +1217,7 @@ export function UIShowcasePage() {
                   </div>
                 </div>
                 
-                <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
+                <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-outline-variant/60 dark:border-outline-variant/40 shadow-sm space-y-4">
                   <p className="text-xs text-on-surface-variant">
                     {t('shw.realTimeSemanticBiofeedbackAlertWhenMediapipeDetects')}
                   </p>
@@ -1240,7 +1240,7 @@ export function UIShowcasePage() {
                   <span className="size-2 rounded-full bg-teal-500" />
                   {t('shw.m7GamifiedBadgeCard')}
                 </h3>
-                <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
+                <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-outline-variant/60 dark:border-outline-variant/40 shadow-sm space-y-4">
                   <p className="text-xs text-on-surface-variant">
                     {t('shw.m7HolographicCardDescription')}
                   </p>
@@ -1275,7 +1275,7 @@ export function UIShowcasePage() {
                   <span className="size-2 rounded-full bg-teal-500" />
                   {t('shw.m8JointDetailPopover')}
                 </h3>
-                <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4 flex flex-col items-center justify-center min-h-[260px]">
+                <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-outline-variant/60 dark:border-outline-variant/40 shadow-sm space-y-4 flex flex-col items-center justify-center min-h-[260px]">
                   <p className="text-xs text-on-surface-variant text-center max-w-sm mb-2">
                     {t('shw.m8JointPopoverDescription')}
                   </p>
@@ -1363,7 +1363,7 @@ export function UIShowcasePage() {
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {/* Selector Segmentado de Articulación */}
-                <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+                <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-outline-variant/60 dark:border-outline-variant/40 shadow-sm flex flex-col justify-between">
                   <CompactJointSelector
                     selectedJoint={compactJoint}
                     onSelectJoint={(j) => setCompactJoint(j)}
@@ -1375,7 +1375,7 @@ export function UIShowcasePage() {
                 </div>
 
                 {/* Stepper Táctil de ROM con Físicas */}
-                <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+                <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-outline-variant/60 dark:border-outline-variant/40 shadow-sm flex flex-col justify-between">
                   <CompactRomStepper
                     value={compactRom}
                     onChange={(val) => setCompactRom(val)}
@@ -1391,7 +1391,7 @@ export function UIShowcasePage() {
                 </div>
 
                 {/* Dropdown Popover de Tolerancia IA */}
-                <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+                <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-outline-variant/60 dark:border-outline-variant/40 shadow-sm flex flex-col justify-between">
                   <div className="space-y-1.5">
                     <span className="text-2xs font-bold uppercase tracking-wider text-on-surface-variant block px-1">
                       {t('shw.mediapipeCalibration')}
@@ -1442,7 +1442,7 @@ export function UIShowcasePage() {
                 </MotionBlurFade>
 
                 {/* TactileFeedback Interactive Demo */}
-                <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-3">
+                <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-outline-variant/60 dark:border-outline-variant/40 shadow-sm space-y-3">
                   <div className="flex items-center justify-between">
                     <span className="text-2xs font-bold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30">
                       {t('shw.tactilefeedbackWrapper')}
@@ -1474,7 +1474,7 @@ export function UIShowcasePage() {
                         onClick={() => {
                           setCompactRom((r) => Math.max(30, r - 5));
                         }}
-                        className="px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-on-surface font-bold text-xs border border-slate-200 dark:border-slate-700"
+                        className="px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-on-surface font-bold text-xs border border-outline-variant/60 dark:border-outline-variant/40"
                       >
                         {t('shw.n5QuickRom2')}
                       </button>
@@ -1500,11 +1500,11 @@ export function UIShowcasePage() {
                 <span className="size-2 rounded-full bg-emerald-500" />
                 {t('shw.n3MobileFixedDock')}
               </h3>
-              <div className="p-5 rounded-2xl bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 space-y-3">
+              <div className="p-5 rounded-2xl bg-surface/85 dark:bg-surface-container/85 border border-outline-variant/60 dark:border-outline-variant/40 space-y-3">
                 <p className="text-xs text-on-surface-variant">
                   {t('shw.mobileFixedDockDescription')}
                 </p>
-                <div className="max-w-md mx-auto p-2 rounded-2xl bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700 flex items-center justify-around text-center text-2xs font-bold text-on-surface-variant">
+                <div className="max-w-md mx-auto p-2 rounded-2xl bg-slate-100/90 dark:bg-slate-800/90 border border-outline-variant/60 dark:border-outline-variant/40 flex items-center justify-around text-center text-2xs font-bold text-on-surface-variant">
                   <div className="py-1 px-3 rounded-xl bg-teal-500/20 text-teal-700 dark:text-teal-300">
                     <Home className="size-4 mx-auto mb-0.5" />
                     <span>{t('shw.home')}</span>
@@ -1567,7 +1567,7 @@ export function UIShowcasePage() {
         >
           <div className="space-y-4">
             {/* Controles de snap point dentro del sheet */}
-            <div className="flex items-center justify-between p-2.5 rounded-xl bg-white/70 dark:bg-slate-800/70 border border-slate-200/60 dark:border-slate-700/60">
+            <div className="flex items-center justify-between p-2.5 rounded-xl bg-surface/90 dark:bg-surface-container/90 border border-outline-variant/60 dark:border-outline-variant/40">
               <span className="text-xs font-bold text-on-surface">
                 {t('shw.heightLevelSnapPoint')}
               </span>
@@ -1794,7 +1794,7 @@ export function UIShowcasePage() {
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 {/* Antes: Blanco plano / gris aburrido */}
-                <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-on-surface relative">
+                <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-outline-variant/60 dark:border-outline-variant/40 text-on-surface relative">
                   <div className="flex items-center justify-between mb-3">
                     <span className="text-2xs font-bold px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-on-surface-variant border border-slate-300 dark:border-slate-700">
                       {t('shw.previousStyleWhiteFlatGray')}
@@ -1962,7 +1962,7 @@ export function UIShowcasePage() {
                     {t('shw.n4AlertDialogs')}
                   </h3>
                 </div>
-                <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col justify-between h-[calc(100%-2rem)]">
+                <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-outline-variant/60 dark:border-outline-variant/40 shadow-sm flex flex-col justify-between h-[calc(100%-2rem)]">
                   <div>
                     <h4 className="text-sm font-bold text-on-surface mb-1">
                       {t('shw.criticalConfirmationModal')}
@@ -1988,7 +1988,7 @@ export function UIShowcasePage() {
                     {t('shw.n5UserAvatarsFallback')}
                   </h3>
                 </div>
-                <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm">
+                <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-outline-variant/60 dark:border-outline-variant/40 shadow-sm">
                   <AvatarDemo />
                 </div>
               </div>
@@ -2026,7 +2026,7 @@ export function UIShowcasePage() {
                     {t('shw.n8StatusChips')}
                   </h3>
                 </div>
-                <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
+                <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-outline-variant/60 dark:border-outline-variant/40 shadow-sm space-y-4">
                   <p className="text-xs text-on-surface-variant">
                     {t('shw.patientStatusAndClinicalSeverityTrafficLight')}
                   </p>
@@ -2045,7 +2045,7 @@ export function UIShowcasePage() {
                     {t('shw.n9InteractiveModal')}
                   </h3>
                 </div>
-                <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
+                <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-outline-variant/60 dark:border-outline-variant/40 shadow-sm space-y-4">
                   <div>
                     <h4 className="text-sm font-bold text-on-surface mb-1">
                       {t('shw.calibrationAndModalConfiguration')}
@@ -2066,7 +2066,7 @@ export function UIShowcasePage() {
                     {t('shw.n10ContextMenuPopover')}
                   </h3>
                 </div>
-                <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
+                <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-outline-variant/60 dark:border-outline-variant/40 shadow-sm space-y-4">
                   <div>
                     <h4 className="text-sm font-bold text-on-surface mb-1">
                       {t('shw.dynamicBiomechanicalDetail')}
@@ -2090,7 +2090,7 @@ export function UIShowcasePage() {
                     {t('shw.n11SlidingDrawer')}
                   </h3>
                 </div>
-                <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
+                <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-outline-variant/60 dark:border-outline-variant/40 shadow-sm space-y-4">
                   <div>
                     <h4 className="text-sm font-bold text-on-surface mb-1">
                       {t('shw.sessionSettingsSidePanel')}
@@ -2111,7 +2111,7 @@ export function UIShowcasePage() {
                     {t('shw.n12DateRangePicker')}
                   </h3>
                 </div>
-                <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
+                <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-outline-variant/60 dark:border-outline-variant/40 shadow-sm space-y-4">
                   <div>
                     <h4 className="text-sm font-bold text-on-surface mb-1">
                       {t('shw.clinicalIntervalCalendar')}
@@ -2137,7 +2137,7 @@ export function UIShowcasePage() {
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {/* Vista Básica */}
-                  <div className="p-5 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+                  <div className="p-5 rounded-3xl bg-white dark:bg-[#0e141d] border border-outline-variant/60 dark:border-outline-variant/40 shadow-sm flex flex-col justify-between">
                     <div>
                       <span className="text-2xs font-bold text-teal-600 dark:text-teal-400 uppercase tracking-wider bg-teal-500/10 px-2 py-0.5 rounded-md">
                         {t('shw.n1BasicView')}
@@ -2155,7 +2155,7 @@ export function UIShowcasePage() {
                   </div>
 
                   {/* Vista Dinámica por Semanas */}
-                  <div className="p-5 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+                  <div className="p-5 rounded-3xl bg-white dark:bg-[#0e141d] border border-outline-variant/60 dark:border-outline-variant/40 shadow-sm flex flex-col justify-between">
                     <div>
                       <span className="text-2xs font-bold text-teal-600 dark:text-teal-400 uppercase tracking-wider bg-teal-500/10 px-2 py-0.5 rounded-md">
                         {t('shw.n2WeekView')}
@@ -2173,7 +2173,7 @@ export function UIShowcasePage() {
                   </div>
 
                   {/* Vista Predeterminada */}
-                  <div className="p-5 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+                  <div className="p-5 rounded-3xl bg-white dark:bg-[#0e141d] border border-outline-variant/60 dark:border-outline-variant/40 shadow-sm flex flex-col justify-between">
                     <div>
                       <span className="text-2xs font-bold text-teal-600 dark:text-teal-400 uppercase tracking-wider bg-teal-500/10 px-2 py-0.5 rounded-md">
                         {t('shw.n3InitialRange')}
@@ -2202,7 +2202,7 @@ export function UIShowcasePage() {
                       {t('shw.scrollOverflowShadows')}
                     </h3>
                   </div>
-                  <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
+                  <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-outline-variant/60 dark:border-outline-variant/40 shadow-sm space-y-4">
                     <div>
                       <h4 className="text-sm font-bold text-on-surface mb-1">
                         {t('shw.containerWithAutomaticGradients')}
@@ -2222,7 +2222,7 @@ export function UIShowcasePage() {
                           { name: t('shw.dynamicHamstringStretch'), reps: t('shw.n2Sets30Sec'), target: t('shw.posteriorChain'), status: t('shw.completed') },
                           { name: t('shw.singleLegBalanceOnAirDisc'), reps: t('shw.n3Sets45Sec'), target: t('shw.proprioception'), status: t('shw.pending') }
                         ].map((ex, i) => (
-                          <div key={i} className="p-3 rounded-xl bg-white dark:bg-slate-800/80 border border-slate-200/60 dark:border-slate-700/60 flex items-center justify-between shadow-xs">
+                          <div key={i} className="p-3 rounded-xl bg-white dark:bg-slate-800/80 border border-outline-variant/60 dark:border-outline-variant/40 flex items-center justify-between shadow-xs">
                             <div>
                               <p className="text-xs font-bold text-on-surface">{ex.name}</p>
                               <p className="text-xs text-on-surface-variant">{ex.target} • {ex.reps}</p>
@@ -2247,7 +2247,7 @@ export function UIShowcasePage() {
                         {t('shw.progressiveLoadingPlaceholders')}
                       </h3>
                     </div>
-                    <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
+                    <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-outline-variant/60 dark:border-outline-variant/40 shadow-sm space-y-4">
                       <div>
                         <h4 className="text-sm font-bold text-on-surface mb-1">
                           {t('shw.shimmerWaveAnimationWithoutFlicker')}
@@ -2282,7 +2282,7 @@ export function UIShowcasePage() {
                         {t('shw.herouiSonnerToastNotifications')}
                       </h3>
                     </div>
-                    <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-3">
+                    <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-outline-variant/60 dark:border-outline-variant/40 shadow-sm space-y-3">
                       <p className="text-xs text-on-surface-variant">
                         {t('shw.triggersDirectErgonomicNotificationsWithHapticFeedba')}
                       </p>
@@ -2344,7 +2344,7 @@ export function UIShowcasePage() {
                       {t('shw.n17ConfettiSideCannons')}
                     </h3>
                   </div>
-                  <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4 flex flex-col justify-between h-[calc(100%-2rem)]">
+                  <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-outline-variant/60 dark:border-outline-variant/40 shadow-sm space-y-4 flex flex-col justify-between h-[calc(100%-2rem)]">
                     <div>
                       <h4 className="text-sm font-bold text-on-surface mb-1">
                         {t('shw.continuousBidirectionalFestiveEffect')}
@@ -2383,7 +2383,7 @@ export function UIShowcasePage() {
                       {t('shw.n18DynamicTextHighlighterTitle')}
                     </h3>
                   </div>
-                  <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
+                  <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-outline-variant/60 dark:border-outline-variant/40 shadow-sm space-y-4">
                     <div className="flex flex-wrap items-center justify-between gap-2">
                       <p className="text-xs text-on-surface-variant">
                         {t('shw.animatedOrganicRoughNotationStrokes')}
@@ -2447,7 +2447,7 @@ export function UIShowcasePage() {
                       {t('shw.n19InteractiveHoverButton')}
                     </h3>
                   </div>
-                  <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4 flex flex-col justify-between h-[calc(100%-2rem)]">
+                  <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-outline-variant/60 dark:border-outline-variant/40 shadow-sm space-y-4 flex flex-col justify-between h-[calc(100%-2rem)]">
                     <div>
                       <h4 className="text-sm font-bold text-on-surface mb-1">
                         {t('shw.radialSlideMicrointeraction')}
@@ -2491,7 +2491,7 @@ export function UIShowcasePage() {
                       {t('shw.n20KineticText')}
                     </h3>
                   </div>
-                  <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
+                  <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-outline-variant/60 dark:border-outline-variant/40 shadow-sm space-y-4">
                     <div>
                       <h4 className="text-sm font-bold text-on-surface mb-1">
                         {t('shw.proximityBasedTypographicWeightDeformation')}
@@ -2578,7 +2578,7 @@ export function UIShowcasePage() {
                       {t('shw.n22NumberTicker')}
                     </h3>
                   </div>
-                  <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
+                  <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-outline-variant/60 dark:border-outline-variant/40 shadow-sm space-y-4">
                     <div>
                       <h4 className="text-sm font-bold text-on-surface mb-1">
                         {t('shw.springPhysicsWithoutAbruptJumps')}
@@ -2743,7 +2743,7 @@ export function UIShowcasePage() {
                   </div>
                 </div>
 
-                <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col md:flex-row items-center gap-8 justify-center">
+                <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-outline-variant/60 dark:border-outline-variant/40 shadow-sm flex flex-col md:flex-row items-center gap-8 justify-center">
                   <PixelImage
                     key={`pixel-${pixelReplayKey}-${pixelGridKey}`}
                     src="/physi.png"
@@ -2817,7 +2817,7 @@ export function UIShowcasePage() {
                     </div>
                   </div>
 
-                  <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
+                  <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-outline-variant/60 dark:border-outline-variant/40 shadow-sm space-y-4">
                     <div>
                       <h4 className="text-sm font-bold text-on-surface mb-1">
                         {t('shw.criticalCallToActionWithFrequencyWaves')}
@@ -2884,7 +2884,7 @@ export function UIShowcasePage() {
                       {t('shw.n26ScrollProgress')}
                     </h3>
                   </div>
-                  <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
+                  <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-outline-variant/60 dark:border-outline-variant/40 shadow-sm space-y-4">
                     <div>
                       <h4 className="text-sm font-bold text-on-surface mb-1">
                         {t('shw.dynamicScrollReadingWithGpuScale')}
@@ -2922,7 +2922,7 @@ export function UIShowcasePage() {
                       {t('shw.n27ShimmerButton')}
                     </h3>
                   </div>
-                  <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
+                  <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-outline-variant/60 dark:border-outline-variant/40 shadow-sm space-y-4">
                     <div>
                       <h4 className="text-sm font-bold text-on-surface mb-1">
                         {t('shw.continuousConicRotation')}
@@ -2964,7 +2964,7 @@ export function UIShowcasePage() {
                       {t('shw.n28ShineBorder')}
                     </h3>
                   </div>
-                  <div className="relative p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4 overflow-hidden">
+                  <div className="relative p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-outline-variant/60 dark:border-outline-variant/40 shadow-sm space-y-4 overflow-hidden">
                     <ShineBorder
                       borderWidth={2}
                       duration={10}
@@ -3007,7 +3007,7 @@ export function UIShowcasePage() {
                       {t('shw.n29SparklesText')}
                     </h3>
                   </div>
-                  <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
+                  <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-outline-variant/60 dark:border-outline-variant/40 shadow-sm space-y-4">
                     <div>
                       <h4 className="text-sm font-bold text-on-surface mb-1">
                         {t('shw.vectorFestiveStarsAndSparkles')}
@@ -3033,7 +3033,7 @@ export function UIShowcasePage() {
                         value={sparklesWord}
                         onChange={(e) => setSparklesWord(e.target.value)}
                         placeholder={t('shw.typeAnAchievementMessage')}
-                        className="flex-1 px-3 py-2 rounded-xl text-xs bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-on-surface focus:outline-hidden focus:border-teal-500"
+                        className="flex-1 px-3 py-2 rounded-xl text-xs bg-slate-100 dark:bg-slate-800 border border-outline-variant/60 dark:border-outline-variant/40 text-on-surface focus:outline-hidden focus:border-teal-500"
                       />
                       <button
                         type="button"
@@ -3064,7 +3064,7 @@ export function UIShowcasePage() {
                     </button>
                   </div>
 
-                  <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
+                  <div className="p-6 rounded-3xl bg-white dark:bg-[#0e141d] border border-outline-variant/60 dark:border-outline-variant/40 shadow-sm space-y-4">
                     <div className="flex flex-wrap items-center gap-2">
                       <span className="text-xs text-on-surface-variant">{t('shw.variant')}</span>
                       {(['blurInUp', 'fadeIn', 'slideUp', 'scaleUp', 'blurIn'] as AnimationVariant[]).map((anim) => (
@@ -3210,7 +3210,7 @@ export function UIShowcasePage() {
               </Button>
             </div>
 
-            <div className="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-6">
+            <div className="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-outline-variant/60 dark:border-outline-variant/40 shadow-sm space-y-6">
               <div>
                 <h3 className="text-xs font-bold uppercase tracking-wider text-on-surface-variant mb-3 flex items-center gap-2">
                   <span>{t('shw.componentVariants')}</span>
@@ -3357,7 +3357,7 @@ export function UIShowcasePage() {
               </p>
             </div>
 
-            <div className="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-wrap gap-4 items-center">
+            <div className="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-outline-variant/60 dark:border-outline-variant/40 shadow-sm flex flex-wrap gap-4 items-center">
               <Button 
                 variant="outline" 
                 onClick={() => { setDialogSize('sm'); setDialogOpen(true); }}
@@ -3401,7 +3401,7 @@ export function UIShowcasePage() {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 p-6 rounded-2xl bg-white dark:bg-slate-900 border border-outline-variant/60 dark:border-outline-variant/40 shadow-sm">
               <div className="space-y-4">
                 <h3 className="text-sm font-bold text-on-surface">
                   {t('shw.clinicalFieldMicroZoom')}
@@ -3500,7 +3500,7 @@ export function UIShowcasePage() {
               </p>
             </div>
 
-            <div className="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-6">
+            <div className="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-outline-variant/60 dark:border-outline-variant/40 shadow-sm space-y-6">
               <ClinicalSlider 
                 value={clinicalRom}
                 onChange={setClinicalRom}
@@ -3545,7 +3545,7 @@ export function UIShowcasePage() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+              <div className="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-outline-variant/60 dark:border-outline-variant/40 shadow-sm space-y-4">
                 <span className="text-2xs uppercase font-bold tracking-wider text-on-surface-variant">{t('shw.dynamicTypography')}</span>
                 <div>
                   <p className="text-xs text-on-surface-variant mb-1">{t('shw.auroraTextEffect')}</p>
@@ -3559,7 +3559,7 @@ export function UIShowcasePage() {
                 </div>
               </div>
 
-              <div className="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+              <div className="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-outline-variant/60 dark:border-outline-variant/40 shadow-sm flex flex-col justify-between">
                 <div>
                   <span className="text-2xs uppercase font-bold tracking-wider text-on-surface-variant block mb-2">
                     {t('shw.tooltipsWithGeometricArrow')}

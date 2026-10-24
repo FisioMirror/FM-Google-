@@ -185,10 +185,10 @@ export function ExerciseImage({ src, name, articulacion, categoria, className, h
         className,
       )}
     >
-      <div className="size-12 rounded-2xl bg-white/70 dark:bg-slate-800/80 shadow-xs flex items-center justify-center mb-2.5 backdrop-blur-md">
+      <div className="size-12 rounded-2xl bg-surface/90 dark:bg-surface-container/90 shadow-xs flex items-center justify-center mb-2.5 backdrop-blur-md">
         <IconCmp className={cn('size-6 animate-breathe-icon', visual.iconClass)} />
       </div>
-      <span className="text-2xs font-bold uppercase tracking-wider text-teal-700 dark:text-teal-300 bg-white/60 dark:bg-slate-900/60 px-2.5 py-0.5 rounded-full mb-1">
+      <span className="text-2xs font-bold uppercase tracking-wider text-teal-700 dark:text-teal-300 bg-surface/90 dark:bg-surface-container/90 px-2.5 py-0.5 rounded-full mb-1">
         {t(visual.badgeKey)}
       </span>
       <span className="font-title-md text-sm sm:text-base font-bold text-on-surface text-center px-2 line-clamp-1">

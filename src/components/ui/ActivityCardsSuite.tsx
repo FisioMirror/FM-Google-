@@ -729,7 +729,7 @@ export const RehabPhaseStepCard: React.FC<RehabPhaseStepCardProps> = ({
                   ? "bg-teal-500/15 border-teal-500/40 text-teal-900 dark:text-teal-100 shadow-sm"
                   : isDone
                   ? "bg-slate-100/60 dark:bg-slate-800/40 border-black/5 dark:border-outline-variant/40 text-on-surface-variant"
-                  : "bg-transparent border-dashed border-slate-300 dark:border-slate-800 text-on-surface-variant opacity-60"
+                  : "bg-transparent border-dashed border-outline-variant/60 dark:border-outline-variant/40 text-on-surface-variant opacity-60"
               )}
             >
               <div>

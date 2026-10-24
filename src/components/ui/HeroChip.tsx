@@ -20,7 +20,7 @@ export function Chip({ color = 'primary', variant = 'primary', size = 'md', chil
     success: 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/25',
     warning: 'bg-warning/10 text-warning dark:text-warning border-warning/25',
     danger: 'bg-danger/10 text-danger dark:text-danger border-danger/25',
-    neutral: 'bg-slate-100 dark:bg-slate-800 text-on-surface border-slate-200 dark:border-slate-700',
+    neutral: 'bg-slate-100 dark:bg-slate-800 text-on-surface border-outline-variant/60 dark:border-outline-variant/40',
   };
 
   const sizeStyles = {

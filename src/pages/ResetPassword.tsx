@@ -221,7 +221,7 @@ export function ResetPassword() {
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
-        className="w-full max-w-md bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 shadow-elevated border border-slate-200 dark:border-slate-800 relative z-10"
+        className="w-full max-w-md bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 shadow-elevated border border-outline-variant/60 dark:border-outline-variant/40 relative z-10"
       >
         {/* Encabezado */}
         <div className="text-center mb-6">
@@ -328,7 +328,7 @@ export function ResetPassword() {
                       type="button"
                       disabled={cooldown > 0 || loading}
                       onClick={handleRequestReset}
-                      className="w-full py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-on-surface text-xs font-semibold transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                      className="w-full py-2.5 rounded-xl border border-outline-variant/60 dark:border-outline-variant/40 bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-on-surface text-xs font-semibold transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                     >
                       <RefreshCw size={13} className={loading ? 'animate-spin' : ''} />
                       {cooldown > 0 ? t('reset.resendIn', { s: cooldown }) : t('reset.resendEmail')}
@@ -349,7 +349,7 @@ export function ResetPassword() {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder={t('auth.emailPlaceholder')}
-                        className="w-full pl-10 pr-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs text-on-surface outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all"
+                        className="w-full pl-10 pr-4 py-3 rounded-2xl border border-outline-variant/60 dark:border-outline-variant/40 bg-slate-50 dark:bg-slate-800 text-xs text-on-surface outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all"
                       />
                     </div>
                   </div>
@@ -404,7 +404,7 @@ export function ResetPassword() {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder={t('auth.emailPlaceholder')}
-                      className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs text-on-surface outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500"
+                      className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-outline-variant/60 dark:border-outline-variant/40 bg-slate-50 dark:bg-slate-800 text-xs text-on-surface outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500"
                     />
                   </div>
                 </div>
@@ -421,7 +421,7 @@ export function ResetPassword() {
                       value={tokenOrCode}
                       onChange={(e) => setTokenOrCode(e.target.value)}
                       placeholder={t('reset.pinPlaceholder')}
-                      className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs text-on-surface font-mono outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500"
+                      className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-outline-variant/60 dark:border-outline-variant/40 bg-slate-50 dark:bg-slate-800 text-xs text-on-surface font-mono outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500"
                     />
                   </div>
                 </div>
@@ -438,7 +438,7 @@ export function ResetPassword() {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder={t('reset.min8Chars')}
-                      className="w-full pl-10 pr-10 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs text-on-surface outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500"
+                      className="w-full pl-10 pr-10 py-2.5 rounded-xl border border-outline-variant/60 dark:border-outline-variant/40 bg-slate-50 dark:bg-slate-800 text-xs text-on-surface outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500"
                     />
                     <button
                       type="button"
@@ -486,7 +486,7 @@ export function ResetPassword() {
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       placeholder={t('reset.repeatPassword')}
-                      className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs text-on-surface outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500"
+                      className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-outline-variant/60 dark:border-outline-variant/40 bg-slate-50 dark:bg-slate-800 text-xs text-on-surface outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500"
                     />
                   </div>
                   {confirmPassword && password !== confirmPassword && (

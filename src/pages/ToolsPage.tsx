@@ -610,7 +610,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
               </div>
             </div>
             <div className="flex flex-col sm:flex-row gap-4 mb-4">
-              <select value={selectedPatient} onChange={(e) => setSelectedPatient(e.target.value)} className="flex-1 px-4 py-3 rounded-xl bg-white/70 dark:bg-slate-800/70 border border-outline-variant/30 outline-none focus:ring-2 focus:ring-teal-500/20 text-on-surface text-sm font-semibold">
+              <select value={selectedPatient} onChange={(e) => setSelectedPatient(e.target.value)} className="flex-1 px-4 py-3 rounded-xl bg-surface/90 dark:bg-surface-container/90 border border-outline-variant/30 outline-none focus:ring-2 focus:ring-teal-500/20 text-on-surface text-sm font-semibold">
                 <option value="">{t('tools.selPatient')}</option>
                 {patients.length === 0 && <option value="" disabled>{t('tools.noPatients')}</option>}
                 {patients.map((p) => (

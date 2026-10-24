@@ -68,7 +68,7 @@ export function MultiSelect({
           "w-full min-h-[44px] px-3.5 py-2 rounded-xl border bg-white dark:bg-slate-900 text-on-surface text-left flex items-center justify-between gap-2 transition-all",
           open
             ? "border-teal-500 ring-2 ring-teal-500/20"
-            : "border-slate-200 dark:border-slate-700 hover:border-teal-500/50",
+            : "border-outline-variant/60 dark:border-outline-variant/40 hover:border-teal-500/50",
         )}
       >
         <div className="flex flex-wrap gap-1.5 flex-1">
@@ -115,7 +115,7 @@ export function MultiSelect({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -4 }}
             transition={{ duration: 0.15 }}
-            className="absolute z-50 mt-1 w-full rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-elevated max-h-56 overflow-y-auto p-1"
+            className="absolute z-50 mt-1 w-full rounded-2xl border border-outline-variant/60 dark:border-outline-variant/40 bg-white dark:bg-slate-900 shadow-elevated max-h-56 overflow-y-auto p-1"
           >
             {options.map((opt) => {
               const selected = value.includes(opt.value);

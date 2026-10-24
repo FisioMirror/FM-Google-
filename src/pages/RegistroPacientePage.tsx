@@ -193,7 +193,7 @@ export function RegistroPacientePage() {
       <div className="absolute top-0 right-1/4 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-info/10 rounded-full blur-3xl pointer-events-none" />
 
-      <div className="w-full max-w-lg bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 shadow-elevated border border-slate-200/80 dark:border-slate-800 relative z-10">
+      <div className="w-full max-w-lg bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 shadow-elevated border border-outline-variant/60 dark:border-outline-variant/40 relative z-10">
         {/* Header */}
         <div className="text-center mb-6">
           <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-teal-600/10 text-teal-600 dark:text-teal-400 mb-3 shadow-inner">
@@ -208,7 +208,7 @@ export function RegistroPacientePage() {
         </div>
 
         {/* Step 1: Token Input & Verification */}
-        <div className="mb-6 p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80">
+        <div className="mb-6 p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-outline-variant/60 dark:border-outline-variant/40/80">
           <div className="flex items-center justify-between mb-2">
             <label className="block text-xs font-bold text-on-surface uppercase tracking-wider">
               {t('reg.accessCode')}
@@ -310,7 +310,7 @@ export function RegistroPacientePage() {
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
               placeholder={t('reg.namePlaceholder')}
-              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs text-on-surface outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500"
+              className="w-full px-4 py-2.5 rounded-xl border border-outline-variant/60 dark:border-outline-variant/40 bg-slate-50 dark:bg-slate-800 text-xs text-on-surface outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500"
             />
           </div>
 
@@ -326,7 +326,7 @@ export function RegistroPacientePage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder={t('reg.emailPlaceholder')}
-                className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs text-on-surface outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500"
+                className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-outline-variant/60 dark:border-outline-variant/40 bg-slate-50 dark:bg-slate-800 text-xs text-on-surface outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500"
               />
             </div>
           </div>
@@ -344,7 +344,7 @@ export function RegistroPacientePage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder={t('reset.min6Chars')}
-                  className="w-full pl-10 pr-9 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs text-on-surface outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500"
+                  className="w-full pl-10 pr-9 py-2.5 rounded-xl border border-outline-variant/60 dark:border-outline-variant/40 bg-slate-50 dark:bg-slate-800 text-xs text-on-surface outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500"
                 />
                 <button
                   type="button"
@@ -368,7 +368,7 @@ export function RegistroPacientePage() {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder={t('reg.repeatPassword')}
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs text-on-surface outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500"
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-outline-variant/60 dark:border-outline-variant/40 bg-slate-50 dark:bg-slate-800 text-xs text-on-surface outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500"
                 />
               </div>
             </div>

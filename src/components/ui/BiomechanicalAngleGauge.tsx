@@ -62,7 +62,7 @@ export const BiomechanicalAngleGauge: React.FC<BiomechanicalAngleGaugeProps> = (
       className={cn(
         'relative flex flex-col items-center justify-center p-5 rounded-3xl',
         'bg-surface/85 dark:bg-surface-container/65 backdrop-blur-xl',
-        'border border-outline-variant/30 dark:border-white/10 shadow-sm transition-all duration-300',
+        'border border-outline-variant/30 dark:border-outline-variant/40 shadow-sm transition-all duration-300',
         'hover:shadow-[0_8px_30px_rgba(0,80,77,0.12)] hover:border-primary/40',
         className
       )}

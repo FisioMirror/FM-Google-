@@ -185,7 +185,7 @@ export const IncidentReportCard: React.FC<{ className?: string }> = ({ className
 
   return (
     <div
-      className={`flex flex-col pt-5 pb-5 bg-white dark:bg-[#0e141d] rounded-3xl shadow-elevated border border-slate-200/80 dark:border-slate-800 w-full max-w-md min-h-[560px] overflow-hidden transition-colors duration-300 ${className}`}
+      className={`flex flex-col pt-5 pb-5 bg-white dark:bg-[#0e141d] rounded-3xl shadow-elevated border border-outline-variant/60 dark:border-outline-variant/40 w-full max-w-md min-h-[560px] overflow-hidden transition-colors duration-300 ${className}`}
     >
       <div className="px-6 sm:px-7 pt-2 pb-4">
         <div className="flex items-center justify-between mb-1">

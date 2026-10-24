@@ -232,7 +232,7 @@ export const ToastItemComponent = React.forwardRef<HTMLDivElement, ToastItemComp
           getBorderAndBg()
         )}
       >
-        <div className="p-2 rounded-xl shrink-0 mt-0.5 border bg-surface-container-high/60 dark:bg-white/5 border-outline-variant/40 dark:border-white/10 flex items-center justify-center">
+        <div className="p-2 rounded-xl shrink-0 mt-0.5 border bg-surface-container-high/60 dark:bg-white/5 border-outline-variant/40 dark:border-outline-variant/40 flex items-center justify-center">
           {getIcon()}
         </div>
 

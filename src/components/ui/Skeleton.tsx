@@ -77,7 +77,7 @@ export function Skeleton({
  */
 export function SkeletonCard() {
   return (
-    <div className="glass-card p-5 space-y-4 rounded-3xl border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl">
+    <div className="glass-card p-5 space-y-4 rounded-3xl border border-outline-variant/60 dark:border-outline-variant/40 bg-surface/90 dark:bg-surface-container/90 backdrop-blur-xl">
       <div className="flex items-center gap-3">
         <Skeleton variant="circle" width={48} height={48} />
         <div className="flex-1 space-y-2">
@@ -97,7 +97,7 @@ export function SkeletonCard() {
 
 export function SkeletonKPI() {
   return (
-    <div className="glass-card p-5 space-y-3 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl">
+    <div className="glass-card p-5 space-y-3 rounded-2xl border border-outline-variant/60 dark:border-outline-variant/40 bg-surface/90 dark:bg-surface-container/90 backdrop-blur-xl">
       <Skeleton variant="circle" width={32} height={32} />
       <Skeleton variant="text" width="50%" height={12} />
       <Skeleton variant="text" width="70%" height={24} />
@@ -111,7 +111,7 @@ export function SkeletonList({ count = 5 }: { count?: number }) {
       {Array.from({ length: count }).map((_, i) => (
         <div
           key={i}
-          className="glass-card p-4 flex items-center gap-3 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl"
+          className="glass-card p-4 flex items-center gap-3 rounded-2xl border border-outline-variant/60 dark:border-outline-variant/40 bg-surface/90 dark:bg-surface-container/90 backdrop-blur-xl"
         >
           <Skeleton variant="circle" width={40} height={40} />
           <div className="flex-1 space-y-2">

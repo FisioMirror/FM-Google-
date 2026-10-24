@@ -1206,7 +1206,7 @@ export function DashboardFisio() {
         </div>
 
         {/* Selector rápido 1-Tap por articulación clínica */}
-        <div className="mb-6 relative z-10 max-w-2xl bg-white/70 dark:bg-slate-900/70 p-3.5 rounded-2xl border border-info/60 dark:border-slate-800 shadow-xs backdrop-blur-md">
+        <div className="mb-6 relative z-10 max-w-2xl bg-surface/90 dark:bg-surface-container/90 p-3.5 rounded-2xl border border-info/60 dark:border-slate-800 shadow-xs backdrop-blur-md">
           <CompactJointSelector
             selectedJoint={selectedJointFilter}
             onSelectJoint={(id) => {

@@ -134,11 +134,11 @@ export function NotificationDrawer({ isOpen, onClose, userId }: NotificationDraw
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 28, stiffness: 300 }}
-            className="w-full max-w-md h-full bg-white dark:bg-slate-900 shadow-elevated border-l border-slate-200/80 dark:border-slate-800 flex flex-col overflow-hidden"
+            className="w-full max-w-md h-full bg-white dark:bg-slate-900 shadow-elevated border-l border-outline-variant/60 dark:border-outline-variant/40 flex flex-col overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
-            <div className="p-4 sm:p-5 border-b border-slate-200/80 dark:border-slate-800 flex items-center justify-between shrink-0 bg-slate-50/50 dark:bg-slate-900/50">
+            <div className="p-4 sm:p-5 border-b border-outline-variant/60 dark:border-outline-variant/40 flex items-center justify-between shrink-0 bg-slate-50/50 dark:bg-slate-900/50">
               <div className="flex items-center gap-2.5">
                 <div className="w-9 h-9 rounded-xl bg-teal-600/10 text-teal-600 dark:text-teal-400 flex items-center justify-center">
                   <Bell size={18} />
@@ -199,7 +199,7 @@ export function NotificationDrawer({ isOpen, onClose, userId }: NotificationDraw
                     className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all flex items-center gap-1.5 ${
                       activeFilter === f.id
                         ? 'bg-primary text-on-primary shadow-xs'
-                        : 'bg-white dark:bg-slate-800 text-on-surface-variant border border-slate-200/70 dark:border-slate-700/60 hover:bg-slate-50'
+                        : 'bg-white dark:bg-slate-800 text-on-surface-variant border border-outline-variant/60 dark:border-outline-variant/40 hover:bg-slate-50'
                     }`}
                   >
                     <span>{f.label}</span>

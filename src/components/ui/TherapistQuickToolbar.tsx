@@ -50,7 +50,7 @@ export const TherapistQuickToolbar: React.FC<TherapistQuickToolbarProps> = ({
       aria-label={t('tqt.physioControlToolbar')}
       className={cn(
         'relative inline-flex items-center rounded-2xl border transition-all duration-300 backdrop-blur-2xl shadow-elevated',
-        'bg-surface/90 dark:bg-slate-900/90 border-outline-variant/30 dark:border-white/10 p-1.5',
+        'bg-surface/90 dark:bg-slate-900/90 border-outline-variant/30 dark:border-outline-variant/40 p-1.5',
         className
       )}
     >

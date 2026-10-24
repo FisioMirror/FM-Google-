@@ -71,7 +71,7 @@ export function CompactJointSelector({
                 'relative px-3.5 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all snap-start select-none border',
                 isSelected
                   ? 'bg-primary text-on-primary border-teal-600 shadow-xs'
-                  : 'bg-white/80 dark:bg-slate-800/80 text-on-surface-variant border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700'
+                  : 'bg-surface/90 dark:bg-surface-container/90 text-on-surface-variant border-outline-variant/60 dark:border-outline-variant/40 hover:bg-slate-100 dark:hover:bg-slate-700'
               )}
             >
               {isSelected && (
@@ -121,7 +121,7 @@ export function CompactRomStepper({
   return (
     <div
       className={cn(
-        'p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 flex items-center justify-between gap-3',
+        'p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-outline-variant/60 dark:border-outline-variant/40/80 flex items-center justify-between gap-3',
         className
       )}
     >
@@ -213,7 +213,7 @@ export function CompactToleranceDropdown({
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="w-full p-2.5 rounded-2xl bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 flex items-center justify-between gap-2 shadow-xs text-left"
+        className="w-full p-2.5 rounded-2xl bg-white dark:bg-slate-800/80 border border-outline-variant/60 dark:border-outline-variant/40 flex items-center justify-between gap-2 shadow-xs text-left"
       >
         <div className="flex items-center gap-2 min-w-0">
           <div className="size-7 rounded-lg bg-teal-500/15 text-teal-700 dark:text-teal-300 flex items-center justify-center shrink-0">
@@ -250,7 +250,7 @@ export function CompactToleranceDropdown({
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -6, scale: 0.98 }}
               transition={springSnappy}
-              className="absolute top-full left-0 right-0 mt-1.5 z-40 p-1.5 rounded-2xl bg-white/95 dark:bg-slate-900/95 border border-slate-200 dark:border-slate-800 shadow-elevated backdrop-blur-xl space-y-1"
+              className="absolute top-full left-0 right-0 mt-1.5 z-40 p-1.5 rounded-2xl bg-surface/95 dark:bg-surface-container/95 border border-outline-variant/60 dark:border-outline-variant/40 shadow-elevated backdrop-blur-xl space-y-1"
             >
               {options.map((opt) => (
                 <button

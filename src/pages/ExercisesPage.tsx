@@ -735,7 +735,7 @@ export function ExercisesPage() {
   return (
     <div className="fm-page pb-16">
       {/* Header section with notification-like glass aesthetics */}
-      <div className="relative rounded-3xl p-6 sm:p-8 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border border-outline-variant/40 dark:border-teal-500/20 shadow-[0_8px_32px_rgba(0,80,77,0.06)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.35)] border-l-4 border-l-teal-600 dark:border-l-teal-400 overflow-hidden">
+      <div className="relative rounded-3xl p-6 sm:p-8 bg-surface/90 dark:bg-surface-container/90 backdrop-blur-xl border border-outline-variant/40 dark:border-teal-500/20 shadow-[0_8px_32px_rgba(0,80,77,0.06)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.35)] border-l-4 border-l-teal-600 dark:border-l-teal-400 overflow-hidden">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 relative z-10">
           <div className="space-y-2">
             <h1 className="fm-title text-on-surface">
@@ -793,7 +793,7 @@ export function ExercisesPage() {
       </div>
 
       {/* Search & Filter Bar (Design-Ref Styled with notification glass) */}
-      <div className="rounded-2xl p-3 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-outline-variant/40 dark:border-teal-500/20 shadow-xs flex flex-col md:flex-row items-stretch md:items-center gap-3">
+      <div className="rounded-2xl p-3 bg-surface/85 dark:bg-surface-container/85 backdrop-blur-xl border border-outline-variant/40 dark:border-teal-500/20 shadow-xs flex flex-col md:flex-row items-stretch md:items-center gap-3">
         {/* Search input */}
         <div className="relative flex-1">
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant size-4" />
@@ -866,7 +866,7 @@ export function ExercisesPage() {
           ))}
         </div>
       ) : filtered.length === 0 ? (
-        <div className="p-12 text-center rounded-3xl bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl border border-dashed border-slate-300 dark:border-slate-800">
+        <div className="p-12 text-center rounded-3xl bg-surface/90 dark:bg-surface-container/90 backdrop-blur-xl border border-dashed border-outline-variant/60 dark:border-outline-variant/40">
           <Activity className="size-12 mx-auto text-teal-600/40 mb-3" />
           <h3 className="text-base font-bold text-on-surface">No se encontraron ejercicios</h3>
           <p className="text-xs text-on-surface-variant max-w-sm mx-auto mt-1 mb-4">
@@ -924,7 +924,7 @@ export function ExercisesPage() {
                     <button
                       onClick={() => setDescriptionExercise(ex)}
                       aria-label={t('exs.viewAnatomy')}
-                      className="absolute bottom-3 right-3 size-9 rounded-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-md flex items-center justify-center text-teal-700 dark:text-teal-300 hover:scale-110 active:scale-95 shadow-sm transition-transform"
+                      className="absolute bottom-3 right-3 size-9 rounded-full bg-surface/90 dark:bg-surface-container/90 backdrop-blur-md flex items-center justify-center text-teal-700 dark:text-teal-300 hover:scale-110 active:scale-95 shadow-sm transition-transform"
                     >
                       <BookOpen className="size-4" />
                     </button>
@@ -944,7 +944,7 @@ export function ExercisesPage() {
                         <span className="capitalize">{ex.articulacion || 'Articular'}</span>
                       </span>
 
-                      <span className="inline-flex items-center gap-1 text-2xs font-bold uppercase px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-on-surface-variant border border-slate-200 dark:border-slate-700">
+                      <span className="inline-flex items-center gap-1 text-2xs font-bold uppercase px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-on-surface-variant border border-outline-variant/60 dark:border-outline-variant/40">
                         <CatIcon className="size-3" />
                         <span className="capitalize">{ex.categoria || 'Movilidad'}</span>
                       </span>
@@ -1070,7 +1070,7 @@ export function ExercisesPage() {
         {descriptionExercise && (
           <div className="p-2 sm:p-4 space-y-6 max-h-[85vh] overflow-y-auto">
             {/* Modal Header */}
-            <div className="flex items-start justify-between gap-4 pb-4 border-b border-slate-200 dark:border-slate-800">
+            <div className="flex items-start justify-between gap-4 pb-4 border-b border-outline-variant/60 dark:border-outline-variant/40">
               <div>
                 <div className="flex items-center gap-2 mb-1">
                   <span className="px-2.5 py-0.5 rounded-full bg-teal-500/10 text-teal-700 dark:text-teal-300 text-2xs font-bold uppercase tracking-wider border border-teal-500/20">
@@ -1101,7 +1101,7 @@ export function ExercisesPage() {
               {/* Left Column: Structured execution phases and guidelines */}
               <div className="lg:col-span-7 space-y-4">
                 {/* Clinical Parameter Summary */}
-                <div className="grid grid-cols-4 gap-2 p-3 rounded-2xl bg-slate-100/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-center">
+                <div className="grid grid-cols-4 gap-2 p-3 rounded-2xl bg-slate-100/80 dark:bg-slate-800/80 border border-outline-variant/60 dark:border-outline-variant/40 text-center">
                   <div>
                     <span className="text-2xs uppercase font-bold text-on-surface-variant block">Series</span>
                     <span className="text-sm font-extrabold text-on-surface">
@@ -1129,7 +1129,7 @@ export function ExercisesPage() {
                 </div>
 
                 {/* Step-by-Step Instructions */}
-                <div className="rounded-2xl p-4 bg-white/90 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 space-y-3">
+                <div className="rounded-2xl p-4 bg-surface/90 dark:bg-surface-container/90 border border-outline-variant/60 dark:border-outline-variant/40 space-y-3">
                   <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-teal-600 dark:text-teal-400">
                     <Brain className="size-4" />
                     <span>{t('exs.stepByStep')}</span>
@@ -1184,7 +1184,7 @@ export function ExercisesPage() {
             </div>
 
             {/* Modal Footer */}
-            <div className="flex items-center justify-between pt-4 border-t border-slate-200 dark:border-slate-800">
+            <div className="flex items-center justify-between pt-4 border-t border-outline-variant/60 dark:border-outline-variant/40">
               {isFisio ? (
                 <button
                   onClick={() => {
@@ -1213,7 +1213,7 @@ export function ExercisesPage() {
       {/* Assign to Patient Modal (Enhanced notification glass style) */}
       <GlassModal isOpen={!!assignExercise} onClose={() => setAssignExercise(null)} size="md">
         <div className="p-6 space-y-4">
-          <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800">
+          <div className="flex items-center justify-between pb-3 border-b border-outline-variant/60 dark:border-outline-variant/40">
             <div>
               <h3 className="text-lg font-bold text-on-surface">Asignar a Paciente</h3>
               <p className="text-xs text-on-surface-variant">
@@ -1240,7 +1240,7 @@ export function ExercisesPage() {
                 value={patientSearch}
                 onChange={(e) => setPatientSearch(e.target.value)}
                 placeholder={t('exs.searchPatientPlaceholder')}
-                className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-sm text-on-surface border border-slate-200 dark:border-slate-700 focus:border-teal-500 focus:outline-none transition-colors"
+                className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-sm text-on-surface border border-outline-variant/60 dark:border-outline-variant/40 focus:border-teal-500 focus:outline-none transition-colors"
               />
             </div>
 
@@ -1274,7 +1274,7 @@ export function ExercisesPage() {
             </div>
           </div>
 
-          <div className="pt-3 border-t border-slate-200 dark:border-slate-800 flex gap-2">
+          <div className="pt-3 border-t border-outline-variant/60 dark:border-outline-variant/40 flex gap-2">
             <button
               onClick={() => setAssignExercise(null)}
               className="flex-1 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-on-surface-variant text-xs font-bold hover:bg-slate-200"
@@ -1320,7 +1320,7 @@ export function ExercisesPage() {
               className="rounded-3xl p-6 sm:p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto bg-white dark:bg-slate-900 border border-outline-variant/40 dark:border-teal-500/20 shadow-elevated space-y-4"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="flex justify-between items-center pb-3 border-b border-slate-200 dark:border-slate-800">
+              <div className="flex justify-between items-center pb-3 border-b border-outline-variant/60 dark:border-outline-variant/40">
                 <div className="flex items-center gap-2">
                   <Activity className="size-5 text-teal-600" />
                   <h3 className="text-xl font-bold text-on-surface">
@@ -1344,7 +1344,7 @@ export function ExercisesPage() {
                   <input
                     value={form.nombre}
                     onChange={(e) => setForm({ ...form, nombre: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-teal-500 text-sm outline-none text-on-surface"
+                    className="w-full px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-outline-variant/60 dark:border-outline-variant/40 focus:border-teal-500 text-sm outline-none text-on-surface"
                     placeholder={t('exs.namePlaceholder')}
                   />
                 </div>
@@ -1356,7 +1356,7 @@ export function ExercisesPage() {
                   <textarea
                     value={form.descripcion}
                     onChange={(e) => setForm({ ...form, descripcion: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-teal-500 text-sm outline-none text-on-surface"
+                    className="w-full px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-outline-variant/60 dark:border-outline-variant/40 focus:border-teal-500 text-sm outline-none text-on-surface"
                     rows={2}
                     placeholder={t('exs.summaryPlaceholder')}
                   />
@@ -1369,7 +1369,7 @@ export function ExercisesPage() {
                   <textarea
                     value={form.detailed_description}
                     onChange={(e) => setForm({ ...form, detailed_description: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-teal-500 text-sm outline-none font-mono text-xs text-on-surface"
+                    className="w-full px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-outline-variant/60 dark:border-outline-variant/40 focus:border-teal-500 text-sm outline-none font-mono text-xs text-on-surface"
                     rows={4}
                     placeholder={t('exs.descriptionPlaceholder')}
                   />
@@ -1383,7 +1383,7 @@ export function ExercisesPage() {
                     <select
                       value={form.articulacion}
                       onChange={(e) => setForm({ ...form, articulacion: e.target.value })}
-                      className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-teal-500 text-xs outline-none font-bold text-on-surface"
+                      className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-outline-variant/60 dark:border-outline-variant/40 focus:border-teal-500 text-xs outline-none font-bold text-on-surface"
                     >
                       <option value="hombro">{t('joints.hombro')}</option>
                       <option value="codo">{t('joints.codo')}</option>
@@ -1401,7 +1401,7 @@ export function ExercisesPage() {
                     <input
                       value={form.grupo_muscular}
                       onChange={(e) => setForm({ ...form, grupo_muscular: e.target.value })}
-                      className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-teal-500 text-xs outline-none text-on-surface"
+                      className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-outline-variant/60 dark:border-outline-variant/40 focus:border-teal-500 text-xs outline-none text-on-surface"
                       placeholder={t('exs.musclePlaceholder')}
                     />
                   </div>
@@ -1414,7 +1414,7 @@ export function ExercisesPage() {
                       type="number"
                       value={form.series}
                       onChange={(e) => setForm({ ...form, series: parseInt(e.target.value) || 1 })}
-                      className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-teal-500 text-xs outline-none text-on-surface"
+                      className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-outline-variant/60 dark:border-outline-variant/40 focus:border-teal-500 text-xs outline-none text-on-surface"
                       min={1}
                     />
                   </div>
@@ -1427,7 +1427,7 @@ export function ExercisesPage() {
                       type="number"
                       value={form.repeticiones}
                       onChange={(e) => setForm({ ...form, repeticiones: parseInt(e.target.value) || 1 })}
-                      className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-teal-500 text-xs outline-none text-on-surface"
+                      className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-outline-variant/60 dark:border-outline-variant/40 focus:border-teal-500 text-xs outline-none text-on-surface"
                       min={1}
                     />
                   </div>
@@ -1440,7 +1440,7 @@ export function ExercisesPage() {
                       type="number"
                       value={form.angulo_objetivo}
                       onChange={(e) => setForm({ ...form, angulo_objetivo: parseInt(e.target.value) || 0 })}
-                      className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-teal-500 text-xs outline-none text-on-surface"
+                      className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-outline-variant/60 dark:border-outline-variant/40 focus:border-teal-500 text-xs outline-none text-on-surface"
                       min={0}
                       max={360}
                     />
@@ -1453,7 +1453,7 @@ export function ExercisesPage() {
                     <select
                       value={form.lado}
                       onChange={(e) => setForm({ ...form, lado: e.target.value })}
-                      className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-teal-500 text-xs outline-none font-bold text-on-surface"
+                      className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-outline-variant/60 dark:border-outline-variant/40 focus:border-teal-500 text-xs outline-none font-bold text-on-surface"
                     >
                       <option value="bilateral">{t('exs.bilateral')}</option>
                       <option value="derecho">{t('exs.right')}</option>
@@ -1487,7 +1487,7 @@ export function ExercisesPage() {
                   </div>
                 )}
 
-                <div className="flex gap-3 pt-3 border-t border-slate-200 dark:border-slate-800">
+                <div className="flex gap-3 pt-3 border-t border-outline-variant/60 dark:border-outline-variant/40">
                   <button
                     onClick={() => setShowModal(false)}
                     className="flex-1 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-on-surface font-bold text-xs hover:bg-slate-200"

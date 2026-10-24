@@ -146,8 +146,8 @@ export function ModalDialog({
       className={cn(
         "relative w-full max-w-lg z-10 p-6 md:p-8 rounded-2xl md:rounded-3xl",
         "max-h-[calc(100dvh-3rem)] overflow-y-auto",
-        "bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl",
-        "border border-slate-200/80 dark:border-slate-800/80",
+        "bg-surface/95 dark:bg-surface-container/95 backdrop-blur-xl",
+        "border border-outline-variant/60 dark:border-outline-variant/40/80",
         "shadow-elevated shadow-primary/10 dark:shadow-teal-950/40 text-foreground",
         className
       )}

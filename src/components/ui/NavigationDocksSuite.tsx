@@ -419,7 +419,7 @@ export const CompactTelehealthBar: React.FC<CompactTelehealthBarProps> = ({
   return (
     <div
       className={cn(
-        "p-3 px-4 rounded-2xl bg-white/90 dark:bg-slate-950/95 text-on-surface dark:text-white border border-teal-500/25 dark:border-teal-500/30 shadow-elevated flex items-center justify-between gap-4 text-xs backdrop-blur-2xl transition-colors",
+        "p-3 px-4 rounded-2xl bg-surface/95 dark:bg-surface-container-high/95 text-on-surface dark:text-white border border-teal-500/25 dark:border-teal-500/30 shadow-elevated flex items-center justify-between gap-4 text-xs backdrop-blur-2xl transition-colors",
         className
       )}
     >

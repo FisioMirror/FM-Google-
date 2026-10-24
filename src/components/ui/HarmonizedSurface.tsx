@@ -49,7 +49,7 @@ const variantStyles: Record<HarmonizedSurfaceVariant, string> = {
 const glassStyles: Record<HarmonizedGlassTone, string> = {
   subtle: "bg-surface/85 dark:bg-surface-container/65 backdrop-blur-xl text-on-surface",
   prominent:
-    "bg-white/70 dark:bg-slate-900/60 backdrop-blur-2xl border-white/40 dark:border-outline-variant/60 text-on-surface shadow-sm",
+    "bg-surface/90 dark:bg-surface-container/90 backdrop-blur-2xl border-white/40 dark:border-outline-variant/60 text-on-surface shadow-sm",
   flat: "bg-surface dark:bg-surface-container text-on-surface",
   "pastel-sky":
     "bg-sky-50/75 dark:bg-sky-950/25 backdrop-blur-xl border border-sky-200/60 dark:border-sky-500/30 text-sky-950 dark:text-sky-100",
