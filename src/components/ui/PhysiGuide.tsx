@@ -412,7 +412,7 @@ export function PhysiGuide({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 16, scale: 0.96 }}
             transition={{ type: 'spring', damping: 26, stiffness: 320 }}
-            className="fixed bottom-24 left-4 right-4 sm:right-auto sm:left-4 sm:w-96 lg:left-8 lg:bottom-28 z-[120] w-[calc(100vw-2rem)] max-h-[62vh] flex flex-col rounded-3xl border border-teal-500/25 bg-surface/95 dark:bg-surface-container/95 backdrop-blur-2xl shadow-elevated overflow-hidden text-on-surface"
+            className="fixed bottom-24 left-4 right-4 sm:right-auto sm:left-4 sm:w-96 lg:left-8 lg:bottom-28 z-[120] w-[calc(100vw-2rem)] max-h-[62vh] flex flex-col rounded-3xl glass-modal shadow-elevated overflow-visible text-on-surface"
           >
             {/* Cabecera */}
             <div className="flex items-center justify-between px-4 py-3 border-b border-outline-variant/20 dark:border-outline-variant/60 shrink-0 bg-teal-500/5">

@@ -27,11 +27,9 @@ import {
   MobilityQuestCard,
   DailyHealthPointsWidget,
   LevelProgressRibbon,
-  VirtualTrophyCabinet,
   CheerReactionButton,
 } from '../components/ui/GamificationSuite';
 import { PainScaleInteractiveCard } from '../components/ui/ActivityCardsSuite';
-import { GamifiedBadgeCard } from '../components/ui/GamifiedBadgeCard';
 import {
   ExerciseTimelineScrubber,
   CompactTelehealthBar,
@@ -748,38 +746,6 @@ export function PatientDashboard() {
         </div>
       </div>
 
-      {/* Gamification Achievements Section */}
-      <CollapsibleSection title={t('patientDashboard.recoveryGoals')} icon="emoji_events">
-        <div className="space-y-6">
-          <div className="p-6 rounded-3xl bg-surface/80 dark:bg-surface-container-low/60 border border-outline/15">
-            <div className="flex justify-between items-center text-xs mb-4">
-              <span className="text-on-surface-variant">{t('patientDashboard.medalsFraction', { a: gamification.unlockedCount, b: gamification.achievements.length })}</span>
-              <span className="font-bold text-teal-600 dark:text-teal-400">{t('patientDashboard.progressUnlocked', { v: Math.round(gamification.totalProgress * 100) })}</span>
-            </div>
-            <AchievementShowcase achievements={gamification.achievements} compact={false} />
-
-            {/* Medallas 3D Gamificadas de FisioMirror */}
-            {/* TODO: conectar xpPoints con los logros reales; progressPct de precisión con forma/ROM real */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6 pt-6 border-t border-outline/15">
-              <GamifiedBadgeCard
-                title={t('gamification.badgeStreakTitle')}
-                description={t('gamification.badgeStreakDesc')}
-                tier="gold"
-                xpPoints={isDemoAccount(user) ? 250 : 0}
-                progressPct={Math.min(100, Math.round(((kpi.streak || 0) / 5) * 100))}
-              />
-              <GamifiedBadgeCard
-                title={t('gamification.badgePrecisionTitle')}
-                description={t('gamification.badgePrecisionDesc')}
-                tier="diamond"
-                xpPoints={isDemoAccount(user) ? 500 : 0}
-                progressPct={isDemoAccount(user) ? 88 : 0}
-              />
-            </div>
-          </div>
-          <VirtualTrophyCabinet />
-        </div>
-      </CollapsibleSection>
     </div>
   );
 }

@@ -162,7 +162,7 @@ export function QuickVoiceSelector({
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 8, scale: 0.95 }}
               transition={{ duration: 0.2, ease: 'easeOut' }}
-              className="absolute right-0 top-full mt-2 w-80 sm:w-96 rounded-3xl bg-surface/95 dark:bg-surface-container/95 backdrop-blur-2xl border border-teal-500/30 dark:border-outline-variant/60 shadow-elevated p-4 sm:p-5 z-[150] text-on-surface"
+              className="absolute right-0 top-full mt-2 w-[min(22rem,calc(100vw-1.5rem))] sm:w-96 max-h-[min(70vh,32rem)] overflow-y-auto overscroll-contain rounded-3xl glass-modal shadow-elevated p-4 sm:p-5 z-[150] text-on-surface"
             >
               {/* Header */}
               <div className="flex items-center justify-between pb-3 border-b border-outline-variant/20 dark:border-outline-variant/60">

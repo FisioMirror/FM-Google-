@@ -19,11 +19,15 @@ import {
   VirtualTrophyCabinet,
 } from '../components/ui/GamificationSuite';
 import { ErgonomicHandModeSwitcher } from '../components/ui/NavigationDocksSuite';
+import { AchievementShowcase } from '../components/AchievementShowcase';
+import { GamifiedBadgeCard } from '../components/ui/GamifiedBadgeCard';
+import { useGamification } from '../hooks/useGamification';
 
 export function ProfilePage() {
   const { t } = useTranslation();
   const user = useAuthStore((s) => s.user);
   const { theme, toggleTheme } = useTheme();
+  const gamification = useGamification();
   const toast = useToast();
   const [editing, setEditing] = useState(false);
   const [form, setForm] = useState({ full_name: '', especialidad: '', universidad: '', cedula: '', colegiado_id: '', anio_egreso: '' });
@@ -615,6 +619,29 @@ export function ProfilePage() {
               ) },
               { id: 'trophies', label: t('pf.tabTrophies'), content: (
                 <div className="space-y-4">
+                  <GlassPanel className="p-5 sm:p-6 rounded-3xl">
+                    <div className="flex justify-between items-center text-xs mb-4">
+                      <span className="text-on-surface-variant">{t('patientDashboard.medalsFraction', { a: gamification.unlockedCount, b: gamification.achievements.length })}</span>
+                      <span className="font-bold text-primary">{t('patientDashboard.progressUnlocked', { v: Math.round(gamification.totalProgress * 100) })}</span>
+                    </div>
+                    <AchievementShowcase achievements={gamification.achievements} compact={false} />
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6 pt-6 border-t border-outline-variant/20">
+                      <GamifiedBadgeCard
+                        title={t('gamification.badgeStreakTitle')}
+                        description={t('gamification.badgeStreakDesc')}
+                        tier="gold"
+                        xpPoints={gamification.points}
+                        progressPct={gamification.levelProgressPercent}
+                      />
+                      <GamifiedBadgeCard
+                        title={t('gamification.badgePrecisionTitle')}
+                        description={t('gamification.badgePrecisionDesc')}
+                        tier="diamond"
+                        xpPoints={gamification.points}
+                        progressPct={Math.round(gamification.totalProgress * 100)}
+                      />
+                    </div>
+                  </GlassPanel>
                   <VirtualTrophyCabinet />
                 </div>
               ) },
