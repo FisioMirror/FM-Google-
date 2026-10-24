@@ -716,7 +716,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
             <div className="flex items-center gap-3 mb-6 relative">
               <div className="w-12 h-12 rounded-xl bg-secondary-container/20 flex items-center justify-center"><Icon name="group" size={24} className="text-secondary animate-breathe-icon" /></div>
               <div>
-                <h3 className="fm-section-title gradient-text-blue">{t('tools.patientsSummary')}</h3>
+                <h3 className="fm-section-title">{t('tools.patientsSummary')}</h3>
                 <p className="text-sm text-on-surface-variant">Resumen general del progreso de todos tus pacientes activos</p>
               </div>
             </div>
@@ -892,7 +892,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
             <div className="flex items-center gap-3">
               <Icon name="smart_toy" filled size={28} className="animate-breathe-icon" />
               <div>
-                <h3 className="font-bold gradient-text-teal">Physi</h3>
+                <h3 className="font-bold">Physi</h3>
                 <p className="text-xs opacity-80">{t('tools.activeReady')}</p>
               </div>
             </div>

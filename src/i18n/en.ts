@@ -3437,6 +3437,8 @@ export const en: typeof es = {
     dictateVoiceNote: 'Dictate clinical voice note',
     adjustLiveRomTarget: 'Adjust live ROM target',
     assessWithAi: 'Assess with AI',
+    openRoutine: 'Open patient routine',
+    newSession: 'Log new session',
   },
 
   uix: {

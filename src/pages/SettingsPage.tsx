@@ -529,7 +529,7 @@ export function SettingsPage() {
       <GlassPanel className="p-6 rounded-2xl relative overflow-hidden">
         <div className="blob-cyan absolute -top-12 -right-12 w-32 h-32 opacity-20 pointer-events-none" />
         <div className="relative space-y-5">
-          <h3 className="font-semibold text-on-surface gradient-text-cyan">{t('set.notifPrefs')}</h3>
+          <h3 className="font-semibold text-on-surface">{t('set.notifPrefs')}</h3>
           {[
             { icon: 'mail', color: 'text-primary', bg: 'bg-primary/10', titleKey: 'set.nEmail', descKey: 'set.nEmailDesc', value: notifEmail, onChange: setNotifEmail },
             { icon: 'notifications_active', color: 'text-secondary', bg: 'bg-secondary-container/20', titleKey: 'set.nPush', descKey: 'set.nPushDesc', value: notifPush, onChange: setNotifPush },
@@ -564,7 +564,7 @@ export function SettingsPage() {
       <GlassPanel className="p-6 rounded-2xl relative overflow-hidden">
         <div className="blob-teal absolute -top-12 -right-12 w-32 h-32 opacity-20 pointer-events-none" />
         <div className="relative">
-          <h3 className="font-semibold text-on-surface gradient-text-teal mb-4">{t('set.accountInfo')}</h3>
+          <h3 className="font-semibold text-on-surface mb-4">{t('set.accountInfo')}</h3>
           <div className="space-y-3">
             <div className="flex items-center justify-between p-3 rounded-xl bg-surface-container-low/60">
               <div className="flex items-center gap-2 text-on-surface-variant"><Icon name="alternate_email" size={18} /><span className="text-sm">Email</span></div>
@@ -582,7 +582,7 @@ export function SettingsPage() {
       <GlassPanel className="p-6 rounded-2xl relative overflow-hidden">
         <div className="blob-blue absolute -top-12 -right-12 w-32 h-32 opacity-20 pointer-events-none" />
         <div className="relative">
-          <h3 className="font-semibold text-on-surface gradient-text-blue mb-4">{t('set.security')}</h3>
+          <h3 className="font-semibold text-on-surface mb-4">{t('set.security')}</h3>
           <button
             onClick={() => setShowPasswordModal(true)}
             className="premium-btn w-full bg-primary text-on-primary py-3 rounded-xl font-semibold flex items-center justify-center gap-2"
@@ -640,7 +640,7 @@ export function SettingsPage() {
       <GlassPanel className="p-6 rounded-2xl relative overflow-hidden">
         <div className="blob-cyan absolute -top-12 -right-12 w-32 h-32 opacity-20 pointer-events-none" />
         <div className="relative">
-          <h3 className="font-semibold text-on-surface gradient-text-cyan mb-4">{t('set.credits')}</h3>
+          <h3 className="font-semibold text-on-surface mb-4">{t('set.credits')}</h3>
           <div className="space-y-3">
             {[
               { icon: Code2, color: 'text-primary', bg: 'bg-primary/10', labelKey: 'set.devTeam', valueKey: 'set.devTeamVal' },
@@ -665,7 +665,7 @@ export function SettingsPage() {
       <GlassPanel className="p-6 rounded-2xl relative overflow-hidden">
         <div className="blob-emerald absolute -top-12 -right-12 w-32 h-32 opacity-20 pointer-events-none" />
         <div className="relative space-y-3">
-          <h3 className="font-semibold text-on-surface gradient-text-emerald mb-2">{t('set.resources')}</h3>
+          <h3 className="font-semibold text-on-surface mb-2">{t('set.resources')}</h3>
           <button
             onClick={() => setShowDocModal(true)}
             className="w-full flex items-center justify-between p-3 rounded-xl bg-surface-container-low/60 hover:bg-surface-container-high transition-colors group"
@@ -740,7 +740,7 @@ export function SettingsPage() {
     <GlassPanel className="p-6 rounded-2xl relative overflow-hidden">
       <div className="blob-teal absolute -top-12 -right-12 w-32 h-32 opacity-20 pointer-events-none" />
       <div className="relative">
-        <h3 className="font-semibold text-on-surface gradient-text-teal mb-2">{t('set.contactChannels')}</h3>
+        <h3 className="font-semibold text-on-surface mb-2">{t('set.contactChannels')}</h3>
         <p className="text-sm text-on-surface-variant mb-6">
           Comunícate con soporte clínico o con tu fisioterapeuta a través de cualquiera de nuestros canales oficiales:
         </p>

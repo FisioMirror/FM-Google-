@@ -552,7 +552,7 @@ export function OCRScannerPage() {
         <Icon name="person_add" size={18} /> {t('ocr.newPatient')}
       </div>
       <div>
-        <h2 className="fm-title gradient-text-living">{t('ocr.loadPrescription')}</h2>
+        <h2 className="fm-title text-on-surface">{t('ocr.loadPrescription')}</h2>
         <p className="font-body-lg text-body-lg text-on-surface-variant">{t('ocr.startIntake')}</p>
       </div>
 
@@ -779,7 +779,7 @@ export function OCRScannerPage() {
         {step === 2 && (
           <motion.div key="step2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6">
             <div>
-              <h2 className="fm-title gradient-text-living">{t('ocr.validateData')}</h2>
+              <h2 className="fm-title text-on-surface">{t('ocr.validateData')}</h2>
               <p className="font-body-lg text-body-lg text-on-surface-variant mt-2 max-w-2xl">
                 {entryMode === 'ia' ? t('ocr.validatedHint') : t('ocr.manualHint')}
               </p>

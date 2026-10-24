@@ -31,7 +31,7 @@ export function NotFound() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.15 }}
-        className="fm-title gradient-text-editorial mb-2"
+        className="fm-title mb-2"
       >
         404
       </motion.h1>

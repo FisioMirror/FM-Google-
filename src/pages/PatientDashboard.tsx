@@ -363,7 +363,7 @@ export function PatientDashboard() {
             <SparklesText
               sparklesCount={4}
               colors={{ first: '#0d9488', second: '#c1ff72' }}
-              className="font-display fm-title gradient-text-living"
+              className="font-display fm-title text-on-surface"
             >
               {greeting}, {user?.full_name?.split(' ')[0] || t('common.patientDefault')}
             </SparklesText>
@@ -404,7 +404,7 @@ export function PatientDashboard() {
         >
           <CardSpotlight
             color="rgba(245, 158, 11, 0.16)"
-            className="p-3.5 sm:p-5 rounded-2xl flex flex-col justify-between cursor-default shadow-sm hover:shadow-card transition-all h-full bg-gradient-to-br from-warning/75 via-surface/90 to-warning/30 dark:from-warning/25 dark:via-surface-container/80 dark:to-slate-900/90 border border-warning/50 dark:border-warning/25"
+            className="p-3.5 sm:p-5 rounded-2xl flex flex-col justify-between cursor-default shadow-sm hover:shadow-card transition-all h-full bg-gradient-to-br from-warning/10 via-surface to-warning/5 dark:from-warning/15 dark:via-surface-container dark:to-surface-container-high border border-warning/30 dark:border-warning/25"
           >
             <div className="flex items-start justify-between mb-2">
               <div className="size-9 sm:size-11 rounded-xl sm:rounded-2xl bg-warning/15 text-warning dark:text-warning flex items-center justify-center shrink-0 border border-warning/20">
@@ -428,7 +428,7 @@ export function PatientDashboard() {
         >
           <CardSpotlight
             color="rgba(20, 184, 166, 0.16)"
-            className="p-3.5 sm:p-5 rounded-2xl flex flex-col justify-between cursor-default shadow-sm hover:shadow-card transition-all h-full bg-gradient-to-br from-teal-50/80 via-surface/90 to-emerald-50/40 dark:from-teal-950/30 dark:via-surface-container/80 dark:to-slate-900/90 border border-teal-200/60 dark:border-teal-500/30"
+            className="p-3.5 sm:p-5 rounded-2xl flex flex-col justify-between cursor-default shadow-sm hover:shadow-card transition-all h-full bg-gradient-to-br from-teal-500/10 via-surface to-emerald-500/5 dark:from-teal-500/15 dark:via-surface-container dark:to-surface-container-high border border-teal-500/30 dark:border-teal-500/25"
           >
             <div className="flex items-start justify-between mb-2">
               <div className="size-9 sm:size-11 rounded-xl sm:rounded-2xl bg-teal-500/15 text-teal-600 dark:text-teal-400 flex items-center justify-center shrink-0 border border-teal-500/25">
@@ -452,7 +452,7 @@ export function PatientDashboard() {
         >
           <CardSpotlight
             color="rgba(14, 165, 233, 0.16)"
-            className="p-3.5 sm:p-5 rounded-2xl flex flex-col justify-between cursor-default shadow-sm hover:shadow-card transition-all h-full bg-gradient-to-br from-info/75 via-surface/90 to-info/40 dark:from-info/25 dark:via-surface-container/80 dark:to-slate-900/90 border border-info/60 dark:border-info/30"
+            className="p-3.5 sm:p-5 rounded-2xl flex flex-col justify-between cursor-default shadow-sm hover:shadow-card transition-all h-full bg-gradient-to-br from-info/10 via-surface to-info/5 dark:from-info/15 dark:via-surface-container dark:to-surface-container-high border border-info/30 dark:border-info/25"
           >
             <div className="flex items-start justify-between mb-2">
               <div className="size-9 sm:size-11 rounded-xl sm:rounded-2xl bg-info/15 text-info dark:text-info flex items-center justify-center shrink-0 border border-info/25">

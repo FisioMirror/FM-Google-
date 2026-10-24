@@ -757,7 +757,7 @@ export function DashboardFisio() {
                 <ShimmerText text={t('dashboard.clinicalEdition')} className="text-2xs font-bold uppercase" />
               </span>
             </div>
-            <h2 className="font-display fm-title gradient-text-living">
+            <h2 className="font-display fm-title text-on-surface">
               {greeting}, <AuroraText>{user?.full_name?.split(' ')[0] || t('common.doctorDefault')}</AuroraText>
             </h2>
             <TextAnimate

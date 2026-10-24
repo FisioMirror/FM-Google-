@@ -450,9 +450,9 @@ export function PatientDetailPage() {
         {/* Action Buttons & Therapist Quick Toolbar */}
         <div className="flex flex-wrap items-center gap-2.5">
           <TherapistQuickToolbar
-            onVoiceNote={() => toast.success(t('patientDetail.voiceNoteSaved'))}
-            onSnapshot={() => toast.success(t('patientDetail.biomechCaptureSaved'))}
-            onAdjustTargetAngle={() => toast.info(`Ajustando objetivo angular (${patient.rom_objetivo || '135°'})`)}
+            onOpenRoutine={() => navigate(`/paciente/${patient.id}?tab=routine`)}
+            onNewSession={() => navigate(`/ar-mirror?patientId=${patient.id}`)}
+            onAssessWithAi={() => navigate(`/ai-assistant?patientId=${patient.id}`)}
           />
 
           <button

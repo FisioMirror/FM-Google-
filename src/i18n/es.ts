@@ -3441,6 +3441,8 @@ export const es = {
     dictateVoiceNote: 'Dictar nota clínica de voz',
     adjustLiveRomTarget: 'Ajustar objetivo ROM en vivo',
     assessWithAi: 'Evaluar IA',
+    openRoutine: 'Abrir rutina del paciente',
+    newSession: 'Registrar nueva sesión',
   },
 
   uix: {

@@ -610,7 +610,7 @@ export function StatsPage() {
     <div className="fm-page">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
         <div>
-          <h1 className="fm-title gradient-text-living mb-2">
+          <h1 className="fm-title text-on-surface mb-2">
             {isFisio ? t('st.clinicalMetrics') : t('st.recoveryProgress')}
           </h1>
           {!isFisio && (
@@ -731,7 +731,7 @@ export function StatsPage() {
                   <div className="blob-teal absolute -top-12 -right-12 w-40 h-40 opacity-20 pointer-events-none" />
                   <div className="flex justify-between items-center mb-6">
                     <div>
-                      <h3 className="fm-section-title gradient-text-teal">Sesiones por Día</h3>
+                      <h3 className="fm-section-title">Sesiones por Día</h3>
                       <p className="text-sm text-on-surface-variant">Últimos 7 días {selectedPatient ? `· ${patients.find(p => p.id === selectedPatient)?.full_name || ''}` : '· Todos los pacientes'}</p>
                     </div>
                     <Icon name="bar_chart" size={28} className="text-primary" />
@@ -813,7 +813,7 @@ export function StatsPage() {
                 <GlassPanel className="p-6 sm:p-8 rounded-3xl flex flex-col card-glow-hover relative overflow-hidden">
                   <div className="blob-blue absolute -top-12 -right-12 w-32 h-32 opacity-20 pointer-events-none" />
                   <div className="flex justify-between items-center mb-4">
-                    <h3 className="fm-section-title gradient-text-blue">Pacientes Más Activos</h3>
+                    <h3 className="fm-section-title">Pacientes Más Activos</h3>
                     <Icon name="leaderboard" size={24} className="text-primary" />
                   </div>
                   <div className="h-64">
@@ -948,7 +948,7 @@ export function StatsPage() {
                   <div className="blob-teal absolute -top-12 -right-12 w-40 h-40 opacity-20 pointer-events-none" />
                   <div className="flex justify-between items-center mb-6">
                     <div>
-                      <h3 className="fm-section-title gradient-text-teal">Evolución Biomecánica</h3>
+                      <h3 className="fm-section-title">Evolución Biomecánica</h3>
                       <p className="text-sm text-on-surface-variant">Seguimiento de Calidad de Ejecución (6 semanas)</p>
                     </div>
                     <div className="flex gap-2">
@@ -1043,7 +1043,7 @@ export function StatsPage() {
                   <div className="blob-blue absolute -top-12 -right-12 w-40 h-40 opacity-20 pointer-events-none" />
                   <div className="flex justify-between items-center mb-6">
                     <div>
-                      <h3 className="fm-section-title gradient-text-blue">Calidad por Sesión</h3>
+                      <h3 className="fm-section-title">Calidad por Sesión</h3>
                       <p className="text-sm text-on-surface-variant">Últimas 12 sesiones (orden cronológico)</p>
                     </div>
                     <Icon name="timeline" size={28} className="text-secondary" />
@@ -1128,7 +1128,7 @@ export function StatsPage() {
                 <div className="blob-teal absolute -top-12 -right-12 w-40 h-40 opacity-15 pointer-events-none" />
                 <div className="flex justify-between items-center mb-6">
                   <div>
-                    <h3 className="fm-section-title gradient-text-teal">Minutos de Entrenamiento</h3>
+                    <h3 className="fm-section-title">Minutos de Entrenamiento</h3>
                     <p className="text-sm text-on-surface-variant">Distribución semanal (últimas 6 semanas)</p>
                   </div>
                   <Icon name="timer" size={28} className="text-primary" />
@@ -1164,7 +1164,7 @@ export function StatsPage() {
               {/* Paciente: Logros e Insignias (gamification kept for patients) */}
               <div className="flex flex-col">
                 <div className="flex justify-between items-center mb-4">
-                  <h3 className="fm-section-title gradient-text-living">Logros e Insignias</h3>
+                  <h3 className="fm-section-title text-on-surface">Logros e Insignias</h3>
                   <button onClick={() => setShowAllBadges(!showAllBadges)} className="text-primary font-bold text-sm flex items-center gap-1 hover:gap-2 transition-all">
                     {showAllBadges ? 'Contraer Vitrina' : 'Expandir Vitrina'}
                     <Icon name={showAllBadges ? 'keyboard_arrow_up' : 'keyboard_arrow_down'} size={18} />

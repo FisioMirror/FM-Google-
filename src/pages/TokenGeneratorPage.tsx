@@ -192,7 +192,7 @@ export function TokenGeneratorPage() {
           />
         )}
         <div className="relative z-10">
-          <h1 className="font-display fm-title gradient-text-living">{t('tok.pageTitle')}</h1>
+          <h1 className="font-display fm-title text-on-surface">{t('tok.pageTitle')}</h1>
           <p className="text-on-surface-variant text-xs sm:text-sm font-medium mt-1">{t('tok.pageSubtitle')}</p>
         </div>
         <div className="relative z-10 shrink-0">

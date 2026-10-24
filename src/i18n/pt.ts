@@ -3437,6 +3437,8 @@ export const pt: typeof es = {
     dictateVoiceNote: 'Ditar nota clínica de voz',
     adjustLiveRomTarget: 'Ajustar meta de ADM ao vivo',
     assessWithAi: 'Avaliar com IA',
+    openRoutine: 'Abrir rotina do paciente',
+    newSession: 'Registrar nova sessão',
   },
 
   uix: {

@@ -319,7 +319,7 @@ export function ProfilePage() {
               )}
             </AnimatePresence>
           </div>
-          <h2 className="font-display fm-title gradient-text-living mt-4 relative">{user?.full_name || t('st.user')}</h2>
+          <h2 className="font-display fm-title text-on-surface mt-4 relative">{user?.full_name || t('st.user')}</h2>
           <div className="font-title-md text-primary bg-primary-container/10 px-4 py-1 rounded-full mt-2 flex items-center gap-2 breathe-badge glow-teal relative">
             <MedicalIcon name="clipboard" size={16} className="text-primary animate-breathe-icon" />
             {isFisio ? t('common.therapist') : t('common.patient')}
@@ -356,7 +356,7 @@ export function ProfilePage() {
               { id: 'personal', label: t('pf.tabPersonal'), content: (
                 <GlassPanel className="p-6 rounded-3xl card-glow-hover shimmer-border hover-lift accent-teal">
                   <div className="flex justify-between items-center mb-6">
-                    <h3 className="font-headline-lg-mobile gradient-text-living font-bold">{t('pf.personalInfo')}</h3>
+                    <h3 className="font-headline-lg-mobile font-bold text-on-surface">{t('pf.personalInfo')}</h3>
                     <button onClick={() => setEditing(!editing)} className="flex items-center gap-2 text-primary font-bold text-sm hover-lift badge-teal px-3 py-1 rounded-full breathe-badge">
                       <Icon name="edit" size={16} /> {editing ? t('common.cancel') : t('common.edit')}
                     </button>
@@ -395,7 +395,7 @@ export function ProfilePage() {
               { id: 'preferences', label: t('pf.tabPreferences'), content: (
                 <>
                 <GlassPanel className="p-6 rounded-3xl card-glow-hover hover-lift">
-                  <h3 className="font-headline-lg-mobile gradient-text-living font-bold mb-6">{t('pf.systemPrefs')}</h3>
+                  <h3 className="font-headline-lg-mobile font-bold text-on-surface mb-6">{t('pf.systemPrefs')}</h3>
                   <div className="space-y-2">
                     <div className="flex items-center justify-between p-4 hover:bg-surface-variant/20 rounded-2xl">
                       <div className="flex items-center gap-3">
@@ -433,7 +433,7 @@ export function ProfilePage() {
                 {isFisio && (
                   <GlassPanel className="p-6 rounded-3xl card-glow-hover hover-lift mt-6 shimmer-border relative overflow-hidden">
                     <div className="absolute -top-10 -right-10 w-32 h-32 rounded-full bg-gradient-to-br from-info/15 to-teal-500/10 blur-2xl pointer-events-none" />
-                    <h3 className="font-headline-lg-mobile gradient-text-living font-bold mb-6 relative">{t('pf.clinicSettings')}</h3>
+                    <h3 className="font-headline-lg-mobile font-bold text-on-surface mb-6 relative">{t('pf.clinicSettings')}</h3>
                     <div className="relative">
                       <label className="text-2xs uppercase text-outline font-bold block mb-2">{t('pf.clinicName')}</label>
                       <div
@@ -504,7 +504,7 @@ export function ProfilePage() {
                           <Icon name="groups" size={24} className="icon-accent-cyan animate-breathe-icon" />
                         </div>
                         <div>
-                          <h3 className="font-headline-lg-mobile gradient-text-living font-bold">{isFisio ? t('pf.activeToday') : t('pf.sessionsScheduled')}</h3>
+                          <h3 className="font-headline-lg-mobile font-bold text-on-surface">{isFisio ? t('pf.activeToday') : t('pf.sessionsScheduled')}</h3>
                           <p className="text-xs text-outline mt-0.5">
                             {isFisio ? t('pf.activeCount', { n: activeToday.length }) : t('pf.nextSessions')}
                           </p>
