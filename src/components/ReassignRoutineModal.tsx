@@ -105,6 +105,14 @@ export function ReassignRoutineModal({
   const [filtroArt, setFiltroArt] = useState<ExerciseLibraryItem['articulacion'] | 'todas'>('todas');
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const todayISO = () => new Date().toISOString().split('T')[0];
+  const plusDaysISO = (days: number) => {
+    const d = new Date();
+    d.setDate(d.getDate() + days);
+    return d.toISOString().split('T')[0];
+  };
+  const [fechaInicio, setFechaInicio] = useState<string>(todayISO);
+  const [fechaFin, setFechaFin] = useState<string>(() => plusDaysISO(28));
 
   const filteredLibrary = useMemo(() => {
     const q = search.toLowerCase().trim();
@@ -156,6 +164,8 @@ export function ReassignRoutineModal({
     setFiltroArt('todas');
     setSaving(false);
     setError(null);
+    setFechaInicio(todayISO());
+    setFechaFin(plusDaysISO(28));
   };
 
   const handleClose = () => {
@@ -166,6 +176,10 @@ export function ReassignRoutineModal({
 
   const handleConfirm = async () => {
     if (!canConfirm || !pacienteId || !fisioterapeutaId) return;
+    if (fechaFin && fechaInicio && fechaFin < fechaInicio) {
+      setError(t('rrm.dateRangeError', 'La fecha de fin no puede ser anterior a la de inicio.'));
+      return;
+    }
     setSaving(true);
     setError(null);
     try {
@@ -207,7 +221,8 @@ export function ReassignRoutineModal({
           ejercicios: ejerciciosJson,
           activa: true,
           status: 'activa',
-          fecha_inicio: new Date().toISOString().split('T')[0],
+          fecha_inicio: fechaInicio || todayISO(),
+          fecha_fin: fechaFin || null,
         })
         .select('id')
         .single();
@@ -525,6 +540,41 @@ export function ReassignRoutineModal({
             {/* STEP 2 — Confirmación */}
             {step === 2 && (
               <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="space-y-5">
+                <div className="p-5 rounded-2xl bg-surface-container border border-outline-variant/20">
+                  <h3 className="font-bold text-on-surface mb-3 flex items-center gap-2">
+                    <Icon name="date_range" size={20} className="text-primary" />
+                    {t('rrm.periodTitle', 'Vigencia de la rutina')}
+                  </h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <label className="block">
+                      <span className="text-2xs uppercase font-bold text-outline tracking-wider block mb-1.5">
+                        {t('rrm.startDate', 'Desde')}
+                      </span>
+                      <input
+                        type="date"
+                        value={fechaInicio}
+                        onChange={(e) => setFechaInicio(e.target.value)}
+                        className="w-full px-3 py-2.5 rounded-xl bg-surface border border-outline-variant/40 text-on-surface text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-primary/40"
+                      />
+                    </label>
+                    <label className="block">
+                      <span className="text-2xs uppercase font-bold text-outline tracking-wider block mb-1.5">
+                        {t('rrm.endDate', 'Hasta')}
+                      </span>
+                      <input
+                        type="date"
+                        value={fechaFin}
+                        min={fechaInicio || undefined}
+                        onChange={(e) => setFechaFin(e.target.value)}
+                        className="w-full px-3 py-2.5 rounded-xl bg-surface border border-outline-variant/40 text-on-surface text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-primary/40"
+                      />
+                    </label>
+                  </div>
+                  <p className="text-xs text-on-surface-variant mt-2">
+                    {t('rrm.periodHint', 'La rutina queda activa dentro de este rango; al vencer se marca como finalizada.')}
+                  </p>
+                </div>
+
                 <div className="p-5 rounded-2xl bg-warning/10 border border-warning/20 flex items-start gap-3">
                   <Icon name="archive" size={24} className="text-warning shrink-0 mt-0.5" />
                   <div>

@@ -1065,7 +1065,11 @@ export function PatientDetailPage() {
                       </span>
                     </div>
                     {r.descripcion && <p className="text-xs text-on-surface-variant mb-1">{r.descripcion}</p>}
-                    <p className="text-xs text-outline">Inicio: {r.fecha_inicio}{r.updated_at ? ` · Actualizada: ${new Date(r.updated_at).toLocaleDateString('es-ES')}` : ''}</p>
+                    <p className="text-xs text-outline">
+                      Inicio: {r.fecha_inicio}
+                      {r.fecha_fin ? ` · Fin: ${r.fecha_fin}` : ''}
+                      {r.updated_at ? ` · Actualizada: ${new Date(r.updated_at).toLocaleDateString('es-ES')}` : ''}
+                    </p>
                   </div>
                 ))}
               </div>
