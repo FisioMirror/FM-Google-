@@ -509,18 +509,21 @@ export function PatientLayout({ children }: PatientLayoutProps) {
             </div>
             <button
               onClick={() => setShowNotifications((v) => !v)}
-              className="relative text-on-surface-variant hover:text-primary transition-colors active-scale p-2 rounded-full"
-              aria-label={`Notificaciones, ${unreadCount} sin leer`}
+              className="relative text-on-surface-variant hover:text-primary hover:bg-primary/8 transition-colors active-scale size-11 inline-flex items-center justify-center rounded-full"
+              aria-label={t('common.notifications', 'Notificaciones') + ', ' + unreadCount + ' ' + t('common.unread', 'sin leer')}
             >
               <Icon name="notifications" size={20} />
               {unreadCount > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-[16px] bg-error rounded-full text-white text-2xs font-bold flex items-center justify-center px-1">{unreadCount > 9 ? '9+' : unreadCount}</span>
+                <span className="absolute top-1.5 right-1.5 min-w-[18px] h-[18px] bg-error rounded-full text-white text-2xs font-bold flex items-center justify-center px-1">{unreadCount > 9 ? '9+' : unreadCount}</span>
               )}
             </button>
-            <LanguageSelector compact />
+            {/* Idioma: sólo escritorio (en móvil vive en Preferencias). */}
+            <div className="hidden lg:flex">
+              <LanguageSelector compact />
+            </div>
             <button
               onClick={toggleTheme}
-              className="text-on-surface-variant hover:text-primary transition-colors active-scale p-2 rounded-full"
+              className="lg:hidden text-on-surface-variant hover:text-primary hover:bg-primary/8 transition-colors active-scale size-11 inline-flex items-center justify-center rounded-full"
               aria-label={t('common.changeTheme')}
             >
               <Icon name={theme === 'dark' ? 'light_mode' : 'dark_mode'} size={20} />
@@ -536,13 +539,7 @@ export function PatientLayout({ children }: PatientLayoutProps) {
                 {t('navigation.chatbotPhysi', 'Chatbot Physi')}
               </span>
             </button>
-            <button
-              onClick={() => setShowLogout(true)}
-              className="text-on-surface-variant hover:text-error transition-colors active-scale p-2 rounded-full"
-              aria-label={t('common.logout')}
-            >
-              <Icon name="logout" size={20} />
-            </button>
+
           </div>
         </header>
         {/* Scrollable content with clean spacing (bottom padding clears the mobile dock / FAB) */}
