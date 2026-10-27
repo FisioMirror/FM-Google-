@@ -2075,3 +2075,36 @@ html { font-size: var(--font-size-base, 16px); }
     background-position: 0% 0%;
   }
 }
+
+/* ── Preferencia de mano: espeja navegación y controles flotantes ── */
+[data-hand="left"] aside[data-sidebar="left"] {
+  left: auto !important;
+  right: 0 !important;
+  border-right-width: 0 !important;
+  border-left-width: 1px;
+}
+
+@media (min-width: 1024px) {
+  [data-hand="left"] main[data-scroll-root] {
+    margin-left: 0 !important;
+    margin-right: var(--app-sidebar-w) !important;
+  }
+}
+
+/* FABs y menús flotantes: en zurdo se anclan a la izquierda */
+[data-hand="left"] .fab-anchor {
+  right: auto !important;
+  left: 1rem !important;
+}
+
+/* Toasts: en zurdo se anclan a la izquierda y alinean su contenido */
+[data-hand="left"] .toast-anchor {
+  right: auto !important;
+  left: 1rem !important;
+  align-items: flex-start !important;
+}
+
+/* Dock móvil: alinea sus acciones a la izquierda en zurdo */
+[data-hand="left"] .dock-anchor {
+  justify-content: flex-start !important;
+}

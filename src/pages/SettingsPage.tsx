@@ -57,7 +57,7 @@ function Toggle({ value, onChange, label }: { value: boolean; onChange: (v: bool
 
 /* ── Confirmation modal ───────────────────────────────────────── */
 export function SettingsPage() {
-  const { theme, toggleTheme, zoom, setZoom, fontSize, setFontSize, resetDefaults } = useTheme();
+  const { theme, toggleTheme, zoom, setZoom, fontSize, setFontSize, resetDefaults, handedness, toggleHandedness } = useTheme();
   const { user, signOut } = useAuthStore();
   const { toast } = useToast();
   const { t, i18n } = useTranslation();
@@ -226,6 +226,23 @@ export function SettingsPage() {
             </div>
           </div>
           <Toggle value={theme === 'dark'} onChange={toggleTheme} label={t('settings.theme', 'Cambiar tema')} />
+        </div>
+      </GlassPanel>
+
+      {/* Mano dominante (espeja la interfaz) */}
+      <GlassPanel className="p-6 rounded-2xl relative overflow-hidden">
+        <div className="blob-emerald absolute -top-12 -right-12 w-32 h-32 opacity-20 pointer-events-none" />
+        <div className="relative flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center shrink-0">
+              <Icon name="swipe" size={24} className="text-emerald-600 dark:text-emerald-400" />
+            </div>
+            <div className="min-w-0">
+              <p className="font-semibold text-on-surface">{t('settings.handedness', 'Mano dominante')}</p>
+              <p className="text-sm text-on-surface-variant">{t('settings.handednessDesc', 'Espeja la navegación, menús, FAB y avisos para uso con la mano izquierda.')}</p>
+            </div>
+          </div>
+          <Toggle value={handedness === 'left'} onChange={toggleHandedness} label={t('settings.handedness', 'Mano dominante')} />
         </div>
       </GlassPanel>
 

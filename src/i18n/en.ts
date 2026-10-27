@@ -305,6 +305,8 @@ export const en = {
     theme: 'Visual Theme',
     lightMode: 'Light Mode',
     darkMode: 'Dark Mode',
+    handedness: 'Dominant hand',
+    handednessDesc: 'Mirrors navigation, menus, FABs and toasts for left-handed use.',
     fontSize: 'Font Size',
     zoom: 'Interface Scale',
     glassmorphism: 'Glassmorphism Effect',

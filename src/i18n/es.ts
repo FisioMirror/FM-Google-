@@ -305,6 +305,8 @@ export const es = {
     theme: 'Tema Visual',
     lightMode: 'Modo Claro',
     darkMode: 'Modo Oscuro',
+    handedness: 'Mano dominante',
+    handednessDesc: 'Espeja la navegación, menús, FAB y avisos para uso con la mano izquierda.',
     fontSize: 'Tamaño de Tipografía',
     zoom: 'Escala de Interfaz',
     glassmorphism: 'Efecto Glassmorfismo',

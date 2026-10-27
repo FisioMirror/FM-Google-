@@ -305,6 +305,8 @@ export const pt = {
     theme: 'Tema Visual',
     lightMode: 'Modo Claro',
     darkMode: 'Modo Escuro',
+    handedness: 'Mão dominante',
+    handednessDesc: 'Espelha a navegação, menus, FABs e avisos para uso com a mão esquerda.',
     fontSize: 'Tamanho da Fonte',
     zoom: 'Escala da Interface',
     glassmorphism: 'Efeito Glassmorphism',
