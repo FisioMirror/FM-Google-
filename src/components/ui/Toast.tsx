@@ -156,7 +156,7 @@ export function ToastProvider({ children, placement = "bottom-right" }: ToastPro
       <div
         aria-live="polite"
         className={cn(
-          "fixed z-[300] pointer-events-none flex gap-2.5 max-w-full px-4 sm:px-0",
+          "toast-anchor fixed z-[300] pointer-events-none flex gap-2.5 max-w-full px-4 sm:px-0",
           placementClasses[placement] || placementClasses["bottom-right"]
         )}
       >
@@ -223,23 +223,23 @@ export const ToastItemComponent = React.forwardRef<HTMLDivElement, ToastItemComp
         className={cn(
           "pointer-events-auto group relative",
           "flex items-start gap-3 p-3.5 sm:p-4 rounded-2xl",
-          "bg-slate-900/95 dark:bg-slate-950/95 text-white",
+          "bg-surface/95 dark:bg-surface-container/95 text-on-surface",
           "backdrop-blur-2xl border",
-          "shadow-2xl shadow-black/40",
+          "shadow-elevated shadow-black/10 dark:shadow-black/40",
           "min-w-[280px] max-w-[390px] w-full",
           getBorderAndBg()
         )}
       >
-        <div className="p-2 rounded-xl shrink-0 mt-0.5 border bg-white/5 border-white/10 flex items-center justify-center">
+        <div className="p-2 rounded-xl shrink-0 mt-0.5 border bg-surface-container-high/60 dark:bg-white/5 border-outline-variant/40 dark:border-white/10 flex items-center justify-center">
           {getIcon()}
         </div>
 
         <div className="flex-1 min-w-0 pt-0.5">
-          <p className="text-xs sm:text-sm font-bold text-white leading-snug">
+          <p className="text-xs sm:text-sm font-bold text-on-surface leading-snug">
             {item.message}
           </p>
           {item.description && (
-            <p className="mt-1 text-[11px] sm:text-xs text-slate-300 leading-relaxed">
+            <p className="mt-1 text-[11px] sm:text-xs text-on-surface-variant leading-relaxed">
               {item.description}
             </p>
           )}
@@ -247,7 +247,7 @@ export const ToastItemComponent = React.forwardRef<HTMLDivElement, ToastItemComp
             <button
               type="button"
               onClick={item.action.onClick}
-              className="mt-2 text-xs font-semibold text-teal-400 hover:text-teal-300 underline underline-offset-2 transition-colors"
+              className="mt-2 text-xs font-semibold text-primary hover:text-primary/80 underline underline-offset-2 transition-colors"
             >
               {item.action.label}
             </button>
@@ -258,7 +258,7 @@ export const ToastItemComponent = React.forwardRef<HTMLDivElement, ToastItemComp
           type="button"
           onClick={onClose}
           aria-label="Cerrar notificación"
-          className="size-6 rounded-lg shrink-0 flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 transition-colors"
+          className="size-6 rounded-lg shrink-0 flex items-center justify-center text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors"
         >
           <X className="size-3.5" />
         </button>
