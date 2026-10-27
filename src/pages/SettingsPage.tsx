@@ -11,7 +11,7 @@ import { speakHumanVoice, stopHumanVoice, getVoiceMode, setVoiceMode, type Voice
 import { GlassPanel } from '../components/ui/Glass';
 import { Icon } from '../components/ui/Icon';
 import { AnimatedTabs } from '../components/ui/AnimatedTabs';
-import { useGlassToast } from '../components/ui/GlassToast';
+import { useToast } from '../components/ui/Toast';
 import { HelpSection } from '../components/ui/HelpSection';
 import { IOSInstallModal } from '../components/ui/IOSInstallModal';
 import { EmailSystemStatusCard } from '../components/ui/EmailSystemStatusCard';
@@ -59,7 +59,7 @@ function Toggle({ value, onChange, label }: { value: boolean; onChange: (v: bool
 export function SettingsPage() {
   const { theme, toggleTheme, zoom, setZoom, fontSize, setFontSize, resetDefaults } = useTheme();
   const { user, signOut } = useAuthStore();
-  const { show } = useGlassToast();
+  const { toast } = useToast();
   const { t, i18n } = useTranslation();
   const [currentLang, setCurrentLang] = useState<string>(() => i18n.language || (typeof window !== 'undefined' ? localStorage.getItem('fisio_language') : 'es') || 'es');
   const { preference: arPreference, setPreference: setArPreference, activeModel: currentArModel } = useMediaPipeModel();
@@ -92,13 +92,14 @@ export function SettingsPage() {
   const handleVoiceModeChange = (mode: VoiceMode) => {
     setLocalVoiceMode(mode);
     setVoiceMode(mode);
-    show({
-      title: mode === 'humanized' ? 'Voz Humanizada Activada' : 'Voz del Dispositivo Activada',
-      message: mode === 'humanized'
-        ? 'La retroalimentación usará voz natural Fish Audio / Neural con respaldo offline.'
-        : 'La retroalimentación usará el sintetizador local offline.',
-      variant: 'success',
-    });
+    toast.success(
+      mode === 'humanized' ? 'Voz Humanizada Activada' : 'Voz del Dispositivo Activada',
+      {
+        description: mode === 'humanized'
+          ? 'La retroalimentación usará voz natural Fish Audio / Neural con respaldo offline.'
+          : 'La retroalimentación usará el sintetizador local offline.',
+      }
+    );
   };
 
   const handleTestVoice = () => {
@@ -170,28 +171,28 @@ export function SettingsPage() {
 
   /* ── Handlers ───────────────────────────────────────────────── */
   const handlePasswordChange = async () => {
-    if (!pwCurrent || !pwNew || !pwConfirm) { show('Completa todos los campos', 'warning'); return; }
-    if (pwNew !== pwConfirm) { show('Las contraseñas nuevas no coinciden', 'error'); return; }
-    if (pwNew.length < 6) { show('La nueva contraseña debe tener al menos 6 caracteres', 'warning'); return; }
+    if (!pwCurrent || !pwNew || !pwConfirm) { toast.warning('Completa todos los campos'); return; }
+    if (pwNew !== pwConfirm) { toast.error('Las contraseñas nuevas no coinciden'); return; }
+    if (pwNew.length < 6) { toast.warning('La nueva contraseña debe tener al menos 6 caracteres'); return; }
     setPwLoading(true);
     try {
       const result = await useAuthStore.getState().updatePassword(pwCurrent, pwNew);
       if (!result.success) {
-        show(result.error || 'Error al cambiar la contraseña', 'error');
+        toast.error(result.error || 'Error al cambiar la contraseña');
         return;
       }
-      show('Contraseña actualizada correctamente', 'success');
+      toast.success('Contraseña actualizada correctamente');
       setPwCurrent(''); setPwNew(''); setPwConfirm('');
       setShowPasswordModal(false);
     } catch {
-      show('Error de conexión al actualizar contraseña', 'error');
+      toast.error('Error de conexión al actualizar contraseña');
     } finally {
       setPwLoading(false);
     }
   };
 
   const handleDeleteAccount = async () => {
-    if (!deletePassword) { show('Ingresa tu contraseña para confirmar', 'warning'); return; }
+    if (!deletePassword) { toast.warning('Ingresa tu contraseña para confirmar'); return; }
     setDeleteLoading(true);
     try {
       const fnUrl = `${supabaseUrl}/functions/v1`;
@@ -200,10 +201,10 @@ export function SettingsPage() {
         body: JSON.stringify({ userId: user?.id, password: deletePassword }),
       });
       const data = await res.json().catch(() => ({}));
-      if (!res.ok || !data.success) { show(data.error || 'Error al eliminar la cuenta', 'error'); return; }
-      show('Cuenta eliminada correctamente', 'success');
+      if (!res.ok || !data.success) { toast.error(data.error || 'Error al eliminar la cuenta'); return; }
+      toast.success('Cuenta eliminada correctamente');
       signOut();
-    } catch { show('Error de conexión', 'error'); } finally { setDeleteLoading(false); }
+    } catch { toast.error('Error de conexión'); } finally { setDeleteLoading(false); }
   };
 
   /* ══════════════════════════════════════════════════════════════
@@ -328,7 +329,7 @@ export function SettingsPage() {
             onChange={(v) => {
               setSpiritualMode(v);
               setSpiritualModeEnabled(v);
-              show(v ? 'Inspiración de Fe activada' : 'Inspiración de Fe desactivada', 'success');
+              toast.success(v ? 'Inspiración de Fe activada' : 'Inspiración de Fe desactivada');
             }}
             label="Palabra de Fortaleza & Fe"
           />
@@ -359,13 +360,12 @@ export function SettingsPage() {
                 onClick={() => {
                   changeAppLanguage(lang.code as 'es' | 'en' | 'pt');
                   setCurrentLang(lang.code);
-                  show(
+                  toast.success(
                     lang.code === 'en'
                       ? 'Language changed to English'
                       : lang.code === 'pt'
                       ? 'Idioma alterado para Português'
-                      : 'Idioma cambiado a Español',
-                    'success'
+                      : 'Idioma cambiado a Español'
                   );
                 }}
                 className={cn(
@@ -413,7 +413,7 @@ export function SettingsPage() {
                 key={m.id}
                 onClick={() => {
                   setArPreference(m.id as ModelPreference);
-                  show(`Modelo de visión configurado a ${m.title}`, 'success');
+                  toast.success(`Modelo de visión configurado a ${m.title}`);
                 }}
                 className={cn(
                   'flex flex-col items-start p-3.5 rounded-xl text-left transition-all border',

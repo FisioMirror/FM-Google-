@@ -18,10 +18,14 @@ import {
   VirtualTrophyCabinet,
 } from '../components/ui/GamificationSuite';
 import { ErgonomicHandModeSwitcher } from '../components/ui/NavigationDocksSuite';
+import { AchievementShowcase } from '../components/AchievementShowcase';
+import { GamifiedBadgeCard } from '../components/ui/GamifiedBadgeCard';
+import { useGamification } from '../hooks/useGamification';
 
 export function ProfilePage() {
   const user = useAuthStore((s) => s.user);
   const { theme, toggleTheme } = useTheme();
+  const gamification = useGamification();
   const toast = useToast();
   const [editing, setEditing] = useState(false);
   const [form, setForm] = useState({ full_name: '', especialidad: '', universidad: '', cedula: '', colegiado_id: '', anio_egreso: '' });
@@ -613,6 +617,29 @@ export function ProfilePage() {
               ) },
               { id: 'trophies', label: 'Logros y Trofeos', content: (
                 <div className="space-y-4">
+                  <GlassPanel className="p-5 sm:p-6 rounded-3xl">
+                    <div className="flex justify-between items-center text-xs mb-4">
+                      <span className="text-on-surface-variant">{gamification.unlockedCount} de {gamification.achievements.length} medallas</span>
+                      <span className="font-bold text-primary">{Math.round(gamification.totalProgress * 100)}% desbloqueado</span>
+                    </div>
+                    <AchievementShowcase achievements={gamification.achievements} compact={false} />
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6 pt-6 border-t border-outline-variant/20">
+                      <GamifiedBadgeCard
+                        title="Constancia Inquebrantable"
+                        description="5 días seguidos completando rutina prescrita"
+                        tier="gold"
+                        xpPoints={gamification.points}
+                        progressPct={gamification.levelProgressPercent}
+                      />
+                      <GamifiedBadgeCard
+                        title="Precisión Articular"
+                        description="ROM > 90° con simetría biomecánica óptima"
+                        tier="diamond"
+                        xpPoints={gamification.points}
+                        progressPct={Math.round(gamification.totalProgress * 100)}
+                      />
+                    </div>
+                  </GlassPanel>
                   <VirtualTrophyCabinet />
                 </div>
               ) },

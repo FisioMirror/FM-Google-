@@ -11,7 +11,6 @@ import { ErrorBoundary } from './components/ui/ErrorBoundary';
 import { ThemeProvider } from './context/ThemeContext';
 import { NotificationProvider } from './context/NotificationContext';
 import { ToastProvider } from './components/ui/ToastProvider';
-import { GlassToastProvider } from './components/ui/GlassToast';
 import { InstallProvider } from './lib/installContext';
 import { InstallModal } from './components/ui/InstallPrompt';
 import { ScrollToTop } from './components/ScrollToTop';
@@ -266,12 +265,10 @@ export default function App() {
       <ThemeProvider>
         <InstallProvider>
           <ToastProvider>
-            <GlassToastProvider>
               <NotificationProvider>
                 <Router />
                 <Analytics />
               </NotificationProvider>
-            </GlassToastProvider>
           </ToastProvider>
         </InstallProvider>
       </ThemeProvider>

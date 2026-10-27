@@ -63,6 +63,12 @@ export function getVoiceMode(): VoiceMode {
 export function setVoiceMode(mode: VoiceMode): void {
   if (typeof localStorage !== 'undefined') {
     localStorage.setItem('fisio_voice_mode', mode);
+    const current = localStorage.getItem('fisio_voice_provider');
+    if (mode === 'device') {
+      localStorage.setItem('fisio_voice_provider', 'device');
+    } else if (!current || current === 'device' || current === 'auto') {
+      localStorage.setItem('fisio_voice_provider', 'fish_audio');
+    }
   }
 }
 
@@ -70,9 +76,9 @@ export function setVoiceMode(mode: VoiceMode): void {
  * Gets the current preferred voice gender persona ('male' warm therapist by default, or 'female').
  */
 export function getVoiceGender(): VoiceGender {
-  if (typeof localStorage === 'undefined') return 'male';
+  if (typeof localStorage === 'undefined') return 'female';
   const stored = localStorage.getItem('fisio_voice_gender');
-  return stored === 'female' ? 'female' : 'male';
+  return stored === 'male' ? 'male' : 'female';
 }
 
 /**
@@ -88,12 +94,14 @@ export function setVoiceGender(gender: VoiceGender): void {
  * Gets the active voice synthesis provider ('auto', 'neural', 'fish_audio', 'device').
  */
 export function getVoiceProvider(): VoiceProvider {
-  if (typeof localStorage === 'undefined') return 'auto';
+  if (typeof localStorage === 'undefined') return 'fish_audio';
+  if (localStorage.getItem('fisio_voice_mode') === 'device') return 'device';
   const stored = localStorage.getItem('fisio_voice_provider') as VoiceProvider;
-  if (stored && ['auto', 'neural', 'fish_audio', 'device'].includes(stored)) {
+  if (stored === 'device') return 'auto';
+  if (stored && ['auto', 'neural', 'fish_audio'].includes(stored)) {
     return stored;
   }
-  return 'auto';
+  return 'fish_audio';
 }
 
 /**

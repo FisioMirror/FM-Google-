@@ -10,7 +10,7 @@ import { runAIJob } from '../lib/ai';
 import { OnboardingGuide } from '../components/OnboardingGuide';
 import { useToast } from '../components/ui/ToastProvider';
 import { useGamification } from '../hooks/useGamification';
-import { AchievementShowcase, AchievementUnlockModal } from '../components/AchievementShowcase';
+import { AchievementUnlockModal } from '../components/AchievementShowcase';
 import { CollapsibleSection } from '../components/ui/CollapsibleSection';
 import { PRIMARY_DEMO_PATIENT } from '../data/unifiedDemoData';
 import { isValidUUID } from '../lib/utils';
@@ -27,11 +27,9 @@ import {
   MobilityQuestCard,
   DailyHealthPointsWidget,
   LevelProgressRibbon,
-  VirtualTrophyCabinet,
   CheerReactionButton,
 } from '../components/ui/GamificationSuite';
 import { PainScaleInteractiveCard } from '../components/ui/ActivityCardsSuite';
-import { GamifiedBadgeCard } from '../components/ui/GamifiedBadgeCard';
 import {
   ExerciseTimelineScrubber,
   CompactTelehealthBar,
@@ -734,37 +732,6 @@ export function PatientDashboard() {
         </div>
       </div>
 
-      {/* Gamification Achievements Section */}
-      <CollapsibleSection title="Logros y Metas de Recuperación" icon="emoji_events">
-        <div className="space-y-6">
-          <div className="p-6 rounded-3xl bg-surface/80 dark:bg-surface-container-low/60 border border-outline/10">
-            <div className="flex justify-between items-center text-xs mb-4">
-              <span className="text-on-surface-variant">{gamification.unlockedCount} de {gamification.achievements.length} medallas</span>
-              <span className="font-bold text-teal-600 dark:text-teal-400">{Math.round(gamification.totalProgress * 100)}% desbloqueado</span>
-            </div>
-            <AchievementShowcase achievements={gamification.achievements} compact={false} />
-
-            {/* Medallas 3D Gamificadas de FisioMirror */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6 pt-6 border-t border-outline/10">
-              <GamifiedBadgeCard
-                title="Constancia Inquebrantable"
-                description="5 días seguidos completando rutina prescrita"
-                tier="gold"
-                xpPoints={250}
-                progressPct={Math.min(100, Math.round(((kpi.streak || 4) / 5) * 100))}
-              />
-              <GamifiedBadgeCard
-                title="Precisión Articular"
-                description="ROM > 90° con simetría biomecánica óptima"
-                tier="diamond"
-                xpPoints={500}
-                progressPct={88}
-              />
-            </div>
-          </div>
-          <VirtualTrophyCabinet />
-        </div>
-      </CollapsibleSection>
     </div>
   );
 }
