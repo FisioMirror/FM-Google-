@@ -1,7 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import { useAnimationFrame } from 'framer-motion';
-import type { JointRotationAxis, ExercisePosition } from '../../types/character.types';
+import type { JointRotationAxis, ExercisePosition, JointAngleConfig } from '../../types/character.types';
+import { getExercisePreset } from '../../data/exercisePresets';
 
 /** Límites anatómicos realistas (en grados) por articulación. */
 const JOINT_LIMITS: Record<string, { min: number; max: number }> = {
@@ -9,14 +10,15 @@ const JOINT_LIMITS: Record<string, { min: number; max: number }> = {
   cuello: { min: -45, max: 45 },
   hombro_izquierdo: { min: -180, max: 180 },
   hombro_derecho: { min: -180, max: 180 },
-  codo_izquierdo: { min: -150, max: 0 },
-  codo_derecho: { min: -150, max: 0 },
+  // 0° extendido -> 150° flexionado (el signo lo aplica toSignedRotation).
+  codo_izquierdo: { min: 0, max: 150 },
+  codo_derecho: { min: 0, max: 150 },
   muñeca_izquierda: { min: -80, max: 80 },
   muñeca_derecha: { min: -80, max: 80 },
   cadera_izquierda: { min: -120, max: 120 },
   cadera_derecha: { min: -120, max: 120 },
-  rodilla_izquierda: { min: -135, max: 0 },
-  rodilla_derecha: { min: -135, max: 0 },
+  rodilla_izquierda: { min: 0, max: 135 },
+  rodilla_derecha: { min: 0, max: 135 },
   tobillo_izquierdo: { min: -40, max: 30 },
   tobillo_derecho: { min: -40, max: 30 },
 };
@@ -25,6 +27,25 @@ const clampAngle = (joint: string, deg: number): number => {
   const limit = JOINT_LIMITS[joint];
   if (!limit) return deg;
   return Math.max(limit.min, Math.min(limit.max, deg));
+};
+
+/**
+ * Las extremidades cuelgan del pivote en -Y: una flexión anatómica positiva
+ * (muslo/brazo hacia adelante) exige rotación NEGATIVA en X. Sin esto la
+ * sentadilla se representaba invertida.
+ */
+const FLEXION_FORWARD_JOINTS = ['codo_', 'cadera_', 'hombro_'];
+
+const toSignedRotation = (joint: string, deg: number, axis: JointRotationAxis): number => {
+  const clamped = clampAngle(joint, deg);
+  let rad = THREE.MathUtils.degToRad(clamped);
+  if (axis === 'x' && deg > 0 && FLEXION_FORWARD_JOINTS.some((p) => joint.startsWith(p))) {
+    rad = -rad;
+  }
+  if (axis === 'z' && (joint.includes('derecho') || joint.includes('derecha'))) {
+    rad = -rad;
+  }
+  return rad;
 };
 
 /** Rotación/posición objetivo del grupo raíz según la posición del ejercicio. */
@@ -47,6 +68,10 @@ export interface KidModel3DProps {
   className?: string;
   /** Posición corporal del ejercicio. Por defecto 'pie' (de pie). */
   position?: ExercisePosition;
+  /** Nombre del ejercicio: la animación automática se deriva de su preset clínico. */
+  exerciseName?: string;
+  /** Articulación principal ('hombro' | 'codo' | 'rodilla' | 'cadera' | 'tobillo' | 'cervical'). */
+  articulacion?: string;
 }
 
 export const KidModel3D: React.FC<KidModel3DProps> = ({
@@ -56,6 +81,8 @@ export const KidModel3D: React.FC<KidModel3DProps> = ({
   autoAnimate = false,
   className = 'w-full h-full min-h-[320px]',
   position = 'pie',
+  exerciseName,
+  articulacion,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const jointsRef = useRef<Record<string, THREE.Group>>({});
@@ -65,6 +92,7 @@ export const KidModel3D: React.FC<KidModel3DProps> = ({
   const statusColorRef = useRef(statusColor);
   const autoAnimateRef = useRef(autoAnimate);
   const positionRef = useRef(position);
+  const animJointsRef = useRef<JointAngleConfig[]>([]);
   // Valores actuales interpolados de la pose de posición (rotación + traslación).
   const poseRef = useRef({ rotX: 0, rotY: 0, rotZ: 0, posY: 0 });
   // Referencia al grupo 3D que rota/traslada todo el modelo según la posición.
@@ -76,6 +104,7 @@ export const KidModel3D: React.FC<KidModel3DProps> = ({
     statusColorRef.current = statusColor;
     autoAnimateRef.current = autoAnimate;
     positionRef.current = position;
+    animJointsRef.current = getExercisePreset(exerciseName ?? '', articulacion).targetJoints;
   }, [jointAngles, jointAxes, statusColor, autoAnimate, position]);
 
   // Interpolación suave de la pose de posición usando Framer Motion.
@@ -399,17 +428,23 @@ export const KidModel3D: React.FC<KidModel3DProps> = ({
         Object.entries(currentAngles).forEach(([jointName, degAngle]) => {
           if (joints[jointName] && typeof degAngle === 'number') {
             const axis: JointRotationAxis = currentAxes[jointName] ?? 'x';
-            // Aplicar límites anatómicos realistas antes de convertir a radianes.
-            const clampedDeg = clampAngle(jointName, degAngle);
-            const rad = THREE.MathUtils.degToRad(clampedDeg);
-            // Invertir el signo para el lado derecho en el eje Z (abducción)
-            // para que ambos brazos/piernas se abran hacia afuera simétricamente.
-            let signedRad = rad;
-            if (axis === 'z' && jointName.includes('derecho')) {
-              signedRad = -rad;
-            }
-            joints[jointName].rotation[axis] = signedRad;
+            joints[jointName].rotation[axis] = toSignedRotation(jointName, degAngle, axis);
           }
+        });
+      } else if (autoAnimateRef.current && animJointsRef.current.length > 0) {
+        // Ciclo clínico derivado del preset del ejercicio (sentadilla, hombro, codo…).
+        const t2 = clock.getElapsedTime();
+        const phase = (1 - Math.cos(t2 * 2.0)) / 2;
+        Object.values(joints).forEach((grp) => {
+          grp.rotation.set(0, 0, 0);
+        });
+        animJointsRef.current.forEach(({ joint, targetAngle, neutralAngle, axis }) => {
+          const grp = joints[joint];
+          if (!grp) return;
+          const ax: JointRotationAxis = axis ?? 'x';
+          const neutral = neutralAngle ?? 0;
+          const deg = neutral + (targetAngle - neutral) * phase;
+          grp.rotation[ax] = toSignedRotation(joint, deg, ax);
         });
       } else if (autoAnimateRef.current) {
         const t = clock.getElapsedTime() * 2.5;

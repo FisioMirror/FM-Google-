@@ -253,6 +253,8 @@ export const ARModel3DOverlayPiP: React.FC<ARModel3DOverlayPiPProps> = ({
               jointAxes={jointAxes}
               statusColor={statusColor}
               autoAnimate={false}
+              exerciseName={exerciseName}
+              position={exerciseDef.position}
               className="w-full h-full"
             />
           ) : (
@@ -261,6 +263,7 @@ export const ARModel3DOverlayPiP: React.FC<ARModel3DOverlayPiPProps> = ({
               jointAxes={jointAxes}
               statusColor={statusColor}
               autoAnimate={false}
+              exerciseName={exerciseName}
               position={exerciseDef.position}
               className="w-full h-full"
             />

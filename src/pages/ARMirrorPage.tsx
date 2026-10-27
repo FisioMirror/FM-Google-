@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useMemo, useState, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Icon } from '../components/ui/Icon';
@@ -28,6 +28,7 @@ import {
 } from '../components/ui/RealTimeMetricsSuite';
 import { AudioMuteFloatingPill } from '../components/ui/FloatingControlsSuite';
 import { ARModel3DOverlayPiP } from '../components/rehabilitation/ARModel3DOverlayPiP';
+import { getExercisePreset } from '../data/exercisePresets';
 
 // Rep completion particle burst
 function repParticleBurst() {
@@ -167,10 +168,15 @@ export function ARMirrorPage() {
     return () => clearInterval(interval);
   }, [state]);
 
-  // Set default target angle for exoskeleton color coding
+  // Ángulo objetivo real del ejercicio (preset clínico), no un 90° fijo.
+  const presetTargetAngle = useMemo(() => {
+    const joints = getExercisePreset(exerciseName || '').targetJoints;
+    return joints[0]?.targetAngle ?? 90;
+  }, [exerciseName]);
+
   useEffect(() => {
-    setTargetAngle(90); // Default 90° target; could be fetched from exercise config
-  }, []);
+    setTargetAngle(presetTargetAngle);
+  }, [presetTargetAngle, setTargetAngle]);
 
   // Read calibration state from localStorage (set by CalibrationPage).
   useEffect(() => {
@@ -654,10 +660,10 @@ export function ARMirrorPage() {
       {/* 3D Model Picture-in-Picture Exercise Demonstrator (Elemento Esencial y Clínico) */}
       <AnimatePresence>
         {showModel3D && state !== 'finished' && (
-          <div className="absolute top-14 sm:top-16 md:top-20 right-2 sm:right-4 md:right-6 z-30 pointer-events-none">
+          <div className="absolute top-14 sm:top-16 md:top-20 right-2 sm:right-4 md:right-6 z-30 pointer-events-auto">
             <ARModel3DOverlayPiP
               exerciseName={exerciseName}
-              targetAngle={90}
+              targetAngle={presetTargetAngle}
               isOpen={showModel3D}
               onClose={() => setShowModel3D(false)}
             />
@@ -706,7 +712,7 @@ export function ARMirrorPage() {
                   >
                     <BiomechanicalAngleGauge
                       currentAngle={currentAngle}
-                      targetAngle={90}
+                      targetAngle={presetTargetAngle}
                       jointName={exerciseName}
                       safeTolerance={10}
                       size={140}
