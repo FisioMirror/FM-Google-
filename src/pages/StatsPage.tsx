@@ -917,8 +917,8 @@ export function StatsPage() {
                 <IncidentReportCard />
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <PatientAdherenceHeatmapCard />
-                  <PostureStabilityCard balanceScore={94} />
-                  <GaitSymmetryCard leftRatio={51} rightRatio={49} cadenceSteps={112} />
+                  <PostureStabilityCard balanceScore={Math.min(99, Math.max(0, Math.round(avgQuality || 0)))} />
+                  <GaitSymmetryCard leftRatio={50} rightRatio={50} cadenceSteps={0} />
                 </div>
               </div>
             </>
