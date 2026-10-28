@@ -94,6 +94,9 @@ export function ARMirrorPage() {
   const user = useAuthStore((s) => s.user);
 
   const exerciseName = searchParams.get('ejercicio') || 'Sesión AR';
+  const [articulacion, setArticulacion] = useState<string | undefined>(
+    searchParams.get('articulacion') || undefined
+  );
 
   const {
     videoRef,
@@ -170,9 +173,14 @@ export function ARMirrorPage() {
 
   // Ángulo objetivo real del ejercicio (preset clínico), no un 90° fijo.
   const presetTargetAngle = useMemo(() => {
-    const joints = getExercisePreset(exerciseName || '').targetJoints;
-    return joints[0]?.targetAngle ?? 90;
-  }, [exerciseName]);
+    try {
+      const joints = getExercisePreset(exerciseName || '', articulacion).targetJoints;
+      return joints[0]?.targetAngle ?? 90;
+    } catch {
+      const joints = getExercisePreset(exerciseName || '').targetJoints;
+      return joints[0]?.targetAngle ?? 90;
+    }
+  }, [exerciseName, articulacion]);
 
   useEffect(() => {
     setTargetAngle(presetTargetAngle);
@@ -663,6 +671,7 @@ export function ARMirrorPage() {
           <div className="absolute top-14 sm:top-16 md:top-20 right-2 sm:right-4 md:right-6 z-30 pointer-events-auto">
             <ARModel3DOverlayPiP
               exerciseName={exerciseName}
+              articulacion={articulacion}
               targetAngle={presetTargetAngle}
               isOpen={showModel3D}
               onClose={() => setShowModel3D(false)}

@@ -25,6 +25,7 @@ import type { CharacterRole, JointRotationAxis, ExerciseDefinition } from '../..
 
 export interface ARModel3DOverlayPiPProps {
   exerciseName: string;
+  articulacion?: string;
   targetAngle?: number;
   isOpen?: boolean;
   onClose?: () => void;
@@ -36,6 +37,7 @@ type PerspectiveAngle = 'front' | 'diagonal' | 'side';
 
 export const ARModel3DOverlayPiP: React.FC<ARModel3DOverlayPiPProps> = ({
   exerciseName,
+  articulacion,
   targetAngle = 90,
   isOpen = true,
   onClose,
@@ -59,11 +61,11 @@ export const ARModel3DOverlayPiP: React.FC<ARModel3DOverlayPiPProps> = ({
       exerciseName || 'Flexión articular',
       3,
       12,
-      undefined,
+      articulacion,
       undefined,
       targetAngle
     );
-  }, [exerciseName, targetAngle]);
+  }, [exerciseName, articulacion, targetAngle]);
 
   // Generar mapa de rotaciones y ejes articulares
   const jointAxes = useMemo<Partial<Record<string, JointRotationAxis>>>(() => {
@@ -254,6 +256,7 @@ export const ARModel3DOverlayPiP: React.FC<ARModel3DOverlayPiPProps> = ({
               statusColor={statusColor}
               autoAnimate={false}
               exerciseName={exerciseName}
+              articulacion={articulacion}
               position={exerciseDef.position}
               className="w-full h-full"
             />
@@ -264,6 +267,7 @@ export const ARModel3DOverlayPiP: React.FC<ARModel3DOverlayPiPProps> = ({
               statusColor={statusColor}
               autoAnimate={false}
               exerciseName={exerciseName}
+              articulacion={articulacion}
               position={exerciseDef.position}
               className="w-full h-full"
             />

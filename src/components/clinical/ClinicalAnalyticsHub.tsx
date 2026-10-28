@@ -28,6 +28,7 @@ import {
 } from 'lucide-react';
 import { GlassPanel } from '../ui/Glass';
 import { useNavigate } from 'react-router-dom';
+import { EmptyState } from '../ui/EmptyState';
 
 interface RomJointData {
   joint: string;
@@ -255,6 +256,38 @@ export function ClinicalAnalyticsHub() {
   const CLINICAL_ALERTS = getAlerts(t);
   const [selectedJoint, setSelectedJoint] = useState<string>(ROM_DATA[0].joint);
   const [activeTab, setActiveTab] = useState<'rom' | 'vas' | 'cohorts'>('rom');
+
+  const hasRealData = false;
+
+  if (!hasRealData) {
+    return (
+      <div className="space-y-6 w-full">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          <div>
+            <div className="flex items-center gap-2 mb-1">
+              <span className="px-2.5 py-0.5 rounded-full text-2xs font-bold uppercase tracking-wider bg-teal-500/10 text-teal-700 dark:text-teal-300 border border-teal-500/20">
+                {t('cah.highPrecisionModule')}
+              </span>
+              <span className="text-xs text-on-surface-variant font-medium">· {t('cah.biomechanicsTeleRehab')}</span>
+            </div>
+            <h3 className="font-headline-md text-headline-sm lg:text-headline-md text-on-surface">
+              {t('cah.advancedClinicalAnalytics')}
+            </h3>
+            <p className="text-xs text-on-surface-variant max-w-2xl">
+              {t('cah.quantitativeMonitoring')}
+            </p>
+          </div>
+        </div>
+        <EmptyState
+          type="analytics"
+          title="Sin datos clínicos reales"
+          description="Aún no hay suficientes datos de sesiones, ROM o dolor para generar analíticas clínicas. Completa sesiones con seguimiento para ver evolución real."
+          actionLabel="Ir a pacientes"
+          onAction={() => navigate('/pacientes')}
+        />
+      </div>
+    );
+  }
 
   const currentJointData = ROM_DATA.find((j) => j.joint === selectedJoint) || ROM_DATA[0];
 

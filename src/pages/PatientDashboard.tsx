@@ -14,6 +14,7 @@ import { AchievementUnlockModal } from '../components/AchievementShowcase';
 import { CollapsibleSection } from '../components/ui/CollapsibleSection';
 import { PRIMARY_DEMO_PATIENT } from '../data/unifiedDemoData';
 import { isValidUUID } from '../lib/utils';
+import { isDemoAccount } from '../lib/demoAuth';
 import { BorderBeam } from '../components/ui/BorderBeam';
 import { CardSpotlight } from '../components/ui/CardSpotlight';
 import { PulsatingButton } from '../components/ui/PulsatingButton';
@@ -82,6 +83,7 @@ const weekDays = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
 export function PatientDashboard() {
   const { t, i18n } = useTranslation();
   const user = useAuthStore((s) => s.user);
+  const isDemo = isDemoAccount(user);
   const navigate = useNavigate();
   const [kpi, setKpi] = useState<PatientKpi>(emptyKpi);
   const [exercises, setExercises] = useState<AssignedExercise[]>([]);
@@ -89,12 +91,7 @@ export function PatientDashboard() {
   const [weekActivity, setWeekActivity] = useState<WeekActivity[]>(weekDays.map((d) => ({ day: d, minutes: 0 })));
   const [allSessionDates, setAllSessionDates] = useState<Date[]>([]);
   const [loading, setLoading] = useState(true);
-  const [evolution] = useState<EvolutionWeek[] | null>([
-    { label: 'Semana 1', pct: 45 },
-    { label: 'Semana 2', pct: 58 },
-    { label: 'Semana 3', pct: 67 },
-    { label: 'Semana 4', pct: 78 },
-  ]);
+  const [evolution] = useState<EvolutionWeek[] | null>(null);
   const [recommendation, setRecommendation] = useState<string | null>(null);
   const [recGeneratedAt, setRecGeneratedAt] = useState<string | null>(null);
   const [recLoading, setRecLoading] = useState(false);
@@ -246,9 +243,9 @@ export function PatientDashboard() {
         );
       }
 
-      // Si no hay datos reales (cuenta demo), inyectar datos ficticios
+      // Si no hay datos reales, mostrar estados vacíos honestos (solo para cuentas demo)
       const isEmpty = (sessions ?? 0) === 0 && weeklyMin === 0 && streak === 0;
-      if (isEmpty) {
+      if (isEmpty && isDemo) {
         setKpi({
           streak: 4,
           totalSessions: PRIMARY_DEMO_PATIENT.sessionsCompleted,
@@ -273,6 +270,16 @@ export function PatientDashboard() {
           }))
         );
         setAllSessionDates(PRIMARY_DEMO_PATIENT.sessions.map((s) => new Date(s.fecha)));
+      } else if (isEmpty && !isDemo) {
+        setKpi({
+          streak: 0,
+          totalSessions: 0,
+          weeklyMinutes: 0,
+          isDemo: false,
+        });
+        setWeekActivity(weekDays.map((d) => ({ day: d, minutes: 0 })));
+        setExercises([]);
+        setAllSessionDates([]);
       }
     } catch {
       // Fallback

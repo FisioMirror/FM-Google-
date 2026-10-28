@@ -59,6 +59,7 @@ interface RoutineRow {
   status: string | null;
   fecha_inicio: string;
   fecha_fin: string | null;
+  fase_recuperacion?: string | null;
   updated_at: string | null;
 }
 
@@ -108,6 +109,7 @@ export function PatientDetailPage() {
   const [activeTab, setActiveTab] = useState<Tab>(initialTab);
   const [loading, setLoading] = useState(true);
   const [aiInsight, setAiInsight] = useState('');
+  const [aiInsightGeneratedAt, setAiInsightGeneratedAt] = useState<string | null>(null);
   const [aiLoading, setAiLoading] = useState(false);
   const [showRoutineModal, setShowRoutineModal] = useState(false);
   const [showPDFModal, setShowPDFModal] = useState(false);
@@ -315,10 +317,16 @@ export function PatientDetailPage() {
       const result = await runAIJob('insights', {
         userPrompt: `Genera un insight clínico breve sobre el progreso de este paciente basado en datos reales: ${dataContext}`,
       });
-      if (result.success && result.result) setAiInsight(result.result);
-      else setAiInsight('No hay datos suficientes para generar un insight.');
+      if (result.success && result.result) {
+        setAiInsight(result.result);
+        setAiInsightGeneratedAt(new Date().toISOString());
+      } else {
+        setAiInsight('No hay datos suficientes para generar un insight.');
+        setAiInsightGeneratedAt(null);
+      }
     } catch {
       setAiInsight('Error conectando con Physi.');
+      setAiInsightGeneratedAt(null);
     } finally {
       setAiLoading(false);
     }
@@ -359,7 +367,7 @@ export function PatientDetailPage() {
     try {
       const { data } = await supabase
         .from('rutinas')
-        .select('id, nombre, descripcion, ejercicios, activa, status, fecha_inicio, fecha_fin, updated_at')
+        .select('id, nombre, descripcion, ejercicios, activa, status, fecha_inicio, fecha_fin, fase_recuperacion, updated_at')
         .eq('paciente_id', id)
         .order('updated_at', { ascending: false, nullsFirst: false } as { ascending: boolean });
       setRoutineHistory((data || []) as unknown as RoutineRow[]);
@@ -1061,7 +1069,17 @@ export function PatientDetailPage() {
                       </span>
                     </div>
                     {r.descripcion && <p className="text-xs text-on-surface-variant mb-1">{r.descripcion}</p>}
-                    <p className="text-xs text-outline">Inicio: {r.fecha_inicio}{r.updated_at ? ` · Actualizada: ${new Date(r.updated_at).toLocaleDateString('es-ES')}` : ''}</p>
+                    <div className="flex flex-wrap items-center gap-2 text-xs text-outline">
+                      <span>Inicio: {r.fecha_inicio ? new Date(r.fecha_inicio).toLocaleDateString('es-ES') : '-'}</span>
+                      {r.fecha_fin && <span>· Vigencia: hasta {new Date(r.fecha_fin).toLocaleDateString('es-ES')}</span>}
+                      {!r.fecha_fin && <span>· Sin fecha de fin</span>}
+                      {r.fase_recuperacion && (
+                        <span className="px-1.5 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20 font-semibold">
+                          Fase: {r.fase_recuperacion}
+                        </span>
+                      )}
+                      {r.updated_at && <span>· Actualizada: {new Date(r.updated_at).toLocaleDateString('es-ES')}</span>}
+                    </div>
                   </div>
                 ))}
               </div>

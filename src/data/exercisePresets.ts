@@ -337,8 +337,29 @@ export function getExercisePreset(
   );
   if (override) return override[1];
 
-  const articulacionKey = (articulacion as Articulacion) || 'hombro';
-  const preset = PRESets[articulacionKey] || PRESets.hombro;
+  const articulacionNorm = articulacion?.toLowerCase().trim();
+  const articulacionKey = articulacionNorm && articulacionNorm in PRESets ? (articulacionNorm as Articulacion) : undefined;
+
+  if (!articulacionKey) {
+    if (import.meta.env?.DEV) {
+      console.warn(`[getExercisePreset] Sin articulación válida para "${name}" (articulacion="${articulacion}"). Usando preset genérico neutro.`);
+    }
+    const fallbackPreset = PRESets.hombro;
+    if (anguloObjetivo && anguloObjetivo > 0) {
+      return {
+        ...fallbackPreset,
+        targetJoints: fallbackPreset.targetJoints.map((j) => ({
+          ...j,
+          targetAngle: anguloObjetivo,
+        })),
+        description: fallbackPreset.description,
+        detailedDescription: fallbackPreset.detailedDescription,
+      };
+    }
+    return fallbackPreset;
+  }
+
+  const preset = PRESets[articulacionKey];
 
   if (anguloObjetivo && anguloObjetivo > 0) {
     return {
