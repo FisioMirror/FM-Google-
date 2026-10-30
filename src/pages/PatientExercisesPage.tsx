@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Icon } from '../components/ui/Icon';
@@ -23,18 +23,10 @@ import {
   Repeat,
   Flame,
 } from 'lucide-react';
-import { VersiculoCard } from '../components/spiritual/VersiculoCard';
-import { AssignmentProgressCard } from '../components/ui/AssignmentProgressCard';
 import {
   UnlockableExerciseLocker,
-  MobilityQuestCard,
   CheerReactionButton,
 } from '../components/ui/GamificationSuite';
-import {
-  JointAnatomyTooltip,
-  ExerciseSwitchFloatingMenu,
-} from '../components/ui/FloatingControlsSuite';
-import { ExerciseTimelineScrubber } from '../components/ui/NavigationDocksSuite';
 
 interface AssignedExercise {
   id: string;
@@ -104,6 +96,26 @@ const DEFAULT_FALLBACK_EXERCISES: AssignedExercise[] = [
   },
 ];
 
+const ZONE_RULES: { zone: string; keywords: string[] }[] = [
+  { zone: 'Hombro', keywords: ['hombro', 'escapul', 'deltoid', 'glenohumeral', 'supraespinoso', 'manguito', 'rotador'] },
+  { zone: 'Codo', keywords: ['codo', 'biceps', 'bíceps', 'triceps', 'tríceps', 'antebrazo', 'braquial'] },
+  { zone: 'Muñeca y mano', keywords: ['muñeca', 'muneca', 'mano', 'dedo', 'carpo', 'pulgar', 'falange'] },
+  { zone: 'Cadera', keywords: ['cadera', 'gluteo', 'glúteo', 'psoas', 'iliaco', 'ilíaco', 'piriforme', 'adductor'] },
+  { zone: 'Rodilla', keywords: ['rodilla', 'cuadriceps', 'cuádriceps', 'isquio', 'menisco', 'rotula', 'rótula', 'poplíteo'] },
+  { zone: 'Tobillo y pie', keywords: ['tobillo', 'pie', 'pantorrilla', 'gemelo', 'aquiles', 'soleo', 'sóleo', 'metatarso'] },
+  { zone: 'Cuello', keywords: ['cuello', 'cervical', 'trapecio', 'escaleno', 'suboccipital'] },
+  { zone: 'Columna y core', keywords: ['columna', 'lumbar', 'dorsal', 'espalda', 'core', 'abdominal', 'torso', 'pelvis', 'sacro'] },
+];
+
+/** Clasifica un ejercicio en una zona corporal a partir de su nombre y descripción reales. */
+function classifyZone(ex: AssignedExercise): string {
+  const haystack = `${ex.ejercicio_nombre ?? ''} ${ex.ejercicio_id ?? ''} ${ex.ejercicio_detailed_description ?? ''}`.toLowerCase();
+  for (const rule of ZONE_RULES) {
+    if (rule.keywords.some((kw) => haystack.includes(kw))) return rule.zone;
+  }
+  return 'General';
+}
+
 export function PatientExercisesPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -117,6 +129,24 @@ export function PatientExercisesPage() {
   // Separate states for Text Description and 3D Demo Modals
   const [descriptionExercise, setDescriptionExercise] = useState<AssignedExercise | null>(null);
   const [demo3DExercise, setDemo3DExercise] = useState<AssignedExercise | null>(null);
+
+  const [zoneFilter, setZoneFilter] = useState<string>('all');
+
+  const availableZones = useMemo(() => {
+    const zones = new Set(exercises.map(classifyZone));
+    return ['all', ...Array.from(zones).sort((a, b) => a.localeCompare(b))];
+  }, [exercises]);
+
+  const filteredExercises = useMemo(
+    () => (zoneFilter === 'all' ? exercises : exercises.filter((ex) => classifyZone(ex) === zoneFilter)),
+    [exercises, zoneFilter]
+  );
+
+  const totalSeries = exercises.reduce((acc, ex) => acc + (ex.series ?? 0), 0);
+  const totalReps = exercises.reduce((acc, ex) => acc + (ex.series ?? 0) * (ex.repeticiones ?? 0), 0);
+  const avgFrequency = exercises.length
+    ? Math.round(exercises.reduce((acc, ex) => acc + (ex.frecuencia_semana ?? 0), 0) / exercises.length)
+    : 0;
 
   useEffect(() => {
     loadExercises();
@@ -256,52 +286,74 @@ export function PatientExercisesPage() {
         </div>
       )}
 
-      {/* Tarjeta de inspiración y fortaleza para la sesión */}
-      <VersiculoCard categoriaInicial="fortaleza" className="mb-2" />
-
-      {/* Resumen del Plan Terapéutico y Desafío Diario */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-        <div className="lg:col-span-2">
-          <AssignmentProgressCard
-            data={{
-              id: 1,
-              date: new Date().toLocaleDateString('es-ES', { month: 'short', day: 'numeric', year: 'numeric' }),
-              title: 'Plan Terapéutico de Cadena Cinética y Movilidad',
-              description: 'Rehabilitación activa con foco en control escapular, estabilidad y cadencia controlada.',
-              progressValue: `${Math.min(100, Math.max(30, exercises.length * 25))}%`,
-              countdownText: 'Revisión con tu fisioterapeuta en 3 días',
-              badge: 'Fase 2: Movilidad Activa',
-            }}
-            onAction={() => navigate('/stats')}
-          />
-        </div>
-        <div className="space-y-4">
-          <MobilityQuestCard
-            questTitle="Misión Diaria: 3 Series Cumplidas"
-            targetExercises={3}
-            completedExercises={exercises.length > 0 ? 1 : 0}
-            xpReward={150}
-          />
-          <div className="flex items-center justify-between p-4 rounded-3xl bg-surface/80 dark:bg-slate-900/60 border border-outline/10">
-            <span className="text-xs font-bold text-slate-700 dark:text-slate-200">¿Sesión completada?</span>
-            <CheerReactionButton />
+      {/* Resumen real del plan asignado (sin datos simulados) */}
+      {exercises.length > 0 ? (
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-2">
+          <div className="p-4 rounded-2xl bg-surface-container-low border border-outline-variant/30">
+            <p className="text-[10px] uppercase font-bold tracking-wider text-on-surface-variant">Ejercicios activos</p>
+            <p className="text-2xl font-extrabold text-on-surface mt-1">{exercises.length}</p>
+          </div>
+          <div className="p-4 rounded-2xl bg-surface-container-low border border-outline-variant/30">
+            <p className="text-[10px] uppercase font-bold tracking-wider text-on-surface-variant">Series prescritas</p>
+            <p className="text-2xl font-extrabold text-on-surface mt-1">{totalSeries}</p>
+          </div>
+          <div className="p-4 rounded-2xl bg-surface-container-low border border-outline-variant/30">
+            <p className="text-[10px] uppercase font-bold tracking-wider text-on-surface-variant">Repeticiones totales</p>
+            <p className="text-2xl font-extrabold text-on-surface mt-1">{totalReps}</p>
+          </div>
+          <div className="p-4 rounded-2xl bg-surface-container-low border border-outline-variant/30 flex flex-col justify-between">
+            <p className="text-[10px] uppercase font-bold tracking-wider text-on-surface-variant">Frecuencia media</p>
+            <p className="text-2xl font-extrabold text-on-surface mt-1">
+              {avgFrequency}<span className="text-xs font-semibold text-on-surface-variant ml-1">días/sem</span>
+            </p>
           </div>
         </div>
-      </div>
-
-      {/* Cronograma de la Rutina y Selector de Ejercicios */}
-      <div className="space-y-4 mb-2">
-        <ExerciseTimelineScrubber />
-        {exercises.length > 0 && (
-          <div className="flex items-center justify-between gap-3 flex-wrap">
-            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Filtro rápido:</span>
-            <ExerciseSwitchFloatingMenu
-              exercises={exercises.map(e => e.ejercicio_nombre || 'Ejercicio')}
-              currentExercise={exercises[0]?.ejercicio_nombre || 'Ejercicio'}
-            />
+      ) : (
+        !loading && (
+          <div className="p-6 rounded-3xl bg-surface-container-low border border-outline-variant/30 text-center">
+            <p className="text-sm font-semibold text-on-surface">Todavía no tenés una rutina activa</p>
+            <p className="text-xs text-on-surface-variant mt-1">
+              Cuando tu fisioterapeuta asigne ejercicios, aparecerán acá con sus series y repeticiones.
+            </p>
           </div>
-        )}
-      </div>
+        )
+      )}
+
+      {/* Filtro por zona corporal */}
+      {exercises.length > 0 && (
+        <div className="space-y-2">
+          <span className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">
+            Filtrar por zona corporal
+          </span>
+          <div className="flex flex-wrap gap-1.5">
+            {availableZones.map((zone) => {
+              const active = zoneFilter === zone;
+              return (
+                <button
+                  key={zone}
+                  onClick={() => setZoneFilter(zone)}
+                  aria-pressed={active}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all cursor-pointer ${
+                    active
+                      ? 'bg-primary text-on-primary border-primary'
+                      : 'bg-surface-container-low text-on-surface-variant border-outline-variant/40 hover:bg-surface-container-high'
+                  }`}
+                >
+                  {zone === 'all' ? 'Todas' : zone}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Reacción de ánimo (única excepción de emoji en la UI) */}
+      {exercises.length > 0 && (
+        <div className="flex items-center justify-between p-4 rounded-2xl bg-surface-container-low border border-outline-variant/30">
+          <span className="text-xs font-bold text-on-surface">¿Cómo te sentís después de la sesión?</span>
+          <CheerReactionButton />
+        </div>
+      )}
 
       {loading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -309,9 +361,22 @@ export function PatientExercisesPage() {
             <SkeletonCard key={i} />
           ))}
         </div>
+      ) : filteredExercises.length === 0 ? (
+        <div className="p-8 rounded-3xl bg-surface-container-low border border-outline-variant/30 text-center">
+          <p className="text-sm font-semibold text-on-surface">No hay ejercicios en esta zona</p>
+          <p className="text-xs text-on-surface-variant mt-1">
+            Probá con otro filtro o volvé a “Todas” para ver la rutina completa.
+          </p>
+          <button
+            onClick={() => setZoneFilter('all')}
+            className="mt-3 px-3 py-1.5 rounded-xl bg-primary text-on-primary text-xs font-semibold"
+          >
+            Ver todas
+          </button>
+        </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {exercises.map((ex, i) => (
+          {filteredExercises.map((ex, i) => (
             <motion.div
               key={ex.id || i}
               initial={{ opacity: 0, y: 16 }}
@@ -327,12 +392,10 @@ export function PatientExercisesPage() {
                     />
                   </div>
 
-                  <div className="mb-2">
-                    <JointAnatomyTooltip
-                      jointName={ex.ejercicio_nombre || 'Articulación'}
-                      agonists={ex.ejercicio_detailed_description?.slice(0, 70) || 'Músculos flexores y estabilizadores'}
-                      precautions={ex.notas || 'Controlar velocidad y mantener rango sin dolor'}
-                    />
+                  <div className="mb-2 flex items-center gap-2">
+                    <span className="px-2.5 py-1 rounded-lg bg-surface-container-high border border-outline-variant/30 text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">
+                      {classifyZone(ex)}
+                    </span>
                   </div>
 
                   {ex.notas && (
