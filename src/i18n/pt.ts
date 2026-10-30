@@ -1,5 +1,5 @@
-import type { es } from "./es";
-export const pt: typeof es = {
+import type { TranslationSchema } from "./es";
+export const pt: TranslationSchema = {
   common: {
     saving: 'Salvando...',
     saveChanges: 'Salvar alterações',

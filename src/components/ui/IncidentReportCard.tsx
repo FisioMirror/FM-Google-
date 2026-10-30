@@ -13,7 +13,7 @@ import {
   GradientStop,
   GridlineSeries,
   Gridline,
-  type ChartDataTypes,
+  type ChartDataShape,
 } from 'reaviz';
 
 interface ChartDataPoint {
@@ -120,7 +120,7 @@ const initialChartData: ChartSeries[] = [
   },
 ];
 
-const validateChartData = (data: ChartSeries[]): ChartDataTypes[] => {
+const validateChartData = (data: ChartSeries[]): ChartDataShape[] => {
   return data.map((series) => ({
     ...series,
     data: series.data.map((item) => ({

@@ -61,9 +61,9 @@ export function Tooltip({
       <AnimatePresence>
         {visible && (
           <motion.div
-            initial={animated ? { opacity: 0, scale: 0.9, y: -5 } : false}
-            animate={animated ? { opacity: 1, scale: 1, y: 0 } : false}
-            exit={animated ? { opacity: 0, scale: 0.9, y: -5 } : false}
+            initial={animated ? { opacity: 0, scale: 0.9, y: -5 } : undefined}
+            animate={animated ? { opacity: 1, scale: 1, y: 0 } : undefined}
+            exit={animated ? { opacity: 0, scale: 0.9, y: -5 } : undefined}
             transition={animated ? { duration: 0.15 } : { duration: 0 }}
             className={cn(
               "absolute z-[300] pointer-events-none",

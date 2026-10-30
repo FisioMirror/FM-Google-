@@ -1,14 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
-import {
-  Heart,
-  Sparkles,
-  CheckCircle2,
-  Flame,
-  ArrowRight,
-  Volume2,
-  VolumeX,
-} from 'lucide-react';
+import { Heart, Sparkles, CheckCircle2, Flame, ArrowRight, Volume2, VolumeX } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { GlassPanel } from '../ui/Glass';
 import MascotAnimation from '../ui/MascotAnimation';

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
-import { Plus, RotateCcw, CheckCircle2, ChevronUp } from 'lucide-react';
+import { Plus, RotateCcw, CheckCircle2 } from 'lucide-react';
 
 export interface RepetitionCounterSpringProps {
   currentReps: number;

@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useRef, useEffect } from "r
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "../../lib/utils";
 import { Button } from "./Button";
-import { Activity, Info, CheckCircle2 } from "lucide-react";
+import { Activity } from "lucide-react";
 
 interface PopoverContextType {
   isOpen: boolean;

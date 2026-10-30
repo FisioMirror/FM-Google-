@@ -1,36 +1,6 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import {
-  Activity,
-  Dumbbell,
-  Target,
-  RotateCw,
-  Layers,
-  Sparkles,
-  Search,
-  Plus,
-  Edit3,
-  Copy,
-  Trash2,
-  BookOpen,
-  UserPlus,
-  CheckCircle2,
-  X,
-  Gauge,
-  Brain,
-  ShieldAlert,
-  Flame,
-  Compass,
-  Zap,
-  Repeat,
-  Crosshair,
-  User,
-  Check,
-  Footprints,
-  Shield,
-  HeartPulse,
-  CircleDot,
-} from 'lucide-react';
+import { Activity, Dumbbell, Target, RotateCw, Layers, Sparkles, Search, Plus, Edit3, Copy, Trash2, BookOpen, UserPlus, CheckCircle2, X, Gauge, Brain, ShieldAlert, Flame, Compass, Zap, Repeat, Crosshair, User, Check, Footprints, Shield, HeartPulse, CircleDot } from 'lucide-react';
 import { useAuthStore } from '../stores/authStore';
 import { supabase } from '../lib/supabase';
 import { useToast } from '../components/ui/ToastProvider';
@@ -39,10 +9,7 @@ import { cn } from '../lib/utils';
 import { Spinner } from '../components/ui/Loader';
 import { SkeletonCard } from '../components/ui/Skeleton';
 import { MuscleTargetRadarCard } from '../components/ui/ActivityCardsSuite';
-import {
-  RapidToleranceAdjuster,
-  JointAnatomyTooltip,
-} from '../components/ui/FloatingControlsSuite';
+import { RapidToleranceAdjuster, JointAnatomyTooltip } from '../components/ui/FloatingControlsSuite';
 import { SkeletonJointSelectorHUD } from '../components/ui/RealTimeMetricsSuite';
 import { celebrateAchievement } from '../lib/confetti';
 import { GlassModal } from '../components/ui/GlassModal';
@@ -267,17 +234,6 @@ const DEFAULT_CLINICAL_EXERCISES: Exercise[] = [
     categoria: 'reeducacion postural',
     complejidad: 'baja',
   },
-];
-
-const FILTER_CATEGORIES = [
-  { id: 'todos', label: 'Todos los Protocolos', icon: Activity },
-  { id: 'hombro', label: 'Hombro', icon: RotateCw },
-  { id: 'rodilla', label: 'Rodilla', icon: Target },
-  { id: 'cadera', label: 'Cadera & Pelvis', icon: Compass },
-  { id: 'tobillo', label: 'Tobillo & Pie', icon: Footprints },
-  { id: 'columna', label: 'Columna & Core', icon: Shield },
-  { id: 'codo', label: 'Codo & Brazos', icon: Dumbbell },
-  { id: 'cervical', label: 'Cervical', icon: CircleDot },
 ];
 
 export function ExercisesPage() {
@@ -544,7 +500,7 @@ export function ExercisesPage() {
       nombre: ex.nombre,
       descripcion: ex.descripcion ?? '',
       detailed_description: ex.detailed_description ?? '',
-      articulacion: ex.articulacion ?? null,
+      articulacion: ex.articulacion ?? '',
       grupo_muscular: ex.grupo_muscular ?? '',
       series: ex.series ?? 3,
       repeticiones: ex.repeticiones ?? 10,

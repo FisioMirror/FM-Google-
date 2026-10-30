@@ -4,7 +4,7 @@ import { motion, AnimatePresence, type PanInfo } from 'framer-motion';
 import { X, ChevronUp, ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { springBottomSheet } from '@/lib/motionVariants';
-import { CLINICAL_PASTELS } from '@/lib/designTokens';
+
 
 export type BottomSheetSnapPoint = 'peek' | 'medium' | 'full';
 

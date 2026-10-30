@@ -1,22 +1,11 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import {
-  Volume2,
-  VolumeX,
-  Copy,
-  Check,
-  Sparkles,
-  Mic,
-  MicOff,
-  Image as ImageIcon,
-  Send,
-  User,
-} from 'lucide-react';
+import { Volume2, VolumeX, Copy, Check, Sparkles, Mic, MicOff, Image as ImageIcon, Send } from 'lucide-react';
 import { useAuthStore } from '../stores/authStore';
 import { supabase } from '../lib/supabase';
 import { runAIJob, normalizeBase64, inferMimeType } from '../lib/ai';
 import { useToast } from '../components/ui/ToastProvider';
-import { humanVoice, getVoiceGender, setVoiceGender, type VoiceGender } from '../lib/humanVoice';
+import { humanVoice, setVoiceGender, type VoiceGender } from '../lib/humanVoice';
 import { formatAIReport } from '../lib/formatReport';
 import { LoadingText } from '../components/ui/LoadingText';
 import { MascotAnimation } from '../components/ui/MascotAnimation';
@@ -97,13 +86,6 @@ export function AIAssistantPage() {
   const mediaStreamRef = useRef<MediaStream | null>(null);
   const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
   const toast = useToast();
-
-  const toggleVoiceGender = () => {
-    const nextGender: VoiceGender = voiceGender === 'male' ? 'female' : 'male';
-    setVoiceGenderState(nextGender);
-    humanVoice.setVoiceGender(nextGender);
-    toast.info(`Tono de voz de Physi: ${nextGender === 'male' ? 'Masculino cálido y amigable' : 'Femenino'}`);
-  };
 
   useEffect(() => {
     loadConversation();
@@ -304,7 +286,7 @@ export function AIAssistantPage() {
         ].filter(Boolean).join('. ');
       } else {
         inputContext = { demo: PRIMARY_DEMO_PATIENT };
-        contextStr = `Paciente Demo: ${PRIMARY_DEMO_PATIENT.name}. Diagnóstico: ${PRIMARY_DEMO_PATIENT.condition}. Racha: 4 días. Progreso: ${PRIMARY_DEMO_PATIENT.recoveryProgress}%.`;
+        contextStr = `Paciente Demo: ${PRIMARY_DEMO_PATIENT.name}. Diagnóstico: ${PRIMARY_DEMO_PATIENT.diagnosis}. Progreso: ${PRIMARY_DEMO_PATIENT.progress}%.`;
       }
 
       const promptSystem = `Eres Physi, un asistente virtual de fisioterapia empático, profesional y motivador en la app FisioMirror.

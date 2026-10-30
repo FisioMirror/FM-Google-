@@ -1,19 +1,5 @@
-import React, { useState } from 'react';
-import {
-  Sparkles,
-  LayoutGrid,
-  Layers,
-  Activity,
-  Heart,
-  Zap,
-  Sliders,
-  Shield,
-  Compass,
-  ArrowRight,
-  Award,
-  Calendar,
-  CheckCircle,
-} from 'lucide-react';
+import { useState } from 'react';
+import { Sparkles, LayoutGrid, Layers, Activity, Heart, Zap, Sliders, Shield, Compass, ArrowRight, Award, Calendar, CheckCircle } from 'lucide-react';
 import { ChatMessages } from '../components/ui/ChatMessages';
 import { AILoader } from '../components/ui/AILoader';
 import { AnimatedThemeToggler } from '../components/ui/AnimatedThemeToggler';
@@ -45,33 +31,7 @@ import { TherapistQuickToolbar } from '../components/ui/TherapistQuickToolbar';
 import { MobileBottomSheet } from '../components/ui/MobileBottomSheet';
 import { CompactJointSelector, CompactRomStepper, CompactToleranceDropdown } from '../components/ui/CompactQuickSelector';
 import { HarmonizedSurface } from '../components/ui/HarmonizedSurface';
-import {
-  CustomAccordion,
-  BasicAlert,
-  CustomAlert,
-  DeleteDialog,
-  BasicAvatar,
-  AvatarWithBadge,
-  CustomBreadcrumbs,
-  IconButtons,
-  IconOnlyButtons,
-  ButtonGroupDropdown,
-  CardWithAvatar,
-  CardWithImage,
-  PremiumCard,
-  StatusChips,
-  ChipVariants,
-  ChipStatuses,
-  DisclosureConfig,
-  Placements,
-  Navigation,
-  PopoverInteractive,
-  ProgressSizes,
-  DateRange,
-  ScrollableList,
-  ToastVariants,
-  PatientsTable,
-} from '../components/heroui';
+import { CustomAccordion, BasicAlert, CustomAlert, DeleteDialog, BasicAvatar, AvatarWithBadge, CustomBreadcrumbs, IconButtons, IconOnlyButtons, ButtonGroupDropdown, CardWithAvatar, CardWithImage, PremiumCard, StatusChips, ChipVariants, ChipStatuses, DisclosureConfig, Placements, Navigation, PopoverInteractive, ProgressSizes, DateRange, ScrollableList, ToastVariants, PatientsTable } from '../components/heroui';
 import { cn } from '../lib/utils';
 
 export function CatalogPage() {
@@ -888,16 +848,14 @@ export function CatalogPage() {
                 <GamifiedBadgeCard
                   title="Constancia de Hierro"
                   description="5 días seguidos completando rutina"
-                  tier="gold"
+                  category="logros"
                   xpPoints={250}
-                  progressPct={100}
                 />
                 <GamifiedBadgeCard
                   title="Precisión Articular"
                   description="ROM > 95% sin compensaciones"
-                  tier="diamond"
+                  category="logros"
                   xpPoints={500}
-                  progressPct={78}
                 />
               </div>
             </div>
@@ -949,12 +907,12 @@ export function CatalogPage() {
           <p className="text-slate-600 dark:text-slate-300">
             Este bottom sheet deslizable erradica el scroll infinito en pantallas móviles, ofreciendo snap points interactivos y selectores de 1 toque.
           </p>
-          <HarmonizedSurface variant="mint" className="p-3.5 rounded-2xl space-y-3">
+          <HarmonizedSurface variant="pastel-mint" className="p-3.5 rounded-2xl space-y-3">
             <CompactJointSelector selectedJoint={selectedJoint} onSelectJoint={setSelectedJoint} />
             <CompactRomStepper value={gaugeAngle} onChange={setGaugeAngle} min={30} max={170} label="Meta ROM" />
             <div className="flex items-center justify-between gap-2 pt-1 border-t border-teal-200/40 dark:border-slate-700/60">
-              <CompactToleranceDropdown toleranceDegrees={10} onSelectTolerance={() => {}} />
-              <JointDetailPopover jointName={selectedJoint} currentAngle={gaugeAngle} targetAngle={120} />
+              <CompactToleranceDropdown tolerance="standard" onChange={() => {}} />
+              <JointDetailPopover triggerLabel={selectedJoint} metrics={{ jointName: selectedJoint, currentRom: gaugeAngle, maxHistoricalRom: 120, angularVelocity: 0, asymmetryPercentage: 0, status: "normal" }} />
             </div>
           </HarmonizedSurface>
         </div>

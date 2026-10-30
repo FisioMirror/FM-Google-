@@ -6,7 +6,12 @@ import { cn } from "@/lib/utils"
 
 const MOVEMENT_DAMPING = 1400
 
-const GLOBE_CONFIG: COBEOptions = {
+// La versión instalada de cobe no declara onRender, pero el runtime lo soporta.
+type GlobeConfig = COBEOptions & {
+  onRender?: (state: { phi: number; width: number; height: number }) => void
+}
+
+const GLOBE_CONFIG: GlobeConfig = {
   width: 800,
   height: 800,
   onRender: () => {},
@@ -89,7 +94,7 @@ export function Globe({
         state.width = widthRef.current * 2
         state.height = widthRef.current * 2
       },
-    })
+    } as GlobeConfig)
 
     setTimeout(() => (canvasRef.current!.style.opacity = "1"), 0)
     return () => {

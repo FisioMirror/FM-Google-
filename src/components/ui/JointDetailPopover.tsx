@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
-import { Crosshair, Info, TrendingUp, AlertTriangle, X } from 'lucide-react';
+import { Crosshair, Info, X } from 'lucide-react';
 
 export interface JointMetrics {
   jointName: string;

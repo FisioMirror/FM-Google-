@@ -1,19 +1,9 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  ChevronDown, 
-  Minus, 
-  Plus, 
-  Check, 
-  Activity, 
-  SlidersHorizontal,
-  ShieldCheck,
-  Zap,
-  Target
-} from 'lucide-react';
+import { ChevronDown, Minus, Plus, Check, ShieldCheck } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { springSnappy, springBouncy } from '@/lib/motionVariants';
-import { CLINICAL_PASTELS } from '@/lib/designTokens';
+
 
 export interface CompactJointOption {
   id: string;

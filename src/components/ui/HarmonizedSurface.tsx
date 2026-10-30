@@ -1,7 +1,7 @@
-import { forwardRef, type ComponentType, type HTMLAttributes } from "react"
-import { motion, type HTMLMotionProps } from "framer-motion"
-import { cn } from "@/lib/utils"
-import { CLINICAL_PASTELS } from "@/lib/designTokens"
+import { forwardRef, type ComponentType } from "react";
+import { motion, type HTMLMotionProps } from "framer-motion";
+import { cn } from "@/lib/utils";
+import { CLINICAL_PASTELS } from "@/lib/designTokens";
 
 export type HarmonizedSurfaceVariant =
   | "panel"

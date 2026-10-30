@@ -25,7 +25,7 @@ export const FisioCard = forwardRef<HTMLDivElement, FisioCardProps>(
     },
     ref
   ) => {
-    let surfaceClass = FISIO_DESIGN_CONTRACT.surface.glassCard;
+    let surfaceClass: string = FISIO_DESIGN_CONTRACT.surface.glassCard;
 
     if (variant === 'solid') {
       surfaceClass = 'bg-surface dark:bg-surface-container border border-outline/15 shadow-2xs';

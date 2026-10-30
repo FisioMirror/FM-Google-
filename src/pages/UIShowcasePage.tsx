@@ -1,39 +1,5 @@
 import { useState } from 'react';
-import { 
-  Sparkles, 
-  Send, 
-  Trash2, 
-  Copy, 
-  Heart, 
-  ArrowLeft, 
-  Zap, 
-  Layers, 
-  Activity, 
-  ShieldCheck, 
-  Smartphone, 
-  CheckCircle, 
-  Sliders,
-  Eye,
-  RefreshCw,
-  Search,
-  ArrowRight,
-  MousePointer,
-  CheckCircle2,
-  Calendar,
-  BarChart3,
-  ListTodo,
-  Bell,
-  AlertTriangle,
-  UserCheck,
-  Megaphone,
-  CheckSquare,
-  Tag,
-  Radio,
-  Home,
-  Users,
-  Camera,
-  Dumbbell
-} from 'lucide-react';
+import { Sparkles, Send, Trash2, Copy, Heart, ArrowLeft, Zap, Layers, Activity, ShieldCheck, Smartphone, CheckCircle, Sliders, Eye, RefreshCw, Search, ArrowRight, MousePointer, CheckCircle2, Calendar, BarChart3, ListTodo, Bell, AlertTriangle, UserCheck, Megaphone, CheckSquare, Tag, Radio, Home, Users, Camera, Dumbbell } from 'lucide-react';
 import { Button, IconButton, BackButton } from '../components/ui/Button';
 import { Dialog, DialogHeader, DialogTitle, DialogDescription, DialogContent, DialogFooter, ConfirmDialog } from '../components/ui/Dialog';
 import { Card, StatCard } from '../components/ui/Card';
@@ -62,12 +28,7 @@ import { ChipStatusesDemo } from '../components/ui/HeroChip';
 import { CustomModalDemo } from '../components/ui/Modal';
 import { PopoverMetricDemo } from '../components/ui/Popover';
 import { DrawerClinicalDemo } from '../components/ui/Drawer';
-import { 
-  DateRangePickerDemo, 
-  BasicRangeCalendar, 
-  WeekViewRangeCalendar, 
-  DefaultValueRangeCalendar 
-} from '../components/ui/DateRangePicker';
+import { DateRangePickerDemo, BasicRangeCalendar, WeekViewRangeCalendar, DefaultValueRangeCalendar } from '../components/ui/DateRangePicker';
 
 // Nuevos componentes estandarizados: ScrollShadow, Skeleton, Toast, AnimatedList, Confetti
 import { ScrollShadow } from '../components/ui/ScrollShadow';
@@ -110,11 +71,7 @@ import { CLINICAL_PASTELS } from '../lib/designTokens';
 
 // PWA Móvil & Físicas de Resorte
 import { MobileBottomSheet, type BottomSheetSnapPoint } from '../components/ui/MobileBottomSheet';
-import { 
-  CompactJointSelector, 
-  CompactRomStepper, 
-  CompactToleranceDropdown 
-} from '../components/ui/CompactQuickSelector';
+import { CompactJointSelector, CompactRomStepper, CompactToleranceDropdown } from '../components/ui/CompactQuickSelector';
 import { MotionBlurFade, TactileFeedback } from '../components/ui/MotionWrappers';
 
 import { useNavigate } from 'react-router-dom';
@@ -658,7 +615,7 @@ export function UIShowcasePage() {
   // Estado para PWA Móvil & Físicas de Resorte
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
   const [bottomSheetSnap, setBottomSheetSnap] = useState<BottomSheetSnapPoint>('medium');
-  const [bottomSheetVariant, setBottomSheetVariant] = useState<'default' | 'pastel-mint' | 'pastel-sky' | 'pastel-lavender'>('pastel-mint');
+  const [bottomSheetVariant] = useState<'default' | 'pastel-mint' | 'pastel-sky' | 'pastel-lavender'>('pastel-mint');
   const [compactJoint, setCompactJoint] = useState('rodilla');
   const [compactRom, setCompactRom] = useState(125);
   const [compactTolerance, setCompactTolerance] = useState<'strict' | 'standard' | 'relaxed'>('standard');

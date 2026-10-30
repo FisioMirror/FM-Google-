@@ -51,7 +51,8 @@ export function AnimatedThemeToggler({
   fromCenter = false,
   ...props
 }: AnimatedThemeTogglerProps) {
-  const { isDark, toggleTheme: toggleAppTheme } = useTheme();
+  const { theme, toggleTheme: toggleAppTheme } = useTheme();
+  const isDark = theme === 'dark';
   const buttonRef = useRef<HTMLButtonElement>(null);
   const isTransitioningRef = useRef(false);
   const activeAnimRef = useRef<Animation | null>(null);

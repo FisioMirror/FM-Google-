@@ -1,33 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import {
-  Volume2,
-  VolumeX,
-  Play,
-  Square,
-  Sparkles,
-  Key,
-  Check,
-  ChevronDown,
-  User,
-  Zap,
-  Radio,
-  Sliders,
-  X,
-} from 'lucide-react';
-import {
-  humanVoice,
-  getVoiceGender,
-  setVoiceGender,
-  getVoiceProvider,
-  setVoiceProvider,
-  getVoiceSpeed,
-  setVoiceSpeed,
-  getFishAudioKey,
-  setFishAudioKey,
-  type VoiceGender,
-  type VoiceProvider,
-} from '@/lib/humanVoice';
+import { Volume2, Play, Square, Sparkles, Key, Check, ChevronDown, User, Zap, Sliders, X } from 'lucide-react';
+import { humanVoice, getVoiceGender, setVoiceGender, getVoiceProvider, setVoiceProvider, getVoiceSpeed, setVoiceSpeed, getFishAudioKey, setFishAudioKey, type VoiceGender, type VoiceProvider } from '@/lib/humanVoice';
 
 interface QuickVoiceSelectorProps {
   compact?: boolean;
@@ -40,13 +14,13 @@ export function QuickVoiceSelector({
   className = '',
   onVoiceChange,
 }: QuickVoiceSelectorProps) {
+  const [_showKeyInput, setShowKeyInput] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [gender, setGenderState] = useState<VoiceGender>('male');
   const [provider, setProviderState] = useState<VoiceProvider>('auto');
   const [speed, setSpeedState] = useState<number>(1.0);
   const [fishKey, setFishKeyState] = useState<string>('');
   const [isPlayingTest, setIsPlayingTest] = useState(false);
-  const [showKeyInput, setShowKeyInput] = useState(false);
 
   useEffect(() => {
     setGenderState(getVoiceGender());

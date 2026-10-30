@@ -198,7 +198,7 @@ export function CalibrationPage() {
         </div>
         <div className="flex items-center gap-2">
           <PoseConfidenceLiveIndicator
-            confidence={isReady && poseData?.isTracking ? 95 : 30}
+            confidencePercent={isReady && poseData?.isTracking ? 95 : 30}
             className="bg-slate-900/70 border-white/20 text-white text-[10px] sm:text-[11px] py-1 px-2.5"
           />
           <button

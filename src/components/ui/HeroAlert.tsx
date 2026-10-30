@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { CheckCircle2, AlertTriangle, AlertCircle, Info, X } from 'lucide-react';
 import { cn } from '../../lib/utils';
 
@@ -12,7 +12,7 @@ interface AlertContextType {
 
 const AlertContext = createContext<AlertContextType>({ status: 'default' });
 
-export interface AlertProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface AlertProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onDrag" | "onDragStart" | "onDragEnd" | "onAnimationStart" | "onAnimationEnd" | "onAnimationIteration"> {
   status?: AlertStatus;
   children: React.ReactNode;
   className?: string;

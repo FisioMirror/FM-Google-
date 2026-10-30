@@ -1112,7 +1112,7 @@ export function OCRScannerPage() {
       <EmailFeatureModal
         open={showEmailModal}
         onClose={() => setShowEmailModal(false)}
-        token={generatedToken}
+        token={generatedToken ?? undefined}
         recipientName={extractedData.nombre_completo || undefined}
         recipientEmail={extractedData.email || undefined}
         recipientPhone={extractedData.telefono || undefined}

@@ -1,6 +1,6 @@
-import { forwardRef, useEffect, useRef } from "react"
-import { cn } from "@/lib/utils"
-import { motion } from "framer-motion"
+import { forwardRef, useEffect, useRef } from "react";
+import { cn } from "@/lib/utils";
+import { motion } from "framer-motion";
 
 export interface OtpInputProps {
   length?: number
@@ -23,7 +23,7 @@ export const OtpInput = forwardRef<HTMLInputElement, OtpInputProps>(
     error,
     autoFocus = true,
     className,
-  }, ref) => {
+  }, _ref) => {
     const inputRefs = useRef<(HTMLInputElement | null)[]>([])
 
     useEffect(() => {

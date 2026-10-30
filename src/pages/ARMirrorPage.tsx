@@ -13,20 +13,15 @@ import { notifySessionCompleted, createNotification } from '../lib/notificationS
 import { updatePresenceStatus } from '../lib/presenceService';
 import { isSpiritualModeEnabled, getVersiculoContextual, type Versiculo } from '../lib/versiculosService';
 import { BookOpen } from 'lucide-react';
-import { Popover } from '../components/ui/Popover';
+
 import { Modal } from '../components/ui/Modal';
 import { PulsatingButton } from '../components/ui/PulsatingButton';
 import { BiomechanicalAngleGauge } from '../components/ui/BiomechanicalAngleGauge';
-import { RepetitionCounterSpring } from '../components/ui/RepetitionCounterSpring';
-import { RehabEnergyBar } from '../components/ui/RehabEnergyBar';
+
+
 import { CompensationAlertBanner } from '../components/ui/CompensationAlertBanner';
-import {
-  PoseConfidenceLiveIndicator,
-  VoiceFeedbackWaveHUD,
-  RepCadenceMetronome,
-  SessionQualityScoreTile,
-} from '../components/ui/RealTimeMetricsSuite';
-import { AudioMuteFloatingPill } from '../components/ui/FloatingControlsSuite';
+import { VoiceFeedbackWaveHUD, RepCadenceMetronome, SessionQualityScoreTile } from '../components/ui/RealTimeMetricsSuite';
+
 import { ARModel3DOverlayPiP } from '../components/rehabilitation/ARModel3DOverlayPiP';
 import { getExercisePreset } from '../data/exercisePresets';
 
@@ -77,7 +72,7 @@ function repParticleBurst() {
   };
   animate();
 }
-import { AnimatedCountdown } from '../components/ui/AnimatedCountdown';
+
 import { TypewriterText } from '../components/ui/TypewriterText';
 import MascotAnimation from '../components/ui/MascotAnimation';
 
@@ -94,7 +89,7 @@ export function ARMirrorPage() {
   const user = useAuthStore((s) => s.user);
 
   const exerciseName = searchParams.get('ejercicio') || 'Sesión AR';
-  const [articulacion, setArticulacion] = useState<string | undefined>(
+  const [articulacion] = useState<string | undefined>(
     searchParams.get('articulacion') || undefined
   );
 
@@ -120,7 +115,6 @@ export function ARMirrorPage() {
   const [state, setState] = useState<SessionState>('active');
   const [isMirrored, setIsMirrored] = useState(true);
   const [timer, setTimer] = useState(0);
-  const [bpm] = useState(0);
   const [currentSet, setCurrentSet] = useState(1);
   const [restCountdown, setRestCountdown] = useState(REST_DURATION);
   const [showFinishModal, setShowFinishModal] = useState(false);
@@ -143,7 +137,6 @@ export function ARMirrorPage() {
   const [sessionStarted, setSessionStarted] = useState(false);
   const [calibrated, setCalibrated] = useState<boolean>(false);
   const [volumeLevel, setVolumeLevel] = useState<'high' | 'low' | 'muted'>('high');
-  const [hudVisible, setHudVisible] = useState(true);
   const [hudMode, setHudMode] = useState<'full' | 'minimal' | 'camera'>('full');
   const [showModel3D, setShowModel3D] = useState<boolean>(true);
   const aiFeedbackRef = useRef<string>('Buen ritmo. Mantén la postura erguida y completa el rango de movimiento.');
@@ -706,7 +699,7 @@ export function ARMirrorPage() {
 
                 <div className="w-48">
                   <RepCadenceMetronome
-                    targetCadenceBpm={42}
+                    durationSeconds={2}
                     className="w-full bg-slate-900/80 backdrop-blur-xl border-white/15 text-white"
                   />
                 </div>

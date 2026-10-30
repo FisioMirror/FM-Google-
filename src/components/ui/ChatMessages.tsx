@@ -13,7 +13,7 @@ export interface ChatMessage {
 
 interface ChatMessagesProps {
   /** Mensajes a mostrar. */
-  messages: ChatMessage[];
+  messages?: ChatMessage[];
   /** Reproduce automáticamente la conversación al montar. */
   autoPlay?: boolean;
   /** Retardo entre mensajes en ms. */

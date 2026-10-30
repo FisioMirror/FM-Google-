@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Calendar as CalendarIcon, ChevronLeft, ChevronRight, ChevronDown, Check, X } from "lucide-react";
+import { Calendar as CalendarIcon, ChevronLeft, ChevronRight, ChevronDown, Check } from "lucide-react";
 import { cn } from "../../lib/utils";
 
 export interface DateRange {
@@ -706,7 +706,6 @@ export function ListBox({ children, className }: { children: React.ReactNode; cl
 export function ListBoxItem({
   children,
   id,
-  textValue,
   className,
 }: {
   children: React.ReactNode;

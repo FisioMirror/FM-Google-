@@ -1,24 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
-import {
-  ShieldCheck,
-  Gauge,
-  LineChart,
-  AudioLines,
-  Scan,
-  Timer,
-  Bot,
-  UserCheck,
-  Clock,
-  Sparkles,
-  Play,
-  Pause,
-  RotateCcw,
-  Volume2,
-  CheckCircle2,
-  Zap,
-} from 'lucide-react';
+import { ShieldCheck, Gauge, LineChart, Scan, Timer, Bot, UserCheck, Sparkles, Play, Pause, Volume2 } from 'lucide-react';
 
 /* 11. PoseConfidenceLiveIndicator */
 export interface PoseConfidenceLiveIndicatorProps {
@@ -167,7 +150,7 @@ export interface ROMDeviationLiveChartProps {
 }
 
 export const ROMDeviationLiveChart: React.FC<ROMDeviationLiveChartProps> = ({ className }) => {
-  const [activeCurve, setActiveCurve] = useState<'both' | 'real' | 'ideal'>('both');
+  const [activeCurve] = useState<'both' | 'real' | 'ideal'>('both');
 
   return (
     <motion.div
@@ -377,7 +360,7 @@ export const RepCadenceMetronome: React.FC<RepCadenceMetronomeProps> = ({
   const getPhaseData = () => {
     switch (currentPhase) {
       case 'concentric':
-        return { name: 'Fase Concéntrica (Subida)', time: 2, color: 'from-teal-500 to-cyan-400' };
+        return { name: 'Fase Concéntrica (Subida)', time: durationSeconds, color: 'from-teal-500 to-cyan-400' };
       case 'isometric':
         return { name: 'Fase Isométrica (Pausa)', time: 1, color: 'from-amber-400 to-orange-400' };
       case 'eccentric':
@@ -411,7 +394,7 @@ export const RepCadenceMetronome: React.FC<RepCadenceMetronomeProps> = ({
             <span className="text-xs font-bold text-slate-800 dark:text-slate-100 block">
               Metrónomo de Cadencia
             </span>
-            <span className="text-[10px] text-slate-500 dark:text-slate-400">Ritmo 2-1-3</span>
+            <span className="text-[10px] text-slate-500 dark:text-slate-400">Ritmo {durationSeconds}-1-3</span>
           </div>
         </div>
         <button

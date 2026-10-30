@@ -1,11 +1,4 @@
-import React, {
-  createContext,
-  useContext,
-  useCallback,
-  useState,
-  useId,
-  type ReactNode,
-} from "react";
+import React, { createContext, useContext, useCallback, useState, type ReactNode } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { CheckCircle2, AlertCircle, AlertTriangle, Info, X } from "lucide-react";
 import { cn } from "../../lib/utils";
@@ -93,9 +86,17 @@ export const toast: ToastFunction = Object.assign(
   }
 );
 
-interface ToastProviderProps {
+export type ToastPlacement =
+  | "top-right"
+  | "top-left"
+  | "bottom-right"
+  | "bottom-left"
+  | "top-center"
+  | "bottom-center";
+
+export interface ToastProviderProps {
   children: ReactNode;
-  placement?: "top-right" | "top-left" | "bottom-right" | "bottom-left" | "top-center" | "bottom-center";
+  placement?: ToastPlacement;
 }
 
 export function ToastProvider({ children, placement = "bottom-right" }: ToastProviderProps) {

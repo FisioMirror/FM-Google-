@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, SlidersHorizontal, Stethoscope, ChevronRight, Check } from "lucide-react";
+import { X, SlidersHorizontal, Stethoscope } from "lucide-react";
 import { cn } from "../../lib/utils";
 import { Button } from "./Button";
 
@@ -79,7 +79,7 @@ export function DrawerTrigger({
   const { open } = useContext(DrawerContext);
 
   if (asChild && React.isValidElement(children)) {
-    return React.cloneElement(children as React.ReactElement<{ onClick?: () => void }>, {
+    return React.cloneElement(children as React.ReactElement<{ onClick?: (e: React.MouseEvent) => void }>, {
       onClick: (e: React.MouseEvent) => {
         (children.props as { onClick?: (e: React.MouseEvent) => void })?.onClick?.(e);
         open();
@@ -250,7 +250,7 @@ export function DrawerFooter({
     <div className={cn("p-6 border-t border-border/40 flex items-center justify-end gap-3 bg-surface/30 dark:bg-slate-900/30", className)}>
       {React.Children.map(children, (child) => {
         if (React.isValidElement(child) && (child.props as { slot?: string })?.slot === "close") {
-          return React.cloneElement(child as React.ReactElement<{ onClick?: () => void }>, {
+          return React.cloneElement(child as React.ReactElement<{ onClick?: (e: React.MouseEvent) => void }>, {
             onClick: (e: React.MouseEvent) => {
               (child.props as { onClick?: (e: React.MouseEvent) => void })?.onClick?.(e);
               close();

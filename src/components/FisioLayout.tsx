@@ -1,30 +1,7 @@
 import { useState, useEffect, useRef, type ReactNode } from 'react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import {
-  UserPlus,
-  Dumbbell,
-  Video,
-  Sparkles,
-  ScanLine,
-  Phone,
-  Bot,
-  LayoutDashboard,
-  Users,
-  Activity,
-  Wrench,
-  UserCheck,
-  Settings,
-  X,
-  Menu,
-  ChevronRight,
-  ChevronLeft,
-  Download,
-  LogOut,
-  Sun,
-  Moon,
-  Bell,
-} from 'lucide-react';
+import { UserPlus, Dumbbell, Video, Sparkles, ScanLine, Phone, Bot, LayoutDashboard, Users, Activity, Wrench, UserCheck, Settings, X, ChevronRight, ChevronLeft, Download, LogOut, Sun, Moon, Bell } from 'lucide-react';
 import { Icon } from './ui/Icon';
 import { BackButton } from './ui/BackButton';
 import { FloatingMenu, type FloatingMenuItem } from './ui/FloatingMenu';

@@ -27,14 +27,6 @@ interface EspecialidadRow {
   nombre: string;
 }
 
-const _GLOW_COLORS = {
-  teal: '0, 80, 77',
-  green: '16, 185, 129',
-  blue: '14, 165, 233',
-  cyan: '6, 182, 212',
-  red: '225, 29, 72',
-};
-
 const DEFAULT_ESPECIALIDADES = [
   'Fisioterapia Deportiva',
   'Rehabilitación Traumatológica',

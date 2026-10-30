@@ -354,7 +354,7 @@ export function PatientDashboard() {
         </div>
 
         {/* Telehealth Status Bar */}
-        <HarmonizedSurface variant="mint" className="mt-4 p-1 rounded-2xl">
+        <HarmonizedSurface variant="pastel-mint" className="mt-4 p-1 rounded-2xl">
           <CompactTelehealthBar
             therapistName={therapist || 'Dra. Ramos'}
             status="En línea · Fisioterapeuta asignada"
@@ -465,22 +465,17 @@ export function PatientDashboard() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div>
-            <StreakFlameCounter currentStreak={kpi.streak || 4} bestStreak={7} />
+            <StreakFlameCounter streakDays={kpi.streak} />
           </div>
           <div>
             <MobilityQuestCard
-              questTitle="Alineación Postural y Estabilidad"
-              targetExercises={2}
-              completedExercises={1}
-              xpReward={120}
+              questTitle="Sesiones de esta semana"
+              progressText={`${kpi.totalSessions} completadas en total`}
+              xpReward={0}
             />
           </div>
           <div>
-            <DailyHealthPointsWidget
-              points={380}
-              dailyGoal={500}
-              burnStreakMultiplier={1.5}
-            />
+            <DailyHealthPointsWidget points={kpi.streak * 100} />
           </div>
         </div>
       </div>

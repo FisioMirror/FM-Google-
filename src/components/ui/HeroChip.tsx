@@ -1,5 +1,5 @@
 import React from 'react';
-import { Check, AlertTriangle, AlertCircle, Circle, Sparkles } from 'lucide-react';
+import { AlertTriangle, AlertCircle, Circle, Sparkles } from 'lucide-react';
 import { cn } from '../../lib/utils';
 
 export type ChipColor = 'success' | 'warning' | 'danger' | 'primary' | 'neutral';

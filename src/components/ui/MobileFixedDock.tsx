@@ -1,17 +1,7 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { 
-  Home, 
-  Users, 
-  Sparkles, 
-  Dumbbell, 
-  Camera, 
-  BarChart3, 
-  User, 
-  Plus,
-  Compass
-} from 'lucide-react';
+import { Home, Users, Sparkles, Dumbbell, Camera, BarChart3, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { springSnappy, springBouncy } from '@/lib/motionVariants';
 

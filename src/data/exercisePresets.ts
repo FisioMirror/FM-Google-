@@ -328,7 +328,7 @@ function ensureAxis(joints: JointAngleConfig[]): JointAngleConfig[] {
 export function getExercisePreset(
   name: string,
   articulacion?: string,
-  lado?: string,
+  _lado?: string,
   anguloObjetivo?: number
 ): ExerciseJointPreset {
   const normName = normalizeName(name);

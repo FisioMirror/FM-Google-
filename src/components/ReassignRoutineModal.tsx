@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '../lib/supabase';
 import { useToast } from './ui/ToastProvider';
@@ -98,6 +99,7 @@ export function ReassignRoutineModal({
   pacienteNombre,
   onSaved,
 }: ReassignRoutineModalProps) {
+  const { t } = useTranslation();
   const toast = useToast();
   const [step, setStep] = useState<Step>(0);
   const [selected, setSelected] = useState<SelectedExercise[]>([]);

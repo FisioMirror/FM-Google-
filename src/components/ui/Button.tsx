@@ -36,7 +36,7 @@ export const buttonVariants = cva(
   }
 )
 
-export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> {
+export interface ButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, "onDrag" | "onDragStart" | "onDragEnd" | "onAnimationStart" | "onAnimationEnd" | "onAnimationIteration">, VariantProps<typeof buttonVariants> {
   loading?: boolean
   icon?: React.ReactNode
   iconPosition?: "left" | "right"

@@ -1,21 +1,6 @@
-import React from 'react';
+
 import { motion, AnimatePresence } from 'framer-motion';
-import {
-  Bell,
-  Volume2,
-  VolumeX,
-  CheckCheck,
-  Check,
-  Trash2,
-  ExternalLink,
-  Activity,
-  Video,
-  ShieldCheck,
-  Dumbbell,
-  Info,
-  X,
-  Sparkles,
-} from 'lucide-react';
+import { Bell, Volume2, VolumeX, CheckCheck, Check, Trash2, ExternalLink, Activity, Video, ShieldCheck, Dumbbell, Info, X, Sparkles } from 'lucide-react';
 import { useRealtimeNotifications, NotificationFilter } from '../../hooks/useRealtimeNotifications';
 import { AppNotification } from '../../lib/notificationService';
 

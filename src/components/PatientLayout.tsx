@@ -1,27 +1,7 @@
 import { type ReactNode, useState, useEffect } from 'react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import {
-  Video,
-  Phone,
-  MessageCircle,
-  Mail,
-  Bot,
-  Home,
-  Dumbbell,
-  Activity,
-  User,
-  Settings,
-  X,
-  Menu,
-  ChevronRight,
-  ChevronLeft,
-  Bell,
-  Sun,
-  Moon,
-  LogOut,
-  Sparkles,
-} from 'lucide-react';
+import { Video, Phone, MessageCircle, Mail, Bot, Home, Dumbbell, Activity, User, Settings, X, Bell, Sun, Moon, LogOut } from 'lucide-react';
 import { Icon } from './ui/Icon';
 import { BackButton } from './ui/BackButton';
 
@@ -531,7 +511,7 @@ export function PatientLayout({ children }: PatientLayoutProps) {
           </div>
         </header>
         {/* Scrollable content with clean spacing */}
-        <div className="flex-1 w-full min-w-0 overflow-y-auto overflow-x-hidden px-4 sm:px-6 pt-8 pb-24 space-y-8 max-w-md mx-auto lg:px-0 lg:max-w-none lg:mx-0 lg:p-10 lg:pb-10 bg-teal-50/20 dark:bg-slate-950/20">{children}</div>
+        <div className="flex-1 w-full min-w-0 overflow-y-auto overflow-x-hidden px-4 sm:px-6 pt-8 pb-24 space-y-8 lg:p-10 lg:pb-10 bg-teal-50/20 dark:bg-slate-950/20">{children}</div>
 
         {/* Desktop footer */}
         <footer className="hidden lg:flex pt-6 pb-6 px-8 justify-between text-outline text-xs border-t divider-teal shrink-0">

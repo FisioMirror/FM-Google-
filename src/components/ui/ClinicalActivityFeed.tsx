@@ -1,19 +1,9 @@
-import { useState } from "react"
-import { motion } from "framer-motion"
-import { 
-  Activity, 
-  AlertTriangle, 
-  CheckCircle2, 
-  Sparkles, 
-  KeyRound, 
-  Play, 
-  Pause, 
-  Plus, 
-  Radio
-} from "lucide-react"
-import { cn } from "@/lib/utils"
-import { AnimatedList } from "./animated-list"
-import { toast } from "./Toast"
+import { useState } from "react";
+
+import { Activity, AlertTriangle, CheckCircle2, Sparkles, KeyRound, Play, Pause, Plus, Radio } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { AnimatedList } from "./animated-list";
+import { toast } from "./Toast";
 
 export interface ClinicalFeedItem {
   id: string

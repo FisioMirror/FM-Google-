@@ -1,23 +1,6 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import {
-  User,
-  Stethoscope,
-  Maximize2,
-  Minimize2,
-  RotateCw,
-  Play,
-  Pause,
-  Eye,
-  EyeOff,
-  Sparkles,
-  Compass,
-  Gauge,
-  Activity,
-  Layers,
-  ChevronDown,
-  X,
-} from 'lucide-react';
+import { motion } from 'framer-motion';
+import { User, Stethoscope, Maximize2, Minimize2, Play, Pause, Sparkles, Compass, Gauge, ChevronDown, X } from 'lucide-react';
 import { PhysioModel3D } from '../characters3d/PhysioModel3D';
 import { KidModel3D } from '../characters3d/KidModel3D';
 import { buildExerciseDefinition } from '../../data/exercisePresets';
@@ -33,7 +16,6 @@ export interface ARModel3DOverlayPiPProps {
   defaultPerspective?: 'front' | 'diagonal' | 'side';
 }
 
-type PerspectiveAngle = 'front' | 'diagonal' | 'side';
 
 export const ARModel3DOverlayPiP: React.FC<ARModel3DOverlayPiPProps> = ({
   exerciseName,
@@ -42,13 +24,11 @@ export const ARModel3DOverlayPiP: React.FC<ARModel3DOverlayPiPProps> = ({
   isOpen = true,
   onClose,
   className = '',
-  defaultPerspective = 'diagonal',
 }) => {
   // Estados de control de la ventana PiP
   const [isMinimized, setIsMinimized] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [characterRole, setCharacterRole] = useState<CharacterRole>('physio');
-  const [perspective, setPerspective] = useState<PerspectiveAngle>(defaultPerspective);
   const [playbackSpeed, setPlaybackSpeed] = useState<number>(1.0);
   const [isPlaying, setIsPlaying] = useState<boolean>(true);
   const [progress, setProgress] = useState<number>(0);

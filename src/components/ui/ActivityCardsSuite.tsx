@@ -1,27 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
-import {
-  Activity,
-  Smile,
-  Meh,
-  Frown,
-  Footprints,
-  Waves,
-  Crosshair,
-  HeartPulse,
-  Milestone,
-  Check,
-  ChevronRight,
-  TrendingUp,
-  Calendar,
-  Sparkles,
-  Zap,
-  Flame,
-  ShieldCheck,
-  Play,
-  RotateCcw,
-} from 'lucide-react';
+import { Activity, Smile, Meh, Frown, Footprints, Waves, Crosshair, HeartPulse, Milestone, Check, ChevronRight, TrendingUp, Calendar, Sparkles, Flame, ShieldCheck, Play, RotateCcw } from 'lucide-react';
 
 /* 1. MuscleTargetRadarCard */
 export interface MuscleTargetRadarCardProps {
@@ -757,7 +737,7 @@ export const EdemaAssessmentCard: React.FC<EdemaAssessmentCardProps> = ({
   perimeterMm = 38.5,
   className,
 }) => {
-  const [grade, setGrade] = useState(foveaGrade);
+  const [grade] = useState(foveaGrade);
   const [tested, setTested] = useState(false);
 
   const runGodetTest = () => {

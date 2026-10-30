@@ -3637,4 +3637,8 @@ export const es = {
 
 } as const;
 
+/** Ensancha los literales de `es` a `string` para tipar en/pt sin exigir el mismo texto. */
+type Widen<T> = { [K in keyof T]: T[K] extends string ? string : Widen<T[K]> };
+export type TranslationSchema = Widen<typeof es>;
+
 export default es;

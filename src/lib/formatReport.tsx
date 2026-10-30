@@ -302,11 +302,15 @@ export function formatAIReport(text: string): ReactNode {
           );
         }
 
-        return (
-          <p key={idx} className="text-xs text-on-surface-variant leading-relaxed font-normal">
-            {renderInline(block.text)}
-          </p>
-        );
+        if (block.kind === 'paragraph') {
+          return (
+            <p key={idx} className="text-xs text-on-surface-variant leading-relaxed font-normal">
+              {renderInline(block.text)}
+            </p>
+          );
+        }
+
+        return null;
       })}
     </div>
   );

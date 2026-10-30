@@ -1,26 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
-import {
-  HelpCircle,
-  Eye,
-  SlidersHorizontal,
-  Volume2,
-  VolumeX,
-  Compass,
-  Pin,
-  ClipboardPen,
-  Tag,
-  Timer,
-  ChevronDown,
-  Check,
-  Play,
-  Pause,
-  RotateCcw,
-  Sparkles,
-  Layers,
-  ShieldAlert,
-} from 'lucide-react';
+import { HelpCircle, Eye, SlidersHorizontal, Volume2, VolumeX, Compass, Pin, ClipboardPen, Tag, ChevronDown, Check, Play, Pause, RotateCcw, Layers, ShieldAlert } from 'lucide-react';
 
 /* 21. JointAnatomyTooltip */
 export interface JointAnatomyTooltipProps {
@@ -370,7 +351,7 @@ export interface QuickPrescriptionModalButtonProps {
 }
 
 export const QuickPrescriptionModalButton: React.FC<QuickPrescriptionModalButtonProps> = ({ className }) => {
-  const [series, setSeries] = useState(3);
+  const [series] = useState(3);
   const [reps, setReps] = useState(12);
 
   return (

@@ -172,8 +172,9 @@ export function StatsPage() {
       }))
     );
 
+    const isDemo = isDemoAccount(user);
+
     try {
-      const isDemo = isDemoAccount(user);
       if (isFisio) {
         if (!user?.id || !isValidUUID(user.id)) {
           if (isDemo) {
@@ -633,7 +634,7 @@ export function StatsPage() {
           </h2>
           {!isFisio && (
             <div className="flex flex-wrap items-center gap-3 mt-2">
-              <StreakFlameCounter currentStreak={streak || 4} bestStreak={7} />
+              <StreakFlameCounter streakDays={streak} />
               <LevelProgressRibbon currentLevel={3} currentXp={340} nextLevelXp={500} className="w-fit" />
             </div>
           )}
@@ -950,7 +951,7 @@ export function StatsPage() {
                 <IncidentReportCard />
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <PatientAdherenceHeatmapCard />
-                  <PostureStabilityCard balanceScore={Math.min(99, Math.max(0, Math.round(avgQuality || 0)))} />
+                  <PostureStabilityCard balanceScore={Math.min(99, Math.max(0, Math.round(avgPrecision || 0)))} />
                   <GaitSymmetryCard leftRatio={50} rightRatio={50} cadenceSteps={0} />
                 </div>
               </div>

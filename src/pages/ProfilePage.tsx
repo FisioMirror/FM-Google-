@@ -31,7 +31,6 @@ export function ProfilePage() {
   const [form, setForm] = useState({ full_name: '', especialidad: '', universidad: '', cedula: '', colegiado_id: '', anio_egreso: '' });
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [pushNotifications, setPushNotifications] = useState(true);
-  const [fontSize, setFontSize] = useState<'normal' | 'large' | 'xlarge'>('normal');
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   // ---- Avatar upload (vista previa antes de guardar) ----
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
@@ -49,28 +48,6 @@ export function ProfilePage() {
   const [loadingActivity, setLoadingActivity] = useState(false);
 
   const isFisio = user?.role === 'fisioterapeuta';
-
-  useEffect(() => {
-    const saved = localStorage.getItem('fisiomirror-font-size') as 'normal' | 'large' | 'xlarge' | null;
-    if (saved) {
-      setFontSize(saved);
-      document.documentElement.dataset.fontSize = saved;
-    }
-  }, []);
-
-  const handleFontSizeChange = async (size: 'normal' | 'large' | 'xlarge') => {
-    setFontSize(size);
-    localStorage.setItem('fisiomirror-font-size', size);
-    document.documentElement.dataset.fontSize = size;
-    if (user?.id) {
-      try {
-        await supabase.from('profiles').update({ font_size: size }).eq('id', user.id);
-        useAuthStore.setState({ user: { ...user, font_size: size } });
-      } catch {
-        // ignore DB errors — preference still saved locally
-      }
-    }
-  };
 
   useEffect(() => {
     if (user && !editing) {
@@ -362,10 +339,8 @@ export function ProfilePage() {
           <div className="w-full mt-4 space-y-3">
             <RecoveryRankBadge rank={isFisio ? 'Rango: Clínico Experto' : 'Rango: Constante de Élite'} className="w-full justify-center" />
             <RehabHeroAvatarCard
-              name={user?.full_name?.split(' ')[0] || 'Usuario'}
-              roleTitle={isFisio ? 'Especialista en Kinesiología' : 'Paciente en Rehabilitación'}
-              level={isFisio ? 12 : 4}
-              powerScore={88}
+              patientName={user?.full_name?.split(' ')[0] || 'Usuario'}
+              rankTitle={isFisio ? 'Especialista en Kinesiología' : 'Paciente en Rehabilitación'}
             />
           </div>
         </motion.div>
@@ -418,27 +393,6 @@ export function ProfilePage() {
                 <GlassPanel className="p-6 rounded-[32px] card-glow-hover hover-lift">
                   <h3 className="font-headline-lg-mobile gradient-text-living font-bold mb-6">Preferencias del Sistema</h3>
                   <div className="space-y-2">
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 hover:bg-surface-variant/20 rounded-2xl gap-3">
-                      <div className="flex items-center gap-3">
-                        <Icon name="format_size" size={24} className="text-outline animate-breathe-icon" />
-                        <div><p className="font-medium">Tamaño de fuente</p><p className="text-xs text-outline">Ajusta el tamaño del texto en toda la app</p></div>
-                      </div>
-                      <div className="flex gap-2">
-                        {([
-                          { key: 'normal', label: 'Normal' },
-                          { key: 'large', label: 'Grande' },
-                          { key: 'xlarge', label: 'Muy grande' },
-                        ] as const).map((opt) => (
-                          <button
-                            key={opt.key}
-                            onClick={() => handleFontSizeChange(opt.key)}
-                            className={`px-4 py-2 rounded-xl font-bold text-sm transition-all ${fontSize === opt.key ? 'bg-primary text-on-primary' : 'bg-surface-variant/30 border border-outline-variant/30 text-on-surface hover:bg-surface-variant/50'}`}
-                          >
-                            {opt.label}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
                     <div className="flex items-center justify-between p-4 hover:bg-surface-variant/20 rounded-2xl">
                       <div className="flex items-center gap-3">
                         <Icon name="dark_mode" size={24} className="text-outline animate-breathe-icon" />
@@ -625,18 +579,21 @@ export function ProfilePage() {
                     <AchievementShowcase achievements={gamification.achievements} compact={false} />
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6 pt-6 border-t border-outline-variant/20">
                       <GamifiedBadgeCard
-                        title="Constancia Inquebrantable"
-                        description="5 días seguidos completando rutina prescrita"
-                        tier="gold"
+                        title="Constancia"
+                        category="adherencia"
+                        description={`Nivel ${gamification.currentLevel.level} · ${Math.round(gamification.levelProgressPercent)}% hacia el siguiente nivel`}
+                        level={gamification.currentLevel.level}
                         xpPoints={gamification.points}
-                        progressPct={gamification.levelProgressPercent}
+                        unlocked={gamification.points > 0}
+                        iconName="trophy"
                       />
                       <GamifiedBadgeCard
-                        title="Precisión Articular"
-                        description="ROM > 90° con simetría biomecánica óptima"
-                        tier="diamond"
+                        title="Progreso general"
+                        category="progreso"
+                        description={`${Math.round(gamification.totalProgress * 100)}% de los objetivos de la rutina actual`}
                         xpPoints={gamification.points}
-                        progressPct={Math.round(gamification.totalProgress * 100)}
+                        unlocked={gamification.totalProgress > 0}
+                        iconName="award"
                       />
                     </div>
                   </GlassPanel>

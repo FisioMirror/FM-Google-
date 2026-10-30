@@ -24,7 +24,7 @@ export function AlertDialog({ children }: { children: React.ReactNode }) {
   );
 }
 
-export function AlertDialogTrigger({ children, asChild }: { children: React.ReactNode; asChild?: boolean }) {
+export function AlertDialogTrigger({ children, asChild: _asChild }: { children: React.ReactNode; asChild?: boolean }) {
   const { setOpen } = useContext(AlertDialogContext);
 
   if (React.isValidElement(children)) {
@@ -103,7 +103,7 @@ export function AlertDialogHeader({ children, className }: { children: React.Rea
   return <div className={cn('flex items-start gap-3.5', className)}>{children}</div>;
 }
 
-export function AlertDialogIcon({ status = 'danger' }: { status?: 'danger' | 'warning' | 'info' }) {
+export function AlertDialogIcon({ status: _status = 'danger' }: { status?: 'danger' | 'warning' | 'info' }) {
   return (
     <div className="p-3 rounded-2xl bg-rose-500/15 text-rose-600 border border-rose-500/20 shrink-0">
       <ShieldAlert className="size-6" />

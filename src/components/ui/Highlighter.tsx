@@ -1,9 +1,9 @@
-import { useLayoutEffect, useRef, useState, useEffect } from "react"
+import { useLayoutEffect, useRef } from "react";
 import type React from "react"
-import { useInView } from "framer-motion"
-import { annotate } from "rough-notation"
-import type { RoughAnnotation } from "rough-notation/lib/model"
-import { cn } from "@/lib/utils"
+import { useInView } from "framer-motion";
+import { annotate } from "rough-notation";
+import type { RoughAnnotation } from "rough-notation/lib/model";
+import { cn } from "@/lib/utils";
 
 export type AnnotationAction =
   | "highlight"

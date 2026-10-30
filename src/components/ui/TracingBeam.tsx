@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { motion, useTransform, useScroll, useSpring } from 'framer-motion';
 import { cn } from '../../lib/utils';
 

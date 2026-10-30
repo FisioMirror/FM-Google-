@@ -17,16 +17,8 @@ import { logPatientRecordAccess } from '../lib/auditService';
 import { getUnifiedPatientById } from '../data/unifiedDemoData';
 import { cn, isValidUUID } from '../lib/utils';
 import { PatientStatisticsView } from '../components/patient/PatientStatisticsView';
-import { JointDetailPopover } from '../components/ui/JointDetailPopover';
 import { TherapistQuickToolbar } from '../components/ui/TherapistQuickToolbar';
-import {
-  StrengthProgressionCard,
-  RehabPhaseStepCard,
-  PatientAdherenceHeatmapCard,
-  PostureStabilityCard,
-  EdemaAssessmentCard,
-  TremorFrequencyCard,
-} from '../components/ui/ActivityCardsSuite';
+import { PatientAdherenceHeatmapCard } from '../components/ui/ActivityCardsSuite';
 import { AIBiomechanicalSummaryBadge } from '../components/ui/RealTimeMetricsSuite';
 import { CompactTelehealthBar } from '../components/ui/NavigationDocksSuite';
 import { ScrollProgress } from '../components/ui/ScrollProgress';
@@ -109,7 +101,7 @@ export function PatientDetailPage() {
   const [activeTab, setActiveTab] = useState<Tab>(initialTab);
   const [loading, setLoading] = useState(true);
   const [aiInsight, setAiInsight] = useState('');
-  const [aiInsightGeneratedAt, setAiInsightGeneratedAt] = useState<string | null>(null);
+  const [, setAiInsightGeneratedAt] = useState<string | null>(null);
   const [aiLoading, setAiLoading] = useState(false);
   const [showRoutineModal, setShowRoutineModal] = useState(false);
   const [showPDFModal, setShowPDFModal] = useState(false);
@@ -288,7 +280,6 @@ export function PatientDetailPage() {
   };
 
   const totalSessions = sessions.length;
-  const _totalMinutes = Math.round(sessions.reduce((sum, s) => sum + (s.duracion_segundos || 0), 0) / 60);
   const avgQuality = sessions.length > 0 ? Math.round(sessions.reduce((sum, s) => sum + (s.calidad_ejecucion || 0), 0) / sessions.length) : 0;
   const lastSession = sessions[0];
   const daysSinceLast = lastSession ? Math.floor((Date.now() - new Date(lastSession.fecha).getTime()) / 86400000) : null;
@@ -359,6 +350,11 @@ export function PatientDetailPage() {
           nombre: 'Rutina Fase I - Movilidad Articular',
           descripcion: 'Rutina asignada para incremento de rango de movimiento',
           ejercicios: exercises,
+          activa: true,
+          status: 'activa',
+          fecha_inicio: new Date().toISOString(),
+          fecha_fin: null,
+          updated_at: new Date().toISOString(),
         },
       ]);
       setShowRoutineHistory(true);
@@ -448,9 +444,9 @@ export function PatientDetailPage() {
         {/* Action Buttons & Therapist Quick Toolbar */}
         <div className="flex flex-wrap items-center gap-2.5">
           <TherapistQuickToolbar
-            onVoiceNote={() => toast.success('Nota de voz clínica guardada')}
-            onSnapshot={() => toast.success('Captura biomecánica archivada')}
-            onAdjustTargetAngle={() => toast.info(`Ajustando objetivo angular (${patient.rom_objetivo || '135°'})`)}
+            onOpenRoutine={() => { void loadRoutineHistory(); }}
+            onNewSession={() => navigate(`/ar-mirror?patientId=${patient.id}`)}
+            onAssessWithAi={() => navigate('/ai-assistant')}
           />
 
           <button
@@ -482,9 +478,12 @@ export function PatientDetailPage() {
       {/* Telehealth & AI Biomechanical Status Ribbon */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <AIBiomechanicalSummaryBadge
-          qualityScore={Math.min(98, Math.max(70, Math.round(75 + recoveryProgress * 0.25)))}
-          postureState={recoveryProgress > 60 ? 'Simetría Óptima' : 'Desviación Leve'}
-          lastUpdated="Evaluado en última sesión"
+          score={avgQuality}
+          summaryText={
+            sessions.length > 0
+              ? `Promedio de calidad de ejecución de ${sessions.length} sesión(es) registradas. Última medición: ${lastSession ? new Date(lastSession.fecha).toLocaleDateString('es-ES') : 'sin fecha'}.`
+              : 'Todavía no hay sesiones registradas para este paciente. El resumen aparecerá cuando se complete la primera sesión AR.'
+          }
         />
         <CompactTelehealthBar
           therapistName={patient.full_name}
@@ -612,26 +611,17 @@ export function PatientDetailPage() {
             </div>
 
             <div className="flex items-center justify-between pt-4 border-t border-outline/10 mt-4">
-              <JointDetailPopover
-                triggerLabel="Inspección Detallada de Articulación"
-                metrics={{
-                  jointName: patient.extremidad_afectada || 'Articulación en Tratamiento',
-                  currentRom: Math.round(80 + recoveryProgress * 0.5),
-                  maxHistoricalRom: 140,
-                  angularVelocity: 42,
-                  asymmetryPercentage: Math.max(4, Math.round(20 - recoveryProgress * 0.15)),
-                  status: recoveryProgress > 70 ? 'normal' : 'warning',
-                }}
-              />
+              <span className="text-xs font-semibold text-on-surface-variant">
+                Articulación: {patient.extremidad_afectada || 'Sin registrar'}
+              </span>
               <span className="text-xs font-semibold text-outline">
-                Objetivo Prescrito: {patient.rom_objetivo || '135°'}
+                Objetivo Prescrito: {patient.rom_objetivo || 'Sin registrar'}
               </span>
             </div>
           </GlassPanel>
 
           <div className="space-y-4">
-            <RehabPhaseStepCard initialStep={recoveryProgress > 70 ? 2 : recoveryProgress > 30 ? 1 : 0} />
-            <StrengthProgressionCard currentMaxKg={18} baselineKg={8} targetKg={25} />
+
             <GlassPanel className="card-glow-hover p-6 rounded-3xl">
               <div className="flex items-center gap-2 mb-2">
                 <Icon name="check_circle" size={20} className="text-primary" />
@@ -646,9 +636,21 @@ export function PatientDetailPage() {
 
           <div className="lg:col-span-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <PatientAdherenceHeatmapCard />
-            <PostureStabilityCard balanceScore={Math.min(99, Math.max(70, Math.round(75 + recoveryProgress * 0.25)))} />
-            <TremorFrequencyCard frequencyHz={2.4} amplitudeMm={1.8} status="Estable (Rango Fisiológico)" />
-            <EdemaAssessmentCard grade={recoveryProgress > 75 ? 1 : 2} circumDeltaMm={recoveryProgress > 75 ? 3 : 8} />
+            <GlassPanel className="card-glow-hover p-6 rounded-3xl">
+              <p className="text-xs font-semibold text-on-surface-variant">Calidad media de ejecución</p>
+              <p className="text-2xl font-bold text-on-surface mt-1">{avgQuality > 0 ? `${avgQuality}%` : '—'}</p>
+              <p className="text-[11px] text-outline mt-1">{sessions.length > 0 ? 'Promedio de sesiones registradas' : 'Sin sesiones registradas'}</p>
+            </GlassPanel>
+            <GlassPanel className="card-glow-hover p-6 rounded-3xl">
+              <p className="text-xs font-semibold text-on-surface-variant">Última sesión</p>
+              <p className="text-sm font-bold text-on-surface mt-1">{lastSession ? new Date(lastSession.fecha).toLocaleDateString('es-ES') : '—'}</p>
+              <p className="text-[11px] text-outline mt-1">{lastSession?.ejercicio_nombre || 'Sin registro'}</p>
+            </GlassPanel>
+            <GlassPanel className="card-glow-hover p-6 rounded-3xl">
+              <p className="text-xs font-semibold text-on-surface-variant">Fase de recuperación</p>
+              <p className="text-sm font-bold text-on-surface mt-1">{routineHistory[0]?.fase_recuperacion || 'Sin registrar'}</p>
+              <p className="text-[11px] text-outline mt-1">{routineHistory[0]?.nombre || 'Sin rutina activa'}</p>
+            </GlassPanel>
           </div>
 
           <GlassPanel className="card-glow-hover lg:col-span-3 p-8 rounded-[2rem] bg-primary-container border-primary/20">

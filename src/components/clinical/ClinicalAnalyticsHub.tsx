@@ -1,31 +1,8 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
-import {
-  ResponsiveContainer,
-  BarChart,
-  Bar,
-  AreaChart,
-  Area,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ReferenceArea,
-} from 'recharts';
-import {
-  Activity,
-  AlertTriangle,
-  ArrowUpRight,
-  CheckCircle2,
-  ChevronRight,
-  Info,
-  Layers,
-  Stethoscope,
-  Target,
-  UserCheck,
-  Zap,
-} from 'lucide-react';
+import { ResponsiveContainer, BarChart, Bar, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceArea } from 'recharts';
+import { Activity, AlertTriangle, ArrowUpRight, CheckCircle2, ChevronRight, Info, Layers, Stethoscope, Target, UserCheck, Zap } from 'lucide-react';
 import { GlassPanel } from '../ui/Glass';
 import { useNavigate } from 'react-router-dom';
 import { EmptyState } from '../ui/EmptyState';
@@ -411,7 +388,7 @@ export function ClinicalAnalyticsHub() {
                   <Tooltip
                     contentStyle={customTooltipStyle.contentStyle}
                     labelStyle={customTooltipStyle.labelStyle}
-                    formatter={(value: number, name: string) => [
+                    formatter={(value, name) => [
                       `${value}°`,
                       name === 'actual' ? t('cah.currentAngle') : t('cah.physiologicalTarget'),
                     ]}
@@ -589,7 +566,7 @@ export function ClinicalAnalyticsHub() {
                   <Tooltip
                     contentStyle={customTooltipStyle.contentStyle}
                     labelStyle={customTooltipStyle.labelStyle}
-                    formatter={(value: number, name: string) => [
+                    formatter={(value, name) => [
                       name === 'precision' ? `${value}%` : `${value}/10`,
                       name === 'precision' ? t('cah.executionQuality') : t('cah.painLevelVas'),
                     ]}

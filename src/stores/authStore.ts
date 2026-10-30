@@ -84,7 +84,7 @@ interface AuthState {
     fullName: string,
     data: FisioSignupData,
   ) => Promise<boolean>;
-  signUpPaciente: (email: string, password: string, fullName: string) => Promise<boolean>;
+  signUpPaciente: (email: string, password: string, fullName: string, token?: string) => Promise<boolean>;
   validateToken: (token: string) => Promise<boolean>;
   updatePassword: (currentPassword: string, newPassword: string) => Promise<{ success: boolean; error?: string }>;
   signOut: () => void;
@@ -633,7 +633,7 @@ export const useAuthStore = create<AuthState>()(
             return false;
           }
 
-          const { password_hash: _, ...userWithoutHash } = finalProfile;
+          const { password_hash: _ph, ...userWithoutHash } = finalProfile as Profile & { password_hash?: string };
           set({ user: userWithoutHash as Profile, loading: false });
           return true;
         } catch (e) {
@@ -642,7 +642,7 @@ export const useAuthStore = create<AuthState>()(
         }
       },
 
-      signUpPaciente: async (email, password, fullName) => {
+      signUpPaciente: async (email, password, fullName, token) => {
         set({ loading: true, error: null });
         const cleanEmail = email.toLowerCase().trim();
         const computedHash = await hashPassword(password);
@@ -691,6 +691,32 @@ export const useAuthStore = create<AuthState>()(
           if (insErr || !newProfile) {
             set({ error: insErr?.message || 'Error al registrar paciente', loading: false });
             return false;
+          }
+
+          // Vincular al terapeuta y consumir el token de activación (si se proveyó)
+          if (token) {
+            try {
+              const cleanToken = token.trim().toUpperCase();
+              const { data: tokenData } = await supabase
+                .from('activation_tokens')
+                .select('id, terapeuta_id, is_used')
+                .eq('token', cleanToken)
+                .maybeSingle();
+
+              if (tokenData && !tokenData.is_used) {
+                if (tokenData.terapeuta_id) {
+                  await supabase
+                    .from('pacientes_terapeutas')
+                    .upsert({ paciente_id: newId, terapeuta_id: tokenData.terapeuta_id });
+                }
+                await supabase
+                  .from('activation_tokens')
+                  .update({ is_used: true, email_asignado: cleanEmail, paciente_id: newId })
+                  .eq('id', tokenData.id);
+              }
+            } catch (linkErr) {
+              console.warn('No se pudo vincular el token en el registro:', linkErr);
+            }
           }
 
           set({ user: newProfile as Profile, loading: false });

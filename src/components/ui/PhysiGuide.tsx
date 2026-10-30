@@ -1,17 +1,11 @@
 import { useState, useRef, useEffect, useCallback, type ReactNode } from 'react';
 import { useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bot, X, Send, RotateCcw, Volume2, VolumeX, Sparkles, User, Mic } from 'lucide-react';
-import {
-  PHYSI_FAQS,
-  matchFAQ as matchGlobalFAQ,
-  matchFollowUp,
-  type FAQ,
-  type FollowUp,
-} from '../../data/physiFAQs';
+import { Bot, X, Send, RotateCcw, Volume2, VolumeX, Sparkles } from 'lucide-react';
+import { PHYSI_FAQS, matchFAQ as matchGlobalFAQ, matchFollowUp, type FAQ, type FollowUp } from '../../data/physiFAQs';
 import { useAuthStore } from '../../stores/authStore';
 import { runAIJob } from '../../lib/ai';
-import { humanVoice, getVoiceGender, setVoiceGender, type VoiceGender } from '../../lib/humanVoice';
+import { humanVoice, setVoiceGender, type VoiceGender } from '../../lib/humanVoice';
 import { QuickVoiceSelector } from './QuickVoiceSelector';
 
 interface Message {
@@ -213,13 +207,6 @@ export function PhysiGuide({
       humanVoice.stop();
       setSpeakingMsgId(null);
     }
-  };
-
-  // Alternar entre voz masculina cálida y femenina
-  const toggleVoiceGender = () => {
-    const nextGender: VoiceGender = voiceGender === 'male' ? 'female' : 'male';
-    setVoiceGenderState(nextGender);
-    humanVoice.setVoiceGender(nextGender);
   };
 
   // Hablar o detener un mensaje específico
@@ -443,7 +430,7 @@ export function PhysiGuide({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 16, scale: 0.96 }}
             transition={{ type: 'spring', damping: 26, stiffness: 320 }}
-            className="fixed bottom-24 left-4 right-4 sm:right-auto sm:left-4 sm:w-96 lg:left-8 lg:bottom-28 z-[120] w-[calc(100vw-2rem)] max-h-[62vh] flex flex-col rounded-3xl border border-teal-500/25 bg-surface/95 dark:bg-surface-container/95 backdrop-blur-2xl shadow-2xl overflow-hidden text-on-surface"
+            className="fixed bottom-24 left-4 right-4 sm:right-auto sm:left-4 sm:w-96 sm:max-w-[calc(100vw-2rem)] lg:left-8 lg:bottom-28 z-[120] max-h-[62vh] flex flex-col rounded-3xl border border-teal-500/25 bg-surface/95 dark:bg-surface-container/95 backdrop-blur-2xl shadow-2xl overflow-hidden text-on-surface"
           >
             {/* Cabecera */}
             <div className="flex items-center justify-between px-4 py-3 border-b border-outline-variant/20 dark:border-white/10 shrink-0 bg-teal-500/5">

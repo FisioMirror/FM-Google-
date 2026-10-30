@@ -1,23 +1,7 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
-import {
-  Flame,
-  Medal,
-  PartyPopper,
-  Compass,
-  Trophy,
-  Coins,
-  Shield,
-  ThumbsUp,
-  Award,
-  Lock,
-  Sparkles,
-  Check,
-  Star,
-  Gift,
-  Share2,
-} from 'lucide-react';
+import { Flame, Medal, PartyPopper, Compass, Trophy, Coins, ThumbsUp, Award, Lock, Sparkles, Check } from 'lucide-react';
 
 /* 31. StreakFlameCounter */
 export interface StreakFlameCounterProps {

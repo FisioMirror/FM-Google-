@@ -39,7 +39,6 @@ export const BiomechanicalAngleGauge: React.FC<BiomechanicalAngleGaugeProps> = (
   // Normalize angle to [0, 1]
   const clampedAngle = Math.max(minAngle, Math.min(maxAngle, currentAngle));
   const progressRatio = (clampedAngle - minAngle) / (maxAngle - minAngle);
-  const targetRatio = (Math.max(minAngle, Math.min(maxAngle, targetAngle)) - minAngle) / (maxAngle - minAngle);
 
   // Circumference of full circle
   const circumference = 2 * Math.PI * radius;

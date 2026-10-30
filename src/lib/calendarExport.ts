@@ -110,3 +110,32 @@ export function buildIcsFileContent(exercises: CalendarExercise[], patientName: 
 
   return lines.join('\r\n');
 }
+
+export interface SingleEventOptions {
+  title: string;
+  description?: string;
+  startDate: Date;
+  durationMinutes?: number;
+  location?: string;
+}
+
+/** Genera un enlace de Google Calendar para un evento puntual (una sesión). */
+export function generateGoogleCalendarUrl({
+  title,
+  description = '',
+  startDate,
+  durationMinutes = 30,
+  location = 'FisioMirror (App)',
+}: SingleEventOptions): string {
+  const start = new Date(startDate);
+  const end = new Date(start.getTime() + durationMinutes * 60 * 1000);
+
+  const params = new URLSearchParams();
+  params.set('action', 'TEMPLATE');
+  params.set('text', title);
+  if (description) params.set('details', description);
+  params.set('location', location);
+  params.set('dates', `${formatDate(start)}/${formatDate(end)}`);
+
+  return `https://calendar.google.com/calendar/render?${params.toString()}`;
+}

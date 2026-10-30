@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, useRef } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
 import { Rocket } from "@gravity-ui/icons";
@@ -73,7 +73,7 @@ export function ModalTrigger({
   const { open } = useContext(ModalContext);
 
   if (asChild && React.isValidElement(children)) {
-    return React.cloneElement(children as React.ReactElement<{ onClick?: () => void }>, {
+    return React.cloneElement(children as React.ReactElement<{ onClick?: (e: React.MouseEvent) => void }>, {
       onClick: (e: React.MouseEvent) => {
         (children.props as { onClick?: (e: React.MouseEvent) => void })?.onClick?.(e);
         open();
@@ -224,7 +224,7 @@ export function ModalFooter({
     <div className={cn("flex flex-col-reverse sm:flex-row items-center justify-end gap-3 pt-2 border-t border-border/40", className)}>
       {React.Children.map(children, (child) => {
         if (React.isValidElement(child) && (child.props as { slot?: string })?.slot === "close") {
-          return React.cloneElement(child as React.ReactElement<{ onClick?: () => void }>, {
+          return React.cloneElement(child as React.ReactElement<{ onClick?: (e: React.MouseEvent) => void }>, {
             onClick: (e: React.MouseEvent) => {
               (child.props as { onClick?: (e: React.MouseEvent) => void })?.onClick?.(e);
               close();
@@ -258,7 +258,7 @@ export function CustomModalDemo() {
   const [savedStatus, setSavedStatus] = useState<string | null>(null);
 
   const handleSave = () => {
-    setSavedStatus(`Parámetros calibrados: Sensibilidad ${sensitivity}%, AR ${arOverlays ? "Activado" : "Desactivado"}`);
+    setSavedStatus(`Demostración de modal: los valores (${sensitivity}%, AR ${arOverlays ? 'sí' : 'no'}) no se aplican a la sesión real.`);
     setTimeout(() => setSavedStatus(null), 3500);
   };
 
@@ -288,7 +288,7 @@ export function CustomModalDemo() {
                 <div className="p-3.5 rounded-xl bg-surface/80 dark:bg-slate-800/60 border border-border/60 space-y-3 mt-4">
                   <div>
                     <div className="flex justify-between text-xs font-semibold mb-1 text-on-surface">
-                      <span>Sensibilidad MediaPipe</span>
+                      <span>Sensibilidad (demostración)</span>
                       <span className="text-primary font-bold">{sensitivity}%</span>
                     </div>
                     <input

@@ -1,16 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
-import {
-  Camera,
-  Volume2,
-  VolumeX,
-  RotateCcw,
-  Target,
-  Maximize2,
-  Sparkles,
-  Sliders,
-} from 'lucide-react';
+import { Camera, Volume2, VolumeX, Target } from 'lucide-react';
 
 export interface DockItem {
   id: string;
@@ -71,24 +62,6 @@ export const ARFloatingDock: React.FC<ARFloatingDockProps> = ({
         setAudioMuted(next);
         onToggleAudio?.(next);
       },
-    },
-    {
-      id: 'reset',
-      label: 'Reiniciar Repeticiones',
-      icon: <RotateCcw className="w-5 h-5" />,
-      onClick: () => {},
-    },
-    {
-      id: 'biofeedback',
-      label: 'Filtro Biomecánico',
-      icon: <Sparkles className="w-5 h-5 text-lime-400" />,
-      onClick: () => {},
-    },
-    {
-      id: 'settings',
-      label: 'Sensibilidad MediaPipe',
-      icon: <Sliders className="w-5 h-5" />,
-      onClick: () => {},
     },
   ];
 

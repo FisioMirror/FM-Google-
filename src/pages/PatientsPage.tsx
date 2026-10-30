@@ -13,29 +13,12 @@ import { SpotlightCard } from '../components/ui/SpotlightCard';
 import { GlassModal } from '../components/ui/GlassModal';
 import { isDemoAccount } from '../lib/demoAuth';
 import { useTranslation } from 'react-i18next';
-import {
-  Users,
-  Search,
-  Plus,
-  LayoutGrid,
-  List,
-  AlertTriangle,
-  CheckCircle2,
-  Key,
-  Copy,
-  Check,
-  Mail,
-  ExternalLink,
-  UserCheck,
-  Calendar,
-  ArrowRight,
-  Eye,
-} from 'lucide-react';
+import { Users, Search, Plus, LayoutGrid, List, AlertTriangle, CheckCircle2, Key, Copy, Check, Mail, ExternalLink, UserCheck, Calendar, ArrowRight, Eye } from 'lucide-react';
 import { DrawerClinicalDemo } from '../components/ui/Drawer';
 import { useRealtimePresence } from '../lib/presenceService';
 import { staggerContainer, staggerItem, springTactile } from '../lib/motionVariants';
 import { MobileBottomSheet } from '../components/ui/MobileBottomSheet';
-import { JointDetailPopover } from '../components/ui/JointDetailPopover';
+
 import { TherapistSidebarMini } from '../components/ui/NavigationDocksSuite';
 
 interface PatientCard {
@@ -111,7 +94,7 @@ export function PatientsPage() {
     const q = searchParams.get('q');
     if (q !== null) {
       setSearchQuery(q);
-      setActiveTab('pacientes');
+      setActiveTab('patients');
     }
   }, [searchParams]);
 
