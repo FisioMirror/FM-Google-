@@ -326,7 +326,7 @@ export function CustomModalDemo() {
 
       {savedStatus && (
         <div className="text-xs px-3 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-700 dark:text-emerald-300 font-medium animate-fadeIn">
-          ✓ {savedStatus}
+          {savedStatus}
         </div>
       )}
     </div>

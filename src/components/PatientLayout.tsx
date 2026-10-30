@@ -26,7 +26,6 @@ import { Icon } from './ui/Icon';
 import { BackButton } from './ui/BackButton';
 
 import { FloatingMenu, type FloatingMenuItem } from './ui/FloatingMenu';
-import { CurvedMobileDock } from './ui/NavigationDocksSuite';
 import { PhysiChatbot } from './ui/PhysiChatbot';
 import { LegalModal, type LegalDocType } from './ui/LegalModal';
 import { useAuthStore } from '../stores/authStore';
@@ -40,20 +39,21 @@ import { useRealtimeNotifications } from '../hooks/useRealtimeNotifications';
 import { initGlobalPresence, updatePresenceStatus } from '../lib/presenceService';
 import { notifyVideoCall } from '../lib/notificationService';
 import { useTranslation } from 'react-i18next';
-import { LanguageSelector } from './ui/LanguageSelector';
+import { changeAppLanguage, normalizeLanguage, type SupportedLanguage } from '../i18n';
 
 interface PatientLayoutProps {
   children: ReactNode;
 }
 
 export function PatientLayout({ children }: PatientLayoutProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const user = useAuthStore((s) => s.user);
   const signOut = useAuthStore((s) => s.signOut);
   const { theme, toggleTheme } = useTheme();
   const toast = useToast();
   const navigate = useNavigate();
   const location = useLocation();
+  const activeLanguage = normalizeLanguage(i18n.language);
 
   const primaryNavItems = [
     { to: '/dashboard-paciente', label: t('navigation.dashboard', 'Inicio'), icon: Home, accent: 'teal' },
@@ -296,7 +296,6 @@ export function PatientLayout({ children }: PatientLayoutProps) {
       <div className="flex items-center px-4 h-16 border-b border-teal-100/60 dark:border-slate-800/80 shrink-0 relative">
         {!collapsed ? (
           <div className="flex items-center gap-3 min-w-0 pr-6">
-            <img src="/logo.png" alt="FisioMirror" className="h-9 w-9 min-w-[36px] min-h-[36px] object-contain shrink-0 aspect-square" />
             <div className="flex flex-col min-w-0">
               <h1 className="text-base font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight whitespace-nowrap">FisioMirror</h1>
               <p className="text-[10px] uppercase tracking-wider text-teal-600 dark:text-teal-400 font-bold whitespace-nowrap">Portal Paciente</p>
@@ -304,7 +303,7 @@ export function PatientLayout({ children }: PatientLayoutProps) {
           </div>
         ) : (
           <div className="w-full flex justify-center">
-            <img src="/logo.png" alt="FisioMirror" className="h-8 w-8 min-w-[32px] min-h-[32px] object-contain shrink-0 aspect-square" />
+            <span className="text-sm font-extrabold tracking-tight text-teal-600 dark:text-teal-400 select-none">FM</span>
           </div>
         )}
         {opts?.showToggle && (
@@ -377,7 +376,7 @@ export function PatientLayout({ children }: PatientLayoutProps) {
   );
 
   return (
-    <div className="flex flex-col lg:flex-row h-screen overflow-hidden bg-background text-on-surface relative" style={{ ['--patient-sidebar-w' as string]: `${sidebarWidth}px`, ['--app-sidebar-w' as string]: `${sidebarWidth}px` }}>
+    <div className="flex flex-col lg:flex-row h-screen w-full max-w-full overflow-x-hidden overflow-hidden bg-background text-on-surface relative" style={{ ['--patient-sidebar-w' as string]: `${sidebarWidth}px`, ['--app-sidebar-w' as string]: `${sidebarWidth}px` }}>
       {/* Ambient Clinical Pastel Mesh Glow (Celeste, Menta y Lavanda suave) */}
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
         <div className="absolute -top-32 left-1/4 w-96 h-96 rounded-full bg-teal-400/10 dark:bg-teal-500/10 blur-[110px]" />
@@ -408,7 +407,6 @@ export function PatientLayout({ children }: PatientLayoutProps) {
             >
               <div className="p-4 flex items-center justify-between border-b border-teal-100/60 dark:border-slate-800">
                 <div className="flex items-center gap-3">
-                  <img src="/logo.png" alt="FisioMirror" className="h-9 w-9 object-contain shrink-0" />
                   <div>
                     <h2 className="text-base font-extrabold text-slate-900 dark:text-white leading-tight">FisioMirror</h2>
                     <p className="text-[10px] uppercase tracking-wider text-teal-600 dark:text-teal-400 font-bold">Portal Paciente</p>
@@ -454,9 +452,9 @@ export function PatientLayout({ children }: PatientLayoutProps) {
       </AnimatePresence>
 
       {/* Main content area with sticky header */}
-      <main className="flex-1 flex flex-col overflow-hidden lg:ml-[var(--patient-sidebar-w)]" data-scroll-root>
+      <main className="flex-1 flex flex-col w-full max-w-full min-w-0 overflow-hidden overflow-x-hidden lg:ml-[var(--patient-sidebar-w)]" data-scroll-root>
         {/* Sticky header — mobile (hamburger + title + actions) and desktop (breadcrumb + actions) */}
-        <header className="glass-panel sticky top-0 z-30 flex items-center justify-between px-3 sm:px-6 h-16 border-b divider-teal shrink-0 gap-2">
+        <header className="glass-panel sticky top-0 z-30 w-full min-w-0 max-w-full flex items-center justify-between px-3 sm:px-6 h-16 border-b divider-teal shrink-0 gap-2">
           {/* Left: hamburger (mobile) + breadcrumb (desktop) */}
           <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
             <button
@@ -467,14 +465,13 @@ export function PatientLayout({ children }: PatientLayoutProps) {
               <Icon name="menu" size={22} />
             </button>
             <BackButton />
-            {/* Mobile title & logo */}
-            <div className="flex items-center gap-2 lg:hidden min-w-0">
-              <img src="/logo.png" alt="FisioMirror" className="h-8 w-8 min-w-[32px] min-h-[32px] object-contain shrink-0 aspect-square" />
-              <span className="text-on-surface font-bold text-sm truncate max-w-[130px] sm:max-w-[180px]">{currentCrumb}</span>
+            {/* Mobile title */}
+            <div className="flex items-center gap-2 lg:hidden min-w-0 flex-1">
+              <span className="text-on-surface font-bold text-sm truncate min-w-0">{currentCrumb}</span>
             </div>
             {/* Desktop breadcrumb */}
             <div className="hidden lg:flex items-center text-outline text-label-sm gap-2 min-w-0 truncate">
-              <span onClick={() => navigate('/dashboard-paciente')} className="hover:text-primary cursor-pointer shrink-0">Inicio</span>
+              <span onClick={() => navigate('/dashboard-paciente')} className="hover:text-primary cursor-pointer shrink-0">{t('navigation.dashboard', 'Inicio')}</span>
               <Icon name="chevron_right" size={14} className="shrink-0" />
               <span className="text-on-surface font-bold truncate">{currentCrumb}</span>
             </div>
@@ -483,11 +480,11 @@ export function PatientLayout({ children }: PatientLayoutProps) {
           <div className="flex items-center gap-1 sm:gap-2 shrink-0">
             <div className={`online-indicator is-${isOnline ? 'online' : 'offline'} hidden md:inline-flex`}>
               <span className="dot" />
-              <span>{isOnline ? 'Online' : 'Offline'}</span>
+              <span>{isOnline ? t('common.online', 'En línea') : t('common.offline', 'Sin conexión')}</span>
             </div>
             <button
               onClick={() => setShowNotifications((v) => !v)}
-              className="relative text-on-surface-variant hover:text-primary transition-colors active-scale p-2 rounded-full"
+              className="relative text-on-surface-variant hover:text-primary transition-colors active-scale p-1 sm:p-2 rounded-full"
               aria-label={`Notificaciones, ${unreadCount} sin leer`}
             >
               <Icon name="notifications" size={20} />
@@ -495,17 +492,27 @@ export function PatientLayout({ children }: PatientLayoutProps) {
                 <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-[16px] bg-error rounded-full text-white text-[9px] font-bold flex items-center justify-center px-1">{unreadCount > 9 ? '9+' : unreadCount}</span>
               )}
             </button>
-            <LanguageSelector compact />
+            <select
+              value={activeLanguage}
+              onChange={(e) => changeAppLanguage(e.target.value as SupportedLanguage)}
+              aria-label={t('common.changeLanguage', 'Cambiar idioma')}
+              title={t('common.changeLanguage', 'Cambiar idioma')}
+              className="shrink-0 w-10 appearance-none cursor-pointer rounded-lg border border-primary/30 bg-surface/80 px-0 py-1 text-center text-[11px] font-bold uppercase tracking-wider text-primary outline-none transition-colors hover:border-primary/60 focus:ring-2 focus:ring-primary/40 dark:bg-slate-900/80"
+            >
+              <option value="es">ES</option>
+              <option value="en">EN</option>
+              <option value="pt">PT</option>
+            </select>
             <button
               onClick={toggleTheme}
-              className="text-on-surface-variant hover:text-primary transition-colors active-scale p-2 rounded-full"
-              aria-label="Cambiar tema"
+              className="text-on-surface-variant hover:text-primary transition-colors active-scale p-1 sm:p-2 rounded-full"
+              aria-label={t('common.changeTheme', 'Cambiar tema')}
             >
               <Icon name={theme === 'dark' ? 'light_mode' : 'dark_mode'} size={20} />
             </button>
             <button
               onClick={() => setPhysiChatOpen(true)}
-              className="p-2 rounded-xl text-on-surface-variant hover:text-primary hover:bg-primary/5 transition-colors active-scale flex items-center gap-1.5"
+              className="p-1 sm:p-2 rounded-xl text-on-surface-variant hover:text-primary hover:bg-primary/5 transition-colors active-scale flex items-center gap-1.5"
               aria-label="Abrir Chatbot IA Physi"
               title="Chatbot IA Physi"
             >
@@ -516,7 +523,7 @@ export function PatientLayout({ children }: PatientLayoutProps) {
             </button>
             <button
               onClick={() => setShowLogout(true)}
-              className="text-on-surface-variant hover:text-error transition-colors active-scale p-2 rounded-full"
+              className="text-on-surface-variant hover:text-error transition-colors active-scale p-1 sm:p-2 rounded-full"
               aria-label="Cerrar sesión"
             >
               <Icon name="logout" size={20} />
@@ -524,7 +531,7 @@ export function PatientLayout({ children }: PatientLayoutProps) {
           </div>
         </header>
         {/* Scrollable content with clean spacing */}
-        <div className="flex-1 overflow-y-auto px-4 sm:px-6 pt-8 pb-10 space-y-8 max-w-md mx-auto lg:px-0 lg:max-w-none lg:mx-0 lg:p-10 bg-teal-50/20 dark:bg-slate-950/20">{children}</div>
+        <div className="flex-1 w-full min-w-0 overflow-y-auto overflow-x-hidden px-4 sm:px-6 pt-8 pb-24 space-y-8 max-w-md mx-auto lg:px-0 lg:max-w-none lg:mx-0 lg:p-10 lg:pb-10 bg-teal-50/20 dark:bg-slate-950/20">{children}</div>
 
         {/* Desktop footer */}
         <footer className="hidden lg:flex pt-6 pb-6 px-8 justify-between text-outline text-xs border-t divider-teal shrink-0">
@@ -537,30 +544,13 @@ export function PatientLayout({ children }: PatientLayoutProps) {
         </footer>
       </main>
 
-      {/* Mobile Fixed Curved Navigation Dock (MegaSuite 41) */}
+      {/* Botón de acción flotante — oculto en la página de chat de Physi */}
       {location.pathname !== '/ai-assistant' && (
-        <div className="md:hidden fixed bottom-4 inset-x-4 z-40 flex justify-center pointer-events-auto">
-          <CurvedMobileDock
-            className="w-full max-w-sm shadow-2xl"
-            currentTab={
-              location.pathname === '/exercises' ? 'ejercicios' : location.pathname === '/stats' ? 'progreso' : 'scan'
-            }
-            onExercisesClick={() => navigate('/exercises')}
-            onScanClick={() => navigate('/ar-mirror')}
-            onProgressClick={() => navigate('/stats')}
-          />
-        </div>
-      )}
-
-      {/* Botón de acción flotante — oculto en móvil donde está el CurvedMobileDock y en la página de chat de Physi */}
-      {location.pathname !== '/ai-assistant' && (
-        <div className="hidden md:block">
-          <FloatingMenu
-            items={quickActionItems}
-            ariaLabel="Acciones del paciente"
-            className="fab-anchor fixed bottom-6 right-6 z-40"
-          />
-        </div>
+        <FloatingMenu
+          items={quickActionItems}
+          ariaLabel="Acciones del paciente"
+          className="fab-anchor fixed bottom-6 right-6 z-40"
+        />
       )}
 
       {/* Centro de Notificaciones Clínico Avanzado */}

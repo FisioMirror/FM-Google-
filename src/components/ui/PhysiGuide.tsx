@@ -2,7 +2,13 @@ import { useState, useRef, useEffect, useCallback, type ReactNode } from 'react'
 import { useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Bot, X, Send, RotateCcw, Volume2, VolumeX, Sparkles, User, Mic } from 'lucide-react';
-import { PHYSI_FAQS, matchFAQ as matchGlobalFAQ, type FAQ } from '../../data/physiFAQs';
+import {
+  PHYSI_FAQS,
+  matchFAQ as matchGlobalFAQ,
+  matchFollowUp,
+  type FAQ,
+  type FollowUp,
+} from '../../data/physiFAQs';
 import { useAuthStore } from '../../stores/authStore';
 import { runAIJob } from '../../lib/ai';
 import { humanVoice, getVoiceGender, setVoiceGender, type VoiceGender } from '../../lib/humanVoice';
@@ -13,6 +19,8 @@ interface Message {
   role: 'user' | 'assistant';
   text: string;
   timestamp?: string;
+  /** Ramas condicionales del árbol de decisiones (solo en respuestas de FAQ) */
+  options?: FollowUp[];
 }
 
 const WELCOME =
@@ -284,7 +292,7 @@ export function PhysiGuide({
       const roleMatch = matchGlobalFAQ(trimmed, isFisio);
       const faqAnswer = roleMatch?.answer || localMatch?.answer || null;
 
-      const finishAndSpeak = (replyText: string) => {
+      const finishAndSpeak = (replyText: string, options?: FollowUp[]) => {
         const assistantId = `a-${Date.now()}`;
         setMessages((prev) => [
           ...prev,
@@ -293,6 +301,7 @@ export function PhysiGuide({
             role: 'assistant',
             text: replyText,
             timestamp: new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }),
+            options: options && options.length > 0 ? options : undefined,
           },
         ]);
         setLoading(false);
@@ -330,13 +339,47 @@ export function PhysiGuide({
 
       setTimeout(() => {
         const replyText = faqAnswer || NO_MATCH;
-        finishAndSpeak(replyText);
+        finishAndSpeak(replyText, roleMatch?.followUps || localMatch?.followUps);
       }, 350);
     },
     [loading, isFisio, autoVoice, voiceGender]
   );
 
   const handleSend = () => sendMessage(input);
+
+  /** Navega una rama del árbol de decisiones sin pasar por la IA. */
+  const handleOption = useCallback(
+    (label: string, tree: FollowUp[]) => {
+      if (loading) return;
+      const node = matchFollowUp(label, tree);
+      if (!node) return;
+
+      const now = new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+      const assistantId = `a-${Date.now()}`;
+
+      setMessages((prev) => [
+        ...prev,
+        { id: `u-${Date.now()}`, role: 'user', text: label, timestamp: now },
+        {
+          id: assistantId,
+          role: 'assistant',
+          text: node.answer,
+          timestamp: now,
+          options: node.followUps && node.followUps.length > 0 ? node.followUps : undefined,
+        },
+      ]);
+
+      if (autoVoice) {
+        setSpeakingMsgId(assistantId);
+        humanVoice.speak(node.answer, {
+          gender: voiceGender,
+          onEnd: () => setSpeakingMsgId(null),
+          onError: () => setSpeakingMsgId(null),
+        });
+      }
+    },
+    [loading, autoVoice, voiceGender]
+  );
 
   const resetChat = () => {
     humanVoice.stop();
@@ -539,6 +582,21 @@ export function PhysiGuide({
                                 </>
                               )}
                             </button>
+                          </div>
+                        )}
+
+                        {/* Árbol de decisiones: ramas condicionales */}
+                        {msg.role === 'assistant' && msg.options && msg.options.length > 0 && (
+                          <div className="mt-2 flex flex-wrap gap-1.5">
+                            {msg.options.map((opt) => (
+                              <button
+                                key={opt.label}
+                                onClick={() => handleOption(opt.label, msg.options ?? [])}
+                                className="px-2.5 py-1.5 rounded-xl border border-teal-500/30 bg-teal-500/10 text-[11px] font-semibold text-teal-800 dark:text-teal-200 hover:bg-teal-500/20 active:scale-[0.98] transition-all cursor-pointer text-left"
+                              >
+                                {opt.label}
+                              </button>
+                            ))}
                           </div>
                         )}
                       </div>

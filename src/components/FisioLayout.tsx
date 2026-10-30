@@ -44,14 +44,14 @@ import { useRealtimeNotifications } from '../hooks/useRealtimeNotifications';
 import { initGlobalPresence, updatePresenceStatus } from '../lib/presenceService';
 import { notifyVideoCall } from '../lib/notificationService';
 import { useTranslation } from 'react-i18next';
-import { LanguageSelector } from './ui/LanguageSelector';
+import { changeAppLanguage, normalizeLanguage, type SupportedLanguage } from '../i18n';
 
 interface FisioLayoutProps {
   children: ReactNode;
 }
 
 export function FisioLayout({ children }: FisioLayoutProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const user = useAuthStore((s) => s.user);
   const signOut = useAuthStore((s) => s.signOut);
   const { theme, toggleTheme } = useTheme();
@@ -59,6 +59,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
   const { isInstalled, triggerInstall } = useInstall();
   const navigate = useNavigate();
   const location = useLocation();
+  const activeLanguage = normalizeLanguage(i18n.language);
 
   const navItems = [
     { to: '/dashboard-fisio', label: t('navigation.dashboard', 'Inicio'), icon: LayoutDashboard, color: 'teal' },
@@ -439,7 +440,6 @@ export function FisioLayout({ children }: FisioLayoutProps) {
       <div className="px-4 py-3 shrink-0 relative flex items-center border-b border-sky-100/60 dark:border-slate-800/80" style={{ minHeight: 64 }}>
         {!collapsed ? (
           <div className="flex items-center gap-3 min-w-0 pr-6">
-            <img src="/logo.png" alt="FisioMirror" className="h-9 w-9 min-w-[36px] min-h-[36px] object-contain shrink-0 aspect-square" />
             <div className="flex flex-col min-w-0">
               <h1 className="text-base font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight whitespace-nowrap">FisioMirror</h1>
               <p className="text-[10px] uppercase tracking-wider text-sky-600 dark:text-sky-400 font-bold whitespace-nowrap">Edición Clínica</p>
@@ -447,7 +447,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
           </div>
         ) : (
           <div className="w-full flex justify-center">
-            <img src="/logo.png" alt="FisioMirror" className="h-8 w-8 min-w-[32px] min-h-[32px] object-contain shrink-0 aspect-square" />
+            <span className="text-sm font-extrabold tracking-tight text-sky-600 dark:text-sky-400 select-none">FM</span>
           </div>
         )}
         {opts?.showToggle && (
@@ -511,7 +511,6 @@ export function FisioLayout({ children }: FisioLayoutProps) {
             >
               <div className="p-4 flex items-center justify-between border-b border-sky-100/60 dark:border-slate-800">
                 <div className="flex items-center gap-3">
-                  <img src="/logo.png" alt="FisioMirror" className="h-9 w-9 object-contain shrink-0" />
                   <div>
                     <h2 className="text-base font-extrabold text-slate-900 dark:text-white leading-tight">FisioMirror</h2>
                     <p className="text-[10px] uppercase tracking-wider text-sky-600 dark:text-sky-400 font-bold">Edición Clínica</p>
@@ -536,7 +535,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
 
       {/* Main content */}
       <main className="flex-1 flex flex-col h-full overflow-y-auto lg:ml-[var(--fisio-sidebar-w)]" data-scroll-root>
-        <header className="h-16 glass-panel sticky top-0 z-30 flex items-center justify-between px-3 sm:px-6 gap-2">
+        <header className="h-16 w-full min-w-0 max-w-full glass-panel sticky top-0 z-30 flex items-center justify-between px-3 sm:px-6 gap-2">
           <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
             <button
               onClick={() => setSidebarOpen(true)}
@@ -546,22 +545,21 @@ export function FisioLayout({ children }: FisioLayoutProps) {
               <Icon name="menu" size={22} />
             </button>
             <BackButton />
-            {/* Mobile title & logo */}
-            <div className="flex items-center gap-2 lg:hidden min-w-0">
-              <img src="/logo.png" alt="FisioMirror" className="h-8 w-8 min-w-[32px] min-h-[32px] object-contain shrink-0 aspect-square" />
-              <span className="text-on-surface font-bold text-sm truncate max-w-[130px] sm:max-w-[180px]">{currentCrumb}</span>
+            {/* Mobile title */}
+            <div className="flex items-center gap-2 lg:hidden min-w-0 flex-1">
+              <span className="text-on-surface font-bold text-sm truncate min-w-0">{currentCrumb}</span>
             </div>
             {/* Desktop breadcrumb */}
             <div className="hidden lg:flex items-center text-outline text-label-sm gap-2 min-w-0 truncate">
-              <span onClick={() => navigate('/dashboard-fisio')} className="hover:text-primary cursor-pointer shrink-0">Inicio</span>
+              <span onClick={() => navigate('/dashboard-fisio')} className="hover:text-primary cursor-pointer shrink-0">{t('navigation.dashboard', 'Inicio')}</span>
               <Icon name="chevron_right" size={14} className="shrink-0" />
               <span className="text-on-surface font-bold truncate">{currentCrumb}</span>
             </div>
           </div>
-          <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
+          <div className="flex items-center gap-1 sm:gap-3 shrink-0">
             <div className={`hidden md:inline-flex online-indicator is-${isOnline ? 'online' : 'offline'}`}>
               <span className="dot" />
-              <span>{isOnline ? 'Online' : 'Offline'}</span>
+              <span>{isOnline ? t('common.online', 'En línea') : t('common.offline', 'Sin conexión')}</span>
             </div>
             <form onSubmit={handleSearch} className="hidden md:flex items-center bg-surface-variant/30 rounded-full pl-10 pr-4 py-2 w-72 relative">
               <Icon name="search" size={18} className="absolute left-3 text-outline" />
@@ -617,11 +615,21 @@ export function FisioLayout({ children }: FisioLayoutProps) {
                 {t('navigation.chatbotPhysi', 'Chatbot Physi')}
               </span>
             </button>
-            <LanguageSelector compact />
+            <select
+              value={activeLanguage}
+              onChange={(e) => changeAppLanguage(e.target.value as SupportedLanguage)}
+              aria-label={t('common.changeLanguage', 'Cambiar idioma')}
+              title={t('common.changeLanguage', 'Cambiar idioma')}
+              className="shrink-0 w-10 appearance-none cursor-pointer rounded-lg border border-primary/30 bg-surface/80 px-0 py-1 text-center text-[11px] font-bold uppercase tracking-wider text-primary outline-none transition-colors hover:border-primary/60 focus:ring-2 focus:ring-primary/40 dark:bg-slate-900/80"
+            >
+              <option value="es">ES</option>
+              <option value="en">EN</option>
+              <option value="pt">PT</option>
+            </select>
             <button
               onClick={toggleTheme}
               className="text-on-surface-variant hover:text-primary transition-colors active-scale"
-              aria-label="Cambiar tema"
+              aria-label={t('common.changeTheme', 'Cambiar tema')}
             >
               <Icon name={theme === 'dark' ? 'light_mode' : 'dark_mode'} size={20} />
             </button>

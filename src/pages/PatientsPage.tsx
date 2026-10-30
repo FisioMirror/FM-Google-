@@ -1137,47 +1137,31 @@ export function PatientsPage() {
       >
         {previewPatient && (
           <div className="space-y-4 text-xs sm:text-sm">
-            <div className="grid grid-cols-2 gap-3 p-3.5 rounded-2xl bg-teal-50/70 dark:bg-slate-800/80 border border-teal-100/60 dark:border-slate-700">
+            <div className="grid grid-cols-2 gap-3 p-3.5 rounded-2xl bg-teal-50/90 dark:bg-slate-800/90 border border-teal-100/70 dark:border-slate-700">
               <div>
-                <span className="text-[10px] uppercase font-bold text-outline">Estado Clínico</span>
+                <span className="text-[10px] uppercase font-bold text-on-surface-variant">Estado Clínico</span>
                 <p className="font-bold text-teal-700 dark:text-teal-300 mt-0.5">{previewPatient.status}</p>
               </div>
               <div>
-                <span className="text-[10px] uppercase font-bold text-outline">Progreso Global</span>
+                <span className="text-[10px] uppercase font-bold text-on-surface-variant">Progreso Global</span>
                 <p className="font-bold text-slate-800 dark:text-white mt-0.5">{previewPatient.recoveryProgress}%</p>
               </div>
               <div>
-                <span className="text-[10px] uppercase font-bold text-outline">Sesiones Realizadas</span>
+                <span className="text-[10px] uppercase font-bold text-on-surface-variant">Sesiones Realizadas</span>
                 <p className="font-semibold text-slate-700 dark:text-slate-200 mt-0.5">{previewPatient.sessionCount} sesiones</p>
               </div>
               <div>
-                <span className="text-[10px] uppercase font-bold text-outline">Última Actividad</span>
+                <span className="text-[10px] uppercase font-bold text-on-surface-variant">Última Actividad</span>
                 <p className="font-semibold text-slate-700 dark:text-slate-200 mt-0.5">{previewPatient.lastSession}</p>
               </div>
             </div>
 
-            <div className="p-3.5 rounded-2xl bg-surface dark:bg-slate-800/50 border border-outline-variant/30 space-y-2">
-              <span className="text-[10px] uppercase font-bold text-outline block">Diagnóstico y Patología</span>
+            <div className="p-3.5 rounded-2xl bg-surface dark:bg-slate-800/60 border border-outline-variant/30 space-y-2">
+              <span className="text-[10px] uppercase font-bold text-on-surface-variant block">Diagnóstico y Patología</span>
               <p className="font-semibold text-on-surface">{previewPatient.condition}</p>
               {previewPatient.patologia && (
                 <p className="text-xs text-on-surface-variant font-medium">Patología: {previewPatient.patologia}</p>
               )}
-            </div>
-
-            {/* Inspección biomecánica rápida */}
-            <div className="p-3.5 rounded-2xl bg-sky-50/50 dark:bg-sky-950/20 border border-sky-100 dark:border-sky-900/30">
-              <span className="text-[10px] uppercase font-bold text-sky-700 dark:text-sky-300 block mb-2">Inspección Biomecánica Rápida</span>
-              <JointDetailPopover
-                metrics={{
-                  jointName: previewPatient.condition.includes('Rodilla') ? 'Rodilla Afectada (Extensión)' : 'Articulación en Tratamiento',
-                  currentRom: Math.round(90 + previewPatient.recoveryProgress * 0.45),
-                  maxHistoricalRom: 135,
-                  angularVelocity: 38,
-                  asymmetryPercentage: Math.max(3, Math.round(25 - previewPatient.recoveryProgress * 0.2)),
-                  status: previewPatient.recoveryProgress > 70 ? 'normal' : 'warning',
-                }}
-                triggerLabel="Examinar Rango de Movimiento (ROM)"
-              />
             </div>
           </div>
         )}

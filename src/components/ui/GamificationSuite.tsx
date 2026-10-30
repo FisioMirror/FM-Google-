@@ -404,7 +404,7 @@ export const CheerReactionButton: React.FC<CheerReactionButtonProps> = ({ classN
           transition={{ duration: 0.8 }}
           className="absolute -top-2 left-1/2 -translate-x-1/2 pointer-events-none text-base"
         >
-          👏
+          👍
         </motion.span>
       ))}
     </div>

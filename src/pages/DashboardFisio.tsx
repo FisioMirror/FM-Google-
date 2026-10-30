@@ -628,15 +628,6 @@ export function DashboardFisio() {
       onSelect: () => navigate('/ocr-scanner'),
     });
 
-    list.push({
-      id: 'quick-ui-showcase',
-      label: 'Galería de Componentes UI Core',
-      subtitle: 'Ver Button, Dialog, Card, Input, OtpInput y Tooltip en vivo',
-      category: 'Acciones',
-      icon: <Sparkles size={18} className="text-teal-500" />,
-      onSelect: () => navigate('/ui-showcase'),
-    });
-
     return list;
   }, [allPatientsForSearch, allExercisesForSearch, navigate]);
 
@@ -1136,7 +1127,7 @@ export function DashboardFisio() {
               className="px-4 py-2.5 rounded-xl text-xs font-bold"
               onClick={() => toast.success('¡Celebración disparada!', { description: 'Ráfaga festiva de objetivos clínicos cumplidos.' })}
             >
-              🎉 Disparar Celebración
+              Disparar Celebración
             </ConfettiSideCannons>
           </div>
         </GlassPanel>

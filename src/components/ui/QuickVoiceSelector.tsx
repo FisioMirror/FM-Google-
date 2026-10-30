@@ -126,7 +126,7 @@ export function QuickVoiceSelector({
             {gender === 'male' ? 'Dr. Physi (Masc.)' : 'Dra. Physi (Fem.)'}
           </span>
           <span className="hidden sm:inline-block text-[10px] px-1.5 py-0.5 rounded-full font-mono bg-teal-500/10 text-teal-700 dark:text-teal-300 border border-teal-500/20">
-            {provider === 'auto' ? '⚡ Voz Neural' : provider === 'fish_audio' ? '🐟 Fish Audio' : '📱 Offline'}
+            {provider === 'auto' ? 'Voz Neural' : provider === 'fish_audio' ? 'Fish Audio' : 'Offline'}
           </span>
         </div>
 
@@ -154,10 +154,10 @@ export function QuickVoiceSelector({
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 8, scale: 0.95 }}
               transition={{ duration: 0.2, ease: 'easeOut' }}
-              className="absolute right-0 top-full mt-2 w-[min(22rem,calc(100vw-1.5rem))] sm:w-96 max-h-[min(70vh,32rem)] overflow-y-auto overscroll-contain rounded-3xl bg-surface/95 dark:bg-surface-container/95 backdrop-blur-2xl border border-teal-500/30 dark:border-white/10 shadow-2xl p-4 sm:p-5 z-[150] text-on-surface"
+              className="fixed inset-x-3 bottom-3 z-[150] max-h-[70vh] overflow-y-auto overscroll-contain rounded-3xl bg-surface/98 dark:bg-surface-container/98 backdrop-blur-2xl border border-outline-variant/40 dark:border-outline-variant/30 shadow-2xl p-4 text-on-surface sm:absolute sm:inset-x-auto sm:bottom-auto sm:right-0 sm:top-full sm:mt-2 sm:w-96 sm:max-h-[min(70vh,32rem)] sm:p-5"
             >
               {/* Header */}
-              <div className="flex items-center justify-between pb-3 border-b border-outline-variant/20 dark:border-white/10">
+              <div className="flex items-center justify-between pb-3 border-b border-outline-variant/25 dark:border-outline-variant/25">
                 <div className="flex items-center gap-2">
                   <div className="size-7 rounded-xl bg-teal-500/20 text-teal-600 dark:text-teal-400 flex items-center justify-center">
                     <Sparkles className="size-4" />
@@ -365,7 +365,7 @@ export function QuickVoiceSelector({
               </div>
 
               {/* Footer Actions: Test audio & Done */}
-              <div className="mt-5 pt-3 border-t border-outline-variant/20 dark:border-white/10 flex items-center justify-between gap-2">
+              <div className="mt-5 pt-3 border-t border-outline-variant/25 dark:border-outline-variant/25 flex items-center justify-between gap-2">
                 <button
                   type="button"
                   onClick={toggleTestAudio}

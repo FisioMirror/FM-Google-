@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { cn } from '../../lib/utils';
 import { supabase } from '../../lib/supabase';
-import { User, Search } from 'lucide-react';
+import { User, Search, X } from 'lucide-react';
 
 export interface CommandItem {
   id?: string;
@@ -203,7 +203,7 @@ export function CommandPalette({
               }}
               className="text-on-surface-variant/60 hover:text-on-surface p-1 rounded-full text-xs"
             >
-              ✕
+              <X size={14} />
             </button>
           ) : (
             <kbd className="hidden sm:inline-flex items-center gap-0.5 px-2 py-0.5 text-[10px] font-semibold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-md shadow-xs">

@@ -11,9 +11,7 @@ import { supabase } from '../lib/supabase';
 import { cn } from '../lib/utils';
 import { SparkleEffect } from '../components/auth/SparkleEffect';
 import { TurnstileWidget, type TurnstileWidgetRef } from '../components/auth/TurnstileWidget';
-import { BorderBeam } from '../components/ui/BorderBeam';
 import { AuroraText } from '../components/ui/AuroraText';
-import { LightRays } from '../components/ui/LightRays';
 import { ShimmerButton } from '../components/ui/ShimmerButton';
 import { useTranslation } from 'react-i18next';
 import { LanguageSelector } from '../components/ui/LanguageSelector';
@@ -778,7 +776,6 @@ export function Login() {
             'radial-gradient(at 0% 0%, rgba(0, 80, 77, 0.12) 0px, transparent 50%), radial-gradient(at 100% 0%, rgba(14, 165, 233, 0.09) 0px, transparent 50%), radial-gradient(at 100% 100%, rgba(13, 148, 136, 0.15) 0px, transparent 50%), radial-gradient(at 0% 100%, rgba(6, 182, 212, 0.10) 0px, transparent 50%)',
         }}
       />
-      <LightRays className="opacity-25 pointer-events-none" />
       {/* Ambient glowing orbs */}
       <div className="pointer-events-none absolute -left-12 top-16 h-72 w-72 rounded-full bg-[#00504d]/10 dark:bg-teal-500/10 blur-[90px]" />
       <div className="pointer-events-none absolute bottom-10 right-0 h-64 w-64 rounded-full bg-cyan-500/10 blur-[90px]" />
@@ -813,12 +810,10 @@ export function Login() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
           className={cn(
-            'w-full rounded-[2.5rem] border border-white/60 dark:border-slate-800/80 bg-white/45 dark:bg-slate-900/50 backdrop-blur-2xl shadow-[0_12px_40px_rgba(0,0,0,0.06)] dark:shadow-[0_12px_40px_rgba(0,0,0,0.3)] p-6 sm:p-9 flex flex-col relative overflow-hidden',
+            'w-full rounded-[2.5rem] border border-white/60 dark:border-slate-800/80 bg-white/45 dark:bg-slate-900/50 backdrop-blur-2xl shadow-[0_12px_40px_rgba(0,0,0,0.06)] dark:shadow-[0_12px_40px_rgba(0,0,0,0.3)] p-6 sm:p-8 flex flex-col relative overflow-hidden',
             isFisio && isRegister ? 'max-w-2xl gap-y-5' : 'max-w-[480px] gap-y-5'
           )}
         >
-          <BorderBeam size={220} duration={12} colorFrom="#0284c7" colorTo="#10b981" />
-
           {/* Internal ambient color spots */}
           <div className="pointer-events-none absolute -top-12 -right-12 h-40 w-40 rounded-full bg-teal-500/15 blur-2xl" />
           <div className="pointer-events-none absolute -bottom-10 -left-10 h-36 w-36 rounded-full bg-cyan-500/10 blur-2xl" />
@@ -865,7 +860,7 @@ export function Login() {
                 type="button"
                 onClick={() => switchRole('paciente')}
                 className={cn(
-                  'relative flex-1 py-3 text-sm font-bold z-10 transition-colors flex items-center justify-center gap-2 rounded-xl',
+                  'relative flex-1 h-11 text-sm font-bold z-10 transition-colors flex items-center justify-center gap-2 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00504d]/40 dark:focus-visible:ring-teal-400/50',
                   isPaciente
                     ? 'text-blue-600 dark:text-blue-400 font-extrabold'
                     : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
@@ -878,7 +873,7 @@ export function Login() {
                 type="button"
                 onClick={() => switchRole('fisioterapeuta')}
                 className={cn(
-                  'relative flex-1 py-3 text-sm font-bold z-10 transition-colors flex items-center justify-center gap-2 rounded-xl',
+                  'relative flex-1 h-11 text-sm font-bold z-10 transition-colors flex items-center justify-center gap-2 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00504d]/40 dark:focus-visible:ring-teal-400/50',
                   isFisio
                     ? 'text-[#00504d] dark:text-[#8ad3cf] font-extrabold'
                     : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
@@ -893,7 +888,7 @@ export function Login() {
           {/* Header Typography matching HTML document */}
           {(!isFisio || !isRegister) && (
             <div className="text-center space-y-1.5 pt-1">
-              <span className="text-[11px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">
+              <span className="text-[11px] font-bold uppercase tracking-widest text-slate-600 dark:text-slate-400">
                 {greeting}
               </span>
               <h2 className="font-extrabold text-2xl sm:text-[26px] tracking-tight leading-tight">
@@ -977,7 +972,7 @@ export function Login() {
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
                         aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
-                        className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-1.5 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00504d]/40 dark:focus-visible:ring-teal-400/50"
                       >
                         <Icon name={showPassword ? 'visibility_off' : 'visibility'} size={19} />
                       </button>
@@ -988,7 +983,7 @@ export function Login() {
                     <button
                       type="button"
                       onClick={() => setShowResetModal(true)}
-                      className="text-xs font-semibold text-[#00504d] dark:text-[#8ad3cf] hover:underline"
+                      className="rounded px-1 -mx-1 text-xs font-semibold text-[#00504d] dark:text-[#8ad3cf] hover:underline transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00504d]/40 dark:focus-visible:ring-teal-400/50"
                     >
                       {t('auth.forgotPassword', '¿Olvidaste tu contraseña?')}
                     </button>
@@ -1014,7 +1009,7 @@ export function Login() {
                   <ShimmerButton
                     type="submit"
                     disabled={loading || cooldown > 0}
-                    className="w-full py-3.5 text-sm font-bold text-white disabled:opacity-50"
+                    className="w-full h-12 py-0 text-sm font-bold text-white disabled:opacity-60 disabled:cursor-not-allowed disabled:shadow-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-300 focus-visible:ring-offset-2 focus-visible:ring-offset-white/70 dark:focus-visible:ring-offset-slate-900"
                   >
                     {loading ? (
                       <Spinner size={18} className="text-white" />
@@ -1034,7 +1029,7 @@ export function Login() {
                       <button
                         type="button"
                         onClick={() => switchMode('register')}
-                        className="font-bold text-[#00504d] dark:text-[#8ad3cf] hover:underline"
+                        className="rounded px-1 -mx-1 font-bold text-[#00504d] dark:text-[#8ad3cf] hover:underline transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00504d]/40 dark:focus-visible:ring-teal-400/50"
                       >
                         {t('auth.signUp', 'Crear Cuenta / Registrarse')}
                       </button>
@@ -1104,7 +1099,8 @@ export function Login() {
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1"
+                        aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-1.5 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00504d]/40 dark:focus-visible:ring-teal-400/50"
                       >
                         <Icon name={showPassword ? 'visibility_off' : 'visibility'} size={19} />
                       </button>
@@ -1169,7 +1165,7 @@ export function Login() {
                   <button
                     type="submit"
                     disabled={loading || cooldown > 0 || token.length < 4 || !email.trim() || !password.trim()}
-                    className="w-full rounded-2xl bg-[#00504d] dark:bg-teal-600 py-3.5 text-sm font-bold text-white shadow-md shadow-teal-900/20 hover:bg-[#0c403d] dark:hover:bg-teal-500 active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                    className="w-full h-12 rounded-2xl bg-[#00504d] dark:bg-teal-600 text-sm font-bold text-white shadow-md shadow-teal-900/20 hover:bg-[#0c403d] dark:hover:bg-teal-500 active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed disabled:shadow-none disabled:active:scale-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00504d]/40 dark:focus-visible:ring-teal-400/50 focus-visible:ring-offset-2 focus-visible:ring-offset-white/70 dark:focus-visible:ring-offset-slate-900"
                   >
                     {loading ? (
                       <Spinner size={18} className="text-white" />
@@ -1245,7 +1241,8 @@ export function Login() {
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1"
+                        aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-1.5 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00504d]/40 dark:focus-visible:ring-teal-400/50"
                       >
                         <Icon name={showPassword ? 'visibility_off' : 'visibility'} size={19} />
                       </button>
@@ -1256,7 +1253,7 @@ export function Login() {
                     <button
                       type="button"
                       onClick={() => setShowResetModal(true)}
-                      className="text-xs font-semibold text-[#00504d] dark:text-[#8ad3cf] hover:underline"
+                      className="rounded px-1 -mx-1 text-xs font-semibold text-[#00504d] dark:text-[#8ad3cf] hover:underline transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00504d]/40 dark:focus-visible:ring-teal-400/50"
                     >
                       ¿Olvidaste tu contraseña?
                     </button>
@@ -1282,7 +1279,7 @@ export function Login() {
                   <button
                     type="submit"
                     disabled={loading || cooldown > 0}
-                    className="w-full rounded-2xl bg-[#00504d] dark:bg-teal-600 py-3.5 text-sm font-bold text-white shadow-md shadow-teal-900/20 hover:bg-[#0c403d] dark:hover:bg-teal-500 active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                    className="w-full h-12 rounded-2xl bg-[#00504d] dark:bg-teal-600 text-sm font-bold text-white shadow-md shadow-teal-900/20 hover:bg-[#0c403d] dark:hover:bg-teal-500 active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed disabled:shadow-none disabled:active:scale-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00504d]/40 dark:focus-visible:ring-teal-400/50 focus-visible:ring-offset-2 focus-visible:ring-offset-white/70 dark:focus-visible:ring-offset-slate-900"
                   >
                     {loading ? (
                       <Spinner size={18} className="text-white" />
@@ -1558,7 +1555,7 @@ export function Login() {
                                     <span className="text-xs font-bold">{credencialFile?.name}</span>
                                   </div>
                                 )}
-                                <span className="text-[11px] text-slate-500">
+                                <span className="text-[11px] text-slate-600 dark:text-slate-400">
                                   Click para cambiar de archivo
                                 </span>
                               </div>
@@ -1570,7 +1567,7 @@ export function Login() {
                                 <span className="font-bold text-sm text-[#00504d] dark:text-[#8ad3cf]">
                                   Cédula Profesional o Título
                                 </span>
-                                <p className="text-xs text-slate-500">
+                                <p className="text-xs text-slate-600 dark:text-slate-400">
                                   Arrastra o selecciona un archivo (PDF o Imagen)
                                 </p>
                               </div>
@@ -1620,7 +1617,7 @@ export function Login() {
                                 toast.success('Cuenta creada exitosamente');
                               }
                             }}
-                            className="text-xs font-semibold text-[#00504d] dark:text-[#8ad3cf] hover:underline"
+                            className="rounded px-1 -mx-1 text-xs font-semibold text-[#00504d] dark:text-[#8ad3cf] hover:underline transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00504d]/40 dark:focus-visible:ring-teal-400/50"
                           >
                             Omitir por ahora →
                           </button>
@@ -1651,7 +1648,7 @@ export function Login() {
                   <button
                     type="submit"
                     disabled={loading || uploading || cooldown > 0 || (fisioStep === 1 && !canSubmitFisioStep1)}
-                    className="w-full rounded-2xl bg-[#00504d] dark:bg-teal-600 py-3.5 text-sm font-bold text-white shadow-md shadow-teal-900/20 hover:bg-[#0c403d] dark:hover:bg-teal-500 active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                    className="w-full h-12 rounded-2xl bg-[#00504d] dark:bg-teal-600 text-sm font-bold text-white shadow-md shadow-teal-900/20 hover:bg-[#0c403d] dark:hover:bg-teal-500 active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed disabled:shadow-none disabled:active:scale-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00504d]/40 dark:focus-visible:ring-teal-400/50 focus-visible:ring-offset-2 focus-visible:ring-offset-white/70 dark:focus-visible:ring-offset-slate-900"
                   >
                     {loading || uploading ? (
                       <Spinner size={18} className="text-white" />
@@ -1686,30 +1683,23 @@ export function Login() {
 
         {/* Demo Fast Access Buttons */}
         <div className="w-full max-w-[480px] flex flex-col items-center gap-y-2 mt-5">
-          <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">
-            Acceso Rápido de Prueba & Galería
+          <span className="text-[11px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest">
+            Acceso Rápido de Prueba
           </span>
           <div className="flex flex-wrap justify-center gap-2.5">
             <button
               onClick={fillFisioDemo}
-              className="px-4 py-2 rounded-full border border-slate-200/80 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 backdrop-blur-md hover:bg-white dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-[#00504d] dark:hover:text-[#8ad3cf] text-xs font-bold shadow-sm transition-all flex items-center gap-1.5 active:scale-95"
+              className="h-11 px-4 rounded-full border border-slate-200/80 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 backdrop-blur-md hover:bg-white dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-[#00504d] dark:hover:text-[#8ad3cf] text-xs font-bold shadow-sm transition-colors flex items-center gap-1.5 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00504d]/40 dark:focus-visible:ring-teal-400/50"
             >
               <Icon name="medical_services" size={15} className="text-[#00504d] dark:text-teal-400" />
               Demo Fisio
             </button>
             <button
               onClick={fillPacienteDemo}
-              className="px-4 py-2 rounded-full border border-slate-200/80 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 backdrop-blur-md hover:bg-white dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 text-xs font-bold shadow-sm transition-all flex items-center gap-1.5 active:scale-95"
+              className="h-11 px-4 rounded-full border border-slate-200/80 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 backdrop-blur-md hover:bg-white dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 text-xs font-bold shadow-sm transition-colors flex items-center gap-1.5 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00504d]/40 dark:focus-visible:ring-teal-400/50"
             >
               <Icon name="person" size={15} className="text-blue-600 dark:text-blue-400" />
               Demo Paciente
-            </button>
-            <button
-              onClick={() => navigate('/ui-showcase')}
-              className="px-4 py-2 rounded-full border border-teal-500/30 bg-teal-500/10 hover:bg-teal-500/20 text-teal-700 dark:text-teal-300 text-xs font-bold shadow-sm transition-all flex items-center gap-1.5 active:scale-95"
-            >
-              <Icon name="palette" size={15} className="text-teal-600 dark:text-teal-400" />
-              Galería UI
             </button>
           </div>
         </div>
@@ -1885,7 +1875,7 @@ export function Login() {
                 <button
                   type="button"
                   onClick={() => setShowResetModal(false)}
-                  className="flex-1 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold text-xs hover:bg-slate-200 dark:hover:bg-slate-700 transition-all"
+                  className="flex-1 h-11 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold text-xs hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00504d]/40 dark:focus-visible:ring-teal-400/50"
                 >
                   Cancelar
                 </button>
@@ -1893,7 +1883,7 @@ export function Login() {
                   type="button"
                   onClick={handleResetPassword}
                   disabled={resetLoading}
-                  className="flex-1 py-2.5 rounded-xl bg-[#00504d] dark:bg-teal-600 text-white font-bold text-xs hover:bg-[#0c403d] dark:hover:bg-teal-500 transition-all disabled:opacity-50 flex items-center justify-center gap-1.5"
+                  className="flex-1 h-11 rounded-xl bg-[#00504d] dark:bg-teal-600 text-white font-bold text-xs hover:bg-[#0c403d] dark:hover:bg-teal-500 transition-colors disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00504d]/40 dark:focus-visible:ring-teal-400/50"
                 >
                   {resetLoading ? <Spinner size={16} className="text-white" /> : <Icon name="send" size={16} />}
                   {resetLoading ? 'Enviando...' : 'Enviar enlace'}
@@ -1949,7 +1939,7 @@ export function Login() {
                   setMode('login');
                   setFisioStep(1);
                 }}
-                className="w-full py-3.5 bg-[#00504d] dark:bg-teal-600 text-white rounded-2xl font-bold text-sm hover:bg-[#0c403d] dark:hover:bg-teal-500 active:scale-95 transition-all shadow-md"
+                className="w-full h-12 bg-[#00504d] dark:bg-teal-600 text-white rounded-2xl font-bold text-sm hover:bg-[#0c403d] dark:hover:bg-teal-500 active:scale-95 transition-all shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00504d]/40 dark:focus-visible:ring-teal-400/50 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-900"
               >
                 Ir a Iniciar Sesión
               </button>
