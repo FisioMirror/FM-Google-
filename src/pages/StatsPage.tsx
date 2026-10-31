@@ -23,7 +23,7 @@ import { GlassPanel } from '../components/ui/Glass';
 import { useAuthStore } from '../stores/authStore';
 import { supabase } from '../lib/supabase';
 import { exportSimplePDF } from '../lib/pdfExport';
-import { useToast } from '../components/ui/ToastProvider';
+import { useToast } from '../components/ui/toastApi';
 import { AnimatedTabs } from '../components/ui/AnimatedTabs';
 import { KpiCardSkeleton } from '../components/ui/PremiumSkeleton';
 import { EmptyState } from '../components/ui/EmptyState';

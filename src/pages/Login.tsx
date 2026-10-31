@@ -6,7 +6,7 @@ import { Spinner } from '../components/ui/Loader';
 import { PinInput } from '../components/ui/PinInput';
 import { useAuthStore } from '../stores/authStore';
 import { useTheme } from '../context/ThemeContext';
-import { useToast } from '../components/ui/ToastProvider';
+import { useToast } from '../components/ui/toastApi';
 import { supabase } from '../lib/supabase';
 import { cn } from '../lib/utils';
 import { SparkleEffect } from '../components/auth/SparkleEffect';

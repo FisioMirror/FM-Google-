@@ -3,7 +3,7 @@ import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { Lock, Eye, EyeOff, AlertCircle, ArrowRight, KeyRound } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { hashPassword } from '../stores/authStore';
-import { useToast } from '../components/ui/ToastProvider';
+import { useToast } from '../components/ui/toastApi';
 import { TurnstileWidget, type TurnstileWidgetRef } from '../components/auth/TurnstileWidget';
 
 export function UpdatePasswordPage() {

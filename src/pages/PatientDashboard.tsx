@@ -8,7 +8,7 @@ import { useAuthStore } from '../stores/authStore';
 import { supabase } from '../lib/supabase';
 import { runAIJob } from '../lib/ai';
 import { OnboardingGuide } from '../components/OnboardingGuide';
-import { useToast } from '../components/ui/ToastProvider';
+import { useToast } from '../components/ui/toastApi';
 import { useGamification } from '../hooks/useGamification';
 import { AchievementUnlockModal } from '../components/AchievementShowcase';
 import { CollapsibleSection } from '../components/ui/CollapsibleSection';

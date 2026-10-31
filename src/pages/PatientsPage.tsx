@@ -7,7 +7,7 @@ import { useAuthStore } from '../stores/authStore';
 import { supabase } from '../lib/supabase';
 import { cn } from '../lib/utils';
 import { UNIFIED_DEMO_PATIENTS } from '../data/unifiedDemoData';
-import { useToast } from '../components/ui/ToastProvider';
+import { useToast } from '../components/ui/toastApi';
 import { EmailFeatureModal } from '../components/ui/EmailFeatureModal';
 import { SpotlightCard } from '../components/ui/SpotlightCard';
 import { GlassModal } from '../components/ui/GlassModal';

@@ -10,7 +10,7 @@ import {
   Send,
   Info,
 } from 'lucide-react';
-import { useToast } from './ToastProvider';
+import { useToast } from './toastApi';
 
 interface DiagnosticState {
   timestamp?: string;

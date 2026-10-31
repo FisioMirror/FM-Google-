@@ -16,7 +16,7 @@ import {
   Check,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
-import { useToast } from '../components/ui/ToastProvider';
+import { useToast } from '../components/ui/toastApi';
 
 export function ResetPassword() {
   const navigate = useNavigate();

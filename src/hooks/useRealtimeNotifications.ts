@@ -9,7 +9,7 @@ import {
   deleteNotification as apiDeleteNotification,
   playNotificationSound,
 } from '../lib/notificationService';
-import { useToast } from '../components/ui/ToastProvider';
+import { useToast } from '../components/ui/toastApi';
 
 export type NotificationFilter = 'todas' | 'no_leidas' | 'clinica' | 'seguridad';
 

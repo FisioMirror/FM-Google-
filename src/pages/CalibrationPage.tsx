@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Icon } from '../components/ui/Icon';
-import { useToast } from '../components/ui/ToastProvider';
+import { useToast } from '../components/ui/toastApi';
 import { usePoseDetection } from '../hooks/usePoseDetection';
 import { PulsatingButton } from '../components/ui/PulsatingButton';
 import { SparklesText } from '../components/ui/SparklesText';

@@ -5,7 +5,7 @@ import { GlassPanel } from '../components/ui/Glass';
 import { SkeletonCard as SkeletonCardUI } from '../components/ui/Skeleton';
 import { useAuthStore } from '../stores/authStore';
 import { supabase } from '../lib/supabase';
-import { useToast } from '../components/ui/ToastProvider';
+import { useToast } from '../components/ui/toastApi';
 import { cn } from '../lib/utils';
 import { EmailFeatureModal } from '../components/ui/EmailFeatureModal';
 import { isDemoAccount } from '../lib/demoAuth';

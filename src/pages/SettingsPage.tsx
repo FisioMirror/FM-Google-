@@ -11,7 +11,7 @@ import { speakHumanVoice, stopHumanVoice, getVoiceMode, setVoiceMode, type Voice
 import { GlassPanel } from '../components/ui/Glass';
 import { Icon } from '../components/ui/Icon';
 import { AnimatedTabs } from '../components/ui/AnimatedTabs';
-import { useToast } from '../components/ui/Toast';
+import { useToast } from '../components/ui/toastApi';
 import { HelpSection } from '../components/ui/HelpSection';
 import { IOSInstallModal } from '../components/ui/IOSInstallModal';
 import { EmailSystemStatusCard } from '../components/ui/EmailSystemStatusCard';

@@ -33,7 +33,7 @@ import { DateRangePickerDemo, BasicRangeCalendar, WeekViewRangeCalendar, Default
 // Nuevos componentes estandarizados: ScrollShadow, Skeleton, Toast, AnimatedList, Confetti
 import { ScrollShadow } from '../components/ui/ScrollShadow';
 import { Skeleton } from '../components/ui/Skeleton';
-import { toast } from '../components/ui/Toast';
+import { toast } from '../components/ui/toastApi';
 import { ClinicalActivityFeed } from '../components/ui/ClinicalActivityFeed';
 import { ConfettiStars, ConfettiSideCannons } from '../components/ui/ConfettiButton';
 

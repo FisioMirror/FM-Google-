@@ -6,7 +6,7 @@ import { GlassModal } from '../components/ui/GlassModal';
 import { SkeletonCard } from '../components/ui/Skeleton';
 import { useAuthStore } from '../stores/authStore';
 import { supabase } from '../lib/supabase';
-import { useToast } from '../components/ui/ToastProvider';
+import { useToast } from '../components/ui/toastApi';
 import { useTranslation } from 'react-i18next';
 import { ExerciseImage } from '../components/ui/ExerciseImage';
 import { getExerciseImage } from '../data/exerciseImages';

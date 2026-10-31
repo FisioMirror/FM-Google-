@@ -15,7 +15,7 @@ import {
   Sparkles,
   Smartphone,
 } from 'lucide-react';
-import { useToast } from './ToastProvider';
+import { useToast } from './toastApi';
 import { supabase } from '../../lib/supabase';
 import { useAuthStore } from '../../stores/authStore';
 import { notifyTokenCreated } from '../../lib/notificationService';

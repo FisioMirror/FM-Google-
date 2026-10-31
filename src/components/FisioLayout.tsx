@@ -8,7 +8,7 @@ import { FloatingMenu, type FloatingMenuItem } from './ui/FloatingMenu';
 import { LegalModal, type LegalDocType } from './ui/LegalModal';
 import { useAuthStore } from '../stores/authStore';
 import { useTheme } from '../context/ThemeContext';
-import { useToast } from './ui/ToastProvider';
+import { useToast } from './ui/toastApi';
 import { useInstall } from '../lib/installContext';
 import { PhysiChatbot } from './ui/PhysiChatbot';
 import { supabase } from '../lib/supabase';

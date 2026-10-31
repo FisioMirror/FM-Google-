@@ -8,7 +8,7 @@ import { SkeletonCard } from '../components/ui/Skeleton';
 import { MedicalIcon } from '../components/ui/MedicalIcon';
 import { GlassPanel } from '../components/ui/Glass';
 import { supabase } from '../lib/supabase';
-import { useToast } from '../components/ui/ToastProvider';
+import { useToast } from '../components/ui/toastApi';
 import { PDFExportModal } from '../components/ui/PDFExportModal';
 import { ReassignRoutineModal } from '../components/ReassignRoutineModal';
 import { runAIJob, ocrUpdatePatient, fileToBase64 } from '../lib/ai';

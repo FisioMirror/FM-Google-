@@ -4,7 +4,7 @@ import { Volume2, VolumeX, Copy, Check, Sparkles, Mic, MicOff, Image as ImageIco
 import { useAuthStore } from '../stores/authStore';
 import { supabase } from '../lib/supabase';
 import { runAIJob, normalizeBase64, inferMimeType } from '../lib/ai';
-import { useToast } from '../components/ui/ToastProvider';
+import { useToast } from '../components/ui/toastApi';
 import { humanVoice, setVoiceGender, type VoiceGender } from '../lib/humanVoice';
 import { formatAIReport } from '../lib/formatReport';
 import { LoadingText } from '../components/ui/LoadingText';

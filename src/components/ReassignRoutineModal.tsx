@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '../lib/supabase';
-import { useToast } from './ui/ToastProvider';
+import { useToast } from './ui/toastApi';
 import { Icon } from './ui/Icon';
 
 import { Spinner } from './ui/Loader';

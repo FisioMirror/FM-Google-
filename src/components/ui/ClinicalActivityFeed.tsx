@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Activity, AlertTriangle, CheckCircle2, Sparkles, KeyRound, Play, Pause, Plus, Radio } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { AnimatedList } from "./animated-list";
-import { toast } from "./Toast";
+import { toast } from "./toastApi";
 
 export interface ClinicalFeedItem {
   id: string

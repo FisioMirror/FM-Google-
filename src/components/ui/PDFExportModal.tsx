@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Icon } from './Icon';
 import { Spinner } from './Loader';
-import { useToast } from './ToastProvider';
+import { useToast } from './toastApi';
 import { supabase } from '../../lib/supabase';
 import { exportSimplePDF, exportPremiumPDF, type PDFPatientData, type ReportType } from '../../lib/pdfExport';
 import { cn } from '../../lib/utils';

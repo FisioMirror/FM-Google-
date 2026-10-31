@@ -20,7 +20,7 @@ import {
   type Versiculo,
   type VersiculoCategoria,
 } from '../../lib/versiculosService';
-import { useToast } from '../ui/ToastProvider';
+import { useToast } from '../ui/toastApi';
 import { cn } from '../../lib/utils';
 
 interface VersiculoCardProps {

@@ -5,7 +5,7 @@ import { Icon } from '../components/ui/Icon';
 import { GlassPanel } from '../components/ui/Glass';
 import { useAuthStore } from '../stores/authStore';
 import { supabase } from '../lib/supabase';
-import { useToast } from '../components/ui/ToastProvider';
+import { useToast } from '../components/ui/toastApi';
 import { runAIJob, fileToBase64, transcribeAudio } from '../lib/ai';
 import { Spinner } from '../components/ui/Loader';
 import { LoadingText } from '../components/ui/LoadingText';

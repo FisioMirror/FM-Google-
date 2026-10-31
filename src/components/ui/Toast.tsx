@@ -1,90 +1,10 @@
-import React, { createContext, useContext, useCallback, useState, type ReactNode } from "react";
+import React, { useCallback, useState, type ReactNode } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { CheckCircle2, AlertCircle, AlertTriangle, Info, X } from "lucide-react";
 import { cn } from "../../lib/utils";
+import { ToastContext, setToastHandlers, type ToastOptions, type ToastItem } from "./toastApi";
 
-export type ToastVariant = "default" | "success" | "error" | "warning" | "info" | "secondary";
-
-export interface ToastOptions {
-  description?: ReactNode;
-  timeout?: number;
-  duration?: number;
-  indicator?: ReactNode;
-  action?: {
-    label: string;
-    onClick: () => void;
-  };
-  variant?: ToastVariant;
-}
-
-export interface ToastItem {
-  id: string;
-  variant: ToastVariant;
-  message: ReactNode;
-  description?: ReactNode;
-  indicator?: ReactNode;
-  action?: {
-    label: string;
-    onClick: () => void;
-  };
-}
-
-export interface ToastFunction {
-  (message: ReactNode, options?: ToastOptions): string;
-  success: (message: ReactNode, options?: ToastOptions) => string;
-  error: (message: ReactNode, options?: ToastOptions) => string;
-  warning: (message: ReactNode, options?: ToastOptions) => string;
-  info: (message: ReactNode, options?: ToastOptions) => string;
-  close: (id: string) => void;
-  clear: () => void;
-}
-
-const ToastContext = createContext<{
-  addToast: (message: ReactNode, options?: ToastOptions) => string;
-  removeToast: (id: string) => void;
-  clearToasts: () => void;
-} | null>(null);
-
-let globalToastHandler: ((message: ReactNode, options?: ToastOptions) => string) | null = null;
-let globalCloseHandler: ((id: string) => void) | null = null;
-let globalClearHandler: (() => void) | null = null;
-
-/**
- * Función canónica `toast()` estilo HeroUI / Sonner
- * Permite sintaxis directa:
- *   toast("Paciente registrado con éxito")
- *   toast("Cambios guardados", { description: "...", indicator: <Star /> })
- *   toast.success("Ángulo calibrado a 120°")
- */
-export const toast: ToastFunction = Object.assign(
-  (message: ReactNode, options?: ToastOptions): string => {
-    if (globalToastHandler) {
-      return globalToastHandler(message, options);
-    }
-    console.warn("toast() llamado sin <ToastProvider /> montado.");
-    return "";
-  },
-  {
-    success: (message: ReactNode, options?: ToastOptions): string => {
-      return toast(message, { ...options, variant: "success" });
-    },
-    error: (message: ReactNode, options?: ToastOptions): string => {
-      return toast(message, { ...options, variant: "error" });
-    },
-    warning: (message: ReactNode, options?: ToastOptions): string => {
-      return toast(message, { ...options, variant: "warning" });
-    },
-    info: (message: ReactNode, options?: ToastOptions): string => {
-      return toast(message, { ...options, variant: "info" });
-    },
-    close: (id: string) => {
-      if (globalCloseHandler) globalCloseHandler(id);
-    },
-    clear: () => {
-      if (globalClearHandler) globalClearHandler();
-    },
-  }
-);
+export type { ToastVariant, ToastOptions, ToastItem, ToastFunction } from "./toastApi";
 
 export type ToastPlacement =
   | "top-right"
@@ -137,10 +57,8 @@ export function ToastProvider({ children, placement = "bottom-right" }: ToastPro
     [removeToast]
   );
 
-  // Asignar manejadores globales
-  globalToastHandler = addToast;
-  globalCloseHandler = removeToast;
-  globalClearHandler = clearToasts;
+  // Conectar la API global (toast.success, etc.) con este provider
+  setToastHandlers({ addToast, removeToast, clearToasts });
 
   const placementClasses: Record<string, string> = {
     "bottom-right": "bottom-5 right-5 sm:bottom-6 sm:right-6 items-end flex-col-reverse",
@@ -268,34 +186,3 @@ export const ToastItemComponent = React.forwardRef<HTMLDivElement, ToastItemComp
   }
 );
 ToastItemComponent.displayName = "ToastItemComponent";
-
-/**
- * Hook para acceso dentro de componentes React
- */
-export function useToast() {
-  const ctx = useContext(ToastContext);
-  if (!ctx) {
-    // Retornamos la API canónica global como fallback seguro
-    return {
-      toast,
-      success: toast.success,
-      error: toast.error,
-      warning: toast.warning,
-      info: toast.info,
-      close: toast.close,
-      clear: toast.clear,
-    };
-  }
-
-  return {
-    toast,
-    success: (msg: ReactNode, opts?: ToastOptions) => ctx.addToast(msg, { ...opts, variant: "success" }),
-    error: (msg: ReactNode, opts?: ToastOptions) => ctx.addToast(msg, { ...opts, variant: "error" }),
-    warning: (msg: ReactNode, opts?: ToastOptions) => ctx.addToast(msg, { ...opts, variant: "warning" }),
-    info: (msg: ReactNode, opts?: ToastOptions) => ctx.addToast(msg, { ...opts, variant: "info" }),
-    close: ctx.removeToast,
-    clear: ctx.clearToasts,
-  };
-}
-
-export default ToastProvider;

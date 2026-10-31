@@ -39,7 +39,7 @@ import { Button } from '../components/ui/Button';
 import { Tooltip } from '../components/ui/Tooltip';
 import { DateRangePicker, RangeCalendar, type DateRange } from '../components/ui/DateRangePicker';
 import { ScrollShadow } from '../components/ui/ScrollShadow';
-import { toast } from '../components/ui/Toast';
+import { toast } from '../components/ui/toastApi';
 import { Skeleton } from '../components/ui/Skeleton';
 import { useTranslation } from 'react-i18next';
 import { currentLocale } from '../lib/format';

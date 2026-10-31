@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Activity, Dumbbell, Target, RotateCw, Layers, Sparkles, Search, Plus, Edit3, Copy, Trash2, BookOpen, UserPlus, CheckCircle2, X, Gauge, Brain, ShieldAlert, Flame, Compass, Zap, Repeat, Crosshair, User, Check, Footprints, Shield, HeartPulse, CircleDot } from 'lucide-react';
 import { useAuthStore } from '../stores/authStore';
 import { supabase } from '../lib/supabase';
-import { useToast } from '../components/ui/ToastProvider';
+import { useToast } from '../components/ui/toastApi';
 import { useTranslation } from 'react-i18next';
 import { cn } from '../lib/utils';
 import { Spinner } from '../components/ui/Loader';
