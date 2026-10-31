@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
 import { Rocket } from "@gravity-ui/icons";
@@ -33,15 +33,15 @@ export function Modal({ children, isOpen: controlledIsOpen, open: controlledOpen
   const isControlled = controlledOpen !== undefined;
   const isOpen = isControlled ? controlledOpen : uncontrolledOpen;
 
-  const setIsOpen = (nextOpen: boolean) => {
+  const setIsOpen = useCallback((nextOpen: boolean) => {
     if (!isControlled) {
       setUncontrolledOpen(nextOpen);
     }
     onOpenChange?.(nextOpen);
-  };
+  }, [isControlled, onOpenChange]);
 
-  const open = () => setIsOpen(true);
-  const close = () => setIsOpen(false);
+  const open = useCallback(() => setIsOpen(true), [setIsOpen]);
+  const close = useCallback(() => setIsOpen(false), [setIsOpen]);
 
   // Esc key listener
   useEffect(() => {
@@ -52,7 +52,7 @@ export function Modal({ children, isOpen: controlledIsOpen, open: controlledOpen
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isOpen]);
+  }, [isOpen, close]);
 
   return (
     <ModalContext.Provider value={{ isOpen, setIsOpen, open, close }}>

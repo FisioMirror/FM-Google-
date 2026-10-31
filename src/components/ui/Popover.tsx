@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useRef, useEffect } from "react";
+import React, { createContext, useContext, useState, useRef, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "../../lib/utils";
 import { Button } from "./Button";
@@ -42,15 +42,15 @@ export function Popover({
   const isControlled = controlledOpen !== undefined;
   const isOpen = isControlled ? controlledOpen : uncontrolledOpen;
 
-  const setIsOpen = (nextOpen: boolean) => {
+  const setIsOpen = useCallback((nextOpen: boolean) => {
     if (!isControlled) {
       setUncontrolledOpen(nextOpen);
     }
     onOpenChange?.(nextOpen);
-  };
+  }, [isControlled, onOpenChange]);
 
-  const toggle = () => setIsOpen(!isOpen);
-  const close = () => setIsOpen(false);
+  const toggle = useCallback(() => setIsOpen(!isOpen), [setIsOpen, isOpen]);
+  const close = useCallback(() => setIsOpen(false), [setIsOpen]);
 
   // Esc key and click outside listeners
   useEffect(() => {
@@ -72,7 +72,7 @@ export function Popover({
       document.removeEventListener("keydown", handleKeyDown);
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [isOpen]);
+  }, [isOpen, close]);
 
   // Separate trigger child and content child
   // If first child is not Popover.Trigger, treat it as trigger

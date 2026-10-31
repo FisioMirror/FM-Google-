@@ -1,4 +1,4 @@
-import { type ReactNode, useState, useEffect } from 'react';
+import { type ReactNode, useCallback, useState, useEffect } from 'react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Video, Phone, MessageCircle, Mail, Bot, Home, Dumbbell, Activity, User, Settings, X, Bell, Sun, Moon, LogOut } from 'lucide-react';
@@ -74,9 +74,32 @@ export function PatientLayout({ children }: PatientLayoutProps) {
   const sidebarWidth = sidebarCollapsed ? 64 : 256;
   const currentCrumb = breadcrumbMap[location.pathname] || 'Inicio';
 
+  const loadTherapistPhone = useCallback(async () => {
+    if (!user?.id) return;
+    try {
+      const { data: link } = await supabase
+        .from('pacientes_terapeutas')
+        .select('terapeuta_id')
+        .eq('paciente_id', user.id)
+        .maybeSingle();
+      if (link?.terapeuta_id) {
+        const { data: fisio } = await supabase
+          .from('fisioterapeutas_simple')
+          .select('telefono')
+          .eq('id', link.terapeuta_id)
+          .maybeSingle();
+        if (fisio?.telefono) setTherapistPhone(fisio.telefono);
+      }
+    } catch {
+      // phone unavailable
+    }
+    setTherapistPhone((prev) => prev || '+584124081077');
+  }, [user]);
+
+
   useEffect(() => {
     loadTherapistPhone();
-  }, [user?.id]);
+  }, [loadTherapistPhone]);
 
   // Inicializar Presencia Realtime en Supabase
   useEffect(() => {
@@ -100,27 +123,6 @@ export function PatientLayout({ children }: PatientLayoutProps) {
     };
   }, []);
 
-  const loadTherapistPhone = async () => {
-    if (!user?.id) return;
-    try {
-      const { data: link } = await supabase
-        .from('pacientes_terapeutas')
-        .select('terapeuta_id')
-        .eq('paciente_id', user.id)
-        .maybeSingle();
-      if (link?.terapeuta_id) {
-        const { data: fisio } = await supabase
-          .from('fisioterapeutas_simple')
-          .select('telefono')
-          .eq('id', link.terapeuta_id)
-          .maybeSingle();
-        if (fisio?.telefono) setTherapistPhone(fisio.telefono);
-      }
-    } catch {
-      // phone unavailable
-    }
-    if (!therapistPhone) setTherapistPhone('+584124081077');
-  };
 
   const handleSignOut = () => {
     signOut();

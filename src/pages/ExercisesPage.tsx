@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Activity, Dumbbell, Target, RotateCw, Layers, Sparkles, Search, Plus, Edit3, Copy, Trash2, BookOpen, UserPlus, CheckCircle2, X, Gauge, Brain, ShieldAlert, Flame, Compass, Zap, Repeat, Crosshair, User, Check, Footprints, Shield, HeartPulse, CircleDot } from 'lucide-react';
 import { useAuthStore } from '../stores/authStore';
@@ -14,7 +14,6 @@ import { SkeletonJointSelectorHUD } from '../components/ui/RealTimeMetricsSuite'
 import { celebrateAchievement } from '../lib/confetti';
 import { GlassModal } from '../components/ui/GlassModal';
 import { SpotlightCard } from '../components/ui/SpotlightCard';
-import { ExerciseImage } from '../components/ui/ExerciseImage';
 import { getExerciseImage } from '../data/exerciseImages';
 import { SkeletonDemo } from '../components/rehabilitation/SkeletonDemo';
 import { buildExerciseDefinition, getExerciseDescription } from '../data/exercisePresets';
@@ -283,19 +282,7 @@ export function ExercisesPage() {
     categoria: 'movilidad',
   });
 
-  useEffect(() => {
-    loadExercises();
-  }, [user?.id]);
-
-  useEffect(() => {
-    const milestones = [3, 5, 10, 20];
-    if (prevExerciseCount > 0 && exercises.length > prevExerciseCount && milestones.includes(exercises.length)) {
-      celebrateAchievement();
-    }
-    setPrevExerciseCount(exercises.length);
-  }, [exercises.length, prevExerciseCount]);
-
-  const loadExercises = async () => {
+  const loadExercises = useCallback(async () => {
     try {
       setLoading(true);
       if (isFisio) {
@@ -344,7 +331,21 @@ export function ExercisesPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user, isFisio]);
+
+
+  useEffect(() => {
+    loadExercises();
+  }, [loadExercises]);
+
+  useEffect(() => {
+    const milestones = [3, 5, 10, 20];
+    if (prevExerciseCount > 0 && exercises.length > prevExerciseCount && milestones.includes(exercises.length)) {
+      celebrateAchievement();
+    }
+    setPrevExerciseCount(exercises.length);
+  }, [exercises.length, prevExerciseCount]);
+
 
   const loadPatients = async () => {
     const isDemo = isDemoAccount(user);
@@ -831,6 +832,7 @@ export function ExercisesPage() {
           {filtered.map((ex, i) => {
             const JointIcon = getJointIcon(ex.articulacion, ex.nombre);
             const CatIcon = getCategoryIcon(ex.categoria);
+            const exerciseImage = getExerciseImage(ex.nombre);
 
             return (
               <motion.div
@@ -857,21 +859,23 @@ export function ExercisesPage() {
 
                 <div>
                   {/* Image container */}
-                  <div className="relative rounded-2xl overflow-hidden mb-3.5 bg-slate-100 dark:bg-slate-800">
-                    <ExerciseImage
-                      src={getExerciseImage(ex.id)}
-                      name={ex.nombre}
-                      articulacion={ex.articulacion}
-                      categoria={ex.categoria}
-                    />
-                    <button
-                      onClick={() => setDescriptionExercise(ex)}
-                      aria-label="Ver Guía Anatómica"
-                      className="absolute bottom-3 right-3 size-9 rounded-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-md flex items-center justify-center text-teal-700 dark:text-teal-300 hover:scale-110 active:scale-95 shadow-md transition-transform"
-                    >
-                      <BookOpen className="size-4" />
-                    </button>
-                  </div>
+                  {exerciseImage && (
+                    <div className="relative rounded-2xl overflow-hidden mb-3.5">
+                      <img
+                        src={exerciseImage}
+                        alt={ex.nombre}
+                        loading="lazy"
+                        className="w-full h-40 object-cover rounded-2xl"
+                      />
+                      <button
+                        onClick={() => setDescriptionExercise(ex)}
+                        aria-label="Ver Guía Anatómica"
+                        className="absolute bottom-3 right-3 size-9 rounded-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-md flex items-center justify-center text-teal-700 dark:text-teal-300 hover:scale-110 active:scale-95 shadow-md transition-transform"
+                      >
+                        <BookOpen className="size-4" />
+                      </button>
+                    </div>
+                  )}
 
                   {/* Title and Badges */}
                   <div className="space-y-1.5 mb-2.5">

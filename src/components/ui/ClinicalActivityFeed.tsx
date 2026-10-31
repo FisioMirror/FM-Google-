@@ -118,14 +118,25 @@ export function ClinicalNotificationCard({ item }: { item: ClinicalFeedItem }) {
   )
 }
 
+export interface ClinicalActivityFeedProps {
+  className?: string
+  delay?: number
+  /** Cuando se pasan items reales, el feed deja de simular eventos. */
+  items?: ClinicalFeedItem[]
+  title?: string
+  subtitle?: string
+}
+
 export function ClinicalActivityFeed({
   className,
   delay = 2400,
-}: {
-  className?: string
-  delay?: number
-}) {
-  const [items, setItems] = useState<ClinicalFeedItem[]>(INITIAL_NOTIFICATIONS)
+  items: realItems,
+  title = 'Feed de Actividad en Vivo',
+  subtitle = 'Sincronización en tiempo real de sesiones y MediaPipe',
+}: ClinicalActivityFeedProps) {
+  const [simulatedItems, setSimulatedItems] = useState<ClinicalFeedItem[]>(INITIAL_NOTIFICATIONS)
+  const items = realItems ?? simulatedItems
+  const isLive = !realItems
   const [isPaused, setIsPaused] = useState(false)
 
   const handleAddLiveEvent = () => {
@@ -141,7 +152,7 @@ export function ClinicalActivityFeed({
       category: "sesion",
       color: "#10b981",
     }
-    setItems((prev) => [newEvent, ...prev])
+    setSimulatedItems((prev) => [newEvent, ...prev])
     toast.success("Evento clínico simulado en vivo", {
       description: `${randomName} registró su medición en el feed.`,
     })
@@ -159,16 +170,16 @@ export function ClinicalActivityFeed({
       <div className="flex items-center justify-between pb-4 mb-2 border-b border-outline-variant/20 dark:border-white/10">
         <div className="flex items-center gap-2.5">
           <div className="relative flex size-3">
-            <span className={cn("animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75", isPaused && "hidden")} />
+            <span className={cn("animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75", (isPaused || !isLive) && "hidden")} />
             <span className="relative inline-flex rounded-full size-3 bg-emerald-500" />
           </div>
           <div>
             <h4 className="text-sm font-bold text-on-surface flex items-center gap-2">
-              Feed de Actividad en Vivo
-              <Radio className="size-3.5 text-primary animate-pulse" />
+              {title}
+              {isLive && <Radio className="size-3.5 text-primary animate-pulse" />}
             </h4>
             <p className="text-[11px] text-on-surface-variant font-medium">
-              Sincronización en tiempo real de sesiones y MediaPipe
+              {subtitle}
             </p>
           </div>
         </div>
@@ -183,14 +194,16 @@ export function ClinicalActivityFeed({
           >
             {isPaused ? <Play className="size-3.5 text-emerald-500" /> : <Pause className="size-3.5" />}
           </button>
-          <button
-            type="button"
-            onClick={handleAddLiveEvent}
-            className="flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1.5 rounded-xl bg-primary text-white hover:bg-primary/90 transition-all shadow-xs"
-          >
-            <Plus className="size-3.5" />
-            Simular Evento
-          </button>
+          {isLive && (
+            <button
+              type="button"
+              onClick={handleAddLiveEvent}
+              className="flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1.5 rounded-xl bg-primary text-white hover:bg-primary/90 transition-all shadow-xs"
+            >
+              <Plus className="size-3.5" />
+              Simular Evento
+            </button>
+          )}
         </div>
       </div>
 

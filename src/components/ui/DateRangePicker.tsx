@@ -849,7 +849,7 @@ export function WeekViewRangeCalendar() {
 }
 
 // 3. Vista con Rango Predeterminado Inicial (DefaultValueRangeCalendar)
-export function parseDate(dateStr: string): Date {
+function parseDate(dateStr: string): Date {
   const [year, month, day] = dateStr.split("-").map(Number);
   return new Date(year, (month || 1) - 1, day || 1);
 }

@@ -12,7 +12,7 @@ export interface CompactJointOption {
   defaultRom: number;
 }
 
-export const CLINICAL_JOINTS: CompactJointOption[] = [
+const CLINICAL_JOINTS: CompactJointOption[] = [
   { id: 'hombro', name: 'Hombro', category: 'superior', defaultRom: 135 },
   { id: 'codo', name: 'Codo', category: 'superior', defaultRom: 90 },
   { id: 'rodilla', name: 'Rodilla', category: 'inferior', defaultRom: 120 },

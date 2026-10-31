@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { Icon } from '../components/ui/Icon';
 import { GlassPanel } from '../components/ui/Glass';
 import { useToast } from '../components/ui/ToastProvider';
@@ -75,12 +75,7 @@ export function ToolsPage() {
     else setBmiStatus('Obesidad');
   }, [height, weight]);
 
-  useEffect(() => {
-    loadPatients();
-    loadChatHistory();
-  }, [user?.id]);
-
-  const loadPatients = async () => {
+  const loadPatients = useCallback(async () => {
     if (!user?.id) return;
     try {
       const { data } = await supabase
@@ -99,9 +94,10 @@ export function ToolsPage() {
     } catch {
       // silently fail — patient list stays empty
     }
-  };
+  }, [user]);
 
-  const loadChatHistory = async () => {
+
+  const loadChatHistory = useCallback(async () => {
     if (!user?.id) return;
     try {
       const { data } = await supabase
@@ -119,7 +115,13 @@ export function ToolsPage() {
     } catch {
       // keep default message
     }
-  };
+  }, [user]);
+
+  useEffect(() => {
+    loadPatients();
+    loadChatHistory();
+  }, [loadPatients, loadChatHistory]);
+
 
   const handleScan = async () => {
     if (scanProcessing) return;

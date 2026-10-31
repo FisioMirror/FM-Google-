@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Icon } from './ui/Icon';
 import MascotAnimation from './ui/MascotAnimation';
 import type { CharacterRole } from '../types/character.types';
-import { hasCompletedOnboarding, markOnboardingComplete } from '../hooks/useGamification';
+import { markOnboardingComplete } from '../hooks/useGamification';
 
 interface OnboardingStep {
   title: string;
@@ -166,5 +166,3 @@ export function OnboardingTour({ role, onComplete }: OnboardingTourProps) {
     </motion.div>
   );
 }
-
-export { hasCompletedOnboarding };

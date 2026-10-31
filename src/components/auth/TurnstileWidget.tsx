@@ -56,9 +56,18 @@ export const TurnstileWidget = forwardRef<TurnstileWidgetRef, TurnstileWidgetPro
   ) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const widgetIdRef = useRef<string | null>(null);
+    const onVerifyRef = useRef(onVerify);
+    const onExpireRef = useRef(onExpire);
+    const onErrorRef = useRef(onError);
     const [token, setToken] = useState<string | null>(null);
     const [status, setStatus] = useState<'loading' | 'ready' | 'verified' | 'error'>('loading');
     const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
+    useEffect(() => {
+      onVerifyRef.current = onVerify;
+      onExpireRef.current = onExpire;
+      onErrorRef.current = onError;
+    }, [onVerify, onExpire, onError]);
 
     useImperativeHandle(ref, () => ({
       reset: () => {
@@ -100,20 +109,20 @@ export const TurnstileWidget = forwardRef<TurnstileWidgetRef, TurnstileWidgetPro
               setToken(verifiedToken);
               setStatus('verified');
               setErrorMsg(null);
-              onVerify(verifiedToken);
+              onVerifyRef.current(verifiedToken);
             },
             'expired-callback': () => {
               if (!isMounted) return;
               setToken(null);
               setStatus('ready');
-              onExpire?.();
+              onExpireRef.current?.();
             },
             'error-callback': (code?: string) => {
               if (!isMounted) return;
               console.warn('Turnstile challenge error:', code);
               setStatus('error');
               setErrorMsg('Verificación no completada. Haz clic para reintentar.');
-              onError?.(code);
+              onErrorRef.current?.(code);
             },
           });
           widgetIdRef.current = id;
@@ -144,7 +153,7 @@ export const TurnstileWidget = forwardRef<TurnstileWidgetRef, TurnstileWidgetPro
             const fallbackToken = `cf-fallback-token-${Date.now()}`;
             setToken(fallbackToken);
             setStatus('verified');
-            onVerify(fallbackToken);
+            onVerifyRef.current(fallbackToken);
           }
         };
         document.head.appendChild(script);

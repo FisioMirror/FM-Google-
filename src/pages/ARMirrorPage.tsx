@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useState, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Icon } from '../components/ui/Icon';
@@ -142,19 +142,6 @@ export function ARMirrorPage() {
   const aiFeedbackRef = useRef<string>('Buen ritmo. Mantén la postura erguida y completa el rango de movimiento.');
   const lastSpokenRef = useRef<number>(0);
 
-  const speak = (text: string) => {
-    if (volumeLevel === 'muted') return;
-    const now = Date.now();
-    if (now - lastSpokenRef.current < 2500) return;
-    lastSpokenRef.current = now;
-    
-    speakHumanVoice(text, {
-      rate: volumeLevel === 'low' ? 0.94 : 1.0,
-      volume: volumeLevel === 'low' ? 0.5 : 1.0,
-      pitch: 1.02,
-      interrupt: true,
-    });
-  };
 
   // Timer
   useEffect(() => {
@@ -207,6 +194,21 @@ export function ARMirrorPage() {
   }, [cameraStarted]);
 
   // Quality score from pose data + compensation detection
+
+  const speak = useCallback((text: string) => {
+    if (volumeLevel === 'muted') return;
+    const now = Date.now();
+    if (now - lastSpokenRef.current < 2500) return;
+    lastSpokenRef.current = now;
+    
+    speakHumanVoice(text, {
+      rate: volumeLevel === 'low' ? 0.94 : 1.0,
+      volume: volumeLevel === 'low' ? 0.5 : 1.0,
+      pitch: 1.02,
+      interrupt: true,
+    });
+  }, [volumeLevel]);
+
   useEffect(() => {
     if (poseData?.isTracking && poseData.landmarks) {
       setQualityScore(poseData.postureScore);
@@ -250,7 +252,7 @@ export function ARMirrorPage() {
         aiFeedbackRef.current = detectedCompensation;
       }
     }
-  }, [poseData, volumeLevel]);
+  }, [poseData, volumeLevel, speak]);
 
   // Rep completion → rest or finish
   useEffect(() => {
@@ -270,7 +272,7 @@ export function ARMirrorPage() {
         speak('Sesión completada. Excelente trabajo.');
       }
     }
-  }, [repCount, state, currentSet, volumeLevel]);
+  }, [repCount, state, currentSet, volumeLevel, speak, toast]);
 
   // Rest countdown
   useEffect(() => {
@@ -285,7 +287,7 @@ export function ARMirrorPage() {
       toast.info('Serie reanudada');
       speak('Comienza la siguiente serie.');
     }
-  }, [state, restCountdown, resetReps]);
+  }, [state, restCountdown, resetReps, speak, toast]);
 
   const saveSession = async (reportData?: { dolor_antes: number; dolor_despues: number; fatiga: number; comentario: string }) => {
     if (!user?.id) return;

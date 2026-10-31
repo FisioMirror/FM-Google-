@@ -105,7 +105,7 @@ export const KidModel3D: React.FC<KidModel3DProps> = ({
     autoAnimateRef.current = autoAnimate;
     positionRef.current = position;
     animJointsRef.current = getExercisePreset(exerciseName ?? '', articulacion).targetJoints;
-  }, [jointAngles, jointAxes, statusColor, autoAnimate, position]);
+  }, [jointAngles, jointAxes, statusColor, autoAnimate, position, exerciseName, articulacion]);
 
   // Interpolación suave de la pose de posición usando Framer Motion.
   // Esto produce transiciones fluidas (tipo ease) al cambiar de posición.

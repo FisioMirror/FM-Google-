@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Icon } from '../components/ui/Icon';
@@ -148,11 +148,7 @@ export function PatientExercisesPage() {
     ? Math.round(exercises.reduce((acc, ex) => acc + (ex.frecuencia_semana ?? 0), 0) / exercises.length)
     : 0;
 
-  useEffect(() => {
-    loadExercises();
-  }, [user?.id]);
-
-  const loadExercises = async () => {
+  const loadExercises = useCallback(async () => {
     try {
       setLoading(true);
       setError(false);
@@ -202,7 +198,13 @@ export function PatientExercisesPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user]);
+
+
+  useEffect(() => {
+    loadExercises();
+  }, [loadExercises]);
+
 
   return (
     <div className="space-y-6 overflow-x-hidden pb-12">
@@ -376,7 +378,9 @@ export function PatientExercisesPage() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {filteredExercises.map((ex, i) => (
+          {filteredExercises.map((ex, i) => {
+            const exerciseImage = getExerciseImage(ex.ejercicio_nombre ?? '');
+            return (
             <motion.div
               key={ex.id || i}
               initial={{ opacity: 0, y: 16 }}
@@ -385,12 +389,16 @@ export function PatientExercisesPage() {
             >
               <div className="ios-glass-heavy refraction-border p-5 sm:p-6 rounded-3xl flex flex-col justify-between h-full group hover:shadow-xl transition-all">
                 <div>
-                  <div className="rounded-2xl overflow-hidden mb-3.5 bg-slate-100 dark:bg-slate-800">
-                    <ExerciseImage
-                      src={getExerciseImage(ex.ejercicio_id)}
-                      name={ex.ejercicio_nombre || 'Ejercicio asignado'}
-                    />
-                  </div>
+                  {exerciseImage && (
+                    <div className="rounded-2xl overflow-hidden mb-3.5">
+                      <img
+                        src={exerciseImage}
+                        alt={ex.ejercicio_nombre || 'Ejercicio asignado'}
+                        loading="lazy"
+                        className="w-full h-40 object-cover rounded-2xl"
+                      />
+                    </div>
+                  )}
 
                   <div className="mb-2 flex items-center gap-2">
                     <span className="px-2.5 py-1 rounded-lg bg-surface-container-high border border-outline-variant/30 text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">
@@ -466,7 +474,8 @@ export function PatientExercisesPage() {
                 </div>
               </div>
             </motion.div>
-          ))}
+            );
+          })}
         </div>
       )}
 
@@ -501,7 +510,7 @@ export function PatientExercisesPage() {
             </div>
 
             <ExerciseImage
-              src={getExerciseImage(descriptionExercise.ejercicio_id)}
+              src={getExerciseImage(descriptionExercise.ejercicio_nombre ?? '')}
               name={descriptionExercise.ejercicio_nombre || 'Ejercicio asignado'}
               heightClass="h-40"
             />

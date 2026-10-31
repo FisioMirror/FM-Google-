@@ -365,6 +365,8 @@ export function usePoseDetection(options: UsePoseDetectionOptions = {}): UsePose
       }, 33);
     };
 
+    let videoEl: HTMLVideoElement | null = null;
+
     const initPose = async () => {
       // 1) Ensure any previous media tracks are safely stopped and released
       if (streamRef.current) {
@@ -418,6 +420,7 @@ export function usePoseDetection(options: UsePoseDetectionOptions = {}): UsePose
 
         // 2) Attach stream to <video> element
         const video = videoRef.current;
+        videoEl = video;
         if (video) {
           video.srcObject = stream;
           await video.play().catch(() => {
@@ -687,11 +690,11 @@ export function usePoseDetection(options: UsePoseDetectionOptions = {}): UsePose
         }
         streamRef.current = null;
       }
-      if (videoRef.current) {
-        videoRef.current.srcObject = null;
+      if (videoEl) {
+        videoEl.srcObject = null;
       }
     };
-  }, [cameraStarted, facingMode, retryKey]);
+  }, [cameraStarted, facingMode, retryKey, options.maxFps, options.modelComplexity]);
 
   return {
     videoRef,

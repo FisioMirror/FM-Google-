@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, X } from 'lucide-react';
 
@@ -58,18 +57,4 @@ export function ComingSoonModal({
       )}
     </AnimatePresence>
   );
-}
-
-export function useComingSoon() {
-  const [open, setOpen] = useState(false);
-  const [config, setConfig] = useState<{ title?: string; description?: string }>({});
-
-  const show = (title?: string, description?: string) => {
-    setConfig({ title, description });
-    setOpen(true);
-  };
-
-  const modal = <ComingSoonModal open={open} onClose={() => setOpen(false)} {...config} />;
-
-  return { show, modal };
 }

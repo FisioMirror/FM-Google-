@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useCallback, useEffect, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Icon } from '../components/ui/Icon';
@@ -259,16 +259,7 @@ export function DashboardFisio() {
     });
   }, [displayedPatients, selectedJointFilter]);
 
-  useEffect(() => {
-    loadKpis();
-    loadPriorities();
-  }, [user?.id]);
-
-  useEffect(() => {
-    if (!kpi.isDemo) loadInsight();
-  }, [kpi.isDemo]);
-
-  const loadKpis = async () => {
+  const loadKpis = useCallback(async () => {
     if (!user?.id) return;
     const isDemo = isDemoAccount(user);
     if (!isValidUUID(user.id)) {
@@ -442,9 +433,10 @@ export function DashboardFisio() {
     } finally {
       setLoadingKpis(false);
     }
-  };
+  }, [user]);
 
-  const loadPriorities = async () => {
+
+  const loadPriorities = useCallback(async () => {
     if (!user?.id) return;
     const isDemo = isDemoAccount(user);
     if (!isValidUUID(user.id)) {
@@ -513,9 +505,14 @@ export function DashboardFisio() {
     } catch {
       // silently fail
     }
-  };
+  }, [user]);
 
-  const loadInsight = async () => {
+  useEffect(() => {
+    loadKpis();
+    loadPriorities();
+  }, [loadKpis, loadPriorities]);
+
+  const loadInsight = useCallback(async () => {
     setInsightLoading(true);
     setInsight(null);
     try {
@@ -559,7 +556,12 @@ export function DashboardFisio() {
     } finally {
       setInsightLoading(false);
     }
-  };
+  }, [user]);
+
+  useEffect(() => {
+    if (!kpi.isDemo) loadInsight();
+  }, [kpi.isDemo, loadInsight]);
+
 
   const greeting = (() => {
     const hour = new Date().getHours();

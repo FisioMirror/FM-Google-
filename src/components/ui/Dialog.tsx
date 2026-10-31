@@ -1,8 +1,10 @@
-import { createContext, type ReactNode, useContext, useEffect } from "react"
+import { type ReactNode, useEffect } from "react"
 import { cn } from "@/lib/utils"
 import { motion, AnimatePresence } from "framer-motion"
 import { X } from "lucide-react"
-import { Button, type buttonVariants } from "./Button"
+import { Button } from "./Button"
+import { buttonVariants } from "./buttonVariants"
+import { DialogContext } from "./dialogContext"
 import type { VariantProps } from "class-variance-authority"
 
 export interface DialogProps {
@@ -13,14 +15,6 @@ export interface DialogProps {
   dismissable?: boolean
   glassEffect?: boolean
   showCloseButton?: boolean
-}
-
-const DialogContext = createContext<{ onOpenChange: (open: boolean) => void } | null>(null)
-
-export function useDialog() {
-  const context = useContext(DialogContext)
-  if (!context) throw new Error("useDialog must be used within a Dialog")
-  return context
 }
 
 export function Dialog({

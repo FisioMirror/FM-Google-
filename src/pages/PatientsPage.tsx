@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useCallback, useEffect, useState, useMemo } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { SkeletonList } from '../components/ui/Skeleton';
@@ -85,20 +85,7 @@ export function PatientsPage() {
 
   const { getUserStatus, onlineCount } = useRealtimePresence();
 
-  useEffect(() => {
-    loadPatients();
-    loadTokens();
-  }, [user?.id]);
-
-  useEffect(() => {
-    const q = searchParams.get('q');
-    if (q !== null) {
-      setSearchQuery(q);
-      setActiveTab('patients');
-    }
-  }, [searchParams]);
-
-  const loadPatients = async () => {
+  const loadPatients = useCallback(async () => {
     setLoading(true);
     const isDemo = isDemoAccount(user);
     const demoCards: PatientCard[] = UNIFIED_DEMO_PATIENTS.map((p) => ({
@@ -193,9 +180,10 @@ export function PatientsPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user]);
 
-  const loadTokens = async () => {
+
+  const loadTokens = useCallback(async () => {
     setTokensLoading(true);
     const isDemo = isDemoAccount(user);
     if (!user?.id) {
@@ -263,7 +251,21 @@ export function PatientsPage() {
     } finally {
       setTokensLoading(false);
     }
-  };
+  }, [user]);
+
+  useEffect(() => {
+    loadPatients();
+    loadTokens();
+  }, [loadPatients, loadTokens]);
+
+  useEffect(() => {
+    const q = searchParams.get('q');
+    if (q !== null) {
+      setSearchQuery(q);
+      setActiveTab('patients');
+    }
+  }, [searchParams]);
+
 
   const createQuickToken = async () => {
     const randomSixDigits = String(Math.floor(100000 + Math.random() * 900000));

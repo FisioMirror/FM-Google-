@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { saveExercises, getExercises, setMeta, getMeta } from '../lib/offlineDB';
 
 export type OfflineStatus = 'online' | 'offline' | 'loading';
@@ -11,6 +11,11 @@ export function useOfflineExercises<T extends { id: string }>(
   const [status, setStatus] = useState<OfflineStatus>('loading');
   const [lastSync, setLastSync] = useState<string | null>(null);
 
+  // El fetch puede venir inline desde el llamador: lo guardamos en un ref para
+  // no re-disparar el efecto en cada render.
+  const fetchRef = useRef(fetchFn);
+  fetchRef.current = fetchFn;
+
   useEffect(() => {
     if (!pacienteId) return;
     let cancelled = false;
@@ -18,7 +23,7 @@ export function useOfflineExercises<T extends { id: string }>(
     const load = async () => {
       setStatus('loading');
       try {
-        const data = await fetchFn();
+        const data = await fetchRef.current();
         if (cancelled) return;
         setExercises(data);
         setStatus('online');

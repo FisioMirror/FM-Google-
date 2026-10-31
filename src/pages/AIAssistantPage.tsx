@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Volume2, VolumeX, Copy, Check, Sparkles, Mic, MicOff, Image as ImageIcon, Send } from 'lucide-react';
 import { useAuthStore } from '../stores/authStore';
@@ -87,15 +87,7 @@ export function AIAssistantPage() {
   const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
   const toast = useToast();
 
-  useEffect(() => {
-    loadConversation();
-  }, [user?.id]);
-
-  useEffect(() => {
-    scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' });
-  }, [messages, loading]);
-
-  const loadConversation = async () => {
+  const loadConversation = useCallback(async () => {
     if (!user?.id || !isValidUUID(user.id)) return;
     try {
       const { data } = await supabase
@@ -121,7 +113,17 @@ export function AIAssistantPage() {
     } catch {
       // keep default message
     }
-  };
+  }, [user]);
+
+
+  useEffect(() => {
+    loadConversation();
+  }, [loadConversation]);
+
+  useEffect(() => {
+    scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' });
+  }, [messages, loading]);
+
 
   const handleCopy = (id: string, text: string) => {
     navigator.clipboard.writeText(text);

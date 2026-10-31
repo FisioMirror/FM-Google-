@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Icon } from '../components/ui/Icon';
 import { GlassPanel } from '../components/ui/Glass';
@@ -41,11 +41,7 @@ export function TokenGeneratorPage() {
   const [deleteConfirmToken, setDeleteConfirmToken] = useState<TokenRow | null>(null);
   const [generating, setGenerating] = useState(false);
 
-  useEffect(() => {
-    loadTokens();
-  }, [user?.id]);
-
-  const loadTokens = async () => {
+  const loadTokens = useCallback(async () => {
     setLoading(true);
     if (!user?.id) {
       setTokens(isDemoAccount(user) ? defaultDemoTokens : []);
@@ -101,7 +97,13 @@ export function TokenGeneratorPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user]);
+
+
+  useEffect(() => {
+    loadTokens();
+  }, [loadTokens]);
+
 
   const createQuickToken = async () => {
     setGenerating(true);

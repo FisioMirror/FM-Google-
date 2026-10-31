@@ -1,1 +1,2 @@
-export * from "./NumberTicker"
+export { NumberTicker } from "./NumberTicker"
+export type { NumberTickerProps } from "./NumberTicker"

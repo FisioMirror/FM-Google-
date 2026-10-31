@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { SkeletonCard } from '../components/ui/Skeleton';
@@ -99,11 +99,7 @@ export function PatientDashboard() {
   const toast = useToast();
   const gamification = useGamification();
 
-  useEffect(() => {
-    loadData();
-  }, [user?.id]);
-
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     if (!user?.id) return;
     setLoading(true);
     try {
@@ -286,7 +282,12 @@ export function PatientDashboard() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user, isDemo]);
+
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
+
 
   const computeStreak = (dates: string[]) => {
     if (!dates || dates.length === 0) return 0;

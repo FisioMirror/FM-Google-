@@ -1,4 +1,4 @@
-import { forwardRef, type ComponentType } from "react";
+import { forwardRef } from "react";
 import { motion, type HTMLMotionProps } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { CLINICAL_PASTELS } from "@/lib/designTokens";
@@ -153,48 +153,3 @@ export const HarmonizedSubcontainer = forwardRef<HTMLDivElement, HarmonizedSurfa
   )
 )
 HarmonizedSubcontainer.displayName = "HarmonizedSubcontainer"
-
-/**
- * withHarmonizedSurface (HOC):
- * Envuelve y normaliza cualquier componente heterogéneo para inyectarle
- * automáticamente el contrato de diseño de FisioMirror sin reescribir su lógica interna.
- */
-export function withHarmonizedSurface<P extends object>(
-  WrappedComponent: ComponentType<P>,
-  defaultOptions: Partial<HarmonizedSurfaceProps> = {}
-) {
-  const HarmonizedComponent = forwardRef<HTMLDivElement, P & { surfaceProps?: Partial<HarmonizedSurfaceProps> }>(
-    ({ surfaceProps, ...componentProps }, ref) => {
-      const mergedOptions = { ...defaultOptions, ...surfaceProps }
-
-      return (
-        <HarmonizedSurface ref={ref} {...mergedOptions}>
-          <WrappedComponent {...(componentProps as P)} />
-        </HarmonizedSurface>
-      )
-    }
-  )
-
-  HarmonizedComponent.displayName = `withHarmonizedSurface(${
-    WrappedComponent.displayName || WrappedComponent.name || "Component"
-  })`
-
-  return HarmonizedComponent
-}
-
-/**
- * withHarmonizedCard (HOC):
- * HOC preconfigurado para tarjetas modulares interactivas.
- */
-export function withHarmonizedCard<P extends object>(
-  WrappedComponent: ComponentType<P>,
-  defaultOptions: Partial<HarmonizedSurfaceProps> = {}
-) {
-  return withHarmonizedSurface(WrappedComponent, {
-    variant: "card",
-    interactive: true,
-    padding: "md",
-    glass: "subtle",
-    ...defaultOptions,
-  })
-}

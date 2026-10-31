@@ -149,6 +149,41 @@ export function StatsPage() {
     return str;
   };
 
+  const loadDailyChart = useCallback((s: SessionRow[]) => {
+    // Sessions per day for the last 7 days, indexed Mon..Sun aligned to current week
+    const today = new Date();
+    const last7 = [0, 0, 0, 0, 0, 0, 0];
+    s.forEach(r => {
+      const d = new Date(r.fecha);
+      const diff = Math.floor((today.getTime() - d.getTime()) / 86400000);
+      if (diff >= 0 && diff < 7) {
+        last7[6 - diff] += 1;
+      }
+    });
+    setDailySessions(last7);
+  }, []);
+
+  const loadWeekChart = useCallback((s: SessionRow[]) => {
+    // Mensual: last 6 weeks aggregated by week
+    const sixWeeksAgo = new Date(Date.now() - 42 * 86400000).toISOString();
+    const recent = s.filter(x => x.fecha >= sixWeeksAgo);
+    const weekBuckets = [0, 0, 0, 0, 0, 0];
+    recent.forEach(r => {
+      const weeksAgo = Math.floor((Date.now() - new Date(r.fecha).getTime()) / (7 * 86400000));
+      if (weeksAgo >= 0 && weeksAgo < 6) weekBuckets[5 - weeksAgo] += r.calidad_ejecucion || 0;
+    });
+    setWeekData(weekBuckets);
+  }, []);
+
+  const applyFisioFilter = useCallback((allSessions: SessionRow[], _allPatients: PatientWithSessions[], patientId: string) => {
+    const filtered = patientId ? allSessions.filter(s => s.paciente_id === patientId) : allSessions;
+    setSessions(filtered);
+    setTotalSessions(filtered.length);
+    setTotalMinutes(Math.round(filtered.reduce((sum, r) => sum + (r.duracion_segundos || 0), 0) / 60));
+    setAvgPrecision(filtered.length > 0 ? Math.round(filtered.reduce((sum, r) => sum + (r.calidad_ejecucion || 0), 0) / filtered.length) : 0);
+    loadDailyChart(filtered);
+  }, [loadDailyChart]);
+
   const loadData = useCallback(async () => {
     setLoading(true);
 
@@ -347,42 +382,10 @@ export function StatsPage() {
     } finally {
       setLoading(false);
     }
-  }, [user?.id, isFisio]);
+  }, [user, isFisio, applyFisioFilter, loadWeekChart]);
 
-  const applyFisioFilter = (allSessions: SessionRow[], _allPatients: PatientWithSessions[], patientId: string) => {
-    const filtered = patientId ? allSessions.filter(s => s.paciente_id === patientId) : allSessions;
-    setSessions(filtered);
-    setTotalSessions(filtered.length);
-    setTotalMinutes(Math.round(filtered.reduce((sum, r) => sum + (r.duracion_segundos || 0), 0) / 60));
-    setAvgPrecision(filtered.length > 0 ? Math.round(filtered.reduce((sum, r) => sum + (r.calidad_ejecucion || 0), 0) / filtered.length) : 0);
-    loadDailyChart(filtered);
-  };
 
-  const loadWeekChart = (s: SessionRow[]) => {
-    // Mensual: last 6 weeks aggregated by week
-    const sixWeeksAgo = new Date(Date.now() - 42 * 86400000).toISOString();
-    const recent = s.filter(x => x.fecha >= sixWeeksAgo);
-    const weekBuckets = [0, 0, 0, 0, 0, 0];
-    recent.forEach(r => {
-      const weeksAgo = Math.floor((Date.now() - new Date(r.fecha).getTime()) / (7 * 86400000));
-      if (weeksAgo >= 0 && weeksAgo < 6) weekBuckets[5 - weeksAgo] += r.calidad_ejecucion || 0;
-    });
-    setWeekData(weekBuckets);
-  };
 
-  const loadDailyChart = (s: SessionRow[]) => {
-    // Sessions per day for the last 7 days, indexed Mon..Sun aligned to current week
-    const today = new Date();
-    const last7 = [0, 0, 0, 0, 0, 0, 0];
-    s.forEach(r => {
-      const d = new Date(r.fecha);
-      const diff = Math.floor((today.getTime() - d.getTime()) / 86400000);
-      if (diff >= 0 && diff < 7) {
-        last7[6 - diff] += 1;
-      }
-    });
-    setDailySessions(last7);
-  };
 
   useEffect(() => {
     loadData();

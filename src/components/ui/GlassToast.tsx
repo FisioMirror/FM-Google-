@@ -1,26 +1,17 @@
 import {
-  createContext,
-  useContext,
   useCallback,
   useState,
   type ReactNode,
 } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '../../lib/utils';
-
-type GlassToastType = 'success' | 'error' | 'info' | 'warning';
+import { GlassToastContext, type GlassToastType } from './glassToastContext';
 
 interface GlassToastItem {
   id: number;
   message: string;
   type: GlassToastType;
 }
-
-interface GlassToastApi {
-  show: (message: string, type?: GlassToastType) => void;
-}
-
-const GlassToastContext = createContext<GlassToastApi | null>(null);
 
 export function GlassToastProvider({ children }: { children: ReactNode }) {
   const [toasts, setToasts] = useState<GlassToastItem[]>([]);
@@ -100,10 +91,4 @@ export function GlassToastProvider({ children }: { children: ReactNode }) {
       </div>
     </GlassToastContext.Provider>
   );
-}
-
-export function useGlassToast(): GlassToastApi {
-  const ctx = useContext(GlassToastContext);
-  if (!ctx) throw new Error('useGlassToast debe usarse dentro de GlassToastProvider');
-  return ctx;
 }

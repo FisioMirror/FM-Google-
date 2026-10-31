@@ -154,7 +154,7 @@ ConfettiStars.displayName = 'ConfettiStars';
  * Dispara confeti continuo desde ambos laterales (cañones laterales) durante una duración dada.
  * Calibrado con la paleta de FisioMirror (teal, kinetic lime, cian y esmeralda).
  */
-export function fireSideCannons(options?: {
+function fireSideCannons(options?: {
   durationMs?: number;
   colors?: string[];
 }) {

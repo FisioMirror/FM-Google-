@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { CheckCircle2 } from 'lucide-react';
 import { Icon } from '../components/ui/Icon';
 import { Spinner } from '../components/ui/Loader';
 import { SkeletonCard } from '../components/ui/Skeleton';
@@ -20,6 +21,8 @@ import { PatientStatisticsView } from '../components/patient/PatientStatisticsVi
 import { TherapistQuickToolbar } from '../components/ui/TherapistQuickToolbar';
 import { PatientAdherenceHeatmapCard } from '../components/ui/ActivityCardsSuite';
 import { AIBiomechanicalSummaryBadge } from '../components/ui/RealTimeMetricsSuite';
+import { ClinicalActivityFeed, type ClinicalFeedItem } from '../components/ui/ClinicalActivityFeed';
+import { ExportCalendarButton } from '../components/ui/ExportCalendarButton';
 import { CompactTelehealthBar } from '../components/ui/NavigationDocksSuite';
 import { ScrollProgress } from '../components/ui/ScrollProgress';
 
@@ -279,6 +282,28 @@ export function PatientDetailPage() {
     }
   };
 
+  const clinicalFeed = useMemo<ClinicalFeedItem[]>(
+    () =>
+      sessions.slice(0, 12).map((s) => {
+        const quality = s.calidad_ejecucion;
+        const minutes = s.duracion_segundos ? Math.max(1, Math.round(s.duracion_segundos / 60)) : null;
+        const parts: string[] = [];
+        if (minutes) parts.push(`${minutes} min`);
+        if (s.repeticiones) parts.push(`${s.repeticiones} rep`);
+        if (s.notas) parts.push(s.notas);
+        return {
+          id: s.id,
+          name: s.ejercicio_nombre || 'Sesión registrada',
+          description: parts.length > 0 ? parts.join(' · ') : 'Sin métricas adicionales registradas',
+          time: new Date(s.fecha).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' }),
+          icon: <CheckCircle2 className="size-4 text-emerald-500" />,
+          badge: quality !== null && quality !== undefined ? `${quality}% calidad` : 'Sin calidad',
+          category: 'sesion' as const,
+          color: '#10b981',
+        };
+      }),
+    [sessions]
+  );
   const totalSessions = sessions.length;
   const avgQuality = sessions.length > 0 ? Math.round(sessions.reduce((sum, s) => sum + (s.calidad_ejecucion || 0), 0) / sessions.length) : 0;
   const lastSession = sessions[0];
@@ -631,7 +656,29 @@ export function PatientDetailPage() {
               {sessions.length > 1 && (
                 <p className="text-xs text-outline">{daysSinceLast !== null ? `Última: hace ${daysSinceLast} día(s)` : ''}</p>
               )}
+              <div className="mt-3">
+                <ExportCalendarButton
+                  title={`Próxima sesión de ${patient.full_name || 'rehabilitación'}`}
+                  description={`Sesión de seguimiento en FisioMirror. Objetivo ROM: ${patient.rom_objetivo || 'sin registrar'}.`}
+                  durationMinutes={45}
+                  size="sm"
+                  className="w-full"
+                />
+              </div>
             </GlassPanel>
+
+            {clinicalFeed.length > 0 ? (
+              <ClinicalActivityFeed
+                items={clinicalFeed}
+                title="Historial de sesiones"
+                subtitle="Registro real de las últimas sesiones completadas"
+              />
+            ) : (
+              <GlassPanel className="card-glow-hover p-6 rounded-3xl">
+                <p className="text-sm font-semibold text-on-surface">Historial de sesiones</p>
+                <p className="text-xs text-outline mt-1">Todavía no hay sesiones registradas para este paciente.</p>
+              </GlassPanel>
+            )}
           </div>
 
           <div className="lg:col-span-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">

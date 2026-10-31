@@ -25,7 +25,7 @@ export const ScrollShadow = React.forwardRef<HTMLDivElement, ScrollShadowProps>(
       offset = 0,
       size = 40,
       className,
-      shadowColor,
+      shadowColor: _shadowColor,
       onScroll,
       ...props
     },

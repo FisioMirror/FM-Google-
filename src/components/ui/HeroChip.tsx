@@ -13,7 +13,7 @@ export interface ChipProps extends React.HTMLAttributes<HTMLSpanElement> {
   size?: 'sm' | 'md' | 'lg';
 }
 
-export function Chip({ color = 'primary', variant = 'primary', size = 'md', children, className = '', ...props }: ChipProps) {
+export function Chip({ color = 'primary', variant: _variant = 'primary', size = 'md', children, className = '', ...props }: ChipProps) {
   const colorStyles: Record<ChipColor, string> = {
     primary: 'bg-teal-500/10 text-teal-700 dark:text-teal-300 border-teal-500/25',
     success: 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/25',

@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, SlidersHorizontal, Stethoscope } from "lucide-react";
 import { cn } from "../../lib/utils";
@@ -41,15 +41,15 @@ export function Drawer({
   const isControlled = controlledOpen !== undefined;
   const isOpen = isControlled ? controlledOpen : uncontrolledOpen;
 
-  const setIsOpen = (nextOpen: boolean) => {
+  const setIsOpen = useCallback((nextOpen: boolean) => {
     if (!isControlled) {
       setUncontrolledOpen(nextOpen);
     }
     onOpenChange?.(nextOpen);
-  };
+  }, [isControlled, onOpenChange]);
 
-  const open = () => setIsOpen(true);
-  const close = () => setIsOpen(false);
+  const open = useCallback(() => setIsOpen(true), [setIsOpen]);
+  const close = useCallback(() => setIsOpen(false), [setIsOpen]);
 
   // Esc listener
   useEffect(() => {
@@ -58,7 +58,7 @@ export function Drawer({
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isOpen]);
+  }, [isOpen, close]);
 
   return (
     <DrawerContext.Provider value={{ isOpen, setIsOpen, open, close, placement }}>
