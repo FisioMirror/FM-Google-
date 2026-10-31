@@ -7,6 +7,7 @@ import { Icon } from './ui/Icon';
 
 import { Spinner } from './ui/Loader';
 import { cn } from '../lib/utils';
+import { currentLocale } from '../lib/format';
 
 
 /**
@@ -203,7 +204,7 @@ export function ReassignRoutineModal({
 
       // 3) Insertar la nueva rutina como activa.
       const now = new Date();
-      const newRoutineName = `Rutina Reasignada - ${now.toLocaleDateString('es-ES')} ${now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}`;
+      const newRoutineName = `Rutina Reasignada - ${now.toLocaleDateString(currentLocale())} ${now.toLocaleTimeString(currentLocale(), { hour: '2-digit', minute: '2-digit' })}`;
       const ejerciciosJson = selected.map((ex) => ({
         nombre: ex.nombre,
         series: ex.series,

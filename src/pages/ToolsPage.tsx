@@ -22,6 +22,7 @@ import {
 } from '../components/ui/FloatingControlsSuite';
 import { BentoGrid, BentoCard } from '../components/ui/BentoGrid';
 import { Calculator, Camera, FileText } from 'lucide-react';
+import { currentLocale } from '../lib/format';
 
 interface ChatMessage {
   role: 'user' | 'assistant';
@@ -678,7 +679,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
                     <div className="flex items-center justify-between px-5 py-3 bg-surface-variant/10 border-t border-outline-variant/20">
                       <span className="flex items-center gap-1.5 text-xs text-on-surface-variant">
                         <Icon name="schedule" size={12} className="opacity-60" />
-                        {new Date().toLocaleString('es-ES', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
+                        {new Date().toLocaleString(currentLocale(), { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
                       </span>
                       <div className="flex items-center gap-3">
                         <button
@@ -746,7 +747,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
                 <div className="flex items-center justify-between px-5 py-3 bg-surface-variant/10 border-t border-outline-variant/20">
                   <span className="flex items-center gap-1.5 text-xs text-on-surface-variant">
                     <Icon name="schedule" size={12} className="opacity-60" />
-                    {new Date().toLocaleString('es-ES', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
+                    {new Date().toLocaleString(currentLocale(), { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
                   </span>
                   <span className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">
                     <Icon name="auto_awesome" size={11} className="text-secondary" />

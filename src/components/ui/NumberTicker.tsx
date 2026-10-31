@@ -1,6 +1,7 @@
 import { useEffect, useRef, forwardRef, type ComponentPropsWithoutRef } from "react"
 import { useInView, useMotionValue, useSpring } from "framer-motion"
 import { cn } from "@/lib/utils"
+import { currentLocale } from '../../lib/format';
 
 export interface NumberTickerProps extends ComponentPropsWithoutRef<"span"> {
   value: number
@@ -54,7 +55,7 @@ export const NumberTicker = forwardRef<HTMLSpanElement, NumberTickerProps>(
       () =>
         springValue.on("change", (latest) => {
           if (ref.current) {
-            const formatted = Intl.NumberFormat("es-ES", {
+            const formatted = Intl.NumberFormat(currentLocale(), {
               minimumFractionDigits: decimalPlaces,
               maximumFractionDigits: decimalPlaces,
             }).format(Number(latest.toFixed(decimalPlaces)))

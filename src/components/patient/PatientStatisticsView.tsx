@@ -14,6 +14,7 @@ import {
 } from 'recharts';
 import { Icon } from '../ui/Icon';
 import { MedicalIcon } from '../ui/MedicalIcon';
+import { currentLocale } from '../../lib/format';
 
 interface SessionData {
   id: string;
@@ -88,7 +89,7 @@ export function PatientStatisticsView({
     }
     return chronoSessions.map((s, idx) => {
       const d = new Date(s.fecha);
-      const dateLabel = isNaN(d.getTime()) ? `S${idx + 1}` : d.toLocaleDateString('es-ES', { day: '2-digit', month: 'short' });
+      const dateLabel = isNaN(d.getTime()) ? `S${idx + 1}` : d.toLocaleDateString(currentLocale(), { day: '2-digit', month: 'short' });
       const rom = s.rom_alcanzado || Math.round(100 + ((s.calidad_ejecucion || 80) * 0.55));
       return {
         sesion: `#${idx + 1}`,
@@ -523,7 +524,7 @@ export function PatientStatisticsView({
                   const d = new Date(s.fecha);
                   const formattedDate = isNaN(d.getTime())
                     ? s.fecha
-                    : d.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+                    : d.toLocaleDateString(currentLocale(), { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
                   const romVal = s.rom_alcanzado || Math.round(100 + ((s.calidad_ejecucion || 80) * 0.55));
                   const durMin = Math.round((s.duracion_segundos || 0) / 60);
                   const durSec = (s.duracion_segundos || 0) % 60;

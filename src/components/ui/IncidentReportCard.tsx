@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import { motion } from 'framer-motion';
+import { currentLocale } from '../../lib/format';
 import {
   AreaChart,
   LinearXAxis,
@@ -224,7 +225,7 @@ export const IncidentReportCard: React.FC<{ className?: string }> = ({ className
                   label={
                     <LinearXAxisTickLabel
                       format={(v) =>
-                        new Date(v).toLocaleDateString('es-ES', {
+                        new Date(v).toLocaleDateString(currentLocale(), {
                           month: 'numeric',
                           day: 'numeric',
                         })

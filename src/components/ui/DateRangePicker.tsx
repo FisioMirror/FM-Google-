@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useRef, useEffect } from "r
 import { motion, AnimatePresence } from "framer-motion";
 import { Calendar as CalendarIcon, ChevronLeft, ChevronRight, ChevronDown, Check } from "lucide-react";
 import { cn } from "../../lib/utils";
+import { currentLocale } from '../../lib/format';
 
 export interface DateRange {
   start: Date | null;
@@ -128,7 +129,7 @@ export function DateRangePickerTrigger({
 
   const formatDate = (d: Date | null) => {
     if (!d) return "";
-    return d.toLocaleDateString("es-ES", { day: "2-digit", month: "short", year: "numeric" });
+    return d.toLocaleDateString(currentLocale(), { day: "2-digit", month: "short", year: "numeric" });
   };
 
   const displayText = value.start
@@ -311,7 +312,7 @@ export function RangeCalendarHeader({ children, className }: { children?: React.
     setCurrentMonth((prev) => new Date(prev.getFullYear(), prev.getMonth() + 1, 1));
   };
 
-  const monthLabel = currentMonth.toLocaleDateString("es-ES", {
+  const monthLabel = currentMonth.toLocaleDateString(currentLocale(), {
     month: "long",
     year: "numeric",
   });
@@ -392,7 +393,7 @@ export function RangeCalendarNavButton({
 
 export function RangeCalendarHeading({ children, className }: { children?: React.ReactNode; className?: string }) {
   const { currentMonth } = useDateRangePicker();
-  const monthLabel = currentMonth.toLocaleDateString("es-ES", {
+  const monthLabel = currentMonth.toLocaleDateString(currentLocale(), {
     month: "long",
     year: "numeric",
   });

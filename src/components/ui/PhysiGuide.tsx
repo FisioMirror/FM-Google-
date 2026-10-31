@@ -7,6 +7,7 @@ import { useAuthStore } from '../../stores/authStore';
 import { runAIJob } from '../../lib/ai';
 import { humanVoice, setVoiceGender, type VoiceGender } from '../../lib/humanVoice';
 import { QuickVoiceSelector } from './QuickVoiceSelector';
+import { currentLocale } from '../../lib/format';
 
 interface Message {
   id: string;
@@ -269,7 +270,7 @@ export function PhysiGuide({
         id: `u-${Date.now()}`,
         role: 'user',
         text: trimmed,
-        timestamp: new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }),
+        timestamp: new Date().toLocaleTimeString(currentLocale(), { hour: '2-digit', minute: '2-digit' }),
       };
       setMessages((prev) => [...prev, userMsg]);
       setInput('');
@@ -287,7 +288,7 @@ export function PhysiGuide({
             id: assistantId,
             role: 'assistant',
             text: replyText,
-            timestamp: new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }),
+            timestamp: new Date().toLocaleTimeString(currentLocale(), { hour: '2-digit', minute: '2-digit' }),
             options: options && options.length > 0 ? options : undefined,
           },
         ]);
@@ -341,7 +342,7 @@ export function PhysiGuide({
       const node = matchFollowUp(label, tree);
       if (!node) return;
 
-      const now = new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+      const now = new Date().toLocaleTimeString(currentLocale(), { hour: '2-digit', minute: '2-digit' });
       const assistantId = `a-${Date.now()}`;
 
       setMessages((prev) => [

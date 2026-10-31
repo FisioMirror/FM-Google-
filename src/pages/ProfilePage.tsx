@@ -21,6 +21,7 @@ import { ErgonomicHandModeSwitcher } from '../components/ui/NavigationDocksSuite
 import { AchievementShowcase } from '../components/AchievementShowcase';
 import { GamifiedBadgeCard } from '../components/ui/GamifiedBadgeCard';
 import { useGamification } from '../hooks/useGamification';
+import { currentLocale } from '../lib/format';
 
 export function ProfilePage() {
   const user = useAuthStore((s) => s.user);
@@ -136,7 +137,7 @@ export function ProfilePage() {
           const s = sessions?.find((x) => x.paciente_id === p.id);
           return {
             name: p.full_name,
-            sessionTime: s ? new Date(s.fecha).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }) : 'Pendiente',
+            sessionTime: s ? new Date(s.fecha).toLocaleTimeString(currentLocale(), { hour: '2-digit', minute: '2-digit' }) : 'Pendiente',
             diagnosis: p.diagnostico || 'Sin diagnóstico',
           };
         });

@@ -51,6 +51,7 @@ import {
 import { humanVoice, isHumanVoiceSpeaking, stopHumanVoice } from '../lib/humanVoice';
 import { staggerContainer, staggerItem, springTactile } from '../lib/motionVariants';
 import { useTranslation } from 'react-i18next';
+import { currentLocale } from '../lib/format';
 
 interface PatientKpi {
   streak: number;
@@ -345,7 +346,7 @@ export function PatientDashboard() {
               {greeting}, {user?.full_name?.split(' ')[0] || 'Paciente'}
             </SparklesText>
             <p className="text-outline font-title-md text-title-md">
-              {new Date().toLocaleDateString(i18n.language === 'en' ? 'en-US' : i18n.language === 'pt' ? 'pt-BR' : 'es-ES', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
+              {new Date().toLocaleDateString(i18n.language === 'en' ? 'en-US' : i18n.language === 'pt' ? 'pt-BR' : currentLocale(), { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
             </p>
           </div>
           <div className="ml-auto flex items-center gap-3">

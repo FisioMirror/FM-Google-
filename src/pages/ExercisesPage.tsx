@@ -19,6 +19,7 @@ import { SkeletonDemo } from '../components/rehabilitation/SkeletonDemo';
 import { buildExerciseDefinition, getExerciseDescription } from '../data/exercisePresets';
 import { UNIFIED_DEMO_PATIENTS } from '../data/unifiedDemoData';
 import { isDemoAccount } from '../lib/demoAuth';
+import { currentLocale } from '../lib/format';
 
 export interface Exercise {
   id: string;
@@ -439,7 +440,7 @@ export function ExercisesPage() {
         const { error: insertErr } = await supabase.from('rutinas').insert({
           paciente_id: selectedPatientId,
           fisioterapeuta_id: user?.id,
-          nombre: `Rutina - ${new Date().toLocaleDateString('es-ES')}`,
+          nombre: `Rutina - ${new Date().toLocaleDateString(currentLocale())}`,
           descripcion: 'Rutina creada al prescribir ejercicio individual',
           ejercicios: [
             {

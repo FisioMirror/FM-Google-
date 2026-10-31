@@ -12,6 +12,7 @@ import { MascotAnimation } from '../components/ui/MascotAnimation';
 import { QuickVoiceSelector } from '../components/ui/QuickVoiceSelector';
 import { isValidUUID } from '../lib/utils';
 import { PRIMARY_DEMO_PATIENT } from '../data/unifiedDemoData';
+import { currentLocale } from '../lib/format';
 
 // Minimal Web Speech API typings
 interface SpeechRecognitionAlternative {
@@ -105,7 +106,7 @@ export function AIAssistantPage() {
             text: d.content,
             images: d.images ?? undefined,
             timestamp: d.created_at
-              ? new Date(d.created_at).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })
+              ? new Date(d.created_at).toLocaleTimeString(currentLocale(), { hour: '2-digit', minute: '2-digit' })
               : undefined,
           }))
         );
@@ -190,7 +191,7 @@ export function AIAssistantPage() {
     const Ctor = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!Ctor) return false;
     const recognition = new Ctor();
-    recognition.lang = 'es-ES';
+    recognition.lang = currentLocale();
     recognition.continuous = false;
     recognition.interimResults = false;
 
@@ -244,7 +245,7 @@ export function AIAssistantPage() {
       role: 'user',
       text: messageText,
       images: images.length > 0 ? [...images] : undefined,
-      timestamp: new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }),
+      timestamp: new Date().toLocaleTimeString(currentLocale(), { hour: '2-digit', minute: '2-digit' }),
     };
 
     setMessages((prev) => [...prev, userMsg]);
@@ -333,7 +334,7 @@ Pregunta del paciente: ${messageText}`;
         id: `ai-${Date.now()}`,
         role: 'assistant',
         text: assistantText,
-        timestamp: new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }),
+        timestamp: new Date().toLocaleTimeString(currentLocale(), { hour: '2-digit', minute: '2-digit' }),
       };
 
       setMessages((prev) => [...prev, assistantMsg]);

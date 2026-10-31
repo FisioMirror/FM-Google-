@@ -45,6 +45,7 @@ import {
 import { IncidentReportCard } from '../components/ui/IncidentReportCard';
 import { QuickPatientSwitcherBar } from '../components/ui/NavigationDocksSuite';
 import { StreakFlameCounter, LevelProgressRibbon } from '../components/ui/GamificationSuite';
+import { currentLocale } from '../lib/format';
 
 const dayLabels = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
 
@@ -644,7 +645,7 @@ export function StatsPage() {
         </div>
         <div className="glass-panel px-4 py-2 rounded-xl flex items-center gap-2">
           <Icon name="calendar_today" size={18} className="text-outline" />
-          <span className="font-bold text-on-surface">{new Date().toLocaleDateString('es-ES', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
+          <span className="font-bold text-on-surface">{new Date().toLocaleDateString(currentLocale(), { month: 'long', day: 'numeric', year: 'numeric' })}</span>
         </div>
       </div>
 
@@ -939,7 +940,7 @@ export function StatsPage() {
                                 {p.avgQuality > 0 ? `${p.avgQuality}%` : '—'}
                               </span>
                             </td>
-                            <td className="py-3 px-2 text-right text-on-surface-variant">{p.lastSessionDate ? new Date(p.lastSessionDate).toLocaleDateString('es-ES') : '—'}</td>
+                            <td className="py-3 px-2 text-right text-on-surface-variant">{p.lastSessionDate ? new Date(p.lastSessionDate).toLocaleDateString(currentLocale()) : '—'}</td>
                           </tr>
                         ))}
                       </tbody>
@@ -1049,7 +1050,7 @@ export function StatsPage() {
                           </div>
                           <div>
                             <p className="font-bold text-on-surface">{s.ejercicio_nombre || 'Sesión'}</p>
-                            <p className="text-xs text-on-surface-variant">{new Date(s.fecha).toLocaleDateString('es-ES')}</p>
+                            <p className="text-xs text-on-surface-variant">{new Date(s.fecha).toLocaleDateString(currentLocale())}</p>
                             <p className="text-sm text-primary font-bold">{s.calidad_ejecucion != null && s.calidad_ejecucion > 0 ? `${s.calidad_ejecucion}% calidad` : 'Sin calificar'}</p>
                           </div>
                         </div>
@@ -1222,7 +1223,7 @@ export function StatsPage() {
                                 <p className="text-xs text-on-surface-variant">{badge.desc}</p>
                                 <p className="text-[10px] text-primary font-bold mt-1 flex items-center gap-1">
                                   <Icon name="event_available" size={12} />
-                                  {badge.date ? new Date(badge.date).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' }) : 'Desbloqueado'}
+                                  {badge.date ? new Date(badge.date).toLocaleDateString(currentLocale(), { day: 'numeric', month: 'long', year: 'numeric' }) : 'Desbloqueado'}
                                 </p>
                               </div>
                             </motion.div>

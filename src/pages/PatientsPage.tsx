@@ -20,6 +20,7 @@ import { staggerContainer, staggerItem, springTactile } from '../lib/motionVaria
 import { MobileBottomSheet } from '../components/ui/MobileBottomSheet';
 
 import { TherapistSidebarMini } from '../components/ui/NavigationDocksSuite';
+import { currentLocale } from '../lib/format';
 
 interface PatientCard {
   id: string;
@@ -931,7 +932,7 @@ export function PatientsPage() {
                       <p className="text-amber-600 dark:text-amber-400">Disponible para ser asignado</p>
                     )}
                     <p className="text-[11px] text-outline mt-0.5">
-                      Emitido el: {new Date(tok.createdAt).toLocaleDateString('es-ES')}
+                      Emitido el: {new Date(tok.createdAt).toLocaleDateString(currentLocale())}
                     </p>
                   </div>
 

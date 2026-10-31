@@ -12,6 +12,7 @@ import { isDemoAccount } from '../lib/demoAuth';
 import { Button } from '../components/ui/Button';
 import { ConfirmDialog } from '../components/ui/Dialog';
 import { Tooltip } from '../components/ui/Tooltip';
+import { currentLocale } from '../lib/format';
 
 interface TokenRow {
   id: string;
@@ -291,7 +292,7 @@ export function TokenGeneratorPage() {
                     </div>
                     <div className="flex items-center gap-2 text-on-surface-variant">
                       <Icon name="schedule" size={16} className="text-outline shrink-0" />
-                      <span>{new Date(t.createdAt).toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+                      <span>{new Date(t.createdAt).toLocaleDateString(currentLocale(), { day: 'numeric', month: 'short', year: 'numeric' })}</span>
                     </div>
                   </div>
                 </div>

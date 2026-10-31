@@ -25,6 +25,7 @@ import { ClinicalActivityFeed, type ClinicalFeedItem } from '../components/ui/Cl
 import { ExportCalendarButton } from '../components/ui/ExportCalendarButton';
 import { CompactTelehealthBar } from '../components/ui/NavigationDocksSuite';
 import { ScrollProgress } from '../components/ui/ScrollProgress';
+import { currentLocale } from '../lib/format';
 
 interface SessionRow {
   id: string;
@@ -295,7 +296,7 @@ export function PatientDetailPage() {
           id: s.id,
           name: s.ejercicio_nombre || 'Sesión registrada',
           description: parts.length > 0 ? parts.join(' · ') : 'Sin métricas adicionales registradas',
-          time: new Date(s.fecha).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' }),
+          time: new Date(s.fecha).toLocaleDateString(currentLocale(), { day: '2-digit', month: 'short', year: 'numeric' }),
           icon: <CheckCircle2 className="size-4 text-emerald-500" />,
           badge: quality !== null && quality !== undefined ? `${quality}% calidad` : 'Sin calidad',
           category: 'sesion' as const,
@@ -506,7 +507,7 @@ export function PatientDetailPage() {
           score={avgQuality}
           summaryText={
             sessions.length > 0
-              ? `Promedio de calidad de ejecución de ${sessions.length} sesión(es) registradas. Última medición: ${lastSession ? new Date(lastSession.fecha).toLocaleDateString('es-ES') : 'sin fecha'}.`
+              ? `Promedio de calidad de ejecución de ${sessions.length} sesión(es) registradas. Última medición: ${lastSession ? new Date(lastSession.fecha).toLocaleDateString(currentLocale()) : 'sin fecha'}.`
               : 'Todavía no hay sesiones registradas para este paciente. El resumen aparecerá cuando se complete la primera sesión AR.'
           }
         />
@@ -690,7 +691,7 @@ export function PatientDetailPage() {
             </GlassPanel>
             <GlassPanel className="card-glow-hover p-6 rounded-3xl">
               <p className="text-xs font-semibold text-on-surface-variant">Última sesión</p>
-              <p className="text-sm font-bold text-on-surface mt-1">{lastSession ? new Date(lastSession.fecha).toLocaleDateString('es-ES') : '—'}</p>
+              <p className="text-sm font-bold text-on-surface mt-1">{lastSession ? new Date(lastSession.fecha).toLocaleDateString(currentLocale()) : '—'}</p>
               <p className="text-[11px] text-outline mt-1">{lastSession?.ejercicio_nombre || 'Sin registro'}</p>
             </GlassPanel>
             <GlassPanel className="card-glow-hover p-6 rounded-3xl">
@@ -760,7 +761,7 @@ export function PatientDetailPage() {
                       <div className="flex justify-between items-start">
                         <div>
                           <p className="font-bold text-on-surface">{s.ejercicio_nombre || 'Sesión'}</p>
-                          <p className="text-sm text-on-surface-variant">{new Date(s.fecha).toLocaleDateString('es-ES', { dateStyle: 'full' })}</p>
+                          <p className="text-sm text-on-surface-variant">{new Date(s.fecha).toLocaleDateString(currentLocale(), { dateStyle: 'full' })}</p>
                         </div>
                         <span className={`text-sm font-bold px-3 py-1 rounded-full ${(s.calidad_ejecucion || 0) >= 80 ? 'bg-success/15 text-success' : (s.calidad_ejecucion || 0) >= 50 ? 'bg-secondary/15 text-secondary' : 'bg-error-container text-on-error-container'}`}>
                           {s.calidad_ejecucion != null && s.calidad_ejecucion > 0 ? `${s.calidad_ejecucion}%` : '—'}
@@ -1119,15 +1120,15 @@ export function PatientDetailPage() {
                     </div>
                     {r.descripcion && <p className="text-xs text-on-surface-variant mb-1">{r.descripcion}</p>}
                     <div className="flex flex-wrap items-center gap-2 text-xs text-outline">
-                      <span>Inicio: {r.fecha_inicio ? new Date(r.fecha_inicio).toLocaleDateString('es-ES') : '-'}</span>
-                      {r.fecha_fin && <span>· Vigencia: hasta {new Date(r.fecha_fin).toLocaleDateString('es-ES')}</span>}
+                      <span>Inicio: {r.fecha_inicio ? new Date(r.fecha_inicio).toLocaleDateString(currentLocale()) : '-'}</span>
+                      {r.fecha_fin && <span>· Vigencia: hasta {new Date(r.fecha_fin).toLocaleDateString(currentLocale())}</span>}
                       {!r.fecha_fin && <span>· Sin fecha de fin</span>}
                       {r.fase_recuperacion && (
                         <span className="px-1.5 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20 font-semibold">
                           Fase: {r.fase_recuperacion}
                         </span>
                       )}
-                      {r.updated_at && <span>· Actualizada: {new Date(r.updated_at).toLocaleDateString('es-ES')}</span>}
+                      {r.updated_at && <span>· Actualizada: {new Date(r.updated_at).toLocaleDateString(currentLocale())}</span>}
                     </div>
                   </div>
                 ))}

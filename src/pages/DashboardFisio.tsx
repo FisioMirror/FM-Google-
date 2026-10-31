@@ -42,6 +42,7 @@ import { ScrollShadow } from '../components/ui/ScrollShadow';
 import { toast } from '../components/ui/Toast';
 import { Skeleton } from '../components/ui/Skeleton';
 import { useTranslation } from 'react-i18next';
+import { currentLocale } from '../lib/format';
 
 interface KpiData {
   activePatients: number;
@@ -704,7 +705,7 @@ export function DashboardFisio() {
               by="word"
               className="text-outline font-title-md text-title-md"
             >
-              {new Date().toLocaleDateString(i18n.language === 'en' ? 'en-US' : i18n.language === 'pt' ? 'pt-BR' : 'es-ES', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
+              {new Date().toLocaleDateString(i18n.language === 'en' ? 'en-US' : i18n.language === 'pt' ? 'pt-BR' : currentLocale(), { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
             </TextAnimate>
           </div>
           <div className="ml-auto flex items-center gap-2.5">
@@ -927,7 +928,7 @@ export function DashboardFisio() {
             <div className="flex items-center justify-between px-8 py-4 bg-surface-variant/10 border-t border-outline-variant/20">
               <div className="flex items-center gap-2 text-xs text-on-surface-variant">
                 <Icon name="schedule" size={14} className="opacity-60" />
-                <span>{new Date().toLocaleString('es-ES', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}</span>
+                <span>{new Date().toLocaleString(currentLocale(), { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}</span>
               </div>
               <span className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">
                 <Icon name="auto_awesome" size={12} className="text-primary" />

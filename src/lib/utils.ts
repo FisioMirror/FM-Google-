@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { currentLocale } from './format';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -35,7 +36,7 @@ export function timeAgo(dateInput: string | Date): string {
   if (day === 1) return 'ayer';
   if (day < 7) return `hace ${day} días`;
   // Más de una semana: fecha completa compacta en español
-  return date.toLocaleString('es-ES', { dateStyle: 'short', timeStyle: 'short' });
+  return date.toLocaleString(currentLocale(), { dateStyle: 'short', timeStyle: 'short' });
 }
 
 /**

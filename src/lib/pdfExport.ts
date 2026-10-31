@@ -1,6 +1,7 @@
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
 import { logReportExport } from './auditService';
+import { currentLocale } from './format';
 
 export type ReportType = 'evolution' | 'pain' | 'medical' | 'recipe';
 
@@ -100,7 +101,7 @@ export function exportSimplePDF(data: PDFPatientData, filename: string, selected
   doc.setFont('helvetica', 'normal');
   doc.text(subtitle, margin, 56);
   doc.setFontSize(9);
-  doc.text(`Fecha: ${new Date().toLocaleDateString('es-ES', { dateStyle: 'long' })}`, pageWidth - margin, 36, { align: 'right' });
+  doc.text(`Fecha: ${new Date().toLocaleDateString(currentLocale(), { dateStyle: 'long' })}`, pageWidth - margin, 36, { align: 'right' });
 
   let y = 110;
   doc.setTextColor(...DARK_GRAY);
@@ -172,7 +173,7 @@ export function exportSimplePDF(data: PDFPatientData, filename: string, selected
 
     for (const s of itemsToRender) {
       if (y > pageHeight - 70) { doc.addPage(); y = 50; }
-      const fechaStr = new Date(s.fecha).toLocaleDateString('es-ES');
+      const fechaStr = new Date(s.fecha).toLocaleDateString(currentLocale());
       const compStr = s.compensaciones && s.compensaciones.length > 0
         ? `Comp: ${s.compensaciones.join(', ')}`
         : (s.notas || 'Sin compensación notable');
@@ -251,7 +252,7 @@ export function exportSimplePDF(data: PDFPatientData, filename: string, selected
   // CASO 3: RÉCIPE / PRESCRIPCIÓN DE RUTINA DOMICILIARIA
   // -------------------------------------------------------------
   } else if (reportType === 'recipe') {
-    doc.text(`Fecha de Emisión: ${new Date().toLocaleDateString('es-ES')}`, margin, y);
+    doc.text(`Fecha de Emisión: ${new Date().toLocaleDateString(currentLocale())}`, margin, y);
     y += 16;
     if (cd.frecuenciaSesiones) {
       doc.text(`Frecuencia Prescrita: ${cd.frecuenciaSesiones}`, margin, y);
@@ -418,7 +419,7 @@ export function exportSimplePDF(data: PDFPatientData, filename: string, selected
     doc.setFontSize(9);
     for (const s of data.sessions.slice(0, 15)) {
       if (y > pageHeight - 60) { doc.addPage(); y = 50; }
-      const fechaStr = new Date(s.fecha).toLocaleDateString('es-ES');
+      const fechaStr = new Date(s.fecha).toLocaleDateString(currentLocale());
       const duracionStr = `${Math.round(s.duracion_segundos / 60)} min`;
       doc.text(fechaStr, margin + 8, y + 16);
       doc.text(s.ejercicio.slice(0, 25), margin + 100, y + 16);
@@ -458,10 +459,10 @@ export function buildPremiumHTML(data: PDFPatientData, aiNarrative?: string): st
   const gm = data.globalMetrics || {};
   const reportType = data.reportType || 'evolution';
   const fmtDate = (d: string) => {
-    try { return new Date(d).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' }); }
+    try { return new Date(d).toLocaleDateString(currentLocale(), { day: '2-digit', month: 'short', year: 'numeric' }); }
     catch { return d; }
   };
-  const today = new Date().toLocaleDateString('es-ES', { dateStyle: 'long' });
+  const today = new Date().toLocaleDateString(currentLocale(), { dateStyle: 'long' });
 
   const reportMeta = {
     evolution: { title: 'FisioMirror', subtitle: 'Informe Clínico de Evolución y Sesiones', bg: 'linear-gradient(135deg,#00504d 0%,#00837a 100%)' },
