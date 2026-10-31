@@ -13,6 +13,23 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  build: {
+    chunkSizeWarningLimit: 700,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          // React y router: base estable, se cachea entre deploys
+          'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+          // Animaciones: pesado y muy estable
+          'vendor-motion': ['framer-motion'],
+          // Backend y datos
+          'vendor-supabase': ['@supabase/supabase-js'],
+          // Graficas (solo se cargan en las paginas que las usan)
+          'vendor-charts': ['recharts'],
+        },
+      },
+    },
+  },
   plugins: [
     react(),
     apiDevPlugin(),
