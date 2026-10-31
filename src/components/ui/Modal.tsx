@@ -4,6 +4,7 @@ import { X } from "lucide-react";
 import { Rocket } from "@gravity-ui/icons";
 import { cn } from "../../lib/utils";
 import { Button } from "./Button";
+import { useFocusTrap } from "../../hooks/useFocusTrap";
 
 interface ModalContextType {
   isOpen: boolean;
@@ -129,8 +130,10 @@ export function ModalDialog({
   children: React.ReactNode;
   className?: string;
 }) {
+  const trapRef = useFocusTrap<HTMLDivElement>();
   return (
     <motion.div
+      ref={trapRef}
       role="dialog"
       aria-modal="true"
       initial={{ opacity: 0, scale: 0.95, y: 12 }}

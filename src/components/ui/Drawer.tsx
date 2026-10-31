@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, SlidersHorizontal, Stethoscope } from "lucide-react";
 import { cn } from "../../lib/utils";
 import { Button } from "./Button";
+import { useFocusTrap } from "../../hooks/useFocusTrap";
 
 export type DrawerPlacement = "left" | "right" | "top" | "bottom";
 
@@ -142,6 +143,7 @@ export function DrawerDialog({
   className?: string;
 }) {
   const { placement } = useContext(DrawerContext);
+  const trapRef = useFocusTrap<HTMLDivElement>();
 
   const slideVariants = {
     right: { initial: { x: "100%" }, animate: { x: 0 }, exit: { x: "100%" } },
@@ -159,6 +161,7 @@ export function DrawerDialog({
 
   return (
     <motion.div
+      ref={trapRef}
       role="dialog"
       aria-modal="true"
       initial={slideVariants[placement].initial}

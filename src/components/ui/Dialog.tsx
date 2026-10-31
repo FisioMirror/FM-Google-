@@ -6,6 +6,7 @@ import { Button } from "./Button"
 import { buttonVariants } from "./buttonVariants"
 import { DialogContext } from "./dialogContext"
 import type { VariantProps } from "class-variance-authority"
+import { useFocusTrap } from "@/hooks/useFocusTrap"
 
 export interface DialogProps {
   open: boolean
@@ -33,6 +34,8 @@ export function Dialog({
     full: "max-w-4xl",
   }[size]
 
+  const trapRef = useFocusTrap<HTMLDivElement>(open)
+
   useEffect(() => {
     document.body.style.overflow = open ? 'hidden' : ''
     return () => { document.body.style.overflow = '' }
@@ -52,6 +55,9 @@ export function Dialog({
 
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             <motion.div
+              ref={trapRef}
+              role="dialog"
+              aria-modal="true"
               initial={{ opacity: 0, scale: 0.94, y: 16 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.94, y: 12 }}
