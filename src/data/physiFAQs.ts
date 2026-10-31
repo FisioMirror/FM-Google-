@@ -264,6 +264,133 @@ export const PHYSI_FAQS_FISIO: FAQ[] = [
       },
     ],
   },
+  {
+    category: 'Fases',
+    keywords: ['fase', 'aguda', 'subaguda', 'remodelacion', 'remodelación', 'funcional', 'etapa', 'estadio'],
+    question: '¿Cuáles son las fases de rehabilitación y cómo las uso?',
+    answer:
+      'El sistema trabaja con cuatro fases clínicas:\n\n' +
+      '1. **Aguda** — control del dolor, movilidad asistida y carga mínima.\n' +
+      '2. **Subaguda** — recuperación progresiva de rango y fuerza inicial.\n' +
+      '3. **Remodelación** — carga y tejido: fuerza, resistencia y control motor.\n' +
+      '4. **Funcional** — gesto deportivo o actividad de la vida diaria.\n\n' +
+      'Al asignar una rutina elegís la fase y el sistema ajusta la progresión sugerida.',
+    followUps: [
+      {
+        label: '¿Cómo cambio la fase de un paciente?',
+        answer:
+          'En la ficha del paciente → **Rutinas** → elegí la rutina y cambia la **fase** en el selector. La fase se guarda con la asignación y aparece en el panel del paciente.',
+        followUps: [
+          {
+            label: '¿La fase afecta los ejercicios?',
+            answer:
+              'Sí: la fase acompaña la asignación y orienta la progresión (series, repeticiones y complejidad). El fisioterapeuta siempre puede editar los parámetros manualmente.',
+          },
+        ],
+      },
+      {
+        label: '¿Puedo asignar fechas desde/hasta?',
+        answer:
+          'Sí. En el modal de asignación definí **desde** y **hasta**; la rutina se muestra al paciente solo dentro de ese rango y el calendario clínico refleja el período.',
+      },
+    ],
+  },
+  {
+    category: 'Seguridad',
+    keywords: ['dolor', 'duele', 'molestia', 'parar', 'detener', 'lesion', 'lesión', 'riesgo', 'seguridad'],
+    question: '¿Qué hago si el paciente siente dolor durante un ejercicio?',
+    answer:
+      'Regla práctica: dolor leve (≤3/10) que cede al terminar la serie es aceptable; dolor agudo, punzante o que aumenta durante el movimiento es señal de **detener**.\n\n' +
+      '1. Suspende la serie y registra la incidencia en la sesión.\n' +
+      '2. Revisa rango, carga y velocidad del ejercicio.\n' +
+      '3. Si el dolor persiste o hay inflamación, deriva a valoración médica.',
+    followUps: [
+      {
+        label: '¿Dónde registro la incidencia?',
+        answer:
+          'En el **feed clínico** del paciente (ficha → Actividad) podés anotar la incidencia con fecha y detalle; queda en el historial exportable.',
+      },
+      {
+        label: '¿Cómo ajusto la intensidad?',
+        answer:
+          'Editá la asignación: bajá series/repeticiones, reducí rango o cambiá a una variante asistida. Si es recurrente, retrocedé una fase.',
+      },
+    ],
+  },
+  {
+    category: 'Adherencia',
+    keywords: ['adherencia', 'cumplimiento', 'constancia', 'abandona', 'no hace', 'adherencia baja'],
+    question: '¿Cómo mido y mejoro la adherencia del paciente?',
+    answer:
+      'La ficha muestra el porcentaje de **adherencia** calculado sobre sesiones completadas vs. programadas.\n\n' +
+      'Para mejorarla: acortá sesiones, priorizá 3-4 ejercicios clave, activá recordatorios y revisá el progreso semanal con el paciente.',
+    followUps: [
+      {
+        label: '¿De dónde sale el porcentaje?',
+        answer:
+          'De las sesiones registradas en el período asignado: sesiones completadas ÷ sesiones esperadas. Si no hay historial suficiente se muestra sin dato en lugar de un valor inventado.',
+      },
+      {
+        label: '¿Puedo ver la racha del paciente?',
+        answer:
+          'Sí, en la gamificación del paciente: racha de días, medallas y ánimo registrado. Sirve como refuerzo conductual, no como criterio clínico.',
+      },
+    ],
+  },
+  {
+    category: 'Espejo AR',
+    keywords: ['calibrar', 'calibracion', 'calibración', 'no detecta', 'no me ve', 'camara', 'distancia'],
+    question: '¿Cómo calibro el Espejo AR si no detecta bien el cuerpo?',
+    answer:
+      'Checklist de calibración:\n\n' +
+      '1. Cuerpo completo en cuadro, a ~2 m de la cámara.\n' +
+      '2. Luz frontal suficiente, sin contraluz fuerte.\n' +
+      '3. Ropa que contraste con el fondo.\n' +
+      '4. Dispositivo estable y cámara sin obstrucciones.\n\n' +
+      'Si la detección sigue inestable, reducí la complejidad del ejercicio o bajá la resolución de la cámara.',
+    followUps: [
+      {
+        label: 'El esqueleto tiembla o salta',
+        answer:
+          'Suele ser poca luz o fondo con movimiento. El sistema suaviza las articulaciones con filtro temporal; si persiste, acercate un poco y evitá ropa holgada.',
+      },
+      {
+        label: '¿Funciona sin internet?',
+        answer:
+          'El análisis de pose corre en el dispositivo. La voz neuronal y la sincronización requieren conexión; sin red se usa la voz local del sistema.',
+      },
+    ],
+  },
+  {
+    category: 'Reportes',
+    keywords: ['exportar', 'informe', 'reporte', 'pdf', 'calendario', 'descargar', 'imprimir'],
+    question: '¿Cómo exporto el informe o el calendario de un paciente?',
+    answer:
+      'En la ficha del paciente usá el botón de **exportar calendario** (genera un .ics con las sesiones) o el **informe** con el resumen de progreso, adherencia y actividad clínica.\n\n' +
+      'Los datos salen de las sesiones registradas; si un período no tiene registros, el informe lo indica en lugar de rellenar con datos simulados.',
+    followUps: [
+      {
+        label: '¿El .ics sirve en Google Calendar?',
+        answer:
+          'Sí: es un calendario estándar iCalendar. Importalo en Google Calendar, Apple Calendar u Outlook.',
+      },
+    ],
+  },
+  {
+    category: 'Asistencia',
+    keywords: ['sin internet', 'offline', 'se corta', 'conexion', 'conexión', 'datos moviles'],
+    question: '¿Qué pasa si se corta la conexión durante una sesión?',
+    answer:
+      'La app es una PWA: la interfaz y los ejercicios ya cargados siguen disponibles offline. Las sesiones se guardan localmente y se sincronizan al recuperar la red.\n\n' +
+      'El indicador de conexión de la barra superior muestra el estado y avisa si hay datos pendientes de subir.',
+    followUps: [
+      {
+        label: '¿Puedo instalar la app?',
+        answer:
+          'Sí. Desde el navegador elegí **Instalar aplicación** (o el aviso de instalación de la app). Queda como icono en el teléfono y abre sin barra del navegador.',
+      },
+    ],
+  },
 ];
 
 /**
@@ -413,6 +540,38 @@ export const PHYSI_FAQS_PATIENT: FAQ[] = [
         label: 'Cambiar idioma o tema',
         answer:
           'El idioma (**ES/EN/PT**) y el tema claro/oscuro se cambian desde la barra superior o desde **Configuración**.',
+      },
+    ],
+  },
+  {
+    category: 'Seguridad',
+    keywords: ['dolor', 'duele', 'molestia', 'parar', 'detener', 'lastima'],
+    question: '¿Qué hago si un ejercicio me duele?',
+    answer:
+      'Detené el ejercicio si el dolor es agudo, punzante o aumenta mientras te movés.\n\n' +
+      '1. No fuerces el rango: trabajá hasta donde no haya dolor.\n' +
+      '2. Anotá qué ejercicio y en qué momento apareció.\n' +
+      '3. Avisá a tu fisioterapeuta desde el chat o en la próxima sesión.',
+    followUps: [
+      {
+        label: '¿Molestia leve es normal?',
+        answer:
+          'Una molestia leve (≤3/10) que aparece al final de la serie y cede en minutos suele ser normal al empezar. Si dura horas o aparece en reposo, consultá.',
+      },
+    ],
+  },
+  {
+    category: 'Progreso',
+    keywords: ['progreso', 'racha', 'medallas', 'animo', 'ánimo', 'puntos', 'avance'],
+    question: '¿Cómo veo mi progreso y mis rachas?',
+    answer:
+      'En tu **Inicio** y en **Progreso** ves: sesiones completadas, porcentaje de adherencia, racha de días, medallas y el registro de ánimo.\n\n' +
+      'Todo se calcula con tus sesiones reales; si todavía no hay datos, se muestra un estado vacío en lugar de cifras inventadas.',
+    followUps: [
+      {
+        label: '¿Cómo mantengo la racha?',
+        answer:
+          'Completá al menos una sesión por día. Las sesiones cortas también cuentan: mejor 5 minutos constantes que una sesión larga aislada.',
       },
     ],
   },

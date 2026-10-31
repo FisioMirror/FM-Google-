@@ -505,7 +505,7 @@ export function PatientLayout({ children }: PatientLayoutProps) {
             </button>
             <button
               onClick={() => setShowLogout(true)}
-              className="text-on-surface-variant hover:text-error transition-colors active-scale p-1 sm:p-2 rounded-full"
+              className="hidden sm:inline-flex text-on-surface-variant hover:text-error transition-colors active-scale p-1 sm:p-2 rounded-full"
               aria-label="Cerrar sesión"
             >
               <Icon name="logout" size={20} />

@@ -624,7 +624,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
             </button>
             <button
               onClick={() => setShowLogout(true)}
-              className="text-on-surface-variant hover:text-error transition-colors active-scale"
+              className="hidden sm:inline-flex text-on-surface-variant hover:text-error transition-colors active-scale"
               aria-label="Cerrar sesión"
             >
               <Icon name="logout" size={20} />

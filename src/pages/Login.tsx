@@ -12,7 +12,6 @@ import { cn } from '../lib/utils';
 import { SparkleEffect } from '../components/auth/SparkleEffect';
 import { TurnstileWidget, type TurnstileWidgetRef } from '../components/auth/TurnstileWidget';
 import { AuroraText } from '../components/ui/AuroraText';
-import { ShimmerButton } from '../components/ui/ShimmerButton';
 import { useTranslation } from 'react-i18next';
 import { LanguageSelector } from '../components/ui/LanguageSelector';
 
@@ -998,10 +997,10 @@ export function Login() {
                     onExpire={() => setTurnstileToken(null)}
                   />
 
-                  <ShimmerButton
+                  <button
                     type="submit"
                     disabled={loading || cooldown > 0}
-                    className="w-full h-12 py-0 text-sm font-bold text-white disabled:opacity-60 disabled:cursor-not-allowed disabled:shadow-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-300 focus-visible:ring-offset-2 focus-visible:ring-offset-white/70 dark:focus-visible:ring-offset-slate-900"
+                    className="group relative w-full h-12 rounded-2xl bg-gradient-to-b from-[#00726c] to-[#003f3c] text-sm font-bold text-white shadow-lg shadow-teal-900/25 border border-teal-300/25 transition-all duration-300 hover:from-[#00837c] hover:to-[#004c48] hover:shadow-xl hover:shadow-teal-900/35 active:translate-y-px disabled:opacity-60 disabled:cursor-not-allowed disabled:shadow-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-300 focus-visible:ring-offset-2 focus-visible:ring-offset-white/70 dark:focus-visible:ring-offset-slate-900"
                   >
                     {loading ? (
                       <Spinner size={18} className="text-white" />
@@ -1010,10 +1009,10 @@ export function Login() {
                     ) : (
                       <span className="flex items-center justify-center gap-2">
                         {t('auth.signIn', 'Iniciar Sesión')}
-                        <Icon name="arrow_forward" size={18} />
+                        <Icon name="arrow_forward" size={18} className="transition-transform duration-300 group-hover:translate-x-0.5" />
                       </span>
                     )}
-                  </ShimmerButton>
+                  </button>
 
                   <div className="pt-2 text-center text-xs text-slate-600 dark:text-slate-400 space-y-1.5">
                     <p>

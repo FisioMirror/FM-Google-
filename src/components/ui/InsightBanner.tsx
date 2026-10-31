@@ -1,7 +1,6 @@
 import { useState, type ReactNode } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, X } from 'lucide-react';
-import { BorderBeam } from './BorderBeam';
 import { cn } from '../../lib/utils';
 
 interface InsightBannerProps {
@@ -14,7 +13,7 @@ interface InsightBannerProps {
 }
 
 /**
- * InsightBanner (Elevated with Magic UI BorderBeam & Glassmorphism)
+ * InsightBanner (Elevated con gradiente clínico)
  */
 export function InsightBanner({
   title,
@@ -45,7 +44,6 @@ export function InsightBanner({
             className
           )}
         >
-          <BorderBeam size={80} duration={8} colorFrom="#14b8a6" colorTo="#0ea5e9" />
 
           <div className="relative z-10 flex items-start sm:items-center justify-between gap-2.5 sm:gap-4">
             <div className="flex items-start sm:items-center gap-2.5 sm:gap-4 min-w-0">
@@ -61,7 +59,7 @@ export function InsightBanner({
                     <span className="size-1 rounded-full bg-teal-400 animate-pulse" /> IA Clínica
                   </span>
                 </div>
-                <p className="text-[11px] sm:text-sm text-teal-100/80 leading-snug sm:leading-relaxed max-w-3xl line-clamp-2 sm:line-clamp-none">
+                <p className="text-[11px] sm:text-sm text-teal-100/80 leading-snug sm:leading-relaxed max-w-3xl line-clamp-3 sm:line-clamp-none">
                   {description}
                 </p>
               </div>

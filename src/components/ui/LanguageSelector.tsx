@@ -11,13 +11,12 @@ interface LanguageOption {
   code: SupportedLanguage;
   label: string;
   nativeName: string;
-  flag: string;
 }
 
 const LANGUAGES: LanguageOption[] = [
-  { code: 'es', label: 'Español', nativeName: 'Español (ES)', flag: '🇪🇸' },
-  { code: 'en', label: 'English', nativeName: 'English (US)', flag: '🇺🇸' },
-  { code: 'pt', label: 'Português', nativeName: 'Português (BR)', flag: '🇧🇷' },
+  { code: 'es', label: 'Español', nativeName: 'Español (ES)' },
+  { code: 'en', label: 'English', nativeName: 'English (US)' },
+  { code: 'pt', label: 'Português', nativeName: 'Português (BR)' },
 ];
 
 interface LanguageSelectorProps {
@@ -91,10 +90,7 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
         title={`Idioma actual: ${currentLang.nativeName}`}
         aria-expanded={isOpen}
       >
-        <span className="text-sm leading-none shrink-0" role="img" aria-label={currentLang.label}>
-          {currentLang.flag}
-        </span>
-        <span className="uppercase tracking-wider font-bold text-[11px] text-teal-700 dark:text-teal-300">
+        <span className="text-[11px] font-bold uppercase tracking-wider text-teal-700 dark:text-teal-300 shrink-0">
           {currentLang.code}
         </span>
         <ChevronDown
@@ -142,7 +138,9 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
                     )}
                   >
                     <div className="flex items-center gap-2">
-                      <span className="text-sm leading-none">{lang.flag}</span>
+                      <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 w-6">
+                        {lang.code}
+                      </span>
                       <span>{lang.nativeName}</span>
                     </div>
                     {isSelected && <Check size={14} className="text-teal-600 dark:text-teal-400 shrink-0" />}

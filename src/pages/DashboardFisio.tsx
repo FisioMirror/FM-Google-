@@ -35,8 +35,6 @@ import { ArrowRight, ChevronRight, Sparkles } from 'lucide-react';
 import { isValidUUID } from '../lib/utils';
 import { isDemoAccount } from '../lib/demoAuth';
 import { staggerContainer, staggerItem, springTactile } from '../lib/motionVariants';
-import { Button } from '../components/ui/Button';
-import { Tooltip } from '../components/ui/Tooltip';
 import { DateRangePicker, RangeCalendar, type DateRange } from '../components/ui/DateRangePicker';
 import { ScrollShadow } from '../components/ui/ScrollShadow';
 import { toast } from '../components/ui/toastApi';
@@ -691,13 +689,13 @@ export function DashboardFisio() {
         <div className="flex items-center gap-4 relative">
           <MascotAnimation type="greeting" size="md" />
           <div>
-            <div className="flex items-center gap-2 mb-1">
-              <KineticText text="FisioMirror" as="span" className="text-xs font-bold uppercase tracking-widest text-primary/80" />
-              <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-600 dark:text-teal-400 border border-teal-500/20">
+            <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mb-1">
+              <KineticText text="FisioMirror" as="span" className="text-[10px] sm:text-xs font-bold uppercase tracking-[0.18em] sm:tracking-widest text-primary/80 whitespace-nowrap" />
+              <span className="hidden sm:inline-flex text-[10px] font-semibold px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-600 dark:text-teal-400 border border-teal-500/20">
                 <ShimmerText text="Edición Clínica IA" className="text-[10px] font-bold uppercase" />
               </span>
             </div>
-            <h2 className="font-display font-headline-lg text-headline-lg-mobile lg:text-headline-lg gradient-text-living">
+            <h2 className="font-display text-2xl sm:text-headline-lg-mobile lg:text-headline-lg leading-tight gradient-text-living">
               {greeting}, <AuroraText>{user?.full_name?.split(' ')[0] || 'Doctor'}</AuroraText>
             </h2>
             <TextAnimate
@@ -732,18 +730,7 @@ export function DashboardFisio() {
                 </DateRangePicker.Popover>
               </DateRangePicker>
             </div>
-            <Tooltip content="Ver la galería en vivo de los nuevos componentes de UI" side="bottom">
-              <Button
-                variant="glow"
-                glowEffect
-                size="sm"
-                onClick={() => navigate('/ui-showcase')}
-                icon={<Sparkles size={15} />}
-                className="hidden sm:inline-flex text-xs"
-              >
-                Componentes UI
-              </Button>
-            </Tooltip>
+
             <HelpGuideButton />
           </div>
         </div>
@@ -802,7 +789,7 @@ export function DashboardFisio() {
               </div>
               
               <div className="relative z-10">
-                <p className="text-[11px] sm:text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-0.5 sm:mb-1 line-clamp-1">{card.label}</p>
+                <p className="text-[10px] sm:text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wide sm:tracking-wider leading-tight mb-1 min-h-[2.1em]">{card.label}</p>
                 {loadingKpis ? (
                   <Skeleton variant="text" width="60%" height={36} className="mt-1" />
                 ) : (
