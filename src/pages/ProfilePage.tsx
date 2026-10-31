@@ -5,7 +5,7 @@ import { GlassPanel } from '../components/ui/Glass';
 import { useAuthStore } from '../stores/authStore';
 import { supabase } from '../lib/supabase';
 import { useToast } from '../components/ui/toastApi';
-import { useTheme } from '../context/ThemeContext';
+import { useTheme } from '../context/themeApi';
 import { MedicalIcon } from '../components/ui/MedicalIcon';
 import { AnimatedTabs } from '../components/ui/AnimatedTabs';
 import { AnimatedLink } from '../components/ui/AnimatedLink';

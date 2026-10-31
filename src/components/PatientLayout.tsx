@@ -9,7 +9,7 @@ import { FloatingMenu, type FloatingMenuItem } from './ui/FloatingMenu';
 import { PhysiChatbot } from './ui/PhysiChatbot';
 import { LegalModal, type LegalDocType } from './ui/LegalModal';
 import { useAuthStore } from '../stores/authStore';
-import { useTheme } from '../context/ThemeContext';
+import { useTheme } from '../context/themeApi';
 import { useToast } from './ui/toastApi';
 import { supabase } from '../lib/supabase';
 import { cn } from '../lib/utils';

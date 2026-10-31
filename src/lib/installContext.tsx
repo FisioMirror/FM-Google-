@@ -1,27 +1,5 @@
-import { createContext, useContext, useEffect, useState, useCallback, useMemo, type ReactNode } from 'react';
-
-interface BeforeInstallPromptEvent extends Event {
-  prompt(): Promise<void>;
-  userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>;
-}
-
-interface InstallContextValue {
-  isInstalled: boolean;
-  isInstallable: boolean;
-  modalOpen: boolean;
-  openModal: () => void;
-  closeModal: () => void;
-  triggerInstall: () => Promise<'accepted' | 'dismissed' | 'unavailable'>;
-}
-
-const InstallContext = createContext<InstallContextValue>({
-  isInstalled: false,
-  isInstallable: false,
-  modalOpen: false,
-  openModal: () => {},
-  closeModal: () => {},
-  triggerInstall: async () => 'unavailable',
-});
+import { useEffect, useState, useCallback, useMemo, type ReactNode } from 'react';
+import { InstallContext, type BeforeInstallPromptEvent } from './installApi';
 
 export function InstallProvider({ children }: { children: ReactNode }) {
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
@@ -80,5 +58,3 @@ export function InstallProvider({ children }: { children: ReactNode }) {
     </InstallContext.Provider>
   );
 }
-
-export const useInstall = () => useContext(InstallContext);

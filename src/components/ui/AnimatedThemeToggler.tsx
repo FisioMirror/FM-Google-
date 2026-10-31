@@ -2,7 +2,7 @@ import { useCallback, useRef } from 'react';
 import { Moon, Sun } from 'lucide-react';
 import { flushSync } from 'react-dom';
 import { cn } from '../../lib/utils';
-import { useTheme } from '../../context/ThemeContext';
+import { useTheme } from '../../context/themeApi';
 
 interface AnimatedThemeTogglerProps extends React.ComponentPropsWithoutRef<'button'> {
   duration?: number;

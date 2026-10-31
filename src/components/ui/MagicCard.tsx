@@ -5,7 +5,7 @@ import {
   useMotionValue,
   useSpring,
 } from "framer-motion"
-import { useThemeSafe } from "@/context/ThemeContext"
+import { useThemeSafe } from "@/context/themeApi"
 import { cn } from "@/lib/utils"
 
 export interface MagicCardBaseProps {

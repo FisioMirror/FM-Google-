@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { X, Download, Smartphone } from 'lucide-react';
 import { useState } from 'react';
-import { useInstall } from '../../lib/installContext';
+import { useInstall } from '../../lib/installApi';
 
 function Toast({ message, onDone }: { message: string; onDone: () => void }) {
   return (

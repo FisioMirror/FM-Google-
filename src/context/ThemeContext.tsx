@@ -1,26 +1,5 @@
-import { createContext, useContext, useEffect, useState, useCallback, useMemo, ReactNode } from 'react'
-
-type Theme = 'light' | 'dark'
-type Handedness = 'right' | 'left'
-
-export const ZOOM_LEVELS = [80, 90, 100, 110, 120] as const
-export const FONT_SIZE_LEVELS = [14, 16, 18, 20] as const
-
-interface ThemeContextType {
-  theme: Theme
-  toggleTheme: () => void
-  setTheme: (theme: Theme) => void
-  zoom: number
-  setZoom: (zoom: number) => void
-  fontSize: number
-  setFontSize: (fontSize: number) => void
-  resetDefaults: () => void
-  handedness: Handedness
-  setHandedness: (h: Handedness) => void
-  toggleHandedness: () => void
-}
-
-export const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
+import { useEffect, useState, useCallback, useMemo, ReactNode } from 'react'
+import { ThemeContext, ZOOM_LEVELS, FONT_SIZE_LEVELS, type Theme, type Handedness } from './themeApi'
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setThemeState] = useState<Theme>(() => {
@@ -109,14 +88,4 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       {children}
     </ThemeContext.Provider>
   )
-}
-
-export function useTheme() {
-  const context = useContext(ThemeContext)
-  if (!context) throw new Error('useTheme must be used within ThemeProvider')
-  return context
-}
-
-export function useThemeSafe() {
-  return useContext(ThemeContext)
 }

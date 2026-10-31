@@ -1,22 +1,5 @@
-import { createContext, useContext, useState, useCallback, useRef, ReactNode } from 'react'
-
-type NotificationType = 'success' | 'warning' | 'error' | 'info'
-
-interface Notification {
-  id: number
-  type: NotificationType
-  title: string
-  message: string
-  time: string
-}
-
-interface NotificationContextType {
-  notifications: Notification[]
-  addNotification: (type: NotificationType, title: string, message: string) => void
-  clearAll: () => void
-}
-
-const NotificationContext = createContext<NotificationContextType | undefined>(undefined)
+import { useState, useCallback, useRef, ReactNode } from 'react'
+import { NotificationContext, type Notification, type NotificationType } from './notificationApi'
 
 let sharedAudioCtx: AudioContext | null = null
 
@@ -96,10 +79,4 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
       {children}
     </NotificationContext.Provider>
   )
-}
-
-export function useNotifications() {
-  const context = useContext(NotificationContext)
-  if (!context) throw new Error('useNotifications must be used within NotificationProvider')
-  return context
 }

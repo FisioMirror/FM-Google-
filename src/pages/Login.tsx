@@ -5,7 +5,7 @@ import { Icon } from '../components/ui/Icon';
 import { Spinner } from '../components/ui/Loader';
 import { PinInput } from '../components/ui/PinInput';
 import { useAuthStore } from '../stores/authStore';
-import { useTheme } from '../context/ThemeContext';
+import { useTheme } from '../context/themeApi';
 import { useToast } from '../components/ui/toastApi';
 import { supabase } from '../lib/supabase';
 import { cn } from '../lib/utils';

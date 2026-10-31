@@ -2,7 +2,7 @@ import { useState, useEffect, type ReactNode } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { Mail, FileText, Shield, Code2, Palette, Heart, BookOpen, Smartphone, MessageCircle, Phone, Globe, Cpu } from 'lucide-react';
-import { useTheme, FONT_SIZE_LEVELS } from '../context/ThemeContext';
+import { useTheme, FONT_SIZE_LEVELS } from '../context/themeApi';
 import { useAuthStore } from '../stores/authStore';
 import { useMediaPipeModel, type ModelPreference } from '../hooks/useMediaPipeModel';
 import { changeAppLanguage } from '../i18n';
