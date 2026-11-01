@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { ResponsiveContainer, BarChart, Bar, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceArea } from 'recharts';
@@ -6,208 +6,8 @@ import { Activity, AlertTriangle, ArrowUpRight, CheckCircle2, ChevronRight, Info
 import { GlassPanel } from '../ui/Glass';
 import { useNavigate } from 'react-router-dom';
 import { EmptyState } from '../ui/EmptyState';
-
-interface RomJointData {
-  joint: string;
-  actual: number;
-  ideal: number;
-  deficit: number;
-  percent: number;
-  unit: string;
-  clinicalNote: string;
-  status: 'optimal' | 'recovering' | 'needs_work';
-}
-
-const getRomData = (t: (key: string, options?: any) => any): RomJointData[] => [
-  {
-    joint: t('cah.shoulderFlexion'),
-    actual: 148,
-    ideal: 180,
-    deficit: 32,
-    percent: 82,
-    unit: '°',
-    clinicalNote: t('cah.goodScapulohumeralProgress'),
-    status: 'recovering',
-  },
-  {
-    joint: t('cah.kneeExtension'),
-    actual: 125,
-    ideal: 135,
-    deficit: 10,
-    percent: 93,
-    unit: '°',
-    clinicalNote: t('cah.fullTerminalExtension'),
-    status: 'optimal',
-  },
-  {
-    joint: t('cah.hipAbduction'),
-    actual: 36,
-    ideal: 45,
-    deficit: 9,
-    percent: 80,
-    unit: '°',
-    clinicalNote: t('cah.gluteusMediusStrengthening'),
-    status: 'recovering',
-  },
-  {
-    joint: t('cah.elbowFlexion'),
-    actual: 134,
-    ideal: 145,
-    deficit: 11,
-    percent: 92,
-    unit: '°',
-    clinicalNote: t('cah.optimalFunctionalArc'),
-    status: 'optimal',
-  },
-  {
-    joint: t('cah.externalRotation'),
-    actual: 68,
-    ideal: 90,
-    deficit: 22,
-    percent: 75,
-    unit: '°',
-    clinicalNote: t('cah.mildPosteriorTightness'),
-    status: 'needs_work',
-  },
-  {
-    joint: t('cah.ankleDorsiflexion'),
-    actual: 16,
-    ideal: 20,
-    deficit: 4,
-    percent: 80,
-    unit: '°',
-    clinicalNote: t('cah.sufficientForGait'),
-    status: 'recovering',
-  },
-];
-
-// Correlación Precisión vs Dolor (VAS / EVA)
-interface VasCorrelationPoint {
-  session: string;
-  precision: number;
-  vasPain: number;
-  fatigue: number;
-  load: string;
-}
-
-const getVasData = (t: (key: string, options?: any) => any): VasCorrelationPoint[] => [
-  { session: 'S1', precision: 54, vasPain: 7.5, fatigue: 8.0, load: t('cah.initialLoad') },
-  { session: 'S2', precision: 62, vasPain: 6.8, fatigue: 7.2, load: t('cah.adaptationLoad') },
-  { session: 'S3', precision: 71, vasPain: 5.5, fatigue: 6.0, load: t('cah.moderateLoad') },
-  { session: 'S4', precision: 78, vasPain: 4.2, fatigue: 5.1, load: t('cah.therapeuticLoad') },
-  { session: 'S5', precision: 84, vasPain: 3.1, fatigue: 4.2, load: t('cah.therapeuticLoad') },
-  { session: 'S6', precision: 90, vasPain: 2.2, fatigue: 3.5, load: t('cah.consolidationLoad') },
-  { session: 'S7', precision: 93, vasPain: 1.8, fatigue: 2.9, load: t('cah.consolidationLoad') },
-  { session: 'S8', precision: 96, vasPain: 1.0, fatigue: 2.1, load: t('cah.optimalLoad') },
-];
-
-// Cohortes Clínicos
-interface ClinicalCohort {
-  name: string;
-  patientsCount: number;
-  adherence: number;
-  avgQuality: number;
-  dischargeForecast: string;
-  color: string;
-}
-
-const getCohorts = (t: (key: string, options?: any) => any): ClinicalCohort[] => [
-  {
-    name: t('cah.postoperativeAclKnee'),
-    patientsCount: 18,
-    adherence: 94,
-    avgQuality: 91,
-    dischargeForecast: t('cah.n34Weeks'),
-    color: '#0d9488', // teal-600
-  },
-  {
-    name: t('cah.lowBackPainSpine'),
-    patientsCount: 26,
-    adherence: 88,
-    avgQuality: 85,
-    dischargeForecast: t('cah.n56Weeks'),
-    color: '#06b6d4', // cyan-500
-  },
-  {
-    name: t('cah.rotatorCuffShoulder'),
-    patientsCount: 14,
-    adherence: 78,
-    avgQuality: 80,
-    dischargeForecast: t('cah.n68Weeks'),
-    color: '#3b82f6', // blue-500
-  },
-  {
-    name: t('cah.geriatricsFallPrevention'),
-    patientsCount: 12,
-    adherence: 84,
-    avgQuality: 86,
-    dischargeForecast: t('cah.continuousMaintenance'),
-    color: '#10b981', // emerald-500
-  },
-  {
-    name: t('cah.neckPainErgonomics'),
-    patientsCount: 9,
-    adherence: 82,
-    avgQuality: 84,
-    dischargeForecast: t('cah.n23Weeks'),
-    color: '#8b5cf6', // purple-500
-  },
-];
-
-// Triage y Prioridades Clínicas
-interface ClinicalAlertItem {
-  id: string;
-  patientName: string;
-  patientId: string;
-  type: 'overload' | 'pain_spike' | 'dropout_risk' | 'milestone_ready';
-  title: string;
-  description: string;
-  metric: string;
-  timeAgo: string;
-}
-
-const getAlerts = (t: (key: string, options?: any) => any): ClinicalAlertItem[] => [
-  {
-    id: 'alt-1',
-    patientName: 'Lucía Mendoza',
-    patientId: 'demo-3',
-    type: 'pain_spike',
-    title: t('cah.acutePainSpike'),
-    description: t('cah.reportedIncreasedDiscomfort'),
-    metric: t('cah.metricEvaRange'),
-    timeAgo: t('cah.timeAgo45Min'),
-  },
-  {
-    id: 'alt-2',
-    patientName: 'Carlos Domínguez',
-    patientId: 'demo-2',
-    type: 'overload',
-    title: t('cah.biomechanicalCompensationDetected'),
-    description: t('cah.arVisionTrunkTilt'),
-    metric: t('cah.compensatedAngle'),
-    timeAgo: t('cah.timeAgo2Hours'),
-  },
-  {
-    id: 'alt-3',
-    patientName: 'Roberto Gómez',
-    patientId: 'demo-4',
-    type: 'dropout_risk',
-    title: t('cah.therapyDropoutRisk'),
-    description: t('cah.inactiveSixDays'),
-    metric: t('cah.adherence42'),
-    timeAgo: t('cah.timeAgo1Day'),
-  },
-  {
-    id: 'alt-4',
-    patientName: 'María Fernández',
-    patientId: 'demo-1',
-    type: 'milestone_ready',
-    title: t('cah.loadProgressionCandidate'),
-    description: t('cah.reachedPhysiologicalRom'),
-    metric: t('cah.rom93PainFree'),
-    timeAgo: t('cah.timeAgoToday'),
-  },
-];
+import { Loader2, RefreshCw } from 'lucide-react';
+import { useClinicalAnalytics } from '../../hooks/useClinicalAnalytics';
 
 const customTooltipStyle = {
   contentStyle: {
@@ -227,14 +27,67 @@ const customTooltipStyle = {
 export function ClinicalAnalyticsHub() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const ROM_DATA = getRomData(t);
-  const VAS_CORRELATION_DATA = getVasData(t);
-  const CLINICAL_COHORTS = getCohorts(t);
-  const CLINICAL_ALERTS = getAlerts(t);
-  const [selectedJoint, setSelectedJoint] = useState<string>(ROM_DATA[0].joint);
+  const { loading, error, sessions, rom, vas, cohorts, alerts, refresh } = useClinicalAnalytics();
+
+  const ROM_DATA = rom.map((point) => ({
+    ...point,
+    clinicalNote: t('cah.measuredSessions', { count: point.samples }),
+  }));
+  const VAS_CORRELATION_DATA = vas;
+  const CLINICAL_COHORTS = cohorts.map((cohort) => ({
+    ...cohort,
+    dischargeForecast:
+      cohort.avgQuality >= 80 ? t('cah.stableProgress') : t('cah.requiresReview'),
+  }));
+  const CLINICAL_ALERTS = alerts.map((alert) => ({
+    ...alert,
+    title: t(alert.titleKey),
+    description: t(alert.descriptionKey),
+    timeAgo:
+      alert.daysAgo > 0
+        ? t('cah.daysAgo', { count: alert.daysAgo })
+        : t('cah.hoursAgo', { count: Math.max(1, alert.hoursAgo) }),
+  }));
+
+  const [selectedJoint, setSelectedJoint] = useState<string>('');
   const [activeTab, setActiveTab] = useState<'rom' | 'vas' | 'cohorts'>('rom');
 
-  const hasRealData = false;
+  useEffect(() => {
+    if (ROM_DATA.length > 0 && !ROM_DATA.some((j) => j.joint === selectedJoint)) {
+      setSelectedJoint(ROM_DATA[0].joint);
+    }
+  }, [ROM_DATA, selectedJoint]);
+
+  const hasRealData = sessions.length > 0;
+  const uniquePatients = new Set(sessions.map((s) => s.pacienteId)).size;
+
+  if (loading) {
+    return (
+      <div className="flex min-h-[280px] w-full items-center justify-center gap-3 text-sm text-on-surface-variant">
+        <Loader2 className="size-4 animate-spin" />
+        <span>{t('cah.loadingAnalytics')}</span>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="space-y-4 w-full">
+        <div className="rounded-3xl border border-warning/30 bg-warning/5 p-6">
+          <p className="text-sm font-bold text-on-surface">{t('cah.analyticsError')}</p>
+          <p className="mt-1 text-xs text-on-surface-variant break-words">{error}</p>
+          <button
+            type="button"
+            onClick={refresh}
+            className="mt-4 inline-flex items-center gap-2 rounded-xl bg-primary px-4 py-2 text-xs font-bold text-on-primary"
+          >
+            <RefreshCw className="size-3.5" />
+            {t('cah.retry')}
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   if (!hasRealData) {
     return (
@@ -326,7 +179,15 @@ export function ClinicalAnalyticsHub() {
       </div>
 
       {/* Tab 1: ROM por Articulación */}
-      {activeTab === 'rom' && (
+      {activeTab === 'rom' && (ROM_DATA.length === 0 ? (
+        <EmptyState
+          type="analytics"
+          title={t('cah.noMeasurements')}
+          description={t('cah.noMeasurementsDesc')}
+          actionLabel={t('cah.retry')}
+          onAction={refresh}
+        />
+      ) : (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Main Chart */}
           <GlassPanel className="lg:col-span-2 p-6 sm:p-8 rounded-3xl border border-outline/15 shadow-sm relative overflow-hidden flex flex-col justify-between">
@@ -516,10 +377,18 @@ export function ClinicalAnalyticsHub() {
             </div>
           </GlassPanel>
         </div>
-      )}
+      ))}
 
       {/* Tab 2: Correlación Precisión vs. Dolor (VAS / EVA) */}
-      {activeTab === 'vas' && (
+      {activeTab === 'vas' && (VAS_CORRELATION_DATA.length === 0 ? (
+        <EmptyState
+          type="analytics"
+          title={t('cah.noMeasurements')}
+          description={t('cah.noMeasurementsDesc')}
+          actionLabel={t('cah.retry')}
+          onAction={refresh}
+        />
+      ) : (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <GlassPanel className="lg:col-span-2 p-6 sm:p-8 rounded-3xl border border-outline/15 shadow-sm">
             <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-6">
@@ -654,7 +523,7 @@ export function ClinicalAnalyticsHub() {
             </div>
           </GlassPanel>
         </div>
-      )}
+      ))}
 
       {/* Tab 3: Cohortes Clínicos */}
       {activeTab === 'cohorts' && (
@@ -671,7 +540,7 @@ export function ClinicalAnalyticsHub() {
                 </p>
               </div>
               <span className="text-xs font-bold px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20">
-                {t('cah.totalPatients')}
+                {uniquePatients} {t('cah.patients')}
               </span>
             </div>
 
@@ -764,6 +633,11 @@ export function ClinicalAnalyticsHub() {
           </span>
         </div>
 
+        {CLINICAL_ALERTS.length === 0 && (
+          <p className="rounded-2xl border border-outline/15 bg-surface-container-low/60 p-5 text-xs text-on-surface-variant">
+            {t('cah.noAlerts')}
+          </p>
+        )}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {CLINICAL_ALERTS.map((alert) => {
             const isWarning = alert.type === 'pain_spike' || alert.type === 'overload';
