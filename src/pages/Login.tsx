@@ -449,7 +449,7 @@ export function Login() {
     } catch {
       toast.warning('No se pudo subir la credencial', {
         description:
-          'Puedes subirla más tarde desde tu perfil. Tu cuenta se creará igualmente.',
+          t('auth.uploadLater'),
       });
       return null;
     } finally {
@@ -464,7 +464,7 @@ export function Login() {
     // Physio Step 1 transition doesn't require Turnstile yet
     if (isFisio && mode === 'register' && fisioStep === 1) {
       if (password !== confirmPassword) {
-        toast.error('Las contraseñas no coinciden');
+        toast.error(t('auth.errPasswordMismatch'));
         return;
       }
       if (!fullName.trim() || !email.trim() || !password.trim() || !cedula.trim()) {
@@ -472,7 +472,7 @@ export function Login() {
         return;
       }
       if (!telefono.trim()) {
-        toast.error('El número de teléfono es obligatorio');
+        toast.error(t('auth.errPhoneRequired'));
         return;
       }
       setFisioStep(2);
@@ -480,7 +480,7 @@ export function Login() {
     }
 
     if (!turnstileToken) {
-      toast.error('Por favor completa la verificación de seguridad Cloudflare');
+      toast.error(t('auth.errTurnstile'));
       return;
     }
 
@@ -494,7 +494,7 @@ export function Login() {
       if (!cfRes.ok || !cfData.success) {
         turnstileRef.current?.reset();
         setTurnstileToken(null);
-        toast.error('Verificación de seguridad no completada. Reintenta.');
+        toast.error(t('auth.errTurnstileRetry'));
         return;
       }
     } catch {
@@ -506,7 +506,7 @@ export function Login() {
     // ─────────────────────────────────────────────
     if (isPaciente && mode === 'login') {
       if (!email.trim() || !password.trim()) {
-        toast.error('Ingresa tu correo y contraseña');
+        toast.error(t('auth.errCredentials'));
         return;
       }
       const ok = await signInPatientWithEmail(email, password);
@@ -532,32 +532,32 @@ export function Login() {
     if (isPaciente && mode === 'register') {
       const cleanTok = token.trim();
       if (!cleanTok || cleanTok.length < 4) {
-        toast.error('Ingresa el código de 6 dígitos asignado por tu fisioterapeuta');
+        toast.error(t('auth.errCode'));
         return;
       }
       if (!email.trim() || !password.trim()) {
-        toast.error('Completa tu correo y contraseña para crear tu cuenta');
+        toast.error(t('auth.errSignup'));
         return;
       }
       if (password !== confirmPassword) {
-        toast.error('Las contraseñas no coinciden');
+        toast.error(t('auth.errPasswordMismatch'));
         return;
       }
       if (password.length < 6) {
-        toast.error('La contraseña debe tener al menos 6 caracteres');
+        toast.error(t('auth.errPasswordShort'));
         return;
       }
 
       // Special demo shortcut
       if (cleanTok === '123456' || email === 'paciente@demo.com') {
         const ok = await linkTokenToEmail(cleanTok, email, password, fullName || undefined);
-        if (ok) toast.success('Cuenta creada y vinculada con éxito. ¡Bienvenido!');
+        if (ok) toast.success(t('auth.signupLinked'));
         return;
       }
 
       const ok = await linkTokenToEmail(cleanTok, email, password, fullName || undefined);
       if (ok) {
-        toast.success('¡Cuenta creada con éxito! Tu token ha sido vinculado.');
+        toast.success(t('auth.signupTokenLinked'));
       } else {
         const currentError = useAuthStore.getState().error;
         if (currentError?.includes('Demasiados intentos')) {
@@ -573,7 +573,7 @@ export function Login() {
     // ─────────────────────────────────────────────
     if (isFisio && mode === 'login') {
       if (!email.trim() || !password.trim()) {
-        toast.error('Ingresa tu correo y contraseña');
+        toast.error(t('auth.errCredentials'));
         return;
       }
       const ok = await signIn(email, password);
@@ -594,7 +594,7 @@ export function Login() {
     // ─────────────────────────────────────────────
     if (isFisio && mode === 'register') {
       if (password !== confirmPassword) {
-        toast.error('Las contraseñas no coinciden');
+        toast.error(t('auth.errPasswordMismatch'));
         return;
       }
       if (fisioStep === 1) {
@@ -603,7 +603,7 @@ export function Login() {
           return;
         }
         if (!telefono.trim()) {
-          toast.error('El número de teléfono es obligatorio');
+          toast.error(t('auth.errPhoneRequired'));
           return;
         }
         setFisioStep(2);
@@ -674,7 +674,7 @@ export function Login() {
   const handleResetPassword = async () => {
     const cleanEmail = resetEmail.trim().toLowerCase();
     if (!cleanEmail) {
-      toast.error('Ingresa tu correo electrónico');
+      toast.error(t('auth.errEmail'));
       return;
     }
     setResetLoading(true);
@@ -688,8 +688,8 @@ export function Login() {
       const data = await res.json();
 
       if (res.ok && data.success) {
-        toast.success('Correo de recuperación enviado', {
-          description: `Hemos enviado el enlace y código de 6 dígitos a ${cleanEmail}.`,
+        toast.success(t('auth.resetSent'), {
+          description: t('auth.resetSentDesc', { email: cleanEmail }),
         });
         setShowResetModal(false);
         setResetEmail('');
@@ -703,13 +703,13 @@ export function Login() {
         } catch {
           // ignore
         }
-        toast.success('Si el correo está registrado, recibirás las instrucciones de recuperación.');
+        toast.success(t('auth.resetGeneric'));
         setShowResetModal(false);
         setResetEmail('');
         navigate(`/reset-password?email=${encodeURIComponent(cleanEmail)}`);
       }
     } catch {
-      toast.success('Si el correo está registrado, recibirás las instrucciones de recuperación.');
+      toast.success(t('auth.resetGeneric'));
       setShowResetModal(false);
       setResetEmail('');
       navigate(`/reset-password?email=${encodeURIComponent(cleanEmail)}`);
@@ -728,11 +728,11 @@ export function Login() {
       ? 'Revisa tus credenciales'
       : isPaciente
       ? mode === 'register'
-        ? 'Vincula tu token de recuperación'
-        : 'Tu recuperación empieza aquí'
+        ? t('auth.heroLinkToken')
+        : t('auth.heroPatient')
       : mode === 'register'
-      ? 'Evolución clínica personalizada'
-      : 'Gestión clínica de alto rendimiento';
+      ? t('auth.heroPatientSub')
+      : t('auth.heroFisioSub');
 
   // Dynamic titles and subtitles
   const getHeaderTitle = () => {
@@ -817,7 +817,7 @@ export function Login() {
                   FisioMirror Profesional
                 </span>
                 <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5">
-                  Tu evolución profesional comienza aquí.
+                  {t('auth.tagline')}
                 </p>
               </div>
               <div className="flex items-center gap-3">
@@ -936,7 +936,7 @@ export function Login() {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder={t('auth.email', 'Correo electrónico')}
-                        aria-label="Correo electrónico del paciente"
+                        aria-label={t('auth.ariaPatientEmail')}
                         autoComplete="email"
                         required
                         className="w-full rounded-2xl border border-slate-200/80 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 pl-11 pr-4 py-3.5 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 outline-none transition-all focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20 dark:focus:border-teal-400 dark:focus:ring-teal-400/20 shadow-sm"
@@ -954,7 +954,7 @@ export function Login() {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         placeholder={t('auth.password', 'Contraseña')}
-                        aria-label="Contraseña del paciente"
+                        aria-label={t('auth.ariaPatientPass')}
                         autoComplete="current-password"
                         required
                         className="w-full rounded-2xl border border-slate-200/80 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 pl-11 pr-11 py-3.5 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 outline-none transition-all focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20 dark:focus:border-teal-400 dark:focus:ring-teal-400/20 shadow-sm"
@@ -1044,7 +1044,7 @@ export function Login() {
                   <div className="space-y-3">
                     <div>
                       <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5 text-center">
-                        Código de Acceso (6 dígitos)
+                        {t('auth.accessCode')}
                       </label>
                       <PinInput
                         value={token}
@@ -1065,7 +1065,7 @@ export function Login() {
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        placeholder="Tu correo electrónico personal"
+                        placeholder={t('auth.phPersonalEmail')}
                         autoComplete="email"
                         required
                         className="w-full rounded-2xl border border-slate-200/80 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 pl-11 pr-4 py-3 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 outline-none transition-all focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20 dark:focus:border-teal-400 dark:focus:ring-teal-400/20 shadow-sm"
@@ -1082,7 +1082,7 @@ export function Login() {
                         type={showPassword ? 'text' : 'password'}
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        placeholder="Crear contraseña"
+                        placeholder={t('auth.phCreatePass')}
                         autoComplete="new-password"
                         required
                         className="w-full rounded-2xl border border-slate-200/80 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 pl-11 pr-11 py-3 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 outline-none transition-all focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20 dark:focus:border-teal-400 dark:focus:ring-teal-400/20 shadow-sm"
@@ -1107,7 +1107,7 @@ export function Login() {
                         type={showPassword ? 'text' : 'password'}
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
-                        placeholder="Confirmar contraseña"
+                        placeholder={t('auth.phConfirmPass')}
                         autoComplete="new-password"
                         required
                         className={cn(
@@ -1169,13 +1169,13 @@ export function Login() {
                   </button>
 
                   <div className="text-center text-xs text-slate-600 dark:text-slate-400 pt-1">
-                    <span>¿Ya vinculaste tu cuenta? </span>
+                    <span>{t('auth.alreadyLinked')}</span>
                     <button
                       type="button"
                       onClick={() => switchMode('login')}
                       className="font-bold text-[#00504d] dark:text-[#8ad3cf] hover:underline"
                     >
-                      Iniciar Sesión
+                      {t('auth.signIn')}
                     </button>
                   </div>
                 </motion.div>
@@ -1224,7 +1224,7 @@ export function Login() {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         placeholder="Contraseña"
-                        aria-label="Contraseña del fisioterapeuta"
+                        aria-label={t('auth.ariaFisioPass')}
                         autoComplete="current-password"
                         required
                         className="w-full rounded-2xl border border-slate-200/80 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 pl-11 pr-11 py-3.5 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 outline-none transition-all focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20 dark:focus:border-teal-400 dark:focus:ring-teal-400/20 shadow-sm"
@@ -1246,7 +1246,7 @@ export function Login() {
                       onClick={() => setShowResetModal(true)}
                       className="rounded px-1 -mx-1 text-xs font-semibold text-[#00504d] dark:text-[#8ad3cf] hover:underline transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00504d]/40 dark:focus-visible:ring-teal-400/50"
                     >
-                      ¿Olvidaste tu contraseña?
+                      {t('auth.forgotPassword')}
                     </button>
                   </div>
 
@@ -1276,14 +1276,14 @@ export function Login() {
                       <Spinner size={18} className="text-white" />
                     ) : (
                       <>
-                        Iniciar Sesión
+                        {t('auth.signIn')}
                         <Icon name="login" size={18} />
                       </>
                     )}
                   </button>
 
                   <div className="pt-2 text-center text-xs text-slate-600 dark:text-slate-400">
-                    <span>¿Nuevo profesional en FisioMirror? </span>
+                    <span>{t('auth.newPro')}</span>
                     <button
                       type="button"
                       onClick={() => switchMode('register')}
@@ -1344,7 +1344,7 @@ export function Login() {
                           </div>
                           <div>
                             <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                              Contraseña <span className="text-red-500">*</span>
+                              {t('auth.password')} <span className="text-red-500">*</span>
                             </label>
                             <input
                               type={showPassword ? 'text' : 'password'}
@@ -1357,7 +1357,7 @@ export function Login() {
                           </div>
                           <div>
                             <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                              Confirmar Contraseña <span className="text-red-500">*</span>
+                              {t('auth.confirmPassword')} <span className="text-red-500">*</span>
                             </label>
                             <input
                               type={showPassword ? 'text' : 'password'}
@@ -1396,7 +1396,7 @@ export function Login() {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                           <div>
                             <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                              Cédula / Documento <span className="text-red-500">*</span>
+                              {t('auth.idDoc')} <span className="text-red-500">*</span>
                             </label>
                             <input
                               value={cedula}
@@ -1408,7 +1408,7 @@ export function Login() {
                           </div>
                           <div>
                             <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                              Teléfono / WhatsApp <span className="text-red-500">*</span>
+                              {t('auth.phone')} <span className="text-red-500">*</span>
                             </label>
                             <input
                               value={telefono}
@@ -1426,7 +1426,7 @@ export function Login() {
                             <input
                               value={universidad}
                               onChange={(e) => setUniversidad(e.target.value)}
-                              placeholder="Nombre de la Institución"
+                              placeholder={t('auth.phInstitution')}
                               className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 px-3.5 py-2.5 text-sm text-slate-900 dark:text-slate-100 outline-none focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20"
                             />
                           </div>
@@ -1443,14 +1443,14 @@ export function Login() {
                           </div>
                           <div>
                             <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                              Año de Formación
+                              {t('auth.gradYear')}
                             </label>
                             <select
                               value={anioEgreso}
                               onChange={(e) => setAnioEgreso(e.target.value)}
                               className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 px-3.5 py-2.5 text-sm text-slate-900 dark:text-slate-100 outline-none focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20 cursor-pointer"
                             >
-                              <option value="">Selecciona un año</option>
+                              <option value="">{t('auth.selectYear')}</option>
                               {[2025, 2024, 2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016, 2015].map((y) => (
                                 <option key={y} value={y}>
                                   {y}
@@ -1463,7 +1463,7 @@ export function Login() {
 
                         <div>
                           <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                            Especialidades Clínicas
+                            {t('auth.specialties')}
                           </label>
                           <div className="flex flex-wrap gap-2 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 min-h-[46px] items-center">
                             {especialidadesSel.map((esp) => (
@@ -1491,7 +1491,7 @@ export function Login() {
                                 }}
                                 className="bg-transparent text-xs text-slate-700 dark:text-slate-300 outline-none cursor-pointer"
                               >
-                                <option value="">+ Añadir...</option>
+                                <option value="">{t('auth.addOption')}</option>
                                 {especialidadesOpts
                                   .filter((o) => !especialidadesSel.includes(o))
                                   .map((o) => (
@@ -1556,7 +1556,7 @@ export function Login() {
                                   <Icon name="upload_file" size={26} />
                                 </div>
                                 <span className="font-bold text-sm text-[#00504d] dark:text-[#8ad3cf]">
-                                  Cédula Profesional o Título
+                                  {t('auth.profLicense')}
                                 </span>
                                 <p className="text-xs text-slate-600 dark:text-slate-400">
                                   Arrastra o selecciona un archivo (PDF o Imagen)
@@ -1576,7 +1576,7 @@ export function Login() {
                         <div className="flex gap-3 p-3.5 bg-teal-50 dark:bg-teal-950/40 rounded-xl border border-teal-200/60 dark:border-teal-800/40">
                           <Icon name="verified_user" filled size={20} className="text-[#00504d] dark:text-teal-400 shrink-0 mt-0.5" />
                           <p className="text-xs text-[#00504d] dark:text-teal-200 leading-relaxed font-medium">
-                            Tu cuenta se activará tras la validación administrativa. Podrás acceder de inmediato en modo preliminar.
+                            {t('auth.pendingValidation')}
                           </p>
                         </div>
 
@@ -1657,13 +1657,13 @@ export function Login() {
                   </button>
 
                   <div className="text-center text-xs text-slate-600 dark:text-slate-400 pt-1">
-                    <span>¿Ya tienes cuenta profesional? </span>
+                    <span>{t('auth.hasAccount')}</span>
                     <button
                       type="button"
                       onClick={() => switchMode('login')}
                       className="font-bold text-[#00504d] dark:text-[#8ad3cf] hover:underline"
                     >
-                      Iniciar Sesión
+                      {t('auth.signIn')}
                     </button>
                   </div>
                 </motion.div>
@@ -1675,7 +1675,7 @@ export function Login() {
         {/* Demo Fast Access Buttons */}
         <div className="w-full max-w-[480px] flex flex-col items-center gap-y-2 mt-5">
           <span className="text-[11px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest">
-            Acceso Rápido de Prueba
+            {t('auth.quickDemo')}
           </span>
           <div className="flex flex-wrap justify-center gap-2.5">
             <button
@@ -1720,7 +1720,7 @@ export function Login() {
           >
             <img
               src={LOGIN_BG_URL}
-              alt="Sesión de rehabilitación interactiva"
+              alt={t('auth.altRehab')}
               className="h-full w-full object-cover object-center"
               onError={(e) => {
                 (e.currentTarget as HTMLImageElement).style.display = 'none';
@@ -1841,7 +1841,7 @@ export function Login() {
                 <Icon name="lock_reset" filled size={24} />
               </div>
               <h3 className="font-extrabold text-xl text-center text-[#00504d] dark:text-[#8ad3cf] mb-1">
-                Recuperar Contraseña
+                {t('auth.recoverPassword')}
               </h3>
               <p className="text-xs text-slate-600 dark:text-slate-400 text-center mb-5 leading-relaxed">
                 Ingresa tu correo y te enviaremos un enlace seguro para restablecer tu acceso.
@@ -1857,7 +1857,7 @@ export function Login() {
                   type="email"
                   value={resetEmail}
                   onChange={(e) => setResetEmail(e.target.value)}
-                  placeholder="Correo electrónico"
+                  placeholder={t('auth.email')}
                   className="w-full pl-10 pr-4 py-2.5 rounded-xl text-sm border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 outline-none focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20"
                 />
               </div>
@@ -1890,7 +1890,7 @@ export function Login() {
                   }}
                   className="text-xs text-primary dark:text-teal-400 hover:underline font-semibold"
                 >
-                  ¿Tienes el enlace o deseas restablecer directamente? Pulsa aquí
+                  {t('auth.hasLinkReset')}
                 </button>
               </div>
             </motion.div>
@@ -1918,10 +1918,10 @@ export function Login() {
                 <Icon name="check_circle" filled size={38} />
               </div>
               <h3 className="font-extrabold text-2xl text-[#00504d] dark:text-[#8ad3cf]">
-                ¡Cuenta Creada con Éxito!
+                {t('auth.successTitle')}
               </h3>
               <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-                Tus datos han sido registrados correctamente en FisioMirror. Ya puedes iniciar sesión para acceder a tu plataforma clínica.
+                {t('auth.successBody')}
               </p>
               <button
                 type="button"
@@ -1932,7 +1932,7 @@ export function Login() {
                 }}
                 className="w-full h-12 bg-[#00504d] dark:bg-teal-600 text-white rounded-2xl font-bold text-sm hover:bg-[#0c403d] dark:hover:bg-teal-500 active:scale-95 transition-all shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00504d]/40 dark:focus-visible:ring-teal-400/50 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-900"
               >
-                Ir a Iniciar Sesión
+                {t('auth.goToLogin')}
               </button>
             </motion.div>
           </motion.div>
