@@ -17,8 +17,7 @@ import { formatAIReport } from '../lib/formatReport';
 import MascotAnimation from '../components/ui/MascotAnimation';
 import { AuroraText } from '../components/ui/AuroraText';
 import { BorderBeam } from '../components/ui/BorderBeam';
-import { ConfettiSideCannons } from '../components/ui/ConfettiButton';
-import { ClinicalActivityFeed, ClinicalNotificationCard } from '../components/ui/ClinicalActivityFeed';
+import { ClinicalActivityFeed, type ClinicalFeedItem } from '../components/ui/ClinicalActivityFeed';
 import { KineticText } from '../components/ui/KineticText';
 import { ClinicalHighlighter } from '../components/ui/Highlighter';
 import { PulsatingButton } from '../components/ui/PulsatingButton';
@@ -233,7 +232,9 @@ export function DashboardFisio() {
   const user = useAuthStore((s) => s.user);
   const navigate = useNavigate();
   const [kpi, setKpi] = useState<KpiData>(emptyKpi);
+  const [feedItems, setFeedItems] = useState<ClinicalFeedItem[]>([]);
   const [insight, setInsight] = useState<string | null>(null);
+  const [insightTrace, setInsightTrace] = useState<string | null>(null);
   const [insightLoading, setInsightLoading] = useState(false);
   const [priorities, setPriorities] = useState<Priority[]>([]);
   const [checkedPriorities, setCheckedPriorities] = useState<boolean[]>([]);
@@ -506,10 +507,67 @@ export function DashboardFisio() {
     }
   }, [user]);
 
+  const loadFeed = useCallback(async () => {
+    try {
+      const { data: links } = await supabase
+        .from('pacientes_terapeutas')
+        .select('paciente_id')
+        .eq('terapeuta_id', user?.id);
+      const ids = (links || []).map((l) => l.paciente_id).filter(Boolean);
+      if (ids.length === 0) { setFeedItems([]); return; }
+
+      const { data: sessions } = await supabase
+        .from('sesiones_completadas')
+        .select('id, paciente_id, ejercicio_nombre, dolor_reportado, calidad_ejecucion, fecha')
+        .in('paciente_id', ids)
+        .order('fecha', { ascending: false })
+        .limit(6);
+      const rows = sessions || [];
+      if (rows.length === 0) { setFeedItems([]); return; }
+
+      const { data: profiles } = await supabase
+        .from('profiles')
+        .select('id, full_name')
+        .in('id', Array.from(new Set(rows.map((r) => r.paciente_id).filter(Boolean))));
+      const nameOf = new Map((profiles || []).map((p: { id: string; full_name: string | null }) => [p.id, p.full_name]));
+
+      const timeAgo = (iso: string | null) => {
+        if (!iso) return '';
+        const diffMin = Math.max(0, Math.round((Date.now() - new Date(iso).getTime()) / 60000));
+        if (diffMin < 1) return 'Ahora';
+        if (diffMin < 60) return `Hace ${diffMin} min`;
+        const h = Math.round(diffMin / 60);
+        if (h < 24) return `Hace ${h} h`;
+        return new Date(iso).toLocaleDateString(currentLocale());
+      };
+
+      setFeedItems(rows.map((r) => {
+        // calidad_ejecucion puede venir 0..1 o 0..100 según el origen del registro.
+        const rawQ = typeof r.calidad_ejecucion === 'number' ? r.calidad_ejecucion : null;
+        const calidad = rawQ === null ? null : Math.min(100, Math.round(rawQ > 1 ? rawQ : rawQ * 100));
+        const hasPain = typeof r.dolor_reportado === 'number' && r.dolor_reportado > 5;
+        const cat: ClinicalFeedItem['category'] = hasPain ? 'alerta' : 'sesion';
+        return {
+          id: r.id,
+          name: `${nameOf.get(r.paciente_id) || 'Paciente'} · ${r.ejercicio_nombre || 'Sesión'}`,
+          description: [calidad !== null ? `Calidad de ejecución ${calidad}%` : null, typeof r.dolor_reportado === 'number' ? `Dolor EVA ${r.dolor_reportado}/10` : null].filter(Boolean).join(' · ') || 'Sesión registrada',
+          time: timeAgo(r.fecha),
+          icon: <Icon name={hasPain ? 'warning' : 'check_circle'} size={16} className={hasPain ? 'text-amber-500' : 'text-emerald-500'} />,
+          badge: calidad !== null ? `Calidad ${calidad}%` : 'Sesión',
+          category: cat,
+          color: hasPain ? '#f59e0b' : '#10b981',
+        };
+      }));
+    } catch {
+      setFeedItems([]);
+    }
+  }, [user]);
+
   useEffect(() => {
     loadKpis();
     loadPriorities();
-  }, [loadKpis, loadPriorities]);
+    loadFeed();
+  }, [loadKpis, loadPriorities, loadFeed]);
 
   const loadInsight = useCallback(async () => {
     setInsightLoading(true);
@@ -521,6 +579,7 @@ export function DashboardFisio() {
         .eq('terapeuta_id', user?.id);
 
       let patientSummary = 'Sin datos de pacientes.';
+      let trace = 'Sin datos';
       if (links && links.length > 0) {
         const ids = links.map((l) => l.paciente_id);
         const { data: profiles } = await supabase
@@ -540,8 +599,10 @@ export function DashboardFisio() {
           : 0;
 
         patientSummary = `Pacientes: ${profiles?.length || 0}, Sesiones recientes: ${totalSessions}, Adherencia promedio: ${avgAdherence}%. ${profiles?.map(p => p.full_name).join(', ') || ''}`;
+        trace = `${profiles?.length || 0} paciente(s) · ${totalSessions} sesión(es) analizadas`;
       }
 
+      setInsightTrace(trace);
       const result = await runAIJob('insights', {
         userPrompt: `Genera un insight clínico breve para el fisioterapeuta basado en estos datos reales: ${patientSummary}`,
       });
@@ -917,9 +978,12 @@ export function DashboardFisio() {
                 <Icon name="schedule" size={14} className="opacity-60" />
                 <span>{new Date().toLocaleString(currentLocale(), { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}</span>
               </div>
-              <span className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">
-                <Icon name="auto_awesome" size={12} className="text-primary" />
-                Generado por IA
+              <span
+                className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-on-surface-variant"
+                title={insightTrace ? `Trazabilidad: ${insightTrace} · fuente Supabase` : 'Sin datos analizados'}
+              >
+                <Icon name="verified" size={12} className="text-primary" />
+                IA · {insightTrace || 'sin datos'} · Supabase
               </span>
             </div>
 
@@ -1090,20 +1154,6 @@ export function DashboardFisio() {
               </p>
             </div>
 
-            <div className="pt-2">
-              <ClinicalNotificationCard
-                item={{
-                  id: 'notif-featured',
-                  name: 'Telemetría Clínica Activa',
-                  description: `${displayedPatients.length} expedientes sincronizados con streaming angular`,
-                  time: 'Ahora',
-                  icon: <Icon name="sync" size={16} className="text-teal-500" />,
-                  badge: 'MediaPipe Live',
-                  category: 'sesion',
-                  color: 'bg-teal-500/10 text-teal-600 dark:text-teal-400 border-teal-500/20',
-                }}
-              />
-            </div>
           </div>
 
           <div className="relative z-10 pt-6 border-t border-outline-variant/20 flex flex-wrap items-center gap-3">
@@ -1113,17 +1163,11 @@ export function DashboardFisio() {
             >
               Ver Expedientes
             </InteractiveHoverButton>
-            <ConfettiSideCannons
-              className="px-4 py-2.5 rounded-xl text-xs font-bold"
-              onClick={() => toast.success('¡Celebración disparada!', { description: 'Ráfaga festiva de objetivos clínicos cumplidos.' })}
-            >
-              Disparar Celebración
-            </ConfettiSideCannons>
           </div>
         </GlassPanel>
 
         <div className="lg:col-span-7">
-          <ClinicalActivityFeed delay={2600} />
+          <ClinicalActivityFeed delay={2600} items={feedItems} />
         </div>
       </div>
 

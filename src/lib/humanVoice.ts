@@ -97,7 +97,8 @@ export function getVoiceProvider(): VoiceProvider {
   if (typeof localStorage === 'undefined') return 'fish_audio';
   if (localStorage.getItem('fisio_voice_mode') === 'device') return 'device';
   const stored = localStorage.getItem('fisio_voice_provider') as VoiceProvider;
-  if (stored === 'device') return 'auto';
+  // Fish Audio es el proveedor predeterminado absoluto; 'device' solo se usa
+  // cuando el modo de voz activo es local (ver más arriba).
   if (stored && ['auto', 'neural', 'fish_audio'].includes(stored)) {
     return stored;
   }

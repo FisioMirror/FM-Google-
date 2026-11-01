@@ -1036,15 +1036,15 @@ export function PatientsPage() {
             </div>
 
             <div className="grid grid-cols-2 gap-3">
-              <div className="p-3 rounded-xl bg-surface-container/60 border border-outline-variant/25">
+              <div className="p-3 rounded-xl bg-surface-container/85 border border-outline-variant/40">
                 <span className="text-2xs uppercase font-bold text-outline block">{t('patients.sessionsDone')}</span>
                 <p className="font-bold text-on-surface mt-0.5 tabular-nums">{quickFicha.sessionCount}</p>
               </div>
-              <div className="p-3 rounded-xl bg-surface-container/60 border border-outline-variant/25">
+              <div className="p-3 rounded-xl bg-surface-container/85 border border-outline-variant/40">
                 <span className="text-2xs uppercase font-bold text-outline block">{t('patients.lastActivity')}</span>
                 <p className="font-semibold text-on-surface mt-0.5 text-xs">{quickFicha.lastSession}</p>
               </div>
-              <div className="p-3 rounded-xl bg-surface-container/60 border border-outline-variant/25 col-span-2">
+              <div className="p-3 rounded-xl bg-surface-container/85 border border-outline-variant/40 col-span-2">
                 <span className="text-2xs uppercase font-bold text-outline block">{t('patients.diagnosisPathology')}</span>
                 <p className="font-semibold text-on-surface mt-0.5 text-sm">{quickFicha.condition}</p>
                 {quickFicha.patologia && (
@@ -1052,7 +1052,7 @@ export function PatientsPage() {
                 )}
               </div>
               {typeof quickFicha.adherencia === 'number' && (
-                <div className="p-3 rounded-xl bg-surface-container/60 border border-outline-variant/25 col-span-2">
+                <div className="p-3 rounded-xl bg-surface-container/85 border border-outline-variant/40 col-span-2">
                   <div className="flex items-center justify-between">
                     <span className="text-2xs uppercase font-bold text-outline">{t('patients.adherence', 'Adherencia')}</span>
                     <span className="text-xs font-extrabold text-on-surface tabular-nums">{quickFicha.adherencia}%</span>

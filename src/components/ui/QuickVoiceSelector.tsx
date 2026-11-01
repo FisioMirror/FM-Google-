@@ -128,7 +128,7 @@ export function QuickVoiceSelector({
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 8, scale: 0.95 }}
               transition={{ duration: 0.2, ease: 'easeOut' }}
-              className="fixed inset-x-3 bottom-3 z-[150] max-h-[70vh] overflow-y-auto overscroll-contain rounded-3xl bg-surface/98 dark:bg-surface-container/98 backdrop-blur-2xl border border-outline-variant/40 dark:border-outline-variant/30 shadow-2xl p-4 text-on-surface sm:absolute sm:inset-x-auto sm:bottom-auto sm:right-0 sm:top-full sm:mt-2 sm:w-96 sm:max-h-[min(70vh,32rem)] sm:p-5"
+              className="fixed inset-x-3 bottom-3 z-[150] max-h-[min(75vh,34rem)] w-auto overflow-y-auto overflow-x-hidden overscroll-contain rounded-3xl bg-surface/95 dark:bg-surface-container/95 backdrop-blur-2xl border border-outline-variant/40 dark:border-outline-variant/35 shadow-2xl p-4 pb-[max(1rem,env(safe-area-inset-bottom))] text-on-surface sm:absolute sm:inset-x-auto sm:bottom-auto sm:right-0 sm:top-full sm:mt-2 sm:w-[24rem] sm:max-h-[min(70vh,32rem)] sm:p-5"
             >
               {/* Header */}
               <div className="flex items-center justify-between pb-3 border-b border-outline-variant/25 dark:border-outline-variant/25">
@@ -169,7 +169,7 @@ export function QuickVoiceSelector({
                       <span className="text-xs font-bold">Dr. Physi</span>
                       {gender === 'male' && <Check className="size-3.5 text-teal-600 dark:text-teal-400" />}
                     </div>
-                    <p className="text-[10px] text-on-surface-variant leading-tight">
+                    <p className="text-[10px] text-on-surface-variant leading-tight break-words">
                       Masculino cálido, empático y profesional.
                     </p>
                   </button>
@@ -187,7 +187,7 @@ export function QuickVoiceSelector({
                       <span className="text-xs font-bold">Dra. Physi</span>
                       {gender === 'female' && <Check className="size-3.5 text-teal-600 dark:text-teal-400" />}
                     </div>
-                    <p className="text-[10px] text-on-surface-variant leading-tight">
+                    <p className="text-[10px] text-on-surface-variant leading-tight break-words">
                       Femenina suave, articulada y motivadora.
                     </p>
                   </button>
@@ -211,12 +211,9 @@ export function QuickVoiceSelector({
                         : 'bg-surface-container/50 border-outline-variant/20 hover:border-teal-500/30 text-on-surface'
                     }`}
                   >
-                    <div className="pr-2">
+                    <div className="pr-2 min-w-0">
                       <div className="flex items-center gap-1.5">
-                        <span className="text-xs font-bold">Voz Neuronal Gratuita</span>
-                        <span className="text-[9px] font-bold px-1.5 py-0.2 rounded-full bg-emerald-500/20 text-emerald-700 dark:text-emerald-300">
-                          Recomendado
-                        </span>
+                        <span className="text-xs font-bold break-words">Voz Neuronal Gratuita</span>
                       </div>
                       <p className="text-[11px] text-on-surface-variant">
                         Alta fidelidad, sin latencia (&lt;350ms) y 100% gratuita sin claves.
@@ -237,9 +234,12 @@ export function QuickVoiceSelector({
                         : 'bg-surface-container/50 border-outline-variant/20 hover:border-teal-500/30 text-on-surface'
                     }`}
                   >
-                    <div className="pr-2">
+                    <div className="pr-2 min-w-0">
                       <div className="flex items-center gap-1.5">
                         <span className="text-xs font-bold">Fish Audio S2.1 Pro</span>
+                        <span className="text-[9px] font-bold px-1.5 py-0.2 rounded-full bg-emerald-500/20 text-emerald-700 dark:text-emerald-300">
+                          Predeterminada
+                        </span>
                         <span className="text-[9px] font-bold px-1.5 py-0.2 rounded-full bg-blue-500/20 text-blue-700 dark:text-blue-300">
                           Clave Opcional
                         </span>
@@ -263,7 +263,7 @@ export function QuickVoiceSelector({
                         : 'bg-surface-container/50 border-outline-variant/20 hover:border-teal-500/30 text-on-surface'
                     }`}
                   >
-                    <div className="pr-2">
+                    <div className="pr-2 min-w-0">
                       <div className="flex items-center gap-1.5">
                         <span className="text-xs font-bold">Síntesis Local (Offline)</span>
                         <span className="text-[9px] font-bold px-1.5 py-0.2 rounded-full bg-amber-500/20 text-amber-700 dark:text-amber-300">

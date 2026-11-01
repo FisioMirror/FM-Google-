@@ -459,9 +459,14 @@ export function PatientDashboard() {
       {/* Gamificación Interactiva & Registro del Umbral de Dolor */}
       <div className="space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-3xl bg-surface/80 dark:bg-surface-container/60 border border-outline/10 shadow-sm">
-          <LevelProgressRibbon currentLevel={3} currentXp={380} nextLevelXp={500} className="w-full sm:w-auto" />
+          <LevelProgressRibbon
+            currentLevel={Math.max(1, Math.floor((kpi.totalSessions * 40) / 500) + 1)}
+            currentXp={(kpi.totalSessions * 40) % 500}
+            nextLevelXp={500}
+            className="w-full sm:w-auto"
+          />
           <span className="text-xs font-bold text-teal-600 dark:text-teal-400">
-            Fase de Recuperación Articular • Nivel 3
+            Fase de Recuperación Articular • Nivel {Math.max(1, Math.floor((kpi.totalSessions * 40) / 500) + 1)}
           </span>
         </div>
 

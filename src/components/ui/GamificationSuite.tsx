@@ -46,7 +46,9 @@ export const StreakFlameCounter: React.FC<StreakFlameCounterProps> = ({
           </span>
         </div>
         <p className="text-[11px] text-slate-600 dark:text-slate-300 font-medium">
-          ¡Constancia clínica ejemplar! Multiplicador de XP <strong className="text-amber-500">x1.5 activo</strong>.
+          {streakDays > 0
+            ? <>¡Constancia clínica ejemplar! Multiplicador de XP <strong className="text-amber-500">x1.5 activo</strong>.</>
+            : <>Completa tu primera sesión para iniciar tu racha clínica.</>}
         </p>
       </div>
     </motion.div>
