@@ -375,7 +375,7 @@ export const en: TranslationSchema = {
     quickCard: "Quick Card",
     record: "Record",
     progress: "Progress",
-    clinicalDirectory: "Clinical Directory ({{n}})",
+    clinicalDirectory: "Clinical Directory",
     activationKeys: "Patient Activation Keys",
     emitNewKey: "Issue New Key",
     activationCode: "Activation Code",

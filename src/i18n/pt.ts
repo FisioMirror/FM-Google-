@@ -375,7 +375,7 @@ export const pt: TranslationSchema = {
     quickCard: "Ficha Rápida",
     record: "Prontuário",
     progress: "Progresso",
-    clinicalDirectory: "Diretório Clínico ({{n}})",
+    clinicalDirectory: "Diretório Clínico",
     activationKeys: "Chaves de Ativação para Pacientes",
     emitNewKey: "Emitir Nova Chave",
     activationCode: "Código de Ativação",

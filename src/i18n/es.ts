@@ -379,7 +379,7 @@ export const es = {
     quickCard: "Ficha Rápida",
     record: "Expediente",
     progress: "Progreso",
-    clinicalDirectory: "Directorio Clínico ({{n}})",
+    clinicalDirectory: "Directorio Clínico",
     activationKeys: "Llaves de Activación para Pacientes",
     emitNewKey: "Emitir Nueva Llave",
     activationCode: "Código de Activación",
