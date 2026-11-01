@@ -329,9 +329,9 @@ export function SettingsPage() {
               <BookOpen size={24} className="text-teal-600 dark:text-teal-400" />
             </div>
             <div>
-              <p className="font-semibold text-on-surface">Palabra de Fortaleza & Fe</p>
+              <p className="font-semibold text-on-surface">{t('settings.wordOfStrength')}</p>
               <p className="text-sm text-on-surface-variant">
-                Muestra versículos de sanidad, constancia y perseverancia en tu recuperación
+                {t('settings.verseDesc')}
               </p>
             </div>
           </div>
@@ -494,7 +494,7 @@ export function SettingsPage() {
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <p className="font-semibold text-on-surface">Motor de Voz en Vivo (TTS)</p>
+                  <p className="font-semibold text-on-surface">{t('settings.liveTtsEngine')}</p>
                   <span className="px-2 py-0.5 text-xs font-medium rounded-full bg-teal-500/15 text-teal-700 dark:text-teal-300">
                     {voiceMode === 'humanized' ? 'Fish Audio IA' : 'Modo Dispositivo'}
                   </span>
@@ -540,7 +540,7 @@ export function SettingsPage() {
                 {voiceMode === 'humanized' && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
               </div>
               <div>
-                <p className="text-xs font-bold text-on-surface">Voz Humanizada Clínica (Recomendada)</p>
+                <p className="text-xs font-bold text-on-surface">{t('settings.neuralVoice')}</p>
                 <p className="text-[11px] text-on-surface-variant leading-relaxed">
                   Fish Audio S2.1 Pro / Neural en vivo. Máxima empatía y articulación médica fluida.
                 </p>
@@ -564,7 +564,7 @@ export function SettingsPage() {
                 {voiceMode === 'device' && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
               </div>
               <div>
-                <p className="text-xs font-bold text-on-surface">Voz del Dispositivo (Offline)</p>
+                <p className="text-xs font-bold text-on-surface">{t('settings.deviceVoice')}</p>
                 <p className="text-[11px] text-on-surface-variant leading-relaxed">
                   Sintetizador Web Speech del sistema operativo. Sin consumo de red, ideal para baja señal.
                 </p>
@@ -584,7 +584,7 @@ export function SettingsPage() {
       <GlassPanel className="p-6 rounded-2xl relative overflow-hidden">
         <div className="blob-cyan absolute -top-12 -right-12 w-32 h-32 opacity-20 pointer-events-none" />
         <div className="relative space-y-5">
-          <h3 className="font-semibold text-on-surface gradient-text-cyan">Preferencias de Notificaciones</h3>
+          <h3 className="font-semibold text-on-surface gradient-text-cyan">{t('settings.notifPrefs')}</h3>
           {[
             { icon: 'mail', color: 'text-primary', bg: 'bg-primary/10', title: 'Notificaciones por Email', desc: 'Recibe actualizaciones y recordatorios en tu correo', value: notifEmail, onChange: setNotifEmail },
             { icon: 'notifications_active', color: 'text-secondary', bg: 'bg-secondary-container/20', title: 'Notificaciones Push', desc: 'Recibe alertas en tiempo real en tu dispositivo', value: notifPush, onChange: setNotifPush },
@@ -619,7 +619,7 @@ export function SettingsPage() {
       <GlassPanel className="p-6 rounded-2xl relative overflow-hidden">
         <div className="blob-teal absolute -top-12 -right-12 w-32 h-32 opacity-20 pointer-events-none" />
         <div className="relative">
-          <h3 className="font-semibold text-on-surface gradient-text-teal mb-4">Información de Cuenta</h3>
+          <h3 className="font-semibold text-on-surface gradient-text-teal mb-4">{t('settings.accountInfo')}</h3>
           <div className="space-y-3">
             <div className="flex items-center justify-between p-3 rounded-xl bg-surface-container-low/60">
               <div className="flex items-center gap-2 text-on-surface-variant"><Icon name="alternate_email" size={18} /><span className="text-sm">Email</span></div>
@@ -642,8 +642,7 @@ export function SettingsPage() {
             onClick={() => setShowPasswordModal(true)}
             className="premium-btn w-full bg-primary text-on-primary py-3 rounded-xl font-semibold flex items-center justify-center gap-2"
           >
-            <Icon name="lock_reset" size={20} />Cambiar Contraseña
-          </button>
+            <Icon name="lock_reset" size={20} />{t('settings.changePassword')}</button>
         </div>
       </GlassPanel>
 
@@ -651,8 +650,8 @@ export function SettingsPage() {
       <GlassPanel className="p-6 rounded-2xl relative overflow-hidden border border-error/20">
         <div className="blob-warm absolute -top-12 -right-12 w-32 h-32 opacity-15 pointer-events-none" />
         <div className="relative">
-          <h3 className="font-semibold text-error mb-2">Zona de Peligro</h3>
-          <p className="text-sm text-on-surface-variant mb-4">Estas acciones son permanentes y no se pueden deshacer</p>
+          <h3 className="font-semibold text-error mb-2">{t('settings.dangerZone')}</h3>
+          <p className="text-sm text-on-surface-variant mb-4">{t('settings.dangerHint')}</p>
           <div className="space-y-3">
             <button
               onClick={() => setShowDeleteModal(true)}
@@ -664,7 +663,7 @@ export function SettingsPage() {
               onClick={() => signOut()}
               className="premium-btn w-full bg-surface-container-low text-on-surface-variant py-3 rounded-xl font-semibold flex items-center justify-center gap-2 hover:bg-surface-container-high transition-colors"
             >
-              <Icon name="logout" size={20} />Cerrar Sesión
+              <Icon name="logout" size={20} />{t('settings.signOut')}
             </button>
           </div>
         </div>
@@ -686,7 +685,7 @@ export function SettingsPage() {
           </div>
           <div>
             <h3 className="text-xl font-bold text-on-surface">FisioMirror</h3>
-            <p className="text-sm text-on-surface-variant">Versión: <span className="font-semibold text-primary">v2.0 – Prototipo</span></p>
+            <p className="text-sm text-on-surface-variant">{t('settings.version')}<span className="font-semibold text-primary">v2.0 – Prototipo</span></p>
           </div>
         </div>
       </GlassPanel>
@@ -695,7 +694,7 @@ export function SettingsPage() {
       <GlassPanel className="p-6 rounded-2xl relative overflow-hidden">
         <div className="blob-cyan absolute -top-12 -right-12 w-32 h-32 opacity-20 pointer-events-none" />
         <div className="relative">
-          <h3 className="font-semibold text-on-surface gradient-text-cyan mb-4">Créditos del Equipo</h3>
+          <h3 className="font-semibold text-on-surface gradient-text-cyan mb-4">{t('settings.teamCredits')}</h3>
           <div className="space-y-3">
             {[
               { icon: Code2, color: 'text-primary', bg: 'bg-primary/10', label: 'Equipo Desarrollador', value: '4 tazas de café y 2 horas de sueño durante un mes.' },
@@ -730,8 +729,8 @@ export function SettingsPage() {
                 <FileText size={20} className="text-primary" />
               </div>
               <div className="text-left">
-                <p className="font-medium text-on-surface text-sm">Documentación Técnica</p>
-                <p className="text-xs text-on-surface-variant">Arquitectura y tecnologías del sistema</p>
+                <p className="font-medium text-on-surface text-sm">{t('settings.techDocs')}</p>
+                <p className="text-xs text-on-surface-variant">{t('settings.techDocsSub')}</p>
               </div>
             </div>
             <Icon name="chevron_right" size={20} className="text-on-surface-variant group-hover:text-primary transition-colors" />
@@ -745,8 +744,8 @@ export function SettingsPage() {
                 <Shield size={20} className="text-cyan-600" />
               </div>
               <div className="text-left">
-                <p className="font-medium text-on-surface text-sm">Licencias de Código Abierto</p>
-                <p className="text-xs text-on-surface-variant">Librerías utilizadas y sus licencias</p>
+                <p className="font-medium text-on-surface text-sm">{t('settings.licenses')}</p>
+                <p className="text-xs text-on-surface-variant">{t('settings.licensesSub')}</p>
               </div>
             </div>
             <Icon name="chevron_right" size={20} className="text-on-surface-variant group-hover:text-primary transition-colors" />
@@ -767,8 +766,8 @@ export function SettingsPage() {
             <Smartphone size={24} />
           </div>
           <div>
-            <h4 className="font-semibold text-on-surface">Instalar App en iPhone / iPad</h4>
-            <p className="text-xs text-on-surface-variant">Guía interactiva para añadir FisioMirror a tu pantalla de inicio en iOS.</p>
+            <h4 className="font-semibold text-on-surface">{t('settings.installIos')}</h4>
+            <p className="text-xs text-on-surface-variant">{t('settings.installIosSub')}</p>
           </div>
         </div>
         <button
@@ -795,7 +794,7 @@ export function SettingsPage() {
     <GlassPanel className="p-6 rounded-2xl relative overflow-hidden">
       <div className="blob-teal absolute -top-12 -right-12 w-32 h-32 opacity-20 pointer-events-none" />
       <div className="relative">
-        <h3 className="font-semibold text-on-surface gradient-text-teal mb-2">Canales de Contacto Directo</h3>
+        <h3 className="font-semibold text-on-surface gradient-text-teal mb-2">{t('settings.contactChannels')}</h3>
         <p className="text-sm text-on-surface-variant mb-6">
           Comunícate con soporte clínico o con tu fisioterapeuta a través de cualquiera de nuestros canales oficiales:
         </p>
@@ -824,7 +823,7 @@ export function SettingsPage() {
               <Phone size={20} />
             </div>
             <div>
-              <p className="font-bold text-sm">Llamada Telefónica</p>
+              <p className="font-bold text-sm">{t('settings.phoneCall')}</p>
               <p className="text-xs opacity-80">+58 412 4081077</p>
             </div>
           </a>
@@ -835,7 +834,7 @@ export function SettingsPage() {
           className="premium-btn inline-flex items-center gap-3 px-6 py-3.5 rounded-xl font-semibold bg-primary text-on-primary hover:bg-primary/90 transition-colors shadow-glow-primary breathe-teal"
         >
           <Mail size={22} />
-          Enviar Correo Electrónico
+          {t('settings.sendEmail')}
         </a>
         <div className="mt-6 p-4 rounded-xl bg-surface-container-low/60 border border-outline-variant/20">
           <div className="flex items-center gap-2 text-on-surface-variant">
@@ -885,10 +884,10 @@ export function SettingsPage() {
               className="bg-surface rounded-2xl p-6 w-full max-w-md shadow-2xl border border-outline-variant/20"
               onClick={(e) => e.stopPropagation()}
             >
-              <h3 className="text-lg font-bold text-on-surface mb-4">Cambiar Contraseña</h3>
+              <h3 className="text-lg font-bold text-on-surface mb-4">{t('settings.changePassword')}</h3>
               <div className="space-y-4">
                 <div>
-                  <label className="text-sm font-medium text-on-surface-variant mb-1 block">Contraseña actual</label>
+                  <label className="text-sm font-medium text-on-surface-variant mb-1 block">{t('settings.currentPassword')}</label>
                   <input
                     type="password" value={pwCurrent} onChange={(e) => setPwCurrent(e.target.value)}
                     className="w-full px-4 py-3 rounded-xl bg-surface-container-low border border-outline-variant/30 text-on-surface focus:outline-none focus:border-primary transition-colors"
@@ -896,15 +895,15 @@ export function SettingsPage() {
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-on-surface-variant mb-1 block">Nueva contraseña</label>
+                  <label className="text-sm font-medium text-on-surface-variant mb-1 block">{t('settings.newPassword')}</label>
                   <input
                     type="password" value={pwNew} onChange={(e) => setPwNew(e.target.value)}
                     className="w-full px-4 py-3 rounded-xl bg-surface-container-low border border-outline-variant/30 text-on-surface focus:outline-none focus:border-primary transition-colors"
-                    placeholder="Mínimo 6 caracteres"
+                    placeholder={t('settings.minChars')}
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-on-surface-variant mb-1 block">Confirmar nueva contraseña</label>
+                  <label className="text-sm font-medium text-on-surface-variant mb-1 block">{t('settings.confirmNewPassword')}</label>
                   <input
                     type="password" value={pwConfirm} onChange={(e) => setPwConfirm(e.target.value)}
                     className="w-full px-4 py-3 rounded-xl bg-surface-container-low border border-outline-variant/30 text-on-surface focus:outline-none focus:border-primary transition-colors"
@@ -913,7 +912,7 @@ export function SettingsPage() {
                 </div>
               </div>
               <div className="flex gap-3 mt-6">
-                <button onClick={() => setShowPasswordModal(false)} className="flex-1 py-3 rounded-xl bg-surface-container-low text-on-surface-variant font-semibold hover:bg-surface-container-high transition-colors">Cancelar</button>
+                <button onClick={() => setShowPasswordModal(false)} className="flex-1 py-3 rounded-xl bg-surface-container-low text-on-surface-variant font-semibold hover:bg-surface-container-high transition-colors">{t('settings.cancel')}</button>
                 <button onClick={handlePasswordChange} disabled={pwLoading} className="flex-1 py-3 rounded-xl bg-primary text-on-primary font-semibold hover:bg-primary/90 transition-colors disabled:opacity-50">{pwLoading ? 'Guardando...' : 'Guardar'}</button>
               </div>
             </motion.div>
@@ -940,12 +939,12 @@ export function SettingsPage() {
                 </div>
                 <div>
                   <h3 className="text-lg font-bold text-error">Eliminar Cuenta</h3>
-                  <p className="text-sm text-on-surface-variant">Esta acción no se puede deshacer</p>
+                  <p className="text-sm text-on-surface-variant">{t('settings.irreversible')}</p>
                 </div>
               </div>
-              <p className="text-sm text-on-surface-variant mb-4">Se desactivará tu cuenta y se eliminarán todos tus datos, historial de sesiones y configuraciones.</p>
+              <p className="text-sm text-on-surface-variant mb-4">{t('settings.deleteWarning')}</p>
               <div>
-                <label className="text-sm font-medium text-on-surface-variant mb-1 block">Confirma con tu contraseña</label>
+                <label className="text-sm font-medium text-on-surface-variant mb-1 block">{t('settings.confirmWithPassword')}</label>
                 <input
                   type="password" value={deletePassword} onChange={(e) => setDeletePassword(e.target.value)}
                   className="w-full px-4 py-3 rounded-xl bg-surface-container-low border border-outline-variant/30 text-on-surface focus:outline-none focus:border-error transition-colors"
@@ -953,7 +952,7 @@ export function SettingsPage() {
                 />
               </div>
               <div className="flex gap-3 mt-6">
-                <button onClick={() => setShowDeleteModal(false)} className="flex-1 py-3 rounded-xl bg-surface-container-low text-on-surface-variant font-semibold hover:bg-surface-container-high transition-colors">Cancelar</button>
+                <button onClick={() => setShowDeleteModal(false)} className="flex-1 py-3 rounded-xl bg-surface-container-low text-on-surface-variant font-semibold hover:bg-surface-container-high transition-colors">{t('settings.cancel')}</button>
                 <button onClick={handleDeleteAccount} disabled={deleteLoading} className="flex-1 py-3 rounded-xl bg-error text-white font-semibold hover:bg-error/90 transition-colors disabled:opacity-50">{deleteLoading ? 'Eliminando...' : 'Eliminar definitivamente'}</button>
               </div>
             </motion.div>
@@ -978,35 +977,35 @@ export function SettingsPage() {
                 <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
                   <BookOpen size={24} className="text-primary" />
                 </div>
-                <h3 className="text-lg font-bold text-on-surface">Documentación Técnica</h3>
+                <h3 className="text-lg font-bold text-on-surface">{t('settings.techDocs')}</h3>
               </div>
               <div className="space-y-4 text-sm text-on-surface-variant leading-relaxed">
                 <div>
-                  <h4 className="font-semibold text-on-surface mb-1">Arquitectura del Sistema</h4>
+                  <h4 className="font-semibold text-on-surface mb-1">{t('settings.systemArch')}</h4>
                   <p>FisioMirror es una aplicación web progresiva (PWA) construida con una arquitectura cliente-servidor. El frontend utiliza React 18 con TypeScript, renderizado con Vite. El backend utiliza Supabase (PostgreSQL) para persistencia de datos, autenticación y funciones serverless (Edge Functions en Deno).</p>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-on-surface mb-1">Tecnologías Principales</h4>
+                  <h4 className="font-semibold text-on-surface mb-1">{t('settings.coreTech')}</h4>
                   <ul className="list-disc list-inside space-y-1">
                     <li>React 18 + TypeScript + Vite</li>
-                    <li>Tailwind CSS para estilos</li>
+                    <li>{t('settings.techTailwind')}</li>
                     <li>Supabase (PostgreSQL, Auth, Edge Functions, Storage)</li>
-                    <li>MediaPipe Pose Detection para análisis de movimiento</li>
-                    <li>Framer Motion para animaciones</li>
-                    <li>HTML2Canvas + jsPDF para generación de PDFs</li>
+                    <li>{t('settings.techMediapipe')}</li>
+                    <li>{t('settings.techMotion')}</li>
+                    <li>{t('settings.techPdf')}</li>
                   </ul>
                 </div>
                 <div>
                   <h4 className="font-semibold text-on-surface mb-1">Flujos Principales</h4>
                   <ul className="list-disc list-inside space-y-1">
-                    <li>Autenticación: Email/contraseña y tokens de activación para pacientes.</li>
-                    <li>Calibración biométrica: Detección de pose con MediaPipe para ángulos articulares.</li>
-                    <li>Espejo AR: Realidad aumentada con feedback en tiempo real.</li>
-                    <li>Generación de informes: PDFs estilizados con narrativa generada por IA.</li>
+                    <li>{t('settings.archAuth')}</li>
+                    <li>{t('settings.archCalib')}</li>
+                    <li>{t('settings.archAr')}</li>
+                    <li>{t('settings.archReports')}</li>
                   </ul>
                 </div>
               </div>
-              <button onClick={() => setShowDocModal(false)} className="w-full mt-6 py-3 rounded-xl bg-primary text-on-primary font-semibold hover:bg-primary/90 transition-colors">Cerrar</button>
+              <button onClick={() => setShowDocModal(false)} className="w-full mt-6 py-3 rounded-xl bg-primary text-on-primary font-semibold hover:bg-primary/90 transition-colors">{t('settings.close')}</button>
             </motion.div>
           </motion.div>
         )}
@@ -1029,7 +1028,7 @@ export function SettingsPage() {
                 <div className="w-12 h-12 rounded-xl bg-cyan-500/10 flex items-center justify-center">
                   <Shield size={24} className="text-cyan-600" />
                 </div>
-                <h3 className="text-lg font-bold text-on-surface">Licencias de Código Abierto</h3>
+                <h3 className="text-lg font-bold text-on-surface">{t('settings.licenses')}</h3>
               </div>
               <div className="space-y-2">
                 {[
@@ -1059,7 +1058,7 @@ export function SettingsPage() {
                   </div>
                 ))}
               </div>
-              <button onClick={() => setShowLicModal(false)} className="w-full mt-6 py-3 rounded-xl bg-primary text-on-primary font-semibold hover:bg-primary/90 transition-colors">Cerrar</button>
+              <button onClick={() => setShowLicModal(false)} className="w-full mt-6 py-3 rounded-xl bg-primary text-on-primary font-semibold hover:bg-primary/90 transition-colors">{t('settings.close')}</button>
             </motion.div>
           </motion.div>
         )}

@@ -168,7 +168,7 @@ function AppRoutes() {
       <Route path="/tools" element={<ProtectedRoute role="fisioterapeuta"><FisioLayout><Suspense fallback={<PageLoader />}><ToolsPage /></Suspense></FisioLayout></ProtectedRoute>} />
       <Route path="/fisio-profile" element={<ProtectedRoute role="fisioterapeuta"><FisioLayout><Suspense fallback={<PageLoader />}><ProfilePage /></Suspense></FisioLayout></ProtectedRoute>} />
       <Route path="/fisio-settings" element={<ProtectedRoute role="fisioterapeuta"><FisioLayout><Suspense fallback={<PageLoader />}><SettingsPage /></Suspense></FisioLayout></ProtectedRoute>} />
-      <Route path="/catalogo" element={<ProtectedRoute role="fisioterapeuta"><FisioLayout><Suspense fallback={<PageLoader />}><CatalogPage /></Suspense></FisioLayout></ProtectedRoute>} />
+      {/* Galeria interna de componentes UI: ya no se expone como "catalogo". */}
       <Route path="/ui-catalog" element={<ProtectedRoute role="fisioterapeuta"><FisioLayout><Suspense fallback={<PageLoader />}><CatalogPage /></Suspense></FisioLayout></ProtectedRoute>} />
       <Route path="/ar-mirror" element={<ProtectedRoute role="paciente"><PatientLayout><Suspense fallback={<PageLoader />}><ARMirrorPage /></Suspense></PatientLayout></ProtectedRoute>} />
 
@@ -179,7 +179,7 @@ function AppRoutes() {
       <Route path="/stats" element={<ProtectedRoute role="paciente"><PatientLayout><Suspense fallback={<PageLoader />}><StatsPage /></Suspense></PatientLayout></ProtectedRoute>} />
       <Route path="/profile" element={<ProtectedRoute role="paciente"><PatientLayout><Suspense fallback={<PageLoader />}><ProfilePage /></Suspense></PatientLayout></ProtectedRoute>} />
       <Route path="/settings" element={<ProtectedRoute role="paciente"><PatientLayout><Suspense fallback={<PageLoader />}><SettingsPage /></Suspense></PatientLayout></ProtectedRoute>} />
-      <Route path="/catalog" element={<ProtectedRoute role="paciente"><PatientLayout><Suspense fallback={<PageLoader />}><CatalogPage /></Suspense></PatientLayout></ProtectedRoute>} />
+      <Route path="/catalog" element={<Navigate to="/exercises" replace />} />
       <Route
         path="/ai-assistant"
         element={
