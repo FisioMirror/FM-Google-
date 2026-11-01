@@ -96,6 +96,10 @@ export interface RepPhase {
   quality: QualityLevel;
 }
 
+export type RoutinePhase = 'Aguda' | 'Subaguda' | 'Remodelación' | 'Funcional';
+
+export const ROUTINE_PHASES: RoutinePhase[] = ['Aguda', 'Subaguda', 'Remodelación', 'Funcional'];
+
 export interface Rutina {
   id: string;
   paciente_id: string;
@@ -106,6 +110,7 @@ export interface Rutina {
   activa: boolean;
   fecha_inicio: string;
   fecha_fin: string | null;
+  fase?: RoutinePhase | null;
 }
 
 export interface SesionCompletada {

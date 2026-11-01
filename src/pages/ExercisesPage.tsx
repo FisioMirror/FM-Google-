@@ -20,6 +20,7 @@ import { buildExerciseDefinition, getExerciseDescription } from '../data/exercis
 import { UNIFIED_DEMO_PATIENTS } from '../data/unifiedDemoData';
 import { isDemoAccount } from '../lib/demoAuth';
 import { currentLocale } from '../lib/format';
+import { ROUTINE_PHASES, type RoutinePhase } from '../types';
 
 export interface Exercise {
   id: string;
@@ -267,6 +268,9 @@ export function ExercisesPage() {
   const [patientSearch, setPatientSearch] = useState('');
   const [selectedPatientId, setSelectedPatientId] = useState<string | null>(null);
   const [assigning, setAssigning] = useState(false);
+  const [assignFase, setAssignFase] = useState<RoutinePhase>('Aguda');
+  const [assignStart, setAssignStart] = useState(() => new Date().toISOString().split('T')[0]);
+  const [assignEnd, setAssignEnd] = useState(() => { const d = new Date(); d.setDate(d.getDate() + 28); return d.toISOString().split('T')[0]; });
 
   const [form, setForm] = useState({
     nombre: '',
@@ -430,14 +434,19 @@ export function ExercisesPage() {
             duracion_segundos: assignExercise.duracion_segundos ?? 60,
           },
         ];
-        const { error: updateErr } = await supabase
+        const baseUpdate = { ejercicios: updatedExercises, fecha_fin: assignEnd || null, updated_at: new Date().toISOString() };
+        let updateErr = (await supabase
           .from('rutinas')
-          .update({ ejercicios: updatedExercises, updated_at: new Date().toISOString() })
-          .eq('id', activeRoutine.id);
+          .update({ ...baseUpdate, fase: assignFase })
+          .eq('id', activeRoutine.id)).error;
+        if (updateErr && /fase|column|columna|schema/i.test(updateErr.message)) {
+          // Entorno sin la migración de `fase`: se guarda la rutina sin la fase declarada.
+          updateErr = (await supabase.from('rutinas').update(baseUpdate).eq('id', activeRoutine.id)).error;
+        }
         if (updateErr) throw updateErr;
         toast.success(`Ejercicio asignado a la rutina activa del paciente`);
       } else {
-        const { error: insertErr } = await supabase.from('rutinas').insert({
+        const insertPayload = {
           paciente_id: selectedPatientId,
           fisioterapeuta_id: user?.id,
           nombre: `Rutina - ${new Date().toLocaleDateString(currentLocale())}`,
@@ -453,8 +462,15 @@ export function ExercisesPage() {
           ],
           activa: true,
           status: 'activa',
-          fecha_inicio: new Date().toISOString().split('T')[0],
-        });
+          fase: assignFase,
+          fecha_inicio: assignStart,
+          fecha_fin: assignEnd || null,
+        };
+        let insertErr = (await supabase.from('rutinas').insert(insertPayload)).error;
+        if (insertErr && /fase|column|columna|schema/i.test(insertErr.message)) {
+          const { fase: _fase, ...withoutFase } = insertPayload;
+          insertErr = (await supabase.from('rutinas').insert(withoutFase)).error;
+        }
         if (insertErr) throw insertErr;
         toast.success(`Nueva rutina creada y asignada con éxito`);
       }
@@ -1219,6 +1235,42 @@ export function ExercisesPage() {
               {patients.length === 0 && (
                 <p className="text-center text-slate-400 text-xs py-4">No hay pacientes disponibles</p>
               )}
+            </div>
+          </div>
+
+          <div className="space-y-3 pt-3 border-t border-slate-200 dark:border-slate-800">
+            <div>
+              <span className="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1.5">{t('exs.phaseLabel', 'Fase de rehabilitación')}</span>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
+                {ROUTINE_PHASES.map((ph) => (
+                  <button
+                    key={ph}
+                    type="button"
+                    onClick={() => setAssignFase(ph)}
+                    aria-pressed={assignFase === ph}
+                    className={cn(
+                      'px-2 py-2 rounded-xl text-[11px] font-bold transition-all border',
+                      assignFase === ph
+                        ? 'bg-teal-600 text-white border-teal-600 shadow-xs'
+                        : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-200 dark:hover:bg-slate-700'
+                    )}
+                  >
+                    {ph}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              <label className="block">
+                <span className="block text-[11px] font-bold text-slate-600 dark:text-slate-300 mb-1">{t('exs.dateFrom', 'Desde')}</span>
+                <input type="date" value={assignStart} onChange={(e) => setAssignStart(e.target.value)}
+                  className="w-full px-2.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-xs font-semibold text-slate-800 dark:text-slate-100 border border-slate-200 dark:border-slate-700 focus:border-teal-500 focus:outline-none" />
+              </label>
+              <label className="block">
+                <span className="block text-[11px] font-bold text-slate-600 dark:text-slate-300 mb-1">{t('exs.dateTo', 'Hasta')}</span>
+                <input type="date" value={assignEnd} min={assignStart || undefined} onChange={(e) => setAssignEnd(e.target.value)}
+                  className="w-full px-2.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-xs font-semibold text-slate-800 dark:text-slate-100 border border-slate-200 dark:border-slate-700 focus:border-teal-500 focus:outline-none" />
+              </label>
             </div>
           </div>
 

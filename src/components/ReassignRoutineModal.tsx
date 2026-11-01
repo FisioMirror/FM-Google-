@@ -8,6 +8,7 @@ import { Icon } from './ui/Icon';
 import { Spinner } from './ui/Loader';
 import { cn } from '../lib/utils';
 import { currentLocale } from '../lib/format';
+import { ROUTINE_PHASES, type RoutinePhase } from '../types';
 
 
 /**
@@ -116,6 +117,7 @@ export function ReassignRoutineModal({
   };
   const [fechaInicio, setFechaInicio] = useState<string>(todayISO);
   const [fechaFin, setFechaFin] = useState<string>(() => plusDaysISO(28));
+  const [fase, setFase] = useState<RoutinePhase>('Aguda');
 
   const filteredLibrary = useMemo(() => {
     const q = search.toLowerCase().trim();
@@ -213,21 +215,34 @@ export function ReassignRoutineModal({
         lado: ex.lado,
       }));
 
-      const { data: newRoutine, error: rutinaErr } = await supabase
+      const basePayload = {
+        paciente_id: pacienteId,
+        fisioterapeuta_id: fisioterapeutaId,
+        nombre: newRoutineName,
+        descripcion: 'Rutina reasignada desde el expediente del paciente',
+        ejercicios: ejerciciosJson,
+        activa: true,
+        status: 'activa',
+        fecha_inicio: fechaInicio || todayISO(),
+        fecha_fin: fechaFin || null,
+      };
+      let { data: newRoutine, error: rutinaErr } = await supabase
         .from('rutinas')
-        .insert({
-          paciente_id: pacienteId,
-          fisioterapeuta_id: fisioterapeutaId,
-          nombre: newRoutineName,
-          descripcion: 'Rutina reasignada desde el expediente del paciente',
-          ejercicios: ejerciciosJson,
-          activa: true,
-          status: 'activa',
-          fecha_inicio: fechaInicio || todayISO(),
-          fecha_fin: fechaFin || null,
-        })
+        .insert({ ...basePayload, fase })
         .select('id')
         .single();
+
+      // Compatibilidad: si la columna 'fase' todavía no existe en la base,
+      // se reintenta sin ella para no bloquear la asignación clínica.
+      if (rutinaErr && /fase/i.test(rutinaErr.message) && /(column|columna|schema)/i.test(rutinaErr.message)) {
+        const retry = await supabase
+          .from('rutinas')
+          .insert(basePayload)
+          .select('id')
+          .single();
+        newRoutine = retry.data;
+        rutinaErr = retry.error;
+      }
 
       if (rutinaErr) {
         // Rollback: reactivar la rutina anterior si falló la inserción.
@@ -571,6 +586,28 @@ export function ReassignRoutineModal({
                         className="w-full px-3 py-2.5 rounded-xl bg-surface border border-outline-variant/40 text-on-surface text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-primary/40"
                       />
                     </label>
+                  </div>
+                  <div className="mt-4">
+                    <span className="text-2xs uppercase font-bold text-outline tracking-wider block mb-1.5">
+                      {t('rrm.phase', 'Fase de rehabilitación')}
+                    </span>
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                      {ROUTINE_PHASES.map((ph) => (
+                        <button
+                          key={ph}
+                          type="button"
+                          onClick={() => setFase(ph)}
+                          className={
+                            fase === ph
+                              ? 'px-3 py-2 rounded-xl text-xs font-bold bg-primary text-on-primary border border-primary shadow-sm transition-all'
+                              : 'px-3 py-2 rounded-xl text-xs font-bold bg-surface text-on-surface border border-outline-variant/40 hover:bg-surface-container-high transition-all'
+                          }
+                          aria-pressed={fase === ph}
+                        >
+                          {ph}
+                        </button>
+                      ))}
+                    </div>
                   </div>
                   <p className="text-xs text-on-surface-variant mt-2">
                     {t('rrm.periodHint', 'La rutina queda activa dentro de este rango; al vencer se marca como finalizada.')}

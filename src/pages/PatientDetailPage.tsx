@@ -55,6 +55,7 @@ interface RoutineRow {
   status: string | null;
   fecha_inicio: string;
   fecha_fin: string | null;
+  fase?: string | null;
   fase_recuperacion?: string | null;
   updated_at: string | null;
 }
@@ -378,6 +379,7 @@ export function PatientDetailPage() {
           ejercicios: exercises,
           activa: true,
           status: 'activa',
+          fase: 'Aguda',
           fecha_inicio: new Date().toISOString(),
           fecha_fin: null,
           updated_at: new Date().toISOString(),
@@ -389,7 +391,7 @@ export function PatientDetailPage() {
     try {
       const { data } = await supabase
         .from('rutinas')
-        .select('id, nombre, descripcion, ejercicios, activa, status, fecha_inicio, fecha_fin, fase_recuperacion, updated_at')
+        .select('*')
         .eq('paciente_id', id)
         .order('updated_at', { ascending: false, nullsFirst: false } as { ascending: boolean });
       setRoutineHistory((data || []) as unknown as RoutineRow[]);
@@ -696,7 +698,7 @@ export function PatientDetailPage() {
             </GlassPanel>
             <GlassPanel className="card-glow-hover p-6 rounded-3xl">
               <p className="text-xs font-semibold text-on-surface-variant">Fase de recuperación</p>
-              <p className="text-sm font-bold text-on-surface mt-1">{routineHistory[0]?.fase_recuperacion || 'Sin registrar'}</p>
+              <p className="text-sm font-bold text-on-surface mt-1">{routineHistory[0]?.fase || routineHistory[0]?.fase_recuperacion || 'Sin registrar'}</p>
               <p className="text-[11px] text-outline mt-1">{routineHistory[0]?.nombre || 'Sin rutina activa'}</p>
             </GlassPanel>
           </div>
@@ -1123,9 +1125,9 @@ export function PatientDetailPage() {
                       <span>Inicio: {r.fecha_inicio ? new Date(r.fecha_inicio).toLocaleDateString(currentLocale()) : '-'}</span>
                       {r.fecha_fin && <span>· Vigencia: hasta {new Date(r.fecha_fin).toLocaleDateString(currentLocale())}</span>}
                       {!r.fecha_fin && <span>· Sin fecha de fin</span>}
-                      {r.fase_recuperacion && (
+                      {(r.fase || r.fase_recuperacion) && (
                         <span className="px-1.5 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20 font-semibold">
-                          Fase: {r.fase_recuperacion}
+                          Fase: {r.fase || r.fase_recuperacion}
                         </span>
                       )}
                       {r.updated_at && <span>· Actualizada: {new Date(r.updated_at).toLocaleDateString(currentLocale())}</span>}
