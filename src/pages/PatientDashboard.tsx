@@ -335,9 +335,9 @@ export function PatientDashboard() {
       {/* Welcome Header */}
       <div className="relative">
         <div className="blob-teal w-40 h-40 -top-10 -left-10 opacity-60 pointer-events-none" />
-        <div className="flex items-center gap-4 relative">
+        <div className="flex flex-wrap items-center gap-3 sm:gap-4 relative">
           <MascotAnimation type="greeting" size="md" />
-          <div>
+          <div className="min-w-0 flex-1">
             <SparklesText
               sparklesCount={4}
               colors={{ first: '#0d9488', second: '#c1ff72' }}
@@ -349,7 +349,7 @@ export function PatientDashboard() {
               {new Date().toLocaleDateString(i18n.language === 'en' ? 'en-US' : i18n.language === 'pt' ? 'pt-BR' : currentLocale(), { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
             </p>
           </div>
-          <div className="ml-auto flex items-center gap-3">
+          <div className="ml-auto flex shrink-0 items-center gap-2 sm:gap-3">
             <CheerReactionButton />
             <HelpGuideButton />
           </div>
