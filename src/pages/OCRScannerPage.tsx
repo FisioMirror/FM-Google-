@@ -589,7 +589,7 @@ export function OCRScannerPage() {
                     </div>
                     <div>
                       <h3 className="font-title-md text-title-md text-on-surface">{t('ocr.loadWithAi')}</h3>
-                      <p className="text-xs text-on-surface-variant">Sube documento + audio</p>
+                      <p className="text-xs text-on-surface-variant">{t('tr.sube_documento_audio')}</p>
                     </div>
                   </div>
                   <p className="text-sm text-on-surface-variant">{t('ocr.aiExtractsDesc')}</p>
@@ -648,7 +648,7 @@ export function OCRScannerPage() {
                     <div className="bg-primary/5 p-6 rounded-2xl flex flex-col gap-4 relative overflow-hidden">
                       <div className="flex items-center gap-2 text-primary">
                         <Icon name="mic" size={18} />
-                        <span className="font-label-sm text-label-sm font-bold">Nota de Voz Clínica</span>
+                        <span className="font-label-sm text-label-sm font-bold">{t('tr.nota_de_voz_clinica')}</span>
                         <span className="ml-auto text-[10px] font-bold text-outline uppercase">Voz IA</span>
                       </div>
                       <div className="flex items-center gap-6 py-4">
@@ -691,11 +691,11 @@ export function OCRScannerPage() {
                             disabled={transcribing}
                             className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-primary/10 text-primary font-bold text-xs hover:bg-primary/20 transition-all disabled:opacity-50"
                           >
-                            {transcribing ? <><Spinner size={16} className="text-primary" /> Transcribiendo...</> : <><Icon name="translate" size={16} /> Transcribir con IA</>}
+                            {transcribing ? <><Spinner size={16} className="text-primary" />{t('tr.transcribiendo')}</> : <><Icon name="translate" size={16} />{t('tr.transcribir_con_ia')}</>}
                           </button>
                           {audioTranscription && (
                             <div className="p-3 rounded-xl bg-primary/5 border border-primary/10">
-                              <p className="text-[10px] font-bold text-primary uppercase mb-1">Transcripción</p>
+                              <p className="text-[10px] font-bold text-primary uppercase mb-1">{t('tr.transcripcion')}</p>
                               <textarea
                                 value={audioTranscription}
                                 onChange={(e) => setAudioTranscription(e.target.value)}
@@ -716,9 +716,9 @@ export function OCRScannerPage() {
                     <div className="p-6 rounded-2xl border border-outline-variant/10 flex flex-col gap-4">
                       <div className="flex items-center gap-3 text-secondary">
                         <Icon name="auto_awesome" size={20} />
-                        <p className="font-label-sm text-label-sm font-bold">Consejo de FisioMirror</p>
+                        <p className="font-label-sm text-label-sm font-bold">{t('tr.consejo_de_fisiomirror')}</p>
                       </div>
-                      <p className="text-sm text-on-surface-variant">Asegúrate de que la firma del médico y el diagnóstico principal sean legibles. La nota de voz se transcribirá y enriquecerá la extracción de datos.</p>
+                      <p className="text-sm text-on-surface-variant">{t('tr.asegurate_de_que_la_firma_del_medi')}</p>
                     </div>
                   </div>
 
@@ -745,7 +745,7 @@ export function OCRScannerPage() {
                       disabled={processing || files.length === 0}
                       className="premium-btn relative overflow-hidden px-10 py-4 bg-primary text-white rounded-xl font-bold font-label-sm text-label-sm shadow-xl shadow-primary/20 hover:shadow-primary/40 hover:-translate-y-0.5 active:scale-95 flex items-center gap-3 disabled:opacity-50 transition-all"
                     >
-                      {processing ? <><Spinner size={20} className="text-white" /> <LoadingText context="ocr" /></> : <><Icon name="psychology" size={20} /> Procesar con IA</>}
+                      {processing ? <><Spinner size={20} className="text-white" /> <LoadingText context="ocr" /></> : <><Icon name="psychology" size={20} />{t('tr.procesar_con_ia')}</>}
                     </button>
                   </div>
                 </>
@@ -758,10 +758,10 @@ export function OCRScannerPage() {
                   </div>
                   <div>
                     <h3 className="font-title-md text-title-md text-on-surface">Carga Manual</h3>
-                    <p className="text-sm text-on-surface-variant max-w-md mx-auto mt-2">Completa todos los campos del formulario manualmente. No se requiere documento ni audio.</p>
+                    <p className="text-sm text-on-surface-variant max-w-md mx-auto mt-2">{t('tr.completa_todos_los_campos_del_form')}</p>
                   </div>
                   <div className="flex gap-3 justify-center">
-                    <button onClick={() => navigate('/patients')} className="px-8 py-3 text-on-surface-variant font-bold font-label-sm text-label-sm hover:bg-surface-variant/30 rounded-xl transition-all">Cancelar</button>
+                    <button onClick={() => navigate('/patients')} className="px-8 py-3 text-on-surface-variant font-bold font-label-sm text-label-sm hover:bg-surface-variant/30 rounded-xl transition-all">{t('tr.cancelar')}</button>
                     <button
                       onClick={startManualEntry}
                       className="premium-btn px-10 py-4 bg-primary text-white rounded-xl font-bold font-label-sm text-label-sm shadow-xl shadow-primary/20 hover:shadow-primary/40 hover:-translate-y-0.5 active:scale-95 flex items-center gap-3 transition-all"
@@ -778,7 +778,7 @@ export function OCRScannerPage() {
         {step === 2 && (
           <motion.div key="step2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6">
             <div>
-              <h2 className="font-headline-lg text-headline-lg-mobile lg:text-headline-lg gradient-text-living">Validar Datos del Paciente</h2>
+              <h2 className="font-headline-lg text-headline-lg-mobile lg:text-headline-lg gradient-text-living">{t('tr.validar_datos_del_paciente')}</h2>
               <p className="font-body-lg text-body-lg text-on-surface-variant mt-2 max-w-2xl">
                 {entryMode === 'ia' ? 'Hemos analizado la documentación. Por favor, confirma o corrige la información extraída por la IA.' : 'Completa todos los campos del formulario. Los campos marcados con * son obligatorios.'}
               </p>
@@ -789,13 +789,13 @@ export function OCRScannerPage() {
               <div className="flex items-center gap-3 mb-6">
                 <div className="p-3 bg-primary/10 rounded-2xl text-primary"><Icon name="person" size={24} className="animate-breathe-icon" /></div>
                 <div>
-                  <h3 className="font-title-md text-title-md">Datos Personales</h3>
+                  <h3 className="font-title-md text-title-md">{t('tr.datos_personales')}</h3>
                   <p className="text-xs text-on-surface-variant">{t('ocr.basicInfo')}</p>
                 </div>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 <div>
-                  <label className={labelClass}>Nombre y Apellido *</label>
+                  <label className={labelClass}>{t('tr.nombre_y_apellido')}</label>
                   <input value={extractedData.nombre_completo} onChange={(e) => setExtractedData({ ...extractedData, nombre_completo: e.target.value })} className={inputClass} />
                 </div>
                 <div>
@@ -817,7 +817,7 @@ export function OCRScannerPage() {
                 <div>
                   <label className={labelClass}>{t('ocr.bloodType')}</label>
                   <select value={extractedData.tipo_sangre} onChange={(e) => setExtractedData({ ...extractedData, tipo_sangre: e.target.value })} className={inputClass}>
-                    <option value="">No detectado</option>
+                    <option value="">{t('tr.no_detectado')}</option>
                     {BLOOD_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
                   </select>
                 </div>
@@ -833,11 +833,11 @@ export function OCRScannerPage() {
                   </select>
                 </div>
                 <div>
-                  <label className={labelClass}>Estatura (cm)</label>
+                  <label className={labelClass}>{t('tr.estatura_cm')}</label>
                   <input type="number" value={extractedData.estatura_cm} onChange={(e) => setExtractedData({ ...extractedData, estatura_cm: e.target.value })} placeholder="No detectado" className={inputClass} />
                 </div>
                 <div>
-                  <label className={labelClass}>Peso (kg)</label>
+                  <label className={labelClass}>{t('tr.peso_kg')}</label>
                   <input type="number" step="0.01" value={extractedData.peso_kg} onChange={(e) => setExtractedData({ ...extractedData, peso_kg: e.target.value })} placeholder="No detectado" className={inputClass} />
                 </div>
               </div>
@@ -882,11 +882,11 @@ export function OCRScannerPage() {
                   <textarea value={extractedData.diagnostico_secundario} onChange={(e) => setExtractedData({ ...extractedData, diagnostico_secundario: e.target.value })} rows={2} placeholder="No detectado" className={textareaClass} />
                 </div>
                 <div>
-                  <label className={labelClass}>Medicamentos Actuales</label>
+                  <label className={labelClass}>{t('tr.medicamentos_actuales')}</label>
                   <textarea value={extractedData.medicamentos_actuales} onChange={(e) => setExtractedData({ ...extractedData, medicamentos_actuales: e.target.value })} rows={2} placeholder="No detectado" className={textareaClass} />
                 </div>
                 <div>
-                  <label className={labelClass}>Alergias a Medicamentos</label>
+                  <label className={labelClass}>{t('tr.alergias_a_medicamentos')}</label>
                   <textarea value={extractedData.alergias} onChange={(e) => setExtractedData({ ...extractedData, alergias: e.target.value })} rows={2} placeholder="No detectado" className={textareaClass} />
                 </div>
                 <div>
@@ -894,15 +894,15 @@ export function OCRScannerPage() {
                   <textarea value={extractedData.enfermedades_cronicas} onChange={(e) => setExtractedData({ ...extractedData, enfermedades_cronicas: e.target.value })} rows={2} placeholder="No detectado" className={textareaClass} />
                 </div>
                 <div>
-                  <label className={labelClass}>Lesiones Previas</label>
+                  <label className={labelClass}>{t('tr.lesiones_previas')}</label>
                   <textarea value={extractedData.lesiones_previas} onChange={(e) => setExtractedData({ ...extractedData, lesiones_previas: e.target.value })} rows={2} placeholder="No detectado" className={textareaClass} />
                 </div>
                 <div>
-                  <label className={labelClass}>Extremidad Afectada</label>
-                  <input value={extractedData.extremidad_afectada} onChange={(e) => setExtractedData({ ...extractedData, extremidad_afectada: e.target.value })} placeholder="Ej. Rodilla derecha" className={inputClass} />
+                  <label className={labelClass}>{t('tr.extremidad_afectada')}</label>
+                  <input value={extractedData.extremidad_afectada} onChange={(e) => setExtractedData({ ...extractedData, extremidad_afectada: e.target.value })} placeholder={t('tr.ej_rodilla_derecha')} className={inputClass} />
                 </div>
                 <div>
-                  <label className={labelClass}>ROM Objetivo</label>
+                  <label className={labelClass}>{t('tr.rom_objetivo')}</label>
                   <input value={extractedData.rom_objetivo} onChange={(e) => setExtractedData({ ...extractedData, rom_objetivo: e.target.value })} placeholder={t('ocr.anglePh')} className={inputClass} />
                 </div>
                 <div>

@@ -9,7 +9,7 @@ import { cn } from '../lib/utils';
 import { Spinner } from '../components/ui/Loader';
 import { SkeletonCard } from '../components/ui/Skeleton';
 import { MuscleTargetRadarCard } from '../components/ui/ActivityCardsSuite';
-import { RapidToleranceAdjuster, JointAnatomyTooltip } from '../components/ui/FloatingControlsSuite';
+import { JointAnatomyTooltip } from '../components/ui/FloatingControlsSuite';
 import { SkeletonJointSelectorHUD } from '../components/ui/RealTimeMetricsSuite';
 import { celebrateAchievement } from '../lib/confetti';
 import { GlassModal } from '../components/ui/GlassModal';
@@ -736,7 +736,6 @@ export function ExercisesPage() {
             <div>
               <span className="text-[10px] uppercase font-bold text-teal-700 dark:text-teal-300 block mb-1">{t('ex.globalTolerance')}</span>
               <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-3">{t('ex.globalToleranceSub')}</p>
-              <RapidToleranceAdjuster />
             </div>
 
             <div className="pt-2 border-t border-teal-200/40 dark:border-slate-700">
@@ -882,7 +881,7 @@ export function ExercisesPage() {
                       />
                       <button
                         onClick={() => setDescriptionExercise(ex)}
-                        aria-label="Ver Guía Anatómica"
+                        aria-label={t('tr.ver_guia_anatomica')}
                         className="absolute bottom-3 right-3 size-9 rounded-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-md flex items-center justify-center text-teal-700 dark:text-teal-300 hover:scale-110 active:scale-95 shadow-md transition-transform"
                       >
                         <BookOpen className="size-4" />
@@ -999,14 +998,14 @@ export function ExercisesPage() {
                         className="flex-1 py-1.5 rounded-lg bg-slate-100/90 dark:bg-slate-800/90 hover:bg-teal-50 dark:hover:bg-teal-950/40 text-slate-600 dark:text-slate-300 hover:text-teal-600 text-xs font-bold transition-all flex items-center justify-center gap-1"
                       >
                         <Edit3 className="size-3" />
-                        <span>Editar</span>
+                        <span>{t('tr.editar')}</span>
                       </button>
                       <button
                         onClick={() => cloneExercise(ex)}
                         className="flex-1 py-1.5 rounded-lg bg-slate-100/90 dark:bg-slate-800/90 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 text-xs font-bold transition-all flex items-center justify-center gap-1"
                       >
                         <Copy className="size-3" />
-                        <span>Clonar</span>
+                        <span>{t('tr.clonar')}</span>
                       </button>
                       <button
                         onClick={() => deleteExercise(ex.id)}
@@ -1048,7 +1047,7 @@ export function ExercisesPage() {
               </div>
 
               <div className="text-right shrink-0">
-                <span className="text-[10px] uppercase font-bold text-slate-400 block">Rango Objetivo</span>
+                <span className="text-[10px] uppercase font-bold text-slate-400 block">{t('tr.rango_objetivo')}</span>
                 <span className="text-lg font-mono font-extrabold text-teal-600 dark:text-teal-400">
                   {descriptionExercise.angulo_objetivo !== null ? `${descriptionExercise.angulo_objetivo}° ROM` : '0° - 90°'}
                 </span>
@@ -1080,7 +1079,7 @@ export function ExercisesPage() {
                     </span>
                   </div>
                   <div>
-                    <span className="text-[10px] uppercase font-bold text-slate-400 block">Lado</span>
+                    <span className="text-[10px] uppercase font-bold text-slate-400 block">{t('tr.lado')}</span>
                     <span className="text-xs font-extrabold text-teal-600 dark:text-teal-400 capitalize">
                       {descriptionExercise.lado || 'Bilateral'}
                     </span>
@@ -1223,7 +1222,7 @@ export function ExercisesPage() {
                   );
                 })}
               {patients.length === 0 && (
-                <p className="text-center text-slate-400 text-xs py-4">No hay pacientes disponibles</p>
+                <p className="text-center text-slate-400 text-xs py-4">{t('tr.no_hay_pacientes_disponibles')}</p>
               )}
             </div>
           </div>
@@ -1277,7 +1276,7 @@ export function ExercisesPage() {
               {assigning ? (
                 <>
                   <Spinner size={16} />
-                  <span>Asignando...</span>
+                  <span>{t('tr.asignando')}</span>
                 </>
               ) : (
                 <>
@@ -1365,12 +1364,12 @@ export function ExercisesPage() {
                       onChange={(e) => setForm({ ...form, articulacion: e.target.value })}
                       className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-teal-500 text-xs outline-none font-bold text-slate-900 dark:text-white"
                     >
-                      <option value="hombro">Hombro</option>
-                      <option value="codo">Codo</option>
-                      <option value="rodilla">Rodilla</option>
-                      <option value="cadera">Cadera</option>
-                      <option value="tobillo">Tobillo</option>
-                      <option value="cervical">Cervical</option>
+                      <option value="hombro">{t('tr.hombro')}</option>
+                      <option value="codo">{t('tr.codo')}</option>
+                      <option value="rodilla">{t('tr.rodilla')}</option>
+                      <option value="cadera">{t('tr.cadera')}</option>
+                      <option value="tobillo">{t('tr.tobillo')}</option>
+                      <option value="cervical">{t('tr.cervical')}</option>
                     </select>
                   </div>
 
@@ -1380,7 +1379,7 @@ export function ExercisesPage() {
                       value={form.grupo_muscular}
                       onChange={(e) => setForm({ ...form, grupo_muscular: e.target.value })}
                       className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-teal-500 text-xs outline-none text-slate-900 dark:text-white"
-                      placeholder="Ej: Deltoides, Supraespinoso"
+                      placeholder={t('tr.ej_deltoides_supraespinoso')}
                     />
                   </div>
 
@@ -1429,9 +1428,9 @@ export function ExercisesPage() {
                       onChange={(e) => setForm({ ...form, lado: e.target.value })}
                       className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-teal-500 text-xs outline-none font-bold text-slate-900 dark:text-white"
                     >
-                      <option value="bilateral">Bilateral</option>
-                      <option value="derecho">Derecho</option>
-                      <option value="izquierdo">Izquierdo</option>
+                      <option value="bilateral">{t('tr.bilateral')}</option>
+                      <option value="derecho">{t('tr.derecho')}</option>
+                      <option value="izquierdo">{t('tr.izquierdo')}</option>
                     </select>
                   </div>
                 </div>
