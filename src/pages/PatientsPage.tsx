@@ -555,7 +555,7 @@ export function PatientsPage() {
               <div className="flex items-center gap-1 p-1 rounded-xl bg-surface-container/80 shrink-0">
                 <button
                   onClick={() => setViewMode('cards')}
-                  aria-label="Vista cuadrícula"
+                  aria-label={t('pat.gridView')}
                   className={cn(
                     'p-1.5 rounded-lg transition-all',
                     viewMode === 'cards' ? 'bg-surface text-teal-600 shadow-xs font-bold' : 'text-outline hover:text-on-surface'
@@ -690,7 +690,7 @@ export function PatientsPage() {
                       {/* Recovery Progress Bar with Shimmer */}
                       <div className="space-y-2 mb-5">
                         <div className="flex justify-between items-end text-xs">
-                          <span className="text-on-surface-variant font-semibold">Progreso de Recuperación</span>
+                          <span className="text-on-surface-variant font-semibold">{t('pat.recoveryProgress')}</span>
                           <span className={cn(
                             "font-extrabold text-sm",
                             isAlert ? "text-rose-600 dark:text-rose-400" : "text-teal-700 dark:text-teal-300"
@@ -718,14 +718,14 @@ export function PatientsPage() {
                       {/* 2-Column Clinical Metadata Grid */}
                       <div className="grid grid-cols-2 gap-3 py-3.5 border-y border-outline-variant/15 text-xs mb-4">
                         <div>
-                          <p className="text-[10px] uppercase font-bold text-outline tracking-wider mb-1">Última Sesión</p>
+                          <p className="text-[10px] uppercase font-bold text-outline tracking-wider mb-1">{t('pat.lastSession')}</p>
                           <p className="font-semibold text-on-surface flex items-center gap-1.5 truncate">
                             <Calendar className="size-3.5 text-teal-600 dark:text-teal-400 shrink-0" />
                             <span>{p.lastSession || 'Reciente'}</span>
                           </p>
                         </div>
                         <div>
-                          <p className="text-[10px] uppercase font-bold text-outline tracking-wider mb-1">Diagnóstico</p>
+                          <p className="text-[10px] uppercase font-bold text-outline tracking-wider mb-1">{t('pat.diagnosis')}</p>
                           <p className="font-semibold text-on-surface line-clamp-1">
                             {p.condition || 'En evaluación'}
                           </p>
@@ -742,10 +742,10 @@ export function PatientsPage() {
                           setPreviewPatient(p);
                         }}
                         className="flex-1 py-2.5 px-3 rounded-xl bg-slate-100 dark:bg-slate-800/80 hover:bg-teal-50 dark:hover:bg-slate-700/80 text-slate-700 dark:text-slate-300 hover:text-teal-700 dark:hover:text-teal-300 font-semibold transition-all text-xs flex items-center justify-center gap-1.5 border border-slate-200/60 dark:border-slate-700/60"
-                        title="Abrir vista previa rápida en modal o bottom sheet"
+                        title={t('pat.openQuickPreview')}
                       >
                         <Eye className="size-3.5 text-teal-600 dark:text-teal-400" />
-                        <span>Ficha Rápida</span>
+                        <span>{t('pat.quickCard')}</span>
                       </button>
                       <button
                         type="button"
@@ -766,11 +766,11 @@ export function PatientsPage() {
               <table className="w-full text-left text-xs">
                 <thead className="bg-surface-container-high/60 text-outline font-bold uppercase tracking-wider border-b border-outline/10">
                   <tr>
-                    <th className="p-4">Paciente</th>
-                    <th className="p-4">Diagnóstico</th>
-                    <th className="p-4">Progreso</th>
+                    <th className="p-4">{t('pat.patient')}</th>
+                    <th className="p-4">{t('pat.diagnosis2')}</th>
+                    <th className="p-4">{t('pat.progress')}</th>
                     <th className="p-4">Estado</th>
-                    <th className="p-4 text-right">Acción</th>
+                    <th className="p-4 text-right">{t('pat.action')}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-outline/10">
@@ -840,10 +840,8 @@ export function PatientsPage() {
                 <Key className="size-5" />
               </div>
               <div>
-                <h3 className="font-bold text-sm text-on-surface">Llaves de Activación para Pacientes</h3>
-                <p className="text-xs text-on-surface-variant">
-                  Permiten a un paciente activar su cuenta y vincular su expediente clínico directamente a tu consulta.
-                </p>
+                <h3 className="font-bold text-sm text-on-surface">{t('pat.tokensTitle')}</h3>
+                <p className="text-xs text-on-surface-variant">{t('pat.tokensDesc')}</p>
               </div>
             </div>
 
@@ -852,7 +850,7 @@ export function PatientsPage() {
               className="px-4 py-2 rounded-xl bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold transition-all shadow-sm flex items-center gap-1.5 shrink-0"
             >
               <Plus className="size-4" />
-              <span>Emitir Nueva Llave</span>
+              <span>{t('pat.issueToken')}</span>
             </button>
           </div>
 
@@ -881,7 +879,7 @@ export function PatientsPage() {
             <EmptyState
               type="tokens"
               icon="key"
-              title="No hay tokens en este estado"
+              title={t('pat.noTokens')}
               description="Puedes emitir un nuevo token de acceso en cualquier momento."
               actionLabel="Generar Token"
               onAction={createQuickToken}
@@ -895,14 +893,14 @@ export function PatientsPage() {
                 >
                   <div className="flex items-start justify-between gap-2">
                     <div>
-                      <span className="text-[10px] text-outline uppercase font-bold tracking-wider">Código de Activación</span>
+                      <span className="text-[10px] text-outline uppercase font-bold tracking-wider">{t('pat.activationCode')}</span>
                       <div className="flex items-center gap-2 mt-1">
                         <span className="text-2xl font-mono font-extrabold tracking-widest text-teal-700 dark:text-teal-300">
                           {tok.token}
                         </span>
                         <button
                           onClick={() => handleCopyCode(tok.token)}
-                          title="Copiar código"
+                          title={t('pat.copyCode')}
                           className="p-1.5 rounded-lg hover:bg-teal-500/10 text-teal-700 dark:text-teal-300 transition-colors"
                         >
                           {copiedToken === tok.token ? <Check className="size-4 text-emerald-500" /> : <Copy className="size-4" />}
@@ -929,7 +927,7 @@ export function PatientsPage() {
                         Vinculado: {tok.patientName}
                       </p>
                     ) : (
-                      <p className="text-amber-600 dark:text-amber-400">Disponible para ser asignado</p>
+                      <p className="text-amber-600 dark:text-amber-400">{t('pat.availableToAssign')}</p>
                     )}
                     <p className="text-[11px] text-outline mt-0.5">
                       Emitido el: {new Date(tok.createdAt).toLocaleDateString(currentLocale())}
@@ -950,7 +948,7 @@ export function PatientsPage() {
                       className="px-3 py-1.5 rounded-xl bg-teal-500/10 hover:bg-teal-500/20 text-[11px] font-bold text-teal-700 dark:text-teal-300 flex items-center gap-1.5 transition-colors"
                     >
                       <Mail className="size-3" />
-                      <span>Enviar</span>
+                      <span>{t('pat.send')}</span>
                     </button>
                   </div>
                 </div>
@@ -1125,11 +1123,11 @@ export function PatientsPage() {
           <div className="space-y-4 text-xs sm:text-sm">
             <div className="grid grid-cols-2 gap-3 p-3.5 rounded-2xl bg-teal-50/90 dark:bg-slate-800/90 border border-teal-100/70 dark:border-slate-700">
               <div>
-                <span className="text-[10px] uppercase font-bold text-on-surface-variant">Estado Clínico</span>
+                <span className="text-[10px] uppercase font-bold text-on-surface-variant">{t('pat.clinicalStatus')}</span>
                 <p className="font-bold text-teal-700 dark:text-teal-300 mt-0.5">{previewPatient.status}</p>
               </div>
               <div>
-                <span className="text-[10px] uppercase font-bold text-on-surface-variant">Progreso Global</span>
+                <span className="text-[10px] uppercase font-bold text-on-surface-variant">{t('pat.globalProgress')}</span>
                 <p className="font-bold text-slate-800 dark:text-white mt-0.5">{previewPatient.recoveryProgress}%</p>
               </div>
               <div>
@@ -1137,13 +1135,13 @@ export function PatientsPage() {
                 <p className="font-semibold text-slate-700 dark:text-slate-200 mt-0.5">{previewPatient.sessionCount} sesiones</p>
               </div>
               <div>
-                <span className="text-[10px] uppercase font-bold text-on-surface-variant">Última Actividad</span>
+                <span className="text-[10px] uppercase font-bold text-on-surface-variant">{t('pat.lastActivity')}</span>
                 <p className="font-semibold text-slate-700 dark:text-slate-200 mt-0.5">{previewPatient.lastSession}</p>
               </div>
             </div>
 
             <div className="p-3.5 rounded-2xl bg-surface dark:bg-slate-800/60 border border-outline-variant/30 space-y-2">
-              <span className="text-[10px] uppercase font-bold text-on-surface-variant block">Diagnóstico y Patología</span>
+              <span className="text-[10px] uppercase font-bold text-on-surface-variant block">{t('pat.diagnosisPathology')}</span>
               <p className="font-semibold text-on-surface">{previewPatient.condition}</p>
               {previewPatient.patologia && (
                 <p className="text-xs text-on-surface-variant font-medium">Patología: {previewPatient.patologia}</p>

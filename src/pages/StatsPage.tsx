@@ -46,6 +46,7 @@ import { IncidentReportCard } from '../components/ui/IncidentReportCard';
 import { QuickPatientSwitcherBar } from '../components/ui/NavigationDocksSuite';
 import { StreakFlameCounter, LevelProgressRibbon } from '../components/ui/GamificationSuite';
 import { currentLocale } from '../lib/format';
+import { useTranslation } from 'react-i18next';
 
 const dayLabels = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
 
@@ -111,6 +112,7 @@ interface PatientWithSessions {
 }
 
 export function StatsPage() {
+  const { t } = useTranslation();
   const user = useAuthStore((s) => s.user);
   const isFisio = user?.role === 'fisioterapeuta';
   const toast = useToast();
@@ -661,7 +663,7 @@ export function StatsPage() {
               onChange={(e) => onPatientFilter(e.target.value)}
               className="px-4 py-3 rounded-xl bg-surface-variant/20 border border-outline-variant/30 outline-none focus:ring-2 focus:ring-primary/20 text-on-surface w-full sm:min-w-[200px] sm:w-auto"
             >
-              <option value="">Todos los pacientes</option>
+              <option value="">{t('stats.allPatients')}</option>
               {patients.map(p => (
                 <option key={p.id} value={p.id}>{p.full_name}</option>
               ))}
@@ -697,7 +699,7 @@ export function StatsPage() {
           </div>
           <div className="flex flex-col items-center justify-center py-12 gap-3">
             <Icon name="progress_activity" size={32} className="text-primary animate-spin" />
-            <p className="text-on-surface-variant text-sm">Cargando métricas…</p>
+            <p className="text-on-surface-variant text-sm">{t('stats.loadingMetrics')}</p>
           </div>
         </>
       ) : (
@@ -754,7 +756,7 @@ export function StatsPage() {
                   <div className="blob-teal absolute -top-12 -right-12 w-40 h-40 opacity-20 pointer-events-none" />
                   <div className="flex justify-between items-center mb-6">
                     <div>
-                      <h3 className="font-title-md text-title-md gradient-text-teal">Sesiones por Día</h3>
+                      <h3 className="font-title-md text-title-md gradient-text-teal">{t('stats.sessionsPerDay')}</h3>
                       <p className="text-sm text-on-surface-variant">Últimos 7 días {selectedPatient ? `· ${patients.find(p => p.id === selectedPatient)?.full_name || ''}` : '· Todos los pacientes'}</p>
                     </div>
                     <Icon name="bar_chart" size={28} className="text-primary" />
@@ -763,7 +765,7 @@ export function StatsPage() {
                     {dailySessions.every((v) => v === 0) ? (
                       <div className="flex flex-col items-center justify-center w-full h-full text-on-surface-variant empty-state-premium">
                         <Icon name="show_chart" size={48} className="opacity-30 mb-2 animate-breathe-icon" />
-                        <p className="text-sm">No hay sesiones registradas en los últimos 7 días.</p>
+                        <p className="text-sm">{t('stats.noSessions7d')}</p>
                       </div>
                     ) : (
                       <ResponsiveContainer width="100%" height="100%">
@@ -790,14 +792,14 @@ export function StatsPage() {
                 <GlassPanel className="p-8 rounded-[2rem] flex flex-col card-glow-hover relative overflow-hidden">
                   <div className="blob-warm absolute -top-12 -right-12 w-32 h-32 opacity-20 pointer-events-none" />
                   <div className="flex justify-between items-center mb-4">
-                    <h3 className="font-title-md text-title-md gradient-text-editorial">Distribución de Calidad</h3>
+                    <h3 className="font-title-md text-title-md gradient-text-editorial">{t('stats.qualityDist')}</h3>
                     <Icon name="pie_chart" size={24} className="text-tertiary" />
                   </div>
                   <div className="h-56 flex-1">
                     {qualityDistribution.length === 0 ? (
                       <div className="flex flex-col items-center justify-center h-full text-on-surface-variant empty-state-premium">
                         <Icon name="pie_chart" size={40} className="opacity-30 mb-2" />
-                        <p className="text-sm">Sin sesiones para analizar.</p>
+                        <p className="text-sm">{t('stats.noSessionsToAnalyze')}</p>
                       </div>
                     ) : (
                       <ResponsiveContainer width="100%" height="100%">
@@ -836,14 +838,14 @@ export function StatsPage() {
                 <GlassPanel className="p-6 sm:p-8 rounded-[2rem] flex flex-col card-glow-hover relative overflow-hidden">
                   <div className="blob-blue absolute -top-12 -right-12 w-32 h-32 opacity-20 pointer-events-none" />
                   <div className="flex justify-between items-center mb-4">
-                    <h3 className="font-title-md text-title-md gradient-text-blue">Pacientes Más Activos</h3>
+                    <h3 className="font-title-md text-title-md gradient-text-blue">{t('stats.mostActive')}</h3>
                     <Icon name="leaderboard" size={24} className="text-primary" />
                   </div>
                   <div className="h-64">
                     {topPatientsChartData.length === 0 ? (
                       <div className="flex flex-col items-center justify-center h-full text-on-surface-variant empty-state-premium">
                         <Icon name="group" size={40} className="opacity-30 mb-2" />
-                        <p className="text-sm">Aún no hay pacientes con sesiones registradas.</p>
+                        <p className="text-sm">{t('stats.noActivePatients')}</p>
                       </div>
                     ) : (
                       <ResponsiveContainer width="100%" height="100%">
@@ -871,8 +873,8 @@ export function StatsPage() {
                   <div className="blob-warm absolute -top-12 -right-12 w-32 h-32 opacity-20 pointer-events-none" />
                   <div className="flex justify-between items-center mb-4">
                     <div>
-                      <h3 className="font-title-md text-title-md gradient-text-editorial">Sesiones por Diagnóstico</h3>
-                      <p className="text-xs text-on-surface-variant mt-0.5">Distribución de carga clínica</p>
+                      <h3 className="font-title-md text-title-md gradient-text-editorial">{t('stats.byDiagnosis')}</h3>
+                      <p className="text-xs text-on-surface-variant mt-0.5">{t('stats.clinicalLoad')}</p>
                     </div>
                     <Icon name="medical_information" size={24} className="text-secondary" />
                   </div>
@@ -880,7 +882,7 @@ export function StatsPage() {
                     {diagnosisDistribution.length === 0 ? (
                       <div className="flex flex-col items-center justify-center h-full text-on-surface-variant empty-state-premium">
                         <Icon name="medical_information" size={40} className="opacity-30 mb-2" />
-                        <p className="text-sm">No hay diagnósticos con sesiones registradas.</p>
+                        <p className="text-sm">{t('stats.noDiagnoses')}</p>
                       </div>
                     ) : (
                       <div className="space-y-3 pt-2">
@@ -917,16 +919,16 @@ export function StatsPage() {
               {patients.length > 0 && (
                 <GlassPanel className="p-8 rounded-[2rem] relative overflow-hidden">
                   <div className="blob-warm absolute -bottom-12 -right-12 w-32 h-32 opacity-15 pointer-events-none" />
-                  <h3 className="font-title-md text-title-md gradient-text-editorial mb-4">Resumen por Paciente</h3>
+                  <h3 className="font-title-md text-title-md gradient-text-editorial mb-4">{t('stats.summaryByPatient')}</h3>
                   <div className="overflow-x-auto">
                     <table className="w-full text-sm">
                       <thead>
                         <tr className="text-on-surface-variant border-b border-outline-variant/20">
-                          <th className="text-left py-3 px-2 font-bold">Paciente</th>
-                          <th className="text-left py-3 px-2 font-bold">Diagnóstico</th>
+                          <th className="text-left py-3 px-2 font-bold">{t('stats.patient')}</th>
+                          <th className="text-left py-3 px-2 font-bold">{t('stats.diagnosis')}</th>
                           <th className="text-center py-3 px-2 font-bold">Sesiones</th>
                           <th className="text-center py-3 px-2 font-bold">Calidad Media</th>
-                          <th className="text-right py-3 px-2 font-bold">Última Sesión</th>
+                          <th className="text-right py-3 px-2 font-bold">{t('stats.lastSession')}</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -971,8 +973,8 @@ export function StatsPage() {
                   <div className="blob-teal absolute -top-12 -right-12 w-40 h-40 opacity-20 pointer-events-none" />
                   <div className="flex justify-between items-center mb-6">
                     <div>
-                      <h3 className="font-title-md text-title-md gradient-text-teal">Evolución Biomecánica</h3>
-                      <p className="text-sm text-on-surface-variant">Seguimiento de Calidad de Ejecución (6 semanas)</p>
+                      <h3 className="font-title-md text-title-md gradient-text-teal">{t('stats.biomechEvolution')}</h3>
+                      <p className="text-sm text-on-surface-variant">{t('stats.qualityTracking')}</p>
                     </div>
                     <div className="flex gap-2">
                     <AnimatedTabs
@@ -990,7 +992,7 @@ export function StatsPage() {
                     {totalSessions === 0 ? (
                       <div className="flex flex-col items-center justify-center h-full text-on-surface-variant empty-state-premium">
                         <Icon name="show_chart" size={48} className="opacity-30 mb-2 animate-breathe-icon" />
-                        <p className="text-sm">Aún no hay datos suficientes para mostrar tu evolución. ¡Cada sesión cuenta y pronto verás tu progreso aquí!</p>
+                        <p className="text-sm">{t('stats.noEvolutionData')}</p>
                       </div>
                     ) : (
                       <ResponsiveContainer width="100%" height="100%">
@@ -1025,7 +1027,7 @@ export function StatsPage() {
                   <div className="flex gap-8 mt-4 pt-4 border-t border-outline-variant/10">
                     <div className="flex items-center gap-2">
                       <span className="w-3 h-3 rounded-full" style={{ background: CHART_COLORS.primary }}></span>
-                      <span className="text-xs font-bold">Calidad de Ejecución</span>
+                      <span className="text-xs font-bold">{t('stats.executionQuality')}</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="w-3 h-3 rounded-full bg-outline"></span>
@@ -1040,7 +1042,7 @@ export function StatsPage() {
                   <div className="space-y-4 flex-1 overflow-y-auto max-h-64">
                     {sessions.length === 0 ? (
                       <div className="empty-state-premium text-center py-4">
-                        <p className="text-sm text-on-surface-variant">Todavía no hay sesiones registradas. Tu camino hacia la recuperación comienza con el primer paso. ¡Tú puedes!</p>
+                        <p className="text-sm text-on-surface-variant">{t('stats.noSessionsPatient')}</p>
                       </div>
                     ) : (
                       sessions.slice(0, 5).map((s, i) => (
@@ -1066,8 +1068,8 @@ export function StatsPage() {
                   <div className="blob-blue absolute -top-12 -right-12 w-40 h-40 opacity-20 pointer-events-none" />
                   <div className="flex justify-between items-center mb-6">
                     <div>
-                      <h3 className="font-title-md text-title-md gradient-text-blue">Calidad por Sesión</h3>
-                      <p className="text-sm text-on-surface-variant">Últimas 12 sesiones (orden cronológico)</p>
+                      <h3 className="font-title-md text-title-md gradient-text-blue">{t('stats.qualityPerSession')}</h3>
+                      <p className="text-sm text-on-surface-variant">{t('stats.last12')}</p>
                     </div>
                     <Icon name="timeline" size={28} className="text-secondary" />
                   </div>
@@ -1075,7 +1077,7 @@ export function StatsPage() {
                     {sessionTrendData.length === 0 ? (
                       <div className="flex flex-col items-center justify-center h-full text-on-surface-variant empty-state-premium">
                         <Icon name="timeline" size={40} className="opacity-30 mb-2" />
-                        <p className="text-sm">Aún no hay sesiones para mostrar tu tendencia.</p>
+                        <p className="text-sm">{t('stats.noTrend')}</p>
                       </div>
                     ) : (
                       <ResponsiveContainer width="100%" height="100%">
@@ -1104,14 +1106,14 @@ export function StatsPage() {
                 <GlassPanel className="p-8 rounded-[2rem] flex flex-col card-glow-hover relative overflow-hidden">
                   <div className="blob-warm absolute -top-12 -right-12 w-32 h-32 opacity-20 pointer-events-none" />
                   <div className="flex justify-between items-center mb-4">
-                    <h3 className="font-title-md text-title-md gradient-text-editorial">Distribución de Ejercicios</h3>
+                    <h3 className="font-title-md text-title-md gradient-text-editorial">{t('stats.exerciseDist')}</h3>
                     <Icon name="pie_chart" size={24} className="text-tertiary" />
                   </div>
                   <div className="h-56 flex-1">
                     {exerciseDistribution.length === 0 ? (
                       <div className="flex flex-col items-center justify-center h-full text-on-surface-variant empty-state-premium">
                         <Icon name="pie_chart" size={40} className="opacity-30 mb-2" />
-                        <p className="text-sm">Sin sesiones registradas todavía.</p>
+                        <p className="text-sm">{t('stats.noSessionsYet')}</p>
                       </div>
                     ) : (
                       <ResponsiveContainer width="100%" height="100%">
@@ -1151,8 +1153,8 @@ export function StatsPage() {
                 <div className="blob-teal absolute -top-12 -right-12 w-40 h-40 opacity-15 pointer-events-none" />
                 <div className="flex justify-between items-center mb-6">
                   <div>
-                    <h3 className="font-title-md text-title-md gradient-text-teal">Minutos de Entrenamiento</h3>
-                    <p className="text-sm text-on-surface-variant">Distribución semanal (últimas 6 semanas)</p>
+                    <h3 className="font-title-md text-title-md gradient-text-teal">{t('stats.trainingMinutes')}</h3>
+                    <p className="text-sm text-on-surface-variant">{t('stats.weeklyDist')}</p>
                   </div>
                   <Icon name="timer" size={28} className="text-primary" />
                 </div>
@@ -1160,7 +1162,7 @@ export function StatsPage() {
                   {weeklyMinutesData.every((d) => d.minutos === 0) ? (
                     <div className="flex flex-col items-center justify-center h-full text-on-surface-variant empty-state-premium">
                       <Icon name="timer" size={40} className="opacity-30 mb-2" />
-                      <p className="text-sm">Aún no has registrado minutos de entrenamiento.</p>
+                      <p className="text-sm">{t('stats.noMinutes')}</p>
                     </div>
                   ) : (
                     <ResponsiveContainer width="100%" height="100%">
@@ -1247,8 +1249,8 @@ export function StatsPage() {
                     <img src="/animations/mascot/consejo.webp" alt="Physi aconsejando" className="w-full h-full object-contain animate-breathe" onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }} />
                   </div>
                   <div>
-                    <p className="font-bold text-primary text-base">Asesoramiento Clínico de Physi</p>
-                    <p className="text-xs text-on-surface-variant">Análisis biomecánico y recomendaciones personalizadas</p>
+                    <p className="font-bold text-primary text-base">{t('stats.physiAdvice')}</p>
+                    <p className="text-xs text-on-surface-variant">{t('stats.physiAdviceSub')}</p>
                   </div>
                 </div>
 
@@ -1256,16 +1258,14 @@ export function StatsPage() {
                   {aiLoading ? (
                     <div className="flex items-center gap-2 text-sm text-on-surface-variant py-4">
                       <Icon name="progress_activity" size={18} className="text-primary animate-spin" />
-                      <span>Analizando métricas biomecánicas y adherencia...</span>
+                      <span>{t('stats.analyzing')}</span>
                     </div>
                   ) : aiInsight ? (
                     <div className="p-4 rounded-2xl bg-surface/80 dark:bg-surface-container-low/70 border border-outline/10 shadow-inner">
                       {formatAIReport(aiInsight)}
                     </div>
                   ) : (
-                    <p className="text-sm text-on-surface-variant">
-                      Genera un análisis clínico automatizado basado en tus datos reales de ejecución y regularidad.
-                    </p>
+                    <p className="text-sm text-on-surface-variant">{t('stats.physiDesc')}</p>
                   )}
                 </div>
               </div>
@@ -1283,7 +1283,7 @@ export function StatsPage() {
             <GlassPanel className="p-8 rounded-[2rem] border-2 border-dashed border-outline-variant/30">
               <div className="flex flex-col items-center text-center gap-3">
                 <Icon name="add_chart" size={40} className="text-outline" />
-                <p className="text-on-surface-variant">Genera un reporte clínico en PDF de tu progreso.</p>
+                <p className="text-on-surface-variant">{t('stats.pdfDesc')}</p>
                 <button
                   onClick={handleGeneratePDF}
                   disabled={pdfLoading}

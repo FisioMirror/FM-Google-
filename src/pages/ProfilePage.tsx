@@ -22,8 +22,10 @@ import { AchievementShowcase } from '../components/AchievementShowcase';
 import { GamifiedBadgeCard } from '../components/ui/GamifiedBadgeCard';
 import { useGamification } from '../hooks/useGamification';
 import { currentLocale } from '../lib/format';
+import { useTranslation } from 'react-i18next';
 
 export function ProfilePage() {
+  const { t } = useTranslation();
   const user = useAuthStore((s) => s.user);
   const { theme, toggleTheme } = useTheme();
   const gamification = useGamification();
@@ -297,9 +299,7 @@ export function ProfilePage() {
                       onClick={cancelAvatarPreview}
                       disabled={avatarUploading}
                       className="px-3 py-1.5 rounded-lg bg-surface-variant/40 text-on-surface-variant text-xs font-bold hover:bg-surface-variant/60 transition-colors disabled:opacity-50"
-                    >
-                      Cancelar
-                    </button>
+                    >{t('common.cancel')}</button>
                     <button
                       type="button"
                       onClick={handleAvatarSave}
@@ -353,7 +353,7 @@ export function ProfilePage() {
               { id: 'personal', label: 'Datos Personales', content: (
                 <GlassPanel className="p-6 rounded-[32px] card-glow-hover shimmer-border hover-lift accent-teal">
                   <div className="flex justify-between items-center mb-6">
-                    <h3 className="font-headline-lg-mobile gradient-text-living font-bold">Información Personal</h3>
+                    <h3 className="font-headline-lg-mobile gradient-text-living font-bold">{t('profile.personalInfo')}</h3>
                     <button onClick={() => setEditing(!editing)} className="flex items-center gap-2 text-primary font-bold text-sm hover-lift badge-teal px-3 py-1 rounded-full breathe-badge">
                       <Icon name="edit" size={16} /> {editing ? 'Cancelar' : 'Editar'}
                     </button>
@@ -383,21 +383,19 @@ export function ProfilePage() {
                     ))}
                   </div>
                   {editing && (
-                    <button onClick={saveProfile} className="premium-btn mt-4 px-6 py-3 bg-primary text-on-primary rounded-xl font-bold hover:scale-[1.02] active:scale-95 transition-all glow-teal breathe-teal">
-                      Guardar Cambios
-                    </button>
+                    <button onClick={saveProfile} className="premium-btn mt-4 px-6 py-3 bg-primary text-on-primary rounded-xl font-bold hover:scale-[1.02] active:scale-95 transition-all glow-teal breathe-teal">{t('profile.saveChanges')}</button>
                   )}
                 </GlassPanel>
               ) },
               { id: 'preferences', label: 'Preferencias', content: (
                 <>
                 <GlassPanel className="p-6 rounded-[32px] card-glow-hover hover-lift">
-                  <h3 className="font-headline-lg-mobile gradient-text-living font-bold mb-6">Preferencias del Sistema</h3>
+                  <h3 className="font-headline-lg-mobile gradient-text-living font-bold mb-6">{t('profile.systemPrefs')}</h3>
                   <div className="space-y-2">
                     <div className="flex items-center justify-between p-4 hover:bg-surface-variant/20 rounded-2xl">
                       <div className="flex items-center gap-3">
                         <Icon name="dark_mode" size={24} className="text-outline animate-breathe-icon" />
-                        <div><p className="font-medium">Modo Oscuro</p><p className="text-xs text-outline">Cambio automático soportado</p></div>
+                        <div><p className="font-medium">{t('profile.darkMode')}</p><p className="text-xs text-outline">{t('profile.darkModeSub')}</p></div>
                       </div>
                       <button
                         onClick={toggleTheme}
@@ -409,7 +407,7 @@ export function ProfilePage() {
                     <div className="flex items-center justify-between p-4 hover:bg-surface-variant/20 rounded-2xl">
                       <div className="flex items-center gap-3">
                         <Icon name="notifications_active" size={24} className="text-outline animate-breathe-icon" />
-                        <div><p className="font-medium">Notificaciones Push</p><p className="text-xs text-outline">Alertas de pacientes y actualizaciones de rutina</p></div>
+                        <div><p className="font-medium">Notificaciones Push</p><p className="text-xs text-outline">{t('profile.notifSub')}</p></div>
                       </div>
                       <button
                         onClick={() => setPushNotifications(!pushNotifications)}
@@ -421,7 +419,7 @@ export function ProfilePage() {
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 hover:bg-surface-variant/20 rounded-2xl gap-3">
                       <div className="flex items-center gap-3">
                         <Icon name="pan_tool" size={24} className="text-outline animate-breathe-icon" />
-                        <div><p className="font-medium">Modo Ergonómico de Agarre</p><p className="text-xs text-outline">Optimiza la posición de controles para diestros o zurdos</p></div>
+                        <div><p className="font-medium">{t('profile.ergonomic')}</p><p className="text-xs text-outline">{t('profile.ergonomicSub')}</p></div>
                       </div>
                       <ErgonomicHandModeSwitcher />
                     </div>
@@ -430,9 +428,9 @@ export function ProfilePage() {
                 {isFisio && (
                   <GlassPanel className="p-6 rounded-[32px] card-glow-hover hover-lift mt-6 shimmer-border relative overflow-hidden">
                     <div className="absolute -top-10 -right-10 w-32 h-32 rounded-full bg-gradient-to-br from-cyan-400/15 to-teal-500/10 blur-2xl pointer-events-none" />
-                    <h3 className="font-headline-lg-mobile gradient-text-living font-bold mb-6 relative">Configuración de Clínica</h3>
+                    <h3 className="font-headline-lg-mobile gradient-text-living font-bold mb-6 relative">{t('profile.clinicSettings')}</h3>
                     <div className="relative">
-                      <label className="text-[10px] uppercase text-outline font-bold block mb-2">Nombre de la Clínica</label>
+                      <label className="text-[10px] uppercase text-outline font-bold block mb-2">{t('profile.clinicName')}</label>
                       <div
                         className="flex items-center gap-3 p-4 rounded-2xl bg-surface-container-low/60 border divider-teal transition-all"
                         onMouseEnter={() => setClinicNameHover(true)}
@@ -453,7 +451,7 @@ export function ProfilePage() {
                               if (e.key === 'Escape') { e.preventDefault(); cancelClinicEdit(); }
                             }}
                             onBlur={saveClinicName}
-                            placeholder="Escribe el nombre de tu clínica…"
+                            placeholder={t('profile.clinicNamePlaceholder')}
                             className="flex-1 bg-transparent border-b-2 border-cyan-500/40 focus:border-cyan-500 outline-none text-on-surface font-medium text-lg py-1"
                           />
                         ) : (
@@ -522,7 +520,7 @@ export function ProfilePage() {
                       </div>
                     ) : isFisio ? (
                       activeToday.length === 0 ? (
-                        <p className="text-sm text-on-surface-variant text-center py-8">No hay pacientes activos hoy. Asigna pacientes para ver su actividad.</p>
+                        <p className="text-sm text-on-surface-variant text-center py-8">{t('profile.noActivePatients')}</p>
                       ) : (
                         <div className="space-y-3">
                           {activeToday.map((p, i) => (
@@ -553,20 +551,19 @@ export function ProfilePage() {
                         <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-teal-500/15 to-cyan-400/10 flex items-center justify-center ring-1 ring-cyan-500/20 mx-auto mb-3 breathe-teal">
                           <Icon name="event_available" size={28} className="icon-accent-cyan animate-breathe-icon" />
                         </div>
-                        <p className="text-sm text-on-surface-variant">Revisa tus ejercicios asignados en el panel principal para ver tus sesiones programadas.</p>
+                        <p className="text-sm text-on-surface-variant">{t('profile.patientNoSessions')}</p>
                       </div>
                     )}
                   </div>
                 </GlassPanel>
                 <div className="flex flex-wrap justify-between items-center gap-4 pt-6">
                   <div className="flex gap-4 text-sm">
-                    <AnimatedLink onClick={() => setLegalModal('privacy')} className="text-on-surface-variant">Política de Privacidad</AnimatedLink>
-                    <AnimatedLink onClick={() => setLegalModal('terms')} className="text-on-surface-variant">Términos</AnimatedLink>
+                    <AnimatedLink onClick={() => setLegalModal('privacy')} className="text-on-surface-variant">{t('profile.privacy')}</AnimatedLink>
+                    <AnimatedLink onClick={() => setLegalModal('terms')} className="text-on-surface-variant">{t('profile.terms')}</AnimatedLink>
                     <AnimatedLink onClick={() => setLegalModal('consent')} className="text-on-surface-variant">Consentimiento</AnimatedLink>
                   </div>
                   <button onClick={() => setShowLogoutModal(true)} className="flex items-center gap-2 px-6 py-3 rounded-xl bg-error/10 text-error font-bold hover:bg-error/20 transition-all breathe-badge hover-lift-warm">
-                    <Icon name="logout" size={20} /> Cerrar Sesión
-                  </button>
+                    <Icon name="logout" size={20} />{t('profile.signOut')}</button>
                 </div>
                 </>
               ) },
@@ -589,7 +586,7 @@ export function ProfilePage() {
                         iconName="trophy"
                       />
                       <GamifiedBadgeCard
-                        title="Progreso general"
+                        title={t('profile.overallProgress')}
                         category="progreso"
                         description={`${Math.round(gamification.totalProgress * 100)}% de los objetivos de la rutina actual`}
                         xpPoints={gamification.points}
@@ -611,15 +608,11 @@ export function ProfilePage() {
           <div className="w-14 h-14 rounded-full bg-error/10 flex items-center justify-center mx-auto breathe-warm">
             <Icon name="logout" size={28} className="text-error animate-breathe-icon" />
           </div>
-          <h3 className="font-headline-lg-mobile text-on-surface font-bold">¿Cerrar Sesión?</h3>
-          <p className="text-sm text-on-surface-variant">Tu sesión se cerrará y tendrás que volver a iniciar sesión para acceder a FisioMirror.</p>
+          <h3 className="font-headline-lg-mobile text-on-surface font-bold">{t('profile.signOutConfirm')}</h3>
+          <p className="text-sm text-on-surface-variant">{t('profile.signOutConfirmBody')}</p>
           <div className="flex gap-3 pt-2">
-            <button onClick={() => setShowLogoutModal(false)} className="flex-1 px-6 py-3 rounded-xl bg-surface-variant/30 text-on-surface-variant font-bold hover:bg-surface-variant/50 transition-all">
-              Cancelar
-            </button>
-            <button onClick={() => { setShowLogoutModal(false); supabase.auth.signOut(); }} className="flex-1 px-6 py-3 rounded-xl bg-error text-on-error font-bold hover:bg-error/90 transition-all">
-              Cerrar Sesión
-            </button>
+            <button onClick={() => setShowLogoutModal(false)} className="flex-1 px-6 py-3 rounded-xl bg-surface-variant/30 text-on-surface-variant font-bold hover:bg-surface-variant/50 transition-all">{t('common.cancel')}</button>
+            <button onClick={() => { setShowLogoutModal(false); supabase.auth.signOut(); }} className="flex-1 px-6 py-3 rounded-xl bg-error text-on-error font-bold hover:bg-error/90 transition-all">{t('profile.signOut2')}</button>
           </div>
         </div>
       </GlassModal>

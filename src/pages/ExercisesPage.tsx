@@ -734,12 +734,8 @@ export function ExercisesPage() {
           </div>
           <div className="p-4 rounded-2xl bg-teal-50/60 dark:bg-slate-800/60 border border-teal-100/60 dark:border-slate-700 flex flex-col justify-between h-full space-y-3">
             <div>
-              <span className="text-[10px] uppercase font-bold text-teal-700 dark:text-teal-300 block mb-1">
-                Tolerancia Global de Calibración
-              </span>
-              <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-3">
-                Ajusta el margen de aceptación angular para los ejercicios con detección MediaPipe activa.
-              </p>
+              <span className="text-[10px] uppercase font-bold text-teal-700 dark:text-teal-300 block mb-1">{t('ex.globalTolerance')}</span>
+              <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-3">{t('ex.globalToleranceSub')}</p>
               <RapidToleranceAdjuster />
             </div>
 
@@ -870,7 +866,7 @@ export function ExercisesPage() {
                 {ex.featured && (
                   <div className="absolute top-4 left-4 z-10 px-3 py-1 rounded-full bg-teal-600/90 backdrop-blur-md text-white text-[10px] font-bold uppercase tracking-wider flex items-center gap-1.5 shadow-md">
                     <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
-                    <span>Protocolo Clínico</span>
+                    <span>{t('ex.clinicalProtocol')}</span>
                   </div>
                 )}
 
@@ -983,7 +979,7 @@ export function ExercisesPage() {
                     className="w-full py-2.5 px-3 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold transition-all flex items-center justify-center gap-1.5 active:scale-98"
                   >
                     <BookOpen className="size-3.5 text-teal-600 dark:text-teal-400" />
-                    <span>Ver Guía Anatómica</span>
+                    <span>{t('ex.viewAnatomy')}</span>
                   </button>
 
                   {isFisio && (
@@ -992,7 +988,7 @@ export function ExercisesPage() {
                       className="w-full py-2.5 px-3 rounded-xl bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold transition-all flex items-center justify-center gap-1.5 shadow-sm shadow-teal-700/20 active:scale-98"
                     >
                       <UserPlus className="size-3.5" />
-                      <span>Asignar a Paciente</span>
+                      <span>{t('ex.assignToPatient')}</span>
                     </button>
                   )}
 
@@ -1014,7 +1010,7 @@ export function ExercisesPage() {
                       </button>
                       <button
                         onClick={() => deleteExercise(ex.id)}
-                        aria-label="Eliminar ejercicio"
+                        aria-label={t('ex.deleteExercise')}
                         className="p-1.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-600 transition-all"
                       >
                         <Trash2 className="size-3.5" />
@@ -1047,8 +1043,7 @@ export function ExercisesPage() {
                 <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white">
                   {descriptionExercise.nombre}
                 </h2>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                  Músculos objetivo: <strong className="text-teal-600 dark:text-teal-400">{descriptionExercise.grupo_muscular || 'Musculatura estabilizadora'}</strong>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{t('ex.targetMuscles')}<strong className="text-teal-600 dark:text-teal-400">{descriptionExercise.grupo_muscular || 'Musculatura estabilizadora'}</strong>
                 </p>
               </div>
 
@@ -1079,7 +1074,7 @@ export function ExercisesPage() {
                     </span>
                   </div>
                   <div>
-                    <span className="text-[10px] uppercase font-bold text-slate-400 block">Sostén</span>
+                    <span className="text-[10px] uppercase font-bold text-slate-400 block">{t('ex.hold')}</span>
                     <span className="text-sm font-extrabold text-slate-800 dark:text-slate-100">
                       3s Isom.
                     </span>
@@ -1096,7 +1091,7 @@ export function ExercisesPage() {
                 <div className="rounded-2xl p-4 bg-white/90 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 space-y-3">
                   <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-teal-600 dark:text-teal-400">
                     <Brain className="size-4" />
-                    <span>Prescripción Paso a Paso & Control Biomecánico</span>
+                    <span>{t('ex.stepByStep')}</span>
                   </div>
 
                   <div className="text-xs sm:text-sm text-slate-700 dark:text-slate-300 whitespace-pre-wrap leading-relaxed space-y-2">
@@ -1112,7 +1107,7 @@ export function ExercisesPage() {
                 <div className="rounded-2xl p-3.5 bg-teal-50 dark:bg-teal-950/40 border border-teal-500/25 flex items-start gap-3">
                   <ShieldAlert className="size-4 text-teal-600 dark:text-teal-400 shrink-0 mt-0.5" />
                   <div className="text-xs text-teal-900 dark:text-teal-200">
-                    <p className="font-bold">Monitoreo de Calibración Óptica (MediaPipe / Pose)</p>
+                    <p className="font-bold">{t('ex.opticalCalib')}</p>
                     <p className="text-teal-700 dark:text-teal-300 mt-0.5">
                       El paciente recibirá biofeedback sonoro y visual si detecta una tolerancia angular mayor a ±8° respecto al ángulo clínico programado.
                     </p>
@@ -1125,7 +1120,7 @@ export function ExercisesPage() {
                 <div className="w-full flex items-center justify-between mb-2">
                   <span className="text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
                     <Activity className="size-3.5 text-teal-600" />
-                    <span>Simulación 3D Sincronizada</span>
+                    <span>{t('ex.synced3d')}</span>
                   </span>
                 </div>
 
@@ -1159,16 +1154,14 @@ export function ExercisesPage() {
                   className="px-4 py-2 rounded-xl bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold transition-all flex items-center gap-2 shadow-xs"
                 >
                   <UserPlus className="size-3.5" />
-                  <span>Asignar este Ejercicio</span>
+                  <span>{t('ex.assignThis')}</span>
                 </button>
               ) : <div />}
 
               <button
                 onClick={() => setDescriptionExercise(null)}
                 className="px-5 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold transition-all"
-              >
-                Cerrar Guía
-              </button>
+              >{t('ex.closeGuide')}</button>
             </div>
           </div>
         )}
@@ -1179,9 +1172,8 @@ export function ExercisesPage() {
         <div className="p-6 space-y-4">
           <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800">
             <div>
-              <h3 className="text-lg font-bold text-slate-900 dark:text-white">Asignar a Paciente</h3>
-              <p className="text-xs text-slate-500">
-                Ejercicio: <strong className="text-teal-600 dark:text-teal-400">{assignExercise?.nombre}</strong>
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white">{t('ex.assignToPatient2')}</h3>
+              <p className="text-xs text-slate-500">{t('ex.exerciseLabel')}<strong className="text-teal-600 dark:text-teal-400">{assignExercise?.nombre}</strong>
               </p>
             </div>
             <button
@@ -1193,9 +1185,7 @@ export function ExercisesPage() {
           </div>
 
           <div className="space-y-3">
-            <label className="block text-xs font-bold text-slate-600 dark:text-slate-300">
-              Seleccionar Paciente de la Clínica
-            </label>
+            <label className="block text-xs font-bold text-slate-600 dark:text-slate-300">{t('ex.selectPatient')}</label>
 
             <div className="relative">
               <Search className="size-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -1203,7 +1193,7 @@ export function ExercisesPage() {
                 type="text"
                 value={patientSearch}
                 onChange={(e) => setPatientSearch(e.target.value)}
-                placeholder="Buscar por nombre del paciente..."
+                placeholder={t('ex.searchPatient')}
                 className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-sm text-slate-800 dark:text-slate-100 border border-slate-200 dark:border-slate-700 focus:border-teal-500 focus:outline-none transition-colors"
               />
             </div>
@@ -1278,9 +1268,7 @@ export function ExercisesPage() {
             <button
               onClick={() => setAssignExercise(null)}
               className="flex-1 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-xs font-bold hover:bg-slate-200"
-            >
-              Cancelar
-            </button>
+            >{t('common.cancel')}</button>
             <button
               onClick={handleAssignExercise}
               disabled={!selectedPatientId || assigning}
@@ -1294,7 +1282,7 @@ export function ExercisesPage() {
               ) : (
                 <>
                   <CheckCircle2 className="size-4" />
-                  <span>Confirmar Asignación</span>
+                  <span>{t('ex.confirmAssign')}</span>
                 </>
               )}
             </button>
@@ -1329,7 +1317,7 @@ export function ExercisesPage() {
                 </div>
                 <button
                   onClick={() => setShowModal(false)}
-                  aria-label="Cerrar modal"
+                  aria-label={t('ex.closeModal')}
                   className="text-slate-400 hover:text-slate-600 p-1"
                 >
                   <X className="size-5" />
@@ -1338,48 +1326,40 @@ export function ExercisesPage() {
 
               <div className="space-y-4">
                 <div>
-                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">
-                    Nombre del Ejercicio
-                  </label>
+                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">{t('ex.exerciseName')}</label>
                   <input
                     value={form.nombre}
                     onChange={(e) => setForm({ ...form, nombre: e.target.value })}
                     className="w-full px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-teal-500 text-sm outline-none text-slate-900 dark:text-white"
-                    placeholder="Ej: Flexión de Hombro Activa"
+                    placeholder={t('ex.namePlaceholder')}
                   />
                 </div>
 
                 <div>
-                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">
-                    Descripción Breve
-                  </label>
+                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">{t('ex.shortDesc')}</label>
                   <textarea
                     value={form.descripcion}
                     onChange={(e) => setForm({ ...form, descripcion: e.target.value })}
                     className="w-full px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-teal-500 text-sm outline-none text-slate-900 dark:text-white"
                     rows={2}
-                    placeholder="Resumen del objetivo terapéutico..."
+                    placeholder={t('ex.descPlaceholder')}
                   />
                 </div>
 
                 <div>
-                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">
-                    Instrucciones Clínicas Detalladas (Fases 1 a 4)
-                  </label>
+                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">{t('ex.detailedInstructions')}</label>
                   <textarea
                     value={form.detailed_description}
                     onChange={(e) => setForm({ ...form, detailed_description: e.target.value })}
                     className="w-full px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-teal-500 text-sm outline-none font-mono text-xs text-slate-900 dark:text-white"
                     rows={4}
-                    placeholder="Detalla la posición inicial, fase concéntrica, sostén isométrico y retorno excéntrico..."
+                    placeholder={t('ex.instructionsPlaceholder')}
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">
-                      Articulación Principal
-                    </label>
+                    <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">{t('ex.mainJoint')}</label>
                     <select
                       value={form.articulacion}
                       onChange={(e) => setForm({ ...form, articulacion: e.target.value })}
@@ -1395,9 +1375,7 @@ export function ExercisesPage() {
                   </div>
 
                   <div>
-                    <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">
-                      Músculos Objetivo
-                    </label>
+                    <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">{t('ex.targetMusclesLabel')}</label>
                     <input
                       value={form.grupo_muscular}
                       onChange={(e) => setForm({ ...form, grupo_muscular: e.target.value })}
@@ -1420,9 +1398,7 @@ export function ExercisesPage() {
                   </div>
 
                   <div>
-                    <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">
-                      Repeticiones por Serie
-                    </label>
+                    <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">{t('ex.repsPerSet')}</label>
                     <input
                       type="number"
                       value={form.repeticiones}
@@ -1433,9 +1409,7 @@ export function ExercisesPage() {
                   </div>
 
                   <div>
-                    <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">
-                      Ángulo ROM Objetivo (Grados °)
-                    </label>
+                    <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">{t('ex.targetRom')}</label>
                     <input
                       type="number"
                       value={form.angulo_objetivo}
@@ -1467,7 +1441,7 @@ export function ExercisesPage() {
                   <div className="pt-2">
                     <p className="text-xs font-bold uppercase tracking-wide text-slate-500 mb-2 flex items-center gap-1.5">
                       <Gauge className="size-4 text-teal-600" />
-                      <span>Vista Previa Biomecánica 3D</span>
+                      <span>{t('ex.biomechPreview')}</span>
                     </p>
                     <div className="flex justify-center">
                       <SkeletonDemo
@@ -1491,9 +1465,7 @@ export function ExercisesPage() {
                   <button
                     onClick={() => setShowModal(false)}
                     className="flex-1 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold text-xs hover:bg-slate-200"
-                  >
-                    Cancelar
-                  </button>
+                  >{t('common.cancel')}</button>
                   <button
                     onClick={saveExercise}
                     className="flex-1 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs shadow-xs"
