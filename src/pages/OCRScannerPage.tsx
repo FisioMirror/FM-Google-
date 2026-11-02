@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -77,6 +78,7 @@ interface Exercise {
 const defaultExercises: Exercise[] = [];
 
 export function OCRScannerPage() {
+  const { t } = useTranslation();
   const user = useAuthStore((s) => s.user);
   const navigate = useNavigate();
   const toast = useToast();
@@ -547,11 +549,10 @@ export function OCRScannerPage() {
   return (
     <div className="max-w-4xl mx-auto space-y-6 overflow-x-hidden">
       <div className="flex items-center gap-2 text-primary font-label-sm text-label-sm">
-        <Icon name="person_add" size={18} /> Nuevo Paciente
-      </div>
+        <Icon name="person_add" size={18} />{t('ocr.newPatient')}</div>
       <div>
-        <h2 className="font-headline-lg text-headline-lg-mobile lg:text-headline-lg gradient-text-living">Cargar Prescripción</h2>
-        <p className="font-body-lg text-body-lg text-on-surface-variant">Inicie el alta del paciente procesando su historial clínico con nuestra IA.</p>
+        <h2 className="font-headline-lg text-headline-lg-mobile lg:text-headline-lg gradient-text-living">{t('ocr.loadPrescription')}</h2>
+        <p className="font-body-lg text-body-lg text-on-surface-variant">{t('ocr.startAdmissionDesc')}</p>
       </div>
 
       <div className="flex justify-between items-center px-3 sm:px-6 py-4 glass-panel rounded-2xl card-glow-hover gap-2">
@@ -587,11 +588,11 @@ export function OCRScannerPage() {
                       <Icon name="psychology" size={24} />
                     </div>
                     <div>
-                      <h3 className="font-title-md text-title-md text-on-surface">Carga con IA</h3>
+                      <h3 className="font-title-md text-title-md text-on-surface">{t('ocr.loadWithAi')}</h3>
                       <p className="text-xs text-on-surface-variant">Sube documento + audio</p>
                     </div>
                   </div>
-                  <p className="text-sm text-on-surface-variant">La IA extrae automáticamente los datos del documento clínico y la nota de voz.</p>
+                  <p className="text-sm text-on-surface-variant">{t('ocr.aiExtractsDesc')}</p>
                 </button>
                 <button
                   onClick={() => setEntryMode('manual')}
@@ -603,10 +604,10 @@ export function OCRScannerPage() {
                     </div>
                     <div>
                       <h3 className="font-title-md text-title-md text-on-surface">Carga Manual</h3>
-                      <p className="text-xs text-on-surface-variant">Sin OCR, formulario vacío</p>
+                      <p className="text-xs text-on-surface-variant">{t('ocr.withoutOcr')}</p>
                     </div>
                   </div>
-                  <p className="text-sm text-on-surface-variant">Completa todos los campos del formulario manualmente, sin necesidad de documentos.</p>
+                  <p className="text-sm text-on-surface-variant">{t('ocr.withoutOcrDesc')}</p>
                 </button>
               </div>
 
@@ -624,8 +625,8 @@ export function OCRScannerPage() {
                     <div className="w-20 h-20 rounded-2xl bg-primary-fixed flex items-center justify-center text-primary mb-2 shadow-sm group-hover:scale-110 transition-transform animate-breathe-icon">
                       <Icon name="cloud_upload" size={40} />
                     </div>
-                    <h3 className="font-title-md text-title-md text-on-surface">Arrastra tu prescripción o receta médica</h3>
-                    <p className="font-body-lg text-body-lg text-on-surface-variant max-w-sm">PDF, JPG o escaneo de alta resolución. Nuestra IA extraerá automáticamente los datos del documento.</p>
+                    <h3 className="font-title-md text-title-md text-on-surface">{t('ocr.dropPrescription')}</h3>
+                    <p className="font-body-lg text-body-lg text-on-surface-variant max-w-sm">{t('ocr.dropPrescriptionDesc')}</p>
                     <input ref={fileInputRef} type="file" accept=".pdf,image/*" multiple className="hidden" onChange={(e) => e.target.files && handleFile(e.target.files)} />
                   </div>
 
@@ -789,7 +790,7 @@ export function OCRScannerPage() {
                 <div className="p-3 bg-primary/10 rounded-2xl text-primary"><Icon name="person" size={24} className="animate-breathe-icon" /></div>
                 <div>
                   <h3 className="font-title-md text-title-md">Datos Personales</h3>
-                  <p className="text-xs text-on-surface-variant">Información básica del paciente</p>
+                  <p className="text-xs text-on-surface-variant">{t('ocr.basicInfo')}</p>
                 </div>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -798,15 +799,15 @@ export function OCRScannerPage() {
                   <input value={extractedData.nombre_completo} onChange={(e) => setExtractedData({ ...extractedData, nombre_completo: e.target.value })} className={inputClass} />
                 </div>
                 <div>
-                  <label className={labelClass}>Documento de Identidad</label>
+                  <label className={labelClass}>{t('ocr.idDocument')}</label>
                   <input value={extractedData.documento_identidad} onChange={(e) => setExtractedData({ ...extractedData, documento_identidad: e.target.value })} placeholder="No detectado" className={inputClass} />
                 </div>
                 <div>
-                  <label className={labelClass}>Fecha de Nacimiento *</label>
+                  <label className={labelClass}>{t('ocr.birthDateReq')}</label>
                   <input type="date" value={extractedData.fecha_nacimiento} onChange={(e) => setExtractedData({ ...extractedData, fecha_nacimiento: e.target.value })} className={inputClass} />
                 </div>
                 <div>
-                  <label className={labelClass}>Teléfono</label>
+                  <label className={labelClass}>{t('ocr.phone')}</label>
                   <input value={extractedData.telefono} onChange={(e) => setExtractedData({ ...extractedData, telefono: e.target.value })} placeholder="No detectado" className={inputClass} />
                 </div>
                 <div>
@@ -814,18 +815,18 @@ export function OCRScannerPage() {
                   <input type="email" value={extractedData.email} onChange={(e) => setExtractedData({ ...extractedData, email: e.target.value })} placeholder="No detectado" className={inputClass} />
                 </div>
                 <div>
-                  <label className={labelClass}>Tipo de Sangre</label>
+                  <label className={labelClass}>{t('ocr.bloodType')}</label>
                   <select value={extractedData.tipo_sangre} onChange={(e) => setExtractedData({ ...extractedData, tipo_sangre: e.target.value })} className={inputClass}>
                     <option value="">No detectado</option>
                     {BLOOD_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
                   </select>
                 </div>
                 <div>
-                  <label className={labelClass}>Ocupación / Profesión</label>
+                  <label className={labelClass}>{t('ocr.occupation')}</label>
                   <input value={extractedData.ocupacion} onChange={(e) => setExtractedData({ ...extractedData, ocupacion: e.target.value })} placeholder="No detectado" className={inputClass} />
                 </div>
                 <div>
-                  <label className={labelClass}>Nivel de Actividad Física</label>
+                  <label className={labelClass}>{t('ocr.activityLevel')}</label>
                   <select value={extractedData.nivel_actividad} onChange={(e) => setExtractedData({ ...extractedData, nivel_actividad: e.target.value })} className={inputClass}>
                     <option value="">No detectado</option>
                     {ACTIVITY_LEVELS.map((l) => <option key={l} value={l}>{l}</option>)}
@@ -842,21 +843,21 @@ export function OCRScannerPage() {
               </div>
               <div className="mt-4 flex items-center gap-3 p-4 rounded-xl bg-primary/5 border border-primary/10">
                 <input type="checkbox" id="es_menor" checked={extractedData.es_menor_edad} onChange={(e) => setExtractedData({ ...extractedData, es_menor_edad: e.target.checked })} className="w-5 h-5 rounded accent-primary" />
-                <label htmlFor="es_menor" className="text-sm font-bold text-on-surface cursor-pointer">El paciente es menor de edad</label>
+                <label htmlFor="es_menor" className="text-sm font-bold text-on-surface cursor-pointer">{t('ocr.isMinor')}</label>
               </div>
               {extractedData.es_menor_edad && (
                 <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4 p-4 rounded-xl bg-tertiary-fixed/10 border border-tertiary-fixed/20">
                   <div>
-                    <label className={labelClass}>Nombre del Tutor</label>
-                    <input value={extractedData.tutor_nombre} onChange={(e) => setExtractedData({ ...extractedData, tutor_nombre: e.target.value })} placeholder="Nombre del tutor" className={inputClass} />
+                    <label className={labelClass}>{t('ocr.guardianName')}</label>
+                    <input value={extractedData.tutor_nombre} onChange={(e) => setExtractedData({ ...extractedData, tutor_nombre: e.target.value })} placeholder={t('ocr.guardianNamePh')} className={inputClass} />
                   </div>
                   <div>
-                    <label className={labelClass}>Teléfono del Tutor</label>
-                    <input value={extractedData.tutor_telefono} onChange={(e) => setExtractedData({ ...extractedData, tutor_telefono: e.target.value })} placeholder="Teléfono del tutor" className={inputClass} />
+                    <label className={labelClass}>{t('ocr.guardianPhone')}</label>
+                    <input value={extractedData.tutor_telefono} onChange={(e) => setExtractedData({ ...extractedData, tutor_telefono: e.target.value })} placeholder={t('ocr.guardianPhonePh')} className={inputClass} />
                   </div>
                   <div>
-                    <label className={labelClass}>Email del Tutor</label>
-                    <input value={extractedData.tutor_email} onChange={(e) => setExtractedData({ ...extractedData, tutor_email: e.target.value })} placeholder="Email del tutor" className={inputClass} />
+                    <label className={labelClass}>{t('ocr.guardianEmail')}</label>
+                    <input value={extractedData.tutor_email} onChange={(e) => setExtractedData({ ...extractedData, tutor_email: e.target.value })} placeholder={t('ocr.guardianEmailPh')} className={inputClass} />
                   </div>
                 </div>
               )}
@@ -867,17 +868,17 @@ export function OCRScannerPage() {
               <div className="flex items-center gap-3 mb-6">
                 <div className="p-3 bg-tertiary-fixed rounded-2xl text-on-tertiary-fixed-variant"><MedicalIcon name="activity" size={24} className="animate-breathe-icon" /></div>
                 <div>
-                  <h3 className="font-title-md text-title-md">Datos Clínicos</h3>
-                  <p className="text-xs text-on-surface-variant">Diagnóstico, tratamiento y antecedentes</p>
+                  <h3 className="font-title-md text-title-md">{t('ocr.clinicalData')}</h3>
+                  <p className="text-xs text-on-surface-variant">{t('ocr.clinicalDataDesc')}</p>
                 </div>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className={labelClass}>Patología *</label>
-                  <textarea value={extractedData.patologia} onChange={(e) => setExtractedData({ ...extractedData, patologia: e.target.value })} rows={2} placeholder="Diagnóstico principal" className={textareaClass} />
+                  <label className={labelClass}>{t('ocr.pathologyReq')}</label>
+                  <textarea value={extractedData.patologia} onChange={(e) => setExtractedData({ ...extractedData, patologia: e.target.value })} rows={2} placeholder={t('ocr.mainDiagnosisPh')} className={textareaClass} />
                 </div>
                 <div>
-                  <label className={labelClass}>Diagnóstico Secundario</label>
+                  <label className={labelClass}>{t('ocr.secondaryDiagnosis')}</label>
                   <textarea value={extractedData.diagnostico_secundario} onChange={(e) => setExtractedData({ ...extractedData, diagnostico_secundario: e.target.value })} rows={2} placeholder="No detectado" className={textareaClass} />
                 </div>
                 <div>
@@ -889,7 +890,7 @@ export function OCRScannerPage() {
                   <textarea value={extractedData.alergias} onChange={(e) => setExtractedData({ ...extractedData, alergias: e.target.value })} rows={2} placeholder="No detectado" className={textareaClass} />
                 </div>
                 <div>
-                  <label className={labelClass}>Enfermedades Crónicas / Contraindicaciones</label>
+                  <label className={labelClass}>{t('ocr.chronicDiseases')}</label>
                   <textarea value={extractedData.enfermedades_cronicas} onChange={(e) => setExtractedData({ ...extractedData, enfermedades_cronicas: e.target.value })} rows={2} placeholder="No detectado" className={textareaClass} />
                 </div>
                 <div>
@@ -902,14 +903,14 @@ export function OCRScannerPage() {
                 </div>
                 <div>
                   <label className={labelClass}>ROM Objetivo</label>
-                  <input value={extractedData.rom_objetivo} onChange={(e) => setExtractedData({ ...extractedData, rom_objetivo: e.target.value })} placeholder="Ej. Flexión 120°" className={inputClass} />
+                  <input value={extractedData.rom_objetivo} onChange={(e) => setExtractedData({ ...extractedData, rom_objetivo: e.target.value })} placeholder={t('ocr.anglePh')} className={inputClass} />
                 </div>
                 <div>
-                  <label className={labelClass}>Frecuencia de Sesiones</label>
-                  <input value={extractedData.frecuencia_sesiones} onChange={(e) => setExtractedData({ ...extractedData, frecuencia_sesiones: e.target.value })} placeholder="Ej. 3 veces por semana" className={inputClass} />
+                  <label className={labelClass}>{t('ocr.sessionFrequency')}</label>
+                  <input value={extractedData.frecuencia_sesiones} onChange={(e) => setExtractedData({ ...extractedData, frecuencia_sesiones: e.target.value })} placeholder={t('ocr.frequencyPh')} className={inputClass} />
                 </div>
                 <div>
-                  <label className={labelClass}>Nombre del Médico Tratante</label>
+                  <label className={labelClass}>{t('ocr.attendingDoctor')}</label>
                   <input value={extractedData.medico_remitente} onChange={(e) => setExtractedData({ ...extractedData, medico_remitente: e.target.value })} placeholder="No detectado" className={inputClass} />
                 </div>
               </div>
@@ -920,17 +921,17 @@ export function OCRScannerPage() {
               <div className="flex items-center gap-3 mb-6">
                 <div className="p-3 bg-error/10 rounded-2xl text-error"><Icon name="emergency" size={24} className="animate-breathe-icon" /></div>
                 <div>
-                  <h3 className="font-title-md text-title-md">Contacto de Emergencia</h3>
-                  <p className="text-xs text-on-surface-variant">Persona a contactar en caso de emergencia</p>
+                  <h3 className="font-title-md text-title-md">{t('ocr.emergencyContact')}</h3>
+                  <p className="text-xs text-on-surface-variant">{t('ocr.emergencyContactDesc')}</p>
                 </div>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className={labelClass}>Nombre del Contacto</label>
+                  <label className={labelClass}>{t('ocr.contactName')}</label>
                   <input value={extractedData.contacto_emergencia_nombre} onChange={(e) => setExtractedData({ ...extractedData, contacto_emergencia_nombre: e.target.value })} placeholder="No detectado" className={inputClass} />
                 </div>
                 <div>
-                  <label className={labelClass}>Teléfono del Contacto</label>
+                  <label className={labelClass}>{t('ocr.contactPhone')}</label>
                   <input value={extractedData.contacto_emergencia_telefono} onChange={(e) => setExtractedData({ ...extractedData, contacto_emergencia_telefono: e.target.value })} placeholder="No detectado" className={inputClass} />
                 </div>
               </div>
@@ -953,14 +954,14 @@ export function OCRScannerPage() {
               <div className="flex-1 space-y-4 min-w-0">
                 <div>
                   <span className="text-primary font-semibold text-label-sm uppercase tracking-wider">Onboarding • Paso 3</span>
-                  <h1 className="font-headline-lg text-headline-lg-mobile lg:text-headline-lg text-primary">Configuración de Rutina</h1>
-                  <p className="text-body-lg text-secondary">Busca y selecciona ejercicios para construir el plan de recuperación.</p>
+                  <h1 className="font-headline-lg text-headline-lg-mobile lg:text-headline-lg text-primary">{t('ocr.routineConfig')}</h1>
+                  <p className="text-body-lg text-secondary">{t('ocr.routineConfigDesc')}</p>
                 </div>
                 <div className="glass-panel p-4 rounded-2xl card-glow-hover">
                   <div className="flex gap-3 mb-4">
                     <div className="relative flex-1">
                       <Icon name="search" size={20} className="absolute left-3 top-1/2 -translate-y-1/2 text-outline" />
-                      <input value={prescriptionSearch} onChange={(e) => setPrescriptionSearch(e.target.value)} placeholder="Buscar ejercicios..." className="w-full pl-10 pr-4 py-3 rounded-xl border-none glass-teal border border-outline-variant/20 outline-none" />
+                      <input value={prescriptionSearch} onChange={(e) => setPrescriptionSearch(e.target.value)} placeholder={t('ocr.searchExercisesPh')} className="w-full pl-10 pr-4 py-3 rounded-xl border-none glass-teal border border-outline-variant/20 outline-none" />
                     </div>
                     <div className="flex gap-2">
                       {['Todos', 'Movilidad', 'Fuerza'].map((f) => (
@@ -991,8 +992,7 @@ export function OCRScannerPage() {
                             onClick={() => addToPrescription(ex.nombre)}
                             className="premium-btn w-full py-3 rounded-xl bg-primary text-on-primary font-bold hover:bg-primary-container active:scale-95 flex items-center justify-center gap-2 transition-all"
                           >
-                            <Icon name="add_circle" size={20} /> Añadir a Rutina
-                          </button>
+                            <Icon name="add_circle" size={20} />{t('ocr.addToRoutine')}</button>
                         </div>
                       </div>
                     ))
@@ -1005,7 +1005,7 @@ export function OCRScannerPage() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <Icon name="list_alt" filled size={24} className="text-primary animate-breathe-icon" />
-                    <h2 className="font-title-md text-title-md text-primary">Prescripción Actual</h2>
+                    <h2 className="font-title-md text-title-md text-primary">{t('ocr.currentPrescription')}</h2>
                   </div>
                   <span className="px-3 py-1 bg-primary/10 text-primary text-label-sm font-bold rounded-full">{prescription.length} Ejercicios</span>
                 </div>
@@ -1016,7 +1016,7 @@ export function OCRScannerPage() {
                         <div>
                           <h4 className="font-semibold text-primary">{item.name}</h4>
                         </div>
-                        <button onClick={() => removeFromPrescription(i)} aria-label="Eliminar ejercicio" className="text-outline hover:text-error transition-colors">
+                        <button onClick={() => removeFromPrescription(i)} aria-label={t('ocr.deleteExercisePh')} className="text-outline hover:text-error transition-colors">
                           <Icon name="delete" size={20} />
                         </button>
                       </div>
@@ -1037,7 +1037,7 @@ export function OCRScannerPage() {
                   {prescription.length === 0 && (
                     <div className="empty-state-premium border-2 border-dashed border-outline-variant rounded-2xl">
                       <Icon name="add_circle" size={32} className="opacity-50 mb-2" />
-                      <p className="text-sm font-semibold text-on-surface-variant">Tu rutina está vacía. Añade ejercicios desde la biblioteca.</p>
+                      <p className="text-sm font-semibold text-on-surface-variant">{t('ocr.emptyRoutine')}</p>
                     </div>
                   )}
                 </div>
@@ -1045,10 +1045,8 @@ export function OCRScannerPage() {
             </div>
             <div className="flex items-center justify-between mt-6 pb-6">
               <button onClick={() => setStep(2)} className="flex items-center gap-2 px-6 py-3 rounded-xl hover:bg-surface-container transition-all text-secondary font-semibold">
-                <Icon name="arrow_back" size={20} /> Volver a Validación
-              </button>
-              <button onClick={generateToken} className="premium-btn px-8 py-4 rounded-2xl bg-primary text-on-primary font-bold shadow-lg hover:shadow-primary/20 hover:-translate-y-0.5 active:scale-95 flex items-center gap-2 transition-all">
-                Generar Token del Paciente <Icon name="bolt" filled size={20} />
+                <Icon name="arrow_back" size={20} />{t('ocr.backToValidation')}</button>
+              <button onClick={generateToken} className="premium-btn px-8 py-4 rounded-2xl bg-primary text-on-primary font-bold shadow-lg hover:shadow-primary/20 hover:-translate-y-0.5 active:scale-95 flex items-center gap-2 transition-all">{t('ocr.generateToken')}<Icon name="bolt" filled size={20} />
               </button>
             </div>
           </motion.div>
@@ -1061,11 +1059,11 @@ export function OCRScannerPage() {
                 <div className="mb-6 inline-flex items-center justify-center w-20 h-20 bg-primary/10 rounded-full">
                   <Icon name="verified_user" filled size={48} className="text-primary animate-breathe-icon" />
                 </div>
-                <h1 className="font-display-lg text-3xl lg:text-display-lg mb-2 shimmer-text">¡Paciente listo!</h1>
+                <h1 className="font-display-lg text-3xl lg:text-display-lg mb-2 shimmer-text">{t('ocr.patientReady')}</h1>
                 <p className="font-body-lg text-body-lg text-secondary mb-10 max-w-md mx-auto">El registro de {extractedData.nombre_completo} se ha completado exitosamente.</p>
 
                 <div className="glass-teal rounded-2xl p-4 sm:p-6 border border-outline-variant/40 mb-10 w-full max-w-[320px] mx-auto">
-                  <span className="block font-label-sm text-label-sm text-secondary uppercase tracking-widest mb-3">Token de Activación</span>
+                  <span className="block font-label-sm text-label-sm text-secondary uppercase tracking-widest mb-3">{t('ocr.activationToken')}</span>
                   <div className="flex items-center justify-center gap-3 sm:gap-6">
                     <span className="font-display-lg text-2xl sm:text-display-lg text-primary tracking-[0.15em] sm:tracking-[0.2em] break-all">{generatedToken}</span>
                     <button onClick={copyToken} aria-label="Copiar token" className={`flex items-center justify-center w-12 h-12 rounded-xl ${copied ? 'bg-tertiary-container' : 'bg-primary'} text-on-primary hover:bg-primary-container active:scale-95 shadow-md transition-all`}>
@@ -1085,7 +1083,7 @@ export function OCRScannerPage() {
                   <div className="glass-teal rounded-2xl p-4 border border-outline-variant/30 flex items-center gap-4">
                     <div className="w-12 h-12 rounded-full bg-tertiary-fixed flex items-center justify-center"><Icon name="document_scanner" size={24} /></div>
                     <div>
-                      <p className="text-[10px] text-secondary uppercase">Resumen Rutina</p>
+                      <p className="text-[10px] text-secondary uppercase">{t('ocr.routineSummary')}</p>
                       <p className="font-title-md text-title-md text-on-surface">{prescription.length} Ejercicios</p>
                     </div>
                   </div>
@@ -1093,15 +1091,13 @@ export function OCRScannerPage() {
 
                 <div className="flex flex-wrap justify-center gap-4 mb-10">
                   <button onClick={() => setShowEmailModal(true)} className="bg-teal-600 text-white font-bold hover:bg-teal-700 shadow-md shadow-teal-600/20 rounded-full px-7 py-3 flex items-center gap-2 transition-all">
-                    <Icon name="send" size={20} /> Enviar Token (Email / SMS / WhatsApp)
-                  </button>
+                    <Icon name="send" size={20} />{t('ocr.sendToken')}</button>
                   <button onClick={() => { try { window.print(); } catch { toast.error('No se pudo imprimir'); } }} className="bg-secondary-container/50 text-secondary font-semibold hover:bg-secondary-container border border-white/20 rounded-full px-6 py-3 flex items-center gap-2">
                     <Icon name="print" size={20} /> Imprimir Receta
                   </button>
                 </div>
 
-                <button onClick={() => navigate('/patients')} className="premium-btn bg-primary text-on-primary py-5 px-10 rounded-2xl font-title-md text-title-md shadow-xl hover:shadow-2xl hover:-translate-y-1 flex items-center justify-center gap-3 transition-all">
-                  Finalizar y volver al Directorio <Icon name="arrow_forward" size={20} />
+                <button onClick={() => navigate('/patients')} className="premium-btn bg-primary text-on-primary py-5 px-10 rounded-2xl font-title-md text-title-md shadow-xl hover:shadow-2xl hover:-translate-y-1 flex items-center justify-center gap-3 transition-all">{t('ocr.finishAndReturn')}<Icon name="arrow_forward" size={20} />
                 </button>
               </div>
             </div>

@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useEffect, useMemo, useState } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -94,6 +95,7 @@ interface PatientProfile {
 type Tab = 'overview' | 'history' | 'routine' | 'statistics';
 
 export function PatientDetailPage() {
+  const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -425,10 +427,8 @@ export function PatientDetailPage() {
     return (
       <div className="empty-state-premium text-center py-20">
         <Icon name="person_off" size={64} className="mx-auto text-outline mb-4 opacity-30" />
-        <p className="text-on-surface-variant">No encontramos el paciente que buscas. Es posible que el registro haya sido removido o el enlace sea incorrecto.</p>
-        <button onClick={() => navigate('/patients')} className="premium-btn mt-4 bg-primary text-on-primary px-6 py-3 rounded-xl font-bold">
-          Volver al Directorio
-        </button>
+        <p className="text-on-surface-variant">{t('pdp.notFound')}</p>
+        <button onClick={() => navigate('/patients')} className="premium-btn mt-4 bg-primary text-on-primary px-6 py-3 rounded-xl font-bold">{t('pdp.backToDirectory')}</button>
       </div>
     );
   }
@@ -463,7 +463,7 @@ export function PatientDetailPage() {
                   {daysSinceLast > 7 ? `Inactivo hace ${daysSinceLast} días` : 'Sesión reciente'}
                 </span>
               ) : (
-                <span>Nuevo ingreso</span>
+                <span>{t('pdp.newAdmission')}</span>
               )}
             </div>
           </div>
@@ -482,7 +482,7 @@ export function PatientDetailPage() {
             className="px-4 py-2.5 rounded-2xl bg-surface-container hover:bg-surface-container-high border border-outline/10 text-on-surface text-xs font-bold transition-all flex items-center gap-2"
           >
             <Icon name="upload_file" size={16} className="text-primary" />
-            <span>Actualizar con OCR</span>
+            <span>{t('pdp.updateWithOcr')}</span>
           </button>
 
           <button
@@ -498,7 +498,7 @@ export function PatientDetailPage() {
             className="px-5 py-2.5 rounded-2xl bg-primary text-on-primary hover:bg-primary/90 text-xs font-bold transition-all shadow-md shadow-primary/20 flex items-center gap-2"
           >
             <Icon name="videocam" size={16} />
-            <span>Iniciar Sesión AR</span>
+            <span>{t('pdp.startArSession')}</span>
           </button>
         </div>
       </div>
@@ -549,8 +549,8 @@ export function PatientDetailPage() {
             <div className="flex items-center gap-3 mb-6">
               <div className="p-3 bg-primary/10 rounded-2xl text-primary"><MedicalIcon name="activity" size={24} /></div>
               <div>
-                <h3 className="font-title-md text-title-md text-on-surface">Datos Clínicos del Paciente</h3>
-                <p className="text-xs text-on-surface-variant">Información extraída del expediente y documentos médicos</p>
+                <h3 className="font-title-md text-title-md text-on-surface">{t('pdp.clinicalData')}</h3>
+                <p className="text-xs text-on-surface-variant">{t('pdp.clinicalDataDesc')}</p>
               </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -587,7 +587,7 @@ export function PatientDetailPage() {
               <div className="mt-4 p-4 rounded-xl bg-error/5 border border-error/10">
                 <div className="flex items-center gap-2 mb-2">
                   <Icon name="emergency" size={16} className="text-error" />
-                  <span className="text-xs font-bold uppercase tracking-wider text-error">Contacto de Emergencia</span>
+                  <span className="text-xs font-bold uppercase tracking-wider text-error">{t('pdp.emergencyContact')}</span>
                 </div>
                 <p className="text-sm text-on-surface">{patient.contacto_emergencia_nombre || 'Sin nombre'} - {patient.contacto_emergencia_telefono || 'Sin teléfono'}</p>
               </div>
@@ -596,7 +596,7 @@ export function PatientDetailPage() {
               <div className="mt-4 p-4 rounded-xl bg-amber-500/10 dark:bg-amber-500/15 border border-amber-500/25">
                 <div className="flex items-center gap-2 mb-2">
                   <Icon name="guardian" size={16} className="text-amber-600 dark:text-amber-400" />
-                  <span className="text-xs font-bold uppercase tracking-wider text-amber-700 dark:text-amber-300">Datos del Tutor</span>
+                  <span className="text-xs font-bold uppercase tracking-wider text-amber-700 dark:text-amber-300">{t('pdp.guardianData')}</span>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-2 text-sm text-on-surface">
                   <span>{patient.tutor_nombre || 'Sin nombre'}</span>
@@ -608,13 +608,12 @@ export function PatientDetailPage() {
           </GlassPanel>
           <GlassPanel className="card-glow-hover lg:col-span-2 p-8 rounded-[2rem]">
             <h3 className="font-title-md text-title-md text-on-surface mb-2 flex items-center gap-2">
-              <MedicalIcon name="activity" size={20} className="text-primary" /> Progreso Biomecánico
-            </h3>
-            <p className="text-sm text-on-surface-variant mb-6">Evolución del Rango de Movimiento (ROM)</p>
+              <MedicalIcon name="activity" size={20} className="text-primary" />{t('pdp.biomechProgress')}</h3>
+            <p className="text-sm text-on-surface-variant mb-6">{t('pdp.romEvolution')}</p>
 
             <div className="flex items-end gap-3 mb-4">
               <span className="text-5xl font-extrabold text-primary">{recoveryProgress > 0 ? `${recoveryProgress}%` : '—'}</span>
-              <span className="text-sm text-on-surface-variant mb-2">Recuperación Global</span>
+              <span className="text-sm text-on-surface-variant mb-2">{t('pdp.globalRecovery')}</span>
             </div>
 
             <div className="h-48 flex items-end justify-between gap-2">
@@ -674,12 +673,12 @@ export function PatientDetailPage() {
               <ClinicalActivityFeed
                 items={clinicalFeed}
                 title="Historial de sesiones"
-                subtitle="Registro real de las últimas sesiones completadas"
+                subtitle={t('pdp.realRecordDesc')}
               />
             ) : (
               <GlassPanel className="card-glow-hover p-6 rounded-3xl">
-                <p className="text-sm font-semibold text-on-surface">Historial de sesiones</p>
-                <p className="text-xs text-outline mt-1">Todavía no hay sesiones registradas para este paciente.</p>
+                <p className="text-sm font-semibold text-on-surface">{t('pdp.sessionHistory')}</p>
+                <p className="text-xs text-outline mt-1">{t('pdp.noSessions')}</p>
               </GlassPanel>
             )}
           </div>
@@ -687,17 +686,17 @@ export function PatientDetailPage() {
           <div className="lg:col-span-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <PatientAdherenceHeatmapCard />
             <GlassPanel className="card-glow-hover p-6 rounded-3xl">
-              <p className="text-xs font-semibold text-on-surface-variant">Calidad media de ejecución</p>
+              <p className="text-xs font-semibold text-on-surface-variant">{t('pdp.avgQuality')}</p>
               <p className="text-2xl font-bold text-on-surface mt-1">{avgQuality > 0 ? `${avgQuality}%` : '—'}</p>
               <p className="text-[11px] text-outline mt-1">{sessions.length > 0 ? 'Promedio de sesiones registradas' : 'Sin sesiones registradas'}</p>
             </GlassPanel>
             <GlassPanel className="card-glow-hover p-6 rounded-3xl">
-              <p className="text-xs font-semibold text-on-surface-variant">Última sesión</p>
+              <p className="text-xs font-semibold text-on-surface-variant">{t('pdp.lastSession')}</p>
               <p className="text-sm font-bold text-on-surface mt-1">{lastSession ? new Date(lastSession.fecha).toLocaleDateString(currentLocale()) : '—'}</p>
               <p className="text-[11px] text-outline mt-1">{lastSession?.ejercicio_nombre || 'Sin registro'}</p>
             </GlassPanel>
             <GlassPanel className="card-glow-hover p-6 rounded-3xl">
-              <p className="text-xs font-semibold text-on-surface-variant">Fase de recuperación</p>
+              <p className="text-xs font-semibold text-on-surface-variant">{t('pdp.recoveryPhase')}</p>
               <p className="text-sm font-bold text-on-surface mt-1">{routineHistory[0]?.fase || routineHistory[0]?.fase_recuperacion || 'Sin registrar'}</p>
               <p className="text-[11px] text-outline mt-1">{routineHistory[0]?.nombre || 'Sin rutina activa'}</p>
             </GlassPanel>
@@ -709,11 +708,10 @@ export function PatientDetailPage() {
                 <Icon name="psychology" filled size={24} className="text-on-primary-container" />
               </div>
               <div>
-                <p className="font-bold text-on-primary-container text-lg">Insight Clínico IA</p>
+                <p className="font-bold text-on-primary-container text-lg">{t('pdp.aiInsight')}</p>
                 {aiLoading ? (
                   <div className="flex items-center gap-2 text-sm text-on-primary-container/80">
-                    <Spinner size={16} className="text-on-primary-container" /> Analizando datos del paciente...
-                  </div>
+                    <Spinner size={16} className="text-on-primary-container" />{t('pdp.analyzingPatient')}</div>
                 ) : aiInsight ? (
                   <div className="text-sm text-on-primary-container/90 leading-relaxed mt-2 bg-white/10 p-4 rounded-xl backdrop-blur-sm border border-white/10">
                     {formatAIReport(aiInsight)}
@@ -726,7 +724,7 @@ export function PatientDetailPage() {
             <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/10">
               <div className="flex items-center gap-2 mb-2">
                 <Icon name="auto_awesome" size={14} className="text-on-primary-container" />
-                <p className="text-[10px] font-bold uppercase tracking-widest text-on-primary-container/80">Sugerencia de Physi</p>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-on-primary-container/80">{t('pdp.physiSuggestion')}</p>
               </div>
               <div className="flex gap-2">
                 <button onClick={generateInsight} disabled={aiLoading} className="flex-1 py-2.5 bg-on-primary-container text-primary font-bold text-xs rounded-xl transition-all hover:bg-on-primary-container/90 active:scale-95 shadow-sm disabled:opacity-50">
@@ -746,11 +744,11 @@ export function PatientDetailPage() {
       {activeTab === 'history' && (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
           <GlassPanel className="card-glow-hover p-8 rounded-[2rem]">
-            <h3 className="font-title-md text-title-md text-on-surface mb-6">Historial Clínico</h3>
+            <h3 className="font-title-md text-title-md text-on-surface mb-6">{t('pdp.clinicalHistory')}</h3>
             {sessions.length === 0 ? (
               <div className="empty-state-premium text-center py-12">
                 <Icon name="history" size={48} className="mx-auto text-outline opacity-30 mb-3" />
-                <p className="text-on-surface-variant">Aún no hay sesiones registradas. Inicia la primera sesión AR para comenzar el seguimiento del progreso.</p>
+                <p className="text-on-surface-variant">{t('pdp.noClinicalSessions')}</p>
               </div>
             ) : (
               <div className="space-y-4">
@@ -776,7 +774,7 @@ export function PatientDetailPage() {
                       </div>
                       {s.notas && (
                         <div className="mt-2 p-3 rounded-xl bg-surface-container text-sm text-on-surface-variant">
-                          <p className="text-xs font-bold uppercase tracking-wider text-outline mb-1">Notas de la sesión</p>
+                          <p className="text-xs font-bold uppercase tracking-wider text-outline mb-1">{t('pdp.sessionNotes')}</p>
                           {s.notas}
                         </div>
                       )}
@@ -799,28 +797,27 @@ export function PatientDetailPage() {
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
           <GlassPanel className="card-glow-hover p-8 rounded-[2rem]">
             <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
-              <h3 className="font-title-md text-title-md text-on-surface">Rutina Asignada</h3>
+              <h3 className="font-title-md text-title-md text-on-surface">{t('pdp.assignedRoutine')}</h3>
               <div className="flex gap-2 flex-wrap">
                 <button
                   onClick={() => loadRoutineHistory()}
                   className="flex items-center gap-2 px-4 py-2 rounded-xl bg-surface-container text-on-surface-variant hover:bg-surface-container-high transition-all text-sm font-bold"
-                  aria-label="Ver historial de rutinas"
+                  aria-label={t('pdp.viewRoutineHistory')}
                 >
                   <Icon name="history" size={18} /> Historial
                 </button>
                 <button
                   onClick={() => setShowReassignModal(true)}
                   className="flex items-center gap-2 px-4 py-2 rounded-xl bg-primary text-on-primary hover:scale-[1.02] active:scale-95 transition-all text-sm font-bold shadow-lg shadow-primary/20"
-                  aria-label="Asignar nueva rutina"
+                  aria-label={t('pdp.assignNewRoutine')}
                 >
-                  <Icon name="autorenew" size={18} /> Reasignar Rutina
-                </button>
+                  <Icon name="autorenew" size={18} />{t('pdp.reassignRoutine')}</button>
               </div>
             </div>
             {exercises.length === 0 ? (
               <div className="empty-state-premium text-center py-12">
                 <MedicalIcon name="exercise" size={48} className="mx-auto text-outline opacity-30 mb-3" />
-                <p className="text-on-surface-variant">No hay ejercicios asignados todavía. Diseña una rutina personalizada para impulsar la recuperación.</p>
+                <p className="text-on-surface-variant">{t('pdp.noExercisesAssigned')}</p>
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -872,20 +869,20 @@ export function PatientDetailPage() {
               <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
                 <Icon name="tune" size={24} className="text-primary" />
               </div>
-              <h3 className="font-title-md text-title-md text-on-surface">Recomendación de Ajuste de Rutina</h3>
+              <h3 className="font-title-md text-title-md text-on-surface">{t('pdp.routineAdjustment')}</h3>
             </div>
             <p className="text-sm text-on-surface-variant mb-4 leading-relaxed">{routineNote}</p>
             <div className="bg-surface-variant/10 rounded-2xl p-4 mb-4">
               <p className="text-xs text-on-surface-variant mb-2 font-semibold uppercase tracking-wider">Acciones sugeridas</p>
               <ul className="text-sm text-on-surface space-y-1.5">
-                <li className="flex items-start gap-2"><Icon name="check_circle" size={16} className="text-success mt-0.5 shrink-0" /> Revisa los ejercicios actuales en la pestaña Rutina Asignada</li>
-                <li className="flex items-start gap-2"><Icon name="check_circle" size={16} className="text-success mt-0.5 shrink-0" /> Considera ajustar series o repeticiones según el progreso</li>
-                <li className="flex items-start gap-2"><Icon name="check_circle" size={16} className="text-success mt-0.5 shrink-0" /> Programa una sesión de seguimiento para verificar mejoras</li>
+                <li className="flex items-start gap-2"><Icon name="check_circle" size={16} className="text-success mt-0.5 shrink-0" />{t('pdp.reviewExercises')}</li>
+                <li className="flex items-start gap-2"><Icon name="check_circle" size={16} className="text-success mt-0.5 shrink-0" />{t('pdp.considerAdjust')}</li>
+                <li className="flex items-start gap-2"><Icon name="check_circle" size={16} className="text-success mt-0.5 shrink-0" />{t('pdp.scheduleFollowUp')}</li>
               </ul>
             </div>
             <div className="flex gap-3">
               <button onClick={() => setShowRoutineModal(false)} className="flex-1 px-6 py-3 rounded-xl bg-surface-variant/30 text-on-surface-variant font-bold hover:bg-surface-variant/50 transition-all">Cerrar</button>
-              <button onClick={() => { setShowRoutineModal(false); setActiveTab('routine'); }} className="flex-1 px-6 py-3 rounded-xl bg-primary text-on-primary font-bold hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2"><Icon name="assignment" size={18} /> Ir a Rutina</button>
+              <button onClick={() => { setShowRoutineModal(false); setActiveTab('routine'); }} className="flex-1 px-6 py-3 rounded-xl bg-primary text-on-primary font-bold hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2"><Icon name="assignment" size={18} />{t('pdp.goToRoutine')}</button>
             </div>
           </div>
         </div>
@@ -937,7 +934,7 @@ export function PatientDetailPage() {
               <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
                 <Icon name="document_scanner" size={24} className="text-primary" />
               </div>
-              <h3 className="font-title-md text-title-md text-on-surface">Actualizar Expediente con Nuevo Documento</h3>
+              <h3 className="font-title-md text-title-md text-on-surface">{t('pdp.updateRecordDoc')}</h3>
             </div>
 
             {!ocrSuggestedChanges ? (
@@ -955,7 +952,7 @@ export function PatientDetailPage() {
                   ) : (
                     <>
                       <Icon name="cloud_upload" size={32} className="text-outline mx-auto mb-2" />
-                      <p className="text-sm text-on-surface-variant">Haz clic para subir una imagen</p>
+                      <p className="text-sm text-on-surface-variant">{t('pdp.clickToUpload')}</p>
                     </>
                   )}
                   <input id="ocr-update-file" type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && setOcrUpdateFile(e.target.files[0])} />
@@ -1106,10 +1103,10 @@ export function PatientDetailPage() {
               <div className="w-10 h-10 rounded-xl bg-secondary-container flex items-center justify-center">
                 <Icon name="history" size={24} className="text-primary" />
               </div>
-              <h3 className="font-title-md text-title-md text-on-surface">Historial de Rutinas</h3>
+              <h3 className="font-title-md text-title-md text-on-surface">{t('pdp.routineHistory')}</h3>
             </div>
             {routineHistory.length === 0 ? (
-              <p className="text-sm text-on-surface-variant text-center py-8">No hay rutinas registradas para este paciente.</p>
+              <p className="text-sm text-on-surface-variant text-center py-8">{t('pdp.noRoutines')}</p>
             ) : (
               <div className="space-y-3">
                 {routineHistory.map((r) => (
@@ -1124,7 +1121,7 @@ export function PatientDetailPage() {
                     <div className="flex flex-wrap items-center gap-2 text-xs text-outline">
                       <span>Inicio: {r.fecha_inicio ? new Date(r.fecha_inicio).toLocaleDateString(currentLocale()) : '-'}</span>
                       {r.fecha_fin && <span>· Vigencia: hasta {new Date(r.fecha_fin).toLocaleDateString(currentLocale())}</span>}
-                      {!r.fecha_fin && <span>· Sin fecha de fin</span>}
+                      {!r.fecha_fin && <span>{t('pdp.noEndDate')}</span>}
                       {(r.fase || r.fase_recuperacion) && (
                         <span className="px-1.5 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20 font-semibold">
                           Fase: {r.fase || r.fase_recuperacion}
