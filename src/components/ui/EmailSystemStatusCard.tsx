@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useState, useEffect, useCallback } from 'react';
 import {
   CheckCircle2,
@@ -42,6 +43,7 @@ interface DiagnosticState {
 }
 
 export function EmailSystemStatusCard() {
+  const { t } = useTranslation();
   const toast = useToast();
   const [loading, setLoading] = useState(false);
   const [diagnostics, setDiagnostics] = useState<DiagnosticState | null>(null);
@@ -149,7 +151,7 @@ export function EmailSystemStatusCard() {
           className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-all self-start sm:self-auto disabled:opacity-50"
         >
           <RefreshCw size={13} className={loading ? 'animate-spin' : ''} />
-          <span>Actualizar Diagnóstico</span>
+          <span>{t('ems.refreshDiagnosis')}</span>
         </button>
       </div>
 
@@ -188,12 +190,10 @@ export function EmailSystemStatusCard() {
               </span>
             ) : diagnostics?.smtp?.configured ? (
               <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300 flex items-center gap-1">
-                <AlertTriangle size={11} /> Error de conexión
-              </span>
+                <AlertTriangle size={11} />{t('ems.connectionError')}</span>
             ) : (
               <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-300 flex items-center gap-1">
-                <Info size={11} /> Vía Supabase
-              </span>
+                <Info size={11} />{t('ems.viaSupabase')}</span>
             )}
           </div>
 
@@ -211,16 +211,14 @@ export function EmailSystemStatusCard() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <ShieldCheck size={14} className="text-teal-600 dark:text-teal-400" />
-              <span className="text-xs font-bold text-slate-800 dark:text-slate-200">Alertas de Seguridad</span>
+              <span className="text-xs font-bold text-slate-800 dark:text-slate-200">{t('ems.securityAlerts')}</span>
             </div>
             <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 flex items-center gap-1">
               <CheckCircle2 size={11} /> Activo
             </span>
           </div>
 
-          <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed">
-            Notificaciones de cambio de contraseña, tokens de sesión y recuperación registradas con hash SHA-256 en base de datos.
-          </p>
+          <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed">{t('ems.securityAlertsDesc')}</p>
 
           <div className="text-[10px] text-slate-500 font-mono pt-1">
             Tabla: notifications (Real-time sync)
@@ -232,14 +230,14 @@ export function EmailSystemStatusCard() {
       <div className="p-4 rounded-2xl bg-teal-50/60 dark:bg-teal-950/30 border border-teal-200/60 dark:border-teal-800/40 space-y-3">
         <h4 className="text-xs font-bold text-teal-950 dark:text-teal-200 flex items-center gap-2">
           <Send size={14} />
-          <span>Realizar Envío de Prueba</span>
+          <span>{t('ems.sendTest')}</span>
         </h4>
         <div className="flex flex-col sm:flex-row items-center gap-2">
           <input
             type="email"
             value={testEmail}
             onChange={(e) => setTestEmail(e.target.value)}
-            placeholder="fisiomirror@proton.me (o correo de prueba)"
+            placeholder={t('ems.testEmailPlaceholder')}
             className="w-full sm:flex-1 px-3.5 py-2 rounded-xl text-xs border border-teal-200 dark:border-teal-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-teal-500/20"
           />
           <div className="flex items-center gap-1.5 w-full sm:w-auto">
@@ -267,32 +265,28 @@ export function EmailSystemStatusCard() {
             </button>
           </div>
         </div>
-        <p className="text-[10px] text-teal-800 dark:text-teal-300">
-          Tip: Si usas Resend en modo Sandbox, debes ingresar <strong>fisiomirror@proton.me</strong> para recibir el correo exitosamente. Para otros correos, configura tu dominio en Resend o ingresa credenciales SMTP.
-        </p>
+        <p className="text-[10px] text-teal-800 dark:text-teal-300">{t('ems.sandboxTip')}<strong>fisiomirror@proton.me</strong>{t('ems.sandboxTip2')}</p>
       </div>
 
       {/* Resend Domain Verification Helper Guide */}
       <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/30 border border-slate-200/60 dark:border-slate-800 text-xs space-y-2 text-slate-600 dark:text-slate-300">
         <div className="flex items-center justify-between">
-          <span className="font-bold text-slate-900 dark:text-white">
-            ¿Cómo habilitar envíos masivos a cualquier paciente?
-          </span>
+          <span className="font-bold text-slate-900 dark:text-white">{t('ems.howEnableBulk')}</span>
           <a
             href="https://resend.com/domains"
             target="_blank"
             rel="noreferrer"
             className="inline-flex items-center gap-1 font-bold text-teal-600 dark:text-teal-400 hover:underline"
           >
-            <span>Verificar Dominio en Resend</span>
+            <span>{t('ems.verifyDomain')}</span>
             <ExternalLink size={12} />
           </a>
         </div>
         <ol className="list-decimal list-inside space-y-1 text-[11px] text-slate-500 dark:text-slate-400">
-          <li>Entra a <strong>resend.com/domains</strong> con tu cuenta (fisiomirror@proton.me).</li>
-          <li>Agrega tu dominio propio (ej: <code className="bg-slate-200 dark:bg-slate-700 px-1 rounded">fisiomirror.com</code>) y copia los registros DNS (TXT, MX).</li>
-          <li>Una vez verificado, define <code className="bg-slate-200 dark:bg-slate-700 px-1 rounded">RESEND_FROM=FisioMirror &lt;soporte@tudominio.com&gt;</code> en tu archivo de variables de entorno.</li>
-          <li>Alternativamente, agrega tus credenciales de correo institucional en <code className="bg-slate-200 dark:bg-slate-700 px-1 rounded">SMTP_HOST</code>, <code className="bg-slate-200 dark:bg-slate-700 px-1 rounded">SMTP_USER</code> y <code className="bg-slate-200 dark:bg-slate-700 px-1 rounded">SMTP_PASS</code>.</li>
+          <li>Entra a <strong>resend.com/domains</strong>{t('ems.withAccount')}</li>
+          <li>{t('ems.addOwnDomain')}<code className="bg-slate-200 dark:bg-slate-700 px-1 rounded">fisiomirror.com</code>{t('ems.copyDns')}</li>
+          <li>Una vez verificado, define <code className="bg-slate-200 dark:bg-slate-700 px-1 rounded">RESEND_FROM=FisioMirror &lt;soporte@tudominio.com&gt;</code>{t('ems.envFile')}</li>
+          <li>{t('ems.altCreds')}<code className="bg-slate-200 dark:bg-slate-700 px-1 rounded">SMTP_HOST</code>, <code className="bg-slate-200 dark:bg-slate-700 px-1 rounded">SMTP_USER</code> y <code className="bg-slate-200 dark:bg-slate-700 px-1 rounded">SMTP_PASS</code>.</li>
         </ol>
       </div>
     </div>

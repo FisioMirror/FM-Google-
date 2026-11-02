@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -41,6 +42,7 @@ export function SendTokenModal({
   recipientEmail: initialEmail = '',
   recipientPhone: initialPhone = '',
 }: SendTokenModalProps) {
+  const { t } = useTranslation();
   const isModalOpen = open ?? isOpen ?? false;
   const toast = useToast();
   const user = useAuthStore((s) => s.user);
@@ -363,9 +365,7 @@ Equipo FisioMirror`;
                   <ShieldCheck size={22} />
                 </div>
                 <div>
-                  <h3 className="font-extrabold text-base text-slate-900 dark:text-white">
-                    Enviar Llave de Acceso
-                  </h3>
+                  <h3 className="font-extrabold text-base text-slate-900 dark:text-white">{t('stm.sendAccessKey')}</h3>
                   <p className="text-xs text-slate-500 dark:text-slate-400">
                     Token:{' '}
                     <span className="font-mono font-bold text-teal-600 dark:text-teal-400 tracking-wider">
@@ -377,7 +377,7 @@ Equipo FisioMirror`;
               <button
                 onClick={onClose}
                 className="p-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
-                aria-label="Cerrar ventana"
+                aria-label={t('stm.closeWindow')}
               >
                 <X size={18} />
               </button>
@@ -400,7 +400,7 @@ Equipo FisioMirror`;
                     type="tel"
                     value={therapistPhone}
                     onChange={(e) => setTherapistPhone(e.target.value)}
-                    placeholder="Teléfono del fisio"
+                    placeholder={t('stm.therapistPhone')}
                     className="w-full text-[10px] bg-transparent border-b border-teal-300 dark:border-teal-700 font-mono text-teal-700 dark:text-teal-300 outline-none placeholder:text-teal-400"
                   />
                 </div>
@@ -409,21 +409,19 @@ Equipo FisioMirror`;
               <div className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/80 dark:border-slate-700/60">
                 <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-400 font-bold uppercase tracking-wider text-[10px] mb-1">
                   <UserCheck size={13} />
-                  <span>Paciente Destinatario</span>
+                  <span>{t('stm.recipientPatient')}</span>
                 </div>
                 <input
                   type="text"
                   value={recipientName}
                   onChange={(e) => setRecipientName(e.target.value)}
-                  placeholder="Nombre del paciente"
+                  placeholder={t('stm.patientName')}
                   className="font-bold text-slate-800 dark:text-white bg-transparent border-b border-transparent hover:border-slate-300 focus:border-teal-500 outline-none w-full truncate"
                 />
                 <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate">
                   {channel === 'email' ? email || 'Ingresa el correo' : phone || 'Ingresa el teléfono'}
                 </p>
-                <span className="inline-block mt-0.5 text-[10px] px-1.5 py-0.2 bg-teal-500/10 text-teal-600 dark:text-teal-400 rounded font-semibold">
-                  Vinculación directa
-                </span>
+                <span className="inline-block mt-0.5 text-[10px] px-1.5 py-0.2 bg-teal-500/10 text-teal-600 dark:text-teal-400 rounded font-semibold">{t('stm.directLink')}</span>
               </div>
             </div>
 
@@ -473,9 +471,7 @@ Equipo FisioMirror`;
             {channel === 'email' && (
               <div className="space-y-3">
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                    Correo electrónico del paciente
-                  </label>
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">{t('stm.patientEmail')}</label>
                   <div className="relative">
                     <Mail size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
                     <input
@@ -492,20 +488,15 @@ Equipo FisioMirror`;
                 <div className="p-3 rounded-2xl bg-teal-50/70 dark:bg-teal-950/30 border border-teal-200/70 dark:border-teal-800/50 space-y-1.5">
                   <div className="flex items-center gap-1.5 text-xs font-bold text-teal-900 dark:text-teal-200">
                     <Sparkles size={14} className="text-teal-600 dark:text-teal-400" />
-                    <span>Envío Oficial FisioMirror</span>
+                    <span>{t('stm.officialEmail')}</span>
                   </div>
-                  <p className="text-[11px] text-teal-800/90 dark:text-teal-300/90 leading-relaxed">
-                    El paciente recibirá una plantilla profesional con su token de acceso rápido y botón de activación directa.
-                  </p>
-                  <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-snug pt-1 border-t border-teal-200/50 dark:border-teal-800/40">
-                    Incluye recordatorio automático para revisar la carpeta de <em>Spam / Correo no deseado</em>.
+                  <p className="text-[11px] text-teal-800/90 dark:text-teal-300/90 leading-relaxed">{t('stm.officialEmailDesc')}</p>
+                  <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-snug pt-1 border-t border-teal-200/50 dark:border-teal-800/40">{t('stm.folderReminder')}<em>Spam / Correo no deseado</em>.
                   </p>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                    Vista previa del mensaje
-                  </label>
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">{t('stm.messagePreview')}</label>
                   <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700 text-[11px] font-mono leading-relaxed text-slate-700 dark:text-slate-300 max-h-24 overflow-y-auto whitespace-pre-wrap">
                     {messageBody}
                   </div>
@@ -517,9 +508,7 @@ Equipo FisioMirror`;
             {channel === 'whatsapp' && (
               <div className="space-y-3">
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                    Teléfono de WhatsApp del paciente
-                  </label>
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">{t('stm.patientWhatsapp')}</label>
                   <div className="relative">
                     <Phone size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
                     <input
@@ -533,9 +522,7 @@ Equipo FisioMirror`;
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                    Vista previa de mensaje estructurado
-                  </label>
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">{t('stm.structuredPreview')}</label>
                   <div className="p-3 rounded-xl bg-emerald-50/50 dark:bg-emerald-950/20 border border-emerald-200/60 dark:border-emerald-800/40 text-[11px] font-mono leading-relaxed text-emerald-950 dark:text-emerald-200 max-h-28 overflow-y-auto whitespace-pre-wrap">
                     {messageBody}
                   </div>
@@ -547,9 +534,7 @@ Equipo FisioMirror`;
             {channel === 'sms' && (
               <div className="space-y-3">
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                    Número telefónico registrado del paciente
-                  </label>
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">{t('stm.registeredPhone')}</label>
                   <div className="relative">
                     <Phone size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
                     <input
@@ -563,9 +548,7 @@ Equipo FisioMirror`;
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                    Texto del SMS (conciso)
-                  </label>
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">{t('stm.smsText')}</label>
                   <div className="p-3 rounded-xl bg-blue-50/50 dark:bg-blue-950/20 border border-blue-200/60 dark:border-blue-800/40 text-[11px] font-mono leading-relaxed text-blue-950 dark:text-blue-200 max-h-28 overflow-y-auto whitespace-pre-wrap">
                     {smsText}
                   </div>
@@ -597,7 +580,7 @@ Equipo FisioMirror`;
                     className="w-full py-2 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200/80 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-semibold text-xs transition-all flex items-center justify-center gap-1.5"
                   >
                     <ExternalLink size={13} />
-                    <span>Abrir en mi gestor de correo</span>
+                    <span>{t('stm.openMailApp')}</span>
                   </button>
                 </>
               )}
@@ -609,7 +592,7 @@ Equipo FisioMirror`;
                   className="w-full py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 active:scale-98 text-white font-bold text-xs transition-all flex items-center justify-center gap-1.5 shadow-md shadow-emerald-600/20"
                 >
                   <ExternalLink size={14} />
-                  <span>Abrir en WhatsApp</span>
+                  <span>{t('stm.openWhatsapp')}</span>
                 </button>
               )}
 
@@ -620,7 +603,7 @@ Equipo FisioMirror`;
                   className="w-full py-2.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 active:scale-98 text-white font-bold text-xs transition-all flex items-center justify-center gap-1.5 shadow-md shadow-blue-600/20"
                 >
                   <Send size={14} />
-                  <span>Enviar por SMS</span>
+                  <span>{t('stm.sendSms')}</span>
                 </button>
               )}
 

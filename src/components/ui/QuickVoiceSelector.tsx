@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Volume2, Play, Square, Sparkles, Key, Check, ChevronDown, User, Zap, Sliders, X } from 'lucide-react';
@@ -14,6 +15,7 @@ export function QuickVoiceSelector({
   className = '',
   onVoiceChange,
 }: QuickVoiceSelectorProps) {
+  const { t } = useTranslation();
   const [_showKeyInput, setShowKeyInput] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [gender, setGenderState] = useState<VoiceGender>('male');
@@ -89,7 +91,7 @@ export function QuickVoiceSelector({
             ? 'px-2.5 py-1 text-xs bg-surface/80 dark:bg-surface-container/70 border-outline-variant/30 hover:border-teal-500/50 hover:bg-teal-500/10 text-on-surface'
             : 'px-3 py-1.5 text-xs bg-surface/90 dark:bg-surface-container/80 border-teal-500/30 hover:border-teal-500/60 hover:bg-teal-500/10 text-on-surface'
         }`}
-        title="Configuración de Voz y Tono de Physi (IA de voz natural)"
+        title={t('qvs.ariaLabel')}
       >
         <div className="size-5 rounded-full bg-teal-500/15 text-teal-600 dark:text-teal-400 flex items-center justify-center shrink-0">
           <Volume2 className="size-3.5 group-hover:scale-110 transition-transform" />
@@ -137,8 +139,8 @@ export function QuickVoiceSelector({
                     <Sparkles className="size-4" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-sm text-on-surface">Voz Humana de Physi</h3>
-                    <p className="text-[11px] text-on-surface-variant">Síntesis natural para clínica y terapia</p>
+                    <h3 className="font-bold text-sm text-on-surface">{t('qvs.title')}</h3>
+                    <p className="text-[11px] text-on-surface-variant">{t('qvs.subtitle')}</p>
                   </div>
                 </div>
                 <button
@@ -153,7 +155,7 @@ export function QuickVoiceSelector({
               <div className="mt-3.5 space-y-2">
                 <label className="text-xs font-semibold text-on-surface flex items-center gap-1.5">
                   <User className="size-3.5 text-teal-600 dark:text-teal-400" />
-                  <span>Perfil y Tono del Terapeuta</span>
+                  <span>{t('qvs.therapistProfile')}</span>
                 </label>
                 <div className="grid grid-cols-2 gap-2">
                   <button
@@ -169,9 +171,7 @@ export function QuickVoiceSelector({
                       <span className="text-xs font-bold">Dr. Physi</span>
                       {gender === 'male' && <Check className="size-3.5 text-teal-600 dark:text-teal-400" />}
                     </div>
-                    <p className="text-[10px] text-on-surface-variant leading-tight break-words">
-                      Masculino cálido, empático y profesional.
-                    </p>
+                    <p className="text-[10px] text-on-surface-variant leading-tight break-words">{t('qvs.warmMale')}</p>
                   </button>
 
                   <button
@@ -198,7 +198,7 @@ export function QuickVoiceSelector({
               <div className="mt-4 space-y-2">
                 <label className="text-xs font-semibold text-on-surface flex items-center gap-1.5">
                   <Zap className="size-3.5 text-teal-600 dark:text-teal-400" />
-                  <span>Motor de Síntesis y Proveedor</span>
+                  <span>{t('qvs.engineProvider')}</span>
                 </label>
                 <div className="space-y-1.5">
                   {/* Auto Neural Free */}
@@ -213,10 +213,10 @@ export function QuickVoiceSelector({
                   >
                     <div className="pr-2 min-w-0">
                       <div className="flex items-center gap-1.5">
-                        <span className="text-xs font-bold break-words">Voz Neuronal Gratuita</span>
+                        <span className="text-xs font-bold break-words">{t('qvs.freeNeural')}</span>
                       </div>
                       <p className="text-[11px] text-on-surface-variant">
-                        Alta fidelidad, sin latencia (&lt;350ms) y 100% gratuita sin claves.
+                        {t('qvs.freeNeuralDesc')}
                       </p>
                     </div>
                     {(provider === 'auto' || provider === 'neural') && (
@@ -244,9 +244,7 @@ export function QuickVoiceSelector({
                           Clave Opcional
                         </span>
                       </div>
-                      <p className="text-[11px] text-on-surface-variant">
-                        Voz hiperrealista de Fish Audio. Admite tu API key personalizada de fish.audio.
-                      </p>
+                      <p className="text-[11px] text-on-surface-variant">{t('qvs.fishDesc')}</p>
                     </div>
                     {provider === 'fish_audio' && (
                       <Check className="size-4 text-teal-600 dark:text-teal-400 shrink-0 mt-0.5" />
@@ -265,14 +263,10 @@ export function QuickVoiceSelector({
                   >
                     <div className="pr-2 min-w-0">
                       <div className="flex items-center gap-1.5">
-                        <span className="text-xs font-bold">Síntesis Local (Offline)</span>
-                        <span className="text-[9px] font-bold px-1.5 py-0.2 rounded-full bg-amber-500/20 text-amber-700 dark:text-amber-300">
-                          Sin Internet
-                        </span>
+                        <span className="text-xs font-bold">{t('qvs.localSynth')}</span>
+                        <span className="text-[9px] font-bold px-1.5 py-0.2 rounded-full bg-amber-500/20 text-amber-700 dark:text-amber-300">{t('qvs.offline')}</span>
                       </div>
-                      <p className="text-[11px] text-on-surface-variant">
-                        Motor interno del dispositivo calibrado con entonación médica.
-                      </p>
+                      <p className="text-[11px] text-on-surface-variant">{t('qvs.localDesc')}</p>
                     </div>
                     {provider === 'device' && (
                       <Check className="size-4 text-teal-600 dark:text-teal-400 shrink-0 mt-0.5" />
@@ -289,18 +283,16 @@ export function QuickVoiceSelector({
                   >
                     <label className="text-[11px] font-semibold text-on-surface flex items-center gap-1">
                       <Key className="size-3 text-teal-600" />
-                      <span>Clave API nativa de Fish Audio (opcional)</span>
+                      <span>{t('qvs.fishKey')}</span>
                     </label>
                     <input
                       type="password"
-                      placeholder="Ej: fish_xxxxxx (de fish.audio)"
+                      placeholder={t('qvs.keyPlaceholder')}
                       value={fishKey}
                       onChange={(e) => handleKeySave(e.target.value)}
                       className="w-full px-3 py-1.5 text-xs rounded-xl bg-surface border border-outline-variant/30 focus:border-teal-500 focus:outline-hidden text-on-surface"
                     />
-                    <p className="text-[10px] text-on-surface-variant">
-                      Si no ingresas una clave, se usará automáticamente el motor neuronal gratuito como respaldo.
-                    </p>
+                    <p className="text-[10px] text-on-surface-variant">{t('qvs.fishKeyDesc')}</p>
                   </motion.div>
                 )}
               </div>
@@ -309,9 +301,7 @@ export function QuickVoiceSelector({
               <div className="mt-4 space-y-2">
                 <label className="text-xs font-semibold text-on-surface flex items-center justify-between">
                   <span className="flex items-center gap-1.5">
-                    <Sliders className="size-3.5 text-teal-600 dark:text-teal-400" />
-                    Ritmo de Articulación
-                  </span>
+                    <Sliders className="size-3.5 text-teal-600 dark:text-teal-400" />{t('qvs.articulationRate')}</span>
                   <span className="text-[11px] font-mono text-teal-600 dark:text-teal-400 font-bold">
                     {speed === 0.9 ? '0.9x (Pausado)' : speed === 1.1 ? '1.1x (Ágil)' : '1.0x (Normal)'}
                   </span>
