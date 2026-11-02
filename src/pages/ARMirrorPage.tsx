@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useCallback, useEffect, useMemo, useState, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -83,6 +84,7 @@ const TOTAL_SETS = 3;
 const REST_DURATION = 15;
 
 export function ARMirrorPage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const toast = useToast();
@@ -465,8 +467,8 @@ export function ARMirrorPage() {
           <div className="flex items-center gap-1.5 sm:gap-2 pointer-events-auto shrink-0">
             <button
               onClick={() => navigate('/dashboard-paciente')}
-              title="Volver al panel"
-              aria-label="Volver al panel de paciente"
+              title={t('ar.backToPanel')}
+              aria-label={t('ar.backToPatientPanel')}
               className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-slate-900/80 hover:bg-slate-900 text-white/80 hover:text-white flex items-center justify-center border border-white/15 backdrop-blur-xl transition-all shadow-md active:scale-95"
             >
               <Icon name="arrow_back" size={18} />
@@ -535,7 +537,7 @@ export function ARMirrorPage() {
             <button
               onClick={toggleFacingMode}
               title={facingMode === 'user' ? 'Cámara trasera' : 'Cámara frontal'}
-              aria-label="Alternar cámara"
+              aria-label={t('ar.toggleCamera')}
               className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-slate-900/80 hover:bg-slate-900 text-white/80 hover:text-white flex items-center justify-center border border-white/15 backdrop-blur-xl transition-all shadow-md active:scale-95"
             >
               <Icon name="flip_camera_ios" size={17} />
@@ -543,7 +545,7 @@ export function ARMirrorPage() {
             <button
               onClick={() => setIsMirrored((prev) => !prev)}
               title={isMirrored ? 'Desactivar efecto espejo' : 'Activar efecto espejo'}
-              aria-label="Modo espejo"
+              aria-label={t('ar.mirrorMode')}
               className={cn(
                 'w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-slate-900/80 hover:bg-slate-900 flex items-center justify-center border backdrop-blur-xl transition-all shadow-md active:scale-95',
                 isMirrored ? 'text-teal-300 border-teal-500/50' : 'text-white/60 border-white/15'
@@ -573,7 +575,7 @@ export function ARMirrorPage() {
       {isSimulated && isReady && (
         <div className="fixed top-12 sm:top-14 left-1/2 -translate-x-1/2 z-[34] flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/20 border border-amber-400/40 backdrop-blur-xl text-amber-200 text-[10px] sm:text-xs font-semibold shadow-lg">
           <Icon name="sensors" size={13} className="text-amber-400 shrink-0" />
-          <span>Simulación Biomecánica</span>
+          <span>{t('ar.simMode')}</span>
           <button
             onClick={reconnectCamera}
             className="ml-1 px-1.5 py-0.5 rounded bg-amber-400/30 hover:bg-amber-400/50 text-white font-bold uppercase tracking-wider text-[9px] transition-colors cursor-pointer"
@@ -587,7 +589,7 @@ export function ARMirrorPage() {
       {!isReady && (
         <div className="absolute inset-0 flex flex-col items-center justify-center gap-4">
           <MascotAnimation type="scanning" size="md" />
-          <p className="text-white/60 text-sm">Inicializando cámara y MediaPipe...</p>
+          <p className="text-white/60 text-sm">{t('ar.initializing')}</p>
         </div>
       )}
       {error && (
@@ -598,9 +600,7 @@ export function ARMirrorPage() {
             <button
               onClick={reconnectCamera}
               className="px-5 py-2.5 bg-teal-500 hover:bg-teal-400 text-white rounded-xl font-bold transition-all text-sm cursor-pointer shadow-lg shadow-teal-500/25 active:scale-95"
-            >
-              Reintentar Cámara
-            </button>
+            >{t('ar.retryCamera')}</button>
             <button
               onClick={() => navigate('/dashboard-paciente')}
               className="px-5 py-2.5 bg-white/10 text-white rounded-xl hover:bg-white/20 transition-all font-semibold text-sm cursor-pointer"
@@ -622,7 +622,7 @@ export function ARMirrorPage() {
           {!calibrated && (
             <div className="mt-2 max-w-md rounded-2xl bg-amber-500/15 border border-amber-400/40 px-4 py-3 text-amber-200 text-sm flex items-center gap-2">
               <Icon name="warning" filled size={18} />
-              <span>Modo sin calibrar: la precisión del seguimiento puede ser menor.</span>
+              <span>{t('ar.noCalibWarning')}</span>
             </div>
           )}
         </div>
@@ -688,7 +688,7 @@ export function ARMirrorPage() {
                   animate={{ opacity: 1, x: 0 }}
                   className="rounded-2xl p-3.5 w-48 bg-slate-900/80 backdrop-blur-xl border border-white/15 text-white shadow-xl"
                 >
-                  <p className="text-white/60 text-[10px] uppercase font-bold tracking-wider mb-1">Series del Ejercicio</p>
+                  <p className="text-white/60 text-[10px] uppercase font-bold tracking-wider mb-1">{t('ar.sets')}</p>
                   <div className="flex items-baseline gap-2">
                     <span className="text-white text-3xl font-black">{currentSet}</span>
                     <span className="text-white/40 text-base">/ {TOTAL_SETS}</span>
@@ -772,7 +772,7 @@ export function ARMirrorPage() {
                 <button
                   onClick={() => setState('paused')}
                   className="rounded-xl px-3 sm:px-4 py-2 sm:py-2.5 bg-white/10 hover:bg-white/15 text-white flex items-center gap-1.5 hover:scale-105 active:scale-95 transition-all cursor-pointer font-bold text-xs sm:text-sm min-h-[40px] sm:min-h-[44px]"
-                  aria-label="Pausar ejercicio"
+                  aria-label={t('ar.pauseExercise')}
                 >
                   <Icon name="pause" size={18} />
                   <span>Pausar</span>
@@ -782,7 +782,7 @@ export function ARMirrorPage() {
                 <button
                   onClick={() => { setState('finished'); setShowPainReport(true); }}
                   className="rounded-xl px-3 sm:px-4 py-2 sm:py-2.5 bg-red-500/80 hover:bg-red-500 text-white flex items-center gap-1.5 hover:scale-105 active:scale-95 transition-all cursor-pointer font-bold text-xs sm:text-sm min-h-[40px] sm:min-h-[44px]"
-                  aria-label="Finalizar ejercicio"
+                  aria-label={t('ar.finishExercise')}
                 >
                   <Icon name="stop" size={18} />
                   <span>Finalizar</span>
@@ -843,7 +843,7 @@ export function ARMirrorPage() {
                     setVolumeLevel(states[(idx + 1) % 3]);
                   }}
                   className="rounded-xl p-2 sm:p-2.5 bg-white/5 hover:bg-white/10 text-white/70 hover:text-white hover:scale-105 active:scale-95 transition-all cursor-pointer flex items-center justify-center min-h-[40px] sm:min-h-[44px] min-w-[40px]"
-                  aria-label="Cambiar volumen de audio"
+                  aria-label={t('ar.changeVolume')}
                   title={`Volumen: ${volumeLevel}`}
                 >
                   <Icon name={volumeLevel === 'muted' ? 'volume_off' : volumeLevel === 'low' ? 'volume_down' : 'volume_up'} size={18} />
@@ -852,7 +852,7 @@ export function ARMirrorPage() {
                 {/* Configuración */}
                 <button
                   onClick={() => setShowSettings(true)}
-                  aria-label="Abrir ajustes"
+                  aria-label={t('ar.openSettings')}
                   className="rounded-xl p-2 sm:p-2.5 bg-white/5 hover:bg-white/10 text-white/70 hover:text-white hover:scale-105 active:scale-95 transition-all cursor-pointer flex items-center justify-center min-h-[40px] sm:min-h-[44px] min-w-[40px]"
                 >
                   <Icon name="settings" size={18} />
@@ -898,7 +898,7 @@ export function ARMirrorPage() {
                 <Modal.Icon className="bg-teal-500/20 text-teal-300">
                   <Icon name="settings" size={20} />
                 </Modal.Icon>
-                <Modal.Heading className="text-white">Configuración del Espejo</Modal.Heading>
+                <Modal.Heading className="text-white">{t('ar.mirrorConfig')}</Modal.Heading>
               </Modal.Header>
               <Modal.Body className="space-y-3">
                 <button
@@ -906,7 +906,7 @@ export function ARMirrorPage() {
                   onClick={() => { setVolumeLevel(volumeLevel === 'muted' ? 'high' : 'muted'); }}
                   className="w-full flex items-center justify-between p-3 rounded-xl bg-white/10 hover:bg-white/15 text-white transition-colors"
                 >
-                  <span className="text-sm font-semibold">Audio de Guía</span>
+                  <span className="text-sm font-semibold">{t('ar.guideAudio')}</span>
                   <Icon name={volumeLevel !== 'muted' ? 'toggle_on' : 'toggle_off'} size={28} className={volumeLevel !== 'muted' ? 'text-teal-300' : 'text-white/40'} />
                 </button>
                 <button
@@ -922,7 +922,7 @@ export function ARMirrorPage() {
                   onClick={() => setIsMirrored((prev) => !prev)}
                   className="w-full flex items-center justify-between p-3 rounded-xl bg-white/10 hover:bg-white/15 text-white transition-colors"
                 >
-                  <span className="text-sm font-semibold">Modo Espejo Invertido</span>
+                  <span className="text-sm font-semibold">{t('ar.mirroredMode')}</span>
                   <Icon name={isMirrored ? 'toggle_on' : 'toggle_off'} size={28} className={isMirrored ? 'text-teal-300' : 'text-white/40'} />
                 </button>
                 <button
@@ -930,7 +930,7 @@ export function ARMirrorPage() {
                   onClick={() => setShowModel3D((prev) => !prev)}
                   className="w-full flex items-center justify-between p-3 rounded-xl bg-white/10 hover:bg-white/15 text-white transition-colors"
                 >
-                  <span className="text-sm font-semibold">Demostrador 3D en Vivo (PiP)</span>
+                  <span className="text-sm font-semibold">{t('ar.liveDemo3d')}</span>
                   <Icon name={showModel3D ? 'toggle_on' : 'toggle_off'} size={28} className={showModel3D ? 'text-teal-300' : 'text-white/40'} />
                 </button>
                 <button
@@ -938,7 +938,7 @@ export function ARMirrorPage() {
                   onClick={() => { handleRestart(); setShowSettings(false); }}
                   className="w-full flex items-center justify-between p-3 rounded-xl bg-white/10 hover:bg-white/15 text-white transition-colors"
                 >
-                  <span className="text-sm font-semibold">Reiniciar sesión actual</span>
+                  <span className="text-sm font-semibold">{t('ar.restartSession')}</span>
                   <Icon name="refresh" size={20} className="text-teal-300" />
                 </button>
               </Modal.Body>
@@ -973,8 +973,8 @@ export function ARMirrorPage() {
               className="glass-modal glass-panel rounded-3xl p-6 md:p-8 max-w-md w-full"
               style={{ background: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(32px)', border: '1px solid rgba(255,255,255,0.2)' }}
             >
-              <h2 className="text-white text-2xl font-bold mb-2">Reporte Post-Sesión</h2>
-              <p className="text-white/60 text-sm mb-4">Tu fisioterapeuta necesita esta información para ajustar tu rutina.</p>
+              <h2 className="text-white text-2xl font-bold mb-2">{t('ar.postSessionReport')}</h2>
+              <p className="text-white/60 text-sm mb-4">{t('ar.postSessionDesc')}</p>
 
               <SessionQualityScoreTile
                 score={Math.min(99, Math.max(76, Math.round(85 + (repCount >= TARGET_REPS ? 10 : 0) - (compensation ? 8 : 0))))}
@@ -983,17 +983,17 @@ export function ARMirrorPage() {
 
               <div className="space-y-5">
                 <div>
-                  <label className="text-white/80 text-sm font-bold">Dolor antes de la sesión (0-10)</label>
+                  <label className="text-white/80 text-sm font-bold">{t('ar.painBefore')}</label>
                   <input type="range" min={0} max={10} value={painBefore} onChange={(e) => setPainBefore(Number(e.target.value))} className="w-full mt-2 accent-[#8ad3cf]" />
                   <div className="flex justify-between text-white/40 text-xs mt-1"><span>0</span><span className="text-white font-bold text-base">{painBefore}</span><span>10</span></div>
                 </div>
                 <div>
-                  <label className="text-white/80 text-sm font-bold">Dolor después de la sesión (0-10)</label>
+                  <label className="text-white/80 text-sm font-bold">{t('ar.painAfter')}</label>
                   <input type="range" min={0} max={10} value={painAfter} onChange={(e) => setPainAfter(Number(e.target.value))} className="w-full mt-2 accent-[#8ad3cf]" />
                   <div className="flex justify-between text-white/40 text-xs mt-1"><span>0</span><span className="text-white font-bold text-base">{painAfter}</span><span>10</span></div>
                 </div>
                 <div>
-                  <label className="text-white/80 text-sm font-bold">Nivel de fatiga (1-5)</label>
+                  <label className="text-white/80 text-sm font-bold">{t('ar.fatigueLevel')}</label>
                   <div className="flex gap-2 mt-2">
                     {[1, 2, 3, 4, 5].map((n) => (
                       <button key={n} onClick={() => setFatigueLevel(n)} className={`flex-1 py-2 rounded-xl font-bold transition-all ${fatigueLevel === n ? 'bg-[#8ad3cf] text-[#001514]' : 'bg-white/10 text-white/60'}`}>{n}</button>
@@ -1002,14 +1002,12 @@ export function ARMirrorPage() {
                 </div>
                 <div>
                   <label className="text-white/80 text-sm font-bold">Comentario (opcional)</label>
-                  <textarea value={painComment} onChange={(e) => setPainComment(e.target.value)} placeholder="Describe cómo te sentiste durante la sesión..." className="w-full mt-2 p-3 rounded-xl bg-white/10 text-white placeholder-white/30 border border-white/10 focus:border-[#8ad3cf] outline-none resize-none" rows={2} />
+                  <textarea value={painComment} onChange={(e) => setPainComment(e.target.value)} placeholder={t('ar.notesPlaceholder')} className="w-full mt-2 p-3 rounded-xl bg-white/10 text-white placeholder-white/30 border border-white/10 focus:border-[#8ad3cf] outline-none resize-none" rows={2} />
                 </div>
               </div>
 
               <div className="flex gap-3 mt-6">
-                <button onClick={() => saveSession({ dolor_antes: painBefore, dolor_despues: painAfter, fatiga: fatigueLevel, comentario: painComment })} className="premium-btn flex-1 py-4 bg-[#8ad3cf] text-[#001514] rounded-2xl font-bold hover:scale-[1.02] active:scale-95 transition-all">
-                  Enviar Reporte
-                </button>
+                <button onClick={() => saveSession({ dolor_antes: painBefore, dolor_despues: painAfter, fatiga: fatigueLevel, comentario: painComment })} className="premium-btn flex-1 py-4 bg-[#8ad3cf] text-[#001514] rounded-2xl font-bold hover:scale-[1.02] active:scale-95 transition-all">{t('ar.sendReport')}</button>
                 <button onClick={() => {
                   setShowPainReport(false);
                   saveSession();
@@ -1045,7 +1043,7 @@ export function ARMirrorPage() {
               >
                 <MascotAnimation type="success" size="md" className="w-full h-full" />
               </motion.div>
-              <h2 className="text-white text-3xl font-bold mb-2">¡Sesión Completada!</h2>
+              <h2 className="text-white text-3xl font-bold mb-2">{t('ar.sessionComplete')}</h2>
               <p className="text-white/60 mb-6">Has completado {currentSet} series con {repCount} repeticiones.</p>
               <div className="grid grid-cols-3 gap-4 mb-6">
                 <div><p className="text-white/40 text-xs">Tiempo</p><p className="text-white text-xl font-bold">{formatTime(timer)}</p></div>
@@ -1057,7 +1055,7 @@ export function ARMirrorPage() {
                 <div className="mb-6 p-4 rounded-2xl bg-white/10 border border-white/15 text-left">
                   <div className="flex items-center gap-1.5 mb-1.5 text-[11px] font-bold uppercase tracking-wider text-teal-300">
                     <BookOpen className="size-3.5" />
-                    <span>Palabra de Sanidad & Fortaleza</span>
+                    <span>{t('ar.wordOfHealing')}</span>
                   </div>
                   <p className="text-xs text-white/95 italic font-medium leading-relaxed">
                     «{finishVerse.texto}»
@@ -1069,9 +1067,7 @@ export function ARMirrorPage() {
               )}
 
               <div className="flex gap-3">
-                <button onClick={() => navigate('/stats')} className="premium-btn flex-1 py-4 bg-primary text-white rounded-2xl font-bold hover:scale-[1.02] active:scale-95 transition-all">
-                  Ver Progreso
-                </button>
+                <button onClick={() => navigate('/stats')} className="premium-btn flex-1 py-4 bg-primary text-white rounded-2xl font-bold hover:scale-[1.02] active:scale-95 transition-all">{t('ar.viewProgress')}</button>
                 <button onClick={() => navigate('/dashboard-paciente')} className="flex-1 py-4 bg-white/10 text-white rounded-2xl font-bold hover:bg-white/20 transition-all">
                   Inicio
                 </button>

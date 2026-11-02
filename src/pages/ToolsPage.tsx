@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { Icon } from '../components/ui/Icon';
 import { GlassPanel } from '../components/ui/Glass';
@@ -36,6 +37,7 @@ interface PatientOption {
 }
 
 export function ToolsPage() {
+  const { t } = useTranslation();
   const toast = useToast();
   const user = useAuthStore((s) => s.user);
   const [bmi, setBmi] = useState(23.5);
@@ -428,8 +430,8 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
                   <MedicalIcon name="clipboard" size={24} className="animate-breathe-icon" />
                 </div>
                 <div>
-                  <h3 className="font-title-md text-xl font-bold text-teal-900 dark:text-teal-100">OCR Clínico Rápido</h3>
-                  <p className="text-xs text-on-surface-variant mt-0.5">Convierte recetas e informes médicos en datos estructurados</p>
+                  <h3 className="font-title-md text-xl font-bold text-teal-900 dark:text-teal-100">{t('tl.ocrTitle')}</h3>
+                  <p className="text-xs text-on-surface-variant mt-0.5">{t('tl.ocrDesc')}</p>
                 </div>
               </div>
             </div>
@@ -444,7 +446,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
               </div>
               <div>
                 <p className="font-bold text-base text-on-surface">{scanProcessing ? <LoadingText context="ocr" /> : scanComplete ? 'Análisis Completado' : 'Arrastra o selecciona un documento clínico'}</p>
-                <p className="text-xs text-on-surface-variant mt-1">Soporta PDF, JPG, PNG (Máx 15MB)</p>
+                <p className="text-xs text-on-surface-variant mt-1">{t('tl.ocrFormats')}</p>
               </div>
               <button onClick={(e) => { e.stopPropagation(); fileInputRef.current?.click(); }} className="bg-teal-600 hover:bg-teal-700 text-white px-6 py-2.5 rounded-full font-bold text-xs shadow-md shadow-teal-700/20 hover:scale-105 active:scale-95 transition-all">
                 Seleccionar Archivo
@@ -541,7 +543,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
                 </div>
                 <div>
                   <h3 className="font-title-md text-xl font-bold text-teal-900 dark:text-teal-100">Calculadora IMC</h3>
-                  <p className="text-xs text-on-surface-variant mt-0.5">Clasificación clínica en tiempo real</p>
+                  <p className="text-xs text-on-surface-variant mt-0.5">{t('tl.ocrClassification')}</p>
                 </div>
               </div>
               <div className="space-y-6">
@@ -598,13 +600,13 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
                 <Icon name="auto_awesome" size={24} className="animate-breathe-icon" />
               </div>
               <div>
-                <h3 className="font-title-md text-xl font-bold text-teal-900 dark:text-teal-100">Resumen de Sesión IA</h3>
-                <p className="text-xs text-on-surface-variant mt-0.5">Genera un resumen narrativo a partir de las últimas sesiones reales</p>
+                <h3 className="font-title-md text-xl font-bold text-teal-900 dark:text-teal-100">{t('tl.aiSessionTitle')}</h3>
+                <p className="text-xs text-on-surface-variant mt-0.5">{t('tl.aiSessionDesc')}</p>
               </div>
             </div>
             <div className="flex flex-col sm:flex-row gap-4 mb-4">
               <select value={selectedPatient} onChange={(e) => setSelectedPatient(e.target.value)} className="flex-1 px-4 py-3 rounded-xl bg-white/70 dark:bg-slate-800/70 border border-outline-variant/30 outline-none focus:ring-2 focus:ring-teal-500/20 text-on-surface text-sm font-semibold">
-                <option value="">Seleccionar Paciente</option>
+                <option value="">{t('tl.selectPatient')}</option>
                 {patients.length === 0 && <option value="" disabled>No hay pacientes asignados</option>}
                 {patients.map((p) => (
                   <option key={p.id} value={p.id}>{p.full_name}</option>
@@ -619,7 +621,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
             {/* Quick Clinical Controls Bar */}
             <div className="flex flex-wrap items-center justify-between gap-3 mb-6 p-3 rounded-2xl bg-teal-500/5 border border-teal-500/15">
               <div className="space-y-1.5">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-outline block">Criterios Clínicos:</span>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-outline block">{t('tl.clinicalCriteria')}</span>
                 <BiomechanicalTagSelector tags={['Movilidad', 'Fuerza', 'Propiocepción', 'Sin Dolor', 'Post-Op']} />
               </div>
               <div className="flex flex-wrap items-center gap-2">
@@ -633,9 +635,9 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
                 <div>
                   <div className="flex items-center gap-2 mb-2">
                     <Icon name="sensors" size={18} className="text-teal-600 dark:text-teal-400 animate-breathe-icon" />
-                    <span className="font-bold text-sm text-on-surface">Telemetría Clínica</span>
+                    <span className="font-bold text-sm text-on-surface">{t('tl.clinicalTelemetry')}</span>
                   </div>
-                  <p className="text-xs text-on-surface-variant leading-relaxed">El resumen se genera a partir de las últimas 5 sesiones registradas del paciente seleccionado en la base de datos.</p>
+                  <p className="text-xs text-on-surface-variant leading-relaxed">{t('tl.aiSessionNote')}</p>
                 </div>
                 <PhysioNoteAnnotationBubble
                   author="Fisio Supervisor"
@@ -652,8 +654,8 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
                         <MedicalIcon name="clipboard" size={20} />
                       </div>
                       <div>
-                        <h4 className="font-bold text-sm text-teal-950 dark:text-teal-100">Informe de Sesión</h4>
-                        <p className="text-[10px] text-on-surface-variant font-semibold uppercase tracking-wider">Resumen Clínico IA</p>
+                        <h4 className="font-bold text-sm text-teal-950 dark:text-teal-100">{t('tl.sessionReport')}</h4>
+                        <p className="text-[10px] text-on-surface-variant font-semibold uppercase tracking-wider">{t('tl.aiSummary')}</p>
                       </div>
                     </div>
                     <div className="flex gap-1.5">
@@ -690,9 +692,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
                           Descargar PDF
                         </button>
                         <span className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">
-                          <Icon name="auto_awesome" size={11} className="text-teal-600 dark:text-teal-400" />
-                          Generado por IA
-                        </span>
+                          <Icon name="auto_awesome" size={11} className="text-teal-600 dark:text-teal-400" />{t('tl.generatedByAi')}</span>
                       </div>
                     </div>
                   )}
@@ -709,8 +709,8 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
             <div className="flex items-center gap-3 mb-6 relative">
               <div className="w-12 h-12 rounded-xl bg-secondary-container/20 flex items-center justify-center"><Icon name="group" size={24} className="text-secondary animate-breathe-icon" /></div>
               <div>
-                <h3 className="font-title-md text-title-md gradient-text-blue">Resumen de Pacientes</h3>
-                <p className="text-sm text-on-surface-variant">Resumen general del progreso de todos tus pacientes activos</p>
+                <h3 className="font-title-md text-title-md gradient-text-blue">{t('tl.patientsSummary')}</h3>
+                <p className="text-sm text-on-surface-variant">{t('tl.patientsSummaryDesc')}</p>
               </div>
             </div>
             <button onClick={generatePatientSummary} disabled={patientSummaryLoading} className="premium-btn mb-4 bg-secondary text-on-secondary-container px-6 py-3 rounded-xl font-bold flex items-center gap-2 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50">
@@ -728,8 +728,8 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
                       <MedicalIcon name="heart" size={22} className="text-secondary" />
                     </div>
                     <div>
-                      <h4 className="font-title-md text-title-md text-secondary tracking-wide">Informe de Paciente</h4>
-                      <p className="text-[10px] text-on-surface-variant font-semibold uppercase tracking-wider">Progreso General IA</p>
+                      <h4 className="font-title-md text-title-md text-secondary tracking-wide">{t('tl.patientReport')}</h4>
+                      <p className="text-[10px] text-on-surface-variant font-semibold uppercase tracking-wider">{t('tl.aiGeneralProgress')}</p>
                     </div>
                   </div>
                   <button
@@ -772,7 +772,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
               <div className="w-12 h-12 rounded-xl bg-error/10 flex items-center justify-center"><Icon name="picture_as_pdf" size={24} className="text-error animate-breathe-icon" /></div>
               <div>
                 <h3 className="font-title-md text-title-md gradient-text-editorial">Exportar Reporte PDF</h3>
-                <p className="text-sm text-on-surface-variant">Genera un reporte clínico en PDF con datos reales del paciente</p>
+                <p className="text-sm text-on-surface-variant">{t('tl.pdfDesc')}</p>
               </div>
             </div>
             <div className="flex flex-col sm:flex-row gap-4 mb-4">
@@ -789,8 +789,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
                 disabled={!selectedPatient}
                 className="premium-btn flex-1 bg-primary text-on-primary px-6 py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50"
               >
-                <Icon name="flash_on" size={20} /> PDF Rápido
-              </button>
+                <Icon name="flash_on" size={20} />{t('tl.pdfTitle')}</button>
               <button
                 onClick={() => { setPdfMode('ai'); setPdfModalOpen(true); }}
                 disabled={!selectedPatient}
@@ -810,15 +809,14 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
       <div className="flex flex-col xl:flex-row gap-6">
         <div className="flex-1 flex flex-col gap-6 min-w-0">
           <div>
-            <h1 className="font-headline-lg text-headline-lg-mobile lg:text-headline-lg gradient-text-editorial">Herramientas IA Clínicas</h1>
-            <p className="text-on-surface-variant font-body-lg">Acelera tu flujo de trabajo con instrumentos clínicos de precisión potenciados por IA.</p>
+            <h1 className="font-headline-lg text-headline-lg-mobile lg:text-headline-lg gradient-text-editorial">{t('tl.toolsTitle')}</h1>
+            <p className="text-on-surface-variant font-body-lg">{t('tl.toolsDesc')}</p>
           </div>
 
           {/* Featured Clinical Bento Showcase */}
           <div className="space-y-3">
             <h2 className="text-xs font-bold uppercase tracking-wider text-teal-600 dark:text-teal-400 flex items-center gap-1.5">
-              <Icon name="grid_view" size={16} /> Suite de Herramientas Destacadas
-            </h2>
+              <Icon name="grid_view" size={16} />{t('tl.featuredTools')}</h2>
             <BentoGrid className="auto-rows-[14rem]">
               <BentoCard
                 name="Calculadora de IMC y Composición"
@@ -915,10 +913,10 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
               value={chatInput}
               onChange={(e) => setChatInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && sendChat()}
-              placeholder="Escribe tu consulta clínica..."
+              placeholder={t('tl.askPlaceholder')}
               className="flex-1 px-4 py-3 rounded-xl bg-surface-variant/20 border border-outline-variant/30 outline-none focus:ring-2 focus:ring-primary/20 text-on-surface placeholder:text-on-surface-variant"
             />
-            <button onClick={sendChat} disabled={aiLoading} aria-label="Enviar consulta clínica" className="premium-btn w-12 h-12 rounded-xl bg-primary text-on-primary flex items-center justify-center hover:scale-105 active:scale-95 transition-all disabled:opacity-50">
+            <button onClick={sendChat} disabled={aiLoading} aria-label={t('tl.sendQuery')} className="premium-btn w-12 h-12 rounded-xl bg-primary text-on-primary flex items-center justify-center hover:scale-105 active:scale-95 transition-all disabled:opacity-50">
               <Icon name="send" size={20} />
             </button>
           </div>
@@ -955,16 +953,16 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
       {showUpdatePatientModal && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4" onClick={() => setShowUpdatePatientModal(false)}>
           <div className="glass-panel rounded-3xl p-6 max-w-lg w-full max-h-[85vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
-            <h3 className="text-xl font-bold text-on-surface mb-1">Actualizar datos de paciente</h3>
-            <p className="text-sm text-on-surface-variant mb-4">Selecciona un paciente y la IA sugerira actualizaciones basadas en el texto extraido.</p>
+            <h3 className="text-xl font-bold text-on-surface mb-1">{t('tl.updatePatientData')}</h3>
+            <p className="text-sm text-on-surface-variant mb-4">{t('tl.updatePatientDataDesc')}</p>
 
-            <label className="block text-sm font-bold text-on-surface-variant mb-2">Buscar paciente</label>
+            <label className="block text-sm font-bold text-on-surface-variant mb-2">{t('tl.searchPatient')}</label>
             <select
               value={updatePatientId}
               onChange={(e) => setUpdatePatientId(e.target.value)}
               className="w-full px-4 py-3 rounded-xl bg-surface-variant/20 dark:bg-slate-800 text-on-surface border border-divider focus:border-primary focus:outline-none transition-colors mb-4"
             >
-              <option className="bg-white dark:bg-slate-800 text-slate-900 dark:text-white" value="">Selecciona un paciente...</option>
+              <option className="bg-white dark:bg-slate-800 text-slate-900 dark:text-white" value="">{t('tl.selectPatientPlaceholder')}</option>
               {patients.map((p) => (
                 <option className="bg-white dark:bg-slate-800 text-slate-900 dark:text-white" key={p.id} value={p.id}>{p.full_name}</option>
               ))}
