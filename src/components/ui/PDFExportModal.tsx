@@ -264,9 +264,7 @@ export function PDFExportModal({ open, onClose, data, filename }: PDFModalProps)
                 onClick={onClose}
                 disabled={loading}
                 className="px-4 py-2.5 rounded-xl text-xs font-bold text-on-surface-variant hover:bg-surface-container-high transition-colors"
-              >
-                Cancelar
-              </button>
+              >{t('tr.cancelar')}</button>
               <button
                 type="button"
                 onClick={handleGenerate}

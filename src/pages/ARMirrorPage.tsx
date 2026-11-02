@@ -694,7 +694,7 @@ export function ARMirrorPage() {
                     <span className="text-white/40 text-base">/ {TOTAL_SETS}</span>
                   </div>
                   <div className="mt-2 pt-2 border-t border-white/10 flex items-center justify-between text-xs">
-                    <span className="text-white/60">Repeticiones</span>
+                    <span className="text-white/60">{t('tr.repeticiones')}</span>
                     <span className="text-teal-300 font-bold">{repCount} / {TARGET_REPS}</span>
                   </div>
                 </motion.div>
@@ -874,8 +874,7 @@ export function ARMirrorPage() {
                   onClick={handleRestart}
                   className="rounded-xl px-3 sm:px-4 py-2 sm:py-2.5 bg-white/10 hover:bg-white/15 text-white flex items-center gap-1.5 hover:scale-105 active:scale-95 transition-all cursor-pointer font-bold text-xs sm:text-sm min-h-[40px] sm:min-h-[44px]"
                 >
-                  <Icon name="refresh" size={18} /> Reiniciar
-                </button>
+                  <Icon name="refresh" size={18} />{t('tr.reiniciar')}</button>
                 <button
                   onClick={() => { setState('finished'); setShowPainReport(true); }}
                   className="rounded-xl px-3 sm:px-4 py-2 sm:py-2.5 bg-red-500/80 hover:bg-red-500 text-white flex items-center gap-1.5 hover:scale-105 active:scale-95 transition-all cursor-pointer font-bold text-xs sm:text-sm min-h-[40px] sm:min-h-[44px]"
@@ -1048,7 +1047,7 @@ export function ARMirrorPage() {
               <div className="grid grid-cols-3 gap-4 mb-6">
                 <div><p className="text-white/40 text-xs">Tiempo</p><p className="text-white text-xl font-bold">{formatTime(timer)}</p></div>
                 <div><p className="text-white/40 text-xs">Repeticiones</p><p className="text-white text-xl font-bold">{repCount}</p></div>
-                <div><p className="text-white/40 text-xs">Calidad</p><p className="text-white text-xl font-bold">{qualityScore}%</p></div>
+                <div><p className="text-white/40 text-xs">{t('tr.calidad')}</p><p className="text-white text-xl font-bold">{qualityScore}%</p></div>
               </div>
 
               {isSpiritualModeEnabled() && finishVerse && (

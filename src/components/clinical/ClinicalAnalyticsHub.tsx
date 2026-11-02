@@ -110,7 +110,7 @@ export function ClinicalAnalyticsHub() {
         </div>
         <EmptyState
           type="analytics"
-          title="Sin datos clínicos reales"
+          title={t('tr.sin_datos_clinicos_reales')}
           description="Aún no hay suficientes datos de sesiones, ROM o dolor para generar analíticas clínicas. Completa sesiones con seguimiento para ver evolución real."
           actionLabel="Ir a pacientes"
           onAction={() => navigate('/pacientes')}

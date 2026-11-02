@@ -734,7 +734,7 @@ export function PatientDetailPage() {
                 </button>
                 {aiInsight && (
                   <button onClick={applyRecommendations} disabled={routineAdjusting} className="flex-1 py-2.5 bg-white/20 text-on-primary-container font-bold text-xs rounded-xl transition-all hover:bg-white/30 active:scale-95 disabled:opacity-50 flex items-center justify-center gap-1">
-                    {routineAdjusting ? <><Spinner size={14} className="text-current" /> Analizando...</> : <><Icon name="tune" size={14} /> Aplicar Recomendaciones</>}
+                    {routineAdjusting ? <><Spinner size={14} className="text-current" />{t('tr.analizando')}</> : <><Icon name="tune" size={14} /> Aplicar Recomendaciones</>}
                   </button>
                 )}
               </div>
@@ -883,7 +883,7 @@ export function PatientDetailPage() {
               </ul>
             </div>
             <div className="flex gap-3">
-              <button onClick={() => setShowRoutineModal(false)} className="flex-1 px-6 py-3 rounded-xl bg-surface-variant/30 text-on-surface-variant font-bold hover:bg-surface-variant/50 transition-all">Cerrar</button>
+              <button onClick={() => setShowRoutineModal(false)} className="flex-1 px-6 py-3 rounded-xl bg-surface-variant/30 text-on-surface-variant font-bold hover:bg-surface-variant/50 transition-all">{t('tr.cerrar')}</button>
               <button onClick={() => { setShowRoutineModal(false); setActiveTab('routine'); }} className="flex-1 px-6 py-3 rounded-xl bg-primary text-on-primary font-bold hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2"><Icon name="assignment" size={18} />{t('pdp.goToRoutine')}</button>
             </div>
           </div>
@@ -960,7 +960,7 @@ export function PatientDetailPage() {
                   <input id="ocr-update-file" type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && setOcrUpdateFile(e.target.files[0])} />
                 </div>
                 <div className="flex gap-3 mt-4">
-                  <button onClick={() => { setShowOcrUpdateModal(false); setOcrUpdateFile(null); }} disabled={ocrProcessing} className="flex-1 px-6 py-3 rounded-xl bg-surface-variant/30 text-on-surface-variant font-bold hover:bg-surface-variant/50 transition-all disabled:opacity-50">Cancelar</button>
+                  <button onClick={() => { setShowOcrUpdateModal(false); setOcrUpdateFile(null); }} disabled={ocrProcessing} className="flex-1 px-6 py-3 rounded-xl bg-surface-variant/30 text-on-surface-variant font-bold hover:bg-surface-variant/50 transition-all disabled:opacity-50">{t('tr.cancelar')}</button>
                   <button onClick={async () => {
                     if (!ocrUpdateFile) return;
                     setOcrProcessing(true);

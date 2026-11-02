@@ -497,7 +497,7 @@ export function PatientStatisticsView({
                   <th className="py-3 px-3">Fecha & Hora</th>
                   <th className="py-3 px-3">{t('psv.prescribedExercise')}</th>
                   <th className="py-3 px-3">{t('psv.durationLabel')}</th>
-                  <th className="py-3 px-3">Reps</th>
+                  <th className="py-3 px-3">{t('tr.reps')}</th>
                   <th className="py-3 px-3">Calidad Biomecánica</th>
                   <th className="py-3 px-3">{t('psv.maxRomLabel')}</th>
                   <th className="py-3 px-3">Observaciones / Notas</th>

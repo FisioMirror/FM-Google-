@@ -491,7 +491,7 @@ export function CalibrationPage() {
               <h3 className="text-white text-xl font-bold mb-2">{t('cal.continueNoCalibQ')}</h3>
               <p className="text-white/70 text-sm mb-6">{t('cal.continueNoCalibDesc')}</p>
               <div className="flex gap-3">
-                <button onClick={() => setShowSkipConfirm(false)} className="flex-1 py-3 bg-white/10 text-white rounded-xl font-bold hover:bg-white/20 transition-colors">Cancelar</button>
+                <button onClick={() => setShowSkipConfirm(false)} className="flex-1 py-3 bg-white/10 text-white rounded-xl font-bold hover:bg-white/20 transition-colors">{t('tr.cancelar')}</button>
                 <button onClick={handleSkip} className="flex-1 py-3 bg-teal-500 text-white rounded-xl font-bold hover:scale-105 active:scale-95 transition-transform">Continuar</button>
               </div>
             </motion.div>

@@ -949,9 +949,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
                 : 'Se generará un PDF estilizado usando IA con los datos del paciente. Esto puede tardar unos segundos.'}
             </p>
             <div className="flex gap-3">
-              <button onClick={() => setPdfModalOpen(false)} className="flex-1 px-6 py-3 rounded-xl bg-surface-variant/30 text-on-surface-variant font-bold hover:bg-surface-variant/50 transition-all">
-                Cancelar
-              </button>
+              <button onClick={() => setPdfModalOpen(false)} className="flex-1 px-6 py-3 rounded-xl bg-surface-variant/30 text-on-surface-variant font-bold hover:bg-surface-variant/50 transition-all">{t('tr.cancelar')}</button>
               <button onClick={handleExportPDF} disabled={pdfLoading} className="premium-btn flex-1 px-6 py-3 rounded-xl bg-primary text-on-primary font-bold flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50">
                 {pdfLoading ? <><Spinner size={20} className="text-on-primary" /> <LoadingText context="pdf" /></> : 'Generar PDF'}
               </button>
@@ -1020,7 +1018,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
             {updateLoading && (
               <div className="flex items-center justify-center py-6 gap-3">
                 <Spinner size={24} className="text-primary" />
-                <span className="text-on-surface-variant text-sm">Analizando...</span>
+                <span className="text-on-surface-variant text-sm">{t('tr.analizando')}</span>
               </div>
             )}
 
@@ -1061,9 +1059,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
               </div>
             )}
 
-            <button onClick={() => setShowUpdatePatientModal(false)} className="w-full mt-4 py-2 text-on-surface-variant text-sm hover:text-on-surface transition-colors">
-              Cerrar
-            </button>
+            <button onClick={() => setShowUpdatePatientModal(false)} className="w-full mt-4 py-2 text-on-surface-variant text-sm hover:text-on-surface transition-colors">{t('tr.cerrar')}</button>
           </div>
         </div>
       )}

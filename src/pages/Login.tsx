@@ -203,7 +203,7 @@ function CharacterSpotlight({
               {/* Glass status badge */}
               <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/95 dark:bg-slate-900/90 backdrop-blur-md shadow-lg border border-sky-500/35 text-sky-800 dark:text-sky-300 text-xs font-extrabold tracking-tight">
                 <Icon name="person" size={13} className="text-sky-600 dark:text-sky-400" />
-                <span>Paciente</span>
+                <span>{t('tr.paciente')}</span>
               </div>
             </motion.div>
           )}
@@ -1852,9 +1852,7 @@ export function Login() {
                   type="button"
                   onClick={() => setShowResetModal(false)}
                   className="flex-1 h-11 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold text-xs hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00504d]/40 dark:focus-visible:ring-teal-400/50"
-                >
-                  Cancelar
-                </button>
+                >{t('tr.cancelar')}</button>
                 <button
                   type="button"
                   onClick={handleResetPassword}

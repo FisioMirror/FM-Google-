@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Heart, Dumbbell, Camera, MessageCircle, TrendingUp, X } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../stores/authStore';
+import { useTranslation } from 'react-i18next';
 
 interface OnboardingStep {
   icon: typeof Heart;
@@ -44,6 +45,7 @@ const steps: OnboardingStep[] = [
 ];
 
 export function OnboardingGuide() {
+  const { t } = useTranslation();
   const user = useAuthStore((s) => s.user);
 
   const [show, setShow] = useState(false);
@@ -153,7 +155,7 @@ export function OnboardingGuide() {
               onClick={handleSkip}
               disabled={completing}
               className="absolute top-4 right-4 w-9 h-9 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-primary/10 hover:text-primary transition-colors disabled:opacity-50"
-              aria-label="Saltar guía"
+              aria-label={t('tr.saltar_guia')}
             >
               <X size={20} />
             </button>

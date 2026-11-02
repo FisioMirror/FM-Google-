@@ -767,7 +767,7 @@ export function PatientsPage() {
                     <th className="p-4">{t('pat.patient')}</th>
                     <th className="p-4">{t('pat.diagnosis2')}</th>
                     <th className="p-4">{t('pat.progress')}</th>
-                    <th className="p-4">Estado</th>
+                    <th className="p-4">{t('tr.estado')}</th>
                     <th className="p-4 text-right">{t('pat.action')}</th>
                   </tr>
                 </thead>

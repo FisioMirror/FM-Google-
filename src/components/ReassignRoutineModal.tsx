@@ -328,7 +328,7 @@ export function ReassignRoutineModal({
               <button
                 onClick={handleClose}
                 disabled={saving}
-                aria-label="Cerrar"
+                aria-label={t('tr.cerrar')}
                 className="w-10 h-10 rounded-xl bg-surface-container text-on-surface-variant hover:bg-surface-container-high transition-all flex items-center justify-center disabled:opacity-50"
               >
                 <Icon name="close" size={22} />
@@ -489,13 +489,13 @@ export function ReassignRoutineModal({
                         </div>
                         <div className="grid grid-cols-2 gap-3">
                           <label className="block">
-                            <span className="text-[11px] font-bold uppercase tracking-wider text-on-surface-variant">Series</span>
+                            <span className="text-[11px] font-bold uppercase tracking-wider text-on-surface-variant">{t('tr.series')}</span>
                             <div className="flex items-center gap-2 mt-1">
                               <button
                                 type="button"
                                 onClick={() => updateConfig(ex.libraryId, 'series', ex.series - 1)}
                                 className="w-9 h-9 rounded-lg bg-surface-container-high text-on-surface hover:bg-outline-variant/30 transition-all flex items-center justify-center"
-                                aria-label="Reducir series"
+                                aria-label={t('tr.reducir_series')}
                               >
                                 <Icon name="remove" size={18} />
                               </button>
@@ -511,20 +511,20 @@ export function ReassignRoutineModal({
                                 type="button"
                                 onClick={() => updateConfig(ex.libraryId, 'series', ex.series + 1)}
                                 className="w-9 h-9 rounded-lg bg-surface-container-high text-on-surface hover:bg-outline-variant/30 transition-all flex items-center justify-center"
-                                aria-label="Aumentar series"
+                                aria-label={t('tr.aumentar_series')}
                               >
                                 <Icon name="add" size={18} />
                               </button>
                             </div>
                           </label>
                           <label className="block">
-                            <span className="text-[11px] font-bold uppercase tracking-wider text-on-surface-variant">Repeticiones</span>
+                            <span className="text-[11px] font-bold uppercase tracking-wider text-on-surface-variant">{t('tr.repeticiones')}</span>
                             <div className="flex items-center gap-2 mt-1">
                               <button
                                 type="button"
                                 onClick={() => updateConfig(ex.libraryId, 'repeticiones', ex.repeticiones - 1)}
                                 className="w-9 h-9 rounded-lg bg-surface-container-high text-on-surface hover:bg-outline-variant/30 transition-all flex items-center justify-center"
-                                aria-label="Reducir repeticiones"
+                                aria-label={t('tr.reducir_repeticiones')}
                               >
                                 <Icon name="remove" size={18} />
                               </button>
@@ -540,7 +540,7 @@ export function ReassignRoutineModal({
                                 type="button"
                                 onClick={() => updateConfig(ex.libraryId, 'repeticiones', ex.repeticiones + 1)}
                                 className="w-9 h-9 rounded-lg bg-surface-container-high text-on-surface hover:bg-outline-variant/30 transition-all flex items-center justify-center"
-                                aria-label="Aumentar repeticiones"
+                                aria-label={t('tr.aumentar_repeticiones')}
                               >
                                 <Icon name="add" size={18} />
                               </button>

@@ -1062,13 +1062,13 @@ export function ExercisesPage() {
                 {/* Clinical Parameter Summary */}
                 <div className="grid grid-cols-4 gap-2 p-3 rounded-2xl bg-slate-100/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-center">
                   <div>
-                    <span className="text-[10px] uppercase font-bold text-slate-400 block">Series</span>
+                    <span className="text-[10px] uppercase font-bold text-slate-400 block">{t('tr.series')}</span>
                     <span className="text-sm font-extrabold text-slate-800 dark:text-slate-100">
                       {descriptionExercise.series ?? 3}
                     </span>
                   </div>
                   <div>
-                    <span className="text-[10px] uppercase font-bold text-slate-400 block">Reps</span>
+                    <span className="text-[10px] uppercase font-bold text-slate-400 block">{t('tr.reps')}</span>
                     <span className="text-sm font-extrabold text-slate-800 dark:text-slate-100">
                       {descriptionExercise.repeticiones ?? 10}
                     </span>

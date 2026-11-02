@@ -2,6 +2,7 @@ import { useState, type ReactNode } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, X } from 'lucide-react';
 import { cn } from '../../lib/utils';
+import { useTranslation } from 'react-i18next';
 
 interface InsightBannerProps {
   title: string;
@@ -23,6 +24,7 @@ export function InsightBanner({
   variant = 'primary',
   className,
 }: InsightBannerProps) {
+  const { t } = useTranslation();
   const [visible, setVisible] = useState(true);
   if (!visible) return null;
 
@@ -68,7 +70,7 @@ export function InsightBanner({
             <button
               onClick={handleDismiss}
               className="size-7 sm:size-8 rounded-lg sm:rounded-xl bg-white/10 hover:bg-white/20 text-white/70 hover:text-white transition-colors flex items-center justify-center shrink-0 cursor-pointer"
-              aria-label="Cerrar notificación"
+              aria-label={t('tr.cerrar_notificacion')}
             >
               <X className="size-3.5 sm:size-4" />
             </button>

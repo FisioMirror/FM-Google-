@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { AlertCircle, ChevronDown, CheckCircle, ArrowRight } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 export interface CompensationAlertBannerProps {
   deviationJoint?: string;
@@ -22,6 +23,7 @@ export const CompensationAlertBanner: React.FC<CompensationAlertBannerProps> = (
   onDismiss,
   onApplyCorrection,
 }) => {
+  const { t } = useTranslation();
   const [expanded, setExpanded] = useState(false);
   const [corrected, setCorrected] = useState(false);
 
@@ -70,9 +72,7 @@ export const CompensationAlertBanner: React.FC<CompensationAlertBannerProps> = (
         <button
           onClick={() => setCorrected(false)}
           className="text-xs text-slate-500 hover:underline"
-        >
-          Reiniciar
-        </button>
+        >{t('tr.reiniciar')}</button>
       </motion.div>
     );
   }

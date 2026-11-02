@@ -5,6 +5,7 @@ import MascotAnimation from './ui/MascotAnimation';
 import { SparkleEffect } from './auth/SparkleEffect';
 import { getTierMeta, type Achievement } from '../hooks/useGamification';
 import { isSpiritualModeEnabled, getVersiculoForLogro } from '../lib/versiculosService';
+import { useTranslation } from 'react-i18next';
 
 interface AchievementUnlockModalProps {
   achievement: Achievement | null;
@@ -13,6 +14,7 @@ interface AchievementUnlockModalProps {
 }
 
 export function AchievementUnlockModal({ achievement, role, onClose }: AchievementUnlockModalProps) {
+  const { t } = useTranslation();
   return (
     <AnimatePresence>
       {achievement && (
@@ -69,7 +71,7 @@ export function AchievementUnlockModal({ achievement, role, onClose }: Achieveme
                 <div className="mb-6 p-4 rounded-2xl bg-teal-500/10 border border-teal-500/20 text-left">
                   <div className="flex items-center gap-1.5 mb-1.5 text-[11px] font-bold uppercase tracking-wider text-teal-700 dark:text-teal-300">
                     <BookOpen size={14} />
-                    <span>Palabra de Victoria & Fortaleza</span>
+                    <span>{t('tr.palabra_de_victoria_fortaleza')}</span>
                   </div>
                   <p className="text-xs text-on-surface italic font-medium leading-relaxed">
                     «{getVersiculoForLogro(achievement.id).texto}»

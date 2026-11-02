@@ -410,14 +410,14 @@ export function PatientExercisesPage() {
                     <div className="flex flex-col items-center">
                       <p className="text-[10px] uppercase font-bold text-slate-400 dark:text-slate-500 flex items-center justify-center gap-1">
                         <Repeat size={11} className="text-teal-600 dark:text-teal-400" />
-                        <span>Series</span>
+                        <span>{t('tr.series')}</span>
                       </p>
                       <span className="font-extrabold text-base text-slate-800 dark:text-slate-100 mt-0.5">{ex.series ?? 3}</span>
                     </div>
                     <div className="flex flex-col items-center pl-2">
                       <p className="text-[10px] uppercase font-bold text-slate-400 dark:text-slate-500 flex items-center justify-center gap-1">
                         <Flame size={11} className="text-amber-500" />
-                        <span>Reps</span>
+                        <span>{t('tr.reps')}</span>
                       </p>
                       <span className="font-extrabold text-base text-slate-800 dark:text-slate-100 mt-0.5">{ex.repeticiones ?? 12}</span>
                     </div>

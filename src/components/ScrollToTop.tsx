@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ArrowUp } from "lucide-react";
 
 import { useLocation } from "react-router-dom";
+import { useTranslation } from 'react-i18next';
 
 function getScrollRoot(): HTMLElement | null {
   return document.querySelector<HTMLElement>("[data-scroll-root]");
@@ -18,6 +19,7 @@ function scrollToTop() {
 }
 
 export function ScrollToTop() {
+  const { t } = useTranslation();
   const [visible, setVisible] = useState(false);
   const location = useLocation();
 
@@ -48,7 +50,7 @@ export function ScrollToTop() {
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           onClick={scrollToTop}
-          aria-label="Volver arriba"
+          aria-label={t('tr.volver_arriba')}
           className="fixed bottom-6 right-6 z-40 w-12 h-12 rounded-full bg-gradient-to-br from-secondary-400 to-accent text-white shadow-glass flex items-center justify-center"
         >
           <ArrowUp className="w-5 h-5" />

@@ -7,6 +7,7 @@ import { buttonVariants } from "./buttonVariants"
 import { DialogContext } from "./dialogContext"
 import type { VariantProps } from "class-variance-authority"
 import { useFocusTrap } from "@/hooks/useFocusTrap"
+import { useTranslation } from 'react-i18next';
 
 export interface DialogProps {
   open: boolean
@@ -27,6 +28,7 @@ export function Dialog({
   glassEffect = true,
   showCloseButton = true,
 }: DialogProps) {
+  const { t } = useTranslation();
   const maxWidth = {
     sm: "max-w-sm",
     md: "max-w-md",
@@ -74,7 +76,7 @@ export function Dialog({
                   type="button"
                   className="absolute top-5 right-5 p-2 rounded-xl text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary cursor-pointer"
                   onClick={() => onOpenChange(false)}
-                  aria-label="Cerrar modal"
+                  aria-label={t('tr.cerrar_modal')}
                 >
                   <X className="h-4 w-4" />
                 </button>

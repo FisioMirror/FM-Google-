@@ -603,7 +603,7 @@ export function OCRScannerPage() {
                       <Icon name="edit_note" size={24} />
                     </div>
                     <div>
-                      <h3 className="font-title-md text-title-md text-on-surface">Carga Manual</h3>
+                      <h3 className="font-title-md text-title-md text-on-surface">{t('tr.carga_manual')}</h3>
                       <p className="text-xs text-on-surface-variant">{t('ocr.withoutOcr')}</p>
                     </div>
                   </div>
@@ -739,7 +739,7 @@ export function OCRScannerPage() {
                   )}
 
                   <div className="pt-6 border-t border-outline-variant/10 flex items-center justify-between">
-                    <button onClick={() => navigate('/patients')} className="px-8 py-3 text-on-surface-variant font-bold font-label-sm text-label-sm hover:bg-surface-variant/30 rounded-xl transition-all">Cancelar</button>
+                    <button onClick={() => navigate('/patients')} className="px-8 py-3 text-on-surface-variant font-bold font-label-sm text-label-sm hover:bg-surface-variant/30 rounded-xl transition-all">{t('tr.cancelar')}</button>
                     <button
                       onClick={processWithAI}
                       disabled={processing || files.length === 0}
@@ -811,7 +811,7 @@ export function OCRScannerPage() {
                   <input value={extractedData.telefono} onChange={(e) => setExtractedData({ ...extractedData, telefono: e.target.value })} placeholder="No detectado" className={inputClass} />
                 </div>
                 <div>
-                  <label className={labelClass}>Email</label>
+                  <label className={labelClass}>{t('tr.email')}</label>
                   <input type="email" value={extractedData.email} onChange={(e) => setExtractedData({ ...extractedData, email: e.target.value })} placeholder="No detectado" className={inputClass} />
                 </div>
                 <div>
@@ -1076,7 +1076,7 @@ export function OCRScannerPage() {
                   <div className="glass-teal rounded-2xl p-4 border border-outline-variant/30 flex items-center gap-4">
                     <div className="w-12 h-12 rounded-full bg-secondary-container border border-outline-variant flex items-center justify-center"><Icon name="person" size={24} /></div>
                     <div>
-                      <p className="text-[10px] text-secondary uppercase">Paciente</p>
+                      <p className="text-[10px] text-secondary uppercase">{t('tr.paciente')}</p>
                       <p className="font-title-md text-title-md text-on-surface">{extractedData.nombre_completo}</p>
                     </div>
                   </div>

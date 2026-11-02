@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { AlertCircle, ShieldAlert, X } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { Button } from './Button';
+import { useTranslation } from 'react-i18next';
 
 interface AlertDialogContextType {
   open: boolean;
@@ -150,6 +151,7 @@ AlertDialog.Body = AlertDialogBody;
 AlertDialog.Footer = AlertDialogFooter;
 
 export function DeleteProjectDialogDemo() {
+  const { t } = useTranslation();
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
@@ -174,9 +176,7 @@ export function DeleteProjectDialogDemo() {
               </p>
             </AlertDialog.Body>
             <AlertDialog.Footer>
-              <Button slot="close" variant="outline" size="sm">
-                Cancelar
-              </Button>
+              <Button slot="close" variant="outline" size="sm">{t('tr.cancelar')}</Button>
               <Button slot="close" variant="destructive" size="sm">
                 Confirmar y Eliminar
               </Button>
