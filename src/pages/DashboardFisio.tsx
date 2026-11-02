@@ -779,7 +779,7 @@ export function DashboardFisio() {
             </PulsatingButton>
             <div className="hidden md:block">
               <DateRangePicker value={dateRange} onChange={setDateRange}>
-                <DateRangePicker.Trigger placeholder="Filtrar rango de sesiones..." />
+                <DateRangePicker.Trigger placeholder={t('df.filterRange')} />
                 <DateRangePicker.Popover>
                   <RangeCalendar>
                     <RangeCalendar.Header />
@@ -801,14 +801,14 @@ export function DashboardFisio() {
       <div className="w-full">
         <CommandPalette
           items={commandItems}
-          placeholder="Buscar pacientes por nombre, condición o ejercicios... (⌘K)"
+          placeholder={t('df.searchPlaceholder')}
           onEnterFallback={(q) => navigate(`/patients?q=${encodeURIComponent(q)}`)}
         />
       </div>
 
       {/* Insight banner */}
       <InsightBanner
-        title="Bienvenido de vuelta"
+        title={t('df.welcomeBack')}
         description={loadingKpis ? 'Cargando resumen...' : realIsEmpty ? 'Aún no hay datos suficientes para mostrar un resumen.' : `Tienes ${kpi.activePatients} paciente(s) activo(s) y ${kpi.sessionsToday} sesión(es) registradas hoy.`}
       />
 
@@ -840,11 +840,11 @@ export function DashboardFisio() {
                 {loadingKpis ? (
                   <span className="text-[9px] sm:text-[10px] font-bold text-outline px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full bg-slate-100 dark:bg-slate-800">Cargando...</span>
                 ) : realIsEmpty ? (
-                  <span className="text-[9px] sm:text-[10px] font-bold text-amber-700 dark:text-amber-300 bg-amber-500/10 border border-amber-500/20 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full">Sin datos</span>
+                  <span className="text-[9px] sm:text-[10px] font-bold text-amber-700 dark:text-amber-300 bg-amber-500/10 border border-amber-500/20 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full">{t('df.noData')}</span>
                 ) : (
                   <span className={`inline-flex items-center gap-1 sm:gap-1.5 text-[9px] sm:text-[10px] font-bold ${card.badgeClass} border px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full`}>
                     <span className="w-1.5 h-1.5 rounded-full bg-current animate-pulse" />
-                    <span className="hidden xs:inline">En vivo</span>
+                    <span className="hidden xs:inline">{t('df.live')}</span>
                   </span>
                 )}
               </div>
@@ -921,8 +921,8 @@ export function DashboardFisio() {
                   <MedicalIcon name="activity" size={28} className="text-primary animate-breathe-icon" />
                 </div>
                 <div>
-                  <h3 className="font-headline-md text-headline-sm lg:text-headline-md text-primary tracking-wide">Informe Clínico</h3>
-                  <p className="text-xs text-on-surface-variant font-semibold uppercase tracking-wider mt-0.5">Physi Clínico</p>
+                  <h3 className="font-headline-md text-headline-sm lg:text-headline-md text-primary tracking-wide">{t('df.clinicalReport')}</h3>
+                  <p className="text-xs text-on-surface-variant font-semibold uppercase tracking-wider mt-0.5">{t('df.physiClinical')}</p>
                 </div>
               </div>
               <span className="hidden sm:inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-primary bg-primary/10 px-3 py-1.5 rounded-full ring-1 ring-primary/20">
@@ -935,7 +935,7 @@ export function DashboardFisio() {
               {insightLoading ? (
                 <div className="flex items-center gap-3 text-sm text-on-surface-variant py-8">
                   <Spinner size={20} className="text-primary" />
-                  <span>Analizando datos clínicos...</span>
+                  <span>{t('df.analyzing')}</span>
                 </div>
               ) : insight ? (
                 <div className="space-y-4">
@@ -965,9 +965,7 @@ export function DashboardFisio() {
               ) : (
                 <div className="min-h-[120px] p-4 bg-primary-container/20 rounded-2xl border border-primary/10 flex flex-col items-center justify-center text-center gap-3">
                   <Icon name="insights" size={32} className="text-primary/40" />
-                  <p className="text-sm text-on-surface-variant leading-relaxed max-w-md">
-                    Datos insuficientes para generar insights. Completa más sesiones para obtener recomendaciones personalizadas.
-                  </p>
+                  <p className="text-sm text-on-surface-variant leading-relaxed max-w-md">{t('df.insufficientData')}</p>
                 </div>
               )}
             </div>
@@ -1011,7 +1009,7 @@ export function DashboardFisio() {
                 <Icon name="flag" size={24} className="icon-accent-cyan animate-breathe-icon" />
               </div>
               <div>
-                <h3 className="font-headline-md text-headline-sm lg:text-headline-md text-on-surface">Prioridades del Día</h3>
+                <h3 className="font-headline-md text-headline-sm lg:text-headline-md text-on-surface">{t('df.dailyPriorities')}</h3>
                 <p className="text-[10px] text-on-surface-variant font-semibold uppercase tracking-wider mt-0.5">
                   {checkedPriorities.filter(Boolean).length} de {priorities.length} completadas
                 </p>
@@ -1034,7 +1032,7 @@ export function DashboardFisio() {
           <ScrollShadow className="max-h-[340px] pr-1.5" size={32}>
             <div className="space-y-3 relative py-1">
               {priorities.length === 0 ? (
-                <p className="text-sm text-on-surface-variant text-center py-8">No hay prioridades pendientes. Asigna pacientes para ver recomendaciones.</p>
+                <p className="text-sm text-on-surface-variant text-center py-8">{t('df.noPriorities')}</p>
               ) : (
                 priorities.map((p, i) => {
                   const checked = checkedPriorities[i];
@@ -1123,11 +1121,11 @@ export function DashboardFisio() {
             <div className="flex justify-between items-start">
               <div>
                 <h3 className="font-headline-lg text-headline-lg-mobile lg:text-headline-lg text-on-surface mb-2">Monitoreo Remoto</h3>
-                <p className="text-on-surface-variant text-sm">Sesiones activas y sincronización clínica</p>
+                <p className="text-on-surface-variant text-sm">{t('df.activeSessions')}</p>
               </div>
               <div className="flex items-center gap-2">
                 <span className="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-ping" />
-                <span className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 tracking-wider">EN VIVO</span>
+                <span className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 tracking-wider">{t('df.liveUpper')}</span>
               </div>
             </div>
 
@@ -1179,8 +1177,8 @@ export function DashboardFisio() {
               <Icon name="self_improvement" size={26} className="icon-accent-cyan animate-breathe-icon" />
             </div>
             <div>
-              <h3 className="font-headline-md text-headline-sm lg:text-headline-md text-on-surface">Pacientes en Tratamiento Activo</h3>
-              <p className="text-xs text-on-surface-variant font-semibold uppercase tracking-wider mt-0.5">Seguimiento y adherencia en tiempo real</p>
+              <h3 className="font-headline-md text-headline-sm lg:text-headline-md text-on-surface">{t('df.activePatients')}</h3>
+              <p className="text-xs text-on-surface-variant font-semibold uppercase tracking-wider mt-0.5">{t('df.trackingDesc')}</p>
             </div>
           </div>
           <button
@@ -1206,7 +1204,7 @@ export function DashboardFisio() {
             <div className="w-12 h-12 rounded-2xl bg-teal-500/10 text-teal-600 dark:text-teal-400 flex items-center justify-center">
               <Icon name="groups" size={26} />
             </div>
-            <h4 className="font-bold text-on-surface text-base">Sin pacientes en esta articulación</h4>
+            <h4 className="font-bold text-on-surface text-base">{t('df.noPatientsJoint')}</h4>
             <p className="text-xs text-on-surface-variant max-w-md">
               No hay pacientes registrados con diagnóstico de {selectedJointFilter}. Cambia el filtro para ver otros pacientes.
             </p>
@@ -1290,7 +1288,7 @@ export function DashboardFisio() {
                     {/* Adherence Progress Bar with Shimmer */}
                     <div className="space-y-2 mt-4 pt-3 border-t border-outline-variant/15 text-xs">
                       <div className="flex justify-between items-center text-on-surface-variant">
-                        <span className="font-semibold text-xs">Adherencia al Tratamiento</span>
+                        <span className="font-semibold text-xs">{t('df.adherence')}</span>
                         <span className="font-extrabold text-sm text-teal-700 dark:text-teal-300">{adherenceVal}%</span>
                       </div>
                       <div className="h-2.5 w-full rounded-full bg-slate-200/80 dark:bg-slate-700/60 overflow-hidden relative">
@@ -1328,8 +1326,8 @@ export function DashboardFisio() {
               <Icon name="trending_up" size={26} className="icon-accent-emerald animate-breathe-icon" />
             </div>
             <div>
-              <h3 className="font-headline-md text-headline-sm lg:text-headline-md text-on-surface">Progreso de Adherencia</h3>
-              <p className="text-xs text-on-surface-variant font-semibold uppercase tracking-wider mt-0.5">Evolución semanal</p>
+              <h3 className="font-headline-md text-headline-sm lg:text-headline-md text-on-surface">{t('df.adherenceProgress')}</h3>
+              <p className="text-xs text-on-surface-variant font-semibold uppercase tracking-wider mt-0.5">{t('df.weeklyEvolution')}</p>
             </div>
           </div>
         </div>
@@ -1337,7 +1335,7 @@ export function DashboardFisio() {
           {evolution.length === 0 ? (
             <div className="flex flex-col items-center justify-center text-center py-8 gap-3">
               <Icon name="trending_up" size={32} className="text-primary/40" />
-              <p className="text-sm text-on-surface-variant leading-relaxed max-w-xs">Completa tus primeras sesiones para ver tu progreso de adherencia aquí.</p>
+              <p className="text-sm text-on-surface-variant leading-relaxed max-w-xs">{t('df.noAdherenceData')}</p>
             </div>
           ) : (
             <div className="space-y-4">

@@ -20,6 +20,7 @@ export const MuscleTargetRadarCard: React.FC<MuscleTargetRadarCardProps> = ({
     { muscle: 'Core / Abdominal', activation: 82, color: '#10b981' },
   ],
 }) => {
+  const { t } = useTranslation();
   const [selectedMuscle, setSelectedMuscle] = useState<string | null>(null);
   const size = 190;
   const center = size / 2;
@@ -61,10 +62,8 @@ export const MuscleTargetRadarCard: React.FC<MuscleTargetRadarCardProps> = ({
             <Activity className="w-4 h-4 animate-pulse" />
           </div>
           <div>
-            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200">
-              Activación Muscular
-            </h4>
-            <span className="text-[10px] text-slate-500 dark:text-slate-400">Mapa de esfuerzo EMG</span>
+            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200">{t('ac.muscleActivation')}</h4>
+            <span className="text-[10px] text-slate-500 dark:text-slate-400">{t('ac.emgMap')}</span>
           </div>
         </div>
         <span className="text-[10px] font-mono font-bold text-teal-700 dark:text-teal-300 bg-teal-500/15 border border-teal-500/30 px-2.5 py-0.5 rounded-full shadow-xs flex items-center gap-1">
@@ -348,6 +347,7 @@ export const GaitSymmetryCard: React.FC<GaitSymmetryCardProps> = ({
   cadenceSteps = 108,
   className,
 }) => {
+  const { t } = useTranslation();
   const [isSimulating, setIsSimulating] = useState(false);
   const [left, setLeft] = useState(leftRatio);
   const [right, setRight] = useState(rightRatio);
@@ -378,9 +378,7 @@ export const GaitSymmetryCard: React.FC<GaitSymmetryCardProps> = ({
           <div className="p-1.5 rounded-xl bg-cyan-500/15 text-cyan-600 dark:text-cyan-400">
             <Footprints className="w-4 h-4 animate-bounce" />
           </div>
-          <h4 className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200">
-            Simetría de Apoyo Plantar
-          </h4>
+          <h4 className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200">{t('ac.plantarSymmetry')}</h4>
         </div>
         <span
           className={cn(
@@ -450,6 +448,7 @@ export const TremorFrequencyCard: React.FC<TremorFrequencyCardProps> = ({
   amplitudeMm = 0.9,
   className,
 }) => {
+  const { t } = useTranslation();
   return (
     <motion.div
       whileHover={{ y: -3, scale: 1.01 }}
@@ -464,9 +463,7 @@ export const TremorFrequencyCard: React.FC<TremorFrequencyCardProps> = ({
           <div className="p-1.5 rounded-xl bg-cyan-500/15 text-cyan-600 dark:text-cyan-400">
             <Waves className="w-4 h-4" />
           </div>
-          <h4 className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200">
-            Estabilidad Isométrica
-          </h4>
+          <h4 className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200">{t('ac.isometricStability')}</h4>
         </div>
         <span className="text-[10px] font-mono font-bold text-cyan-600 dark:text-cyan-400 bg-cyan-500/15 border border-cyan-500/30 px-2.5 py-0.5 rounded-full">
           Frecuencia: {frequencyHz} Hz
@@ -519,6 +516,7 @@ export const PostureStabilityCard: React.FC<PostureStabilityCardProps> = ({
   centerShiftY = -3,
   className,
 }) => {
+  const { t } = useTranslation();
   const [shiftX, setShiftX] = useState(centerShiftX);
   const [shiftY, setShiftY] = useState(centerShiftY);
 
@@ -536,9 +534,7 @@ export const PostureStabilityCard: React.FC<PostureStabilityCardProps> = ({
           <div className="p-1.5 rounded-xl bg-emerald-500/15 text-emerald-600 dark:text-emerald-400">
             <Crosshair className="w-4 h-4 animate-spin" style={{ animationDuration: '16s' }} />
           </div>
-          <h4 className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200">
-            Centro de Presión & Gravedad
-          </h4>
+          <h4 className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200">{t('ac.pressureCenter')}</h4>
         </div>
         <span className="text-xs font-mono font-black text-emerald-600 dark:text-emerald-400 bg-emerald-500/15 border border-emerald-500/30 px-2.5 py-0.5 rounded-full">
           {balanceScore}/100 Score
@@ -584,8 +580,7 @@ export const PostureStabilityCard: React.FC<PostureStabilityCardProps> = ({
         </div>
       </div>
 
-      <p className="text-[11px] text-center text-slate-500 dark:text-slate-400">
-        Desviación coronal: <strong className="font-mono text-emerald-500">{shiftX}°</strong> | Sagital:{' '}
+      <p className="text-[11px] text-center text-slate-500 dark:text-slate-400">{t('ac.coronalDeviation')}<strong className="font-mono text-emerald-500">{shiftX}°</strong> | Sagital:{' '}
         <strong className="font-mono text-emerald-500">{shiftY}°</strong>
       </p>
     </motion.div>
@@ -604,6 +599,7 @@ export const CardioEffortPillCard: React.FC<CardioEffortPillCardProps> = ({
   heartRateEstimated = 104,
   className,
 }) => {
+  const { t } = useTranslation();
   const percent = Math.min(100, Math.max(0, ((borgLevel - 6) / 14) * 100));
 
   return (
@@ -640,9 +636,7 @@ export const CardioEffortPillCard: React.FC<CardioEffortPillCardProps> = ({
           </span>
           <span className="text-xs font-semibold text-rose-500 ml-1.5">BPM est.</span>
         </div>
-        <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
-          Zona Aeróbica Terapéutica
-        </span>
+        <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">{t('ac.aerobicZone')}</span>
       </div>
 
       <div className="relative w-full h-2.5 rounded-full bg-slate-200 dark:bg-slate-800 overflow-hidden my-2">
@@ -656,7 +650,7 @@ export const CardioEffortPillCard: React.FC<CardioEffortPillCardProps> = ({
       <div className="flex justify-between text-[10px] font-mono text-slate-400">
         <span>6 (Reposo)</span>
         <span>12 (Moderado)</span>
-        <span>20 (Máximo)</span>
+        <span>{t('ac.max20')}</span>
       </div>
     </motion.div>
   );
@@ -672,6 +666,7 @@ export const RehabPhaseStepCard: React.FC<RehabPhaseStepCardProps> = ({
   currentPhaseIndex = 1,
   className,
 }) => {
+  const { t } = useTranslation();
   const [activeStep, setActiveStep] = useState(currentPhaseIndex);
   const phases = [
     { title: 'Fase 1: Analgesia & Isometría', detail: 'Reducción de dolor y activación refleja' },
@@ -693,9 +688,7 @@ export const RehabPhaseStepCard: React.FC<RehabPhaseStepCardProps> = ({
           <div className="p-1.5 rounded-xl bg-primary/15 text-primary">
             <Milestone className="w-4 h-4" />
           </div>
-          <h4 className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200">
-            Fase de Recuperación Clínica
-          </h4>
+          <h4 className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200">{t('ac.recoveryPhase')}</h4>
         </div>
         <span className="text-[10px] font-mono font-bold text-primary bg-primary/10 border border-primary/20 px-2 py-0.5 rounded-full">
           Paso {activeStep + 1} de 3
@@ -725,9 +718,7 @@ export const RehabPhaseStepCard: React.FC<RehabPhaseStepCardProps> = ({
                 <div className="font-bold flex items-center gap-2">
                   <span>{p.title}</span>
                   {isCurrent && (
-                    <span className="text-[9px] uppercase font-black tracking-wider bg-teal-500 text-white px-1.5 py-0.2 rounded-full">
-                      En Curso
-                    </span>
+                    <span className="text-[9px] uppercase font-black tracking-wider bg-teal-500 text-white px-1.5 py-0.2 rounded-full">{t('ac.inProgress')}</span>
                   )}
                 </div>
                 <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">{p.detail}</p>
@@ -755,6 +746,7 @@ export const EdemaAssessmentCard: React.FC<EdemaAssessmentCardProps> = ({
   perimeterMm = 38.5,
   className,
 }) => {
+  const { t } = useTranslation();
   const [grade] = useState(foveaGrade);
   const [tested, setTested] = useState(false);
 
@@ -773,16 +765,14 @@ export const EdemaAssessmentCard: React.FC<EdemaAssessmentCardProps> = ({
       )}
     >
       <div className="flex items-center justify-between mb-2">
-        <h4 className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200">
-          Control de Edema & Signo de Fóvea
-        </h4>
+        <h4 className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200">{t('ac.edemaControl')}</h4>
         <span className="text-xs font-mono font-bold text-teal-600 dark:text-teal-400 bg-teal-500/15 border border-teal-500/30 px-2.5 py-0.5 rounded-full">
           Grado {grade}+ / 4+
         </span>
       </div>
 
       <div className="my-2 p-3 rounded-2xl bg-slate-100/70 dark:bg-slate-800/60 flex items-center justify-between text-xs">
-        <span className="text-slate-500">Perímetro Articular:</span>
+        <span className="text-slate-500">{t('ac.jointPerimeter')}</span>
         <span className="font-mono font-bold text-slate-900 dark:text-white text-sm">{perimeterMm} cm</span>
       </div>
 
@@ -802,9 +792,7 @@ export const EdemaAssessmentCard: React.FC<EdemaAssessmentCardProps> = ({
         </button>
       </div>
 
-      <p className="text-[11px] text-slate-500 dark:text-slate-400">
-        Recuperación elástica rápida. Inflamación periarticular en resolución progresiva.
-      </p>
+      <p className="text-[11px] text-slate-500 dark:text-slate-400">{t('ac.elasticRecovery')}</p>
     </motion.div>
   );
 };
@@ -821,6 +809,7 @@ export const StrengthProgressionCard: React.FC<StrengthProgressionCardProps> = (
   velocityMs = 0.68,
   className,
 }) => {
+  const { t } = useTranslation();
   return (
     <motion.div
       whileHover={{ y: -3, scale: 1.01 }}
@@ -835,9 +824,7 @@ export const StrengthProgressionCard: React.FC<StrengthProgressionCardProps> = (
           <div className="p-1.5 rounded-xl bg-primary/15 text-primary">
             <TrendingUp className="w-4 h-4" />
           </div>
-          <h4 className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200">
-            Fuerza en Velocidad (VBT)
-          </h4>
+          <h4 className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200">{t('ac.vbt')}</h4>
         </div>
         <span className="text-[10px] font-mono text-primary bg-primary/15 border border-primary/30 px-2.5 py-0.5 rounded-full font-bold">
           {velocityMs} m/s
@@ -851,14 +838,12 @@ export const StrengthProgressionCard: React.FC<StrengthProgressionCardProps> = (
           </span>
           <span className="text-xs text-slate-400 ml-1 font-bold">kg 1RM Est.</span>
         </div>
-        <span className="text-[11px] font-bold text-teal-600 dark:text-teal-400 bg-teal-500/10 px-2 py-0.5 rounded-full">
-          Velocidad de ejecución óptima
-        </span>
+        <span className="text-[11px] font-bold text-teal-600 dark:text-teal-400 bg-teal-500/10 px-2 py-0.5 rounded-full">{t('ac.optimalVelocity')}</span>
       </div>
 
       <div className="flex items-center gap-1.5 text-[11px] font-bold text-emerald-600 dark:text-emerald-400 mt-2 p-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
         <Sparkles className="w-3.5 h-3.5 shrink-0" />
-        <span>+4.2% de fuerza útil respecto a la semana anterior</span>
+        <span>{t('ac.strengthGain')}</span>
       </div>
     </motion.div>
   );
@@ -872,6 +857,7 @@ export interface PatientAdherenceHeatmapCardProps {
 export const PatientAdherenceHeatmapCard: React.FC<PatientAdherenceHeatmapCardProps> = ({
   className,
 }) => {
+  const { t } = useTranslation();
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
   const days = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
   const adherence = [2, 3, 3, 1, 3, 2, 0];
@@ -940,7 +926,7 @@ export const PatientAdherenceHeatmapCard: React.FC<PatientAdherenceHeatmapCardPr
             exit={{ opacity: 0, height: 0 }}
             className="mt-3 p-2 rounded-xl bg-teal-500/10 border border-teal-500/20 text-xs text-slate-600 dark:text-slate-300 flex items-center justify-between"
           >
-            <span>Día {days[selectedDay]}: <strong>{minutes[selectedDay]} minutos</strong> de rutina</span>
+            <span>Día {days[selectedDay]}: <strong>{minutes[selectedDay]} minutos</strong>{t('ac.routineOf')}</span>
             <span className="font-bold text-teal-600 dark:text-teal-400">100% postura validada</span>
           </motion.div>
         )}

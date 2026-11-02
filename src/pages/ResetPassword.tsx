@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -19,7 +20,8 @@ import { supabase } from '../lib/supabase';
 import { useToast } from '../components/ui/toastApi';
 
 export function ResetPassword() {
-  const navigate = useNavigate();
+
+  const { t } = useTranslation();  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const toast = useToast();
 
@@ -270,9 +272,7 @@ export function ResetPassword() {
                 <div className="w-12 h-12 rounded-full bg-teal-600 text-white flex items-center justify-center mx-auto shadow-md shadow-teal-600/20">
                   <Check size={26} />
                 </div>
-                <h3 className="text-sm font-bold text-teal-950 dark:text-teal-200">
-                  ¡Cambio Completado con Éxito!
-                </h3>
+                <h3 className="text-sm font-bold text-teal-950 dark:text-teal-200">{t('rp.successTitle')}</h3>
                 <p className="text-xs text-teal-800 dark:text-teal-300 leading-relaxed">
                   Tu contraseña ha sido actualizada. Te enviamos un comprobante de seguridad a{' '}
                   <strong>{email}</strong>.
@@ -283,7 +283,7 @@ export function ResetPassword() {
                 to="/login"
                 className="w-full py-3.5 px-4 rounded-2xl bg-teal-600 hover:bg-teal-700 active:scale-98 text-white font-bold text-xs transition-all flex items-center justify-center gap-2 shadow-md shadow-teal-600/20"
               >
-                <span>Iniciar Sesión Ahora</span>
+                <span>{t('rp.loginNow')}</span>
                 <ArrowRight size={14} />
               </Link>
             </motion.div>
@@ -303,13 +303,10 @@ export function ResetPassword() {
                     <div className="w-10 h-10 rounded-full bg-teal-600 text-white flex items-center justify-center mx-auto shadow-md shadow-teal-600/20">
                       <CheckCircle2 size={22} />
                     </div>
-                    <h3 className="text-sm font-bold text-teal-900 dark:text-teal-200">
-                      Correo de Recuperación Enviado
-                    </h3>
+                    <h3 className="text-sm font-bold text-teal-900 dark:text-teal-200">{t('rp.recoveryEmailSent')}</h3>
                     <p className="text-xs text-teal-800 dark:text-teal-300 leading-relaxed">
                       Hemos enviado un enlace directo y un código PIN de 6 dígitos a{' '}
-                      <strong className="underline">{email}</strong>. Válido por 15 minutos.
-                    </p>
+                      <strong className="underline">{email}</strong>{t('rp.valid15')}</p>
                   </div>
 
                   <div className="flex flex-col gap-2 pt-1">
@@ -319,7 +316,7 @@ export function ResetPassword() {
                       className="w-full py-3 rounded-xl bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold transition-all flex items-center justify-center gap-1.5 shadow-sm"
                     >
                       <KeyRound size={14} />
-                      <span>Ingresar Código PIN Recibido</span>
+                      <span>{t('rp.enterPin')}</span>
                     </button>
 
                     <button
@@ -336,9 +333,7 @@ export function ResetPassword() {
               ) : (
                 <form onSubmit={handleRequestReset} className="space-y-4">
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
-                      Correo Electrónico de tu Cuenta
-                    </label>
+                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">{t('rp.accountEmail')}</label>
                     <div className="relative">
                       <Mail size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
                       <input
@@ -361,7 +356,7 @@ export function ResetPassword() {
                       <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                     ) : (
                       <>
-                        <span>Enviar Enlace y Código de Recuperación</span>
+                        <span>{t('rp.sendLinkAndCode')}</span>
                         <ArrowRight size={14} />
                       </>
                     )}
@@ -372,9 +367,7 @@ export function ResetPassword() {
                       type="button"
                       onClick={() => setMode('reset')}
                       className="text-xs text-teal-600 dark:text-teal-400 font-bold hover:underline"
-                    >
-                      ¿Ya tienes un código PIN o enlace? Haz clic aquí
-                    </button>
+                    >{t('rp.alreadyHaveCode')}</button>
                   </div>
                 </form>
               )}
@@ -391,9 +384,7 @@ export function ResetPassword() {
             >
               <form onSubmit={handleUpdatePassword} className="space-y-3.5">
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                    Correo Electrónico
-                  </label>
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">{t('rp.email')}</label>
                   <div className="relative">
                     <Mail size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
                     <input
@@ -408,9 +399,7 @@ export function ResetPassword() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                    Código PIN (6 dígitos) o Token del Correo
-                  </label>
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">{t('rp.pinOrToken')}</label>
                   <div className="relative">
                     <KeyRound size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
                     <input
@@ -425,9 +414,7 @@ export function ResetPassword() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                    Nueva Contraseña
-                  </label>
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">{t('rp.newPassword')}</label>
                   <div className="relative">
                     <Lock size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
                     <input
@@ -435,7 +422,7 @@ export function ResetPassword() {
                       required
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      placeholder="Mínimo 8 caracteres"
+                      placeholder={t('rp.minChars')}
                       className="w-full pl-10 pr-10 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500"
                     />
                     <button
@@ -473,9 +460,7 @@ export function ResetPassword() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                    Confirmar Nueva Contraseña
-                  </label>
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">{t('rp.confirmNewPassword')}</label>
                   <div className="relative">
                     <Lock size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
                     <input
@@ -483,17 +468,16 @@ export function ResetPassword() {
                       required
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
-                      placeholder="Repite la contraseña"
+                      placeholder={t('rp.repeatPassword')}
                       className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500"
                     />
                   </div>
                   {confirmPassword && password !== confirmPassword && (
-                    <p className="text-[10px] text-red-500 mt-1">Las contraseñas no coinciden</p>
+                    <p className="text-[10px] text-red-500 mt-1">{t('rp.passwordsMismatch')}</p>
                   )}
                   {confirmPassword && password === confirmPassword && (
                     <p className="text-[10px] text-teal-600 dark:text-teal-400 mt-1 flex items-center gap-1">
-                      <ShieldCheck size={11} /> Las contraseñas coinciden
-                    </p>
+                      <ShieldCheck size={11} />{t('rp.passwordsMatch')}</p>
                   )}
                 </div>
 
@@ -506,7 +490,7 @@ export function ResetPassword() {
                     <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                   ) : (
                     <>
-                      <span>Guardar Nueva Contraseña</span>
+                      <span>{t('rp.saveNewPassword')}</span>
                       <ArrowRight size={14} />
                     </>
                   )}
@@ -517,9 +501,7 @@ export function ResetPassword() {
                     type="button"
                     onClick={() => setMode('request')}
                     className="text-xs text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 font-semibold"
-                  >
-                    Volver a solicitar enlace por correo
-                  </button>
+                  >{t('rp.resendEmail')}</button>
                 </div>
               </form>
             </motion.div>
@@ -533,7 +515,7 @@ export function ResetPassword() {
             className="inline-flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 hover:text-teal-600 dark:hover:text-teal-400 font-bold transition-colors"
           >
             <ArrowLeft size={14} />
-            <span>Volver a Iniciar Sesión</span>
+            <span>{t('rp.backToLogin')}</span>
           </Link>
         </div>
       </motion.div>
