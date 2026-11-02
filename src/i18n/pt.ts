@@ -978,6 +978,153 @@ export const pt: TranslationSchema = {
     lastSaved: "Último ajuste: {{date}}",
   },
 
+  pdash: {
+    routineBy: "Rotina prescrita pelo seu fisioterapeuta",
+    weekly: "Atividade Semanal",
+    dailyMin: "Minutos diários",
+    goal: "Meta: 15 min/dia",
+    rom: "Evolução da Amplitude Articular",
+    physio: "Fisioterapeuta Designado",
+    physi: "Copiloto Physi",
+    physiSub: "Conselho cinesiológico personalizado",
+    listen: "Ouvir o conselho com voz humana",
+  },
+
+  notif: {
+    toggleSound: "Alternar som",
+    close: "Fechar notificações",
+    markAll: "Marcar todas",
+    viewDetail: "Ver detalhe",
+    markRead: "Marcar como lida",
+    deleteNotif: "Excluir notificação",
+    del: "Excluir",
+  },
+
+  ver: {
+    title: "Palavra de Força e Fé",
+    copy: "Copiar versículo",
+    another: "Receber outra palavra",
+    minimize: "Minimizar por enquanto",
+    searching: "Buscando palavra de força...",
+    renew: "Renovar reflexão",
+  },
+
+  play: {
+    active: "Paciente Ativo",
+    theme: "Alterar tema",
+    logout: "Sair",
+    portal: "Portal do Paciente",
+    closeMenu: "Fechar menu",
+    openMenu: "Abrir menu",
+    openPhysi: "Abrir Chatbot IA Physi",
+    physiChat: "Chatbot IA Physi",
+    consent: "Consentimento Informado",
+    terms: "Termos de Serviço",
+    privacy: "Privacidade de Dados",
+  },
+
+  gam: {
+    noStreak: "Complete sua primeira sessão para iniciar sua sequência clínica.",
+    romRange: "Faixa de reabilitação",
+    trophyCase: "Vitrine de Troféus Clínicos",
+    healthPoints: "Pontos de Saúde",
+    redeem: "Resgatáveis por consultas prioritárias",
+  },
+
+  upw: {
+    passPh: "Mínimo 6 caracteres",
+    pass2Ph: "Repita a senha",
+    save: "Salvar Nova Senha",
+  },
+
+  pex: {
+    close: "Fechar janela de exportação",
+    quick: "PDF Rápido",
+    ai: "PDF Estilizado IA",
+    generating: "Gerando documento...",
+    download: "Baixar PDF",
+  },
+
+  hal: {
+    close: "Fechar aviso",
+    newFeatures: "Novos recursos disponíveis",
+    offline: "Não foi possível conectar ao servidor",
+    profileOk: "Perfil clínico atualizado com sucesso",
+    profileOkBody: "Todas as alterações na sua rotina foram salvas e criptografadas localmente.",
+    lightTitle: "Aviso de Iluminação para Câmera AR",
+    lightBody: "Para uma detecção precisa de articulações a 30 FPS, garanta boa iluminação frontal.",
+  },
+
+  mdl: {
+    close: "Fechar modal",
+    settings: "Configurações do FisioMirror",
+    sensitivity: "Sensibilidade (demonstração)",
+  },
+
+  aia: {
+    title: "Physi Assistente IA",
+    attachAlt: "Anexo",
+    listen: "Ouvir a mensagem com voz humana",
+    stop: "Parar",
+    listenNatural: "Ouvir voz natural",
+    copy: "Copiar texto",
+    analyzing: "Physi está analisando sua consulta...",
+    attach: "Anexar imagem de exercício ou desconforto",
+    inputPh: "Escreva sua consulta ao Physi (ou pressione o microfone)...",
+    send: "Enviar mensagem ao Physi",
+  },
+
+  hcb: {
+    title: "Preferências de Notificação Clínica",
+    desc: "Escolha como deseja receber avisos de reabilitação, lembretes e relatórios médicos.",
+    email: "Notificações por E-mail",
+    push: "Alertas Push no Navegador",
+    sms: "Lembretes SMS / WhatsApp",
+  },
+
+  ar3: {
+    restore: "Restaurar visualizador 3D",
+    guideUpper: "GUIA 3D",
+    guide: "Guia 3D",
+    minimize: "Minimizar para pílula",
+    hide: "Ocultar modelo 3D",
+    physioAvatar: "Avatar Fisioterapeuta",
+    patientAvatar: "Avatar Paciente",
+    follow: "Siga o movimento",
+    live: "Ao vivo",
+  },
+
+  tk: {
+    empty: "Nenhum token registrado",
+    code: "Código de Ativação",
+    copy: "Copiar token",
+    copyTitle: "Copiar token para a área de transferência",    del: "Excluir token",
+    confirmDel: "Excluir código de ativação?",
+  },
+
+  ndk: {
+    startScan: "Iniciar Escaneamento / Sessão AR",
+    guide: "Guia Clínica Assistida",
+    dominant: "Alternar mão dominante para a rotina",
+    call: "Ligar para o terapeuta",
+    callTitle: "Chamada direta",
+    msg: "Mensagem ao assistente",
+    msgTitle: "Chat clínico",
+  },
+
+  ios: {
+    title: "Instalar no iPhone / iPad",
+    sub: "Atalho como app nativa",
+  },
+
+  hav: {
+    altPhysio: "Dra. Fisioterapeuta",
+    altPatient: "Paciente",
+    role: "Fisioterapeuta Titular",
+    patientStatus: "Paciente Ativo • Joelho",
+    tokenPending: "Token Pendente (Sem foto)",
+  },
+
   settings: {
     verseDesc: "Mostra versículos de cura, constância e perseverança na sua recuperação",
     signOut: "Sair",
@@ -1271,6 +1418,11 @@ export const pt: TranslationSchema = {
 
 
   reg: {
+    linked: "Prontuário clínico vinculado com sucesso",
+    namePh: "Seu nome e sobrenome",
+    emailPh: "paciente@email.com",
+    passPh: "Mínimo 6 caracteres",
+    pass2Ph: "Repita sua senha",
     captchaRequired: 'Complete a verificação de segurança',
     tokenTooShort: "O código deve conter pelo menos 4 caracteres",
     demoTokenOk: "Token de teste validado corretamente",
@@ -2997,6 +3149,10 @@ export const pt: TranslationSchema = {
   },
 
   drp: {
+    prevMonth: "Mês anterior",
+    weeks: "Semanas a exibir:",
+    defaultRange: "Intervalo de reabilitação padrão",
+    totalSessions: "Total de sessões selecionadas:",
     selectClinicalRange: 'Selecionar intervalo clínico...',
     selectEnd: 'Selecionar fim',
     previousMonth: 'Mês anterior',
@@ -3679,6 +3835,14 @@ export const pt: TranslationSchema = {
   },
 
   pg: {
+    reset: "Reiniciar conversa",
+    resetTitle: "Reiniciar chat",
+    close: "Fechar janela",
+    closeTitle: "Fechar",
+    stop: "Parar",
+    suggestions: "Sugestões para começar",
+    inputPh: "Pergunte ao Physi...",
+    send: "Enviar mensagem",
     welcome: 'Olá! Sou a Physi, sua assistente e guia interativa no FisioMirror. Você pode me fazer qualquer pergunta sobre seus exercícios, pacientes, análise biomecânica ou a plataforma. Vou responder em voz alta, natural e em tempo real!',
     noMatch: 'Não entendi sua pergunta. Tente termos como paciente, rotina, amplitude articular ou contate o suporte: fisiomirror@proton.me',
     faqViewActivePatients: 'Como vejo meus pacientes ativos?',

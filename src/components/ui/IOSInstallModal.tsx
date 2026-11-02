@@ -1,5 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Share, PlusSquare, Smartphone, CheckCircle2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface IOSInstallModalProps {
   isOpen: boolean;
@@ -7,6 +8,7 @@ interface IOSInstallModalProps {
 }
 
 export function IOSInstallModal({ isOpen, onClose }: IOSInstallModalProps) {
+  const { t } = useTranslation();
   return (
     <AnimatePresence>
       {isOpen && (
@@ -31,8 +33,8 @@ export function IOSInstallModal({ isOpen, onClose }: IOSInstallModalProps) {
                   <Smartphone className="size-5" />
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-on-surface">Instalar en iPhone / iPad</h3>
-                  <p className="text-xs text-on-surface-variant">Acceso directo como app nativa</p>
+                  <h3 className="text-base font-bold text-on-surface">{t('ios.title')}</h3>
+                  <p className="text-xs text-on-surface-variant">{t('ios.sub')}</p>
                 </div>
               </div>
               <button

@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Bell, Volume2, VolumeX, CheckCheck, Check, Trash2, ExternalLink, Activity, Video, ShieldCheck, Dumbbell, Info, X, Sparkles } from 'lucide-react';
 import { useRealtimeNotifications, NotificationFilter } from '../../hooks/useRealtimeNotifications';
 import { AppNotification } from '../../lib/notificationService';
+import { useTranslation } from 'react-i18next';
 
 interface NotificationDrawerProps {
   isOpen: boolean;
@@ -70,6 +71,7 @@ function getNotificationBadgeStyle(type: string) {
 }
 
 export function NotificationDrawer({ isOpen, onClose, userId }: NotificationDrawerProps) {
+  const { t } = useTranslation();
   const {
     notifications,
     unreadCount,
@@ -154,7 +156,7 @@ export function NotificationDrawer({ isOpen, onClose, userId }: NotificationDraw
                       ? 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-200'
                       : 'text-teal-600 dark:text-teal-400 bg-teal-50 dark:bg-teal-950/40'
                   }`}
-                  aria-label="Alternar sonido"
+                  aria-label={t('notif.toggleSound')}
                 >
                   {soundMuted ? <VolumeX size={17} /> : <Volume2 size={17} />}
                 </button>
@@ -164,7 +166,7 @@ export function NotificationDrawer({ isOpen, onClose, userId }: NotificationDraw
                   type="button"
                   onClick={onClose}
                   className="p-2 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-                  aria-label="Cerrar notificaciones"
+                  aria-label={t('notif.close')}
                 >
                   <X size={18} />
                 </button>
@@ -209,7 +211,7 @@ export function NotificationDrawer({ isOpen, onClose, userId }: NotificationDraw
                   className="text-[11px] font-bold text-teal-600 dark:text-teal-400 hover:underline flex items-center gap-1 shrink-0 px-2 py-1 rounded-lg hover:bg-teal-50 dark:hover:bg-teal-950/30 transition-colors"
                 >
                   <CheckCheck size={13} />
-                  <span className="hidden sm:inline">Marcar todas</span>
+                  <span className="hidden sm:inline">{t('notif.markAll')}</span>
                 </button>
               )}
             </div>
@@ -281,7 +283,7 @@ export function NotificationDrawer({ isOpen, onClose, userId }: NotificationDraw
                                 onClick={() => handleOpenLink(notif)}
                                 className="px-2.5 py-1 rounded-lg bg-teal-600 hover:bg-teal-700 text-white text-[10px] font-bold transition-all flex items-center gap-1 shadow-xs"
                               >
-                                <span>Ver detalle</span>
+                                <span>{t('notif.viewDetail')}</span>
                                 <ExternalLink size={11} />
                               </button>
                             )}
@@ -293,7 +295,7 @@ export function NotificationDrawer({ isOpen, onClose, userId }: NotificationDraw
                                 className="text-[10px] font-semibold text-teal-700 dark:text-teal-300 hover:underline flex items-center gap-1"
                               >
                                 <Check size={12} />
-                                <span>Marcar leída</span>
+                                <span>{t('notif.markRead')}</span>
                               </button>
                             ) : null}
 
@@ -302,8 +304,8 @@ export function NotificationDrawer({ isOpen, onClose, userId }: NotificationDraw
                                 type="button"
                                 onClick={() => removeNotification(notif.id)}
                                 className="p-1 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/40 transition-colors"
-                                title="Eliminar notificación"
-                                aria-label="Eliminar"
+                                title={t('notif.deleteNotif')}
+                                aria-label={t('notif.del')}
                               >
                                 <Trash2 size={13} />
                               </button>

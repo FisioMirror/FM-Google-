@@ -6,6 +6,7 @@ import { useToast } from './toastApi';
 import { supabase } from '../../lib/supabase';
 import { exportSimplePDF, exportPremiumPDF, type PDFPatientData, type ReportType } from '../../lib/pdfExport';
 import { cn } from '../../lib/utils';
+import { useTranslation } from 'react-i18next';
 
 interface PDFModalProps {
   open: boolean;
@@ -15,6 +16,7 @@ interface PDFModalProps {
 }
 
 export function PDFExportModal({ open, onClose, data, filename }: PDFModalProps) {
+  const { t } = useTranslation();
   const toast = useToast();
   const [selectedType, setSelectedType] = useState<ReportType>('evolution');
   const [formatMode, setFormatMode] = useState<'quick' | 'ai'>('quick');
@@ -162,7 +164,7 @@ export function PDFExportModal({ open, onClose, data, filename }: PDFModalProps)
               </div>
               <button
                 onClick={onClose}
-                aria-label="Cerrar ventana de exportación"
+                aria-label={t('pex.close')}
                 className="p-1.5 rounded-xl text-outline hover:text-on-surface hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer"
               >
                 <Icon name="close" size={20} />
@@ -227,7 +229,7 @@ export function PDFExportModal({ open, onClose, data, filename }: PDFModalProps)
                 >
                   <div className="flex items-center gap-2 mb-1">
                     <Icon name="bolt" size={16} className="text-teal-600 dark:text-teal-400" />
-                    <span className="text-xs font-bold text-on-surface">PDF Rápido</span>
+                    <span className="text-xs font-bold text-on-surface">{t('pex.quick')}</span>
                   </div>
                   <p className="text-[10px] text-on-surface-variant leading-tight">
                     jsPDF instantáneo. Ligero e ideal para impresión médica directa.
@@ -246,7 +248,7 @@ export function PDFExportModal({ open, onClose, data, filename }: PDFModalProps)
                 >
                   <div className="flex items-center gap-2 mb-1">
                     <Icon name="auto_awesome" size={16} className="text-teal-600 dark:text-teal-400" />
-                    <span className="text-xs font-bold text-on-surface">PDF Estilizado IA</span>
+                    <span className="text-xs font-bold text-on-surface">{t('pex.ai')}</span>
                   </div>
                   <p className="text-[10px] text-on-surface-variant leading-tight">
                     Membretado de alta fidelidad con narrativa analítica profunda.
@@ -274,12 +276,12 @@ export function PDFExportModal({ open, onClose, data, filename }: PDFModalProps)
                 {loading ? (
                   <>
                     <Spinner size={16} className="text-white" />
-                    <span>Generando Documento...</span>
+                    <span>{t('pex.generating')}</span>
                   </>
                 ) : (
                   <>
                     <Icon name="download" size={16} />
-                    <span>Descargar PDF</span>
+                    <span>{t('pex.download')}</span>
                   </>
                 )}
               </button>

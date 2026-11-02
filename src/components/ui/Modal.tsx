@@ -5,6 +5,7 @@ import { Rocket } from "@gravity-ui/icons";
 import { cn } from "../../lib/utils";
 import { Button } from "./Button";
 import { useFocusTrap } from "../../hooks/useFocusTrap";
+import { useTranslation } from 'react-i18next';
 
 interface ModalContextType {
   isOpen: boolean;
@@ -156,6 +157,7 @@ export function ModalDialog({
 }
 
 export function ModalCloseTrigger({ className }: { className?: string }) {
+  const { t } = useTranslation();
   const { close } = useContext(ModalContext);
 
   return (
@@ -168,7 +170,7 @@ export function ModalCloseTrigger({ className }: { className?: string }) {
         "border border-border/50 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary/40",
         className
       )}
-      aria-label="Cerrar modal"
+      aria-label={t('mdl.close')}
     >
       <X className="size-4.5" />
     </button>
@@ -256,6 +258,7 @@ Modal.Footer = ModalFooter;
  * CustomModalDemo con lógica interactiva real
  */
 export function CustomModalDemo() {
+  const { t } = useTranslation();
   const [sensitivity, setSensitivity] = useState(85);
   const [arOverlays, setArOverlays] = useState(true);
   const [savedStatus, setSavedStatus] = useState<string | null>(null);
@@ -281,7 +284,7 @@ export function CustomModalDemo() {
                 <Modal.Icon className="bg-primary/10 text-primary">
                   <Rocket className="size-5" />
                 </Modal.Icon>
-                <Modal.Heading>Configuración de FisioMirror</Modal.Heading>
+                <Modal.Heading>{t('mdl.settings')}</Modal.Heading>
               </Modal.Header>
               <Modal.Body>
                 <p className="text-sm text-neutral-600 dark:text-neutral-300">
@@ -291,7 +294,7 @@ export function CustomModalDemo() {
                 <div className="p-3.5 rounded-xl bg-surface/80 dark:bg-slate-800/60 border border-border/60 space-y-3 mt-4">
                   <div>
                     <div className="flex justify-between text-xs font-semibold mb-1 text-on-surface">
-                      <span>Sensibilidad (demostración)</span>
+                      <span>{t('mdl.sensitivity')}</span>
                       <span className="text-primary font-bold">{sensitivity}%</span>
                     </div>
                     <input

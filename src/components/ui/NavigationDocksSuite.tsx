@@ -13,6 +13,7 @@ import {
   Phone,
   MessageSquare,
 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 /* 41. CurvedMobileDock */
 export interface CurvedMobileDockProps {
@@ -30,6 +31,7 @@ export const CurvedMobileDock: React.FC<CurvedMobileDockProps> = ({
   onProgressClick,
   currentTab,
 }) => {
+  const { t } = useTranslation();
   const [internalTab, setInternalTab] = useState<'ejercicios' | 'scan' | 'progreso'>('scan');
   const activeTab = currentTab || internalTab;
 
@@ -68,7 +70,7 @@ export const CurvedMobileDock: React.FC<CurvedMobileDockProps> = ({
             onScanClick?.();
           }}
           className="size-14 rounded-2xl bg-gradient-to-tr from-teal-600 via-teal-500 to-cyan-400 text-white flex items-center justify-center shadow-xl shadow-teal-500/40 border-2 border-white dark:border-slate-950 cursor-pointer"
-          title="Iniciar Escaneo / Sesión AR"
+          title={t('ndk.startScan')}
         >
           <Sparkles className="w-6 h-6 animate-pulse" />
         </motion.button>
@@ -322,6 +324,7 @@ export interface FloatingHelpBeaconProps {
 }
 
 export const FloatingHelpBeacon: React.FC<FloatingHelpBeaconProps> = ({ className, onClick }) => {
+  const { t } = useTranslation();
   return (
     <motion.button
       type="button"
@@ -334,7 +337,7 @@ export const FloatingHelpBeacon: React.FC<FloatingHelpBeaconProps> = ({ classNam
       )}
     >
       <LifeBuoy className="w-4 h-4 animate-spin text-teal-600 dark:text-teal-400" style={{ animationDuration: '10s' }} />
-      <span>Guía Clínica Asistida</span>
+      <span>{t('ndk.guide')}</span>
       <span className="size-2 rounded-full bg-emerald-500 animate-ping" />
     </motion.button>
   );
@@ -352,6 +355,7 @@ export const ErgonomicHandModeSwitcher: React.FC<ErgonomicHandModeSwitcherProps>
   onChange,
   className,
 }) => {
+  const { t } = useTranslation();
   const [currentHand, setCurrentHand] = useState(hand);
 
   useEffect(() => {
@@ -373,7 +377,7 @@ export const ErgonomicHandModeSwitcher: React.FC<ErgonomicHandModeSwitcherProps>
         "inline-flex items-center gap-2.5 p-2 px-3.5 rounded-2xl bg-white/90 dark:bg-slate-800/90 border border-teal-500/30 text-xs font-bold text-slate-800 dark:text-slate-100 shadow-md cursor-pointer transition-colors",
         className
       )}
-      title="Alternar mano dominante para la rutina"
+      title={t('ndk.dominant')}
     >
       <Hand className="w-4 h-4 text-teal-600 dark:text-teal-400" />
       <span>Modo {currentHand === 'right' ? 'Diestro' : 'Zurdo'}</span>
@@ -399,6 +403,7 @@ export const CompactTelehealthBar: React.FC<CompactTelehealthBarProps> = ({
   onQuickMessage,
   className,
 }) => {
+  const { t } = useTranslation();
   return (
     <div
       className={cn(
@@ -423,9 +428,9 @@ export const CompactTelehealthBar: React.FC<CompactTelehealthBarProps> = ({
           <button
             type="button"
             onClick={onQuickCall}
-            aria-label="Llamar al terapeuta"
+            aria-label={t('ndk.call')}
             className="p-1.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white transition-all shadow-sm active:scale-95 cursor-pointer"
-            title="Llamada directa"
+            title={t('ndk.callTitle')}
           >
             <Phone className="w-3.5 h-3.5" />
           </button>
@@ -435,9 +440,9 @@ export const CompactTelehealthBar: React.FC<CompactTelehealthBarProps> = ({
           <button
             type="button"
             onClick={onQuickMessage}
-            aria-label="Mensaje al asistente"
+            aria-label={t('ndk.msg')}
             className="p-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-teal-500/20 text-slate-700 dark:text-slate-200 transition-all border border-slate-200 dark:border-white/10 active:scale-95 cursor-pointer"
-            title="Chat clínico"
+            title={t('ndk.msgTitle')}
           >
             <MessageSquare className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400" />
           </button>

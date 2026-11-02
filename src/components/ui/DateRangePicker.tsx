@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Calendar as CalendarIcon, ChevronLeft, ChevronRight, ChevronDown, Check } from "lucide-react";
 import { cn } from "../../lib/utils";
 import { currentLocale } from '../../lib/format';
+import { useTranslation } from 'react-i18next';
 
 export interface DateRange {
   start: Date | null;
@@ -302,6 +303,7 @@ function RangeCalendarStandalone({
 }
 
 export function RangeCalendarHeader({ children, className }: { children?: React.ReactNode; className?: string }) {
+  const { t } = useTranslation();
   const { currentMonth, setCurrentMonth } = useDateRangePicker();
 
   const handlePrevMonth = () => {
@@ -332,7 +334,7 @@ export function RangeCalendarHeader({ children, className }: { children?: React.
         type="button"
         onClick={handlePrevMonth}
         className="p-1.5 rounded-lg text-muted hover:text-foreground hover:bg-surface border border-transparent hover:border-border/50 transition-colors"
-        aria-label="Mes anterior"
+        aria-label={t('drp.prevMonth')}
       >
         <ChevronLeft className="size-4" />
       </button>
@@ -343,7 +345,7 @@ export function RangeCalendarHeader({ children, className }: { children?: React.
         type="button"
         onClick={handleNextMonth}
         className="p-1.5 rounded-lg text-muted hover:text-foreground hover:bg-surface border border-transparent hover:border-border/50 transition-colors"
-        aria-label="Mes siguiente"
+        aria-label={t('drp.nextMonth')}
       >
         <ChevronRight className="size-4" />
       </button>
@@ -796,12 +798,13 @@ const weekOptions = [
 ] as const;
 
 export function WeekViewRangeCalendar() {
+  const { t } = useTranslation();
   const [weeks, setWeeks] = useState(2);
 
   return (
     <div className="flex flex-col items-center gap-6 w-full max-w-sm">
       <div className="w-full flex items-center justify-between">
-        <span className="text-xs font-bold text-slate-700 dark:text-slate-300">Semanas a visualizar:</span>
+        <span className="text-xs font-bold text-slate-700 dark:text-slate-300">{t('drp.weeks')}</span>
         <Select
           className="w-40"
           value={String(weeks)}
@@ -856,6 +859,7 @@ function parseDate(dateStr: string): Date {
 }
 
 export function DefaultValueRangeCalendar() {
+  const { t } = useTranslation();
   const defaultValue = {
     start: parseDate("2026-02-03"),
     end: parseDate("2026-02-12"),
@@ -863,7 +867,7 @@ export function DefaultValueRangeCalendar() {
 
   return (
     <RangeCalendar
-      aria-label="Rango de rehabilitación predeterminado"
+      aria-label={t('drp.defaultRange')}
       defaultValue={defaultValue}
       className="w-full max-w-sm"
     >
@@ -888,6 +892,7 @@ export function DefaultValueRangeCalendar() {
  * DateRangePickerDemo con presets clínicos (Últimos 7 días, 30 días, etc.)
  */
 export function DateRangePickerDemo() {
+  const { t } = useTranslation();
   const today = new Date();
   const past7Days = new Date();
   past7Days.setDate(today.getDate() - 7);
@@ -953,7 +958,7 @@ export function DateRangePickerDemo() {
 
               {range.start && range.end && (
                 <div className="pt-2 border-t border-border/40 flex items-center justify-between text-[11px]">
-                  <span className="text-muted">Total sesiones seleccionadas:</span>
+                  <span className="text-muted">{t('drp.totalSessions')}</span>
                   <span className="font-bold text-primary">
                     {Math.round((range.end.getTime() - range.start.getTime()) / (1000 * 60 * 60 * 24))} días de evolución
                   </span>

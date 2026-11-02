@@ -237,7 +237,7 @@ export function PatientLayout({ children }: PatientLayoutProps) {
             <p className="font-bold text-sm text-slate-900 dark:text-slate-100 truncate">{user?.full_name || 'Paciente'}</p>
             <div className="flex items-center gap-1.5 mt-0.5">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              <p className="text-[10px] text-teal-600 dark:text-teal-400 uppercase tracking-wider font-semibold">Paciente Activo</p>
+              <p className="text-[10px] text-teal-600 dark:text-teal-400 uppercase tracking-wider font-semibold">{t('play.active')}</p>
             </div>
           </div>
         </div>
@@ -246,7 +246,7 @@ export function PatientLayout({ children }: PatientLayoutProps) {
         <button
           onClick={toggleTheme}
           className="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-teal-50 dark:hover:bg-slate-800 hover:text-teal-600 dark:hover:text-teal-400 transition-colors"
-          aria-label="Cambiar tema"
+          aria-label={t('play.theme')}
         >
           {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
         </button>
@@ -265,7 +265,7 @@ export function PatientLayout({ children }: PatientLayoutProps) {
         <button
           onClick={() => { onNavAway?.(); setShowLogout(true); }}
           className="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-red-50 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 transition-colors"
-          aria-label="Cerrar sesión"
+          aria-label={t('play.logout')}
         >
           <LogOut size={18} />
         </button>
@@ -280,7 +280,7 @@ export function PatientLayout({ children }: PatientLayoutProps) {
           <div className="flex items-center gap-3 min-w-0 pr-6">
             <div className="flex flex-col min-w-0">
               <h1 className="text-base font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight whitespace-nowrap">FisioMirror</h1>
-              <p className="text-[10px] uppercase tracking-wider text-teal-600 dark:text-teal-400 font-bold whitespace-nowrap">Portal Paciente</p>
+              <p className="text-[10px] uppercase tracking-wider text-teal-600 dark:text-teal-400 font-bold whitespace-nowrap">{t('play.portal')}</p>
             </div>
           </div>
         ) : (
@@ -391,13 +391,13 @@ export function PatientLayout({ children }: PatientLayoutProps) {
                 <div className="flex items-center gap-3">
                   <div>
                     <h2 className="text-base font-extrabold text-slate-900 dark:text-white leading-tight">FisioMirror</h2>
-                    <p className="text-[10px] uppercase tracking-wider text-teal-600 dark:text-teal-400 font-bold">Portal Paciente</p>
+                    <p className="text-[10px] uppercase tracking-wider text-teal-600 dark:text-teal-400 font-bold">{t('play.portal')}</p>
                   </div>
                 </div>
                 <button
                   onClick={() => setSidebarOpen(false)}
                   className="p-2 rounded-xl text-slate-500 hover:text-slate-800 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-                  aria-label="Cerrar menú"
+                  aria-label={t('play.closeMenu')}
                 >
                   <X size={20} />
                 </button>
@@ -441,7 +441,7 @@ export function PatientLayout({ children }: PatientLayoutProps) {
           <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
             <button
               onClick={() => setSidebarOpen(true)}
-              aria-label="Abrir menú"
+              aria-label={t('play.openMenu')}
               className="lg:hidden text-primary shrink-0 p-1.5 rounded-lg hover:bg-primary/10 transition-colors"
             >
               <Icon name="menu" size={22} />
@@ -495,8 +495,8 @@ export function PatientLayout({ children }: PatientLayoutProps) {
             <button
               onClick={() => setPhysiChatOpen(true)}
               className="p-1 sm:p-2 rounded-xl text-on-surface-variant hover:text-primary hover:bg-primary/5 transition-colors active-scale flex items-center gap-1.5"
-              aria-label="Abrir Chatbot IA Physi"
-              title="Chatbot IA Physi"
+              aria-label={t('play.openPhysi')}
+              title={t('play.physiChat')}
             >
               <Bot size={20} className="text-primary" />
               <span className="hidden xl:inline text-xs font-semibold text-primary">
@@ -506,7 +506,7 @@ export function PatientLayout({ children }: PatientLayoutProps) {
             <button
               onClick={() => setShowLogout(true)}
               className="hidden sm:inline-flex text-on-surface-variant hover:text-error transition-colors active-scale p-1 sm:p-2 rounded-full"
-              aria-label="Cerrar sesión"
+              aria-label={t('play.logout')}
             >
               <Icon name="logout" size={20} />
             </button>
@@ -519,9 +519,9 @@ export function PatientLayout({ children }: PatientLayoutProps) {
         <footer className="hidden lg:flex pt-6 pb-6 px-8 justify-between text-outline text-xs border-t divider-teal shrink-0">
           <span>&copy; 2025 FisioMirror</span>
           <div className="flex gap-4">
-            <button onClick={() => setLegalModal('consent')} className="transition-colors hover:text-primary">Consentimiento Informado</button>
-            <button onClick={() => setLegalModal('terms')} className="transition-colors hover:text-primary">Términos de Servicio</button>
-            <button onClick={() => setLegalModal('privacy')} className="transition-colors hover:text-primary">Privacidad de Datos</button>
+            <button onClick={() => setLegalModal('consent')} className="transition-colors hover:text-primary">{t('play.consent')}</button>
+            <button onClick={() => setLegalModal('terms')} className="transition-colors hover:text-primary">{t('play.terms')}</button>
+            <button onClick={() => setLegalModal('privacy')} className="transition-colors hover:text-primary">{t('play.privacy')}</button>
           </div>
         </footer>
       </main>

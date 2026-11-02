@@ -5,8 +5,10 @@ import { supabase } from '../lib/supabase';
 import { hashPassword } from '../stores/authStore';
 import { useToast } from '../components/ui/toastApi';
 import { TurnstileWidget, type TurnstileWidgetRef } from '../components/auth/TurnstileWidget';
+import { useTranslation } from 'react-i18next';
 
 export function UpdatePasswordPage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const toast = useToast();
@@ -177,7 +179,7 @@ export function UpdatePasswordPage() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Mínimo 6 caracteres"
+                placeholder={t('upw.passPh')}
                 className="w-full pl-10 pr-10 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500"
               />
               <button
@@ -201,7 +203,7 @@ export function UpdatePasswordPage() {
                 required
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="Repite la contraseña"
+                placeholder={t('upw.pass2Ph')}
                 className="w-full pl-10 pr-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500"
               />
             </div>
@@ -223,7 +225,7 @@ export function UpdatePasswordPage() {
               <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
             ) : (
               <>
-                <span>Guardar Nueva Contraseña</span>
+                <span>{t('upw.save')}</span>
                 <ArrowRight size={17} />
               </>
             )}

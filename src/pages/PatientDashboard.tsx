@@ -546,7 +546,7 @@ export function PatientDashboard() {
           {/* Assigned Exercises List */}
           <CollapsibleSection title={t('patientDashboard.todayExercises', 'Mis Ejercicios Asignados')} icon="assignment" defaultOpen>
             <div className="flex justify-between items-center mb-3">
-              <p className="text-xs text-on-surface-variant">Rutina prescrita por tu fisioterapeuta</p>
+              <p className="text-xs text-on-surface-variant">{t('pdash.routineBy')}</p>
               <button
                 onClick={() => navigate('/exercises')}
                 className="text-xs font-bold text-teal-600 dark:text-teal-400 hover:underline"
@@ -613,13 +613,13 @@ export function PatientDashboard() {
         {/* Right Col: Weekly Progress & Physi Assistant */}
         <div className="space-y-6">
           {/* Activity Graph */}
-          <CollapsibleSection title="Actividad Semanal" icon="trending_up" defaultOpen>
+          <CollapsibleSection title={t('pdash.weekly')} icon="trending_up" defaultOpen>
             <SimpleCalendar markedDates={allSessionDates} />
 
             <div className="p-5 rounded-2xl bg-surface/80 dark:bg-surface-container-low/60 border border-outline/10 mt-4">
               <div className="flex justify-between items-center text-xs mb-3 text-on-surface-variant">
-                <span className="font-semibold">Minutos diarios</span>
-                <span>Objetivo: 15 min/día</span>
+                <span className="font-semibold">{t('pdash.dailyMin')}</span>
+                <span>{t('pdash.goal')}</span>
               </div>
               <div className="h-32 flex items-end justify-between gap-2 pt-4">
                 {weekActivity.map((d, i) => (
@@ -643,7 +643,7 @@ export function PatientDashboard() {
             {evolution && (
               <div className="p-4 rounded-2xl bg-surface/80 dark:bg-surface-container-low/60 border border-outline/10 mt-4 space-y-2">
                 <div className="flex justify-between items-center text-xs text-on-surface-variant mb-1">
-                  <span className="font-semibold">Evolución de Rango Articular</span>
+                  <span className="font-semibold">{t('pdash.rom')}</span>
                   <span className="font-bold text-teal-600 dark:text-teal-400">
                     +{evolution[evolution.length - 1].pct - evolution[0].pct}% global
                   </span>
@@ -668,7 +668,7 @@ export function PatientDashboard() {
                   <User className="size-5" />
                 </div>
                 <div>
-                  <p className="text-[10px] uppercase font-bold text-outline">Fisioterapeuta Asignado</p>
+                  <p className="text-[10px] uppercase font-bold text-outline">{t('pdash.physio')}</p>
                   <p className="text-xs font-bold text-on-surface">{therapist}</p>
                 </div>
               </div>
@@ -685,8 +685,8 @@ export function PatientDashboard() {
                 <Bot className="size-4" />
               </div>
               <div>
-                <h4 className="text-xs font-bold uppercase tracking-wider text-on-surface">Copiloto Physi</h4>
-                <p className="text-[11px] text-outline">Consejo kinesiológico personalizado</p>
+                <h4 className="text-xs font-bold uppercase tracking-wider text-on-surface">{t('pdash.physi')}</h4>
+                <p className="text-[11px] text-outline">{t('pdash.physiSub')}</p>
               </div>
             </div>
 
@@ -735,7 +735,7 @@ export function PatientDashboard() {
                     ? 'bg-teal-500 text-white shadow-xs animate-pulse border-teal-400'
                     : 'bg-teal-500/10 hover:bg-teal-500/20 text-teal-700 dark:text-teal-300 border-teal-500/20'
                 }`}
-                title="Escuchar consejo con voz humana de Physi"
+                title={t('pdash.listen')}
               >
                 {isSpeakingCopilot ? <VolumeX className="size-3.5" /> : <Volume2 className="size-3.5" />}
                 <span>{isSpeakingCopilot ? 'Detener voz' : 'Escuchar consejo'}</span>

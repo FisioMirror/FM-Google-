@@ -5,6 +5,7 @@ import { PhysioModel3D } from '../characters3d/PhysioModel3D';
 import { KidModel3D } from '../characters3d/KidModel3D';
 import { buildExerciseDefinition } from '../../data/exercisePresets';
 import type { CharacterRole, JointRotationAxis, ExerciseDefinition } from '../../types/character.types';
+import { useTranslation } from 'react-i18next';
 
 export interface ARModel3DOverlayPiPProps {
   exerciseName: string;
@@ -25,6 +26,7 @@ export const ARModel3DOverlayPiP: React.FC<ARModel3DOverlayPiPProps> = ({
   onClose,
   className = '',
 }) => {
+  const { t } = useTranslation();
   // Estados de control de la ventana PiP
   const [isMinimized, setIsMinimized] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -147,7 +149,7 @@ export const ARModel3DOverlayPiP: React.FC<ARModel3DOverlayPiPProps> = ({
         <button
           onClick={() => setIsMinimized(false)}
           className="group flex items-center gap-2.5 px-4 py-2.5 rounded-2xl bg-slate-900/90 dark:bg-slate-900/90 backdrop-blur-xl border border-teal-500/40 text-white shadow-xl hover:bg-slate-800 transition-all active:scale-95 cursor-pointer"
-          title="Restaurar visualizador 3D"
+          title={t('ar3.restore')}
         >
           <div className="relative flex items-center justify-center">
             <span className="w-2.5 h-2.5 rounded-full bg-teal-400 animate-pulse" />
@@ -155,7 +157,7 @@ export const ARModel3DOverlayPiP: React.FC<ARModel3DOverlayPiPProps> = ({
           </div>
           <div className="text-left">
             <div className="flex items-center gap-1.5">
-              <span className="text-xs font-black tracking-wide text-teal-300">GUÍA 3D</span>
+              <span className="text-xs font-black tracking-wide text-teal-300">{t('ar3.guideUpper')}</span>
               <span className="text-[10px] text-white/60 font-mono">{primaryJointAngle}°</span>
             </div>
             <p className="text-[10px] text-white/70 max-w-[120px] truncate">{exerciseName}</p>
@@ -186,7 +188,7 @@ export const ARModel3DOverlayPiP: React.FC<ARModel3DOverlayPiPProps> = ({
           </div>
           <div className="min-w-0">
             <div className="flex items-center gap-1">
-              <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-teal-400">Guía 3D</span>
+              <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-teal-400">{t('ar3.guide')}</span>
               <span className="text-[8px] sm:text-[9px] px-1 py-0.1 rounded-full bg-white/10 text-white/80 font-mono">
                 {phaseText}
               </span>
@@ -209,7 +211,7 @@ export const ARModel3DOverlayPiP: React.FC<ARModel3DOverlayPiPProps> = ({
           <button
             onClick={() => setIsMinimized(true)}
             className="p-1 rounded-lg text-white/60 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
-            title="Minimizar a píldora"
+            title={t('ar3.minimize')}
           >
             <ChevronDown className="size-3.5 sm:size-4" />
           </button>
@@ -217,7 +219,7 @@ export const ARModel3DOverlayPiP: React.FC<ARModel3DOverlayPiPProps> = ({
             <button
               onClick={onClose}
               className="p-1 rounded-lg text-white/60 hover:text-red-400 hover:bg-red-500/10 transition-colors cursor-pointer"
-              title="Ocultar modelo 3D"
+              title={t('ar3.hide')}
             >
               <X className="size-3.5 sm:size-4" />
             </button>
@@ -322,7 +324,7 @@ export const ARModel3DOverlayPiP: React.FC<ARModel3DOverlayPiPProps> = ({
                   ? 'bg-teal-600 text-white shadow-xs'
                   : 'text-white/60 hover:text-white'
               }`}
-              title="Avatar Fisioterapeuta"
+              title={t('ar3.physioAvatar')}
             >
               <Stethoscope className="size-3" />
             </button>
@@ -333,7 +335,7 @@ export const ARModel3DOverlayPiP: React.FC<ARModel3DOverlayPiPProps> = ({
                   ? 'bg-teal-600 text-white shadow-xs'
                   : 'text-white/60 hover:text-white'
               }`}
-              title="Avatar Paciente"
+              title={t('ar3.patientAvatar')}
             >
               <User className="size-3" />
             </button>
@@ -342,8 +344,8 @@ export const ARModel3DOverlayPiP: React.FC<ARModel3DOverlayPiPProps> = ({
 
         {/* Guía rápida de postura */}
         <div className="text-[9px] text-white/60 flex items-center justify-between px-1">
-          <span className="truncate">Sigue el movimiento</span>
-          <span className="text-teal-400 font-bold shrink-0">En vivo</span>
+          <span className="truncate">{t('ar3.follow')}</span>
+          <span className="text-teal-400 font-bold shrink-0">{t('ar3.live')}</span>
         </div>
       </div>
     </motion.div>

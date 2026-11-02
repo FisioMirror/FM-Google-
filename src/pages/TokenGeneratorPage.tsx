@@ -13,6 +13,7 @@ import { Button } from '../components/ui/Button';
 import { ConfirmDialog } from '../components/ui/Dialog';
 import { Tooltip } from '../components/ui/Tooltip';
 import { currentLocale } from '../lib/format';
+import { useTranslation } from 'react-i18next';
 
 interface TokenRow {
   id: string;
@@ -32,6 +33,7 @@ const defaultDemoTokens: TokenRow[] = [
 ];
 
 export function TokenGeneratorPage() {
+  const { t } = useTranslation();
   const user = useAuthStore((s) => s.user);
   const toast = useToast();
   const [tokens, setTokens] = useState<TokenRow[]>([]);
@@ -238,16 +240,16 @@ export function TokenGeneratorPage() {
           <div className="w-14 h-14 rounded-2xl bg-teal-500/10 text-teal-700 dark:text-teal-300 flex items-center justify-center mx-auto mb-4">
             <Icon name="key" size={28} />
           </div>
-          <h3 className="font-display text-lg font-bold text-on-surface mb-1.5">No hay tokens registrados</h3>
+          <h3 className="font-display text-lg font-bold text-on-surface mb-1.5">{t('tk.empty')}</h3>
           <p className="text-on-surface-variant text-xs sm:text-sm max-w-md mx-auto">
             Aún no has creado tokens bajo este filtro. Los tokens permiten a los pacientes sincronizar sus datos clínicos con la app.
           </p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {filteredTokens.map((t, i) => (
+          {filteredTokens.map((tk, i) => (
             <motion.div
-              key={t.id}
+              key={tk.id}
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.05 }}
@@ -257,42 +259,42 @@ export function TokenGeneratorPage() {
                 <div>
                   <div className="flex justify-between items-start mb-4">
                     <div>
-                      <p className="text-[10px] uppercase text-on-surface-variant font-bold tracking-wider mb-1">Código de Activación</p>
+                      <p className="text-[10px] uppercase text-on-surface-variant font-bold tracking-wider mb-1">{t('tk.code')}</p>
                       <div className="flex items-center gap-3">
-                        <span className="font-mono text-3xl sm:text-4xl font-extrabold tracking-widest text-teal-700 dark:text-teal-300 select-all">{t.token}</span>
+                        <span className="font-mono text-3xl sm:text-4xl font-extrabold tracking-widest text-teal-700 dark:text-teal-300 select-all">{tk.token}</span>
                         <button
-                          onClick={() => copyToken(t.id, t.token)}
-                          aria-label="Copiar token"
+                          onClick={() => copyToken(tk.id, tk.token)}
+                          aria-label={t('tk.copy')}
                           className={cn(
                             'flex items-center justify-center size-9 rounded-xl transition-all active:scale-95',
-                            copiedId === t.id
+                            copiedId === tk.id
                               ? 'bg-emerald-500 text-white shadow-xs'
                               : 'bg-teal-500/10 text-teal-700 dark:text-teal-300 hover:bg-teal-500/20',
                           )}
-                          title="Copiar token al portapapeles"
+                          title={t('tk.copyTitle')}
                         >
-                          <Icon name={copiedId === t.id ? 'check' : 'content_copy'} size={16} />
+                          <Icon name={copiedId === tk.id ? 'check' : 'content_copy'} size={16} />
                         </button>
                       </div>
                     </div>
                     <span className={cn(
                       'px-2.5 py-1 rounded-full text-[11px] font-bold border',
-                      t.status === 'pendiente' && 'bg-amber-500/10 border-amber-500/20 text-amber-700 dark:text-amber-300',
-                      t.status === 'activado' && 'bg-emerald-500/10 border-emerald-500/20 text-emerald-700 dark:text-emerald-300',
-                      t.status === 'expirado' && 'bg-slate-500/10 border-slate-500/20 text-slate-500',
+                      tk.status === 'pendiente' && 'bg-amber-500/10 border-amber-500/20 text-amber-700 dark:text-amber-300',
+                      tk.status === 'activado' && 'bg-emerald-500/10 border-emerald-500/20 text-emerald-700 dark:text-emerald-300',
+                      tk.status === 'expirado' && 'bg-slate-500/10 border-slate-500/20 text-slate-500',
                     )}>
-                      {t.status.charAt(0).toUpperCase() + t.status.slice(1)}
+                      {tk.status.charAt(0).toUpperCase() + tk.status.slice(1)}
                     </span>
                   </div>
 
                   <div className="space-y-2 text-xs sm:text-sm py-2">
                     <div className="flex items-center gap-2 text-on-surface">
                       <Icon name="person" size={16} className="text-teal-600 dark:text-teal-400 shrink-0" />
-                      <span className="font-semibold">{t.patientName || 'Sin asignar (disponible)'}</span>
+                      <span className="font-semibold">{tk.patientName || 'Sin asignar (disponible)'}</span>
                     </div>
                     <div className="flex items-center gap-2 text-on-surface-variant">
                       <Icon name="schedule" size={16} className="text-outline shrink-0" />
-                      <span>{new Date(t.createdAt).toLocaleDateString(currentLocale(), { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+                      <span>{new Date(tk.createdAt).toLocaleDateString(currentLocale(), { day: 'numeric', month: 'short', year: 'numeric' })}</span>
                     </div>
                   </div>
                 </div>
@@ -300,7 +302,7 @@ export function TokenGeneratorPage() {
                 <div className="flex gap-2 mt-4 pt-4 border-t border-outline/10">
                   <Tooltip content="Generar un nuevo código aleatorio" side="top">
                     <button
-                      onClick={() => regenerateToken(t.id)}
+                      onClick={() => regenerateToken(tk.id)}
                       className="flex-1 py-2.5 px-3 rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface font-bold text-xs transition-all flex items-center justify-center gap-1.5"
                     >
                       <Icon name="refresh" size={14} /> Regenerar
@@ -308,7 +310,7 @@ export function TokenGeneratorPage() {
                   </Tooltip>
                   <Tooltip content="Enviar token por correo electrónico" side="top">
                     <button
-                      onClick={() => setEmailModalToken(t)}
+                      onClick={() => setEmailModalToken(tk)}
                       className="flex-1 py-2.5 px-3 rounded-xl bg-teal-500/10 hover:bg-teal-500/20 text-teal-700 dark:text-teal-300 font-bold text-xs transition-all flex items-center justify-center gap-1.5"
                     >
                       <Icon name="mail" size={14} /> Enviar
@@ -316,10 +318,10 @@ export function TokenGeneratorPage() {
                   </Tooltip>
                   <Tooltip content="Eliminar token permanentemente" side="top">
                     <button
-                      onClick={() => setDeleteConfirmToken(t)}
-                      aria-label="Eliminar token"
+                      onClick={() => setDeleteConfirmToken(tk)}
+                      aria-label={t('tk.del')}
                       className="py-2.5 px-3 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 transition-all flex items-center justify-center"
-                      title="Eliminar token"
+                      title={t('tk.del')}
                     >
                       <Icon name="delete" size={14} />
                     </button>
@@ -342,7 +344,7 @@ export function TokenGeneratorPage() {
       <ConfirmDialog
         open={deleteConfirmToken !== null}
         onOpenChange={(open) => !open && setDeleteConfirmToken(null)}
-        title="¿Eliminar código de activación?"
+        title={t('tk.confirmDel')}
         description={`¿Estás seguro de que deseas eliminar el token ${deleteConfirmToken?.token}? Esta acción es irreversible.`}
         confirmText="Sí, eliminar"
         cancelText="Conservar"

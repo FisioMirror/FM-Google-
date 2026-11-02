@@ -22,6 +22,7 @@ import {
 } from '../../lib/versiculosService';
 import { useToast } from '../ui/toastApi';
 import { cn } from '../../lib/utils';
+import { useTranslation } from 'react-i18next';
 
 interface VersiculoCardProps {
   categoriaInicial?: VersiculoCategoria;
@@ -36,6 +37,7 @@ export function VersiculoCard({
   className,
   allowCategoryChange = true,
 }: VersiculoCardProps) {
+  const { t } = useTranslation();
   const [enabled, setEnabled] = useState(() => isSpiritualModeEnabled());
   const [versiculo, setVersiculo] = useState<Versiculo | null>(null);
   const [categoria, setCategoria] = useState<VersiculoCategoria>(categoriaInicial);
@@ -118,7 +120,7 @@ export function VersiculoCard({
           className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold text-teal-700 dark:text-teal-300 bg-teal-500/10 hover:bg-teal-500/15 border border-teal-500/20 transition-all hover:scale-[1.02]"
         >
           <BookOpen className="size-3.5" />
-          <span>Palabra de Fortaleza & Fe</span>
+          <span>{t('ver.title')}</span>
         </button>
       </motion.div>
     );
@@ -192,7 +194,7 @@ export function VersiculoCard({
             onClick={handleCopy}
             disabled={!versiculo}
             className="size-8 rounded-xl bg-surface-container/60 hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface flex items-center justify-center transition-colors"
-            title="Copiar versículo"
+            title={t('ver.copy')}
             aria-label="Copiar versículo"
           >
             {copied ? <Check className="size-4 text-teal-600" /> : <Copy className="size-4" />}
@@ -202,7 +204,7 @@ export function VersiculoCard({
             onClick={() => cargarVersiculo(categoria)}
             disabled={loading}
             className="size-8 rounded-xl bg-surface-container/60 hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface flex items-center justify-center transition-colors"
-            title="Recibir otra palabra"
+            title={t('ver.another')}
             aria-label="Recibir otra palabra"
           >
             <RefreshCw className={cn('size-4', loading && 'animate-spin text-teal-600')} />
@@ -211,7 +213,7 @@ export function VersiculoCard({
           <button
             onClick={handleDismiss}
             className="size-8 rounded-xl bg-surface-container/60 hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface flex items-center justify-center transition-colors"
-            title="Minimizar por ahora"
+            title={t('ver.minimize')}
             aria-label="Minimizar por ahora"
           >
             <X className="size-4" />
@@ -255,7 +257,7 @@ export function VersiculoCard({
               className="py-4 text-center text-xs text-outline flex items-center justify-center gap-2"
             >
               <RefreshCw className="size-3.5 animate-spin text-teal-600" />
-              <span>Buscando palabra de fortaleza...</span>
+              <span>{t('ver.searching')}</span>
             </motion.div>
           ) : versiculo ? (
             <motion.div
@@ -295,7 +297,7 @@ export function VersiculoCard({
           disabled={loading}
           className="text-xs font-bold text-teal-600 dark:text-teal-400 hover:text-teal-800 dark:hover:text-teal-200 transition-colors inline-flex items-center gap-1 shrink-0 ml-3"
         >
-          <span>Renovar reflexión</span>
+          <span>{t('ver.renew')}</span>
           <RefreshCw className={cn('size-3', loading && 'animate-spin')} />
         </button>
       </div>

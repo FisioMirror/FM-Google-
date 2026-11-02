@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import {
@@ -18,6 +19,7 @@ import { Button } from '../components/ui/Button';
 import { OtpInput } from '../components/ui/OtpInput';
 
 export function RegistroPacientePage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const toast = useToast();
@@ -279,7 +281,7 @@ export function RegistroPacientePage() {
             <div className="mt-3 p-3 rounded-xl bg-teal-50 dark:bg-teal-950/40 border border-teal-200 dark:border-teal-800 text-xs text-teal-800 dark:text-teal-200 space-y-1">
               <div className="flex items-center gap-1.5 font-bold">
                 <CheckCircle2 size={15} className="text-teal-600 dark:text-teal-400" />
-                <span>Expediente clínico vinculado correctamente</span>
+                <span>{t('reg.linked')}</span>
               </div>
               {therapistName && (
                 <p className="text-[11px] text-teal-700 dark:text-teal-300 pl-5">
@@ -307,7 +309,7 @@ export function RegistroPacientePage() {
               required
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
-              placeholder="Tu nombre y apellido"
+              placeholder={t('reg.namePh')}
               className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500"
             />
           </div>
@@ -323,7 +325,7 @@ export function RegistroPacientePage() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="paciente@correo.com"
+                placeholder={t('reg.emailPh')}
                 className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500"
               />
             </div>
@@ -341,7 +343,7 @@ export function RegistroPacientePage() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Mínimo 6 caracteres"
+                  placeholder={t('reg.passPh')}
                   className="w-full pl-10 pr-9 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500"
                 />
                 <button
@@ -365,7 +367,7 @@ export function RegistroPacientePage() {
                   required
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  placeholder="Repite tu clave"
+                  placeholder={t('reg.pass2Ph')}
                   className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500"
                 />
               </div>

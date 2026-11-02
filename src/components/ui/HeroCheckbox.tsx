@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState } from 'react';
 import { Check } from 'lucide-react';
 import { cn } from '../../lib/utils';
+import { useTranslation } from 'react-i18next';
 
 interface CheckboxGroupContextType {
   values: string[];
@@ -127,10 +128,11 @@ Checkbox.Indicator = CheckboxIndicator;
 Checkbox.Content = CheckboxContent;
 
 export function CheckboxPreferencesDemo() {
+  const { t } = useTranslation();
   return (
     <Surface className="w-full max-w-lg">
-      <Label>Preferencias de Notificación Clínica</Label>
-      <Description>Elige cómo deseas recibir avisos de rehabilitación, recordatorios y reportes médicos.</Description>
+      <Label>{t('hcb.title')}</Label>
+      <Description>{t('hcb.desc')}</Description>
       <CheckboxGroup name="notifications">
         <Checkbox value="email">
           <Checkbox.Content>
@@ -138,7 +140,7 @@ export function CheckboxPreferencesDemo() {
               <Checkbox.Indicator />
             </Checkbox.Control>
             <div>
-              <p className="font-bold text-slate-900 dark:text-white">Notificaciones por Correo</p>
+              <p className="font-bold text-slate-900 dark:text-white">{t('hcb.email')}</p>
               <p className="text-[11px] font-normal text-slate-500 dark:text-slate-400">
                 Resúmenes semanales de evolución y notas de tu fisioterapeuta.
               </p>
@@ -152,7 +154,7 @@ export function CheckboxPreferencesDemo() {
               <Checkbox.Indicator />
             </Checkbox.Control>
             <div>
-              <p className="font-bold text-slate-900 dark:text-white">Alertas Push en Navegador</p>
+              <p className="font-bold text-slate-900 dark:text-white">{t('hcb.push')}</p>
               <p className="text-[11px] font-normal text-slate-500 dark:text-slate-400">
                 Avisos instantáneos al momento de iniciar tu rutina de ejercicios.
               </p>
@@ -166,7 +168,7 @@ export function CheckboxPreferencesDemo() {
               <Checkbox.Indicator />
             </Checkbox.Control>
             <div>
-              <p className="font-bold text-slate-900 dark:text-white">Recordatorios SMS / WhatsApp</p>
+              <p className="font-bold text-slate-900 dark:text-white">{t('hcb.sms')}</p>
               <p className="text-[11px] font-normal text-slate-500 dark:text-slate-400">
                 Mensaje directo de recordatorio si tienes más de 48 horas sin entrenar.
               </p>

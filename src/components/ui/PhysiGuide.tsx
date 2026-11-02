@@ -8,6 +8,7 @@ import { runAIJob } from '../../lib/ai';
 import { humanVoice, setVoiceGender, type VoiceGender } from '../../lib/humanVoice';
 import { QuickVoiceSelector } from './QuickVoiceSelector';
 import { currentLocale } from '../../lib/format';
+import { useTranslation } from 'react-i18next';
 
 interface Message {
   id: string;
@@ -145,6 +146,7 @@ export function PhysiGuide({
   onClose,
   variant,
 }: PhysiGuideProps) {
+  const { t } = useTranslation();
   const [internalOpen, setInternalOpen] = useState(false);
   const user = useAuthStore((s) => s.user);
   const isFisio = user?.role === 'fisioterapeuta';
@@ -482,8 +484,8 @@ export function PhysiGuide({
                 {/* Reset Chat */}
                 <button
                   onClick={resetChat}
-                  aria-label="Reiniciar conversación"
-                  title="Reiniciar chat"
+                  aria-label={t('pg.reset')}
+                  title={t('pg.resetTitle')}
                   className="text-on-surface-variant hover:text-teal-600 transition-colors p-1.5 rounded-xl hover:bg-surface-container-high cursor-pointer"
                 >
                   <RotateCcw size={15} />
@@ -492,8 +494,8 @@ export function PhysiGuide({
                 {/* Cerrar */}
                 <button
                   onClick={() => setOpen(false)}
-                  aria-label="Cerrar ventana"
-                  title="Cerrar"
+                  aria-label={t('pg.close')}
+                  title={t('pg.closeTitle')}
                   className="text-on-surface-variant hover:text-rose-500 transition-colors p-1.5 rounded-xl hover:bg-rose-500/10 cursor-pointer"
                 >
                   <X size={17} />
@@ -561,12 +563,12 @@ export function PhysiGuide({
                               {isSpeaking ? (
                                 <>
                                   <VolumeX size={13} className="text-rose-500" />
-                                  <span className="text-rose-600 dark:text-rose-400 font-bold">Detener</span>
+                                  <span className="text-rose-600 dark:text-rose-400 font-bold">{t('pg.stop')}</span>
                                 </>
                               ) : (
                                 <>
                                   <Volume2 size={13} />
-                                  <span>Escuchar</span>
+                                  <span>{t('pg.listen')}</span>
                                 </>
                               )}
                             </button>
@@ -629,7 +631,7 @@ export function PhysiGuide({
               <div className="px-3.5 pb-2 shrink-0">
                 <p className="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant mb-1.5 flex items-center gap-1">
                   <Sparkles size={11} className="text-teal-500" />
-                  <span>Sugerencias para empezar</span>
+                  <span>{t('pg.suggestions')}</span>
                 </p>
                 <div className="flex flex-wrap gap-1.5 max-h-20 overflow-y-auto scrollbar-thin">
                   {faqs.map((faq, i) => (
@@ -662,7 +664,7 @@ export function PhysiGuide({
                       handleSend();
                     }
                   }}
-                  placeholder="Pregúntale a Physi..."
+                  placeholder={t('pg.inputPh')}
                   rows={1}
                   className="flex-1 resize-none rounded-xl border border-outline-variant/30 dark:border-white/10 bg-surface/90 dark:bg-surface-container/60 px-3 py-2 text-xs sm:text-sm text-on-surface outline-none focus:ring-2 focus:ring-primary focus:border-primary/50 transition-all placeholder:text-on-surface-variant/50 max-h-24"
                 />
@@ -670,7 +672,7 @@ export function PhysiGuide({
                   onClick={handleSend}
                   disabled={!input.trim() || loading}
                   className="size-10 rounded-xl bg-teal-600 text-white flex items-center justify-center shrink-0 hover:bg-teal-500 disabled:opacity-40 disabled:cursor-not-allowed transition-all active:scale-95 shadow-md shadow-teal-900/15 cursor-pointer"
-                  aria-label="Enviar mensaje"
+                  aria-label={t('pg.send')}
                 >
                   <Send size={16} />
                 </button>

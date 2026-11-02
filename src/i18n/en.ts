@@ -978,6 +978,153 @@ export const en: TranslationSchema = {
     lastSaved: "Last adjustment: {{date}}",
   },
 
+  pdash: {
+    routineBy: "Routine prescribed by your physiotherapist",
+    weekly: "Weekly Activity",
+    dailyMin: "Daily minutes",
+    goal: "Goal: 15 min/day",
+    rom: "Range of Motion Trend",
+    physio: "Assigned Physiotherapist",
+    physi: "Physi Copilot",
+    physiSub: "Personalized kinesiology advice",
+    listen: "Listen to the advice in a human voice",
+  },
+
+  notif: {
+    toggleSound: "Toggle sound",
+    close: "Close notifications",
+    markAll: "Mark all",
+    viewDetail: "View details",
+    markRead: "Mark as read",
+    deleteNotif: "Delete notification",
+    del: "Delete",
+  },
+
+  ver: {
+    title: "Word of Strength & Faith",
+    copy: "Copy verse",
+    another: "Receive another word",
+    minimize: "Minimize for now",
+    searching: "Seeking a word of strength...",
+    renew: "Renew reflection",
+  },
+
+  play: {
+    active: "Active Patient",
+    theme: "Change theme",
+    logout: "Sign out",
+    portal: "Patient Portal",
+    closeMenu: "Close menu",
+    openMenu: "Open menu",
+    openPhysi: "Open Physi AI Chatbot",
+    physiChat: "Physi AI Chatbot",
+    consent: "Informed Consent",
+    terms: "Terms of Service",
+    privacy: "Data Privacy",
+  },
+
+  gam: {
+    noStreak: "Complete your first session to start your clinical streak.",
+    romRange: "Rehabilitation range",
+    trophyCase: "Clinical Trophy Case",
+    healthPoints: "Health Points",
+    redeem: "Redeemable for priority consultations",
+  },
+
+  upw: {
+    passPh: "At least 6 characters",
+    pass2Ph: "Repeat the password",
+    save: "Save New Password",
+  },
+
+  pex: {
+    close: "Close export window",
+    quick: "Quick PDF",
+    ai: "AI-Styled PDF",
+    generating: "Generating document...",
+    download: "Download PDF",
+  },
+
+  hal: {
+    close: "Dismiss notice",
+    newFeatures: "New features available",
+    offline: "Could not connect to the server",
+    profileOk: "Clinical profile updated successfully",
+    profileOkBody: "All changes to your routine were saved and encrypted locally.",
+    lightTitle: "AR Camera Lighting Notice",
+    lightBody: "For accurate joint detection at 30 FPS, make sure you have good frontal lighting.",
+  },
+
+  mdl: {
+    close: "Close modal",
+    settings: "FisioMirror Settings",
+    sensitivity: "Sensitivity (demo)",
+  },
+
+  aia: {
+    title: "Physi AI Assistant",
+    attachAlt: "Attachment",
+    listen: "Listen to the message in a natural voice",
+    stop: "Stop",
+    listenNatural: "Listen to natural voice",
+    copy: "Copy text",
+    analyzing: "Physi is analyzing your question...",
+    attach: "Attach an exercise or pain photo",
+    inputPh: "Write your question to Physi (or press the microphone)...",
+    send: "Send message to Physi",
+  },
+
+  hcb: {
+    title: "Clinical Notification Preferences",
+    desc: "Choose how you want to receive rehab alerts, reminders and medical reports.",
+    email: "Email Notifications",
+    push: "Browser Push Alerts",
+    sms: "SMS / WhatsApp Reminders",
+  },
+
+  ar3: {
+    restore: "Restore 3D viewer",
+    guideUpper: "3D GUIDE",
+    guide: "3D Guide",
+    minimize: "Minimize to pill",
+    hide: "Hide 3D model",
+    physioAvatar: "Physiotherapist avatar",
+    patientAvatar: "Patient avatar",
+    follow: "Follow the movement",
+    live: "Live",
+  },
+
+  tk: {
+    empty: "No tokens registered",
+    code: "Activation Code",
+    copy: "Copy token",
+    copyTitle: "Copy token to clipboard",    del: "Delete token",
+    confirmDel: "Delete activation code?",
+  },
+
+  ndk: {
+    startScan: "Start Scan / AR Session",
+    guide: "Assisted Clinical Guide",
+    dominant: "Toggle dominant hand for the routine",
+    call: "Call the therapist",
+    callTitle: "Direct call",
+    msg: "Message the assistant",
+    msgTitle: "Clinical chat",
+  },
+
+  ios: {
+    title: "Install on iPhone / iPad",
+    sub: "Home screen shortcut as a native app",
+  },
+
+  hav: {
+    altPhysio: "Physiotherapist",
+    altPatient: "Patient",
+    role: "Head Physiotherapist",
+    patientStatus: "Active Patient • Knee",
+    tokenPending: "Pending Token (No photo)",
+  },
+
   settings: {
     verseDesc: "Shows verses of healing, perseverance and encouragement in your recovery",
     signOut: "Sign Out",
@@ -1271,6 +1418,11 @@ export const en: TranslationSchema = {
 
 
   reg: {
+    linked: "Clinical record linked successfully",
+    namePh: "Your full name",
+    emailPh: "patient@email.com",
+    passPh: "At least 6 characters",
+    pass2Ph: "Repeat your password",
     captchaRequired: 'Complete the security verification',
     tokenTooShort: "The code must contain at least 4 characters",
     demoTokenOk: "Demo token validated correctly",
@@ -2997,6 +3149,10 @@ export const en: TranslationSchema = {
   },
 
   drp: {
+    prevMonth: "Previous month",
+    weeks: "Weeks to display:",
+    defaultRange: "Default rehabilitation range",
+    totalSessions: "Total sessions selected:",
     selectClinicalRange: 'Select clinical range...',
     selectEnd: 'Select end',
     previousMonth: 'Previous month',
@@ -3679,6 +3835,14 @@ export const en: TranslationSchema = {
   },
 
   pg: {
+    reset: "Restart conversation",
+    resetTitle: "Restart chat",
+    close: "Close window",
+    closeTitle: "Close",
+    stop: "Stop",
+    suggestions: "Suggestions to get started",
+    inputPh: "Ask Physi...",
+    send: "Send message",
     welcome: 'Hi! I\'m Physi, your interactive assistant and guide in FisioMirror. You can ask me anything about your exercises, patients, biomechanical analysis or the platform. I\'ll answer out loud with a natural voice in real time!',
     noMatch: 'I didn\'t understand your question. Try terms like patient, routine, joint range, or contact support: fisiomirror@proton.me',
     faqViewActivePatients: 'How do I view my active patients?',

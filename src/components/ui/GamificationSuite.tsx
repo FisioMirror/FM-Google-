@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { Flame, Medal, PartyPopper, Compass, Trophy, Coins, ThumbsUp, Award, Lock, Sparkles, Check } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 /* 31. StreakFlameCounter */
 export interface StreakFlameCounterProps {
@@ -13,6 +14,7 @@ export const StreakFlameCounter: React.FC<StreakFlameCounterProps> = ({
   streakDays = 7,
   className,
 }) => {
+  const { t } = useTranslation();
   return (
     <motion.div
       whileHover={{ y: -3, scale: 1.01 }}
@@ -48,7 +50,7 @@ export const StreakFlameCounter: React.FC<StreakFlameCounterProps> = ({
         <p className="text-[11px] text-slate-600 dark:text-slate-300 font-medium">
           {streakDays > 0
             ? <>¡Constancia clínica ejemplar! Multiplicador de XP <strong className="text-amber-500">x1.5 activo</strong>.</>
-            : <>Completa tu primera sesión para iniciar tu racha clínica.</>}
+            : <>{t('gam.noStreak')}</>}
         </p>
       </div>
     </motion.div>
@@ -69,6 +71,7 @@ export const LevelProgressRibbon: React.FC<LevelProgressRibbonProps> = ({
   nextLevelXp = 600,
   className,
 }) => {
+  const { t } = useTranslation();
   const [xp, setXp] = useState(currentXp);
   const percent = Math.min(100, Math.round((xp / nextLevelXp) * 100));
 
@@ -94,7 +97,7 @@ export const LevelProgressRibbon: React.FC<LevelProgressRibbonProps> = ({
             <span className="text-xs font-bold text-slate-800 dark:text-white block">
               Nivel Terapéutico
             </span>
-            <span className="text-[10px] text-slate-400">Rango de rehabilitación</span>
+            <span className="text-[10px] text-slate-400">{t('gam.romRange')}</span>
           </div>
         </div>
         <button
@@ -240,6 +243,7 @@ export const VirtualTrophyCabinet: React.FC<VirtualTrophyCabinetProps> = ({
   trophiesCount = 6,
   className,
 }) => {
+  const { t } = useTranslation();
   return (
     <motion.div
       whileHover={{ y: -3, scale: 1.01 }}
@@ -254,7 +258,7 @@ export const VirtualTrophyCabinet: React.FC<VirtualTrophyCabinetProps> = ({
           <Trophy className="w-6 h-6 animate-pulse" />
         </div>
         <div>
-          <h4 className="text-xs font-bold text-slate-800 dark:text-white">Vitrina de Trofeos Clínicos</h4>
+          <h4 className="text-xs font-bold text-slate-800 dark:text-white">{t('gam.trophyCase')}</h4>
           <span className="text-[11px] text-slate-400 font-medium">
             {trophiesCount} medallas biomecánicas desbloqueadas
           </span>
@@ -280,6 +284,7 @@ export const DailyHealthPointsWidget: React.FC<DailyHealthPointsWidgetProps> = (
   points = 840,
   className,
 }) => {
+  const { t } = useTranslation();
   const [pts, setPts] = useState(points);
 
   return (
@@ -300,8 +305,8 @@ export const DailyHealthPointsWidget: React.FC<DailyHealthPointsWidgetProps> = (
           <Coins className="w-6 h-6" />
         </motion.div>
         <div>
-          <h4 className="text-xs font-bold text-slate-800 dark:text-white">Puntos de Salud</h4>
-          <span className="text-[11px] text-slate-400">Canjeables por consultas prioritarias</span>
+          <h4 className="text-xs font-bold text-slate-800 dark:text-white">{t('gam.healthPoints')}</h4>
+          <span className="text-[11px] text-slate-400">{t('gam.redeem')}</span>
         </div>
       </div>
       <button

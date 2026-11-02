@@ -13,6 +13,7 @@ import { QuickVoiceSelector } from '../components/ui/QuickVoiceSelector';
 import { isValidUUID } from '../lib/utils';
 import { PRIMARY_DEMO_PATIENT } from '../data/unifiedDemoData';
 import { currentLocale } from '../lib/format';
+import { useTranslation } from 'react-i18next';
 
 // Minimal Web Speech API typings
 interface SpeechRecognitionAlternative {
@@ -63,6 +64,7 @@ interface ChatMessage {
 }
 
 export function AIAssistantPage() {
+  const { t } = useTranslation();
   const user = useAuthStore((s) => s.user);
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
@@ -386,7 +388,7 @@ Pregunta del paciente: ${messageText}`;
           <MascotAnimation type="greeting" size="xs" className="breathe-blue shrink-0" />
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="font-bold text-base text-on-surface">Physi Asistente IA</h1>
+              <h1 className="font-bold text-base text-on-surface">{t('aia.title')}</h1>
               <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-teal-500/10 text-teal-600 border border-teal-500/20">
                 <span className="size-1.5 rounded-full bg-teal-500 animate-pulse" />
                 Guía de Rehabilitación
@@ -455,7 +457,7 @@ Pregunta del paciente: ${messageText}`;
                 {msg.images && msg.images.length > 0 && (
                   <div className="flex flex-wrap gap-2 mb-2">
                     {msg.images.map((img, i) => (
-                      <img key={i} src={img} alt="Adjunto" className="w-24 h-24 rounded-2xl object-cover border border-outline/15" />
+                      <img key={i} src={img} alt={t('aia.attachAlt')} className="w-24 h-24 rounded-2xl object-cover border border-outline/15" />
                     ))}
                   </div>
                 )}
@@ -487,12 +489,12 @@ Pregunta del paciente: ${messageText}`;
                               ? 'bg-teal-500 text-white shadow-xs animate-pulse ring-2 ring-teal-400/40'
                               : 'hover:bg-teal-500/10 text-teal-600 dark:text-teal-400'
                           }`}
-                          title="Escuchar mensaje con voz humana de Physi"
+                          title={t('aia.listen')}
                         >
                           {currentlySpeakingId === msg.id ? (
                             <>
                               <VolumeX className="size-3.5" />
-                              <span>Detener</span>
+                              <span>{t('aia.stop')}</span>
                               <span className="flex gap-0.5 items-center ml-0.5">
                                 <span className="size-1 rounded-full bg-white animate-bounce" style={{ animationDelay: '0ms' }} />
                                 <span className="size-1 rounded-full bg-white animate-bounce" style={{ animationDelay: '150ms' }} />
@@ -502,14 +504,14 @@ Pregunta del paciente: ${messageText}`;
                           ) : (
                             <>
                               <Volume2 className="size-3.5" />
-                              <span>Escuchar voz natural</span>
+                              <span>{t('aia.listenNatural')}</span>
                             </>
                           )}
                         </button>
                         <button
                           onClick={() => handleCopy(msg.id, msg.text)}
                           className="p-1.5 rounded-xl hover:bg-surface-container text-outline hover:text-on-surface transition-colors flex items-center gap-1 font-semibold"
-                          title="Copiar texto"
+                          title={t('aia.copy')}
                         >
                           {copiedId === msg.id ? <Check className="size-3.5 text-emerald-500" /> : <Copy className="size-3.5" />}
                           <span>{copiedId === msg.id ? 'Copiado' : 'Copiar'}</span>
@@ -531,7 +533,7 @@ Pregunta del paciente: ${messageText}`;
               <div className="p-4 rounded-3xl bg-surface/90 dark:bg-surface-container-low/90 border border-teal-500/20 text-on-surface rounded-tl-none shadow-xs">
                 <div className="flex items-center gap-2 text-xs font-semibold text-teal-600 dark:text-teal-400 mb-1.5">
                   <Sparkles className="size-3.5 animate-spin" />
-                  <span>Physi está analizando tu consulta...</span>
+                  <span>{t('aia.analyzing')}</span>
                 </div>
                 <LoadingText context="ai" className="block text-xs text-on-surface-variant italic" />
               </div>
@@ -576,7 +578,7 @@ Pregunta del paciente: ${messageText}`;
       <div className="flex gap-2 items-end shrink-0 min-h-0 bg-surface/70 dark:bg-surface-container-low/70 p-2 rounded-3xl border border-outline/15">
         <button
           onClick={() => fileInputRef.current?.click()}
-          aria-label="Adjuntar imagen de ejercicio o molestia"
+          aria-label={t('aia.attach')}
           className="size-11 rounded-2xl hover:bg-teal-500/10 text-teal-600 dark:text-teal-400 flex items-center justify-center transition-all shrink-0"
         >
           <ImageIcon className="size-5" />
@@ -612,7 +614,7 @@ Pregunta del paciente: ${messageText}`;
               sendMessage();
             }
           }}
-          placeholder="Escribe tu consulta a Physi (o presiona el micrófono)..."
+          placeholder={t('aia.inputPh')}
           rows={1}
           className="flex-1 px-3 py-2.5 text-xs sm:text-sm bg-transparent outline-none resize-none text-on-surface placeholder:text-outline"
         />
@@ -620,7 +622,7 @@ Pregunta del paciente: ${messageText}`;
         <button
           onClick={() => sendMessage()}
           disabled={loading || (!input.trim() && images.length === 0)}
-          aria-label="Enviar mensaje a Physi"
+          aria-label={t('aia.send')}
           className="size-11 rounded-2xl bg-teal-600 hover:bg-teal-700 text-white flex items-center justify-center hover:scale-105 active:scale-95 transition-all disabled:opacity-40 disabled:hover:scale-100 shrink-0 shadow-sm"
         >
           <Send className="size-4" />

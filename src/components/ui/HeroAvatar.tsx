@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState } from 'react';
 import { cn } from '../../lib/utils';
+import { useTranslation } from 'react-i18next';
 
 interface AvatarContextType {
   hasImageLoaded: boolean;
@@ -79,27 +80,28 @@ Avatar.Image = AvatarImage;
 Avatar.Fallback = AvatarFallback;
 
 export function AvatarDemo() {
+  const { t } = useTranslation();
   return (
     <div className="flex flex-wrap items-center gap-4">
       <div className="flex items-center gap-2.5">
         <Avatar size="lg">
-          <Avatar.Image alt="Dra. Fisioterapeuta" src="/physi.png" />
+          <Avatar.Image alt={t('hav.altPhysio')} src="/physi.png" />
           <Avatar.Fallback>FM</Avatar.Fallback>
         </Avatar>
         <div>
           <p className="text-xs font-bold text-slate-900 dark:text-white">Dra. Elena Ramos</p>
-          <p className="text-[11px] text-teal-600 dark:text-teal-400">Fisioterapeuta Titular</p>
+          <p className="text-[11px] text-teal-600 dark:text-teal-400">{t('hav.role')}</p>
         </div>
       </div>
 
       <div className="flex items-center gap-2.5">
         <Avatar size="md">
-          <Avatar.Image alt="Paciente" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" />
+          <Avatar.Image alt={t('hav.altPatient')} src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" />
           <Avatar.Fallback>CR</Avatar.Fallback>
         </Avatar>
         <div>
           <p className="text-xs font-bold text-slate-900 dark:text-white">Carlos Romero</p>
-          <p className="text-[11px] text-slate-400">Paciente Activo • Rodilla</p>
+          <p className="text-[11px] text-slate-400">{t('hav.patientStatus')}</p>
         </div>
       </div>
 
@@ -109,7 +111,7 @@ export function AvatarDemo() {
         </Avatar>
         <div>
           <p className="text-xs font-bold text-slate-900 dark:text-white">Jorge Ramírez</p>
-          <p className="text-[11px] text-slate-400">Token Pendiente (Sin foto)</p>
+          <p className="text-[11px] text-slate-400">{t('hav.tokenPending')}</p>
         </div>
       </div>
     </div>
