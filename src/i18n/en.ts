@@ -991,13 +991,17 @@ export const en: TranslationSchema = {
   },
 
   notif: {
-    toggleSound: "Toggle sound",
-    close: "Close notifications",
+    filterAll: "All",
+    filterUnread: "Unread",
+    filterClinical: "Clinical",
+    filterSecurity: "Security",
     markAll: "Mark all",
     viewDetail: "View details",
     markRead: "Mark as read",
     deleteNotif: "Delete notification",
     del: "Delete",
+    toggleSound: "Toggle sound",
+    close: "Close notifications",
   },
 
   ver: {
@@ -1123,6 +1127,11 @@ export const en: TranslationSchema = {
     role: "Head Physiotherapist",
     patientStatus: "Active Patient • Knee",
     tokenPending: "Pending Token (No photo)",
+  },
+
+  jtt: {
+    agonists: "Agonist Muscles:",
+    close: "Close",
   },
 
   settings: {

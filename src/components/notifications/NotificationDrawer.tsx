@@ -4,6 +4,7 @@ import { Bell, Volume2, VolumeX, CheckCheck, Check, Trash2, ExternalLink, Activi
 import { useRealtimeNotifications, NotificationFilter } from '../../hooks/useRealtimeNotifications';
 import { AppNotification } from '../../lib/notificationService';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 
 interface NotificationDrawerProps {
   isOpen: boolean;
@@ -83,12 +84,13 @@ export function NotificationDrawer({ isOpen, onClose, userId }: NotificationDraw
     markAllRead,
     removeNotification,
   } = useRealtimeNotifications(userId);
+  const navigate = useNavigate();
 
   const filters: { id: NotificationFilter; label: string; count?: number }[] = [
-    { id: 'todas', label: 'Todas' },
-    { id: 'no_leidas', label: 'No leídas', count: unreadCount },
-    { id: 'clinica', label: 'Clínica' },
-    { id: 'seguridad', label: 'Seguridad' },
+    { id: 'todas', label: t('notif.filterAll') },
+    { id: 'no_leidas', label: t('notif.filterUnread'), count: unreadCount },
+    { id: 'clinica', label: t('notif.filterClinical') },
+    { id: 'seguridad', label: t('notif.filterSecurity') },
   ];
 
   const handleOpenLink = (notif: AppNotification) => {
@@ -97,7 +99,8 @@ export function NotificationDrawer({ isOpen, onClose, userId }: NotificationDraw
       if (notif.link.startsWith('http')) {
         window.open(notif.link, '_blank');
       } else {
-        window.location.href = notif.link;
+        navigate(notif.link);
+        onClose?.();
       }
     }
   };

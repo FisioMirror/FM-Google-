@@ -995,13 +995,17 @@ export const es = {
   },
 
   notif: {
-    toggleSound: "Alternar sonido",
-    close: "Cerrar notificaciones",
+    filterAll: "Todas",
+    filterUnread: "No leídas",
+    filterClinical: "Clínica",
+    filterSecurity: "Seguridad",
     markAll: "Marcar todas",
     viewDetail: "Ver detalle",
     markRead: "Marcar leída",
     deleteNotif: "Eliminar notificación",
     del: "Eliminar",
+    toggleSound: "Alternar sonido",
+    close: "Cerrar notificaciones",
   },
 
   ver: {
@@ -1127,6 +1131,11 @@ export const es = {
     role: "Fisioterapeuta Titular",
     patientStatus: "Paciente Activo • Rodilla",
     tokenPending: "Token Pendiente (Sin foto)",
+  },
+
+  jtt: {
+    agonists: "Músculos Agonistas:",
+    close: "Cerrar",
   },
 
   settings: {

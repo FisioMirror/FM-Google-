@@ -258,7 +258,7 @@ export async function notifySessionCompleted(params: {
     type: 'ejercicio',
     title: `Sesión completada por ${params.patientName}`,
     message: `Finalizó "${params.exerciseTitle}" con ${Math.round(params.precision)}% de precisión${durationText}.`,
-    link: '/dashboard',
+    link: '/dashboard-fisio',
   });
 }
 
@@ -277,7 +277,7 @@ export async function notifyRoutineAssigned(params: {
     type: 'rutina',
     title: `Nueva rutina asignada por ${params.therapistName}`,
     message: `Tienes disponible la rutina "${params.routineTitle}"${countText}. Ingresa a tu módulo de ejercicios para comenzar.`,
-    link: '/paciente/ejercicios',
+    link: '/exercises',
   });
 }
 
@@ -327,6 +327,6 @@ export async function notifySecurityAlert(params: {
     type: 'seguridad',
     title: params.title,
     message: params.message,
-    link: '/perfil',
+    link: '/profile',
   });
 }

@@ -991,13 +991,17 @@ export const pt: TranslationSchema = {
   },
 
   notif: {
-    toggleSound: "Alternar som",
-    close: "Fechar notificações",
+    filterAll: "Todas",
+    filterUnread: "Não lidas",
+    filterClinical: "Clínica",
+    filterSecurity: "Segurança",
     markAll: "Marcar todas",
     viewDetail: "Ver detalhe",
     markRead: "Marcar como lida",
     deleteNotif: "Excluir notificação",
     del: "Excluir",
+    toggleSound: "Alternar som",
+    close: "Fechar notificações",
   },
 
   ver: {
@@ -1123,6 +1127,11 @@ export const pt: TranslationSchema = {
     role: "Fisioterapeuta Titular",
     patientStatus: "Paciente Ativo • Joelho",
     tokenPending: "Token Pendente (Sem foto)",
+  },
+
+  jtt: {
+    agonists: "Músculos Agonistas:",
+    close: "Fechar",
   },
 
   settings: {

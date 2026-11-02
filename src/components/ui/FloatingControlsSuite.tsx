@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { HelpCircle, Eye, SlidersHorizontal, Volume2, VolumeX, Compass, Pin, ClipboardPen, Tag, ChevronDown, Check, Play, Pause, RotateCcw, Layers, ShieldAlert } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 /* 21. JointAnatomyTooltip */
 export interface JointAnatomyTooltipProps {
@@ -17,6 +18,7 @@ export const JointAnatomyTooltip: React.FC<JointAnatomyTooltipProps> = ({
   precautions = 'Evitar flexión forzada > 90° en fase inflamatoria aguda',
   className,
 }) => {
+  const { t } = useTranslation();
   const [visible, setVisible] = useState(false);
 
   return (
@@ -54,14 +56,14 @@ export const JointAnatomyTooltip: React.FC<JointAnatomyTooltipProps> = ({
                 onClick={() => setVisible(false)}
                 className="text-slate-400 hover:text-slate-700 dark:hover:text-white text-[10px] cursor-pointer"
               >
-                Cerrar
+                {t('jtt.close')}
               </button>
             </div>
             <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed">
-              <strong className="text-slate-900 dark:text-white">Músculos Agonistas:</strong> {agonists}
+              <strong className="text-slate-900 dark:text-white">{t('jtt.agonists')}</strong> {agonists}
             </p>
-            <div className="p-2 rounded-xl bg-amber-500/15 border border-amber-500/30 text-[10px] text-amber-300 flex items-start gap-1.5">
-              <ShieldAlert className="w-3.5 h-3.5 shrink-0 text-amber-400 mt-0.5" />
+            <div className="p-2 rounded-xl bg-amber-50 border border-amber-300 text-[10px] text-amber-900 dark:bg-amber-950/50 dark:border-amber-700/60 dark:text-amber-100 flex items-start gap-1.5">
+              <ShieldAlert className="w-3.5 h-3.5 shrink-0 text-amber-600 dark:text-amber-400 mt-0.5" />
               <span>{precautions}</span>
             </div>
           </motion.div>
