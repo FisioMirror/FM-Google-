@@ -27,6 +27,7 @@ import { ExportCalendarButton } from '../components/ui/ExportCalendarButton';
 import { CompactTelehealthBar } from '../components/ui/NavigationDocksSuite';
 import { ScrollProgress } from '../components/ui/ScrollProgress';
 import { currentLocale } from '../lib/format';
+import { DrawerClinicalDemo } from '../components/ui/Drawer';
 
 interface SessionRow {
   id: string;
@@ -457,6 +458,7 @@ export function PatientDetailPage() {
             </p>
             <div className="flex items-center gap-3 mt-2 text-xs text-outline">
               <span className="font-bold">ID: #{patient.id.slice(0, 8)}</span>
+              <DrawerClinicalDemo patientId={patient.id} patientName={patient.full_name} />
               <span>•</span>
               {daysSinceLast !== null ? (
                 <span className={daysSinceLast > 7 ? 'text-amber-600 font-bold' : 'text-emerald-600 font-bold'}>

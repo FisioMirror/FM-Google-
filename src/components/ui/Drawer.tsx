@@ -1,3 +1,7 @@
+import { supabase } from '../../lib/supabase';
+import { useAuthStore } from '../../stores/authStore';
+import { useToast } from './toastApi';
+import { useTranslation } from 'react-i18next';
 import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, SlidersHorizontal, Stethoscope } from "lucide-react";
@@ -281,24 +285,84 @@ Drawer.Footer = DrawerFooter;
 /**
  * DrawerClinicalDemo con formulario clínico y métricas de fisioterapia en tiempo real
  */
-export function DrawerClinicalDemo() {
-  const [toleranceLevel, setToleranceLevel] = useState("Media");
-  const [maxReps, setMaxReps] = useState(12);
-  const [notes, setNotes] = useState("Paciente con buena evolución en rotación externa. Evitar abducción superior a 110° sin apoyo.");
-  const [alertSaved, setAlertSaved] = useState(false);
+export interface DrawerClinicalDemoProps {
+  patientId?: string;
+  patientName?: string;
+}
 
-  const handleSave = () => {
-    setAlertSaved(true);
-    setTimeout(() => setAlertSaved(false), 3000);
+/**
+ * Ajustes clinicos de sesion persistidos en public.session_adjustments.
+ * Sin paciente seleccionado no permite guardar (no inventa datos).
+ */
+export function DrawerClinicalDemo({ patientId, patientName }: DrawerClinicalDemoProps) {
+  const { t } = useTranslation();
+  const toast = useToast();
+  const user = useAuthStore((s) => s.user);
+  const [open, setOpen] = useState(false);
+  const [tolerance, setTolerance] = useState(8);
+  const [maxReps, setMaxReps] = useState(12);
+  const [focus, setFocus] = useState<'movilidad' | 'fuerza' | 'control' | 'dolor'>('movilidad');
+  const [notes, setNotes] = useState('');
+  const [saving, setSaving] = useState(false);
+  const [lastAt, setLastAt] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!open || !patientId) return;
+    let alive = true;
+    supabase
+      .from('session_adjustments')
+      .select('tolerancia_grados, repeticiones_max, foco, notas, creado_en')
+      .eq('paciente_id', patientId)
+      .order('creado_en', { ascending: false })
+      .limit(1)
+      .maybeSingle()
+      .then(({ data }) => {
+        if (!alive || !data) return;
+        setTolerance(data.tolerancia_grados ?? 8);
+        setMaxReps(data.repeticiones_max ?? 12);
+        setFocus((data.foco as typeof focus) ?? 'movilidad');
+        setNotes(data.notas ?? '');
+        setLastAt(data.creado_en ?? null);
+      });
+    return () => {
+      alive = false;
+    };
+  }, [open, patientId]);
+
+  const handleSave = async () => {
+    if (!patientId || !user) return;
+    setSaving(true);
+    const { error } = await supabase.from('session_adjustments').insert({
+      paciente_id: patientId,
+      fisio_id: user.id,
+      tolerancia_grados: tolerance,
+      repeticiones_max: maxReps,
+      foco: focus,
+      notas: notes.trim() || null,
+    });
+    setSaving(false);
+    if (error) {
+      console.error('session_adjustments insert', error);
+      toast.error(t('sa.error'));
+      return;
+    }
+    setLastAt(new Date().toISOString());
+    toast.success(t('sa.saved'));
+    setOpen(false);
   };
 
   return (
     <div className="space-y-3">
-      <Drawer placement="right">
+      <Drawer placement="right" isOpen={open} onOpenChange={setOpen}>
         <Drawer.Trigger asChild>
-          <Button variant="secondary" className="gap-2 shadow-xs border-primary/20 hover:border-primary/50">
+          <Button
+            variant="secondary"
+            disabled={!patientId}
+            title={patientId ? undefined : t('sa.noPatient')}
+            className="gap-2 shadow-xs border-primary/20 hover:border-primary/50"
+          >
             <SlidersHorizontal className="size-4 text-primary" />
-            <span>Abrir Ajustes Clínicos (Drawer)</span>
+            <span>{t('sa.open')}</span>
           </Button>
         </Drawer.Trigger>
         <Drawer.Backdrop>
@@ -310,91 +374,99 @@ export function DrawerClinicalDemo() {
                     <Stethoscope className="size-5" />
                   </Drawer.Icon>
                   <div>
-                    <Drawer.Heading>Ajustes de Sesión</Drawer.Heading>
-                    <p className="text-xs text-muted">Protocolo de Rehabilitación Hombro</p>
+                    <Drawer.Heading>{t('sa.title')}</Drawer.Heading>
+                    <p className="text-xs text-muted">{patientName || t('sa.subtitle')}</p>
                   </div>
                 </div>
                 <Drawer.CloseTrigger />
               </Drawer.Header>
 
-              <Drawer.Body>
-                <div className="space-y-4">
-                  <div className="p-4 rounded-2xl bg-teal-500/10 border border-teal-500/20 text-xs">
-                    <span className="font-bold text-teal-700 dark:text-teal-300 block mb-1">
-                      Paciente Vinculado: Carlos Mendoza (ID: #FM-4029)
-                    </span>
-                    <p className="text-neutral-600 dark:text-neutral-300">
-                      Sesión 6 de 14. Diagnóstico: Tendinopatía supraespinosa derecha con limitación articular leve.
-                    </p>
+              <Drawer.Body className="space-y-5">
+                <div>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="text-xs font-bold text-on-surface">{t('sa.tolerance')}</label>
+                    <span className="text-xs font-mono font-black text-primary">{tolerance}°</span>
                   </div>
+                  <input
+                    type="range"
+                    min={0}
+                    max={45}
+                    step={1}
+                    value={tolerance}
+                    aria-label={t('sa.tolerance')}
+                    onChange={(e) => setTolerance(Number(e.target.value))}
+                    className="w-full accent-teal-600"
+                  />
+                  <p className="text-[11px] text-muted">{t('sa.toleranceHint')}</p>
+                </div>
 
-                  <div>
-                    <label className="text-xs font-semibold text-on-surface block mb-2">
-                      Tolerancia al Esfuerzo Biomecánico
-                    </label>
-                    <div className="grid grid-cols-3 gap-2">
-                      {["Baja", "Media", "Alta"].map((level) => (
-                        <button
-                          key={level}
-                          type="button"
-                          onClick={() => setToleranceLevel(level)}
-                          className={cn(
-                            "py-2 px-3 rounded-xl text-xs font-semibold border transition-all duration-200",
-                            toleranceLevel === level
-                              ? "bg-primary text-white border-primary shadow-xs"
-                              : "bg-surface dark:bg-slate-800 border-border/60 text-muted hover:text-foreground"
-                          )}
-                        >
-                          {level}
-                        </button>
-                      ))}
-                    </div>
+                <div>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="text-xs font-bold text-on-surface">{t('sa.reps')}</label>
+                    <span className="text-xs font-mono font-black text-primary">{maxReps}</span>
                   </div>
+                  <input
+                    type="range"
+                    min={1}
+                    max={30}
+                    step={1}
+                    value={maxReps}
+                    aria-label={t('sa.reps')}
+                    onChange={(e) => setMaxReps(Number(e.target.value))}
+                    className="w-full accent-teal-600"
+                  />
+                </div>
 
-                  <div>
-                    <div className="flex justify-between items-center text-xs font-semibold text-on-surface mb-2">
-                      <span>Repeticiones Objetivo por Serie</span>
-                      <span className="text-primary font-bold">{maxReps} reps</span>
-                    </div>
-                    <input
-                      type="range"
-                      min="6"
-                      max="20"
-                      value={maxReps}
-                      onChange={(e) => setMaxReps(Number(e.target.value))}
-                      className="w-full accent-primary h-2 bg-slate-200 dark:bg-slate-700 rounded-lg cursor-pointer"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="text-xs font-semibold text-on-surface block mb-1.5">
-                      Observaciones Clínicas del Terapeuta
-                    </label>
-                    <textarea
-                      value={notes}
-                      onChange={(e) => setNotes(e.target.value)}
-                      rows={4}
-                      className="w-full p-3 rounded-xl bg-surface/70 dark:bg-slate-800/70 border border-border/60 text-xs text-foreground focus:ring-2 focus:ring-primary/40 focus:outline-none resize-none"
-                    />
+                <div>
+                  <label className="text-xs font-bold text-on-surface block mb-2">{t('sa.focus')}</label>
+                  <div className="grid grid-cols-2 gap-2">
+                    {(['movilidad', 'fuerza', 'control', 'dolor'] as const).map((f) => (
+                      <button
+                        key={f}
+                        type="button"
+                        onClick={() => setFocus(f)}
+                        className={`px-3 py-2 rounded-xl text-xs font-bold border transition-colors ${
+                          focus === f
+                            ? 'bg-teal-600 text-white border-teal-600'
+                            : 'bg-surface border-outline/20 text-on-surface hover:border-teal-500/40'
+                        }`}
+                      >
+                        {t(`sa.focus_${f}`)}
+                      </button>
+                    ))}
                   </div>
                 </div>
-              </Drawer.Body>
 
-              <Drawer.Footer>
-                <Button slot="close" className="w-full" onClick={handleSave}>
-                  Aplicar Parámetros a la Sesión
-                </Button>
-              </Drawer.Footer>
+                <div>
+                  <label className="text-xs font-bold text-on-surface block mb-2">{t('sa.notes')}</label>
+                  <textarea
+                    value={notes}
+                    onChange={(e) => setNotes(e.target.value)}
+                    placeholder={t('sa.notesPlaceholder')}
+                    rows={3}
+                    className="w-full rounded-xl bg-surface border border-outline/20 px-3 py-2 text-sm text-on-surface"
+                  />
+                </div>
+
+                {lastAt && (
+                  <p className="text-[11px] text-muted">
+                    {t('sa.lastSaved', { date: new Date(lastAt).toLocaleDateString() })}
+                  </p>
+                )}
+
+                <div className="flex justify-end gap-2 pt-1">
+                  <Button variant="secondary" onClick={() => setOpen(false)}>
+                    {t('common.cancel')}
+                  </Button>
+                  <Button onClick={handleSave} disabled={saving || !patientId}>
+                    {saving ? t('sa.saving') : t('sa.save')}
+                  </Button>
+                </div>
+              </Drawer.Body>
             </Drawer.Dialog>
           </Drawer.Container>
         </Drawer.Backdrop>
       </Drawer>
-
-      {alertSaved && (
-        <div className="text-xs px-3 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-700 dark:text-emerald-300 font-medium animate-fadeIn">
-          Parámetros actualizados: {maxReps} repeticiones, tolerancia {toleranceLevel}.
-        </div>
-      )}
     </div>
   );
 }

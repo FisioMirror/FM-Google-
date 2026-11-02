@@ -14,7 +14,6 @@ import { GlassModal } from '../components/ui/GlassModal';
 import { isDemoAccount } from '../lib/demoAuth';
 import { useTranslation } from 'react-i18next';
 import { Users, Search, Plus, LayoutGrid, List, AlertTriangle, CheckCircle2, Key, Copy, Check, Mail, ExternalLink, UserCheck, Calendar, ArrowRight, Eye } from 'lucide-react';
-import { DrawerClinicalDemo } from '../components/ui/Drawer';
 import { useRealtimePresence } from '../lib/presenceService';
 import { staggerContainer, staggerItem, springTactile } from '../lib/motionVariants';
 import { MobileBottomSheet } from '../components/ui/MobileBottomSheet';
@@ -371,7 +370,6 @@ export function PatientsPage() {
 
         {/* Primary Action Buttons */}
         <div className="flex flex-wrap items-center gap-3">
-          <DrawerClinicalDemo />
           <button
             onClick={createQuickToken}
             className="px-4 py-2.5 rounded-2xl bg-surface/80 dark:bg-surface-container-low/70 border border-outline/15 text-on-surface hover:border-teal-500/40 text-xs font-bold transition-all flex items-center gap-2 shadow-sm"
