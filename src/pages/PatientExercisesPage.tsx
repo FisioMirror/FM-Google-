@@ -277,7 +277,7 @@ export function PatientExercisesPage() {
         <div className="flex items-center justify-between gap-2 px-4 py-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-xs text-rose-700 dark:text-rose-300 font-medium">
           <div className="flex items-center gap-2">
             <Icon name="error_outline" size={16} />
-            <span>No se pudo sincronizar la rutina con el servidor. Mostrando ejercicios guardados.</span>
+            <span>{t('px.syncFailed')}</span>
           </div>
           <button
             onClick={() => loadExercises()}
@@ -306,17 +306,15 @@ export function PatientExercisesPage() {
           <div className="p-4 rounded-2xl bg-surface-container-low border border-outline-variant/30 flex flex-col justify-between">
             <p className="text-[10px] uppercase font-bold tracking-wider text-on-surface-variant">Frecuencia media</p>
             <p className="text-2xl font-extrabold text-on-surface mt-1">
-              {avgFrequency}<span className="text-xs font-semibold text-on-surface-variant ml-1">días/sem</span>
+              {avgFrequency}<span className="text-xs font-semibold text-on-surface-variant ml-1">{t('px.daysPerWeek')}</span>
             </p>
           </div>
         </div>
       ) : (
         !loading && (
           <div className="p-6 rounded-3xl bg-surface-container-low border border-outline-variant/30 text-center">
-            <p className="text-sm font-semibold text-on-surface">Todavía no tenés una rutina activa</p>
-            <p className="text-xs text-on-surface-variant mt-1">
-              Cuando tu fisioterapeuta asigne ejercicios, aparecerán acá con sus series y repeticiones.
-            </p>
+            <p className="text-sm font-semibold text-on-surface">{t('px.noRoutine')}</p>
+            <p className="text-xs text-on-surface-variant mt-1">{t('px.noRoutineDesc')}</p>
           </div>
         )
       )}
@@ -324,9 +322,7 @@ export function PatientExercisesPage() {
       {/* Filtro por zona corporal */}
       {exercises.length > 0 && (
         <div className="space-y-2">
-          <span className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">
-            Filtrar por zona corporal
-          </span>
+          <span className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">{t('px.filterByZone')}</span>
           <div className="flex flex-wrap gap-1.5">
             {availableZones.map((zone) => {
               const active = zoneFilter === zone;
@@ -352,7 +348,7 @@ export function PatientExercisesPage() {
       {/* Reacción de ánimo (única excepción de emoji en la UI) */}
       {exercises.length > 0 && (
         <div className="flex items-center justify-between p-4 rounded-2xl bg-surface-container-low border border-outline-variant/30">
-          <span className="text-xs font-bold text-on-surface">¿Cómo te sentís después de la sesión?</span>
+          <span className="text-xs font-bold text-on-surface">{t('px.howFeel')}</span>
           <CheerReactionButton />
         </div>
       )}
@@ -365,16 +361,12 @@ export function PatientExercisesPage() {
         </div>
       ) : filteredExercises.length === 0 ? (
         <div className="p-8 rounded-3xl bg-surface-container-low border border-outline-variant/30 text-center">
-          <p className="text-sm font-semibold text-on-surface">No hay ejercicios en esta zona</p>
-          <p className="text-xs text-on-surface-variant mt-1">
-            Probá con otro filtro o volvé a “Todas” para ver la rutina completa.
-          </p>
+          <p className="text-sm font-semibold text-on-surface">{t('px.noExercisesZone')}</p>
+          <p className="text-xs text-on-surface-variant mt-1">{t('px.noExercisesZoneDesc')}</p>
           <button
             onClick={() => setZoneFilter('all')}
             className="mt-3 px-3 py-1.5 rounded-xl bg-primary text-on-primary text-xs font-semibold"
-          >
-            Ver todas
-          </button>
+          >{t('px.viewAll')}</button>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -408,7 +400,7 @@ export function PatientExercisesPage() {
 
                   {ex.notas && (
                     <div className="text-xs text-on-surface-variant mt-2 mb-3 bg-teal-500/10 dark:bg-teal-950/30 p-3 rounded-2xl border border-teal-500/20">
-                      <span className="font-bold text-teal-700 dark:text-teal-300 mr-1.5">Indicación del Fisioterapeuta:</span>
+                      <span className="font-bold text-teal-700 dark:text-teal-300 mr-1.5">{t('px.therapistIndication')}</span>
                       <span className="text-on-surface">{ex.notas}</span>
                     </div>
                   )}
@@ -448,7 +440,7 @@ export function PatientExercisesPage() {
                       className="py-2.5 px-3 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-semibold text-xs transition-all flex items-center justify-center gap-1.5"
                     >
                       <BookOpen size={14} className="text-teal-600 dark:text-teal-400" />
-                      <span>Descripción</span>
+                      <span>{t('px.description')}</span>
                     </button>
 
                     {/* Botón 2: Demostración 3D Biomecánica Separada */}
@@ -457,7 +449,7 @@ export function PatientExercisesPage() {
                       className="py-2.5 px-3 rounded-xl bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/30 text-teal-700 dark:text-teal-300 font-semibold text-xs transition-all flex items-center justify-center gap-1.5"
                     >
                       <Layers size={14} className="text-teal-600 dark:text-teal-400" />
-                      <span>Demostración 3D</span>
+                      <span>{t('px.demo3d')}</span>
                     </button>
                   </div>
 
@@ -469,7 +461,7 @@ export function PatientExercisesPage() {
                     className="w-full py-3 rounded-2xl bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs transition-all shadow-md shadow-teal-700/20 flex items-center justify-center gap-2 active:scale-[0.98]"
                   >
                     <Play size={16} fill="currentColor" />
-                    <span>Iniciar en Espejo AR</span>
+                    <span>{t('px.startAr')}</span>
                   </button>
                 </div>
               </div>
@@ -481,9 +473,7 @@ export function PatientExercisesPage() {
 
       {/* Próximos Ejercicios por Desbloquear según Progresión */}
       <div className="mt-8 space-y-3">
-        <h3 className="font-bold text-sm text-slate-700 dark:text-slate-200 uppercase tracking-wider">
-          Nivel de Progresión Clínica Futura
-        </h3>
+        <h3 className="font-bold text-sm text-slate-700 dark:text-slate-200 uppercase tracking-wider">{t('px.futureProgression')}</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <UnlockableExerciseLocker
             exerciseTitle="Rotación Externa con Carga Excéntrica (3kg)"
@@ -517,9 +507,7 @@ export function PatientExercisesPage() {
 
             <div className="space-y-3">
               <div>
-                <p className="text-[11px] font-bold uppercase tracking-wider text-on-surface-variant mb-1">
-                  Instrucciones de Ejecución
-                </p>
+                <p className="text-[11px] font-bold uppercase tracking-wider text-on-surface-variant mb-1">{t('px.executionInstructions')}</p>
                 <p className="text-xs text-on-surface leading-relaxed whitespace-pre-wrap">
                   {descriptionExercise.ejercicio_detailed_description ||
                     getExerciseDescription(descriptionExercise.ejercicio_nombre || '')}
@@ -528,9 +516,7 @@ export function PatientExercisesPage() {
 
               {descriptionExercise.notas && (
                 <div className="p-3 rounded-xl bg-teal-500/10 border border-teal-500/20">
-                  <p className="text-[11px] font-bold text-teal-700 dark:text-teal-300">
-                    Nota del Terapeuta:
-                  </p>
+                  <p className="text-[11px] font-bold text-teal-700 dark:text-teal-300">{t('px.therapistNote')}</p>
                   <p className="text-xs text-on-surface mt-0.5">{descriptionExercise.notas}</p>
                 </div>
               )}
@@ -557,9 +543,7 @@ export function PatientExercisesPage() {
                 <Layers size={18} />
               </div>
               <div>
-                <h3 className="font-bold text-base text-on-surface">
-                  Demostración Biomecánica 3D
-                </h3>
+                <h3 className="font-bold text-base text-on-surface">{t('px.biomechDemo')}</h3>
                 <p className="text-[11px] text-on-surface-variant">
                   {demo3DExercise.ejercicio_nombre}
                 </p>
@@ -583,15 +567,11 @@ export function PatientExercisesPage() {
             </div>
 
             <div className="flex items-center justify-between pt-2">
-              <span className="text-[11px] text-on-surface-variant">
-                Observa los ángulos articulares y la postura corporal recomendada.
-              </span>
+              <span className="text-[11px] text-on-surface-variant">{t('px.biomechDemoDesc')}</span>
               <button
                 onClick={() => setDemo3DExercise(null)}
                 className="px-5 py-2 rounded-xl bg-primary text-white text-xs font-bold hover:opacity-90 transition-opacity"
-              >
-                Cerrar Visor 3D
-              </button>
+              >{t('px.close3d')}</button>
             </div>
           </div>
         )}

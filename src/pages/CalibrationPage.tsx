@@ -10,6 +10,7 @@ import { CalibrationCompass } from '../components/ui/FloatingControlsSuite';
 import {
   PoseConfidenceLiveIndicator,
 } from '../components/ui/RealTimeMetricsSuite';
+import { useTranslation } from 'react-i18next';
 
 type CalibState = 'idle' | 'detecting' | 'calibrating' | 'success' | 'error';
 
@@ -19,6 +20,7 @@ const DETECT_TIMEOUT = 15;
 const COUNTDOWN_FROM = 3;
 
 export function CalibrationPage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const toast = useToast();
   const { videoRef, canvasRef, poseData, isReady, error, startCamera, isSimulated, reconnectCamera } = usePoseDetection();
@@ -193,8 +195,8 @@ export function CalibrationPage() {
           <Icon name="arrow_back" size={20} className="text-white" />
         </button>
         <div className="flex flex-col items-center">
-          <h1 className="font-bold text-sm sm:text-base tracking-wide">Calibración Postural</h1>
-          <span className="text-[10px] text-teal-300 font-semibold uppercase tracking-wider">Alineación de Cámara</span>
+          <h1 className="font-bold text-sm sm:text-base tracking-wide">{t('cal.title')}</h1>
+          <span className="text-[10px] text-teal-300 font-semibold uppercase tracking-wider">{t('cal.cameraAlignment')}</span>
         </div>
         <div className="flex items-center gap-2">
           <PoseConfidenceLiveIndicator
@@ -238,7 +240,7 @@ export function CalibrationPage() {
       {isSimulated && isReady && (
         <div className="absolute top-14 sm:top-16 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 bg-amber-500/20 border border-amber-400/40 backdrop-blur-md px-3 py-1.5 rounded-full text-amber-200 text-[11px] sm:text-xs font-medium shadow-md">
           <Icon name="sensors" size={14} className="text-amber-400 shrink-0" />
-          <span>Modo Simulación Biomecánica</span>
+          <span>{t('cal.simMode')}</span>
           <button
             onClick={reconnectCamera}
             className="ml-1 px-2 py-0.5 rounded-full bg-amber-400/30 hover:bg-amber-400/50 text-white text-[10px] font-bold uppercase tracking-wider transition-colors cursor-pointer"
@@ -272,7 +274,7 @@ export function CalibrationPage() {
       {state === 'idle' && (
         <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-slate-950/90 backdrop-blur-md gap-4">
           <div className="w-14 h-14 rounded-full border-3 border-teal-400 border-t-transparent animate-spin" />
-          <p className="text-white/80 text-sm font-medium">Inicializando cámara y sensor corporal...</p>
+          <p className="text-white/80 text-sm font-medium">{t('cal.initializing')}</p>
         </div>
       )}
 
@@ -287,15 +289,11 @@ export function CalibrationPage() {
             <button
               onClick={reconnectCamera}
               className="px-5 py-2.5 bg-teal-500 hover:bg-teal-400 text-white rounded-xl font-bold transition-all text-sm cursor-pointer shadow-lg shadow-teal-500/25 active:scale-95"
-            >
-              Reintentar Cámara
-            </button>
+            >{t('cal.retryCamera')}</button>
             <button
               onClick={() => navigate('/dashboard-paciente')}
               className="px-5 py-2.5 bg-white/10 text-white rounded-xl font-bold hover:bg-white/20 transition-colors text-sm"
-            >
-              Volver al inicio
-            </button>
+            >{t('cal.backHome')}</button>
           </div>
         </div>
       )}
@@ -351,12 +349,8 @@ export function CalibrationPage() {
                           <Icon name="accessibility_new" size={20} />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-white text-xs sm:text-sm font-semibold leading-snug">
-                            Colócate frente a la cámara
-                          </p>
-                          <p className="text-white/60 text-[11px] sm:text-xs mt-0.5 leading-relaxed">
-                            Asegúrate de que tu torso y ambos brazos queden visibles dentro del encuadre.
-                          </p>
+                          <p className="text-white text-xs sm:text-sm font-semibold leading-snug">{t('cal.standFront')}</p>
+                          <p className="text-white/60 text-[11px] sm:text-xs mt-0.5 leading-relaxed">{t('cal.standFrontDesc')}</p>
                         </div>
                       </div>
 
@@ -397,9 +391,7 @@ export function CalibrationPage() {
                         <button
                           onClick={() => setShowSkipConfirm(true)}
                           className="text-white/50 hover:text-white transition-colors"
-                        >
-                          Continuar sin calibrar
-                        </button>
+                        >{t('cal.continueNoCalib')}</button>
                       </div>
                     </>
                   )}
@@ -443,10 +435,8 @@ export function CalibrationPage() {
                 sparklesCount={6}
                 colors={{ first: '#2dd4bf', second: '#c1ff72' }}
                 className="text-2xl sm:text-3xl font-bold text-white mb-2"
-              >
-                ¡Calibración exitosa!
-              </SparklesText>
-              <p className="text-white/70 text-sm max-w-sm">Tu cámara está optimizada para el modo AR con bio-feedback en tiempo real.</p>
+              >{t('cal.success')}</SparklesText>
+              <p className="text-white/70 text-sm max-w-sm">{t('cal.successDesc')}</p>
             </motion.div>
             <PulsatingButton
               variant="ripple"
@@ -454,8 +444,7 @@ export function CalibrationPage() {
               onClick={goAR}
               className="mt-3 px-7 py-3.5 bg-teal-500 hover:bg-teal-400 text-white rounded-2xl font-bold flex items-center gap-2 shadow-lg shadow-teal-500/30 text-sm sm:text-base cursor-pointer"
             >
-              <Icon name="play_arrow" size={20} /> Continuar al Modo AR
-            </PulsatingButton>
+              <Icon name="play_arrow" size={20} />{t('cal.continueAr')}</PulsatingButton>
           </motion.div>
         )}
       </AnimatePresence>
@@ -472,10 +461,8 @@ export function CalibrationPage() {
             <div className="w-16 h-16 rounded-full bg-amber-500/20 flex items-center justify-center border border-amber-500/40">
               <Icon name="warning" filled size={36} className="text-amber-400" />
             </div>
-            <h2 className="text-xl sm:text-2xl font-bold text-white">No se detectó tu postura</h2>
-            <p className="text-white/70 text-sm max-w-sm">
-              Verifica que haya suficiente iluminación y que tu torso y ambos brazos queden dentro del encuadre.
-            </p>
+            <h2 className="text-xl sm:text-2xl font-bold text-white">{t('cal.noPosture')}</h2>
+            <p className="text-white/70 text-sm max-w-sm">{t('cal.noPostureDesc')}</p>
             <div className="flex flex-col sm:flex-row gap-3 mt-3 w-full max-w-xs">
               <button
                 onClick={retry}
@@ -501,8 +488,8 @@ export function CalibrationPage() {
               <div className="w-16 h-16 rounded-full bg-amber-500/20 flex items-center justify-center mx-auto mb-4">
                 <Icon name="warning" filled size={32} className="text-amber-400" />
               </div>
-              <h3 className="text-white text-xl font-bold mb-2">Continuar sin calibrar?</h3>
-              <p className="text-white/70 text-sm mb-6">La precision del seguimiento puede verse afectada sin calibrar. Deseas continuar?</p>
+              <h3 className="text-white text-xl font-bold mb-2">{t('cal.continueNoCalibQ')}</h3>
+              <p className="text-white/70 text-sm mb-6">{t('cal.continueNoCalibDesc')}</p>
               <div className="flex gap-3">
                 <button onClick={() => setShowSkipConfirm(false)} className="flex-1 py-3 bg-white/10 text-white rounded-xl font-bold hover:bg-white/20 transition-colors">Cancelar</button>
                 <button onClick={handleSkip} className="flex-1 py-3 bg-teal-500 text-white rounded-xl font-bold hover:scale-105 active:scale-95 transition-transform">Continuar</button>
