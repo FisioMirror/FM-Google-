@@ -1138,6 +1138,16 @@ export const es = {
     close: "Cerrar",
   },
 
+  gait: {
+    balanced: "Marcha Equilibrada",
+    mildAsymmetry: "Asimetría Leve",
+    emptyTitle: "Sin mediciones de marcha",
+    emptyBody: "Se mostrará cuando haya capturas de marcha registradas.",
+    leftFoot: "Pie Izquierdo",
+    rightFoot: "Pie Derecho",
+    cadence: "Cadencia: {{steps}} pasos/min",
+  },
+
   settings: {
     verseDesc: "Muestra versículos de sanidad, constancia y perseverancia en tu recuperación",
     signOut: "Cerrar Sesión",

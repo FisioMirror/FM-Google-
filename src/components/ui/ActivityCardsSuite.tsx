@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
-import { Activity, Smile, Meh, Frown, Footprints, Waves, Crosshair, HeartPulse, Milestone, Check, ChevronRight, TrendingUp, Calendar, Sparkles, Flame, ShieldCheck, Play, RotateCcw } from 'lucide-react';
+import { Activity, Smile, Meh, Frown, Footprints, Waves, Crosshair, HeartPulse, Milestone, Check, ChevronRight, TrendingUp, Calendar, Sparkles, Flame, ShieldCheck, Play } from 'lucide-react';
 
 /* 1. MuscleTargetRadarCard */
 export interface MuscleTargetRadarCardProps {
@@ -335,34 +335,29 @@ export const PainScaleInteractiveCard: React.FC<PainScaleInteractiveCardProps> =
 
 /* 3. GaitSymmetryCard */
 export interface GaitSymmetryCardProps {
-  leftRatio?: number; // e.g. 52
-  rightRatio?: number; // e.g. 48
+  /** Porcentaje de carga del pie izquierdo (0-100). Sin dato -> estado vacío. */
+  leftRatio?: number;
+  /** Porcentaje de carga del pie derecho (0-100). Sin dato -> estado vacío. */
+  rightRatio?: number;
   cadenceSteps?: number;
   className?: string;
 }
 
+/**
+ * Simetria de marcha. No inventa valores: sin medicion muestra un estado vacio
+ * explicito hasta que existan datos de captura (MediaPipe / sensores).
+ */
 export const GaitSymmetryCard: React.FC<GaitSymmetryCardProps> = ({
-  leftRatio = 51,
-  rightRatio = 49,
-  cadenceSteps = 108,
+  leftRatio,
+  rightRatio,
+  cadenceSteps,
   className,
 }) => {
   const { t } = useTranslation();
-  const [isSimulating, setIsSimulating] = useState(false);
-  const [left, setLeft] = useState(leftRatio);
-  const [right, setRight] = useState(rightRatio);
-  const isSymmetric = Math.abs(left - right) <= 4;
-
-  const toggleSimulation = () => {
-    setIsSimulating(!isSimulating);
-    if (!isSimulating) {
-      setLeft(54);
-      setRight(46);
-    } else {
-      setLeft(leftRatio);
-      setRight(rightRatio);
-    }
-  };
+  const hasData = typeof leftRatio === 'number' && typeof rightRatio === 'number';
+  const left = leftRatio ?? 0;
+  const right = rightRatio ?? 0;
+  const isSymmetric = hasData && Math.abs(left - right) <= 4;
 
   return (
     <motion.div
@@ -376,62 +371,73 @@ export const GaitSymmetryCard: React.FC<GaitSymmetryCardProps> = ({
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <div className="p-1.5 rounded-xl bg-cyan-500/15 text-cyan-600 dark:text-cyan-400">
-            <Footprints className="w-4 h-4 animate-bounce" />
+            <Footprints className="w-4 h-4" />
           </div>
-          <h4 className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200">{t('ac.plantarSymmetry')}</h4>
+          <h4 className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200">
+            {t('ac.plantarSymmetry')}
+          </h4>
         </div>
-        <span
-          className={cn(
-            "text-[10px] font-bold px-2.5 py-0.5 rounded-full border shadow-xs flex items-center gap-1",
-            isSymmetric
-              ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border-emerald-500/30"
-              : "bg-amber-500/15 text-amber-600 dark:text-amber-400 border-amber-500/30"
+        {hasData && (
+          <span
+            className={cn(
+              "text-[10px] font-bold px-2.5 py-0.5 rounded-full border shadow-xs flex items-center gap-1",
+              isSymmetric
+                ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border-emerald-500/30"
+                : "bg-amber-500/15 text-amber-600 dark:text-amber-400 border-amber-500/30"
+            )}
+          >
+            <span className={cn("size-1.5 rounded-full", isSymmetric ? "bg-emerald-500" : "bg-amber-500")} />
+            {isSymmetric ? t('gait.balanced') : t('gait.mildAsymmetry')}
+          </span>
+        )}
+      </div>
+
+      {!hasData ? (
+        <div className="py-6 text-center">
+          <Footprints className="w-7 h-7 mx-auto mb-2 text-slate-400 dark:text-slate-500" />
+          <p className="text-xs font-bold text-slate-700 dark:text-slate-200">{t('gait.emptyTitle')}</p>
+          <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 max-w-[240px] mx-auto">
+            {t('gait.emptyBody')}
+          </p>
+        </div>
+      ) : (
+        <>
+          <div className="grid grid-cols-2 gap-3 my-2">
+            <div className="p-3 rounded-2xl bg-teal-500/10 dark:bg-teal-500/15 border border-teal-500/20 text-center">
+              <span className="text-[10px] uppercase font-bold text-teal-700 dark:text-teal-400 block mb-0.5">
+                {t('gait.leftFoot')}
+              </span>
+              <span className="text-2xl font-black font-mono text-slate-900 dark:text-white tabular-nums">{left}%</span>
+            </div>
+            <div className="p-3 rounded-2xl bg-cyan-500/10 dark:bg-cyan-500/15 border border-cyan-500/20 text-center">
+              <span className="text-[10px] uppercase font-bold text-cyan-700 dark:text-cyan-400 block mb-0.5">
+                {t('gait.rightFoot')}
+              </span>
+              <span className="text-2xl font-black font-mono text-slate-900 dark:text-white tabular-nums">{right}%</span>
+            </div>
+          </div>
+
+          <div className="relative w-full h-3 rounded-full bg-slate-200 dark:bg-slate-800 overflow-hidden flex my-2 p-0.5 border border-black/5 dark:border-white/5">
+            <motion.div
+              animate={{ width: `${left}%` }}
+              transition={{ type: 'spring', stiffness: 200, damping: 25 }}
+              className="h-full bg-gradient-to-r from-teal-600 to-teal-400 rounded-l-full"
+            />
+            <motion.div
+              animate={{ width: `${right}%` }}
+              transition={{ type: 'spring', stiffness: 200, damping: 25 }}
+              className="h-full bg-gradient-to-r from-cyan-400 to-cyan-500 rounded-r-full"
+            />
+            <div className="absolute left-1/2 top-0 bottom-0 w-0.5 bg-white shadow-sm z-10 -translate-x-1/2" />
+          </div>
+
+          {typeof cadenceSteps === 'number' && cadenceSteps > 0 && (
+            <p className="text-[11px] text-slate-600 dark:text-slate-300 mt-2 text-center font-medium">
+              {t('gait.cadence', { steps: cadenceSteps })}
+            </p>
           )}
-        >
-          <span className={cn("size-1.5 rounded-full", isSymmetric ? "bg-emerald-500" : "bg-amber-500 animate-ping")} />
-          {isSymmetric ? 'Marcha Equilibrada' : 'Asimetría Leve'}
-        </span>
-      </div>
-
-      <div className="grid grid-cols-2 gap-3 my-2">
-        <div className="p-3 rounded-2xl bg-teal-500/10 dark:bg-teal-500/15 border border-teal-500/20 text-center">
-          <span className="text-[10px] uppercase font-bold text-teal-600 dark:text-teal-400 block mb-0.5">Pie Izquierdo</span>
-          <span className="text-2xl font-black font-mono text-slate-900 dark:text-white tabular-nums">{left}%</span>
-        </div>
-        <div className="p-3 rounded-2xl bg-cyan-500/10 dark:bg-cyan-500/15 border border-cyan-500/20 text-center">
-          <span className="text-[10px] uppercase font-bold text-cyan-600 dark:text-cyan-400 block mb-0.5">Pie Derecho</span>
-          <span className="text-2xl font-black font-mono text-slate-900 dark:text-white tabular-nums">{right}%</span>
-        </div>
-      </div>
-
-      <div className="relative w-full h-3 rounded-full bg-slate-200 dark:bg-slate-800 overflow-hidden flex my-2 p-0.5 border border-black/5 dark:border-white/5">
-        <motion.div
-          animate={{ width: `${left}%` }}
-          transition={{ type: 'spring', stiffness: 200, damping: 25 }}
-          className="h-full bg-gradient-to-r from-teal-600 to-teal-400 rounded-l-full"
-        />
-        <motion.div
-          animate={{ width: `${right}%` }}
-          transition={{ type: 'spring', stiffness: 200, damping: 25 }}
-          className="h-full bg-gradient-to-r from-cyan-400 to-cyan-500 rounded-r-full"
-        />
-        {/* Marcador central */}
-        <div className="absolute left-1/2 top-0 bottom-0 w-0.5 bg-white shadow-sm z-10 -translate-x-1/2" />
-      </div>
-
-      <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 mt-2">
-        <span className="flex items-center gap-1">
-          Cadencia: <strong className="font-mono text-slate-800 dark:text-white">{cadenceSteps}</strong> ppm
-        </span>
-        <button
-          type="button"
-          onClick={toggleSimulation}
-          className="text-[10px] font-bold text-cyan-600 dark:text-cyan-400 hover:underline flex items-center gap-1"
-        >
-          <RotateCcw className="w-3 h-3" />
-          {isSimulating ? 'Restaurar' : 'Simular Carga'}
-        </button>
-      </div>
+        </>
+      )}
     </motion.div>
   );
 };

@@ -1134,6 +1134,16 @@ export const en: TranslationSchema = {
     close: "Close",
   },
 
+  gait: {
+    balanced: "Balanced gait",
+    mildAsymmetry: "Mild asymmetry",
+    emptyTitle: "No gait measurements",
+    emptyBody: "It will appear once gait captures are recorded.",
+    leftFoot: "Left foot",
+    rightFoot: "Right foot",
+    cadence: "Cadence: {{steps}} steps/min",
+  },
+
   settings: {
     verseDesc: "Shows verses of healing, perseverance and encouragement in your recovery",
     signOut: "Sign Out",

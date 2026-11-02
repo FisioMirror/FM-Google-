@@ -1134,6 +1134,16 @@ export const pt: TranslationSchema = {
     close: "Fechar",
   },
 
+  gait: {
+    balanced: "Marcha Equilibrada",
+    mildAsymmetry: "Assimetria leve",
+    emptyTitle: "Sem medições de marcha",
+    emptyBody: "Será exibido quando houver capturas de marcha registradas.",
+    leftFoot: "Pé Esquerdo",
+    rightFoot: "Pé Direito",
+    cadence: "Cadência: {{steps}} passos/min",
+  },
+
   settings: {
     verseDesc: "Mostra versículos de cura, constância e perseverança na sua recuperação",
     signOut: "Sair",

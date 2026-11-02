@@ -958,7 +958,7 @@ export function StatsPage() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <PatientAdherenceHeatmapCard />
                   <PostureStabilityCard balanceScore={Math.min(99, Math.max(0, Math.round(avgPrecision || 0)))} />
-                  <GaitSymmetryCard leftRatio={50} rightRatio={50} cadenceSteps={0} />
+                  <GaitSymmetryCard />
                 </div>
               </div>
             </>

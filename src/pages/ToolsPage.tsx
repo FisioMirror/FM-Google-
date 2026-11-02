@@ -581,11 +581,22 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
                   <p className="text-[10px] text-teal-200 font-medium mt-1">Normal: 18.5 – 24.9</p>
                 </div>
               </div>
-              <div className="mt-4 flex h-2 rounded-full overflow-hidden bg-white/20">
-                <div className="bg-amber-400" style={{ width: '25%' }} />
-                <div className="bg-emerald-400" style={{ width: '35%' }} />
-                <div className="bg-orange-400" style={{ width: '25%' }} />
-                <div className="bg-red-400" style={{ width: '15%' }} />
+              <div className="relative mt-6">
+              <div className="flex h-2 rounded-full overflow-hidden bg-white/20">
+                <div className="bg-amber-400" style={{ width: '14%' }} />
+                <div className="bg-emerald-400" style={{ width: '26%' }} />
+                <div className="bg-orange-400" style={{ width: '20%' }} />
+                <div className="bg-red-400" style={{ width: '40%' }} />
+              </div>
+              {Number.isFinite(Number(bmi)) && (
+                <div
+                  className="absolute -top-1 transition-all"
+                  style={{ left: 'calc(' + Math.min(100, Math.max(0, ((Number(bmi) - 15) / 25) * 100)) + '% - 6px)' }}
+                  title={'IMC ' + bmi}
+                >
+                  <div className="w-3 h-4 rounded-sm bg-white shadow-md border border-black/30" />
+                </div>
+              )}
               </div>
             </div>
           </SpotlightCard>
