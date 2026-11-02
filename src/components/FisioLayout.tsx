@@ -376,7 +376,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
             <p className="font-bold text-sm text-slate-900 dark:text-slate-100 truncate">{user?.full_name || 'Fisioterapeuta'}</p>
             <div className="flex items-center gap-1.5 mt-0.5">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              <p className="text-[10px] text-sky-600 dark:text-sky-400 uppercase tracking-wider font-semibold">En consulta</p>
+              <p className="text-[10px] text-sky-600 dark:text-sky-400 uppercase tracking-wider font-semibold">{t('fl.inConsultation')}</p>
             </div>
           </div>
         </div>
@@ -384,7 +384,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
       <div className={cn(collapsed ? 'flex flex-col items-center gap-2' : 'flex items-center justify-between px-1')}>
         <button
           onClick={toggleTheme}
-          aria-label="Cambiar tema"
+          aria-label={t('fl.toggleTheme')}
           className="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-sky-50 dark:hover:bg-slate-800 hover:text-sky-600 dark:hover:text-sky-400 transition-colors"
         >
           {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
@@ -403,7 +403,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
         </button>
         <button
           onClick={() => { onNavAway?.(); setShowLogout(true); }}
-          aria-label="Cerrar sesión"
+          aria-label={t('fl.signOut')}
           className="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-red-50 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 transition-colors"
         >
           <LogOut size={18} />
@@ -419,7 +419,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
           <div className="flex items-center gap-3 min-w-0 pr-6">
             <div className="flex flex-col min-w-0">
               <h1 className="text-base font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight whitespace-nowrap">FisioMirror</h1>
-              <p className="text-[10px] uppercase tracking-wider text-sky-600 dark:text-sky-400 font-bold whitespace-nowrap">Edición Clínica</p>
+              <p className="text-[10px] uppercase tracking-wider text-sky-600 dark:text-sky-400 font-bold whitespace-nowrap">{t('fl.clinicalEdition')}</p>
             </div>
           </div>
         ) : (
@@ -496,7 +496,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
                 <button
                   onClick={() => setSidebarOpen(false)}
                   className="p-2 rounded-xl text-slate-500 hover:text-slate-800 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-                  aria-label="Cerrar menú"
+                  aria-label={t('fl.closeMenu')}
                 >
                   <X size={20} />
                 </button>
@@ -516,7 +516,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
           <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
             <button
               onClick={() => setSidebarOpen(true)}
-              aria-label="Abrir menú"
+              aria-label={t('fl.openMenu')}
               className="lg:hidden text-primary shrink-0 p-1.5 rounded-lg hover:bg-primary/10 transition-colors"
             >
               <Icon name="menu" size={22} />
@@ -636,11 +636,11 @@ export function FisioLayout({ children }: FisioLayoutProps) {
         <div className="p-4 sm:p-6 lg:p-8 pb-8 flex-1 bg-teal-50/20 dark:bg-slate-950/20">{children}</div>
 
         <footer className="pt-6 pb-6 px-4 sm:px-8 flex flex-col md:flex-row justify-between text-outline text-xs gap-4 border-t border-white/10">
-          <span>&copy; 2025 FisioMirror S.A. | Edición Clínica Premium v2.0.42</span>
+          <span>{t('fl.rights')}</span>
           <div className="flex gap-4">
             <button onClick={() => setLegalModal('consent')} className="text-outline hover:text-primary transition-colors">Consentimiento Informado</button>
-            <button onClick={() => setLegalModal('terms')} className="text-outline hover:text-primary transition-colors">Términos de Servicio</button>
-            <button onClick={() => setLegalModal('privacy')} className="text-outline hover:text-primary transition-colors">Privacidad de Datos</button>
+            <button onClick={() => setLegalModal('terms')} className="text-outline hover:text-primary transition-colors">{t('fl.terms')}</button>
+            <button onClick={() => setLegalModal('privacy')} className="text-outline hover:text-primary transition-colors">{t('fl.privacy')}</button>
           </div>
         </footer>
       </main>
@@ -674,7 +674,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
                   <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
                     <Video size={22} />
                   </div>
-                  <h3 className="font-title-md text-title-md text-on-surface">Iniciar videollamada</h3>
+                  <h3 className="font-title-md text-title-md text-on-surface">{t('fl.startVideoCall')}</h3>
                 </div>
                 <button
                   onClick={() => !videoStarting && setShowVideoModal(false)}
@@ -684,7 +684,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
                   <Icon name="close" size={20} />
                 </button>
               </div>
-              <p className="text-on-surface-variant text-sm mb-4">Selecciona el paciente con quien quieres iniciar la videollamada.</p>
+              <p className="text-on-surface-variant text-sm mb-4">{t('fl.videoCallDesc')}</p>
 
               {videoLoading ? (
                 <div className="flex items-center justify-center py-10">
@@ -692,13 +692,11 @@ export function FisioLayout({ children }: FisioLayoutProps) {
                 </div>
               ) : videoPatients.length === 0 ? (
                 <div className="text-center py-8">
-                  <p className="text-on-surface-variant text-sm mb-4">No tienes pacientes vinculados todavía.</p>
+                  <p className="text-on-surface-variant text-sm mb-4">{t('fl.noLinkedPatients')}</p>
                   <button
                     onClick={() => { setShowVideoModal(false); navigate('/ocr-scanner'); }}
                     className="px-5 py-3 rounded-xl bg-primary text-on-primary font-bold text-sm hover:scale-[0.98] transition-all min-h-[48px]"
-                  >
-                    Cargar nuevo paciente
-                  </button>
+                  >{t('fl.loadNewPatient')}</button>
                 </div>
               ) : (
                 <div className="space-y-2 max-h-72 overflow-y-auto">

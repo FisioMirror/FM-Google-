@@ -319,7 +319,7 @@ export function ReassignRoutineModal({
                   <Icon name="autorenew" size={24} className="text-primary" />
                 </div>
                 <div className="min-w-0">
-                  <h2 className="font-title-md text-title-md text-on-surface truncate">Reasignar Rutina</h2>
+                  <h2 className="font-title-md text-title-md text-on-surface truncate">{t('rrm.title')}</h2>
                   <p className="text-xs text-on-surface-variant truncate">
                     Paciente: <span className="font-semibold">{pacienteNombre}</span>
                   </p>
@@ -380,7 +380,7 @@ export function ReassignRoutineModal({
                     <input
                       value={search}
                       onChange={(e) => setSearch(e.target.value)}
-                      placeholder="Buscar ejercicio..."
+                      placeholder={t('rrm.searchExercise')}
                       className="input-base w-full pl-12 pr-4 py-3 rounded-xl focus:ring-2 focus:ring-primary/20 bg-surface-container border border-outline-variant/20"
                     />
                   </div>
@@ -389,7 +389,7 @@ export function ReassignRoutineModal({
                     onChange={(e) => setFiltroArt(e.target.value as typeof filtroArt)}
                     className="input-base px-4 py-3 rounded-xl bg-surface-container border border-outline-variant/20 focus:ring-2 focus:ring-primary/20"
                   >
-                    <option value="todas">Todas las articulaciones</option>
+                    <option value="todas">{t('rrm.allJoints')}</option>
                     {(Object.keys(ARTICULACION_LABELS) as ExerciseLibraryItem['articulacion'][]).map((a) => (
                       <option key={a} value={a}>{ARTICULACION_LABELS[a]}</option>
                     ))}
@@ -443,7 +443,7 @@ export function ReassignRoutineModal({
                 {filteredLibrary.length === 0 && (
                   <div className="text-center py-12">
                     <Icon name="search_off" size={48} className="mx-auto text-outline opacity-30 mb-2" />
-                    <p className="text-on-surface-variant text-sm">No se encontraron ejercicios con ese criterio.</p>
+                    <p className="text-on-surface-variant text-sm">{t('rrm.noExercisesFound')}</p>
                   </div>
                 )}
 
@@ -461,7 +461,7 @@ export function ReassignRoutineModal({
               <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}>
                 {selected.length === 0 ? (
                   <div className="text-center py-12">
-                    <p className="text-on-surface-variant">No has seleccionado ejercicios. Vuelve al paso anterior.</p>
+                    <p className="text-on-surface-variant">{t('rrm.noSelection')}</p>
                   </div>
                 ) : (
                   <div className="space-y-3">
@@ -481,7 +481,7 @@ export function ReassignRoutineModal({
                           </div>
                           <button
                             onClick={() => removeSelected(ex.libraryId)}
-                            aria-label="Quitar ejercicio"
+                            aria-label={t('rrm.removeExercise')}
                             className="w-8 h-8 rounded-lg bg-error-container/50 text-error hover:bg-error-container transition-all flex items-center justify-center shrink-0"
                           >
                             <Icon name="delete" size={16} />
@@ -617,18 +617,15 @@ export function ReassignRoutineModal({
                 <div className="p-5 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-start gap-3">
                   <Icon name="archive" size={24} className="text-amber-600 shrink-0 mt-0.5" />
                   <div>
-                    <p className="font-bold text-on-surface text-sm">La rutina actual será archivada</p>
-                    <p className="text-xs text-on-surface-variant mt-1">
-                      La rutina activa existente cambiará a estado <span className="font-semibold">archivada</span> (no se elimina) y la nueva rutina quedará como <span className="font-semibold">activa</span>.
+                    <p className="font-bold text-on-surface text-sm">{t('rrm.currentArchived')}</p>
+                    <p className="text-xs text-on-surface-variant mt-1">{t('rrm.activeWillChange')}<span className="font-semibold">archivada</span>{t('rrm.notDeleted')}<span className="font-semibold">activa</span>.
                     </p>
                   </div>
                 </div>
 
                 <div className="p-5 rounded-2xl bg-surface-container border border-outline-variant/20">
                   <h3 className="font-bold text-on-surface mb-3 flex items-center gap-2">
-                    <Icon name="list_alt" size={20} className="text-primary" />
-                    Resumen de la nueva rutina
-                  </h3>
+                    <Icon name="list_alt" size={20} className="text-primary" />{t('rrm.summary')}</h3>
                   <div className="space-y-2">
                     {selected.map((ex) => (
                       <div key={ex.libraryId} className="flex items-center justify-between gap-3 p-3 rounded-xl bg-surface">
@@ -651,7 +648,7 @@ export function ReassignRoutineModal({
                     ))}
                   </div>
                   <div className="mt-3 pt-3 border-t border-outline-variant/20 flex items-center justify-between text-sm">
-                    <span className="text-on-surface-variant">Total de ejercicios</span>
+                    <span className="text-on-surface-variant">{t('rrm.totalExercises')}</span>
                     <span className="font-bold text-on-surface">{selected.length}</span>
                   </div>
                 </div>
@@ -700,9 +697,7 @@ export function ReassignRoutineModal({
                     </>
                   ) : (
                     <>
-                      <Icon name="save" size={18} />
-                      Confirmar y Guardar
-                    </>
+                      <Icon name="save" size={18} />{t('rrm.confirmSave')}</>
                   )}
                 </button>
               )}

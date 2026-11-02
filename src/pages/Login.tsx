@@ -52,6 +52,7 @@ function CharacterSpotlight({
   reduceMotion: boolean | null;
   onSelectRole: (role: LoginRole) => void;
 }) {
+  const { t } = useTranslation();
   const isPaciente = activeRole === 'paciente';
   const isFisio = activeRole === 'fisioterapeuta';
 
@@ -128,7 +129,7 @@ function CharacterSpotlight({
         onClick={() => onSelectRole('fisioterapeuta')}
         role="button"
         tabIndex={0}
-        aria-label="Seleccionar rol Fisioterapeuta"
+        aria-label={t('auth.selectRoleTherapist')}
         className={cn(
           'absolute top-0 bottom-0 left-0 w-1/2 pointer-events-auto cursor-pointer group flex flex-col justify-center items-center transition-all',
           isFisio ? 'z-20' : 'z-10 hover:bg-emerald-500/[0.02]'
@@ -165,7 +166,7 @@ function CharacterSpotlight({
           <div className="absolute top-[28%] left-[24%] opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none transform -translate-y-1 group-hover:translate-y-0">
             <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-md shadow-md border border-slate-200/90 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-[11px] font-bold">
               <Icon name="touch_app" size={12} />
-              <span>Ver Fisioterapeuta</span>
+              <span>{t('auth.viewTherapist')}</span>
             </div>
           </div>
         )}
@@ -176,7 +177,7 @@ function CharacterSpotlight({
         onClick={() => onSelectRole('paciente')}
         role="button"
         tabIndex={0}
-        aria-label="Seleccionar rol Paciente"
+        aria-label={t('auth.selectRolePatient')}
         className={cn(
           'absolute top-0 bottom-0 right-0 w-1/2 pointer-events-auto cursor-pointer group flex flex-col justify-center items-center transition-all',
           isPaciente ? 'z-20' : 'z-10 hover:bg-sky-500/[0.02]'
@@ -213,7 +214,7 @@ function CharacterSpotlight({
           <div className="absolute top-[32%] right-[24%] opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none transform -translate-y-1 group-hover:translate-y-0">
             <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-md shadow-md border border-slate-200/90 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-[11px] font-bold">
               <Icon name="touch_app" size={12} />
-              <span>Ver Paciente</span>
+              <span>{t('auth.viewPatient')}</span>
             </div>
           </div>
         )}
@@ -787,7 +788,7 @@ export function Login() {
             <LanguageSelector compact />
             <button
               onClick={toggleTheme}
-              aria-label="Cambiar tema"
+              aria-label={t('auth.toggleTheme')}
               className="p-2.5 rounded-full border border-slate-200/80 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 backdrop-blur-md hover:scale-105 transition-all text-[#00504d] dark:text-[#8ad3cf] shadow-sm hover:shadow cursor-pointer"
             >
               <Icon name={theme === 'dark' ? 'light_mode' : 'dark_mode'} size={18} />
@@ -902,9 +903,7 @@ export function Login() {
                   Etapa {fisioStep}/2
                 </span>
               </div>
-              <p className="text-xs text-slate-600 dark:text-slate-400">
-                Completa tus datos profesionales para validar tu acceso.
-              </p>
+              <p className="text-xs text-slate-600 dark:text-slate-400">{t('auth.completeProfessionalData')}</p>
             </div>
           )}
 
@@ -1206,7 +1205,7 @@ export function Login() {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="Correo profesional"
-                        aria-label="Correo del fisioterapeuta"
+                        aria-label={t('auth.therapistEmail')}
                         autoComplete="email"
                         required
                         className="w-full rounded-2xl border border-slate-200/80 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 pl-11 pr-4 py-3.5 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 outline-none transition-all focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20 dark:focus:border-teal-400 dark:focus:ring-teal-400/20 shadow-sm"
@@ -1223,7 +1222,7 @@ export function Login() {
                         type={showPassword ? 'text' : 'password'}
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        placeholder="Contraseña"
+                        placeholder={t('auth.password')}
                         aria-label={t('auth.ariaFisioPass')}
                         autoComplete="current-password"
                         required
@@ -1420,9 +1419,7 @@ export function Login() {
                             />
                           </div>
                           <div>
-                            <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                              Universidad de Egreso
-                            </label>
+                            <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">{t('auth.graduationUniversity')}</label>
                             <input
                               value={universidad}
                               onChange={(e) => setUniversidad(e.target.value)}
@@ -1525,9 +1522,7 @@ export function Login() {
                         className="space-y-4"
                       >
                         <div>
-                          <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-2">
-                            Carga de credencial profesional (opcional)
-                          </label>
+                          <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-2">{t('auth.uploadCredential')}</label>
                           <div
                             onClick={() => document.getElementById('credencial-file-input')?.click()}
                             className="border-2 border-dashed border-[#00504d]/30 dark:border-teal-500/30 rounded-2xl p-6 text-center cursor-pointer hover:border-[#00504d] dark:hover:border-teal-400 hover:bg-[#00504d]/5 transition-all"
@@ -1546,9 +1541,7 @@ export function Login() {
                                     <span className="text-xs font-bold">{credencialFile?.name}</span>
                                   </div>
                                 )}
-                                <span className="text-[11px] text-slate-600 dark:text-slate-400">
-                                  Click para cambiar de archivo
-                                </span>
+                                <span className="text-[11px] text-slate-600 dark:text-slate-400">{t('auth.clickToChangeFile')}</span>
                               </div>
                             ) : (
                               <div className="flex flex-col items-center gap-2">
@@ -1689,9 +1682,7 @@ export function Login() {
               onClick={fillPacienteDemo}
               className="h-11 px-4 rounded-full border border-slate-200/80 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 backdrop-blur-md hover:bg-white dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 text-xs font-bold shadow-sm transition-colors flex items-center gap-1.5 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00504d]/40 dark:focus-visible:ring-teal-400/50"
             >
-              <Icon name="person" size={15} className="text-blue-600 dark:text-blue-400" />
-              Demo Paciente
-            </button>
+              <Icon name="person" size={15} className="text-blue-600 dark:text-blue-400" />{t('auth.demoPatient')}</button>
           </div>
         </div>
       </div>
@@ -1788,9 +1779,7 @@ export function Login() {
                 className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-slate-900/60 backdrop-blur-md z-30"
               >
                 <Spinner size={44} className="text-teal-400 animate-spin" />
-                <p className="text-white font-bold text-lg tracking-wide">
-                  Preparando tu espacio...
-                </p>
+                <p className="text-white font-bold text-lg tracking-wide">{t('auth.preparingSpace')}</p>
               </motion.div>
             )}
           </AnimatePresence>
@@ -1807,9 +1796,7 @@ export function Login() {
                 <div className="rounded-2xl bg-red-900/60 backdrop-blur-md px-8 py-4 border border-red-500/40 shadow-2xl">
                   <div className="flex items-center gap-3 text-red-200">
                     <Icon name="error" filled size={24} />
-                    <span className="text-sm font-bold">
-                      Revisa tus credenciales e intenta de nuevo
-                    </span>
+                    <span className="text-sm font-bold">{t('auth.checkCredentials')}</span>
                   </div>
                 </div>
               </motion.div>
@@ -1843,9 +1830,7 @@ export function Login() {
               <h3 className="font-extrabold text-xl text-center text-[#00504d] dark:text-[#8ad3cf] mb-1">
                 {t('auth.recoverPassword')}
               </h3>
-              <p className="text-xs text-slate-600 dark:text-slate-400 text-center mb-5 leading-relaxed">
-                Ingresa tu correo y te enviaremos un enlace seguro para restablecer tu acceso.
-              </p>
+              <p className="text-xs text-slate-600 dark:text-slate-400 text-center mb-5 leading-relaxed">{t('auth.resetDesc')}</p>
 
               <div className="relative mb-4">
                 <Icon

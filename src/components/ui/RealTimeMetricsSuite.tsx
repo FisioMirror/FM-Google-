@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
@@ -15,6 +16,7 @@ export const PoseConfidenceLiveIndicator: React.FC<PoseConfidenceLiveIndicatorPr
   visibleLandmarksCount = 33,
   className,
 }) => {
+  const { t } = useTranslation();
   const [jitter, setJitter] = useState(0);
 
   useEffect(() => {
@@ -66,9 +68,7 @@ export const PoseConfidenceLiveIndicator: React.FC<PoseConfidenceLiveIndicatorPr
         >
           {displayConfidence}%
         </motion.span>
-        <span className="text-[9px] uppercase font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full">
-          Lock Cinemático
-        </span>
+        <span className="text-[9px] uppercase font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full">{t('rtm.kinematicLock')}</span>
       </div>
     </motion.div>
   );
@@ -86,6 +86,7 @@ export const AngularVelocityStreamGauge: React.FC<AngularVelocityStreamGaugeProp
   maxSafeVelocity = 90,
   className,
 }) => {
+  const { t } = useTranslation();
   const [vel, setVel] = useState(velocityDegSec);
   const percent = Math.min(100, (vel / maxSafeVelocity) * 100);
 
@@ -110,9 +111,7 @@ export const AngularVelocityStreamGauge: React.FC<AngularVelocityStreamGaugeProp
             <Gauge className="w-4 h-4 animate-pulse" />
           </div>
           <div>
-            <span className="text-xs font-bold text-slate-800 dark:text-slate-100 block">
-              Velocidad Angular en Vivo
-            </span>
+            <span className="text-xs font-bold text-slate-800 dark:text-slate-100 block">{t('rtm.liveAngularVelocity')}</span>
             <span className="text-[10px] text-slate-500 dark:text-slate-400">
               Control motriz articular
             </span>
@@ -137,7 +136,7 @@ export const AngularVelocityStreamGauge: React.FC<AngularVelocityStreamGaugeProp
 
       <div className="flex justify-between text-[10px] text-slate-400 font-mono font-semibold">
         <span>0 °/s</span>
-        <span className="text-teal-600 dark:text-teal-400">Zona de Control Óptimo</span>
+        <span className="text-teal-600 dark:text-teal-400">{t('rtm.optimalControlZone')}</span>
         <span>{maxSafeVelocity} °/s</span>
       </div>
     </motion.div>
@@ -150,6 +149,7 @@ export interface ROMDeviationLiveChartProps {
 }
 
 export const ROMDeviationLiveChart: React.FC<ROMDeviationLiveChartProps> = ({ className }) => {
+  const { t } = useTranslation();
   const [activeCurve] = useState<'both' | 'real' | 'ideal'>('both');
 
   return (
@@ -220,11 +220,9 @@ export const ROMDeviationLiveChart: React.FC<ROMDeviationLiveChartProps> = ({ cl
 
       <div className="flex items-center justify-between text-[10px] text-slate-500 dark:text-slate-400">
         <span className="flex items-center gap-1">
-          <span className="size-2 rounded-full bg-teal-400" /> Paciente Real
-        </span>
+          <span className="size-2 rounded-full bg-teal-400" />{t('rtm.realPatient')}</span>
         <span className="flex items-center gap-1">
-          <span className="w-3 h-0.5 bg-slate-400 inline-block border-b border-dashed" /> Plantilla Clínica
-        </span>
+          <span className="w-3 h-0.5 bg-slate-400 inline-block border-b border-dashed" />{t('rtm.clinicalTemplate')}</span>
       </div>
     </motion.div>
   );
@@ -296,6 +294,7 @@ export const CameraFramingGuideHUD: React.FC<CameraFramingGuideHUDProps> = ({
   framingStatus = 'ok',
   className,
 }) => {
+  const { t } = useTranslation();
   const [status, setStatus] = useState(framingStatus);
 
   const cycleStatus = () => {
@@ -319,9 +318,7 @@ export const CameraFramingGuideHUD: React.FC<CameraFramingGuideHUDProps> = ({
           <Scan className="w-4 h-4 animate-spin" style={{ animationDuration: '24s' }} />
         </div>
         <div>
-          <span className="text-xs font-bold text-slate-800 dark:text-slate-100 block">
-            Encuadre Óptimo AR
-          </span>
+          <span className="text-xs font-bold text-slate-800 dark:text-slate-100 block">{t('rtm.optimalArFraming')}</span>
           <span className="text-[10px] text-slate-500 dark:text-slate-400">
             Distancia ideal: 2.1 metros
           </span>
@@ -355,6 +352,7 @@ export const RepCadenceMetronome: React.FC<RepCadenceMetronomeProps> = ({
   durationSeconds = 2.0,
   className,
 }) => {
+  const { t } = useTranslation();
   const [currentPhase, setCurrentPhase] = useState(phase);
 
   const getPhaseData = () => {
@@ -391,9 +389,7 @@ export const RepCadenceMetronome: React.FC<RepCadenceMetronomeProps> = ({
             <Timer className="w-4 h-4" />
           </div>
           <div>
-            <span className="text-xs font-bold text-slate-800 dark:text-slate-100 block">
-              Metrónomo de Cadencia
-            </span>
+            <span className="text-xs font-bold text-slate-800 dark:text-slate-100 block">{t('rtm.cadenceMetronome')}</span>
             <span className="text-[10px] text-slate-500 dark:text-slate-400">Ritmo {durationSeconds}-1-3</span>
           </div>
         </div>
@@ -433,6 +429,7 @@ export const AIBiomechanicalSummaryBadge: React.FC<AIBiomechanicalSummaryBadgePr
   summaryText = 'Excelente control lumbopélvico con 0 compensaciones escapulares durante las 3 series.',
   className,
 }) => {
+  const { t } = useTranslation();
   return (
     <motion.div
       whileHover={{ y: -3, scale: 1.01 }}
@@ -448,10 +445,8 @@ export const AIBiomechanicalSummaryBadge: React.FC<AIBiomechanicalSummaryBadgePr
             <Bot className="w-4 h-4 animate-bounce" />
           </div>
           <div>
-            <span className="text-xs font-bold text-primary block">
-              Evaluación Rápida Physi IA
-            </span>
-            <span className="text-[10px] text-slate-400">Análisis cinemático automático</span>
+            <span className="text-xs font-bold text-primary block">{t('rtm.quickPhysiEval')}</span>
+            <span className="text-[10px] text-slate-400">{t('rtm.autoKinematic')}</span>
           </div>
         </div>
         <span className="text-xs font-mono font-black text-teal-600 dark:text-teal-400 bg-teal-500/15 border border-teal-500/30 px-3 py-1 rounded-full">
@@ -477,6 +472,7 @@ export const SkeletonJointSelectorHUD: React.FC<SkeletonJointSelectorHUDProps> =
   onSelect,
   className,
 }) => {
+  const { t } = useTranslation();
   const [active, setActive] = useState(selectedJoint);
   const joints = [
     { name: 'Hombro', rom: '165°' },
@@ -497,7 +493,7 @@ export const SkeletonJointSelectorHUD: React.FC<SkeletonJointSelectorHUDProps> =
     >
       <div className="flex items-center gap-2 text-xs font-bold text-slate-800 dark:text-white">
         <UserCheck className="w-4 h-4 text-primary" />
-        <span>Articulación Focal MediaPipe</span>
+        <span>{t('rtm.mediapipeFocusJoint')}</span>
       </div>
       <div className="flex flex-wrap gap-1.5">
         {joints.map((j) => {
@@ -542,6 +538,7 @@ export const HoldDurationTimerRing: React.FC<HoldDurationTimerRingProps> = ({
   totalSeconds = 10,
   className,
 }) => {
+  const { t } = useTranslation();
   const [seconds, setSeconds] = useState(secondsLeft);
   const [running, setRunning] = useState(false);
 
@@ -577,9 +574,7 @@ export const HoldDurationTimerRing: React.FC<HoldDurationTimerRingProps> = ({
           {running ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
         </button>
         <div>
-          <span className="text-xs font-bold text-slate-800 dark:text-white block">
-            Sostenimiento Isométrico
-          </span>
+          <span className="text-xs font-bold text-slate-800 dark:text-white block">{t('rtm.isometricHold')}</span>
           <span className="text-[10px] text-slate-500 dark:text-slate-400">
             {running ? 'Contando contracción fija...' : 'Toca para iniciar cuenta'}
           </span>
@@ -602,6 +597,7 @@ export const SessionQualityScoreTile: React.FC<SessionQualityScoreTileProps> = (
   score = 92,
   className,
 }) => {
+  const { t } = useTranslation();
   return (
     <motion.div
       whileHover={{ y: -3, scale: 1.01 }}
@@ -616,12 +612,8 @@ export const SessionQualityScoreTile: React.FC<SessionQualityScoreTileProps> = (
           <Sparkles className="w-4 h-4 animate-spin" style={{ animationDuration: '10s' }} />
         </div>
         <div>
-          <span className="text-xs font-bold text-slate-800 dark:text-white block">
-            Índice de Calidad Biomecánica
-          </span>
-          <span className="text-[10px] text-slate-500 dark:text-slate-400">
-            Simetría 94% • Cadencia 92% • Rango 90%
-          </span>
+          <span className="text-xs font-bold text-slate-800 dark:text-white block">{t('rtm.biomechQualityIndex')}</span>
+          <span className="text-[10px] text-slate-500 dark:text-slate-400">{t('rtm.sampleMetrics')}</span>
         </div>
       </div>
       <div className="text-2xl font-black font-mono text-teal-600 dark:text-teal-400 tabular-nums">
