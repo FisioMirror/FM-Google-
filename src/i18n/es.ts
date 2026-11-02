@@ -617,6 +617,23 @@ export const es = {
     updateSuccess: "Expediente actualizado correctamente",
     updateConnectionError: "Error de conexión al actualizar el expediente",
   },
+  pain: {
+    title: "Escala Analógica Visual (EVA)",
+    none: "Sin Dolor (Confort Absoluto)",
+    mild: "Dolor Leve Tolerable (Zona Segura)",
+    moderate: "Dolor Moderado (Atención Biomecánica)",
+    intense: "Dolor Intenso (Límite Articular)",
+    max: "Dolor Máximo Inhabilitante (Detener Inmediatamente)",
+    sliderAria: "Nivel de dolor de 0 a 10",
+    send: "Registrar dolor",
+    sent: "Registrado",
+    saving: "Guardando...",
+    savedToast: "Dolor registrado. Tu fisioterapeuta lo verá en tu expediente.",
+    saveError: "No se pudo registrar el dolor. Reintentá.",
+    demoNoSave: "Cuenta demo: la medición no se guarda en la base.",
+    hintReadOnly: "Esta vista no guarda la medición.",
+  },
+
   settings: {
     verseDesc: "Muestra versículos de sanidad, constancia y perseverancia en tu recuperación",
     signOut: "Cerrar Sesión",

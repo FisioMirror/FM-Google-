@@ -98,6 +98,30 @@ export function PatientDashboard() {
   const [recLoading, setRecLoading] = useState(false);
   const [isSpeakingCopilot, setIsSpeakingCopilot] = useState(false);
   const toast = useToast();
+
+  // Registro de dolor: persiste una medicion real en pain_reports (RLS: paciente = auth.uid()).
+  const [savingPain, setSavingPain] = useState(false);
+  const handlePainSubmit = async (pain: number) => {
+    if (!user) {
+      toast.error(t('pain.saveError'));
+      return;
+    }
+    if (isDemo) {
+      toast.info(t('pain.demoNoSave'));
+      return;
+    }
+    setSavingPain(true);
+    try {
+      const { error } = await supabase.from('pain_reports').insert({ paciente_id: user.id, nivel: pain });
+      if (error) throw error;
+      toast.success(t('pain.savedToast'));
+    } catch (err) {
+      console.error('pain_reports insert', err);
+      toast.error(t('pain.saveError'));
+    } finally {
+      setSavingPain(false);
+    }
+  };
   const gamification = useGamification();
 
   const loadData = useCallback(async () => {
@@ -652,7 +676,7 @@ export function PatientDashboard() {
           </CollapsibleSection>
 
           {/* Registro del Umbral de Dolor */}
-          <PainScaleInteractiveCard initialPain={2} />
+          <PainScaleInteractiveCard initialPain={2} onSubmit={handlePainSubmit} submitting={savingPain} />
 
           {/* AI Physi Recommendation Card */}
           <div className="p-6 rounded-3xl bg-surface/80 dark:bg-surface-container-low/60 border border-outline/10 space-y-4">

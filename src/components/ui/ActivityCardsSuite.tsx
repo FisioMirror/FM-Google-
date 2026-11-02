@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
 import { Activity, Smile, Meh, Frown, Footprints, Waves, Crosshair, HeartPulse, Milestone, Check, ChevronRight, TrendingUp, Calendar, Sparkles, Flame, ShieldCheck, Play, RotateCcw } from 'lucide-react';
 
@@ -208,14 +209,21 @@ export interface PainScaleInteractiveCardProps {
   initialPain?: number; // 0 - 10
   className?: string;
   onPainChange?: (pain: number) => void;
+  /** Si se provee, la tarjeta muestra el boton Enviar y persiste la medicion. */
+  onSubmit?: (pain: number) => Promise<void> | void;
+  submitting?: boolean;
 }
 
 export const PainScaleInteractiveCard: React.FC<PainScaleInteractiveCardProps> = ({
   initialPain = 3,
   className,
   onPainChange,
+  onSubmit,
+  submitting = false,
 }) => {
+  const { t } = useTranslation();
   const [pain, setPain] = useState(initialPain);
+  const [sent, setSent] = useState(false);
 
   const getFace = () => {
     if (pain === 0) return <Smile className="w-8 h-8 text-emerald-400 animate-pulse" />;
@@ -225,11 +233,11 @@ export const PainScaleInteractiveCard: React.FC<PainScaleInteractiveCardProps> =
   };
 
   const getLabel = () => {
-    if (pain === 0) return 'Sin Dolor (Confort Absoluto)';
-    if (pain <= 3) return 'Dolor Leve Tolerable (Zona Segura)';
-    if (pain <= 6) return 'Dolor Moderado (Atención Biomecánica)';
-    if (pain <= 8) return 'Dolor Intenso (Límite Articular)';
-    return 'Dolor Máximo Inhabilitante (Detener Inmediatamente)';
+    if (pain === 0) return t('pain.none');
+    if (pain <= 3) return t('pain.mild');
+    if (pain <= 6) return t('pain.moderate');
+    if (pain <= 8) return t('pain.intense');
+    return t('pain.max');
   };
 
   const getAccentGradient = () => {
@@ -244,12 +252,19 @@ export const PainScaleInteractiveCard: React.FC<PainScaleInteractiveCardProps> =
     return 'text-rose-600 dark:text-rose-400 bg-rose-500/15 border-rose-500/30';
   };
 
+  const handleSubmit = async () => {
+    if (!onSubmit || submitting) return;
+    await onSubmit(pain);
+    setSent(true);
+    window.setTimeout(() => setSent(false), 2600);
+  };
+
   return (
     <motion.div
       whileHover={{ y: -3, scale: 1.01 }}
       transition={{ duration: 0.2 }}
       className={cn(
-        "relative p-5 rounded-3xl bg-gradient-to-br backdrop-blur-2xl border border-outline-variant/30 dark:border-white/10 shadow-lg overflow-hidden transition-all",
+        "relative p-5 rounded-3xl bg-gradient-to-br border border-outline-variant/30 dark:border-white/10 shadow-lg overflow-hidden transition-all",
         getAccentGradient(),
         className
       )}
@@ -260,7 +275,7 @@ export const PainScaleInteractiveCard: React.FC<PainScaleInteractiveCardProps> =
             <Activity className="w-4 h-4" />
           </div>
           <span className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200">
-            Escala Analógica Visual (EVA)
+            {t('pain.title')}
           </span>
         </div>
         <motion.span
@@ -269,49 +284,52 @@ export const PainScaleInteractiveCard: React.FC<PainScaleInteractiveCardProps> =
           animate={{ scale: 1 }}
           className={cn("text-xs font-mono font-black px-3 py-1 rounded-full border shadow-xs", getBadgeColor())}
         >
-          {pain} / 10 EVA
+          {pain} / 10
         </motion.span>
       </div>
 
-      <div className="flex items-center gap-4 py-2">
-        <motion.div
-          key={pain}
-          initial={{ scale: 0.7, rotate: -10 }}
-          animate={{ scale: 1, rotate: 0 }}
-          transition={{ type: 'spring', stiffness: 400, damping: 20 }}
-          className="p-3.5 rounded-2xl bg-surface/90 dark:bg-slate-800/90 shadow-md border border-black/5 dark:border-white/10 shrink-0"
-        >
-          {getFace()}
-        </motion.div>
-        <div className="flex-1 min-w-0">
-          <div className="text-sm font-black text-slate-900 dark:text-white mb-0.5 truncate">{getLabel()}</div>
-          <p className="text-[11px] text-slate-500 dark:text-slate-400">
-            Ajusta el slider táctil según la sensación percibida al final del rango de movimiento.
-          </p>
+      <div className="flex items-center gap-4 my-2">
+        <div className="shrink-0">{getFace()}</div>
+        <div className="min-w-0 flex-1">
+          <p className="text-sm font-semibold text-slate-900 dark:text-slate-100 leading-snug">{getLabel()}</p>
+          <input
+            type="range"
+            min={0}
+            max={10}
+            step={1}
+            value={pain}
+            aria-label={t('pain.sliderAria')}
+            onChange={(e) => {
+              const v = Number(e.target.value);
+              setPain(v);
+              onPainChange?.(v);
+            }}
+            className="mt-2 w-full accent-teal-600 cursor-pointer"
+          />
+          <div className="flex justify-between text-[10px] font-mono text-slate-600 dark:text-slate-400">
+            <span>0</span><span>5</span><span>10</span>
+          </div>
         </div>
       </div>
 
-      <div className="mt-4 space-y-1.5">
-        <div className="relative">
-          <input
-            type="range"
-            min="0"
-            max="10"
-            value={pain}
-            onChange={(e) => {
-              const val = Number(e.target.value);
-              setPain(val);
-              onPainChange?.(val);
-            }}
-            className="w-full accent-teal-600 cursor-pointer h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none"
-          />
-        </div>
-        <div className="flex justify-between text-[10px] font-mono font-bold text-slate-400">
-          <span className="text-emerald-500">0 (Confort)</span>
-          <span className="text-amber-500">5 (Moderado)</span>
-          <span className="text-rose-500">10 (Crítico)</span>
-        </div>
-      </div>
+      {onSubmit ? (
+        <button
+          type="button"
+          onClick={handleSubmit}
+          disabled={submitting}
+          className="mt-3 w-full flex items-center justify-center gap-2 py-2.5 rounded-2xl text-xs font-bold bg-slate-900 text-white dark:bg-white dark:text-slate-900 hover:opacity-90 disabled:opacity-60 transition-opacity"
+        >
+          {sent ? (
+            <><Check className="w-4 h-4" />{t('pain.sent')}</>
+          ) : submitting ? (
+            t('pain.saving')
+          ) : (
+            t('pain.send')
+          )}
+        </button>
+      ) : (
+        <p className="mt-3 text-[11px] text-slate-600 dark:text-slate-400">{t('pain.hintReadOnly')}</p>
+      )}
     </motion.div>
   );
 };

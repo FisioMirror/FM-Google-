@@ -613,6 +613,23 @@ export const pt: TranslationSchema = {
     updateSuccess: "Prontuário atualizado com sucesso",
     updateConnectionError: "Erro de conexão ao atualizar o prontuário",
   },
+  pain: {
+    title: "Escala Analógica Visual (EVA)",
+    none: "Sem Dor (Conforto Absoluto)",
+    mild: "Dor Leve Tolerável (Zona Segura)",
+    moderate: "Dor Moderado (Atenção Biomecânica)",
+    intense: "Dor Intenso (Limite Articular)",
+    max: "Dor Máximo Incapacitante (Parar Imediatamente)",
+    sliderAria: "Nível de dor de 0 a 10",
+    send: "Registrar dor",
+    sent: "Registrado",
+    saving: "Salvando...",
+    savedToast: "Dor registrado. Seu fisioterapeuta verá no seu prontuário.",
+    saveError: "Não foi possível registrar a dor. Tente novamente.",
+    demoNoSave: "Conta demo: a medição não é salva no banco.",
+    hintReadOnly: "Esta visualização não salva a medição.",
+  },
+
   settings: {
     verseDesc: "Mostra versículos de cura, constância e perseverança na sua recuperação",
     signOut: "Sair",

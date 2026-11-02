@@ -613,6 +613,23 @@ export const en: TranslationSchema = {
     updateSuccess: "Record updated successfully",
     updateConnectionError: "Connection error while updating the record",
   },
+  pain: {
+    title: "Visual Analogue Scale (VAS)",
+    none: "No Pain (Absolute Comfort)",
+    mild: "Mild Tolerable Pain (Safe Zone)",
+    moderate: "Moderate Pain (Biomechanical Attention)",
+    intense: "Intense Pain (Joint Limit)",
+    max: "Maximum Disabling Pain (Stop Immediately)",
+    sliderAria: "Pain level from 0 to 10",
+    send: "Log pain",
+    sent: "Logged",
+    saving: "Saving...",
+    savedToast: "Pain logged. Your physiotherapist will see it in your record.",
+    saveError: "Could not log the pain. Try again.",
+    demoNoSave: "Demo account: the measurement is not saved to the database.",
+    hintReadOnly: "This view does not save the measurement.",
+  },
+
   settings: {
     verseDesc: "Shows verses of healing, perseverance and encouragement in your recovery",
     signOut: "Sign Out",
