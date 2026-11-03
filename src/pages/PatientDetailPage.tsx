@@ -492,7 +492,7 @@ export function PatientDetailPage() {
             className="px-4 py-2.5 rounded-2xl bg-surface-container hover:bg-surface-container-high border border-outline/10 text-on-surface text-xs font-bold transition-all flex items-center gap-2"
           >
             <Icon name="picture_as_pdf" size={16} />
-            <span>Exportar PDF</span>
+            <span>{t('tr.exportar_pdf')}</span>
           </button>
 
           <button
@@ -654,7 +654,7 @@ export function PatientDetailPage() {
             <GlassPanel className="card-glow-hover p-6 rounded-3xl">
               <div className="flex items-center gap-2 mb-2">
                 <Icon name="check_circle" size={20} className="text-primary" />
-                <span className="text-sm text-on-surface-variant font-semibold">Sesiones Completadas</span>
+                <span className="text-sm text-on-surface-variant font-semibold">{t('tr.sesiones_completadas')}</span>
               </div>
               <p className="text-2xl font-bold text-on-surface">{totalSessions}</p>
               {sessions.length > 1 && (
@@ -674,7 +674,7 @@ export function PatientDetailPage() {
             {clinicalFeed.length > 0 ? (
               <ClinicalActivityFeed
                 items={clinicalFeed}
-                title="Historial de sesiones"
+                title={t('tr.historial_de_sesiones')}
                 subtitle={t('pdp.realRecordDesc')}
               />
             ) : (
@@ -782,7 +782,7 @@ export function PatientDetailPage() {
                       )}
                       {Boolean(s.compensaciones_detectadas) && typeof s.compensaciones_detectadas === 'object' && String(s.compensaciones_detectadas) !== '[object Object]' && (
                         <div className="mt-2 p-3 rounded-xl bg-amber-500/10 text-sm text-amber-600">
-                          <p className="text-xs font-bold uppercase tracking-wider mb-1">Compensaciones detectadas</p>
+                          <p className="text-xs font-bold uppercase tracking-wider mb-1">{t('tr.compensaciones_detectadas')}</p>
                           {String((s.compensaciones_detectadas as Record<string, unknown>).tipo || 'Compensación detectada durante la sesión')}
                         </div>
                       )}
@@ -875,7 +875,7 @@ export function PatientDetailPage() {
             </div>
             <p className="text-sm text-on-surface-variant mb-4 leading-relaxed">{routineNote}</p>
             <div className="bg-surface-variant/10 rounded-2xl p-4 mb-4">
-              <p className="text-xs text-on-surface-variant mb-2 font-semibold uppercase tracking-wider">Acciones sugeridas</p>
+              <p className="text-xs text-on-surface-variant mb-2 font-semibold uppercase tracking-wider">{t('tr.acciones_sugeridas')}</p>
               <ul className="text-sm text-on-surface space-y-1.5">
                 <li className="flex items-start gap-2"><Icon name="check_circle" size={16} className="text-success mt-0.5 shrink-0" />{t('pdp.reviewExercises')}</li>
                 <li className="flex items-start gap-2"><Icon name="check_circle" size={16} className="text-success mt-0.5 shrink-0" />{t('pdp.considerAdjust')}</li>
@@ -1003,7 +1003,7 @@ export function PatientDetailPage() {
                       setOcrProcessing(false);
                     }
                   }} disabled={!ocrUpdateFile || ocrProcessing} className="flex-1 px-6 py-3 rounded-xl bg-primary text-on-primary font-bold hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2 disabled:opacity-50">
-                    {ocrProcessing ? <><Spinner size={18} className="text-white" /> Analizando...</> : <><Icon name="psychology" size={18} /> Analizar con IA</>}
+                    {ocrProcessing ? <><Spinner size={18} className="text-white" />{t('tr.analizando')}</> : <><Icon name="psychology" size={18} />{t('tr.analizar_con_ia')}</>}
                   </button>
                 </div>
               </>

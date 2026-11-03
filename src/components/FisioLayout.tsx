@@ -359,7 +359,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
           title={collapsed ? 'Instalar App' : undefined}
         >
           <Download size={18} className="shrink-0 text-sky-600 dark:text-sky-400" />
-          {!collapsed && <span className="text-sm font-medium">Instalar App</span>}
+          {!collapsed && <span className="text-sm font-medium">{t('tr.instalar_app')}</span>}
         </button>
       )}
       {!collapsed && (
@@ -391,7 +391,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
         </button>
         <button
           onClick={() => { onNavAway?.(); setShowNotifications(true); }}
-          aria-label="Notificaciones"
+          aria-label={t('tr.notificaciones')}
           className="relative p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-sky-50 dark:hover:bg-slate-800 hover:text-sky-600 dark:hover:text-sky-400 transition-colors"
         >
           <Bell size={18} />
@@ -490,7 +490,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
                 <div className="flex items-center gap-3">
                   <div>
                     <h2 className="text-base font-extrabold text-slate-900 dark:text-white leading-tight">FisioMirror</h2>
-                    <p className="text-[10px] uppercase tracking-wider text-sky-600 dark:text-sky-400 font-bold">Edición Clínica</p>
+                    <p className="text-[10px] uppercase tracking-wider text-sky-600 dark:text-sky-400 font-bold">{t('tr.edicion_clinica')}</p>
                   </div>
                 </div>
                 <button
@@ -584,8 +584,8 @@ export function FisioLayout({ children }: FisioLayoutProps) {
             <button
               onClick={() => setPhysiGuideOpen(true)}
               className="p-2 rounded-xl text-on-surface-variant hover:text-primary hover:bg-primary/5 transition-colors active-scale flex items-center gap-1.5"
-              aria-label="Abrir Chatbot IA Physi"
-              title="Chatbot IA Physi"
+              aria-label={t('tr.abrir_chatbot_ia_physi')}
+              title={t('tr.chatbot_ia_physi')}
             >
               <Bot size={20} className="text-primary" />
               <span className="hidden xl:inline text-xs font-semibold text-primary">
@@ -638,7 +638,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
         <footer className="pt-6 pb-6 px-4 sm:px-8 flex flex-col md:flex-row justify-between text-outline text-xs gap-4 border-t border-white/10">
           <span>{t('fl.rights')}</span>
           <div className="flex gap-4">
-            <button onClick={() => setLegalModal('consent')} className="text-outline hover:text-primary transition-colors">Consentimiento Informado</button>
+            <button onClick={() => setLegalModal('consent')} className="text-outline hover:text-primary transition-colors">{t('tr.consentimiento_informado')}</button>
             <button onClick={() => setLegalModal('terms')} className="text-outline hover:text-primary transition-colors">{t('fl.terms')}</button>
             <button onClick={() => setLegalModal('privacy')} className="text-outline hover:text-primary transition-colors">{t('fl.privacy')}</button>
           </div>

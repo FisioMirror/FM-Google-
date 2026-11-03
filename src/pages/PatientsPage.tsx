@@ -563,7 +563,7 @@ export function PatientsPage() {
                 </button>
                 <button
                   onClick={() => setViewMode('list')}
-                  aria-label="Vista lista"
+                  aria-label={t('tr.vista_lista')}
                   className={cn(
                     'p-1.5 rounded-lg transition-all',
                     viewMode === 'list' ? 'bg-surface text-teal-600 shadow-xs font-bold' : 'text-outline hover:text-on-surface'
@@ -593,7 +593,7 @@ export function PatientsPage() {
             <EmptyState
               type="patients"
               icon="person_search"
-              title="No se encontraron pacientes"
+              title={t('tr.no_se_encontraron_pacientes')}
               description="Intenta modificar tu búsqueda o carga un nuevo paciente con el escáner OCR."
               actionLabel="Cargar Nuevo Paciente"
               onAction={() => navigate('/ocr-scanner')}
@@ -709,7 +709,7 @@ export function PatientsPage() {
                         </div>
                         <div className="flex justify-between text-[11px] text-outline font-medium">
                           <span>{p.sessionCount || 1} sesiones completadas</span>
-                          <span>Plan prescrito</span>
+                          <span>{t('tr.plan_prescrito')}</span>
                         </div>
                       </div>
 
@@ -750,7 +750,7 @@ export function PatientsPage() {
                         onClick={() => navigate(`/paciente/${p.id}`)}
                         className="flex-1 py-2.5 px-3 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-bold transition-all text-xs flex items-center justify-center gap-1.5 shadow-xs"
                       >
-                        <span>Expediente</span>
+                        <span>{t('tr.expediente')}</span>
                         <ArrowRight className="size-3.5" />
                       </button>
                     </div>
@@ -817,7 +817,7 @@ export function PatientsPage() {
                         </span>
                       </td>
                       <td className="p-4 text-right">
-                        <span className="text-teal-600 font-bold hover:underline">Ver Expediente</span>
+                        <span className="text-teal-600 font-bold hover:underline">{t('tr.ver_expediente')}</span>
                       </td>
                     </tr>
                   );

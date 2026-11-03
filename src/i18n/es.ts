@@ -1251,6 +1251,18 @@ export const es = {
     anterior_a_2015: "Anterior a 2015",
     o_escribe_una: "O escribe una...",
     vista_previa_credencial: "Vista previa credencial",
+    exportar_pdf: "Exportar PDF",
+    sesiones_completadas: "Sesiones Completadas",
+    historial_de_sesiones: "Historial de sesiones",
+    compensaciones_detectadas: "Compensaciones detectadas",
+    acciones_sugeridas: "Acciones sugeridas",
+    analizar_con_ia: "Analizar con IA",
+    edicion_clinica: "Edición Clínica",
+    vista_lista: "Vista lista",
+    no_se_encontraron_pacientes: "No se encontraron pacientes",
+    plan_prescrito: "Plan prescrito",
+    expediente: "Expediente",
+    ver_expediente: "Ver Expediente",
   },
 
   settings: {

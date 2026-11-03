@@ -1247,6 +1247,18 @@ export const pt: TranslationSchema = {
     anterior_a_2015: "Antes de 2015",
     o_escribe_una: "Ou digite uma...",
     vista_previa_credencial: "Prévia da credencial",
+    exportar_pdf: "Exportar PDF",
+    sesiones_completadas: "Sessões Concluídas",
+    historial_de_sesiones: "Histórico de sessões",
+    compensaciones_detectadas: "Compensações detectadas",
+    acciones_sugeridas: "Ações sugeridas",
+    analizar_con_ia: "Analisar com IA",
+    edicion_clinica: "Edição Clínica",
+    vista_lista: "Visualização em lista",
+    no_se_encontraron_pacientes: "Nenhum paciente encontrado",
+    plan_prescrito: "Plano prescrito",
+    expediente: "Prontuário",
+    ver_expediente: "Ver Prontuário",
   },
 
   settings: {
