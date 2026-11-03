@@ -1242,6 +1242,15 @@ export const es = {
     cumple_hipaa: "Cumple HIPAA",
     confirmar_reporte_pdf: "Confirmar Reporte PDF",
     campos_a_actualizar: "Campos a actualizar:",
+    seguridad: "Seguridad",
+    recursos: "Recursos",
+    whatsapp_directo: "WhatsApp Directo",
+    eliminar_cuenta: "Eliminar Cuenta",
+    fisioterapeuta: "Fisioterapeuta",
+    correo_profesional: "Correo profesional",
+    anterior_a_2015: "Anterior a 2015",
+    o_escribe_una: "O escribe una...",
+    vista_previa_credencial: "Vista previa credencial",
   },
 
   settings: {

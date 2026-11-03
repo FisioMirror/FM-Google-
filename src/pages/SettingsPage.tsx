@@ -637,7 +637,7 @@ export function SettingsPage() {
       <GlassPanel className="p-6 rounded-2xl relative overflow-hidden">
         <div className="blob-blue absolute -top-12 -right-12 w-32 h-32 opacity-20 pointer-events-none" />
         <div className="relative">
-          <h3 className="font-semibold text-on-surface gradient-text-blue mb-4">Seguridad</h3>
+          <h3 className="font-semibold text-on-surface gradient-text-blue mb-4">{t('tr.seguridad')}</h3>
           <button
             onClick={() => setShowPasswordModal(true)}
             className="premium-btn w-full bg-primary text-on-primary py-3 rounded-xl font-semibold flex items-center justify-center gap-2"
@@ -657,8 +657,7 @@ export function SettingsPage() {
               onClick={() => setShowDeleteModal(true)}
               className="premium-btn w-full bg-error/10 text-error py-3 rounded-xl font-semibold flex items-center justify-center gap-2 hover:bg-error/20 transition-colors border border-error/20"
             >
-              <Icon name="delete_forever" size={20} />Eliminar Cuenta
-            </button>
+              <Icon name="delete_forever" size={20} />{t('tr.eliminar_cuenta')}</button>
             <button
               onClick={() => signOut()}
               className="premium-btn w-full bg-surface-container-low text-on-surface-variant py-3 rounded-xl font-semibold flex items-center justify-center gap-2 hover:bg-surface-container-high transition-colors"
@@ -719,7 +718,7 @@ export function SettingsPage() {
       <GlassPanel className="p-6 rounded-2xl relative overflow-hidden">
         <div className="blob-emerald absolute -top-12 -right-12 w-32 h-32 opacity-20 pointer-events-none" />
         <div className="relative space-y-3">
-          <h3 className="font-semibold text-on-surface gradient-text-emerald mb-2">Recursos</h3>
+          <h3 className="font-semibold text-on-surface gradient-text-emerald mb-2">{t('tr.recursos')}</h3>
           <button
             onClick={() => setShowDocModal(true)}
             className="w-full flex items-center justify-between p-3 rounded-xl bg-surface-container-low/60 hover:bg-surface-container-high transition-colors group"
@@ -810,7 +809,7 @@ export function SettingsPage() {
               <MessageCircle size={20} />
             </div>
             <div>
-              <p className="font-bold text-sm">WhatsApp Directo</p>
+              <p className="font-bold text-sm">{t('tr.whatsapp_directo')}</p>
               <p className="text-xs opacity-80">+58 412 4081077</p>
             </div>
           </a>

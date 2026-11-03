@@ -1238,6 +1238,15 @@ export const en: TranslationSchema = {
     cumple_hipaa: "HIPAA Compliant",
     confirmar_reporte_pdf: "Confirm PDF Report",
     campos_a_actualizar: "Fields to update:",
+    seguridad: "Security",
+    recursos: "Resources",
+    whatsapp_directo: "Direct WhatsApp",
+    eliminar_cuenta: "Delete Account",
+    fisioterapeuta: "Physiotherapist",
+    correo_profesional: "Professional email",
+    anterior_a_2015: "Before 2015",
+    o_escribe_una: "Or type one...",
+    vista_previa_credencial: "Credential preview",
   },
 
   settings: {

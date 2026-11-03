@@ -155,7 +155,7 @@ function CharacterSpotlight({
               {/* Glass status badge */}
               <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/95 dark:bg-slate-900/90 backdrop-blur-md shadow-lg border border-emerald-500/35 text-emerald-800 dark:text-emerald-300 text-xs font-extrabold tracking-tight">
                 <Icon name="medical_services" size={13} className="text-emerald-600 dark:text-emerald-400" />
-                <span>Fisioterapeuta</span>
+                <span>{t('tr.fisioterapeuta')}</span>
               </div>
             </motion.div>
           )}
@@ -1204,7 +1204,7 @@ export function Login() {
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        placeholder="Correo profesional"
+                        placeholder={t('tr.correo_profesional')}
                         aria-label={t('auth.therapistEmail')}
                         autoComplete="email"
                         required
@@ -1453,7 +1453,7 @@ export function Login() {
                                   {y}
                                 </option>
                               ))}
-                              <option value="anterior">Anterior a 2015</option>
+                              <option value="anterior">{t('tr.anterior_a_2015')}</option>
                             </select>
                           </div>
                         </div>
@@ -1507,7 +1507,7 @@ export function Login() {
                                   addEspecialidad();
                                 }
                               }}
-                              placeholder="O escribe una..."
+                              placeholder={t('tr.o_escribe_una')}
                               className="bg-transparent text-xs text-slate-900 dark:text-slate-100 flex-grow min-w-[100px] outline-none"
                             />
                           </div>
@@ -1532,7 +1532,7 @@ export function Login() {
                                 {credencialFile?.type.startsWith('image/') ? (
                                   <img
                                     src={credencialPreview}
-                                    alt="Vista previa credencial"
+                                    alt={t('tr.vista_previa_credencial')}
                                     className="max-h-28 rounded-lg shadow-sm"
                                   />
                                 ) : (
