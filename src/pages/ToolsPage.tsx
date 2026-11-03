@@ -458,7 +458,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
             {scanResult && (
               <div className="mt-4 p-5 ios-glass-heavy refraction-border rounded-2xl space-y-3">
                 <div className="flex items-center justify-between mb-2">
-                  <h4 className="font-bold text-sm text-teal-800 dark:text-teal-200">Resultado del Análisis (22 Campos)</h4>
+                  <h4 className="font-bold text-sm text-teal-800 dark:text-teal-200">{t('tr.resultado_del_analisis_22_campos')}</h4>
                   <div className="flex gap-2">
                     <button
                       onClick={() => {
@@ -542,7 +542,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
                   <Icon name="calculate" size={24} className="animate-breathe-icon" />
                 </div>
                 <div>
-                  <h3 className="font-title-md text-xl font-bold text-teal-900 dark:text-teal-100">Calculadora IMC</h3>
+                  <h3 className="font-title-md text-xl font-bold text-teal-900 dark:text-teal-100">{t('tr.calculadora_imc')}</h3>
                   <p className="text-xs text-on-surface-variant mt-0.5">{t('tl.ocrClassification')}</p>
                 </div>
               </div>
@@ -553,7 +553,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
                   min={100}
                   max={250}
                   step={1}
-                  label="Estatura"
+                  label={t('tr.estatura')}
                   unit=" cm"
                   ticks={[120, 150, 175, 200, 220]}
                 />
@@ -563,7 +563,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
                   min={30}
                   max={200}
                   step={1}
-                  label="Peso"
+                  label={t('tr.peso')}
                   unit=" kg"
                   ticks={[40, 70, 100, 130, 160]}
                 />
@@ -573,12 +573,12 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
             <div className="mt-8 p-6 bg-teal-700 text-white rounded-2xl shadow-xl relative overflow-hidden">
               <div className="relative z-10 flex items-center justify-between">
                 <div>
-                  <p className="text-[10px] uppercase font-bold tracking-widest text-teal-200 mb-0.5">IMC Calculado</p>
+                  <p className="text-[10px] uppercase font-bold tracking-widest text-teal-200 mb-0.5">{t('tr.imc_calculado')}</p>
                   <span className="text-4xl font-black font-mono tracking-tight">{bmi}</span>
                 </div>
                 <div className="text-right">
                   <span className={`px-3 py-1 rounded-full text-xs font-bold shadow-xs ${bmiStatus === 'Peso Saludable' ? 'bg-emerald-500 text-white' : bmiStatus === 'Bajo Peso' ? 'bg-amber-500 text-white' : bmiStatus === 'Sobrepeso' ? 'bg-orange-500 text-white' : 'bg-red-500 text-white'}`}>{bmiStatus}</span>
-                  <p className="text-[10px] text-teal-200 font-medium mt-1">Normal: 18.5 – 24.9</p>
+                  <p className="text-[10px] text-teal-200 font-medium mt-1">{t('tr.normal_18_5_24_9')}</p>
                 </div>
               </div>
               <div className="relative mt-6">
@@ -618,7 +618,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
             <div className="flex flex-col sm:flex-row gap-4 mb-4">
               <select value={selectedPatient} onChange={(e) => setSelectedPatient(e.target.value)} className="flex-1 px-4 py-3 rounded-xl bg-white/70 dark:bg-slate-800/70 border border-outline-variant/30 outline-none focus:ring-2 focus:ring-teal-500/20 text-on-surface text-sm font-semibold">
                 <option value="">{t('tl.selectPatient')}</option>
-                {patients.length === 0 && <option value="" disabled>No hay pacientes asignados</option>}
+                {patients.length === 0 && <option value="" disabled>{t('tr.no_hay_pacientes_asignados')}</option>}
                 {patients.map((p) => (
                   <option key={p.id} value={p.id}>{p.full_name}</option>
                 ))}
@@ -782,13 +782,13 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
             <div className="flex items-center gap-3 mb-6 relative">
               <div className="w-12 h-12 rounded-xl bg-error/10 flex items-center justify-center"><Icon name="picture_as_pdf" size={24} className="text-error animate-breathe-icon" /></div>
               <div>
-                <h3 className="font-title-md text-title-md gradient-text-editorial">Exportar Reporte PDF</h3>
+                <h3 className="font-title-md text-title-md gradient-text-editorial">{t('tr.exportar_reporte_pdf')}</h3>
                 <p className="text-sm text-on-surface-variant">{t('tl.pdfDesc')}</p>
               </div>
             </div>
             <div className="flex flex-col sm:flex-row gap-4 mb-4">
               <select value={selectedPatient} onChange={(e) => setSelectedPatient(e.target.value)} className="flex-1 px-4 py-3 rounded-xl bg-surface-variant/20 border border-outline-variant/30 outline-none focus:ring-2 focus:ring-primary/20 text-on-surface">
-                <option value="">Seleccionar Paciente</option>
+                <option value="">{t('tr.seleccionar_paciente')}</option>
                 {patients.map((p) => (
                   <option key={p.id} value={p.id}>{p.full_name}</option>
                 ))}
@@ -895,7 +895,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
               <Icon name="smart_toy" filled size={28} className="animate-breathe-icon" />
               <div>
                 <h3 className="font-bold gradient-text-teal">Physi</h3>
-                <p className="text-xs opacity-80">Activo y Listo</p>
+                <p className="text-xs opacity-80">{t('tr.activo_y_listo')}</p>
               </div>
             </div>
           </div>
@@ -931,7 +931,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
               <Icon name="send" size={20} />
             </button>
           </div>
-          <p className="text-[10px] text-outline mt-2 flex items-center gap-1"><span className="w-2 h-2 bg-green-500 rounded-full" /> Cumple HIPAA</p>
+          <p className="text-[10px] text-outline mt-2 flex items-center gap-1"><span className="w-2 h-2 bg-green-500 rounded-full" />{t('tr.cumple_hipaa')}</p>
         </div>
       </div>
 
@@ -941,7 +941,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
           <div className="glass-panel rounded-3xl p-5 sm:p-6 lg:p-8 max-w-full sm:max-w-md w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center gap-3 mb-4">
               <Icon name="picture_as_pdf" size={28} className="text-error" />
-              <h3 className="font-title-md text-title-md">Confirmar Reporte PDF</h3>
+              <h3 className="font-title-md text-title-md">{t('tr.confirmar_reporte_pdf')}</h3>
             </div>
             <p className="text-sm text-on-surface-variant mb-6">
               {pdfMode === 'simple'
@@ -1024,7 +1024,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
 
             {Object.keys(updatePreview).length > 0 && (
               <div className="space-y-3 mt-4">
-                <p className="text-sm font-bold text-on-surface">Campos a actualizar:</p>
+                <p className="text-sm font-bold text-on-surface">{t('tr.campos_a_actualizar')}</p>
                 {Object.entries(updatePreview).map(([key, value]) => (
                   <div key={key} className="p-3 rounded-xl bg-teal-50 dark:bg-teal-900/20 border border-teal-200 dark:border-teal-800">
                     <p className="text-xs font-bold text-teal-700 dark:text-teal-300 uppercase">{key.replace(/_/g, ' ')}</p>
