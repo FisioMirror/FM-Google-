@@ -111,7 +111,8 @@ begin
   return case when TG_OP = 'DELETE' then OLD else NEW end;
 end $$;
 
-create or replace view public.vw_audit_logs_readable as
+create or replace view public.vw_audit_logs_readable
+with (security_invoker = true) as
 select
   id,
   created_at,
@@ -129,4 +130,8 @@ select
 from public.audit_logs;
 
 comment on view public.vw_audit_logs_readable is
-  'Vista de bitácora con descripciones legibles para supervisión administrativa.';
+  'Vista de bitácora con descripciones legibles para supervisión administrativa. security_invoker: respeta el RLS de audit_logs.';
+
+-- La vista hereda el RLS de audit_logs (solo fisioterapeutas). Se retiran grants directos.
+revoke all on public.vw_audit_logs_readable from anon;
+grant select on public.vw_audit_logs_readable to authenticated;
