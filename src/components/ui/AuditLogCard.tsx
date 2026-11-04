@@ -31,14 +31,21 @@ const ACTION_LABEL: Record<string, string> = {
 };
 
 function buildFallback(row: AuditRow): string {
-  const entity = ENTITY_LABEL[row.entity_type] || row.entity_type;
-  const action = ACTION_LABEL[row.action] || row.action.toLowerCase();
   const actor = row.actor_email || 'sistema';
   const values = row.new_values || row.old_values || {};
   const name =
     (values as Record<string, unknown>).full_name ||
     (values as Record<string, unknown>).ejercicio_nombre ||
     (values as Record<string, unknown>).nombre;
+
+  // Acciones de aplicación (AUTH_LOGIN_SUCCESS, EXPORT_REPORT, ...): se muestran tal cual.
+  if (!ACTION_LABEL[row.action]) {
+    const readable = row.action.replace(/_/g, ' ').toLowerCase();
+    return name ? `${actor}: ${readable} («${String(name)}»)` : `${actor}: ${readable}`;
+  }
+
+  const entity = ENTITY_LABEL[row.entity_type] || row.entity_type;
+  const action = ACTION_LABEL[row.action];
   return name
     ? `${actor} ${action} ${entity} «${String(name)}»`
     : `${actor} ${action} ${entity}`;
