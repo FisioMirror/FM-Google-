@@ -143,6 +143,9 @@ export function ARMirrorPage() {
   const [showModel3D, setShowModel3D] = useState<boolean>(true);
   const aiFeedbackRef = useRef<string>('Buen ritmo. Mantén la postura erguida y completa el rango de movimiento.');
   const lastSpokenRef = useRef<number>(0);
+  const peakAngleRef = useRef(0);
+  const angleSumRef = useRef(0);
+  const angleSamplesRef = useRef(0);
 
 
   // Timer
@@ -192,7 +195,12 @@ export function ARMirrorPage() {
 
   // Mark session as started once the camera is live
   useEffect(() => {
-    if (cameraStarted) setSessionStarted(true);
+    if (cameraStarted) {
+      setSessionStarted(true);
+      peakAngleRef.current = 0;
+      angleSumRef.current = 0;
+      angleSamplesRef.current = 0;
+    }
   }, [cameraStarted]);
 
   // Quality score from pose data + compensation detection
@@ -310,6 +318,12 @@ export function ARMirrorPage() {
       const targetTotal = TARGET_REPS * TOTAL_SETS;
       const adherencia = targetTotal > 0 ? Math.min(100, Math.round((repCount * currentSet / targetTotal) * 100)) : 0;
 
+      const metricas = {
+        max_angle: Math.round(peakAngleRef.current),
+        avg_angle: angleSamplesRef.current > 0 ? Math.round(angleSumRef.current / angleSamplesRef.current) : null,
+        samples: angleSamplesRef.current,
+      };
+
       const isRealUser = isValidUUID(user.id);
 
       if (isRealUser) {
@@ -323,6 +337,7 @@ export function ARMirrorPage() {
           ejercicios: ejerciciosData,
           adherencia: adherencia,
           notas: aiFeedbackRef.current,
+          metricas,
           compensaciones_detectadas: compensation ? { tipo: compensation } : null,
           dolor_reportado: reportData?.dolor_despues ?? null,
         }).select('id').single();
@@ -388,6 +403,7 @@ export function ARMirrorPage() {
             ejercicios: ejerciciosData,
             adherencia: adherencia,
             notas: aiFeedbackRef.current,
+            metricas,
             compensaciones_detectadas: compensation ? { tipo: compensation } : null,
             dolor_reportado: reportData?.dolor_despues ?? null,
           };
@@ -414,6 +430,16 @@ export function ARMirrorPage() {
 
   const currentAngle = poseData ? Math.max(poseData.leftElbowAngle, poseData.rightElbowAngle) : 0;
 
+  // ROM real: pico y promedio de ángulo medido por el sensor durante la sesión.
+  useEffect(() => {
+    if (!sessionStarted || state !== 'active' || !poseData?.isTracking) return;
+    const a = Math.max(poseData.leftArmAngle || 0, poseData.rightArmAngle || 0);
+    if (!Number.isFinite(a) || a <= 0) return;
+    peakAngleRef.current = Math.max(peakAngleRef.current, a);
+    angleSumRef.current += a;
+    angleSamplesRef.current += 1;
+  }, [poseData, sessionStarted, state]);
+
   const toggleFullscreen = async () => {
     try {
       if (!document.fullscreenElement) {
@@ -433,6 +459,9 @@ export function ARMirrorPage() {
     resetReps();
     setCurrentSet(1);
     setTimer(0);
+    peakAngleRef.current = 0;
+    angleSumRef.current = 0;
+    angleSamplesRef.current = 0;
   };
 
   return (

@@ -58,46 +58,34 @@ export function PatientStatisticsView({
   const totalMinutes = Math.round(sessions.reduce((sum, s) => sum + (s.duracion_segundos || 0), 0) / 60);
   const avgQuality = totalSessions > 0 ? Math.round(sessions.reduce((sum, s) => sum + (s.calidad_ejecucion || 0), 0) / totalSessions) : 0;
   
-  // Peak ROM reached or fallback estimate based on quality
+  // Peak ROM: solo dato real registrado por el sensor (sin estimaciones).
   const peakRom = useMemo(() => {
     let max = 0;
     sessions.forEach((s) => {
-      if (s.rom_alcanzado && s.rom_alcanzado > max) max = s.rom_alcanzado;
+      if (typeof s.rom_alcanzado === 'number' && s.rom_alcanzado > max) max = s.rom_alcanzado;
     });
-    if (max > 0) return max;
-    // Default estimated from quality if not explicitly set
-    return avgQuality > 0 ? Math.min(170, Math.round(100 + (avgQuality * 0.6))) : 0;
-  }, [sessions, avgQuality]);
+    return max;
+  }, [sessions]);
 
-  // Average adherence
-  const avgAdherence = useMemo(() => {
+  // Adherencia real: null cuando no hay dato (se muestra '—', no se estima).
+  const avgAdherence = useMemo<number | null>(() => {
     const withAdh = sessions.filter((s) => typeof s.adherencia === 'number');
-    if (withAdh.length > 0) {
-      return Math.round(withAdh.reduce((sum, s) => sum + (s.adherencia || 0), 0) / withAdh.length);
-    }
-    return avgQuality >= 80 ? 92 : avgQuality >= 60 ? 84 : 70;
-  }, [sessions, avgQuality]);
+    if (withAdh.length === 0) return null;
+    return Math.round(withAdh.reduce((sum, s) => sum + (s.adherencia as number), 0) / withAdh.length);
+  }, [sessions]);
 
   // Evolution Data for Chart (Sorted chronologically)
   const evolutionData = useMemo(() => {
     const chronoSessions = [...sessions].reverse();
-    if (chronoSessions.length === 0) {
-      return [
-        { sesion: 'S1', calidad: 72, rom: 110, date: 'Semana 1' },
-        { sesion: 'S2', calidad: 78, rom: 125, date: 'Semana 2' },
-        { sesion: 'S3', calidad: 85, rom: 138, date: 'Semana 3' },
-        { sesion: 'S4', calidad: 91, rom: 150, date: 'Semana 4' },
-      ];
-    }
+    if (chronoSessions.length === 0) return [];
     return chronoSessions.map((s, idx) => {
       const d = new Date(s.fecha);
       const dateLabel = isNaN(d.getTime()) ? `S${idx + 1}` : d.toLocaleDateString(currentLocale(), { day: '2-digit', month: 'short' });
-      const rom = s.rom_alcanzado || Math.round(100 + ((s.calidad_ejecucion || 80) * 0.55));
       return {
         sesion: `#${idx + 1}`,
         date: dateLabel,
-        calidad: s.calidad_ejecucion || 0,
-        rom,
+        calidad: typeof s.calidad_ejecucion === 'number' ? s.calidad_ejecucion : null,
+        rom: typeof s.rom_alcanzado === 'number' ? s.rom_alcanzado : null,
         ejercicio: s.ejercicio_nombre || 'Sesión',
         duracionMin: Math.round((s.duracion_segundos || 0) / 60),
       };
@@ -122,48 +110,38 @@ export function PatientStatisticsView({
     const result = Object.entries(exMap).map(([name, data]) => ({
       name: name.length > 18 ? `${name.substring(0, 16)}...` : name,
       fullName: name,
-      minutos: data.totalMinutes || 1,
+      minutos: data.totalMinutes,
       repeticiones: data.totalReps,
       calidad: Math.round(data.avgQuality / data.count),
     }));
 
-    if (result.length === 0) {
-      return exercises.map((e) => ({
-        name: e.ejercicio_nombre ? (e.ejercicio_nombre.length > 18 ? `${e.ejercicio_nombre.substring(0, 16)}...` : e.ejercicio_nombre) : 'Ejercicio',
-        fullName: e.ejercicio_nombre || 'Ejercicio',
-        minutos: (e.series || 3) * 4,
-        repeticiones: (e.series || 3) * (e.repeticiones || 12),
-        calidad: 88,
-      }));
-    }
-
     return result;
-  }, [sessions, exercises]);
+  }, [sessions]);
 
-  // Detected compensations breakdown
+  // Detected compensations: agregado real de compensaciones_detectadas (sin diagnosticos inferidos).
   const compensationsSummary = useMemo(() => {
-    const comps: { title: string; desc: string; severity: 'baja' | 'moderada' | 'controlada'; count: number }[] = [
-      {
-        title: 'Elevación de Escápula / Trapecio',
-        desc: 'Compensación común al elevar el brazo en abducción y flexión.',
-        severity: avgQuality >= 85 ? 'controlada' : 'moderada',
-        count: Math.max(1, Math.round((100 - avgQuality) / 5)),
-      },
-      {
-        title: 'Inclinación de Tronco Lateral',
-        desc: 'Desplazamiento del eje axial para ganar rango de movimiento aparente.',
-        severity: 'controlada',
-        count: Math.max(0, Math.round((95 - avgQuality) / 10)),
-      },
-      {
-        title: 'Velocidad en Fase Excéntrica',
-        desc: 'Descenso rápido sin control muscular motor completo en retorno.',
-        severity: avgQuality >= 80 ? 'controlada' : 'baja',
-        count: 2,
-      },
-    ];
-    return comps;
-  }, [avgQuality]);
+    const map = new Map<string, number>();
+    sessions.forEach((s) => {
+      const raw = s.compensaciones_detectadas;
+      const items = Array.isArray(raw) ? raw : raw && typeof raw === 'object' ? [raw] : [];
+      items.forEach((item) => {
+        const tipo =
+          typeof item === 'string'
+            ? item
+            : item && typeof item === 'object' && 'tipo' in item
+            ? String((item as { tipo?: unknown }).tipo ?? '')
+            : item && typeof item === 'object' && 'type' in item
+            ? String((item as { type?: unknown }).type ?? '')
+            : '';
+        if (tipo.trim()) map.set(tipo.trim(), (map.get(tipo.trim()) ?? 0) + 1);
+      });
+    });
+    return [...map.entries()].map(([title, count]) => ({
+      title,
+      desc: 'Detectada por el sensor de cámara durante las sesiones registradas.',
+      count,
+    }));
+  }, [sessions]);
 
   return (
     <div className="space-y-6 w-full">
@@ -176,7 +154,7 @@ export function PatientStatisticsView({
               <Icon name="check_circle" size={22} />
             </div>
             <span className="text-[10px] sm:text-xs font-bold px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-700 dark:text-teal-300">
-              {avgAdherence}% adh.
+              {avgAdherence != null ? `${avgAdherence}% adh.` : '— adh.'}
             </span>
           </div>
           <div>
@@ -239,7 +217,7 @@ export function PatientStatisticsView({
               <Icon name="straighten" size={22} />
             </div>
             <span className="text-[10px] sm:text-xs font-bold px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-700 dark:text-cyan-300">
-              {targetRom ? `Meta ${targetRom.split(' ')[0]}` : 'Meta 160°'}
+              {targetRom ? `Meta ${targetRom.split(' ')[0]}` : 'Sin meta'}
             </span>
           </div>
           <div>
@@ -270,6 +248,11 @@ export function PatientStatisticsView({
             </div>
           </div>
 
+          {evolutionData.length === 0 ? (
+            <div className="h-64 sm:h-72 w-full flex items-center justify-center text-sm text-on-surface-variant px-4 text-center">
+              {t('psv.noSessions')}
+            </div>
+          ) : (
           <div className="h-64 sm:h-72 w-full pt-2">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={evolutionData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
@@ -295,11 +278,11 @@ export function PatientStatisticsView({
                           <p className="font-bold text-teal-300">{data.ejercicio} ({data.date})</p>
                           <p className="flex justify-between gap-4">
                             <span className="text-slate-300">{t('tr.calidad_motora')}</span>
-                            <span className="font-bold text-teal-400">{data.calidad}%</span>
+                            <span className="font-bold text-teal-400">{data.calidad != null ? `${data.calidad}%` : '—'}</span>
                           </p>
                           <p className="flex justify-between gap-4">
                             <span className="text-slate-300">{t('tr.rango_articular')}</span>
-                            <span className="font-bold text-sky-400">{data.rom}°</span>
+                            <span className="font-bold text-sky-400">{data.rom != null ? `${data.rom}°` : '—'}</span>
                           </p>
                           <p className="flex justify-between gap-4">
                             <span className="text-slate-300">{t('psv.duration')}</span>
@@ -337,6 +320,7 @@ export function PatientStatisticsView({
               </AreaChart>
             </ResponsiveContainer>
           </div>
+          )}
         </motion.div>
 
         {/* Chart 2: Volume & Time Per Prescribed Exercise */}
@@ -354,6 +338,11 @@ export function PatientStatisticsView({
             </div>
           </div>
 
+          {exerciseStatsData.length === 0 ? (
+            <div className="h-64 sm:h-72 w-full flex items-center justify-center text-sm text-on-surface-variant px-4 text-center">
+              {t('psv.noSessions')}
+            </div>
+          ) : (
           <div className="h-64 sm:h-72 w-full pt-2">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={exerciseStatsData} margin={{ top: 10, right: 10, left: -20, bottom: 20 }}>
@@ -402,6 +391,7 @@ export function PatientStatisticsView({
               </BarChart>
             </ResponsiveContainer>
           </div>
+          )}
         </motion.div>
       </div>
 
@@ -417,6 +407,9 @@ export function PatientStatisticsView({
           </div>
 
           <div className="space-y-3">
+            {compensationsSummary.length === 0 && (
+              <p className="text-sm text-on-surface-variant">Sin compensaciones registradas por el sensor en las sesiones de este paciente.</p>
+            )}
             {compensationsSummary.map((comp) => (
               <div
                 key={comp.title}
@@ -432,14 +425,8 @@ export function PatientStatisticsView({
                   </div>
                 </div>
                 <div className="flex items-center gap-2 self-end sm:self-center shrink-0">
-                  <span className={`text-[11px] font-bold px-2.5 py-1 rounded-full ${
-                    comp.severity === 'controlada'
-                      ? 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20'
-                      : comp.severity === 'moderada'
-                      ? 'bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/20'
-                      : 'bg-blue-500/10 text-blue-700 dark:text-blue-300 border border-blue-500/20'
-                  }`}>
-                    {comp.severity === 'controlada' ? 'Bien Controlado' : comp.severity === 'moderada' ? 'Revisión Sugerida' : 'Baja Incidencia'}
+                  <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-slate-500/10 text-slate-700 dark:text-slate-300 border border-slate-500/20">
+                    {comp.count} {comp.count === 1 ? 'registro' : 'registros'}
                   </span>
                 </div>
               </div>
@@ -455,20 +442,23 @@ export function PatientStatisticsView({
               <h3 className="font-bold text-sm uppercase tracking-wider">{t('psv.clinicalAssessment')}</h3>
             </div>
             <h4 className="text-lg font-bold text-slate-900 dark:text-slate-100 mb-2">
-              {avgQuality >= 85 ? 'Excelente Progresión Motora' : 'Evolución Favorable y Estable'}
+              {totalSessions === 0 ? 'Sin datos suficientes' : avgQuality >= 85 ? 'Calidad motriz alta' : 'Calidad motriz en seguimiento'}
             </h4>
             <p className="text-xs text-on-surface-variant leading-relaxed">
-              El paciente {patientName} mantiene una adherencia terapéutica de {avgAdherence}%, con una calidad motriz promedio de {avgQuality}% y un arco articular pico de {peakRom}°. Se recomienda continuar con la dosificación prescrita.
+              {totalSessions === 0
+                ? `Todavía no hay sesiones registradas para ${patientName}. La evaluación se completará cuando existan datos reales de cámara.`
+                : `${patientName} registra ${totalSessions} sesión${totalSessions === 1 ? '' : 'es'}, con una calidad motriz promedio de ${avgQuality}%. Adherencia: ${avgAdherence != null ? `${avgAdherence}%` : 'sin datos'}. Arco articular pico: ${peakRom > 0 ? `${peakRom}°` : 'sin registro'}.`}
             </p>
           </div>
 
-          <div className="p-3.5 rounded-2xl bg-teal-500/5 border border-teal-500/15">
-            <div className="flex items-center justify-between text-xs mb-1.5 font-bold">
-              <span className="text-slate-700 dark:text-slate-300">{t('psv.rehabPhase')}</span>
-              <span className="text-teal-700 dark:text-teal-300">{t('tr.fase_3_4')}</span>
+          <div className="p-3.5 rounded-2xl bg-teal-500/5 border border-teal-500/15 space-y-2">
+            <div className="flex items-center justify-between text-xs font-bold">
+              <span className="text-slate-700 dark:text-slate-300">Ejercicios prescritos</span>
+              <span className="text-teal-700 dark:text-teal-300 tabular-nums">{exercises.length}</span>
             </div>
-            <div className="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
-              <div className="h-full bg-teal-600 dark:bg-teal-400 rounded-full" style={{ width: `${Math.min(100, Math.max(25, avgQuality))}%` }} />
+            <div className="flex items-center justify-between text-xs font-bold">
+              <span className="text-slate-700 dark:text-slate-300">Sesiones con sensor</span>
+              <span className="text-teal-700 dark:text-teal-300 tabular-nums">{totalSessions}</span>
             </div>
           </div>
         </div>
@@ -509,7 +499,7 @@ export function PatientStatisticsView({
                   const formattedDate = isNaN(d.getTime())
                     ? s.fecha
                     : d.toLocaleDateString(currentLocale(), { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
-                  const romVal = s.rom_alcanzado || Math.round(100 + ((s.calidad_ejecucion || 80) * 0.55));
+                  const romVal = typeof s.rom_alcanzado === 'number' ? `${s.rom_alcanzado}°` : '—';
                   const durMin = Math.round((s.duracion_segundos || 0) / 60);
                   const durSec = (s.duracion_segundos || 0) % 60;
 
@@ -530,8 +520,8 @@ export function PatientStatisticsView({
                           {s.calidad_ejecucion || 0}%
                         </span>
                       </td>
-                      <td className="py-3 px-3 font-bold tabular-nums text-sky-700 dark:text-sky-300">{romVal}°</td>
-                      <td className="py-3 px-3 text-on-surface-variant max-w-xs truncate">{s.notas || 'Control motor fluido sin compensaciones reportadas.'}</td>
+                      <td className="py-3 px-3 font-bold tabular-nums text-sky-700 dark:text-sky-300">{romVal}</td>
+                      <td className="py-3 px-3 text-on-surface-variant max-w-xs truncate">{s.notas || '—'}</td>
                     </tr>
                   );
                 })}

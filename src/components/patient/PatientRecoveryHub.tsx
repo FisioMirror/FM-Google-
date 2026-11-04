@@ -26,7 +26,10 @@ export function PatientRecoveryHub() {
       return;
     }
 
-    const message = t('wl.voiceMessage', { score: overallRecovery ?? 0 });
+    const message =
+      overallRecovery === null
+        ? t('wl.noData')
+        : t('wl.voiceMessage', { score: overallRecovery });
 
     setIsPlayingAudio(true);
     speakHumanVoice(message, {

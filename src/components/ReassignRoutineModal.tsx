@@ -266,6 +266,7 @@ export function ReassignRoutineModal({
 
       const rows = selected.map((ex) => ({
         paciente_id: pacienteId,
+        fisio_id: fisioterapeutaId,
         ejercicio_nombre: ex.nombre,
         series: ex.series,
         repeticiones: ex.repeticiones,

@@ -413,6 +413,10 @@ export function ExercisesPage() {
       toast.error('Selecciona un paciente');
       return;
     }
+    if (!user) {
+      toast.error('Sesión no válida. Volvé a iniciar sesión.');
+      return;
+    }
     setAssigning(true);
     try {
       const { data: activeRoutine } = await supabase
@@ -477,12 +481,13 @@ export function ExercisesPage() {
 
       const { error: peErr } = await supabase.from('patient_exercises').insert({
         paciente_id: selectedPatientId,
+        fisio_id: user.id,
         ejercicio_id: assignExercise.id,
         ejercicio_nombre: assignExercise.nombre,
         series: assignExercise.series ?? 3,
         repeticiones: assignExercise.repeticiones ?? 10,
       });
-      if (peErr) console.error('Error inserting patient_exercise:', peErr.message);
+      if (peErr) throw peErr;
 
       setAssignExercise(null);
       setSelectedPatientId(null);

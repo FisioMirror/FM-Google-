@@ -40,6 +40,8 @@ interface SessionRow {
   notas: string | null;
   compensaciones_detectadas: unknown;
   adherencia: number | null;
+  metricas?: Record<string, unknown> | null;
+  rom_alcanzado?: number;
 }
 
 interface ExerciseRow {
@@ -229,12 +231,22 @@ export function PatientDetailPage() {
 
       const { data: sessionData } = await supabase
         .from('sesiones_completadas')
-        .select('id, fecha, ejercicio_nombre, duracion_segundos, repeticiones, calidad_ejecucion, notas, compensaciones_detectadas, adherencia')
+        .select('id, fecha, ejercicio_nombre, duracion_segundos, repeticiones, calidad_ejecucion, notas, compensaciones_detectadas, adherencia, metricas')
         .eq('paciente_id', patientId)
         .order('fecha', { ascending: false });
 
       if (sessionData && sessionData.length > 0) {
-        setSessions(sessionData as unknown as SessionRow[]);
+        setSessions(
+          (sessionData as unknown as SessionRow[]).map((row) => {
+            const m = row.metricas ?? {};
+            const raw = m.max_angle ?? m.maxAngle ?? m.angulo_maximo;
+            const n = Number(raw);
+            return {
+              ...row,
+              rom_alcanzado: Number.isFinite(n) && n > 0 ? Math.round(n) : undefined,
+            };
+          }),
+        );
       } else if (demoPatient) {
         setSessions(demoPatient.sessions as unknown as SessionRow[]);
       }

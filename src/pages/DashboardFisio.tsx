@@ -289,17 +289,24 @@ export function DashboardFisio() {
         .select('*', { count: 'exact', head: true })
         .eq('terapeuta_id', user.id);
 
+      const { data: links } = await supabase
+        .from('pacientes_terapeutas')
+        .select('paciente_id')
+        .eq('terapeuta_id', user.id);
+      const pIds = (links?.map((l) => l.paciente_id).filter(Boolean) ?? []) as string[];
+
       const today = new Date().toISOString().split('T')[0];
       const { count: sessionCount } = await supabase
         .from('sesiones_completadas')
         .select('*', { count: 'exact', head: true })
-        .gte('fecha', today);
+        .gte('fecha', today)
+        .in('paciente_id', pIds);
 
       const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
       const { data: weekSessions } = await supabase
         .from('sesiones_completadas')
-        .select('calidad_ejecucion')
-        .eq('paciente_id', user.id)
+        .select('paciente_id, adherencia')
+        .in('paciente_id', pIds)
         .gte('fecha', weekAgo);
 
       const { count: tokenCount } = await supabase
@@ -308,8 +315,9 @@ export function DashboardFisio() {
         .eq('terapeuta_id', user.id)
         .is('paciente_id', null);
 
-      const adherence = weekSessions && weekSessions.length > 0
-        ? Math.round(weekSessions.reduce((sum, s) => sum + (s.calidad_ejecucion || 0), 0) / weekSessions.length)
+      const weekAdh = (weekSessions ?? []).filter((s: any) => typeof s.adherencia === 'number');
+      const adherence = weekAdh.length > 0
+        ? Math.round(weekAdh.reduce((sum: number, s: any) => sum + s.adherencia, 0) / weekAdh.length)
         : 0;
 
       setKpi({
@@ -320,13 +328,43 @@ export function DashboardFisio() {
         isDemo: isDemo,
       });
 
-      // Load patient cards & search list from both links and patient profiles
-      const { data: links } = await supabase
-        .from('pacientes_terapeutas')
-        .select('paciente_id')
-        .eq('terapeuta_id', user.id);
+      // Agregados reales por paciente (90 dias) y rutina activa para las tarjetas.
+      const since = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString();
+      const [recentRes, routinesRes] = await Promise.all([
+        pIds.length > 0
+          ? supabase
+              .from('sesiones_completadas')
+              .select('paciente_id, calidad_ejecucion, fecha')
+              .in('paciente_id', pIds)
+              .gte('fecha', since)
+              .limit(1000)
+          : Promise.resolve({ data: [] as any[] }),
+        pIds.length > 0
+          ? supabase
+              .from('rutinas')
+              .select('paciente_id, nombre')
+              .in('paciente_id', pIds)
+              .eq('activa', true)
+          : Promise.resolve({ data: [] as any[] }),
+      ]);
 
-      const pIds = links?.map((l) => l.paciente_id).filter(Boolean) || [];
+      const statsByPatient = new Map<string, { count: number; qualitySum: number; qualityN: number; last: string | null }>();
+      (recentRes.data ?? []).forEach((r: any) => {
+        const pid = r.paciente_id as string | undefined;
+        if (!pid) return;
+        const cur = statsByPatient.get(pid) ?? { count: 0, qualitySum: 0, qualityN: 0, last: null };
+        cur.count += 1;
+        if (typeof r.calidad_ejecucion === 'number') {
+          cur.qualitySum += r.calidad_ejecucion;
+          cur.qualityN += 1;
+        }
+        if (!cur.last || (r.fecha && r.fecha > cur.last)) cur.last = r.fecha ?? cur.last;
+        statsByPatient.set(pid, cur);
+      });
+      const routineByPatient = new Map<string, string>();
+      (routinesRes.data ?? []).forEach((r: any) => {
+        if (r.paciente_id && r.nombre) routineByPatient.set(r.paciente_id, r.nombre);
+      });
 
       let queryProfs = supabase
         .from('profiles')
@@ -342,17 +380,22 @@ export function DashboardFisio() {
 
       if (profs && profs.length > 0) {
         setDisplayedPatients(
-          profs.map((p) => ({
-            id: p.id,
-            name: p.full_name || 'Paciente',
-            diagnosis: p.diagnostico || p.patologia || 'En evaluación',
-            status: 'Activo',
-            adherence: 80,
-            progress: 60,
-            sessionsCompleted: 1,
-            sessionsTotal: 10,
-            routine: 'Plan prescrito',
-          }))
+          profs.map((p) => {
+            const st = statsByPatient.get(p.id);
+            const lastMs = st?.last ? new Date(st.last).getTime() : 0;
+            const daysSince = lastMs ? (Date.now() - lastMs) / 86400000 : Infinity;
+            return {
+              id: p.id,
+              name: p.full_name || 'Paciente',
+              diagnosis: p.diagnostico || p.patologia || 'Sin diagnóstico registrado',
+              status: !st ? 'Sin sesiones' : daysSince <= 14 ? 'Activo' : 'Sin actividad reciente',
+              adherence: st && st.qualityN > 0 ? Math.round(st.qualitySum / st.qualityN) : null,
+              progress: null,
+              sessionsCompleted: st?.count ?? 0,
+              sessionsTotal: null,
+              routine: routineByPatient.get(p.id) ?? null,
+            };
+          })
         );
 
         const searchList = profs.map((p) => ({
@@ -1225,8 +1268,9 @@ export function DashboardFisio() {
               const patientName = p.name || 'Paciente';
               const initials = patientName.split(' ').filter(Boolean).map((n: string) => n[0]).join('').slice(0, 2) || 'PA';
               const isOnline = p.status === 'Activo';
-              const isWarning = p.status === 'Requiere Revisión' || p.status === 'En pausa';
-              const adherenceVal = p.adherence || p.progress || 0;
+              const isWarning = p.status !== 'Activo';
+              const hasAdherence = typeof p.adherence === 'number';
+              const adherenceVal = hasAdherence ? p.adherence : 0;
 
               return (
                 <motion.div
@@ -1271,13 +1315,9 @@ export function DashboardFisio() {
                       <span className={`px-2.5 py-1 text-[11px] font-bold rounded-full border uppercase tracking-wider flex items-center gap-1.5 shrink-0 ${
                         p.status === 'Activo'
                           ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300 border-emerald-200'
-                          : p.status === 'Requiere Revisión'
-                          ? 'bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300 border-amber-200'
-                          : 'bg-teal-50 text-teal-700 dark:bg-teal-950/40 dark:text-teal-300 border-teal-200'
+                          : 'bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300 border-amber-200'
                       }`}>
-                        <span className={`w-1.5 h-1.5 rounded-full ${
-                          p.status === 'Activo' ? 'bg-emerald-500 animate-pulse' : p.status === 'Requiere Revisión' ? 'bg-amber-500' : 'bg-teal-600'
-                        }`} />
+                        <span className={`w-1.5 h-1.5 rounded-full ${p.status === 'Activo' ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500'}`} />
                         <span>{p.status}</span>
                       </span>
                     </div>
@@ -1286,19 +1326,19 @@ export function DashboardFisio() {
                     <div className="space-y-2 mt-4 pt-3 border-t border-outline-variant/15 text-xs">
                       <div className="flex justify-between items-center text-on-surface-variant">
                         <span className="font-semibold text-xs">{t('df.adherence')}</span>
-                        <span className="font-extrabold text-sm text-teal-700 dark:text-teal-300">{adherenceVal}%</span>
+                        <span className="font-extrabold text-sm text-teal-700 dark:text-teal-300">{hasAdherence ? `${adherenceVal}%` : '—'}</span>
                       </div>
                       <div className="h-2.5 w-full rounded-full bg-slate-200/80 dark:bg-slate-700/60 overflow-hidden relative">
                         <div
                           className="h-full rounded-full bg-teal-600 relative overflow-hidden transition-all duration-700"
-                          style={{ width: `${Math.max(6, adherenceVal)}%` }}
+                          style={{ width: hasAdherence ? `${Math.max(6, adherenceVal)}%` : '0%' }}
                         >
                           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full animate-shimmer-bar" />
                         </div>
                       </div>
                       <div className="flex justify-between items-center text-[11px] text-outline font-medium pt-0.5">
-                        <span>{p.sessionsCompleted || 1}/{p.sessionsTotal || 10} sesiones</span>
-                        <span>{p.routine || 'Plan activo'}</span>
+                        <span>{p.sessionsCompleted ?? 0} {(p.sessionsCompleted ?? 0) === 1 ? 'sesión' : 'sesiones'}</span>
+                        <span className="truncate max-w-[55%] text-right">{p.routine || 'Sin rutina activa'}</span>
                       </div>
                     </div>
                   </div>
