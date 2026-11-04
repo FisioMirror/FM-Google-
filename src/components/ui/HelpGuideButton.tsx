@@ -20,6 +20,9 @@ type FaqSection =
   | 'patientStats'
   | 'ar'
   | 'calibration'
+  | 'ocr'
+  | 'catalog'
+  | 'ai'
   | 'general';
 
 function resolveSection(pathname: string): FaqSection {
@@ -37,6 +40,9 @@ function resolveSection(pathname: string): FaqSection {
   if (pathname.startsWith('/stats')) return 'patientStats';
   if (pathname.startsWith('/ar-mirror')) return 'ar';
   if (pathname.startsWith('/calibration')) return 'calibration';
+  if (pathname.startsWith('/ocr-scanner')) return 'ocr';
+  if (pathname.startsWith('/ui-catalog') || pathname.startsWith('/catalog')) return 'catalog';
+  if (pathname.startsWith('/ai-assistant')) return 'ai';
   return 'general';
 }
 
