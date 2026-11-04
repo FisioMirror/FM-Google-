@@ -10,7 +10,8 @@ import { exportSimplePDF, exportPremiumPDF, type PDFPatientData } from '../lib/p
 import { formatAIReport } from '../lib/formatReport';
 import { Spinner } from '../components/ui/Loader';
 import { LoadingText } from '../components/ui/LoadingText';
-import { SkeletonCard, SkeletonList } from '../components/ui/Skeleton';
+import { SkeletonCard, SkeletonReport } from '../components/ui/Skeleton';
+import { AuditLogCard } from '../components/ui/AuditLogCard';
 import { AnimatedTabs } from '../components/ui/AnimatedTabs';
 import { MedicalIcon } from '../components/ui/MedicalIcon';
 import { SpotlightCard } from '../components/ui/SpotlightCard';
@@ -679,7 +680,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
                     {summaryText ? (
                       formatAIReport(summaryText)
                     ) : summaryLoading ? (
-                      <SkeletonList count={3} />
+                      <SkeletonReport />
                     ) : (
                       <div className="empty-state-premium">
                         <Icon name="auto_awesome" size={32} className="opacity-40 mb-2" />
@@ -823,6 +824,8 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
             <h1 className="font-headline-lg text-headline-lg-mobile lg:text-headline-lg gradient-text-editorial">{t('tl.toolsTitle')}</h1>
             <p className="text-on-surface-variant font-body-lg">{t('tl.toolsDesc')}</p>
           </div>
+
+          <AuditLogCard className="order-last" />
 
           {/* Featured Clinical Bento Showcase */}
           <div className="space-y-3">

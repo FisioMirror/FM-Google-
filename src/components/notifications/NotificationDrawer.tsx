@@ -95,14 +95,18 @@ export function NotificationDrawer({ isOpen, onClose, userId }: NotificationDraw
 
   const handleOpenLink = (notif: AppNotification) => {
     markRead(notif.id);
-    if (notif.link) {
-      if (notif.link.startsWith('http')) {
-        window.open(notif.link, '_blank');
-      } else {
-        navigate(notif.link);
-        onClose?.();
-      }
+    if (!notif.link) return;
+    if (/^https?:\/\//.test(notif.link)) {
+      window.open(notif.link, '_blank');
+      return;
     }
+    // Compatibilidad: las notificaciones antiguas de sesión apuntaban al dashboard
+    // general (/dashboard-fisio). Las nuevas ya guardan el expediente concreto.
+    const isLegacySessionLink =
+      notif.link === '/dashboard-fisio' &&
+      (notif.type === 'ejercicio' || notif.type === 'clinica');
+    navigate(isLegacySessionLink ? '/patients' : notif.link);
+    onClose?.();
   };
 
   return (

@@ -256,7 +256,7 @@ export function formatAIReport(text: string): ReactNode {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 min-w-0 break-words [overflow-wrap:anywhere]">
       {blocks.map((block, idx) => {
         if (block.kind === 'header') {
           return (
@@ -265,7 +265,7 @@ export function formatAIReport(text: string): ReactNode {
                 <div className="p-1.5 rounded-xl bg-teal-500/10 dark:bg-teal-400/10 border border-teal-500/20 shrink-0">
                   {getHeaderIcon(block.text)}
                 </div>
-                <h4 className="font-bold text-xs uppercase tracking-wider text-teal-900 dark:text-teal-200">
+                <h4 className="font-bold text-xs uppercase tracking-wider text-teal-900 dark:text-teal-200 break-words min-w-0">
                   {renderInline(block.text)}
                 </h4>
               </div>
@@ -281,7 +281,7 @@ export function formatAIReport(text: string): ReactNode {
               className="flex items-start gap-3 p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-950 dark:text-amber-200 text-xs leading-relaxed shadow-xs"
             >
               <AlertTriangle className="size-4 text-amber-600 shrink-0 mt-0.5" />
-              <div className="flex-1 font-medium">{renderInline(block.text)}</div>
+              <div className="flex-1 min-w-0 font-medium break-words">{renderInline(block.text)}</div>
             </div>
           );
         }
@@ -295,7 +295,7 @@ export function formatAIReport(text: string): ReactNode {
                   className="flex items-start gap-2.5 p-3 rounded-2xl bg-surface-container-low/80 dark:bg-surface-container-low/50 border border-outline/10 text-xs text-on-surface leading-relaxed transition-all hover:border-teal-500/30"
                 >
                   <CheckCircle2 className="size-4 text-teal-600 dark:text-teal-400 shrink-0 mt-0.5" />
-                  <span className="flex-1 font-normal">{renderInline(item)}</span>
+                  <span className="flex-1 min-w-0 font-normal break-words">{renderInline(item)}</span>
                 </div>
               ))}
             </div>
@@ -304,7 +304,7 @@ export function formatAIReport(text: string): ReactNode {
 
         if (block.kind === 'paragraph') {
           return (
-            <p key={idx} className="text-xs text-on-surface-variant leading-relaxed font-normal">
+            <p key={idx} className="text-xs text-on-surface-variant leading-relaxed font-normal break-words min-w-0">
               {renderInline(block.text)}
             </p>
           );
@@ -324,7 +324,7 @@ function renderInline(text: string): ReactNode {
   return parts.map((part, i) => {
     if (part.startsWith('**') && part.endsWith('**') && part.length > 4) {
       return (
-        <strong key={i} className="font-bold text-on-surface">
+        <strong key={i} className="font-bold text-on-surface break-words">
           {part.slice(2, -2)}
         </strong>
       );

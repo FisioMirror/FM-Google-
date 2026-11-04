@@ -10,6 +10,8 @@ interface GlassModalProps {
   children: ReactNode;
   size?: 'sm' | 'md' | 'lg' | 'xl' | 'full';
   dismissable?: boolean;
+  /** 'glass' (por defecto) o 'solid' para superficies clínicas blancas sin blur. */
+  variant?: 'glass' | 'solid';
 }
 
 /**
@@ -22,6 +24,7 @@ export function GlassModal({
   children,
   size = 'md',
   dismissable = true,
+  variant = 'glass',
 }: GlassModalProps) {
   const { t } = useTranslation();
   useEffect(() => {
@@ -74,7 +77,10 @@ export function GlassModal({
             role="dialog"
             aria-modal="true"
             className={cn(
-              'relative w-full max-h-[90vh] overflow-y-auto overflow-x-hidden rounded-[1.75rem] sm:rounded-[2rem] border border-outline-variant/45 bg-surface/[0.97] p-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] sm:p-7 shadow-[0_24px_80px_-24px_rgba(2,6,23,0.55)] backdrop-blur-2xl z-10 dark:border-white/10 dark:bg-surface-container/[0.97]',
+              'relative w-full max-h-[90vh] overflow-y-auto overflow-x-hidden rounded-[1.75rem] sm:rounded-[2rem] border p-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] sm:p-7 z-10',
+              variant === 'solid'
+                ? 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 shadow-xl'
+                : 'border-outline-variant/45 bg-surface/[0.97] shadow-[0_24px_80px_-24px_rgba(2,6,23,0.55)] backdrop-blur-2xl dark:border-white/10 dark:bg-surface-container/[0.97]',
               sizeClasses[size]
             )}
           >

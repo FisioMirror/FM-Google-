@@ -352,6 +352,7 @@ export function ARMirrorPage() {
           if (link?.terapeuta_id) {
             notifySessionCompleted({
               therapistId: link.terapeuta_id,
+              patientId: user.id,
               patientName: user.full_name || 'Paciente',
               exerciseTitle: exerciseName,
               precision: qualityScore,

@@ -63,7 +63,7 @@ export function GlassToastProvider({ children }: { children: ReactNode }) {
                   'p-2 rounded-xl shrink-0 border flex items-center justify-center',
                   toast.type === 'success' && 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30',
                   toast.type === 'error' && 'bg-red-500/15 text-red-400 border-red-500/30',
-                  toast.type === 'warning' && 'bg-amber-500/15 text-amber-400 border-amber-500/30',
+                  toast.type === 'warning' && 'bg-amber-100 text-amber-900 border-amber-400 dark:bg-amber-950 dark:text-amber-100 dark:border-amber-700',
                   toast.type === 'info' && 'bg-cyan-500/15 text-cyan-400 border-cyan-500/30',
                 )}
               >

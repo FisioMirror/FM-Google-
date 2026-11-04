@@ -51,6 +51,7 @@ export function useGaitCapture() {
   }, []);
 
   const start = useCallback(async (video: HTMLVideoElement) => {
+    videoRef.current = video;
     setError(null);
     samplesRef.current = { l: [], r: [], t: [] };
     try {
@@ -67,23 +68,36 @@ export function useGaitCapture() {
         const vision: any = await import(/* @vite-ignore */ CDN);
         const { PoseLandmarker, FilesetResolver } = vision;
         const fileset = await FilesetResolver.forVisionTasks(`${CDN}/wasm`);
-        landmarkerRef.current = await PoseLandmarker.createFromOptions(fileset, {
-          baseOptions: { modelAssetPath: MODEL, delegate: 'GPU' },
-          runningMode: 'VIDEO',
+        const options = {
+          baseOptions: { modelAssetPath: MODEL, delegate: 'GPU' as 'GPU' | 'CPU' },
+          runningMode: 'VIDEO' as const,
           numPoses: 1,
-        });
+        };
+        try {
+          landmarkerRef.current = await PoseLandmarker.createFromOptions(fileset, options);
+        } catch {
+          // Android antiguos o WebView sin WebGL: reintentar en CPU antes de fallar.
+          landmarkerRef.current = await PoseLandmarker.createFromOptions(fileset, {
+            ...options,
+            baseOptions: { modelAssetPath: MODEL, delegate: 'CPU' },
+          });
+        }
       }
 
       setStatus('measuring');
       const lm = landmarkerRef.current;
       let lastVideoTime = -1;
+      let lastInfer = 0;
+      const MIN_INFER_MS = 50; // ~20 fps: suficiente para marcha y mucho mas liviano
 
       const loop = () => {
         const v = videoRef.current;
         if (!v || !streamRef.current) return;
-        if (v.currentTime !== lastVideoTime && v.readyState >= 2) {
+        const frameNow = performance.now();
+        if (v.currentTime !== lastVideoTime && v.readyState >= 2 && frameNow - lastInfer >= MIN_INFER_MS) {
           lastVideoTime = v.currentTime;
-          const now = performance.now();
+          lastInfer = frameNow;
+          const now = frameNow;
           const res = lm.detectForVideo(v, now);
           const pose: Landmark[] | undefined = res?.landmarks?.[0];
           if (pose && pose.length > 27) {

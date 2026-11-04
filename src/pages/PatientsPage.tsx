@@ -11,6 +11,7 @@ import { useToast } from '../components/ui/toastApi';
 import { EmailFeatureModal } from '../components/ui/EmailFeatureModal';
 import { SpotlightCard } from '../components/ui/SpotlightCard';
 import { GlassModal } from '../components/ui/GlassModal';
+import { DrawerClinicalDemo } from '../components/ui/Drawer';
 import { isDemoAccount } from '../lib/demoAuth';
 import { useTranslation } from 'react-i18next';
 import { Users, Search, Plus, LayoutGrid, List, AlertTriangle, CheckCircle2, Key, Copy, Check, Mail, ExternalLink, UserCheck, Calendar, ArrowRight, Eye } from 'lucide-react';
@@ -969,11 +970,12 @@ export function PatientsPage() {
         />
       )}
 
-      {/* GlassModal: Ficha rápida (click en tarjeta) */}
+      {/* Ficha rápida clínica (click en la tarjeta): superficie sólida, sin glass */}
       <GlassModal
         isOpen={quickFicha !== null}
         onClose={() => setQuickFicha(null)}
         size="md"
+        variant="solid"
       >
         {quickFicha && (
           <div className="space-y-5">
@@ -1085,6 +1087,10 @@ export function PatientsPage() {
                 <Calendar className="size-4" />
                 {t('patients.assignRoutine', 'Asignar rutina')}
               </button>
+            </div>
+
+            <div className="pt-1">
+              <DrawerClinicalDemo patientId={quickFicha.id} patientName={quickFicha.name} />
             </div>
           </div>
         )}

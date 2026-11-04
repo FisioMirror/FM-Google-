@@ -44,7 +44,7 @@ export const JointAnatomyTooltip: React.FC<JointAnatomyTooltipProps> = ({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 8, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            className="absolute left-0 bottom-full mb-2.5 z-50 w-72 p-4 rounded-3xl bg-white/95 dark:bg-slate-950/95 text-slate-800 dark:text-white border border-teal-500/30 dark:border-teal-500/40 shadow-2xl text-xs space-y-2 backdrop-blur-2xl transition-colors"
+            className="absolute left-0 bottom-full mb-2.5 z-50 w-72 p-4 rounded-3xl bg-white dark:bg-slate-900 text-slate-800 dark:text-white border border-slate-200 dark:border-slate-700 shadow-2xl text-xs space-y-2 transition-colors"
           >
             <div className="flex items-center justify-between pb-1 border-b border-slate-200 dark:border-white/10">
               <span className="font-black text-teal-600 dark:text-teal-400 flex items-center gap-1.5">
@@ -62,7 +62,7 @@ export const JointAnatomyTooltip: React.FC<JointAnatomyTooltipProps> = ({
             <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed">
               <strong className="text-slate-900 dark:text-white">{t('jtt.agonists')}</strong> {agonists}
             </p>
-            <div className="p-2 rounded-xl bg-amber-50 border border-amber-300 text-[10px] text-amber-900 dark:bg-amber-950/50 dark:border-amber-700/60 dark:text-amber-100 flex items-start gap-1.5">
+            <div className="p-2 rounded-xl bg-amber-100 border border-amber-400 text-[10px] text-amber-950 dark:bg-amber-950 dark:border-amber-700 dark:text-amber-50 flex items-start gap-1.5">
               <ShieldAlert className="w-3.5 h-3.5 shrink-0 text-amber-600 dark:text-amber-400 mt-0.5" />
               <span>{precautions}</span>
             </div>
@@ -332,7 +332,7 @@ export const PhysioNoteAnnotationBubble: React.FC<PhysioNoteAnnotationBubbleProp
     <motion.div
       whileHover={{ y: -2 }}
       className={cn(
-        "inline-flex items-center gap-2.5 p-2.5 px-4 rounded-2xl bg-amber-500/15 border border-amber-500/35 text-amber-900 dark:text-amber-100 text-xs shadow-md",
+        "inline-flex items-center gap-2.5 p-2.5 px-4 rounded-2xl bg-amber-100 border border-amber-400 text-amber-950 dark:bg-amber-950 dark:border-amber-700 dark:text-amber-50 text-xs shadow-md",
         className
       )}
     >

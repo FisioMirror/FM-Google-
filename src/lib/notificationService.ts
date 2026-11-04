@@ -245,6 +245,7 @@ export async function deleteNotification(notificationId: string): Promise<boolea
  */
 export async function notifySessionCompleted(params: {
   therapistId: string;
+  patientId?: string;
   patientName: string;
   exerciseTitle: string;
   precision: number;
@@ -258,7 +259,7 @@ export async function notifySessionCompleted(params: {
     type: 'ejercicio',
     title: `Sesión completada por ${params.patientName}`,
     message: `Finalizó "${params.exerciseTitle}" con ${Math.round(params.precision)}% de precisión${durationText}.`,
-    link: '/dashboard-fisio',
+    link: params.patientId ? `/paciente/${params.patientId}` : '/patients',
   });
 }
 

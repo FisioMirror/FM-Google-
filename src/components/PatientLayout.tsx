@@ -3,6 +3,7 @@ import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Video, Phone, MessageCircle, Mail, Bot, Home, Dumbbell, Activity, User, Settings, X, Bell, Sun, Moon, LogOut } from 'lucide-react';
 import { Icon } from './ui/Icon';
+import { HelpGuideButton, ContextualFAQCard } from './ui/HelpGuideButton';
 import { BackButton } from './ui/BackButton';
 
 import { FloatingMenu, type FloatingMenuItem } from './ui/FloatingMenu';
@@ -460,7 +461,7 @@ export function PatientLayout({ children }: PatientLayoutProps) {
           </div>
           {/* Right: actions — all buttons directly in header */}
           <div className="flex items-center gap-1 sm:gap-2 shrink-0">
-            <div className={`online-indicator is-${isOnline ? 'online' : 'offline'} hidden md:inline-flex`}>
+            <HelpGuideButton /><div className={`online-indicator is-${isOnline ? 'online' : 'offline'} hidden md:inline-flex`}>
               <span className="dot" />
               <span>{isOnline ? t('common.online', 'En línea') : t('common.offline', 'Sin conexión')}</span>
             </div>
@@ -513,7 +514,7 @@ export function PatientLayout({ children }: PatientLayoutProps) {
           </div>
         </header>
         {/* Scrollable content with clean spacing */}
-        <div className="flex-1 w-full min-w-0 overflow-y-auto overflow-x-hidden px-4 sm:px-6 pt-8 pb-24 space-y-8 lg:p-10 lg:pb-10 bg-teal-50/20 dark:bg-slate-950/20">{children}</div>
+        <div className="flex-1 w-full min-w-0 overflow-y-auto overflow-x-hidden px-4 sm:px-6 pt-8 pb-24 space-y-8 lg:p-10 lg:pb-10 bg-teal-50/20 dark:bg-slate-950/20">{children}<ContextualFAQCard className="max-w-4xl" /></div>
 
         {/* Desktop footer */}
         <footer className="hidden lg:flex pt-6 pb-6 px-8 justify-between text-outline text-xs border-t divider-teal shrink-0">

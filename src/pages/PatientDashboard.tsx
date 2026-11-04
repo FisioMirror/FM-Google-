@@ -20,7 +20,6 @@ import { CardSpotlight } from '../components/ui/CardSpotlight';
 import { PulsatingButton } from '../components/ui/PulsatingButton';
 import { SparklesText } from '../components/ui/SparklesText';
 import { MascotAnimation } from '../components/ui/MascotAnimation';
-import { HelpGuideButton } from '../components/ui/HelpGuideButton';
 import { PatientRecoveryHub } from '../components/patient/PatientRecoveryHub';
 import { VersiculoCard } from '../components/spiritual/VersiculoCard';
 import {
@@ -375,7 +374,6 @@ export function PatientDashboard() {
           </div>
           <div className="ml-auto flex shrink-0 items-center gap-2 sm:gap-3">
             <CheerReactionButton />
-            <HelpGuideButton />
           </div>
         </div>
 

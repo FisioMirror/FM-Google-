@@ -95,6 +95,28 @@ export function SkeletonCard() {
   );
 }
 
+/** Reporte narrativo: encabezado + párrafos + tarjetas de nota. Sin avatares ni imágenes. */
+export function SkeletonReport() {
+  return (
+    <div className="space-y-3.5" aria-hidden="true">
+      <div className="flex items-center gap-2.5">
+        <Skeleton variant="rect" width={28} height={28} className="rounded-xl" />
+        <Skeleton variant="text" width="45%" height={14} />
+      </div>
+      <div className="space-y-2">
+        <Skeleton variant="text" width="100%" height={12} />
+        <Skeleton variant="text" width="92%" height={12} />
+        <Skeleton variant="text" width="78%" height={12} />
+      </div>
+      <div className="space-y-2.5 pt-1">
+        {[0, 1, 2].map((i) => (
+          <Skeleton key={i} variant="rect" width="100%" height={44} className="rounded-xl" />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export function SkeletonKPI() {
   return (
     <div className="glass-card p-5 space-y-3 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl">

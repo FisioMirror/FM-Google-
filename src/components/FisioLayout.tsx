@@ -3,6 +3,7 @@ import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { UserPlus, Dumbbell, Video, Sparkles, ScanLine, Phone, Bot, LayoutDashboard, Users, Activity, Wrench, UserCheck, Settings, X, ChevronRight, ChevronLeft, Download, LogOut, Sun, Moon, Bell } from 'lucide-react';
 import { Icon } from './ui/Icon';
+import { HelpGuideButton, ContextualFAQCard } from './ui/HelpGuideButton';
 import { BackButton } from './ui/BackButton';
 import { FloatingMenu, type FloatingMenuItem } from './ui/FloatingMenu';
 import { LegalModal, type LegalDocType } from './ui/LegalModal';
@@ -534,7 +535,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
             </div>
           </div>
           <div className="flex items-center gap-1 sm:gap-3 shrink-0">
-            <div className={`hidden md:inline-flex online-indicator is-${isOnline ? 'online' : 'offline'}`}>
+            <HelpGuideButton /><div className={`hidden md:inline-flex online-indicator is-${isOnline ? 'online' : 'offline'}`}>
               <span className="dot" />
               <span>{isOnline ? t('common.online', 'En línea') : t('common.offline', 'Sin conexión')}</span>
             </div>
@@ -633,7 +634,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
         </header>
 
         {/* Main scrollable content with clean spacing */}
-        <div className="p-4 sm:p-6 lg:p-8 pb-8 flex-1 bg-teal-50/20 dark:bg-slate-950/20">{children}</div>
+        <div className="p-4 sm:p-6 lg:p-8 pb-8 flex-1 bg-teal-50/20 dark:bg-slate-950/20">{children}<ContextualFAQCard className="mt-8 max-w-4xl" /></div>
 
         <footer className="pt-6 pb-6 px-4 sm:px-8 flex flex-col md:flex-row justify-between text-outline text-xs gap-4 border-t border-white/10">
           <span>{t('fl.rights')}</span>

@@ -1025,7 +1025,7 @@ export function ExercisesPage() {
       )}
 
       {/* Comprehensive Anatomical & Biomechanical Guide Modal */}
-      <GlassModal isOpen={!!descriptionExercise} onClose={() => setDescriptionExercise(null)} size="xl">
+      <GlassModal isOpen={!!descriptionExercise} onClose={() => setDescriptionExercise(null)} size="xl" variant="solid">
         {descriptionExercise && (
           <div className="p-2 sm:p-4 space-y-6 max-h-[85vh] overflow-y-auto">
             {/* Modal Header */}

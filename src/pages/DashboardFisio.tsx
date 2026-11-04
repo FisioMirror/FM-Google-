@@ -8,7 +8,6 @@ import { Spinner } from '../components/ui/Loader';
 import { MedicalIcon } from '../components/ui/MedicalIcon';
 import { CommandPalette, type CommandItem } from '../components/ui/CommandPalette';
 import { InsightBanner } from '../components/ui/InsightBanner';
-import { HelpGuideButton } from '../components/ui/HelpGuideButton';
 import { OnboardingGuide } from '../components/OnboardingGuide';
 import { useAuthStore } from '../stores/authStore';
 import { supabase } from '../lib/supabase';
@@ -791,8 +790,6 @@ export function DashboardFisio() {
                 </DateRangePicker.Popover>
               </DateRangePicker>
             </div>
-
-            <HelpGuideButton />
           </div>
         </div>
       </div>
