@@ -926,8 +926,8 @@ export function StatsPage() {
                         <tr className="text-on-surface-variant border-b border-outline-variant/20">
                           <th className="text-left py-3 px-2 font-bold">{t('stats.patient')}</th>
                           <th className="text-left py-3 px-2 font-bold">{t('stats.diagnosis')}</th>
-                          <th className="text-center py-3 px-2 font-bold">Sesiones</th>
-                          <th className="text-center py-3 px-2 font-bold">Calidad Media</th>
+                          <th className="text-center py-3 px-2 font-bold">{t('tr.sesiones')}</th>
+                          <th className="text-center py-3 px-2 font-bold">{t('tr.calidad_media')}</th>
                           <th className="text-right py-3 px-2 font-bold">{t('stats.lastSession')}</th>
                         </tr>
                       </thead>
@@ -1031,14 +1031,14 @@ export function StatsPage() {
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="w-3 h-3 rounded-full bg-outline"></span>
-                      <span className="text-xs font-bold text-on-surface-variant">Tendencia</span>
+                      <span className="text-xs font-bold text-on-surface-variant">{t('tr.tendencia')}</span>
                     </div>
                   </div>
                 </GlassPanel>
 
                 <GlassPanel className="p-8 rounded-[2rem] flex flex-col card-glow-hover relative overflow-hidden">
                   <div className="blob-blue absolute -top-12 -right-12 w-32 h-32 opacity-20 pointer-events-none" />
-                  <h3 className="font-title-md text-title-md gradient-text-editorial mb-4">Sesiones Recientes</h3>
+                  <h3 className="font-title-md text-title-md gradient-text-editorial mb-4">{t('tr.sesiones_recientes')}</h3>
                   <div className="space-y-4 flex-1 overflow-y-auto max-h-64">
                     {sessions.length === 0 ? (
                       <div className="empty-state-premium text-center py-4">
@@ -1189,7 +1189,7 @@ export function StatsPage() {
               {/* Paciente: Logros e Insignias (gamification kept for patients) */}
               <div className="flex flex-col">
                 <div className="flex justify-between items-center mb-4">
-                  <h3 className="font-headline-lg text-headline-lg-mobile lg:text-headline-lg gradient-text-living">Logros e Insignias</h3>
+                  <h3 className="font-headline-lg text-headline-lg-mobile lg:text-headline-lg gradient-text-living">{t('tr.logros_e_insignias')}</h3>
                   <button onClick={() => setShowAllBadges(!showAllBadges)} className="text-primary font-bold text-sm flex items-center gap-1 hover:gap-2 transition-all">
                     {showAllBadges ? 'Contraer Vitrina' : 'Expandir Vitrina'}
                     <Icon name={showAllBadges ? 'keyboard_arrow_up' : 'keyboard_arrow_down'} size={18} />

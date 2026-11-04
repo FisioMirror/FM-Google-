@@ -418,7 +418,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
         {!collapsed ? (
           <div className="flex items-center gap-3 min-w-0 pr-6">
             <div className="flex flex-col min-w-0">
-              <h1 className="text-base font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight whitespace-nowrap">FisioMirror</h1>
+              <h1 className="text-base font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight whitespace-nowrap">{t('tr.fisiomirror')}</h1>
               <p className="text-[10px] uppercase tracking-wider text-sky-600 dark:text-sky-400 font-bold whitespace-nowrap">{t('fl.clinicalEdition')}</p>
             </div>
           </div>
@@ -489,7 +489,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
               <div className="p-4 flex items-center justify-between border-b border-sky-100/60 dark:border-slate-800">
                 <div className="flex items-center gap-3">
                   <div>
-                    <h2 className="text-base font-extrabold text-slate-900 dark:text-white leading-tight">FisioMirror</h2>
+                    <h2 className="text-base font-extrabold text-slate-900 dark:text-white leading-tight">{t('tr.fisiomirror')}</h2>
                     <p className="text-[10px] uppercase tracking-wider text-sky-600 dark:text-sky-400 font-bold">{t('tr.edicion_clinica')}</p>
                   </div>
                 </div>
@@ -625,7 +625,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
             <button
               onClick={() => setShowLogout(true)}
               className="hidden sm:inline-flex text-on-surface-variant hover:text-error transition-colors active-scale"
-              aria-label="Cerrar sesión"
+              aria-label={t('tr.cerrar_sesion')}
             >
               <Icon name="logout" size={20} />
             </button>
@@ -678,7 +678,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
                 </div>
                 <button
                   onClick={() => !videoStarting && setShowVideoModal(false)}
-                  aria-label="Cerrar"
+                  aria-label={t('tr.cerrar')}
                   className="text-outline hover:text-error transition-colors p-2 min-h-[44px] min-w-[44px] flex items-center justify-center"
                 >
                   <Icon name="close" size={20} />

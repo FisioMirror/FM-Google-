@@ -166,8 +166,8 @@ export function DeleteProjectDialogDemo() {
             <AlertDialog.Header>
               <AlertDialog.Icon status="danger" />
               <div>
-                <AlertDialog.Heading>¿Eliminar este registro permanentemente?</AlertDialog.Heading>
-                <span className="text-[10px] text-rose-600 dark:text-rose-400 font-bold uppercase tracking-wider">Operación Irreversible</span>
+                <AlertDialog.Heading>{t('tr.eliminar_este_registro_permanentemente')}</AlertDialog.Heading>
+                <span className="text-[10px] text-rose-600 dark:text-rose-400 font-bold uppercase tracking-wider">{t('tr.operacion_irreversible')}</span>
               </div>
             </AlertDialog.Header>
             <AlertDialog.Body>

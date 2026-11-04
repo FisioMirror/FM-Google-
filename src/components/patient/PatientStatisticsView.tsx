@@ -205,7 +205,7 @@ export function PatientStatisticsView({
               Minutos Acumulados
             </p>
             <h3 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 dark:text-slate-100 tabular-nums tracking-tight">
-              {totalMinutes} <span className="text-sm font-bold text-on-surface-variant">min</span>
+              {totalMinutes} <span className="text-sm font-bold text-on-surface-variant">{t('tr.min')}</span>
             </h3>
             <p className="text-[11px] text-on-surface-variant mt-1">{t('psv.activeTime')}</p>
           </div>
@@ -294,11 +294,11 @@ export function PatientStatisticsView({
                         <div className="bg-slate-900/95 text-white p-3 rounded-xl shadow-xl text-xs space-y-1.5 border border-slate-700">
                           <p className="font-bold text-teal-300">{data.ejercicio} ({data.date})</p>
                           <p className="flex justify-between gap-4">
-                            <span className="text-slate-300">Calidad motora:</span>
+                            <span className="text-slate-300">{t('tr.calidad_motora')}</span>
                             <span className="font-bold text-teal-400">{data.calidad}%</span>
                           </p>
                           <p className="flex justify-between gap-4">
-                            <span className="text-slate-300">Rango articular:</span>
+                            <span className="text-slate-300">{t('tr.rango_articular')}</span>
                             <span className="font-bold text-sky-400">{data.rom}°</span>
                           </p>
                           <p className="flex justify-between gap-4">
@@ -376,15 +376,15 @@ export function PatientStatisticsView({
                         <div className="bg-slate-900/95 text-white p-3 rounded-xl shadow-xl text-xs space-y-1.5 border border-slate-700">
                           <p className="font-bold text-teal-300">{d.fullName}</p>
                           <p className="flex justify-between gap-4">
-                            <span className="text-slate-300">Minutos invertidos:</span>
+                            <span className="text-slate-300">{t('tr.minutos_invertidos')}</span>
                             <span className="font-bold text-teal-400">{d.minutos} min</span>
                           </p>
                           <p className="flex justify-between gap-4">
-                            <span className="text-slate-300">Repeticiones totales:</span>
+                            <span className="text-slate-300">{t('tr.repeticiones_totales')}</span>
                             <span className="font-bold text-sky-400">{d.repeticiones} reps</span>
                           </p>
                           <p className="flex justify-between gap-4">
-                            <span className="text-slate-300">Calidad promedio:</span>
+                            <span className="text-slate-300">{t('tr.calidad_promedio')}</span>
                             <span className="font-bold text-emerald-400">{d.calidad}%</span>
                           </p>
                         </div>
@@ -465,7 +465,7 @@ export function PatientStatisticsView({
           <div className="p-3.5 rounded-2xl bg-teal-500/5 border border-teal-500/15">
             <div className="flex items-center justify-between text-xs mb-1.5 font-bold">
               <span className="text-slate-700 dark:text-slate-300">{t('psv.rehabPhase')}</span>
-              <span className="text-teal-700 dark:text-teal-300">Fase 3 / 4</span>
+              <span className="text-teal-700 dark:text-teal-300">{t('tr.fase_3_4')}</span>
             </div>
             <div className="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
               <div className="h-full bg-teal-600 dark:bg-teal-400 rounded-full" style={{ width: `${Math.min(100, Math.max(25, avgQuality))}%` }} />
@@ -494,13 +494,13 @@ export function PatientStatisticsView({
             <table className="w-full text-left text-xs border-collapse">
               <thead>
                 <tr className="border-b border-outline/10 text-on-surface-variant font-semibold">
-                  <th className="py-3 px-3">Fecha & Hora</th>
+                  <th className="py-3 px-3">{t('tr.fecha_hora')}</th>
                   <th className="py-3 px-3">{t('psv.prescribedExercise')}</th>
                   <th className="py-3 px-3">{t('psv.durationLabel')}</th>
                   <th className="py-3 px-3">{t('tr.reps')}</th>
-                  <th className="py-3 px-3">Calidad Biomecánica</th>
+                  <th className="py-3 px-3">{t('tr.calidad_biomecanica')}</th>
                   <th className="py-3 px-3">{t('psv.maxRomLabel')}</th>
-                  <th className="py-3 px-3">Observaciones / Notas</th>
+                  <th className="py-3 px-3">{t('tr.observaciones_notas')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-outline/5 text-slate-800 dark:text-slate-200">

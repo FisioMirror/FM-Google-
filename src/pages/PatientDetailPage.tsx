@@ -1153,7 +1153,7 @@ export function PatientDetailPage() {
                 ))}
               </div>
             )}
-            <button onClick={() => setShowRoutineHistory(false)} className="w-full mt-4 py-3 rounded-xl bg-surface-variant/30 text-on-surface-variant font-bold hover:bg-surface-variant/50 transition-all">Cerrar</button>
+            <button onClick={() => setShowRoutineHistory(false)} className="w-full mt-4 py-3 rounded-xl bg-surface-variant/30 text-on-surface-variant font-bold hover:bg-surface-variant/50 transition-all">{t('tr.cerrar')}</button>
           </div>
         </div>
       )}
