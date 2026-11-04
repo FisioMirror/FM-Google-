@@ -28,6 +28,7 @@ import { CompactTelehealthBar } from '../components/ui/NavigationDocksSuite';
 import { ScrollProgress } from '../components/ui/ScrollProgress';
 import { currentLocale } from '../lib/format';
 import { DrawerClinicalDemo } from '../components/ui/Drawer';
+import { EditPatientModal } from '../components/patient/EditPatientModal';
 
 interface SessionRow {
   id: string;
@@ -122,6 +123,7 @@ export function PatientDetailPage() {
   const [showReassignModal, setShowReassignModal] = useState(false);
   const [routineHistory, setRoutineHistory] = useState<RoutineRow[]>([]);
   const [showRoutineHistory, setShowRoutineHistory] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -501,6 +503,13 @@ export function PatientDetailPage() {
           >
             <Icon name="videocam" size={16} />
             <span>{t('pdp.startArSession')}</span>
+          </button>
+                    <button
+            onClick={() => setShowEditModal(true)}
+            className="px-4 py-2 rounded-xl bg-surface-container/60 border border-outline/10 hover:bg-surface-container text-xs font-bold transition-all flex items-center gap-2"
+          >
+            <Icon name="edit" size={16} />
+            <span>{t('pdp.editClinicalRecord') || 'Editar expediente'}</span>
           </button>
         </div>
       </div>
@@ -1082,6 +1091,15 @@ export function PatientDetailPage() {
             )}
           </div>
         </div>
+      )}
+
+      {showEditModal && patient && (
+        <EditPatientModal
+          open={showEditModal}
+          onClose={() => setShowEditModal(false)}
+          patient={patient}
+          onSaved={(updated) => setPatient((prev) => (prev ? { ...prev, ...updated } : prev))}
+        />
       )}
 
       {/* Reassign Routine — Full-screen wizard */}
