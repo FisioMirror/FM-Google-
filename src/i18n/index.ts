@@ -3,6 +3,7 @@ import { initReactI18next } from 'react-i18next';
 import { es } from './es';
 import { en } from './en';
 import { pt } from './pt';
+import { translationAdditions, withAdditions } from './additions';
 
 export type SupportedLanguage = 'es' | 'en' | 'pt';
 
@@ -23,9 +24,9 @@ if (!i18n.isInitialized) {
     .use(initReactI18next)
     .init({
       resources: {
-        es: { translation: es },
-        en: { translation: en },
-        pt: { translation: pt },
+        es: { translation: withAdditions(es, translationAdditions.es) },
+        en: { translation: withAdditions(en, translationAdditions.en) },
+        pt: { translation: withAdditions(pt, translationAdditions.pt) },
       },
       lng: savedLanguage,
       fallbackLng: 'es',

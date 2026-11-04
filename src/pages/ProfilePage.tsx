@@ -17,7 +17,6 @@ import {
   RecoveryRankBadge,
   VirtualTrophyCabinet,
 } from '../components/ui/GamificationSuite';
-import { ErgonomicHandModeSwitcher } from '../components/ui/NavigationDocksSuite';
 import { AchievementShowcase } from '../components/AchievementShowcase';
 import { GamifiedBadgeCard } from '../components/ui/GamifiedBadgeCard';
 import { useGamification } from '../hooks/useGamification';
@@ -140,7 +139,7 @@ export function ProfilePage() {
           return {
             name: p.full_name,
             sessionTime: s ? new Date(s.fecha).toLocaleTimeString(currentLocale(), { hour: '2-digit', minute: '2-digit' }) : 'Pendiente',
-            diagnosis: p.diagnostico || 'Sin diagnóstico',
+            diagnosis: p.diagnostico || t('profile.noDiagnosis'),
           };
         });
         setActiveToday(todayList.slice(0, 6));
@@ -318,10 +317,10 @@ export function ProfilePage() {
               )}
             </AnimatePresence>
           </div>
-          <h2 className="font-display font-headline-lg text-headline-lg-mobile lg:text-headline-lg gradient-text-living mt-4 relative">{user?.full_name || 'Usuario'}</h2>
+          <h2 className="font-display font-headline-lg text-headline-lg-mobile lg:text-headline-lg gradient-text-living mt-4 relative">{user?.full_name || t('profile.userFallback')}</h2>
           <div className="font-title-md text-primary bg-primary-container/10 px-4 py-1 rounded-full mt-2 flex items-center gap-2 breathe-badge glow-teal relative">
             <MedicalIcon name="clipboard" size={16} className="text-primary animate-breathe-icon" />
-            {isFisio ? 'Fisioterapeuta' : 'Paciente'}
+            {isFisio ? t('roles.physiotherapist') : t('roles.patient')}
           </div>
           <div className="w-full space-y-2 mt-6">
             {user?.email && (
@@ -338,10 +337,10 @@ export function ProfilePage() {
             )}
           </div>
           <div className="w-full mt-4 space-y-3">
-            <RecoveryRankBadge rank={isFisio ? 'Rango: Clínico Experto' : 'Rango: Constante de Élite'} className="w-full justify-center" />
+            <RecoveryRankBadge rank={isFisio ? t('profile.rankExpert') : t('profile.rankElite')} className="w-full justify-center" />
             <RehabHeroAvatarCard
-              patientName={user?.full_name?.split(' ')[0] || 'Usuario'}
-              rankTitle={isFisio ? 'Especialista en Kinesiología' : 'Paciente en Rehabilitación'}
+              patientName={user?.full_name?.split(' ')[0] || t('profile.userFallback')}
+              rankTitle={isFisio ? t('profile.rankTitlePhysio') : t('profile.rankTitlePatient')}
             />
           </div>
         </motion.div>
@@ -350,22 +349,22 @@ export function ProfilePage() {
         <div className="lg:col-span-8 space-y-6 w-full min-w-0">
           <AnimatedTabs
             tabs={[
-              { id: 'personal', label: 'Datos Personales', content: (
+              { id: 'personal', label: t('profile.tabPersonal'), content: (
                 <GlassPanel className="p-6 rounded-[32px] card-glow-hover shimmer-border hover-lift accent-teal">
                   <div className="flex justify-between items-center mb-6">
                     <h3 className="font-headline-lg-mobile gradient-text-living font-bold">{t('profile.personalInfo')}</h3>
                     <button onClick={() => setEditing(!editing)} className="flex items-center gap-2 text-primary font-bold text-sm hover-lift badge-teal px-3 py-1 rounded-full breathe-badge">
-                      <Icon name="edit" size={16} /> {editing ? 'Cancelar' : 'Editar'}
+                      <Icon name="edit" size={16} /> {editing ? t('common.cancel') : t('common.edit')}
                     </button>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {[
-                      { label: 'Nombre Completo', key: 'full_name', type: 'text' },
-                      { label: isFisio ? 'Especialidad' : 'Condición / Diagnóstico', key: 'especialidad', type: 'text' },
-                      ...(isFisio ? [{ label: 'Universidad', key: 'universidad', type: 'text' }] : []),
-                      { label: 'Cédula', key: 'cedula', type: 'text' },
-                      { label: 'Colegiado ID', key: 'colegiado_id', type: 'text' },
-                      { label: 'Año de Egreso', key: 'anio_egreso', type: 'number' },
+                      { label: t('profile.fullName'), key: 'full_name', type: 'text' },
+                      { label: isFisio ? t('profile.specialty') : t('profile.conditionDx'), key: 'especialidad', type: 'text' },
+                      ...(isFisio ? [{ label: t('profile.university'), key: 'universidad', type: 'text' }] : []),
+                      { label: t('profile.license'), key: 'cedula', type: 'text' },
+                      { label: t('profile.billId'), key: 'colegiado_id', type: 'text' },
+                      { label: t('profile.gradYear'), key: 'anio_egreso', type: 'number' },
                     ].map((field) => (
                       <div key={field.key} className="p-4 rounded-2xl bg-surface-container-low/60 border divider-teal">
                         <label className="text-[10px] uppercase text-outline font-bold block mb-1">{field.label}</label>
@@ -387,7 +386,7 @@ export function ProfilePage() {
                   )}
                 </GlassPanel>
               ) },
-              { id: 'preferences', label: 'Preferencias', content: (
+              { id: 'preferences', label: t('profile.tabPreferences'), content: (
                 <>
                 <GlassPanel className="p-6 rounded-[32px] card-glow-hover hover-lift">
                   <h3 className="font-headline-lg-mobile gradient-text-living font-bold mb-6">{t('profile.systemPrefs')}</h3>
@@ -407,7 +406,7 @@ export function ProfilePage() {
                     <div className="flex items-center justify-between p-4 hover:bg-surface-variant/20 rounded-2xl">
                       <div className="flex items-center gap-3">
                         <Icon name="notifications_active" size={24} className="text-outline animate-breathe-icon" />
-                        <div><p className="font-medium">Notificaciones Push</p><p className="text-xs text-outline">{t('profile.notifSub')}</p></div>
+                        <div><p className="font-medium">{t('profile.pushNotifications')}</p><p className="text-xs text-outline">{t('profile.notifSub')}</p></div>
                       </div>
                       <button
                         onClick={() => setPushNotifications(!pushNotifications)}
@@ -415,13 +414,6 @@ export function ProfilePage() {
                       >
                         <div className={`w-6 h-6 bg-white rounded-full transition-transform ${pushNotifications ? 'translate-x-7' : 'translate-x-1'}`} />
                       </button>
-                    </div>
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 hover:bg-surface-variant/20 rounded-2xl gap-3">
-                      <div className="flex items-center gap-3">
-                        <Icon name="pan_tool" size={24} className="text-outline animate-breathe-icon" />
-                        <div><p className="font-medium">{t('profile.ergonomic')}</p><p className="text-xs text-outline">{t('profile.ergonomicSub')}</p></div>
-                      </div>
-                      <ErgonomicHandModeSwitcher />
                     </div>
                   </div>
                 </GlassPanel>
@@ -460,7 +452,7 @@ export function ProfilePage() {
                             className="flex-1 flex items-center justify-between text-left group"
                           >
                             <span className="font-medium text-on-surface text-lg">
-                              {user?.clinic_name || 'Sin nombre · Pulsa para editar'}
+                              {user?.clinic_name || t('profile.clinicNoName')}
                             </span>
                             <AnimatePresence>
                               {(clinicNameHover || !user?.clinic_name) && (
@@ -471,7 +463,7 @@ export function ProfilePage() {
                                   className="flex items-center gap-1 text-xs font-bold text-cyan-600 bg-cyan-500/10 px-3 py-1.5 rounded-full ring-1 ring-cyan-500/20"
                                 >
                                   <Icon name="edit" size={14} />
-                                  {user?.clinic_name ? 'Editar' : 'Añadir'}
+                                  {user?.clinic_name ? t('common.edit') : t('profile.add')}
                                 </motion.span>
                               )}
                             </AnimatePresence>
@@ -480,15 +472,15 @@ export function ProfilePage() {
                       </div>
                       <p className="text-xs text-outline mt-2 ml-1">
                         {clinicNameEditing
-                          ? 'Pulsa Enter para guardar · Esc para cancelar'
-                          : 'Pulsa sobre el nombre para editarlo'}
+                          ? t('profile.enterToSave')
+                          : t('profile.clickToEdit')}
                       </p>
                     </div>
                   </GlassPanel>
                 )}
                 </>
               ) },
-              { id: 'activity', label: isFisio ? 'Actividad' : 'Sesiones', content: (
+              { id: 'activity', label: isFisio ? t('profile.tabActivity') : t('profile.tabSessions'), content: (
                 <>
                 <GlassPanel className="p-6 rounded-[32px] card-glow-hover hover-lift shimmer-border relative overflow-hidden">
                   <div className="absolute -top-10 -right-10 w-32 h-32 rounded-full bg-gradient-to-br from-cyan-400/15 to-teal-500/10 blur-2xl pointer-events-none" />
@@ -499,9 +491,9 @@ export function ProfilePage() {
                           <Icon name="groups" size={24} className="icon-accent-cyan animate-breathe-icon" />
                         </div>
                         <div>
-                          <h3 className="font-headline-lg-mobile gradient-text-living font-bold">{isFisio ? 'Pacientes Activos Hoy' : 'Sesiones Programadas'}</h3>
+                          <h3 className="font-headline-lg-mobile gradient-text-living font-bold">{isFisio ? t('profile.activeToday') : t('profile.sessionsScheduled')}</h3>
                           <p className="text-xs text-outline mt-0.5">
-                            {isFisio ? `${activeToday.length} paciente(s) con actividad` : 'Tus próximas sesiones de rehabilitación'}
+                            {isFisio ? t('profile.activeCount', { n: activeToday.length }) : t('profile.nextSessions')}
                           </p>
                         </div>
                       </div>
@@ -560,14 +552,14 @@ export function ProfilePage() {
                   <div className="flex gap-4 text-sm">
                     <AnimatedLink onClick={() => setLegalModal('privacy')} className="text-on-surface-variant">{t('profile.privacy')}</AnimatedLink>
                     <AnimatedLink onClick={() => setLegalModal('terms')} className="text-on-surface-variant">{t('profile.terms')}</AnimatedLink>
-                    <AnimatedLink onClick={() => setLegalModal('consent')} className="text-on-surface-variant">Consentimiento</AnimatedLink>
+                    <AnimatedLink onClick={() => setLegalModal('consent')} className="text-on-surface-variant">{t('profile.consent')}</AnimatedLink>
                   </div>
                   <button onClick={() => setShowLogoutModal(true)} className="flex items-center gap-2 px-6 py-3 rounded-xl bg-error/10 text-error font-bold hover:bg-error/20 transition-all breathe-badge hover-lift-warm">
                     <Icon name="logout" size={20} />{t('profile.signOut')}</button>
                 </div>
                 </>
               ) },
-              { id: 'trophies', label: 'Logros y Trofeos', content: (
+              { id: 'trophies', label: t('profile.tabTrophies'), content: (
                 <div className="space-y-4">
                   <GlassPanel className="p-5 sm:p-6 rounded-3xl">
                     <div className="flex justify-between items-center text-xs mb-4">

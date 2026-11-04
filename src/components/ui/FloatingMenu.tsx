@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { Plus } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '../../lib/utils';
@@ -19,11 +19,34 @@ interface FloatingMenuProps {
 
 export function FloatingMenu({ items, ariaLabel = 'Acciones rápidas', className }: FloatingMenuProps) {
   const [open, setOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Cerrar al hacer scroll o tocar fuera: antes el menú quedaba fijo sobre el
+  // contenido y, en pantallas chicas, la lista de acciones se salía del viewport.
+  useEffect(() => {
+    if (!open) return;
+    const onScroll = (event: Event) => {
+      if (containerRef.current?.contains(event.target as Node)) return;
+      setOpen(false);
+    };
+    const onPointerDown = (event: PointerEvent) => {
+      if (containerRef.current?.contains(event.target as Node)) return;
+      setOpen(false);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true, capture: true });
+    window.addEventListener('pointerdown', onPointerDown, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', onScroll, true);
+      window.removeEventListener('pointerdown', onPointerDown);
+    };
+  }, [open]);
 
   return (
-    <div className={cn('flex flex-col items-end gap-3 safe-area-bottom', className)}>
+    <div ref={containerRef} className={cn('flex flex-col items-end gap-3 safe-area-bottom', className)}>
       <AnimatePresence>
-        {open && items.map((item, i) => (
+        {open && (
+        <div className="flex max-h-[min(60vh,26rem)] flex-col items-end gap-3 overflow-y-auto overscroll-contain pr-0.5">
+        {items.map((item, i) => (
           <motion.button
             key={i}
             initial={{ opacity: 0, x: 20, scale: 0.8 }}
@@ -38,6 +61,8 @@ export function FloatingMenu({ items, ariaLabel = 'Acciones rápidas', className
             <span className="truncate">{item.label}</span>
           </motion.button>
         ))}
+        </div>
+        )}
       </AnimatePresence>
       <motion.button
         whileTap={{ scale: 0.9 }}

@@ -1,4 +1,4 @@
-import React, { useCallback, useState, type ReactNode } from "react";
+import React, { useCallback, useMemo, useState, type ReactNode } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { CheckCircle2, AlertCircle, AlertTriangle, Info, X } from "lucide-react";
 import { cn } from "../../lib/utils";
@@ -60,6 +60,10 @@ export function ToastProvider({ children, placement = "bottom-right" }: ToastPro
   // Conectar la API global (toast.success, etc.) con este provider
   setToastHandlers({ addToast, removeToast, clearToasts });
 
+  // Valor estable: evita re-renders y efectos duplicados en consumidores que
+  // dependen de la identidad de `useToast()`.
+  const contextValue = useMemo(() => ({ addToast, removeToast, clearToasts }), [addToast, removeToast, clearToasts]);
+
   const placementClasses: Record<string, string> = {
     "bottom-right": "bottom-5 right-5 sm:bottom-6 sm:right-6 items-end flex-col-reverse",
     "bottom-left": "bottom-5 left-5 sm:bottom-6 sm:left-6 items-start flex-col-reverse",
@@ -70,7 +74,7 @@ export function ToastProvider({ children, placement = "bottom-right" }: ToastPro
   };
 
   return (
-    <ToastContext.Provider value={{ addToast, removeToast, clearToasts }}>
+    <ToastContext.Provider value={contextValue}>
       {children}
       <div
         aria-live="polite"

@@ -17,10 +17,20 @@ export interface PoseLandmark {
 
 export interface PoseData {
   landmarks: PoseLandmark[];
+  /** Ángulo de hombro (cadera-hombro-codo) de cada lado. */
   leftArmAngle: number;
   rightArmAngle: number;
+  /** Ángulo de codo (hombro-codo-muñeca) de cada lado. */
   leftElbowAngle: number;
   rightElbowAngle: number;
+  /** Ángulo de la articulación que cuenta repeticiones para el ejercicio actual. */
+  primaryAngle: number;
+  /** Objetivo clínico configurado para esa articulación. */
+  targetAngle: number;
+  /** Calidad (0-100) de la última repetición completada. */
+  lastRepQuality: number | null;
+  /** Rango articular recorrido en la última repetición, en grados. */
+  lastRepRange: number;
   postureScore: number;
   isTracking: boolean;
 }
@@ -47,6 +57,26 @@ function inferRepJoint(exerciseName?: string): RepJoint {
   if (/(hombro|shoulder|elevaci|abducci|press militar|overhead)/.test(name)) return 'shoulder';
   if (/(cadera|hip|puente|bridge|gluteo|glúteo)/.test(name)) return 'hip';
   return 'elbow';
+}
+
+/**
+ * Rango articular esperado (en grados) para una repetición completa.
+ * Los presets clínicos expresan flexión/elevación/abducción; la rodilla usa
+ * extensión (target 0), por eso su rango se deja en un valor funcional.
+ */
+function expectedRangeFor(joint: RepJoint, targetAngle: number): number {
+  switch (joint) {
+    case 'elbow':
+      return Math.max(45, Math.min(140, targetAngle || 110));
+    case 'shoulder':
+      return Math.max(45, Math.min(160, targetAngle || 90));
+    case 'hip':
+      return Math.max(25, Math.min(90, targetAngle || 45));
+    case 'knee':
+      return Math.max(45, Math.min(100, targetAngle > 0 ? Math.max(70, targetAngle) : 70));
+    default:
+      return 70;
+  }
 }
 
 export interface UsePoseDetectionResult {
@@ -148,6 +178,16 @@ export function usePoseDetection(options: UsePoseDetectionOptions = {}): UsePose
   const repAngleSmoothRef = useRef<number | null>(null);
   const lastRepTsRef = useRef<number>(0);
   const targetAngleRef = useRef<number>(90);
+  const lastRepQualityRef = useRef<number | null>(null);
+  const lastRepRangeRef = useRef<number>(0);
+  const repTrackRef = useRef({
+    phase: 'idle' as 'idle' | 'moving',
+    startAngle: 0,
+    min: 0,
+    max: 0,
+    startTs: 0,
+    lastRest: 0,
+  });
   const repJointRef = useRef<RepJoint>(options.repJoint ?? inferRepJoint(options.exerciseName));
   repJointRef.current = options.repJoint ?? inferRepJoint(options.exerciseName);
 
@@ -156,6 +196,9 @@ export function usePoseDetection(options: UsePoseDetectionOptions = {}): UsePose
     repPhaseRef.current = 'down';
     repAngleSmoothRef.current = null;
     lastRepTsRef.current = 0;
+    lastRepQualityRef.current = null;
+    lastRepRangeRef.current = 0;
+    repTrackRef.current = { phase: 'idle', startAngle: 0, min: 0, max: 0, startTs: 0, lastRest: 0 };
   }, []);
 
   const toggleFacingMode = useCallback(() => {
@@ -229,6 +272,72 @@ export function usePoseDetection(options: UsePoseDetectionOptions = {}): UsePose
       ctx.restore();
     };
 
+    const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
+
+    /**
+     * Detector de repeticiones por excursión articular.
+     * Funciona para flexión (el ángulo baja) y para elevación/abducción (sube):
+     * registra el extremo de partida, el rango recorrido y cuenta cuando el
+     * paciente vuelve cerca del punto inicial con un rango mínimo y un tiempo
+     * fisiológicamente plausible. Devuelve la calidad de la repetición.
+     */
+    const trackAngle = (rawAngle: number, expectedRange: number) => {
+      const now = performance.now();
+      const prevSmooth = repAngleSmoothRef.current;
+      const alpha = prevSmooth === null ? 1 : 0.42;
+      const angle = prevSmooth === null ? rawAngle : prevSmooth + alpha * (rawAngle - prevSmooth);
+      repAngleSmoothRef.current = angle;
+
+      const track = repTrackRef.current;
+      if (track.phase === 'idle') {
+        if (track.lastRest === 0) track.lastRest = angle;
+        track.lastRest += 0.06 * (angle - track.lastRest);
+        const startDelta = Math.max(16, expectedRange * 0.22);
+        if (Math.abs(angle - track.lastRest) > startDelta) {
+          track.phase = 'moving';
+          track.startAngle = track.lastRest;
+          track.min = angle;
+          track.max = angle;
+          track.startTs = now;
+        }
+        return { angle, counted: false, quality: null as number | null, range: 0 };
+      }
+
+      track.min = Math.min(track.min, angle);
+      track.max = Math.max(track.max, angle);
+      const range = track.max - track.min;
+      const elapsed = now - track.startTs;
+      const minRange = Math.max(24, expectedRange * 0.5);
+      const returnTolerance = Math.max(10, expectedRange * 0.18);
+
+      if (range >= minRange && elapsed >= 900 && Math.abs(angle - track.startAngle) <= returnTolerance) {
+        const rangeScore = clamp((range / expectedRange) * 100, 0, 100);
+        const seconds = elapsed / 1000;
+        const tempoScore = seconds < 0.8 ? 40 : seconds < 1.2 ? 65 : seconds <= 6 ? 100 : seconds <= 8 ? 75 : 55;
+        const quality = Math.round(rangeScore * 0.8 + tempoScore * 0.2);
+        track.phase = 'idle';
+        track.startAngle = 0;
+        track.min = 0;
+        track.max = 0;
+        track.startTs = 0;
+        track.lastRest = angle;
+        lastRepQualityRef.current = clamp(quality, 0, 100);
+        lastRepRangeRef.current = Math.round(range);
+        return { angle, counted: true, quality: lastRepQualityRef.current, range };
+      }
+
+      // Movimiento inconcluso (pérdida de encuadre, pausa larga): reiniciar.
+      if (elapsed > 8000) {
+        track.phase = 'idle';
+        track.startAngle = 0;
+        track.min = 0;
+        track.max = 0;
+        track.startTs = 0;
+        track.lastRest = angle;
+      }
+      return { angle, counted: false, quality: null as number | null, range: Math.round(range) };
+    };
+
     // Resilient simulated rehabilitation stream for no-camera or busy-camera environments
     const startSimulationMode = () => {
       if (!mounted) return;
@@ -299,14 +408,9 @@ export function usePoseDetection(options: UsePoseDetectionOptions = {}): UsePose
         const rightAngle = Math.round(115 + angleCycle * 50);
         const leftAngle = 160;
 
-        // Rep counting logic (simulation mirrors the selected joint thresholds)
-        const simulatedDownThreshold = repJointRef.current === 'knee' ? 100 : repJointRef.current === 'shoulder' ? 70 : repJointRef.current === 'hip' ? 110 : 60;
-        if (rightAngle > 155 && repPhaseRef.current === 'down') {
-          repPhaseRef.current = 'up';
-        } else if (rightAngle < simulatedDownThreshold && repPhaseRef.current === 'up') {
-          repPhaseRef.current = 'down';
-          setRepCount((r) => r + 1);
-        }
+        // La simulación usa el mismo detector por excursión que la cámara real.
+        const simTrack = trackAngle(rightAngle, expectedRangeFor(repJointRef.current, targetAngleRef.current));
+        if (simTrack.counted) setRepCount((r) => r + 1);
 
         // Build 33 landmarks for skeleton overlay
         const rad = (rightAngle * Math.PI) / 180;
@@ -358,6 +462,10 @@ export function usePoseDetection(options: UsePoseDetectionOptions = {}): UsePose
           rightArmAngle: rightAngle,
           leftElbowAngle: leftAngle,
           rightElbowAngle: rightAngle,
+          primaryAngle: rightAngle,
+          targetAngle: targetAngleRef.current,
+          lastRepQuality: lastRepQualityRef.current,
+          lastRepRange: lastRepRangeRef.current,
           postureScore,
           isTracking: true,
         });
@@ -500,23 +608,55 @@ export function usePoseDetection(options: UsePoseDetectionOptions = {}): UsePose
                 return calculateAngle(la, lb, lc);
               };
 
-              // Joint angles for AR HUD
-              const leftArmAngle = angleOf(LM.LEFT_SHOULDER, LM.LEFT_ELBOW, LM.LEFT_WRIST);
-              const rightArmAngle = angleOf(LM.RIGHT_SHOULDER, LM.RIGHT_ELBOW, LM.RIGHT_WRIST);
+              // Hombro y codo se miden por separado: antes ambos campos recibían
+              // el ángulo de codo y el HUD mostraba un valor incorrecto.
+              const leftShoulderAngle = angleOf(LM.LEFT_HIP, LM.LEFT_SHOULDER, LM.LEFT_ELBOW);
+              const rightShoulderAngle = angleOf(LM.RIGHT_HIP, LM.RIGHT_SHOULDER, LM.RIGHT_ELBOW);
+              const leftElbowAngle = angleOf(LM.LEFT_SHOULDER, LM.LEFT_ELBOW, LM.LEFT_WRIST);
+              const rightElbowAngle = angleOf(LM.RIGHT_SHOULDER, LM.RIGHT_ELBOW, LM.RIGHT_WRIST);
 
               const visibleCount = landmarks.filter((lm) => lm.visibility > 0.5).length;
-              const postureScore = Math.round((visibleCount / 33) * 100);
+              const lSh = landmarks[LM.LEFT_SHOULDER];
+              const rSh = landmarks[LM.RIGHT_SHOULDER];
+              const lHip = landmarks[LM.LEFT_HIP];
+              const rHip = landmarks[LM.RIGHT_HIP];
+              const shoulderVisible = (lSh?.visibility ?? 0) > 0.4 || (rSh?.visibility ?? 0) > 0.4;
+              const hipVisible = (lHip?.visibility ?? 0) > 0.4 || (rHip?.visibility ?? 0) > 0.4;
+              const isTracking = visibleCount >= 14 && shoulderVisible && hipVisible;
+
+              // Postura real: visibilidad + alineación de hombros/caderas y
+              // verticalidad del torso (antes era solo % de landmarks visibles).
+              let postureScore = Math.round(clamp((visibleCount / 33) * 100, 0, 100));
+              if (
+                (lSh?.visibility ?? 0) > 0.4 && (rSh?.visibility ?? 0) > 0.4 &&
+                (lHip?.visibility ?? 0) > 0.4 && (rHip?.visibility ?? 0) > 0.4
+              ) {
+                const shoulderTilt = Math.abs(lSh.y - rSh.y);
+                const hipTilt = Math.abs(lHip.y - rHip.y);
+                const midShoulderX = (lSh.x + rSh.x) / 2;
+                const midShoulderY = (lSh.y + rSh.y) / 2;
+                const midHipX = (lHip.x + rHip.x) / 2;
+                const midHipY = (lHip.y + rHip.y) / 2;
+                const torsoLength = Math.hypot(midShoulderX - midHipX, midShoulderY - midHipY) || 0.1;
+                const lateralLean = Math.abs(midShoulderX - midHipX) / torsoLength;
+                const alignmentPenalty = Math.min(
+                  55,
+                  shoulderTilt * 260 + hipTilt * 260 + Math.max(0, lateralLean - 0.12) * 90
+                );
+                const visibilityScore = clamp((visibleCount / 33) * 100 * 1.15, 0, 100);
+                postureScore = Math.round(
+                  clamp(visibilityScore * 0.45 + (100 - alignmentPenalty) * 0.55, 0, 100)
+                );
+              }
               const postureColor = getPostureColor(postureScore);
 
               drawOverlay(ctx, landmarks, postureColor, canvas.width, canvas.height);
 
-              // Conteo de repeticiones con visibilidad validada + histéresis.
-              // Sin cooldown, un frame ruidoso cuenta una repetición fantasma.
+              // Articulación que cuenta el ejercicio: se elige el lado con mayor
+              // visibilidad de los 3 puntos (un brazo quieto no tapa la flexión
+              // del otro). El detector por excursión funciona para flexión y
+              // elevación, sin umbrales fijos por articulación.
               const repJoint = repJointRef.current;
-              // Se elige el lado del cuerpo que el paciente está trabajando: el de
-              // mayor visibilidad de los 3 puntos. Antes se usaba Math.max() de
-              // ambos lados, así que un brazo quieto y extendido (170°) tapaba la
-              // flexión del otro y la repetición nunca se contaba.
               const sideTriplets: Record<string, [number, number, number][]> = {
                 knee: [
                   [LM.LEFT_HIP, LM.LEFT_KNEE, LM.LEFT_ANKLE],
@@ -546,43 +686,29 @@ export function usePoseDetection(options: UsePoseDetectionOptions = {}): UsePose
               const rawAngle = angleOf(bestTriplet[0], bestTriplet[1], bestTriplet[2]);
               const sideVisible = visibilityOf(bestTriplet) >= 0.5;
 
-              if (rawAngle !== null && sideVisible) {
-                const now = performance.now();
-                // EMA corto sobre el ángulo de conteo: el jitter del landmark no
-                // debe disparar repeticiones fantasma ni perder las lentas.
-                const prevSmooth = repAngleSmoothRef.current;
-                const alpha = prevSmooth === null ? 1 : 0.45;
-                const currentAngle = prevSmooth === null ? rawAngle : prevSmooth + alpha * (rawAngle - prevSmooth);
-                repAngleSmoothRef.current = currentAngle;
-
-                const downThreshold =
-                  repJoint === 'knee' ? 100 : repJoint === 'shoulder' ? 70 : repJoint === 'hip' ? 110 : 60;
-                // Umbral de extensión: mismo para todas las articulaciones porque
-                // el ángulo siempre se mide como apertura articular (0°=cerrado).
-                const upThreshold = 155;
-                const minRepMs = 700; // ~85 rpm como techo fisiológico razonable
-
-                if (currentAngle > upThreshold && repPhaseRef.current === 'down') {
-                  repPhaseRef.current = 'up';
-                } else if (
-                  currentAngle < downThreshold &&
-                  repPhaseRef.current === 'up' &&
-                  now - lastRepTsRef.current > minRepMs
-                ) {
-                  repPhaseRef.current = 'down';
-                  lastRepTsRef.current = now;
+              let primaryAngle = 0;
+              if (isTracking && rawAngle !== null && sideVisible) {
+                const tracked = trackAngle(rawAngle, expectedRangeFor(repJoint, targetAngleRef.current));
+                primaryAngle = tracked.angle;
+                repPhaseRef.current = repTrackRef.current.phase === 'moving' ? 'up' : 'down';
+                if (tracked.counted) {
+                  lastRepTsRef.current = performance.now();
                   setRepCount((r) => r + 1);
                 }
               }
 
               setPoseData({
                 landmarks,
-                leftArmAngle: leftArmAngle ?? 0,
-                rightArmAngle: rightArmAngle ?? 0,
-                leftElbowAngle: leftArmAngle ?? 0,
-                rightElbowAngle: rightArmAngle ?? 0,
+                leftArmAngle: leftShoulderAngle ?? 0,
+                rightArmAngle: rightShoulderAngle ?? 0,
+                leftElbowAngle: leftElbowAngle ?? 0,
+                rightElbowAngle: rightElbowAngle ?? 0,
+                primaryAngle: Math.round(primaryAngle),
+                targetAngle: targetAngleRef.current,
+                lastRepQuality: lastRepQualityRef.current,
+                lastRepRange: lastRepRangeRef.current,
                 postureScore,
-                isTracking: true,
+                isTracking,
               });
             } else {
               lastLandmarksRef.current = null;

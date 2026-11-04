@@ -146,6 +146,11 @@ export function ARMirrorPage() {
   const peakAngleRef = useRef(0);
   const angleSumRef = useRef(0);
   const angleSamplesRef = useRef(0);
+  const repQualitySumRef = useRef(0);
+  const repQualityCountRef = useRef(0);
+  const lastQualityRepRef = useRef(0);
+  const lastQualityUpdateRef = useRef(0);
+  const lostTrackingNotifiedRef = useRef(false);
 
 
   // Timer
@@ -200,6 +205,9 @@ export function ARMirrorPage() {
       peakAngleRef.current = 0;
       angleSumRef.current = 0;
       angleSamplesRef.current = 0;
+      repQualitySumRef.current = 0;
+      repQualityCountRef.current = 0;
+      lastQualityRepRef.current = 0;
     }
   }, [cameraStarted]);
 
@@ -219,9 +227,56 @@ export function ARMirrorPage() {
     });
   }, [volumeLevel]);
 
+  // Calidad real por repetición y feedback de voz según el rango logrado.
+  // Se acumula durante toda la sesión (no se reinicia entre series).
+  useEffect(() => {
+    if (repCount < lastQualityRepRef.current) {
+      lastQualityRepRef.current = repCount;
+      return;
+    }
+    if (repCount === lastQualityRepRef.current) return;
+    lastQualityRepRef.current = repCount;
+
+    const q = poseData?.lastRepQuality;
+    if (q == null) return;
+    repQualitySumRef.current += q;
+    repQualityCountRef.current += 1;
+    const base = poseData?.postureScore ?? 0;
+    const avg = repQualitySumRef.current / repQualityCountRef.current;
+    setQualityScore(Math.round(base * 0.45 + avg * 0.55));
+
+    if (sessionStarted && state === 'active' && !isSimulated) {
+      if (q < 55) speak('Ampliá el rango del movimiento');
+      else if (q < 72) speak('Controlá la velocidad y completá el recorrido');
+      else if (q >= 92) speak('Excelente repetición');
+    }
+  }, [repCount]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Aviso único si el paciente sale del encuadre.
+  useEffect(() => {
+    if (!sessionStarted || state !== 'active' || !poseData) return;
+    if (!poseData.isTracking) {
+      if (!lostTrackingNotifiedRef.current) {
+        lostTrackingNotifiedRef.current = true;
+        speak('No veo tu cuerpo completo. Acercate o acomodá la cámara.');
+      }
+    } else {
+      lostTrackingNotifiedRef.current = false;
+    }
+  }, [poseData?.isTracking, sessionStarted, state, speak]); // eslint-disable-line react-hooks/exhaustive-deps
+
   useEffect(() => {
     if (poseData?.isTracking && poseData.landmarks) {
-      setQualityScore(poseData.postureScore);
+      const now = Date.now();
+      if (now - lastQualityUpdateRef.current > 350) {
+        lastQualityUpdateRef.current = now;
+        const base = poseData.postureScore;
+        const avg = repQualityCountRef.current > 0
+          ? repQualitySumRef.current / repQualityCountRef.current
+          : null;
+        const blended = avg != null ? Math.round(base * 0.45 + avg * 0.55) : base;
+        setQualityScore((prev) => (Math.abs(prev - blended) >= 1 ? blended : prev));
+      }
 
       // Compensation detection: check hip and torso alignment
       const leftHip = poseData.landmarks[23];
@@ -302,21 +357,22 @@ export function ARMirrorPage() {
   const saveSession = async (reportData?: { dolor_antes: number; dolor_despues: number; fatiga: number; comentario: string }) => {
     if (!user?.id) return;
     try {
+      const completedReps = Math.min(TARGET_REPS * TOTAL_SETS, (currentSet - 1) * TARGET_REPS + repCount);
       sessionStorage.setItem('ar_session_backup', JSON.stringify({
-        exerciseName, timer, repCount, qualityScore, currentSet,
+        exerciseName, timer, repCount: completedReps, qualityScore, currentSet,
       }));
 
       const ejerciciosData = [{
         nombre: exerciseName,
         series: currentSet,
-        repeticiones: repCount,
+        repeticiones: completedReps,
         duracion_segundos: timer,
         calidad_promedio: qualityScore,
       }];
 
       // Calculate adherence: completed reps vs target reps (TARGET_REPS * TOTAL_SETS)
       const targetTotal = TARGET_REPS * TOTAL_SETS;
-      const adherencia = targetTotal > 0 ? Math.min(100, Math.round((repCount * currentSet / targetTotal) * 100)) : 0;
+      const adherencia = targetTotal > 0 ? Math.min(100, Math.round((completedReps / targetTotal) * 100)) : 0;
 
       const metricas = {
         max_angle: Math.round(peakAngleRef.current),
@@ -331,7 +387,7 @@ export function ARMirrorPage() {
           paciente_id: user.id,
           ejercicio_nombre: exerciseName,
           duracion_segundos: timer,
-          repeticiones: repCount,
+          repeticiones: completedReps,
           calidad_ejecucion: qualityScore,
           calidad_promedio: qualityScore,
           ejercicios: ejerciciosData,
@@ -381,7 +437,7 @@ export function ARMirrorPage() {
               userId: user.id,
               type: 'logro',
               title: '¡Sesión de rehabilitación completada!',
-              message: `Lograste ${Math.round(qualityScore)}% de precisión en "${exerciseName}" con ${repCount} repeticiones completadas.`,
+              message: `Lograste ${Math.round(qualityScore)}% de precisión en "${exerciseName}" con ${completedReps} repeticiones completadas.`,
               link: '/stats',
             });
           }
@@ -397,7 +453,7 @@ export function ARMirrorPage() {
             fecha: new Date().toISOString(),
             ejercicio_nombre: exerciseName,
             duracion_segundos: timer,
-            repeticiones: repCount,
+            repeticiones: completedReps,
             calidad_ejecucion: qualityScore,
             calidad_promedio: qualityScore,
             ejercicios: ejerciciosData,
@@ -428,12 +484,12 @@ export function ARMirrorPage() {
 
   const formatTime = (s: number) => `${Math.floor(s / 60).toString().padStart(2, '0')}:${(s % 60).toString().padStart(2, '0')}`;
 
-  const currentAngle = poseData ? Math.max(poseData.leftElbowAngle, poseData.rightElbowAngle) : 0;
+  const currentAngle = poseData?.primaryAngle ?? 0;
 
   // ROM real: pico y promedio de ángulo medido por el sensor durante la sesión.
   useEffect(() => {
     if (!sessionStarted || state !== 'active' || !poseData?.isTracking) return;
-    const a = Math.max(poseData.leftArmAngle || 0, poseData.rightArmAngle || 0);
+    const a = poseData.primaryAngle || 0;
     if (!Number.isFinite(a) || a <= 0) return;
     peakAngleRef.current = Math.max(peakAngleRef.current, a);
     angleSumRef.current += a;
@@ -462,6 +518,9 @@ export function ARMirrorPage() {
     peakAngleRef.current = 0;
     angleSumRef.current = 0;
     angleSamplesRef.current = 0;
+    repQualitySumRef.current = 0;
+    repQualityCountRef.current = 0;
+    lastQualityRepRef.current = 0;
   };
 
   return (
@@ -1006,7 +1065,7 @@ export function ARMirrorPage() {
               <p className="text-white/60 text-sm mb-4">{t('ar.postSessionDesc')}</p>
 
               <SessionQualityScoreTile
-                score={Math.min(99, Math.max(76, Math.round(85 + (repCount >= TARGET_REPS ? 10 : 0) - (compensation ? 8 : 0))))}
+                score={Math.round(qualityScore)}
                 className="bg-slate-900/80 border-white/15 text-white mb-5"
               />
 

@@ -131,8 +131,11 @@ export function RegistroPacientePage() {
     }
   }, [toast]);
 
+  // Evita revalidar (y repetir el toast) si el efecto se vuelve a disparar.
+  const autoValidatedRef = useRef('');
   useEffect(() => {
-    if (queryToken && queryToken.length >= 4) {
+    if (queryToken && queryToken.length >= 4 && autoValidatedRef.current !== queryToken) {
+      autoValidatedRef.current = queryToken;
       validateToken(queryToken);
     }
   }, [queryToken, validateToken]);

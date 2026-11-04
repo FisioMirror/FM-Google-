@@ -1,4 +1,5 @@
 import { useEffect, type ReactNode } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 import { cn } from '../../lib/utils';
@@ -53,7 +54,9 @@ export function GlassModal({
     full: 'max-w-5xl',
   };
 
-  return (
+  // Portal al body: si el modal se monta dentro del topbar (backdrop-blur,
+  // transform, overflow), el `fixed` queda contenido y el diálogo se recorta.
+  return createPortal(
     <AnimatePresence>
       {isOpen && (
         <div className="fixed inset-0 z-[120] flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
@@ -97,6 +100,7 @@ export function GlassModal({
           </motion.div>
         </div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 }

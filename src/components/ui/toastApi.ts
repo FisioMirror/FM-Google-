@@ -1,4 +1,4 @@
-import { createContext, useContext, type ReactNode } from "react";
+import { createContext, useContext, useMemo, type ReactNode } from "react";
 
 /**
  * API de toasts sin componentes (para no romper react-refresh).
@@ -106,28 +106,33 @@ export const toast: ToastFunction = Object.assign(
  * Hook para acceso dentro de componentes React.
  * Si no hay <ToastProvider /> montado, cae a la API global.
  */
+const fallbackToastApi = {
+  toast,
+  success: toast.success,
+  error: toast.error,
+  warning: toast.warning,
+  info: toast.info,
+  close: toast.close,
+  clear: toast.clear,
+  removeToast: toast.close,
+  clearToasts: toast.clear,
+};
+
 export function useToast() {
   const ctx = useContext(ToastContext);
-  if (!ctx) {
+  // Identidad estable: si el objeto cambia en cada render, cualquier efecto que
+  // dependa de `toast` se vuelve a ejecutar sin parar (p. ej. validar el token
+  // de activación y mostrar el toast en loop).
+  return useMemo(() => {
+    if (!ctx) return fallbackToastApi;
     return {
       toast,
-      success: toast.success,
-      error: toast.error,
-      warning: toast.warning,
-      info: toast.info,
-      close: toast.close,
-      clear: toast.clear,
-      removeToast: toast.close,
-      clearToasts: toast.clear,
+      success: (msg: ReactNode, opts?: ToastOptions) => ctx.addToast(msg, { ...opts, variant: 'success' }),
+      error: (msg: ReactNode, opts?: ToastOptions) => ctx.addToast(msg, { ...opts, variant: 'error' }),
+      warning: (msg: ReactNode, opts?: ToastOptions) => ctx.addToast(msg, { ...opts, variant: 'warning' }),
+      info: (msg: ReactNode, opts?: ToastOptions) => ctx.addToast(msg, { ...opts, variant: 'info' }),
+      close: ctx.removeToast,
+      clear: ctx.clearToasts,
     };
-  }
-  return {
-    toast,
-    success: (msg: ReactNode, opts?: ToastOptions) => ctx.addToast(msg, { ...opts, variant: 'success' }),
-    error: (msg: ReactNode, opts?: ToastOptions) => ctx.addToast(msg, { ...opts, variant: 'error' }),
-    warning: (msg: ReactNode, opts?: ToastOptions) => ctx.addToast(msg, { ...opts, variant: 'warning' }),
-    info: (msg: ReactNode, opts?: ToastOptions) => ctx.addToast(msg, { ...opts, variant: 'info' }),
-    close: ctx.removeToast,
-    clear: ctx.clearToasts,
-  };
+  }, [ctx]);
 }
