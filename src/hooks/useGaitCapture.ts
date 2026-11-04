@@ -1,0 +1,152 @@
+import { useCallback, useEffect, useRef, useState } from 'react';
+
+export type GaitStatus = 'idle' | 'loading' | 'measuring' | 'error';
+
+export interface GaitResult {
+  leftRatio: number | null;
+  rightRatio: number | null;
+  cadenceSteps: number | null;
+}
+
+interface Landmark { x: number; y: number; visibility?: number }
+
+const CDN = 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14';
+const MODEL =
+  'https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task';
+
+function kneeAngle(hip: Landmark, knee: Landmark, ankle: Landmark): number {
+  const v1 = { x: hip.x - knee.x, y: hip.y - knee.y };
+  const v2 = { x: ankle.x - knee.x, y: ankle.y - knee.y };
+  const dot = v1.x * v2.x + v1.y * v2.y;
+  const m1 = Math.hypot(v1.x, v1.y);
+  const m2 = Math.hypot(v2.x, v2.y);
+  if (m1 === 0 || m2 === 0) return 0;
+  return (Math.acos(Math.max(-1, Math.min(1, dot / (m1 * m2)))) * 180) / Math.PI;
+}
+
+/**
+ * Captura de marcha con MediaPipe Pose (cargado en runtime desde CDN).
+ * Devuelve reparto de carga entre piernas y cadencia SOLO si hubo medicion real.
+ * Sin camara, sin modelo o con menos de 3 s de datos devuelve nulls y un error
+ * explicito: nunca inventa valores.
+ */
+export function useGaitCapture() {
+  const [status, setStatus] = useState<GaitStatus>('idle');
+  const [error, setError] = useState<string | null>(null);
+  const [result, setResult] = useState<GaitResult>({ leftRatio: null, rightRatio: null, cadenceSteps: null });
+
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const streamRef = useRef<MediaStream | null>(null);
+  const rafRef = useRef<number | null>(null);
+  const landmarkerRef = useRef<any>(null);
+  const samplesRef = useRef<{ l: number[]; r: number[]; t: number[] }>({ l: [], r: [], t: [] });
+
+  const stop = useCallback(() => {
+    if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    rafRef.current = null;
+    if (streamRef.current) streamRef.current.getTracks().forEach((tr) => tr.stop());
+    streamRef.current = null;
+    if (videoRef.current) videoRef.current.srcObject = null;
+    setStatus('idle');
+  }, []);
+
+  const start = useCallback(async (video: HTMLVideoElement) => {
+    setError(null);
+    samplesRef.current = { l: [], r: [], t: [] };
+    try {
+      setStatus('loading');
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: 'environment', width: 640, height: 480 },
+        audio: false,
+      });
+      streamRef.current = stream;
+      video.srcObject = stream;
+      await video.play();
+
+      if (!landmarkerRef.current) {
+        const vision: any = await import(/* @vite-ignore */ CDN);
+        const { PoseLandmarker, FilesetResolver } = vision;
+        const fileset = await FilesetResolver.forVisionTasks(`${CDN}/wasm`);
+        landmarkerRef.current = await PoseLandmarker.createFromOptions(fileset, {
+          baseOptions: { modelAssetPath: MODEL, delegate: 'GPU' },
+          runningMode: 'VIDEO',
+          numPoses: 1,
+        });
+      }
+
+      setStatus('measuring');
+      const lm = landmarkerRef.current;
+      let lastVideoTime = -1;
+
+      const loop = () => {
+        const v = videoRef.current;
+        if (!v || !streamRef.current) return;
+        if (v.currentTime !== lastVideoTime && v.readyState >= 2) {
+          lastVideoTime = v.currentTime;
+          const now = performance.now();
+          const res = lm.detectForVideo(v, now);
+          const pose: Landmark[] | undefined = res?.landmarks?.[0];
+          if (pose && pose.length > 27) {
+            const [lh, lk, la] = [pose[23], pose[25], pose[27]];
+            const [rh, rk, ra] = [pose[24], pose[26], pose[28]];
+            const vis = Math.min(lk?.visibility ?? 0, rk?.visibility ?? 0);
+            if (vis > 0.5) {
+              const L = kneeAngle(lh, lk, la);
+              const R = kneeAngle(rh, rk, ra);
+              samplesRef.current.l.push(L);
+              samplesRef.current.r.push(R);
+              samplesRef.current.t.push(now);
+              if (samplesRef.current.l.length > 900) {
+                samplesRef.current.l.shift();
+                samplesRef.current.r.shift();
+                samplesRef.current.t.shift();
+              }
+            }
+          }
+        }
+        rafRef.current = requestAnimationFrame(loop);
+      };
+      rafRef.current = requestAnimationFrame(loop);
+    } catch (e: any) {
+      stop();
+      setStatus('error');
+      setError(
+        e?.name === 'NotAllowedError'
+          ? 'Permiso de camara denegado. Habilitalo para medir la marcha.'
+          : 'No se pudo iniciar la captura de marcha (camara o modelo no disponibles).'
+      );
+    }
+  }, [stop]);
+
+  const finish = useCallback(() => {
+    const { l, r, t } = samplesRef.current;
+    if (l.length < 30) {
+      stop();
+      setError('Muestras insuficientes (menos de 3 s con ambas piernas visibles).');
+      setStatus('error');
+      return;
+    }
+    const excursion = (arr: number[]) => Math.max(...arr) - Math.min(...arr);
+    const el = excursion(l);
+    const er = excursion(r);
+    const total = el + er;
+    const leftRatio = total > 0 ? Math.round((el / total) * 100) : null;
+    const rightRatio = leftRatio !== null ? 100 - leftRatio : null;
+
+    const seconds = (t[t.length - 1] - t[0]) / 1000;
+    let steps = 0;
+    for (let i = 1; i < l.length - 1; i++) {
+      const prev = l[i - 1];
+      const next = l[i + 1];
+      if (prev > l[i] && next > l[i] && l[i] < 140) steps++;
+    }
+    const cadenceSteps = seconds > 0 ? Math.round((steps / seconds) * 60) : null;
+
+    setResult({ leftRatio, rightRatio, cadenceSteps });
+    stop();
+  }, [stop]);
+
+  useEffect(() => () => stop(), [stop]);
+
+  return { status, error, result, videoRef, start, finish, stop, reset: () => setError(null) };
+}

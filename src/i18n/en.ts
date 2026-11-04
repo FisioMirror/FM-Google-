@@ -1142,6 +1142,11 @@ export const en: TranslationSchema = {
     leftFoot: "Left foot",
     rightFoot: "Right foot",
     cadence: "Cadence: {{steps}} steps/min",
+    start: "Start gait capture",
+    finish: "Finish and calculate",
+    reset: "New measurement",
+    recording: "Measuring",
+    loading: "Loading model...",
   },
 
   tr: {

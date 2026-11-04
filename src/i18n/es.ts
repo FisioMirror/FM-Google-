@@ -1146,6 +1146,11 @@ export const es = {
     leftFoot: "Pie Izquierdo",
     rightFoot: "Pie Derecho",
     cadence: "Cadencia: {{steps}} pasos/min",
+    start: "Iniciar captura de marcha",
+    finish: "Finalizar y calcular",
+    reset: "Nueva medicion",
+    recording: "Midiendo",
+    loading: "Cargando modelo...",
   },
 
   tr: {

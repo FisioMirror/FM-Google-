@@ -1142,6 +1142,11 @@ export const pt: TranslationSchema = {
     leftFoot: "Pé Esquerdo",
     rightFoot: "Pé Direito",
     cadence: "Cadência: {{steps}} passos/min",
+    start: "Iniciar captura de marcha",
+    finish: "Finalizar e calcular",
+    reset: "Nova medição",
+    recording: "Medindo",
+    loading: "Carregando modelo...",
   },
 
   tr: {
