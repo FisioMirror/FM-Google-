@@ -35,6 +35,11 @@ let pollTimer: ReturnType<typeof setInterval> | null = null;
 
 const stateListeners = new Set<(state: RealtimeSharedState) => void>();
 const toastCallbacks = new Set<(title: string, desc?: string) => void>();
+// Evita repetir el toast si la misma notificacion llega varias veces (reintentos de canal)
+const recentlyToasted = new Set<string>();
+// Segunda barrera: mismo titulo+mensaje no se repite dentro de 10s aunque cambie el id
+let lastToastKey: string | null = null;
+let lastToastAt = 0;
 
 function notifyStateListeners() {
   stateListeners.forEach((fn) => fn(sharedState));
@@ -152,8 +157,20 @@ function startSubscription(uid: string) {
           }
 
           // Single toast alert across all open components
+          const alreadyShown = newNotif?.id ? recentlyToasted.has(newNotif.id) : false;
+          if (newNotif?.id && !alreadyShown) {
+            recentlyToasted.add(newNotif.id);
+            if (recentlyToasted.size > 200) {
+              const oldest = recentlyToasted.values().next().value;
+              if (oldest) recentlyToasted.delete(oldest);
+            }
+          }
+          const toastKey = String(newNotif?.title || '') + '|' + String(newNotif?.message || '');
+          const isRepeat = toastKey === lastToastKey && Date.now() - lastToastAt < 10_000;
           const firstToast = toastCallbacks.values().next().value;
-          if (firstToast) {
+          if (firstToast && !alreadyShown && !isRepeat) {
+            lastToastKey = toastKey;
+            lastToastAt = Date.now();
             firstToast(newNotif.title, newNotif.message);
           }
         } else if (payload.eventType === 'UPDATE') {
