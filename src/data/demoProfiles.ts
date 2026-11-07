@@ -1,11 +1,14 @@
 import type { Profile } from '../types';
 
+const DEMO_VERIFIED_AT = new Date('2024-01-01T00:00:00.000Z').toISOString();
+
 export const DEMO_PATIENT_PROFILE: Profile = {
   id: '5093ac77-e391-49ba-994a-8c75572c8313',
   email: 'paciente@demo.com',
   full_name: 'Carlos Mendoza',
   role: 'paciente',
   is_active: true,
+  email_verified_at: DEMO_VERIFIED_AT,
   especialidad: null,
   universidad: null,
   anio_egreso: null,
@@ -34,6 +37,7 @@ export const DEMO_FISIO_PROFILE: Profile = {
   full_name: 'Dr. Roberto Silva',
   role: 'fisioterapeuta',
   is_active: true,
+  email_verified_at: DEMO_VERIFIED_AT,
   especialidad: 'Traumatología y Ortopedia, Fisioterapia Deportiva',
   universidad: 'Universidad Central de Venezuela',
   anio_egreso: 2018,
