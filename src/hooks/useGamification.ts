@@ -35,6 +35,9 @@ export const PLAYER_LEVELS: PlayerLevel[] = [
 const STORAGE_KEY = 'fisiomirror-achievements';
 const ONBOARDING_KEY = 'fisiomirror-onboarding-done';
 const POINTS_KEY = 'fisiomirror-fisiocoins';
+const PENDING_KEY = 'fisiomirror-pending-achievement';
+const PRACTICED_KEY = 'fisiomirror-practiced-exercises';
+const SESSION_ACHIEVEMENTS = new Set(['first_session', 'three_sessions', 'five_sessions', 'ten_sessions']);
 
 const TIER_META: Record<AchievementTier, { color: string; glow: string; label: string }> = {
   bronce: { color: '#CD7F32', glow: 'rgba(205,127,50,0.5)', label: 'Bronce' },
@@ -57,7 +60,7 @@ const DEFAULT_ACHIEVEMENTS: Achievement[] = [
   { id: 'perfect_form', title: 'Forma Perfecta', description: 'Alcanza el rango óptimo en un ejercicio', tier: 'plata', icon: 'verified', unlocked: false, unlockedAt: null, progress: 0, maxProgress: 1, versiculo: { cita: 'Filipenses 4:13', texto: 'Todo lo puedo en Cristo que me fortalece.' } },
   { id: 'night_owl', title: 'Lechuza Nocturna', description: 'Completa una sesión después de las 8 PM', tier: 'bronce', icon: 'nights_stay', unlocked: false, unlockedAt: null, progress: 0, maxProgress: 1, versiculo: { cita: 'Salmos 4:8', texto: 'En paz me acostaré, y asimismo dormiré; porque solo tú, Jehová, me haces vivir confiado.' } },
   { id: 'early_bird', title: 'Madrugador', description: 'Completa una sesión antes de las 7 AM', tier: 'bronce', icon: 'wb_sunny', unlocked: false, unlockedAt: null, progress: 0, maxProgress: 1, versiculo: { cita: 'Salmos 143:8', texto: 'Hazme oír por la mañana tu misericordia, porque en ti he confiado.' } },
-  { id: 'all_exercises', title: 'Explorador', description: 'Practica todos tus ejercicios asignados al menos una vez', tier: 'oro', icon: 'explore', unlocked: false, unlockedAt: null, progress: 0, maxProgress: 5, versiculo: { cita: 'Colosenses 3:23', texto: 'Y todo lo que hagáis, hacedlo de corazón, como para el Señor.' } },
+  { id: 'all_exercises', title: 'Explorador', description: 'Practica 5 ejercicios distintos al menos una vez', tier: 'oro', icon: 'explore', unlocked: false, unlockedAt: null, progress: 0, maxProgress: 5, versiculo: { cita: 'Colosenses 3:23', texto: 'Y todo lo que hagáis, hacedlo de corazón, como para el Señor.' } },
 ];
 
 function loadAchievements(): Achievement[] {
@@ -112,11 +115,16 @@ function savePoints(pts: number) {
 
 export function useGamification() {
   const [points, setPoints] = useState<number>(() => loadPoints());
-  const [achievements, setAchievements] = useState<Achievement[]>(() => {
-    const loaded = loadAchievements();
-    return loaded.map((achievement) => ({ ...achievement, progress: achievement.unlocked ? achievement.maxProgress : 0 }));
+  const [achievements, setAchievements] = useState<Achievement[]>(() => loadAchievements());
+  const [newlyUnlocked, setNewlyUnlocked] = useState<Achievement | null>(() => {
+    try {
+      const pendingId = localStorage.getItem(PENDING_KEY);
+      if (!pendingId) return null;
+      return achievements.find((a) => a.id === pendingId && a.unlocked) ?? null;
+    } catch {
+      return null;
+    }
   });
-  const [newlyUnlocked, setNewlyUnlocked] = useState<Achievement | null>(null);
   const prevUnlockedRef = useRef<Set<string>>(new Set(achievements.filter(a => a.unlocked).map(a => a.id)));
 
   useEffect(() => {
@@ -148,37 +156,90 @@ export function useGamification() {
   useEffect(() => {
     saveAchievements(achievements);
     const currentUnlocked = new Set(achievements.filter(a => a.unlocked).map(a => a.id));
-    const newly = achievements.find(a => a.unlocked && !prevUnlockedRef.current.has(a.id));
-    if (newly) {
-      setNewlyUnlocked(newly);
-      addPoints(100); // 100 FisioCoins for each achievement!
+    const newly = achievements.filter(a => a.unlocked && !prevUnlockedRef.current.has(a.id));
+    if (newly.length > 0) {
+      setNewlyUnlocked(newly[0]);
+      addPoints(100 * newly.length); // 100 FisioCoins por logro
     }
     prevUnlockedRef.current = currentUnlocked;
   }, [achievements, addPoints]);
 
-  const recordSession = useCallback(() => {
-    const today = new Date().toISOString().split('T')[0];
+  const recordSession = useCallback((options?: { quality?: number; exerciseName?: string; at?: Date }) => {
+    const now = options?.at ?? new Date();
+    const today = now.toISOString().split('T')[0];
     const lastSessionDate = localStorage.getItem('fisiomirror-last-session-date');
-    if (lastSessionDate === today) return;
-    localStorage.setItem('fisiomirror-last-session-date', today);
-    addPoints(50); // 50 FisioCoins for session!
+    if (lastSessionDate !== today) {
+      localStorage.setItem('fisiomirror-last-session-date', today);
+      addPoints(50); // 50 FisioCoins por día con sesión
+    }
+
+    // Ejercicios distintos practicados (para el logro Explorador).
+    let practicedCount = 0;
+    if (options?.exerciseName) {
+      try {
+        const raw = localStorage.getItem(PRACTICED_KEY);
+        const names: string[] = raw ? JSON.parse(raw) : [];
+        if (!names.includes(options.exerciseName)) {
+          names.push(options.exerciseName);
+          localStorage.setItem(PRACTICED_KEY, JSON.stringify(names));
+        }
+        practicedCount = names.length;
+      } catch {
+        practicedCount = 1;
+      }
+    }
+
+    const hour = now.getHours();
+    const quality = options?.quality ?? 0;
 
     setAchievements(prev => {
       const updated = [...prev];
       const newUnlocks: Achievement[] = [];
+
       updated.forEach((ach, idx) => {
         if (ach.unlocked) return;
-        if (ach.id === 'first_session' || ach.id === 'three_sessions' || ach.id === 'five_sessions' || ach.id === 'ten_sessions') {
+
+        if (SESSION_ACHIEVEMENTS.has(ach.id)) {
           const newProgress = ach.progress + 1;
-          if (newProgress >= ach.maxProgress) {
-            updated[idx] = { ...ach, progress: newProgress, unlocked: true, unlockedAt: new Date().toISOString() };
-            newUnlocks.push(updated[idx]);
-          } else {
-            updated[idx] = { ...ach, progress: newProgress };
-          }
+          updated[idx] = newProgress >= ach.maxProgress
+            ? { ...ach, progress: ach.maxProgress, unlocked: true, unlockedAt: new Date().toISOString() }
+            : { ...ach, progress: newProgress };
+          if (updated[idx].unlocked) newUnlocks.push(updated[idx]);
+          return;
+        }
+
+        if (ach.id === 'night_owl' && hour >= 20) {
+          updated[idx] = { ...ach, progress: ach.maxProgress, unlocked: true, unlockedAt: new Date().toISOString() };
+          newUnlocks.push(updated[idx]);
+          return;
+        }
+
+        if (ach.id === 'early_bird' && hour < 7) {
+          updated[idx] = { ...ach, progress: ach.maxProgress, unlocked: true, unlockedAt: new Date().toISOString() };
+          newUnlocks.push(updated[idx]);
+          return;
+        }
+
+        if (ach.id === 'perfect_form' && quality >= 90) {
+          updated[idx] = { ...ach, progress: ach.maxProgress, unlocked: true, unlockedAt: new Date().toISOString() };
+          newUnlocks.push(updated[idx]);
+          return;
+        }
+
+        if (ach.id === 'all_exercises' && practicedCount > 0) {
+          updated[idx] = practicedCount >= ach.maxProgress
+            ? { ...ach, progress: ach.maxProgress, unlocked: true, unlockedAt: new Date().toISOString() }
+            : { ...ach, progress: practicedCount };
+          if (updated[idx].unlocked) newUnlocks.push(updated[idx]);
         }
       });
+
       if (newUnlocks.length > 0) {
+        try {
+          localStorage.setItem(PENDING_KEY, newUnlocks[0].id);
+        } catch {
+          // ignore
+        }
         celebrateAchievement();
       }
       return updated;
@@ -186,28 +247,58 @@ export function useGamification() {
   }, [addPoints]);
 
   const recordStreak = useCallback((days: number) => {
-    addPoints(15 * days); // Bonus FisioCoins for streaks
     setAchievements(prev => {
       const updated = [...prev];
       const newUnlocks: Achievement[] = [];
       updated.forEach((ach, idx) => {
-        if (ach.unlocked) return;
-        if (ach.id === 'streak_3' && days >= 3) {
-          updated[idx] = { ...ach, progress: 3, unlocked: true, unlockedAt: new Date().toISOString() };
+        if (ach.unlocked || !ach.id.startsWith('streak_')) return;
+        const target = ach.id === 'streak_3' ? 3 : 7;
+        if (days >= target) {
+          updated[idx] = { ...ach, progress: ach.maxProgress, unlocked: true, unlockedAt: new Date().toISOString() };
           newUnlocks.push(updated[idx]);
-        } else if (ach.id === 'streak_7' && days >= 7) {
-          updated[idx] = { ...ach, progress: 7, unlocked: true, unlockedAt: new Date().toISOString() };
-          newUnlocks.push(updated[idx]);
-        } else if (ach.id.startsWith('streak_') && !ach.unlocked) {
-          updated[idx] = { ...ach, progress: Math.min(days, ach.maxProgress) };
+        } else {
+          updated[idx] = { ...ach, progress: Math.max(ach.progress, Math.min(days, ach.maxProgress)) };
         }
       });
       if (newUnlocks.length > 0) {
+        try {
+          localStorage.setItem(PENDING_KEY, newUnlocks[0].id);
+        } catch {
+          // ignore
+        }
         celebrateAchievement();
       }
       return updated;
     });
-  }, [addPoints]);
+  }, []);
+
+  // Sincroniza el progreso con el total real de sesiones (sin duplicar al guardar).
+  const syncSessionProgress = useCallback((total: number) => {
+    if (!Number.isFinite(total) || total <= 0) return;
+    setAchievements(prev => {
+      const updated = [...prev];
+      const newUnlocks: Achievement[] = [];
+      updated.forEach((ach, idx) => {
+        if (ach.unlocked || !SESSION_ACHIEVEMENTS.has(ach.id)) return;
+        const progress = Math.max(ach.progress, Math.min(total, ach.maxProgress));
+        if (total >= ach.maxProgress) {
+          updated[idx] = { ...ach, progress: ach.maxProgress, unlocked: true, unlockedAt: new Date().toISOString() };
+          newUnlocks.push(updated[idx]);
+        } else {
+          updated[idx] = { ...ach, progress };
+        }
+      });
+      if (newUnlocks.length > 0) {
+        try {
+          localStorage.setItem(PENDING_KEY, newUnlocks[0].id);
+        } catch {
+          // ignore
+        }
+        celebrateAchievement();
+      }
+      return updated;
+    });
+  }, []);
 
   const unlockSpecial = useCallback((achievementId: string) => {
     addPoints(75);
@@ -216,12 +307,24 @@ export function useGamification() {
       if (idx === -1 || prev[idx].unlocked) return prev;
       const updated = [...prev];
       updated[idx] = { ...updated[idx], unlocked: true, progress: updated[idx].maxProgress, unlockedAt: new Date().toISOString() };
+      try {
+        localStorage.setItem(PENDING_KEY, achievementId);
+      } catch {
+        // ignore
+      }
       celebrateAchievement();
       return updated;
     });
   }, [addPoints]);
 
-  const dismissUnlock = useCallback(() => setNewlyUnlocked(null), []);
+  const dismissUnlock = useCallback(() => {
+    setNewlyUnlocked(null);
+    try {
+      localStorage.removeItem(PENDING_KEY);
+    } catch {
+      // ignore
+    }
+  }, []);
 
   const unlockedCount = achievements.filter(a => a.unlocked).length;
   const totalProgress = achievements.reduce((sum, a) => sum + (a.unlocked ? 1 : a.progress / a.maxProgress), 0) / achievements.length;
@@ -232,6 +335,7 @@ export function useGamification() {
     dismissUnlock,
     recordSession,
     recordStreak,
+    syncSessionProgress,
     unlockSpecial,
     unlockedCount,
     totalProgress,

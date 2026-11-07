@@ -39,7 +39,7 @@ export function AchievementUnlockModal({ achievement, role, onClose }: Achieveme
 
             <div className="relative z-10">
               <p className="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest mb-2">
-                ¡Logro Desbloqueado!
+                {t('ach.unlockTitle', '¡Logro Desbloqueado!')}
               </p>
 
               <div className="w-40 h-52 mx-auto my-4 relative flex items-center justify-center">
@@ -56,15 +56,15 @@ export function AchievementUnlockModal({ achievement, role, onClose }: Achieveme
               >
                 <Icon name={achievement.icon} filled size={18} />
                 <span className="font-label-sm font-bold uppercase tracking-wide">
-                  {getTierMeta(achievement.tier).label}
+                  {t(`ach.tier_${achievement.tier}`, getTierMeta(achievement.tier).label)}
                 </span>
               </div>
 
               <h3 className="font-headline-md text-headline-md-mobile lg:text-headline-md gradient-text-editorial mb-2">
-                {achievement.title}
+                {t(`ach.${achievement.id}_title`, achievement.title)}
               </h3>
               <p className="text-on-surface-variant font-body-lg mb-4">
-                {achievement.description}
+                {t(`ach.${achievement.id}_desc`, achievement.description)}
               </p>
 
               {isSpiritualModeEnabled() && (
@@ -86,7 +86,7 @@ export function AchievementUnlockModal({ achievement, role, onClose }: Achieveme
                 onClick={onClose}
                 className="premium-btn w-full py-3 rounded-xl bg-primary text-on-primary font-bold hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2"
               >
-                <Icon name="celebration" size={20} /> ¡Continuar!
+                <Icon name="celebration" size={20} /> {t('ach.continue', '¡Continuar!')}
               </button>
             </div>
           </motion.div>
@@ -102,6 +102,7 @@ interface AchievementShowcaseProps {
 }
 
 export function AchievementShowcase({ achievements, compact = false }: AchievementShowcaseProps) {
+  const { t } = useTranslation();
   const unlocked = achievements.filter((a) => a.unlocked);
   const locked = achievements.filter((a) => !a.unlocked);
 
@@ -120,7 +121,7 @@ export function AchievementShowcase({ achievements, compact = false }: Achieveme
                 backgroundColor: ach.unlocked ? `${meta.color}20` : 'rgba(0,0,0,0.05)',
                 boxShadow: ach.unlocked ? `0 0 12px ${meta.glow}` : 'none',
               }}
-              title={ach.title}
+              title={t(`ach.${ach.id}_title`, ach.title)}
             >
               <Icon name={ach.icon} filled size={22} className={ach.unlocked ? '' : 'text-on-surface-variant'} style={ach.unlocked ? { color: meta.color } : undefined} />
             </div>
@@ -135,7 +136,7 @@ export function AchievementShowcase({ achievements, compact = false }: Achieveme
       {unlocked.length > 0 && (
         <div>
           <p className="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest mb-3">
-            Desbloqueados ({unlocked.length})
+            {t('ach.unlocked', 'Desbloqueados')} ({unlocked.length})
           </p>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
             {unlocked.map((ach, i) => {
@@ -155,13 +156,13 @@ export function AchievementShowcase({ achievements, compact = false }: Achieveme
                   >
                     <Icon name={ach.icon} filled size={28} style={{ color: meta.color }} />
                   </div>
-                  <p className="font-title-sm text-title-sm text-on-surface leading-tight mb-1">{ach.title}</p>
-                  <p className="text-label-sm text-label-sm text-on-surface-variant line-clamp-2">{ach.description}</p>
+                  <p className="font-title-sm text-title-sm text-on-surface leading-tight mb-1">{t(`ach.${ach.id}_title`, ach.title)}</p>
+                  <p className="text-label-sm text-label-sm text-on-surface-variant line-clamp-2">{t(`ach.${ach.id}_desc`, ach.description)}</p>
                   <div
                     className="inline-block px-2 py-0.5 rounded-full mt-2 font-label-sm text-label-sm font-bold uppercase"
                     style={{ backgroundColor: `${meta.color}20`, color: meta.color }}
                   >
-                    {meta.label}
+                    {t(`ach.tier_${ach.tier}`, meta.label)}
                   </div>
                 </motion.div>
               );
@@ -173,7 +174,7 @@ export function AchievementShowcase({ achievements, compact = false }: Achieveme
       {locked.length > 0 && (
         <div>
           <p className="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest mb-3">
-            Por Desbloquear ({locked.length})
+            {t('ach.locked', 'Por Desbloquear')} ({locked.length})
           </p>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
             {locked.map((ach) => {
@@ -184,8 +185,8 @@ export function AchievementShowcase({ achievements, compact = false }: Achieveme
                   <div className="w-14 h-14 rounded-2xl mx-auto mb-2 flex items-center justify-center bg-on-surface/5">
                     <Icon name={ach.icon} filled size={28} className="text-on-surface-variant" />
                   </div>
-                  <p className="font-title-sm text-title-sm text-on-surface leading-tight mb-1">{ach.title}</p>
-                  <p className="text-label-sm text-label-sm text-on-surface-variant line-clamp-2 mb-2">{ach.description}</p>
+                  <p className="font-title-sm text-title-sm text-on-surface leading-tight mb-1">{t(`ach.${ach.id}_title`, ach.title)}</p>
+                  <p className="text-label-sm text-label-sm text-on-surface-variant line-clamp-2 mb-2">{t(`ach.${ach.id}_desc`, ach.description)}</p>
                   <div className="h-1.5 rounded-full bg-on-surface/10 overflow-hidden">
                     <div
                       className="h-full rounded-full transition-all duration-500"

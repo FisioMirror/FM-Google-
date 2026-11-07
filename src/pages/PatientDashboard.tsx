@@ -123,6 +123,16 @@ export function PatientDashboard() {
   };
   const gamification = useGamification();
 
+  // Mantiene los logros de racha sincronizados con las sesiones reales.
+  useEffect(() => {
+    if (kpi.streak > 0) gamification.recordStreak(kpi.streak);
+  }, [kpi.streak, gamification.recordStreak]);
+
+  // Reconstruye los logros de sesiones con el total real de la base.
+  useEffect(() => {
+    if (kpi.totalSessions > 0) gamification.syncSessionProgress(kpi.totalSessions);
+  }, [kpi.totalSessions, gamification.syncSessionProgress]);
+
   const loadData = useCallback(async () => {
     if (!user?.id) return;
     setLoading(true);

@@ -379,7 +379,7 @@ export function PatientExercisesPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.08 }}
             >
-              <div className="ios-glass-heavy refraction-border p-5 sm:p-6 rounded-3xl flex flex-col justify-between h-full group hover:shadow-xl transition-all">
+              <div className="bg-white dark:bg-surface-container-high border border-outline-variant/40 p-5 sm:p-6 rounded-3xl flex flex-col justify-between h-full group hover:shadow-xl transition-all">
                 <div>
                   {exerciseImage && (
                     <div className="rounded-2xl overflow-hidden mb-3.5">
@@ -487,7 +487,7 @@ export function PatientExercisesPage() {
       </div>
 
       {/* Modal 1: Solo Descripción Clínica en Texto */}
-      <GlassModal isOpen={!!descriptionExercise} onClose={() => setDescriptionExercise(null)} size="md">
+      <GlassModal isOpen={!!descriptionExercise} onClose={() => setDescriptionExercise(null)} size="md" variant="solid">
         {descriptionExercise && (
           <div className="space-y-4">
             <div className="flex items-center gap-2 border-b border-outline-variant/30 pb-3">
@@ -535,7 +535,7 @@ export function PatientExercisesPage() {
       </GlassModal>
 
       {/* Modal 2: Solo Demostración 3D de Avatar / Esqueleto Biomecánico */}
-      <GlassModal isOpen={!!demo3DExercise} onClose={() => setDemo3DExercise(null)} size="lg">
+      <GlassModal isOpen={!!demo3DExercise} onClose={() => setDemo3DExercise(null)} size="lg" variant="solid">
         {demo3DExercise && (
           <div className="space-y-4">
             <div className="flex items-center gap-2 border-b border-outline-variant/30 pb-3">

@@ -11,10 +11,11 @@ import { useToast } from '../components/ui/toastApi';
 import { EmailFeatureModal } from '../components/ui/EmailFeatureModal';
 import { SpotlightCard } from '../components/ui/SpotlightCard';
 import { GlassModal } from '../components/ui/GlassModal';
+import { ConfirmDialog } from '../components/ui/Dialog';
 import { DrawerClinicalDemo } from '../components/ui/Drawer';
 import { isDemoAccount } from '../lib/demoAuth';
 import { useTranslation } from 'react-i18next';
-import { Users, Search, Plus, LayoutGrid, List, AlertTriangle, CheckCircle2, Key, Copy, Check, Mail, ExternalLink, UserCheck, Calendar, ArrowRight, Eye } from 'lucide-react';
+import { Users, Search, Plus, LayoutGrid, List, AlertTriangle, CheckCircle2, Key, Copy, Check, Mail, ExternalLink, UserCheck, Calendar, ArrowRight, Eye, Trash2 } from 'lucide-react';
 import { useRealtimePresence } from '../lib/presenceService';
 import { staggerContainer, staggerItem, springTactile } from '../lib/motionVariants';
 import { MobileBottomSheet } from '../components/ui/MobileBottomSheet';
@@ -37,6 +38,10 @@ interface PatientCard {
   documento_identidad?: string;
   telefono?: string;
   adherencia?: number;
+}
+
+function isValidTokenId(id: string) {
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
 }
 
 interface TokenRow {
@@ -81,6 +86,8 @@ export function PatientsPage() {
   const [viewMode, setViewMode] = useState<'cards' | 'list'>('cards');
   const [copiedToken, setCopiedToken] = useState<string | null>(null);
   const [emailModalToken, setEmailModalToken] = useState<TokenRow | null>(null);
+  const [deleteConfirmToken, setDeleteConfirmToken] = useState<TokenRow | null>(null);
+  const [deletingTokenId, setDeletingTokenId] = useState<string | null>(null);
   const [quickFicha, setQuickFicha] = useState<PatientCard | null>(null);
   const [previewPatient, setPreviewPatient] = useState<PatientCard | null>(null);
 
@@ -126,21 +133,23 @@ export function PatientsPage() {
 
       const patientIds = links?.map((l) => l.paciente_id).filter(Boolean) || [];
 
-      let profQuery = supabase
+      // Solo los pacientes vinculados a este fisioterapeuta. Antes se
+      // consultaba también role = 'paciente', lo que mezclaba expedientes de
+      // otros profesionales y descuadraba el conteo frente a Estadísticas.
+      if (patientIds.length === 0) {
+        setPatients(isDemo ? demoCards : []);
+        setLoading(false);
+        return;
+      }
+
+      const { data: profiles } = await supabase
         .from('profiles')
         .select(`
           id, full_name, email, diagnostico,
           patologia, medico_remitente, documento_identidad,
           telefono, fecha_nacimiento, extremidad_afectada, role
-        `);
-
-      if (patientIds.length > 0) {
-        profQuery = profQuery.or(`id.in.(${patientIds.join(',')}),role.eq.paciente`);
-      } else {
-        profQuery = profQuery.eq('role', 'paciente');
-      }
-
-      const { data: profiles } = await profQuery;
+        `)
+        .in('id', patientIds);
 
       if (!profiles || profiles.length === 0) {
         setPatients(isDemo ? demoCards : []);
@@ -291,6 +300,25 @@ export function PatientsPage() {
       });
     } catch {
       toast.error('Error al generar el token.');
+    }
+  };
+
+  const handleDeleteToken = async (row: TokenRow) => {
+    setDeletingTokenId(row.id);
+    try {
+      // Los tokens demo y los recién creados sin recargar viven solo en memoria.
+      const isPersisted = isValidTokenId(row.id);
+      if (isPersisted) {
+        const { error } = await supabase.from('activation_tokens').delete().eq('id', row.id);
+        if (error) throw error;
+      }
+      setTokens((prev) => prev.filter((t) => t.id !== row.id));
+      toast.success(t('pat.tokenDeleted', 'Token eliminado'));
+    } catch {
+      toast.error(t('pat.tokenDeleteError', 'No se pudo eliminar el token. Reintenta.'));
+    } finally {
+      setDeletingTokenId(null);
+      setDeleteConfirmToken(null);
     }
   };
 
@@ -949,6 +977,16 @@ export function PatientsPage() {
                       <Mail className="size-3" />
                       <span>{t('pat.send')}</span>
                     </button>
+
+                    <button
+                      onClick={() => setDeleteConfirmToken(tok)}
+                      disabled={deletingTokenId === tok.id}
+                      title={t('pat.deleteToken', 'Eliminar token')}
+                      aria-label={t('pat.deleteToken', 'Eliminar token')}
+                      className="p-1.5 rounded-xl text-rose-600 dark:text-rose-400 hover:bg-rose-500/10 transition-colors disabled:opacity-50"
+                    >
+                      <Trash2 className="size-4" />
+                    </button>
                   </div>
                 </div>
               ))}
@@ -956,6 +994,17 @@ export function PatientsPage() {
           )}
         </div>
       )}
+
+      <ConfirmDialog
+        open={deleteConfirmToken !== null}
+        onOpenChange={(open) => !open && setDeleteConfirmToken(null)}
+        title={t('pat.confirmDeleteToken', 'Eliminar token')}
+        description={t('pat.confirmDeleteTokenDesc', '¿Seguro que querés eliminar este token? Esta acción es irreversible y el enlace dejará de funcionar.')}
+        confirmText={t('common.delete', 'Eliminar')}
+        cancelText={t('common.cancel', 'Cancelar')}
+        confirmVariant="destructive"
+        onConfirm={() => deleteConfirmToken && handleDeleteToken(deleteConfirmToken)}
+      />
 
       {/* Email Feature Modal */}
       {emailModalToken && (

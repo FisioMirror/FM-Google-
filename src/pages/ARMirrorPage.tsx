@@ -8,6 +8,7 @@ import { useAuthStore } from '../stores/authStore';
 import { supabase } from '../lib/supabase';
 import { celebrateSession } from '../lib/confetti';
 import { usePoseDetection } from '../hooks/usePoseDetection';
+import { useGamification } from '../hooks/useGamification';
 import { isValidUUID, cn } from '../lib/utils';
 import { speakHumanVoice } from '../lib/humanVoice';
 import { notifySessionCompleted, createNotification } from '../lib/notificationService';
@@ -84,6 +85,7 @@ const TOTAL_SETS = 3;
 const REST_DURATION = 15;
 
 export function ARMirrorPage() {
+  const gamification = useGamification();
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -472,6 +474,8 @@ export function ARMirrorPage() {
         }
       }
 
+      // Logros locales: sesión, horario, calidad y ejercicios distintos.
+      gamification.recordSession({ quality: qualityScore, exerciseName });
       toast.success('Sesión guardada correctamente');
       sessionStorage.removeItem('ar_session_backup');
       setShowPainReport(false);

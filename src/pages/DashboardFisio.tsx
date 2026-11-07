@@ -26,6 +26,7 @@ import { ShineBorder } from '../components/ui/ShineBorder';
 import { MagicCard } from '../components/ui/MagicCard';
 import { NumberTicker } from '../components/ui/NumberTicker';
 import { InteractiveHoverButton } from '../components/ui/InteractiveHoverButton';
+import { ConfettiSideCannons } from '../components/ui/ConfettiButton';
 import { CompactJointSelector } from '../components/ui/CompactQuickSelector';
 import { TextAnimate } from '../components/ui/TextAnimate';
 import { UNIFIED_DEMO_PATIENTS } from '../data/unifiedDemoData';
@@ -1201,6 +1202,12 @@ export function DashboardFisio() {
             >
               Ver Expedientes
             </InteractiveHoverButton>
+            <ConfettiSideCannons
+              className="px-4 py-2.5 rounded-xl text-xs font-bold"
+              onClick={() => toast.success(t('dashboard.celebrationToast', 'Celebración lanzada'))}
+            >
+              {t('dashboard.celebrateAchievement', 'Celebrar logro')}
+            </ConfettiSideCannons>
           </div>
         </GlassPanel>
 

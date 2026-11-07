@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Volume2, Play, Square, Sparkles, Key, Check, ChevronDown, User, Zap, Sliders, X } from 'lucide-react';
 import { humanVoice, getVoiceGender, setVoiceGender, getVoiceProvider, setVoiceProvider, getVoiceSpeed, setVoiceSpeed, getFishAudioKey, setFishAudioKey, type VoiceGender, type VoiceProvider } from '@/lib/humanVoice';
@@ -23,6 +24,46 @@ export function QuickVoiceSelector({
   const [speed, setSpeedState] = useState<number>(1.0);
   const [fishKey, setFishKeyState] = useState<string>('');
   const [isPlayingTest, setIsPlayingTest] = useState(false);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const [isDesktop, setIsDesktop] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia('(min-width: 640px)').matches,
+  );
+  const [panelPos, setPanelPos] = useState<{ top: number; left: number; width: number; maxHeight: number } | null>(null);
+
+  useEffect(() => {
+    const mq = window.matchMedia('(min-width: 640px)');
+    const onChange = () => setIsDesktop(mq.matches);
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
+  }, []);
+
+  // El panel se portaliza a body para no quedar recortado ni atrapado por el
+  // backdrop-filter del chat de PhysiGuide. En escritorio se ancla al trigger.
+  useEffect(() => {
+    if (!isOpen || !isDesktop) {
+      setPanelPos(null);
+      return;
+    }
+    const update = () => {
+      const rect = triggerRef.current?.getBoundingClientRect();
+      if (!rect) return;
+      const width = Math.min(384, window.innerWidth - 24);
+      const left = Math.max(12, Math.min(rect.right - width, window.innerWidth - width - 12));
+      const spaceBelow = window.innerHeight - rect.bottom - 12;
+      const spaceAbove = rect.top - 12;
+      const placeAbove = spaceBelow < 260 && spaceAbove > spaceBelow;
+      const maxHeight = Math.max(200, Math.min(544, placeAbove ? spaceAbove : spaceBelow));
+      const top = placeAbove ? Math.max(12, rect.top - maxHeight - 8) : rect.bottom + 8;
+      setPanelPos({ top, left, width, maxHeight });
+    };
+    update();
+    window.addEventListener('resize', update);
+    window.addEventListener('scroll', update, true);
+    return () => {
+      window.removeEventListener('resize', update);
+      window.removeEventListener('scroll', update, true);
+    };
+  }, [isOpen, isDesktop]);
 
   useEffect(() => {
     setGenderState(getVoiceGender());
@@ -84,6 +125,7 @@ export function QuickVoiceSelector({
     <div className={`relative inline-block ${className}`}>
       {/* Trigger Button */}
       <button
+        ref={triggerRef}
         type="button"
         onClick={() => setIsOpen(!isOpen)}
         className={`group flex items-center gap-2 rounded-2xl border transition-all duration-300 cursor-pointer shadow-xs ${
@@ -110,12 +152,13 @@ export function QuickVoiceSelector({
       </button>
 
       {/* Popover Menu / Modal */}
-      <AnimatePresence>
+      {createPortal(
+        <AnimatePresence>
         {isOpen && (
           <>
             {/* Backdrop for click outside */}
             <div
-              className="fixed inset-0 z-[140]"
+              className="fixed inset-0 z-[190]"
               onClick={() => {
                 setIsOpen(false);
                 if (isPlayingTest) {
@@ -130,7 +173,16 @@ export function QuickVoiceSelector({
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 8, scale: 0.95 }}
               transition={{ duration: 0.2, ease: 'easeOut' }}
-              className="fixed inset-x-3 bottom-3 z-[150] max-h-[min(75vh,34rem)] w-auto overflow-y-auto overflow-x-hidden overscroll-contain rounded-3xl bg-surface/95 dark:bg-surface-container/95 backdrop-blur-2xl border border-outline-variant/40 dark:border-outline-variant/35 shadow-2xl p-4 pb-[max(1rem,env(safe-area-inset-bottom))] text-on-surface sm:absolute sm:inset-x-auto sm:bottom-auto sm:right-0 sm:top-full sm:mt-2 sm:w-[24rem] sm:max-h-[min(70vh,32rem)] sm:p-5"
+              style={
+                isDesktop && panelPos
+                  ? { top: panelPos.top, left: panelPos.left, width: panelPos.width, maxHeight: panelPos.maxHeight }
+                  : undefined
+              }
+              className={
+                isDesktop
+                  ? 'fixed z-[200] overflow-y-auto overflow-x-hidden overscroll-contain rounded-3xl bg-surface dark:bg-surface-container border border-outline-variant/40 dark:border-outline-variant/35 shadow-2xl p-5 text-on-surface'
+                  : 'fixed inset-x-3 bottom-3 z-[200] max-h-[min(75vh,34rem)] w-auto overflow-y-auto overflow-x-hidden overscroll-contain rounded-3xl bg-surface dark:bg-surface-container border border-outline-variant/40 dark:border-outline-variant/35 shadow-2xl p-4 pb-[max(1rem,env(safe-area-inset-bottom))] text-on-surface'
+              }
             >
               {/* Header */}
               <div className="flex items-center justify-between pb-3 border-b border-outline-variant/25 dark:border-outline-variant/25">
@@ -360,7 +412,9 @@ export function QuickVoiceSelector({
             </motion.div>
           </>
         )}
-      </AnimatePresence>
+        </AnimatePresence>,
+        document.body,
+      )}
     </div>
   );
 }

@@ -351,7 +351,7 @@ export function PatientLayout({ children }: PatientLayoutProps) {
   const desktopSidebar = (
     <aside
       data-sidebar="left"
-      className="fixed left-0 top-0 h-screen z-40 flex flex-col bg-gradient-to-b from-white/90 via-teal-50/30 to-surface/90 dark:from-slate-900 dark:via-slate-900/95 dark:to-slate-950 border-r border-teal-200/50 dark:border-slate-800 text-slate-900 dark:text-slate-200 transition-all duration-300 overflow-hidden backdrop-blur-xl"
+      className="fixed left-0 top-0 h-[100dvh] z-40 flex flex-col bg-gradient-to-b from-white/90 via-teal-50/30 to-surface/90 dark:from-slate-900 dark:via-slate-900/95 dark:to-slate-950 border-r border-teal-200/50 dark:border-slate-800 text-slate-900 dark:text-slate-200 transition-all duration-300 overflow-hidden backdrop-blur-xl"
       style={{ width: `${sidebarWidth}px` }}
     >
       {sidebarContent(sidebarCollapsed, { showToggle: true })}
@@ -359,7 +359,7 @@ export function PatientLayout({ children }: PatientLayoutProps) {
   );
 
   return (
-    <div className="flex flex-col lg:flex-row h-screen w-full max-w-full overflow-x-hidden overflow-hidden bg-background text-on-surface relative" style={{ ['--patient-sidebar-w' as string]: `${sidebarWidth}px`, ['--app-sidebar-w' as string]: `${sidebarWidth}px` }}>
+    <div className="flex flex-col lg:flex-row h-[100dvh] w-full max-w-full overflow-x-hidden overflow-hidden bg-background text-on-surface relative" style={{ ['--patient-sidebar-w' as string]: `${sidebarWidth}px`, ['--app-sidebar-w' as string]: `${sidebarWidth}px` }}>
       {/* Ambient Clinical Pastel Mesh Glow (Celeste, Menta y Lavanda suave) */}
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
         <div className="absolute -top-32 left-1/4 w-96 h-96 rounded-full bg-teal-400/10 dark:bg-teal-500/10 blur-[110px]" />
@@ -514,7 +514,7 @@ export function PatientLayout({ children }: PatientLayoutProps) {
           </div>
         </header>
         {/* Scrollable content with clean spacing */}
-        <div className="flex-1 w-full min-w-0 overflow-y-auto overflow-x-hidden px-4 sm:px-6 pt-8 pb-24 space-y-8 lg:p-10 lg:pb-10 bg-teal-50/20 dark:bg-slate-950/20">{children}<ContextualFAQCard className="max-w-4xl" /></div>
+        <div data-scroll-body className="flex-1 w-full min-w-0 overflow-y-auto overflow-x-hidden overscroll-contain px-4 sm:px-6 pt-8 pb-24 space-y-8 lg:p-10 lg:pb-10 bg-teal-50/20 dark:bg-slate-950/20">{children}<ContextualFAQCard className="max-w-4xl" /></div>
 
         {/* Desktop footer */}
         <footer className="hidden lg:flex pt-6 pb-6 px-8 justify-between text-outline text-xs border-t divider-teal shrink-0">
@@ -532,7 +532,7 @@ export function PatientLayout({ children }: PatientLayoutProps) {
         <FloatingMenu
           items={quickActionItems}
           ariaLabel="Acciones del paciente"
-          className="fab-anchor fixed bottom-6 right-6 z-40"
+          className="fab-anchor fixed bottom-[calc(1.5rem+env(safe-area-inset-bottom))] right-6 z-40"
         />
       )}
 

@@ -1172,7 +1172,7 @@ export function ExercisesPage() {
       </GlassModal>
 
       {/* Assign to Patient Modal (Enhanced notification glass style) */}
-      <GlassModal isOpen={!!assignExercise} onClose={() => setAssignExercise(null)} size="md">
+      <GlassModal isOpen={!!assignExercise} onClose={() => setAssignExercise(null)} size="md" variant="solid">
         <div className="p-6 space-y-4">
           <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800">
             <div>

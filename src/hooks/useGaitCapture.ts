@@ -162,5 +162,11 @@ export function useGaitCapture() {
 
   useEffect(() => () => stop(), [stop]);
 
-  return { status, error, result, videoRef, start, finish, stop, reset: () => setError(null) };
+  const reset = useCallback(() => {
+    stop();
+    setError(null);
+    setResult({ leftRatio: null, rightRatio: null, cadenceSteps: null });
+  }, [stop]);
+
+  return { status, error, result, videoRef, start, finish, stop, reset };
 }

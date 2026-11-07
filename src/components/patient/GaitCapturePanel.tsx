@@ -1,4 +1,3 @@
-import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Video, Square, RotateCcw } from 'lucide-react';
 import { GaitSymmetryCard } from '../ui/ActivityCardsSuite';
@@ -7,21 +6,21 @@ import { useGaitCapture } from '../../hooks/useGaitCapture';
 /** Captura real de marcha (MediaPipe) que alimenta GaitSymmetryCard. */
 export function GaitCapturePanel({ className }: { className?: string }) {
   const { t } = useTranslation();
-  const { status, error, result, start, finish, reset } = useGaitCapture();
-  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const { status, error, result, videoRef, start, finish, reset } = useGaitCapture();
   const measuring = status === 'measuring' || status === 'loading';
   const hasResult = result.leftRatio !== null;
 
   return (
     <div className={className}>
-      {measuring && (
-        <div className="mb-3 rounded-2xl overflow-hidden bg-black/80 aspect-video relative">
-          <video ref={videoRef} playsInline muted className="w-full h-full object-cover" />
-          <span className="absolute top-2 left-2 text-[10px] font-bold uppercase tracking-wider bg-error text-white px-2 py-1 rounded-full">
-            {status === 'loading' ? (t('gait.loading') || 'Cargando modelo...') : (t('gait.recording') || 'Midiendo')}
-          </span>
-        </div>
-      )}
+      {/* El video debe existir siempre: el botón de inicio le pasa su ref a la
+          cámara. Antes solo se montaba en estado "measuring", así que la ref era
+          null y la captura no arrancaba nunca. */}
+      <div className={measuring ? 'mb-3 rounded-2xl overflow-hidden bg-black/80 aspect-video relative' : 'hidden'}>
+        <video ref={videoRef} playsInline muted className="w-full h-full object-cover" />
+        <span className="absolute top-2 left-2 text-[10px] font-bold uppercase tracking-wider bg-error text-white px-2 py-1 rounded-full">
+          {status === 'loading' ? (t('gait.loading') || 'Cargando modelo...') : (t('gait.recording') || 'Midiendo')}
+        </span>
+      </div>
 
       <GaitSymmetryCard
         leftRatio={result.leftRatio ?? undefined}

@@ -397,7 +397,7 @@ export function PhysiGuide({
           whileHover={{ scale: 1.05 }}
           aria-label={open ? 'Cerrar guía de Physi' : 'Abrir guía de Physi'}
           aria-expanded={open}
-          className="fixed bottom-24 left-4 lg:bottom-8 lg:left-8 z-[120] flex items-center justify-center w-14 h-14 rounded-full min-h-[56px] min-w-[56px] touch-manipulation active:scale-95 pb-[env(safe-area-inset-bottom)] relative group cursor-pointer"
+          className="fixed bottom-24 left-4 lg:bottom-8 lg:left-8 z-[180] flex items-center justify-center w-14 h-14 rounded-full min-h-[56px] min-w-[56px] touch-manipulation active:scale-95 pb-[env(safe-area-inset-bottom)] relative group cursor-pointer"
         >
           {!open && (
             <motion.span
@@ -433,10 +433,10 @@ export function PhysiGuide({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 16, scale: 0.96 }}
             transition={{ type: 'spring', damping: 26, stiffness: 320 }}
-            className="fixed bottom-24 left-4 right-4 sm:right-auto sm:left-4 sm:w-96 sm:max-w-[calc(100vw-2rem)] lg:left-8 lg:bottom-28 z-[120] max-h-[62vh] flex flex-col rounded-3xl border border-teal-500/25 bg-surface/95 dark:bg-surface-container/95 backdrop-blur-2xl shadow-2xl overflow-hidden text-on-surface"
+            className="fixed bottom-24 left-4 right-4 sm:right-auto sm:left-4 sm:w-96 sm:max-w-[calc(100vw-2rem)] lg:left-8 lg:bottom-28 z-[180] max-h-[62vh] flex flex-col rounded-3xl border border-teal-500/25 bg-surface/95 dark:bg-surface-container/95 backdrop-blur-2xl shadow-2xl overflow-visible text-on-surface"
           >
             {/* Cabecera */}
-            <div className="flex items-center justify-between px-4 py-3 border-b border-outline-variant/20 dark:border-white/10 shrink-0 bg-teal-500/5">
+            <div className="flex items-center justify-between px-4 py-3 border-b border-outline-variant/20 dark:border-white/10 shrink-0 bg-teal-500/5 rounded-t-3xl">
               <div className="flex items-center gap-2.5 min-w-0">
                 <div className="size-9 rounded-2xl bg-teal-500/15 text-teal-600 dark:text-teal-400 border border-teal-500/25 flex items-center justify-center shrink-0">
                   <Bot size={20} />
@@ -506,7 +506,7 @@ export function PhysiGuide({
             {/* Mensajes */}
             <div
               ref={scrollRef}
-              className="flex-1 overflow-y-auto p-3.5 space-y-3.5 scrollbar-thin"
+              className="flex-1 overflow-y-auto p-3.5 space-y-3.5 scrollbar-thin rounded-b-3xl"
             >
               {messages.map((msg) => {
                 const isSpeaking = speakingMsgId === msg.id;

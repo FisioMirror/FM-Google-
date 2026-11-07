@@ -273,9 +273,9 @@ export function AIAssistantPage() {
 
       if (isRealUser) {
         const [profileRes, statsRes, routinesRes] = await Promise.allSettled([
-          supabase.from('profiles').select('full_name, diagnostico, notas_medicas').eq('id', user.id).single(),
-          supabase.from('patient_stats').select('adherencia, racha_dias, precision_promedio').eq('patient_id', user.id).single(),
-          supabase.from('patient_routines').select('name, exercises').eq('patient_id', user.id).eq('active', true),
+          supabase.from('profiles').select('full_name, diagnostico, patologia, extremidad_afectada').eq('id', user.id).single(),
+          supabase.from('sesiones_completadas').select('adherencia, calidad_promedio, dolor_reportado').eq('paciente_id', user.id).order('fecha', { ascending: false }).limit(1).maybeSingle(),
+          supabase.from('rutinas').select('nombre, ejercicios').eq('paciente_id', user.id).eq('activa', true),
         ]);
 
         const profile = profileRes.status === 'fulfilled' ? profileRes.value.data : null;
@@ -286,8 +286,10 @@ export function AIAssistantPage() {
         contextStr = [
           profile?.full_name ? `Paciente: ${profile.full_name}` : '',
           profile?.diagnostico ? `Diagnóstico: ${profile.diagnostico}` : '',
-          stats?.racha_dias ? `Racha de rehabilitación: ${stats.racha_dias} días consecutivos` : '',
+          profile?.patologia ? `Patología: ${profile.patologia}` : '',
+          profile?.extremidad_afectada ? `Extremidad afectada: ${profile.extremidad_afectada}` : '',
           stats?.adherencia ? `Adherencia: ${stats.adherencia}%` : '',
+          stats?.calidad_promedio ? `Calidad de ejecución: ${stats.calidad_promedio}%` : '',
         ].filter(Boolean).join('. ');
       } else {
         inputContext = { demo: PRIMARY_DEMO_PATIENT };
