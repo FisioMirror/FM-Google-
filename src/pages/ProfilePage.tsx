@@ -22,6 +22,13 @@ import { GamifiedBadgeCard } from '../components/ui/GamifiedBadgeCard';
 import { useGamification } from '../hooks/useGamification';
 import { currentLocale } from '../lib/format';
 import { useTranslation } from 'react-i18next';
+import {
+  fisioProfileSchema,
+  patientProfileSchema,
+  formatZodError,
+  PLACEHOLDERS,
+  SELECT_OPTIONS,
+} from '../lib/validation';
 
 export function ProfilePage() {
   const { t } = useTranslation();
@@ -30,7 +37,40 @@ export function ProfilePage() {
   const gamification = useGamification();
   const toast = useToast();
   const [editing, setEditing] = useState(false);
-  const [form, setForm] = useState({ full_name: '', especialidad: '', universidad: '', cedula: '', colegiado_id: '', anio_egreso: '' });
+  const [form, setForm] = useState({
+    full_name: '',
+    especialidad: '',
+    universidad: '',
+    cedula: '',
+    colegiado_id: '',
+    anio_egreso: '',
+    // Patient fields
+    fecha_nacimiento: '',
+    diagnostico: '',
+    patologia: '',
+    diagnostico_secundario: '',
+    medicamentos_actuales: '',
+    alergias: '',
+    enfermedades_cronicas: '',
+    lesiones_previas: '',
+    extremidad_afectada: '',
+    rom_objetivo: '',
+    frecuencia_sesiones: '',
+    medico_remitente: '',
+    telefono: '',
+    tipo_sangre: '',
+    ocupacion: '',
+    nivel_actividad: '',
+    estatura_cm: '',
+    peso_kg: '',
+    es_menor_edad: false,
+    contacto_emergencia_nombre: '',
+    contacto_emergencia_telefono: '',
+    tutor_nombre: '',
+    tutor_telefono: '',
+    tutor_email: '',
+    consentimiento: false,
+  });
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [pushNotifications, setPushNotifications] = useState(true);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
@@ -45,6 +85,9 @@ export function ProfilePage() {
   const [clinicNameSaving, setClinicNameSaving] = useState(false);
   const [clinicNameHover, setClinicNameHover] = useState(false);
   const clinicNameRef = useRef<HTMLInputElement>(null);
+
+  // Validation errors
+  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
 
   // Pacientes activos hoy / sesiones programadas (fisio only)
   const [activeToday, setActiveToday] = useState<{ name: string; sessionTime: string; diagnosis: string }[]>([]);
@@ -61,10 +104,39 @@ export function ProfilePage() {
         cedula: user.cedula || '',
         colegiado_id: user.colegiado_id || '',
         anio_egreso: user.anio_egreso?.toString() || '',
+        fecha_nacimiento: user.fecha_nacimiento || '',
+        diagnostico: user.diagnostico || '',
+        patologia: user.patologia || '',
+        diagnostico_secundario: user.diagnostico_secundario || '',
+        medicamentos_actuales: user.medicamentos_actuales || '',
+        alergias: user.alergias || '',
+        enfermedades_cronicas: user.enfermedades_cronicas || '',
+        lesiones_previas: user.lesiones_previas || '',
+        extremidad_afectada: user.extremidad_afectada || '',
+        rom_objetivo: user.rom_objetivo || '',
+        frecuencia_sesiones: user.frecuencia_sesiones || '',
+        medico_remitente: user.medico_remitente || '',
+        telefono: user.telefono || '',
+        tipo_sangre: user.tipo_sangre || '',
+        ocupacion: user.ocupacion || '',
+        nivel_actividad: user.nivel_actividad || '',
+        estatura_cm: user.estatura_cm?.toString() || '',
+        peso_kg: user.peso_kg?.toString() || '',
+        es_menor_edad: user.es_menor_edad || false,
+        contacto_emergencia_nombre: user.contacto_emergencia_nombre || '',
+        contacto_emergencia_telefono: user.contacto_emergencia_telefono || '',
+        tutor_nombre: user.tutor_nombre || '',
+        tutor_telefono: user.tutor_telefono || '',
+        tutor_email: user.tutor_email || '',
+        consentimiento: user.consentimiento || false,
       });
       setAvatarUrl(user.avatar_url ?? null);
     }
   }, [user, editing]);
+
+  const clearFieldError = (field: string) => {
+    setValidationErrors(prev => { const n = { ...prev }; delete n[field]; return n; });
+  };
 
   // ---- Clinic name inline editing ----
   const startClinicEdit = () => {
@@ -155,18 +227,60 @@ export function ProfilePage() {
 
   const saveProfile = async () => {
     if (!user?.id) return;
+
+    // Validate with Zod
+    const schema = isFisio ? fisioProfileSchema : patientProfileSchema;
+    const result = schema.safeParse(form);
+    if (!result.success) {
+      setValidationErrors(formatZodError(result.error));
+      return;
+    }
+
     try {
-      const { error } = await supabase.from('profiles').update({
+      const updateData: Record<string, unknown> = {
         full_name: form.full_name,
-        especialidad: form.especialidad || null,
-        universidad: form.universidad || null,
-        cedula: form.cedula || null,
-        colegiado_id: form.colegiado_id || null,
-        anio_egreso: form.anio_egreso ? parseInt(form.anio_egreso, 10) : null,
         updated_at: new Date().toISOString(),
-      }).eq('id', user.id);
+      };
+
+      if (isFisio) {
+        updateData.especialidad = form.especialidad || null;
+        updateData.universidad = form.universidad || null;
+        updateData.cedula = form.cedula || null;
+        updateData.colegiado_id = form.colegiado_id || null;
+        updateData.anio_egreso = form.anio_egreso ? parseInt(form.anio_egreso, 10) : null;
+        updateData.telefono = form.telefono || null;
+      } else {
+        updateData.fecha_nacimiento = form.fecha_nacimiento || null;
+        updateData.diagnostico = form.diagnostico || null;
+        updateData.patologia = form.patologia || null;
+        updateData.diagnostico_secundario = form.diagnostico_secundario || null;
+        updateData.medicamentos_actuales = form.medicamentos_actuales || null;
+        updateData.alergias = form.alergias || null;
+        updateData.enfermedades_cronicas = form.enfermedades_cronicas || null;
+        updateData.lesiones_previas = form.lesiones_previas || null;
+        updateData.extremidad_afectada = form.extremidad_afectada || null;
+        updateData.rom_objetivo = form.rom_objetivo || null;
+        updateData.frecuencia_sesiones = form.frecuencia_sesiones || null;
+        updateData.medico_remitente = form.medico_remitente || null;
+        updateData.telefono = form.telefono || null;
+        updateData.tipo_sangre = form.tipo_sangre || null;
+        updateData.ocupacion = form.ocupacion || null;
+        updateData.nivel_actividad = form.nivel_actividad || null;
+        updateData.estatura_cm = form.estatura_cm ? parseInt(form.estatura_cm, 10) : null;
+        updateData.peso_kg = form.peso_kg ? parseFloat(form.peso_kg) : null;
+        updateData.es_menor_edad = form.es_menor_edad;
+        updateData.contacto_emergencia_nombre = form.contacto_emergencia_nombre || null;
+        updateData.contacto_emergencia_telefono = form.contacto_emergencia_telefono || null;
+        updateData.tutor_nombre = form.tutor_nombre || null;
+        updateData.tutor_telefono = form.tutor_telefono || null;
+        updateData.tutor_email = form.tutor_email || null;
+        updateData.consentimiento = form.consentimiento;
+      }
+
+      const { error } = await supabase.from('profiles').update(updateData).eq('id', user.id);
       if (error) throw error;
-      useAuthStore.setState({ user: { ...user, full_name: form.full_name, especialidad: form.especialidad || null, universidad: form.universidad || null, cedula: form.cedula || null, colegiado_id: form.colegiado_id || null, anio_egreso: form.anio_egreso ? parseInt(form.anio_egreso, 10) : null } });
+
+      useAuthStore.setState({ user: { ...user, ...updateData } });
       toast.success('Perfil actualizado');
       setEditing(false);
     } catch {
@@ -355,7 +469,7 @@ export function ProfilePage() {
           <AnimatedTabs
             tabs={[
               { id: 'personal', label: t('profile.tabPersonal'), content: (
-                <GlassPanel className="p-6 rounded-[32px] card-glow-hover shimmer-border hover-lift accent-teal">
+                <GlassPanel className="p-6 rounded-[32px] card-glow-hover hover-lift accent-teal">
                   <div className="flex justify-between items-center mb-6">
                     <h3 className="font-headline-lg-mobile gradient-text-living font-bold">{t('profile.personalInfo')}</h3>
                     <button onClick={() => setEditing(!editing)} className="flex items-center gap-2 text-primary font-bold text-sm hover-lift badge-teal px-3 py-1 rounded-full breathe-badge">
@@ -363,28 +477,331 @@ export function ProfilePage() {
                     </button>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {[
-                      { label: t('profile.fullName'), key: 'full_name', type: 'text' },
-                      { label: isFisio ? t('profile.specialty') : t('profile.conditionDx'), key: 'especialidad', type: 'text' },
-                      ...(isFisio ? [{ label: t('profile.university'), key: 'universidad', type: 'text' }] : []),
-                      { label: t('profile.license'), key: 'cedula', type: 'text' },
-                      { label: t('profile.billId'), key: 'colegiado_id', type: 'text' },
-                      { label: t('profile.gradYear'), key: 'anio_egreso', type: 'number' },
-                    ].map((field) => (
-                      <div key={field.key} className="p-4 rounded-2xl bg-surface-container-low/60 border divider-teal">
-                        <label className="text-[10px] uppercase text-outline font-bold block mb-1">{field.label}</label>
-                        {editing ? (
-                          <input
-                            type={field.type}
-                            value={(form as Record<string, string>)[field.key]}
-                            onChange={(e) => setForm({ ...form, [field.key]: e.target.value })}
-                            className="input-base"
-                          />
-                        ) : (
-                          <span className="font-medium text-on-surface">{(form as Record<string, string>)[field.key] || '—'}</span>
-                        )}
-                      </div>
-                    ))}
+                    {isFisio ? (
+                      <>
+                        <div key="full_name" className="p-4 rounded-2xl bg-surface-container-low/60 border divider-teal">
+                          <label className="text-[10px] uppercase text-outline font-bold block mb-1">{t('profile.fullName')}</label>
+                          {editing ? (
+                            <>
+                              <input
+                                type="text"
+                                value={form.full_name}
+                                onChange={(e) => { setForm({ ...form, full_name: e.target.value }); clearFieldError('full_name'); }}
+                                className={`input-base ${validationErrors.full_name ? 'border-red-500 focus:border-red-500' : ''}`}
+                                placeholder={PLACEHOLDERS.fullName}
+                              />
+                              {validationErrors.full_name && <p className="mt-1 text-xs text-red-600 dark:text-red-400">{validationErrors.full_name}</p>}
+                            </>
+                          ) : (
+                            <span className="font-medium text-on-surface">{form.full_name || '—'}</span>
+                          )}
+                        </div>
+                        <div key="especialidad" className="p-4 rounded-2xl bg-surface-container-low/60 border divider-teal">
+                          <label className="text-[10px] uppercase text-outline font-bold block mb-1">{t('profile.specialty')}</label>
+                          {editing ? (
+                            <>
+                              <input
+                                type="text"
+                                value={form.especialidad}
+                                onChange={(e) => { setForm({ ...form, especialidad: e.target.value }); clearFieldError('especialidad'); }}
+                                className={`input-base ${validationErrors.especialidad ? 'border-red-500 focus:border-red-500' : ''}`}
+                                placeholder={PLACEHOLDERS.especialidad}
+                              />
+                              {validationErrors.especialidad && <p className="mt-1 text-xs text-red-600 dark:text-red-400">{validationErrors.especialidad}</p>}
+                            </>
+                          ) : (
+                            <span className="font-medium text-on-surface">{form.especialidad || '—'}</span>
+                          )}
+                        </div>
+                        <div key="universidad" className="p-4 rounded-2xl bg-surface-container-low/60 border divider-teal">
+                          <label className="text-[10px] uppercase text-outline font-bold block mb-1">{t('profile.university')}</label>
+                          {editing ? (
+                            <>
+                              <input
+                                type="text"
+                                value={form.universidad}
+                                onChange={(e) => { setForm({ ...form, universidad: e.target.value }); clearFieldError('universidad'); }}
+                                className={`input-base ${validationErrors.universidad ? 'border-red-500 focus:border-red-500' : ''}`}
+                                placeholder={PLACEHOLDERS.universidad}
+                              />
+                              {validationErrors.universidad && <p className="mt-1 text-xs text-red-600 dark:text-red-400">{validationErrors.universidad}</p>}
+                            </>
+                          ) : (
+                            <span className="font-medium text-on-surface">{form.universidad || '—'}</span>
+                          )}
+                        </div>
+                        <div key="cedula" className="p-4 rounded-2xl bg-surface-container-low/60 border divider-teal">
+                          <label className="text-[10px] uppercase text-outline font-bold block mb-1">{t('profile.license')}</label>
+                          {editing ? (
+                            <>
+                              <input
+                                type="text"
+                                value={form.cedula}
+                                onChange={(e) => { setForm({ ...form, cedula: e.target.value }); clearFieldError('cedula'); }}
+                                className={`input-base ${validationErrors.cedula ? 'border-red-500 focus:border-red-500' : ''}`}
+                                placeholder={PLACEHOLDERS.cedula}
+                              />
+                              {validationErrors.cedula && <p className="mt-1 text-xs text-red-600 dark:text-red-400">{validationErrors.cedula}</p>}
+                            </>
+                          ) : (
+                            <span className="font-medium text-on-surface">{form.cedula || '—'}</span>
+                          )}
+                        </div>
+                        <div key="colegiado_id" className="p-4 rounded-2xl bg-surface-container-low/60 border divider-teal">
+                          <label className="text-[10px] uppercase text-outline font-bold block mb-1">{t('profile.billId')}</label>
+                          {editing ? (
+                            <>
+                              <input
+                                type="text"
+                                value={form.colegiado_id}
+                                onChange={(e) => { setForm({ ...form, colegiado_id: e.target.value }); clearFieldError('colegiado_id'); }}
+                                className={`input-base ${validationErrors.colegiado_id ? 'border-red-500 focus:border-red-500' : ''}`}
+                                placeholder={PLACEHOLDERS.colegiadoId}
+                              />
+                              {validationErrors.colegiado_id && <p className="mt-1 text-xs text-red-600 dark:text-red-400">{validationErrors.colegiado_id}</p>}
+                            </>
+                          ) : (
+                            <span className="font-medium text-on-surface">{form.colegiado_id || '—'}</span>
+                          )}
+                        </div>
+                        <div key="anio_egreso" className="p-4 rounded-2xl bg-surface-container-low/60 border divider-teal">
+                          <label className="text-[10px] uppercase text-outline font-bold block mb-1">{t('profile.gradYear')}</label>
+                          {editing ? (
+                            <>
+                              <input
+                                type="number"
+                                value={form.anio_egreso}
+                                onChange={(e) => { setForm({ ...form, anio_egreso: e.target.value }); clearFieldError('anio_egreso'); }}
+                                min={1950}
+                                max={new Date().getFullYear()}
+                                className={`input-base ${validationErrors.anio_egreso ? 'border-red-500 focus:border-red-500' : ''}`}
+                                placeholder={PLACEHOLDERS.anioEgreso}
+                              />
+                              {validationErrors.anio_egreso && <p className="mt-1 text-xs text-red-600 dark:text-red-400">{validationErrors.anio_egreso}</p>}
+                            </>
+                          ) : (
+                            <span className="font-medium text-on-surface">{form.anio_egreso || '—'}</span>
+                          )}
+                        </div>
+                        <div key="telefono" className="p-4 rounded-2xl bg-surface-container-low/60 border divider-teal">
+                          <label className="text-[10px] uppercase text-outline font-bold block mb-1">{t('profile.phone')}</label>
+                          {editing ? (
+                            <>
+                              <input
+                                type="tel"
+                                value={form.telefono}
+                                onChange={(e) => { setForm({ ...form, telefono: e.target.value }); clearFieldError('telefono'); }}
+                                className={`input-base ${validationErrors.telefono ? 'border-red-500 focus:border-red-500' : ''}`}
+                                placeholder={PLACEHOLDERS.telefono}
+                              />
+                              {validationErrors.telefono && <p className="mt-1 text-xs text-red-600 dark:text-red-400">{validationErrors.telefono}</p>}
+                            </>
+                          ) : (
+                            <span className="font-medium text-on-surface">{form.telefono || '—'}</span>
+                          )}
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <div key="full_name" className="p-4 rounded-2xl bg-surface-container-low/60 border divider-teal">
+                          <label className="text-[10px] uppercase text-outline font-bold block mb-1">{t('profile.fullName')}</label>
+                          {editing ? (
+                            <>
+                              <input
+                                type="text"
+                                value={form.full_name}
+                                onChange={(e) => { setForm({ ...form, full_name: e.target.value }); clearFieldError('full_name'); }}
+                                className={`input-base ${validationErrors.full_name ? 'border-red-500 focus:border-red-500' : ''}`}
+                                placeholder={PLACEHOLDERS.fullName}
+                              />
+                              {validationErrors.full_name && <p className="mt-1 text-xs text-red-600 dark:text-red-400">{validationErrors.full_name}</p>}
+                            </>
+                          ) : (
+                            <span className="font-medium text-on-surface">{form.full_name || '—'}</span>
+                          )}
+                        </div>
+                        <div key="fecha_nacimiento" className="p-4 rounded-2xl bg-surface-container-low/60 border divider-teal">
+                          <label className="text-[10px] uppercase text-outline font-bold block mb-1">{t('profile.birthDate')}</label>
+                          {editing ? (
+                            <>
+                              <input
+                                type="date"
+                                value={form.fecha_nacimiento}
+                                onChange={(e) => { setForm({ ...form, fecha_nacimiento: e.target.value }); clearFieldError('fecha_nacimiento'); }}
+                                max={new Date().toISOString().split('T')[0]}
+                                className={`input-base ${validationErrors.fecha_nacimiento ? 'border-red-500 focus:border-red-500' : ''}`}
+                              />
+                              {validationErrors.fecha_nacimiento && <p className="mt-1 text-xs text-red-600 dark:text-red-400">{validationErrors.fecha_nacimiento}</p>}
+                            </>
+                          ) : (
+                            <span className="font-medium text-on-surface">{form.fecha_nacimiento ? new Date(form.fecha_nacimiento).toLocaleDateString() : '—'}</span>
+                          )}
+                        </div>
+                        <div key="diagnostico" className="p-4 rounded-2xl bg-surface-container-low/60 border divider-teal">
+                          <label className="text-[10px] uppercase text-outline font-bold block mb-1">{t('profile.conditionDx')}</label>
+                          {editing ? (
+                            <>
+                              <input
+                                type="text"
+                                value={form.diagnostico}
+                                onChange={(e) => { setForm({ ...form, diagnostico: e.target.value }); clearFieldError('diagnostico'); }}
+                                className={`input-base ${validationErrors.diagnostico ? 'border-red-500 focus:border-red-500' : ''}`}
+                                placeholder={PLACEHOLDERS.diagnostico}
+                              />
+                              {validationErrors.diagnostico && <p className="mt-1 text-xs text-red-600 dark:text-red-400">{validationErrors.diagnostico}</p>}
+                            </>
+                          ) : (
+                            <span className="font-medium text-on-surface">{form.diagnostico || '—'}</span>
+                          )}
+                        </div>
+                        <div key="patologia" className="p-4 rounded-2xl bg-surface-container-low/60 border divider-teal">
+                          <label className="text-[10px] uppercase text-outline font-bold block mb-1">{t('profile.pathology')}</label>
+                          {editing ? (
+                            <>
+                              <input
+                                type="text"
+                                value={form.patologia}
+                                onChange={(e) => { setForm({ ...form, patologia: e.target.value }); clearFieldError('patologia'); }}
+                                className={`input-base ${validationErrors.patologia ? 'border-red-500 focus:border-red-500' : ''}`}
+                                placeholder={PLACEHOLDERS.patologia}
+                              />
+                              {validationErrors.patologia && <p className="mt-1 text-xs text-red-600 dark:text-red-400">{validationErrors.patologia}</p>}
+                            </>
+                          ) : (
+                            <span className="font-medium text-on-surface">{form.patologia || '—'}</span>
+                          )}
+                        </div>
+                        <div key="telefono" className="p-4 rounded-2xl bg-surface-container-low/60 border divider-teal">
+                          <label className="text-[10px] uppercase text-outline font-bold block mb-1">{t('profile.phone')}</label>
+                          {editing ? (
+                            <>
+                              <input
+                                type="tel"
+                                value={form.telefono}
+                                onChange={(e) => { setForm({ ...form, telefono: e.target.value }); clearFieldError('telefono'); }}
+                                className={`input-base ${validationErrors.telefono ? 'border-red-500 focus:border-red-500' : ''}`}
+                                placeholder={PLACEHOLDERS.telefono}
+                              />
+                              {validationErrors.telefono && <p className="mt-1 text-xs text-red-600 dark:text-red-400">{validationErrors.telefono}</p>}
+                            </>
+                          ) : (
+                            <span className="font-medium text-on-surface">{form.telefono || '—'}</span>
+                          )}
+                        </div>
+                        <div key="tipo_sangre" className="p-4 rounded-2xl bg-surface-container-low/60 border divider-teal">
+                          <label className="text-[10px] uppercase text-outline font-bold block mb-1">{t('profile.bloodType')}</label>
+                          {editing ? (
+                            <>
+                              <select
+                                value={form.tipo_sangre}
+                                onChange={(e) => { setForm({ ...form, tipo_sangre: e.target.value }); clearFieldError('tipo_sangre'); }}
+                                className={`input-base ${validationErrors.tipo_sangre ? 'border-red-500 focus:border-red-500' : ''}`}
+                              >
+                                <option value="">{t('profile.selectBloodType')}</option>
+                                {SELECT_OPTIONS.bloodType.map((opt) => (
+                                  <option key={opt.value} value={opt.value}>{opt.label}</option>
+                                ))}
+                              </select>
+                              {validationErrors.tipo_sangre && <p className="mt-1 text-xs text-red-600 dark:text-red-400">{validationErrors.tipo_sangre}</p>}
+                            </>
+                          ) : (
+                            <span className="font-medium text-on-surface">{form.tipo_sangre || '—'}</span>
+                          )}
+                        </div>
+                        <div key="ocupacion" className="p-4 rounded-2xl bg-surface-container-low/60 border divider-teal">
+                          <label className="text-[10px] uppercase text-outline font-bold block mb-1">{t('profile.occupation')}</label>
+                          {editing ? (
+                            <>
+                              <input
+                                type="text"
+                                value={form.ocupacion}
+                                onChange={(e) => { setForm({ ...form, ocupacion: e.target.value }); clearFieldError('ocupacion'); }}
+                                className={`input-base ${validationErrors.ocupacion ? 'border-red-500 focus:border-red-500' : ''}`}
+                                placeholder={PLACEHOLDERS.ocupacion}
+                              />
+                              {validationErrors.ocupacion && <p className="mt-1 text-xs text-red-600 dark:text-red-400">{validationErrors.ocupacion}</p>}
+                            </>
+                          ) : (
+                            <span className="font-medium text-on-surface">{form.ocupacion || '—'}</span>
+                          )}
+                        </div>
+                        <div key="nivel_actividad" className="p-4 rounded-2xl bg-surface-container-low/60 border divider-teal">
+                          <label className="text-[10px] uppercase text-outline font-bold block mb-1">{t('profile.activityLevel')}</label>
+                          {editing ? (
+                            <>
+                              <select
+                                value={form.nivel_actividad}
+                                onChange={(e) => { setForm({ ...form, nivel_actividad: e.target.value }); clearFieldError('nivel_actividad'); }}
+                                className={`input-base ${validationErrors.nivel_actividad ? 'border-red-500 focus:border-red-500' : ''}`}
+                              >
+                                <option value="">{t('profile.selectActivityLevel')}</option>
+                                {SELECT_OPTIONS.activityLevel.map((opt) => (
+                                  <option key={opt.value} value={opt.value}>{opt.label}</option>
+                                ))}
+                              </select>
+                              {validationErrors.nivel_actividad && <p className="mt-1 text-xs text-red-600 dark:text-red-400">{validationErrors.nivel_actividad}</p>}
+                            </>
+                          ) : (
+                            <span className="font-medium text-on-surface">{form.nivel_actividad || '—'}</span>
+                          )}
+                        </div>
+                        <div key="estatura_cm" className="p-4 rounded-2xl bg-surface-container-low/60 border divider-teal">
+                          <label className="text-[10px] uppercase text-outline font-bold block mb-1">{t('profile.height')}</label>
+                          {editing ? (
+                            <>
+                              <input
+                                type="number"
+                                value={form.estatura_cm}
+                                onChange={(e) => { setForm({ ...form, estatura_cm: e.target.value }); clearFieldError('estatura_cm'); }}
+                                min={50}
+                                max={250}
+                                className={`input-base ${validationErrors.estatura_cm ? 'border-red-500 focus:border-red-500' : ''}`}
+                                placeholder={PLACEHOLDERS.estaturaCm}
+                              />
+                              {validationErrors.estatura_cm && <p className="mt-1 text-xs text-red-600 dark:text-red-400">{validationErrors.estatura_cm}</p>}
+                            </>
+                          ) : (
+                            <span className="font-medium text-on-surface">{form.estatura_cm ? `${form.estatura_cm} cm` : '—'}</span>
+                          )}
+                        </div>
+                        <div key="peso_kg" className="p-4 rounded-2xl bg-surface-container-low/60 border divider-teal">
+                          <label className="text-[10px] uppercase text-outline font-bold block mb-1">{t('profile.weight')}</label>
+                          {editing ? (
+                            <>
+                              <input
+                                type="number"
+                                step="0.1"
+                                value={form.peso_kg}
+                                onChange={(e) => { setForm({ ...form, peso_kg: e.target.value }); clearFieldError('peso_kg'); }}
+                                min={2}
+                                max={300}
+                                className={`input-base ${validationErrors.peso_kg ? 'border-red-500 focus:border-red-500' : ''}`}
+                                placeholder={PLACEHOLDERS.pesoKg}
+                              />
+                              {validationErrors.peso_kg && <p className="mt-1 text-xs text-red-600 dark:text-red-400">{validationErrors.peso_kg}</p>}
+                            </>
+                          ) : (
+                            <span className="font-medium text-on-surface">{form.peso_kg ? `${form.peso_kg} kg` : '—'}</span>
+                          )}
+                        </div>
+                        <div key="es_menor_edad" className="p-4 rounded-2xl bg-surface-container-low/60 border divider-teal">
+                          <label className="text-[10px] uppercase text-outline font-bold block mb-1">{t('profile.isMinor')}</label>
+                          {editing ? (
+                            <label className="flex items-center gap-2 cursor-pointer">
+                              <input
+                                type="checkbox"
+                                checked={form.es_menor_edad}
+                                onChange={(e) => setForm({ ...form, es_menor_edad: e.target.checked })}
+                                className="w-5 h-5 rounded border-slate-300 text-teal-600 focus:ring-teal-500"
+                              />
+                              <span className="text-sm text-on-surface">{t('profile.minorLabel')}</span>
+                            </label>
+                          ) : (
+                            <span className="font-medium text-on-surface">{form.es_menor_edad ? t('common.yes') : t('common.no')}</span>
+                          )}
+                        </div>
+                      </>
+                    )}
                   </div>
                   {editing && (
                     <button onClick={saveProfile} className="premium-btn mt-4 px-6 py-3 bg-primary text-on-primary rounded-xl font-bold hover:scale-[1.02] active:scale-95 transition-all glow-teal breathe-teal">{t('profile.saveChanges')}</button>

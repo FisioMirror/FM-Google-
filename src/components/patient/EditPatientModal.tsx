@@ -3,9 +3,17 @@ import { useTranslation } from 'react-i18next';
 import { X, Save } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { useToast } from '../ui/toastApi';
+import {
+  patientProfileSchema,
+  formatZodError,
+  PLACEHOLDERS,
+  SELECT_OPTIONS,
+} from '../../lib/validation';
+
 const Label = (p: React.LabelHTMLAttributes<HTMLLabelElement>) => <label {...p} className="text-xs font-semibold text-on-surface-variant" />;
 const Input = (p: React.InputHTMLAttributes<HTMLInputElement>) => <input {...p} className="w-full px-3 py-2 rounded-xl bg-surface-container border border-outline/15 text-sm text-on-surface focus:outline-none focus:border-primary" />;
 const Textarea = (p: React.TextareaHTMLAttributes<HTMLTextAreaElement>) => <textarea {...p} className="w-full px-3 py-2 rounded-xl bg-surface-container border border-outline/15 text-sm text-on-surface focus:outline-none focus:border-primary resize-none" />;
+const Select = (p: React.SelectHTMLAttributes<HTMLSelectElement>) => <select {...p} className="w-full px-3 py-2 rounded-xl bg-surface-container border border-outline/15 text-sm text-on-surface focus:outline-none focus:border-primary" />;
 const Button = ({ variant, className, ...p }: React.ButtonHTMLAttributes<HTMLButtonElement> & { variant?: string }) => <button {...p} className={(variant === 'ghost' ? 'px-4 py-2 rounded-xl text-sm font-bold text-on-surface-variant hover:bg-surface-container transition-colors ' : 'px-4 py-2 rounded-xl bg-primary text-on-primary text-sm font-bold hover:bg-primary/90 transition-colors ') + (className || '')} />;
 
 interface PatientProfile {
@@ -33,6 +41,7 @@ interface PatientProfile {
   tutor_nombre: string | null;
   tutor_telefono: string | null;
   tutor_email: string | null;
+  es_menor_edad: boolean | null;
 }
 
 interface EditPatientModalProps {
@@ -47,20 +56,32 @@ export function EditPatientModal({ open, onClose, patient, onSaved }: EditPatien
   const toast = useToast();
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState<PatientProfile>(patient);
+  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
     if (open) setForm(patient);
   }, [open, patient]);
 
-  const handleChange = (field: keyof PatientProfile, value: string) => {
+const handleChange = (field: keyof PatientProfile, value: string | number | boolean) => {
     if (field === 'estatura_cm' || field === 'peso_kg') {
       setForm((prev) => ({ ...prev, [field]: value === '' ? null : Number(value) }));
+      return;
+    }
+    if (field === 'es_menor_edad') {
+      setForm((prev) => ({ ...prev, [field]: Boolean(value) }));
       return;
     }
     setForm((prev) => ({ ...prev, [field]: value === '' ? null : value }));
   };
 
   const handleSave = async () => {
+    // Validate with Zod
+    const result = patientProfileSchema.safeParse(form);
+    if (!result.success) {
+      setValidationErrors(formatZodError(result.error));
+      return;
+    }
+
     setSaving(true);
     try {
       const { error } = await supabase
@@ -88,6 +109,7 @@ export function EditPatientModal({ open, onClose, patient, onSaved }: EditPatien
           tutor_nombre: form.tutor_nombre,
           tutor_telefono: form.tutor_telefono,
           tutor_email: form.tutor_email,
+          es_menor_edad: form.es_menor_edad,
         })
         .eq('id', patient.id);
 
@@ -101,6 +123,10 @@ export function EditPatientModal({ open, onClose, patient, onSaved }: EditPatien
     } finally {
       setSaving(false);
     }
+  };
+
+  const clearFieldError = (field: string) => {
+    setValidationErrors(prev => { const n = { ...prev }; delete n[field]; return n; });
   };
 
   if (!open) return null;
@@ -124,11 +150,24 @@ export function EditPatientModal({ open, onClose, patient, onSaved }: EditPatien
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>Patología / Diagnóstico principal</Label>
-                <Textarea value={form.patologia || form.diagnostico || ''} onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => { handleChange('patologia', e.target.value); handleChange('diagnostico', e.target.value); }} rows={2} />
+                <Textarea
+                  value={form.patologia || form.diagnostico || ''}
+                  onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => { handleChange('patologia', e.target.value); handleChange('diagnostico', e.target.value); clearFieldError('patologia'); clearFieldError('diagnostico'); }}
+                  rows={2}
+                  placeholder={PLACEHOLDERS.patologia}
+                />
+                {validationErrors.patologia && <p className="text-xs text-red-600 dark:text-red-400">{validationErrors.patologia}</p>}
+                {validationErrors.diagnostico && <p className="text-xs text-red-600 dark:text-red-400">{validationErrors.diagnostico}</p>}
               </div>
               <div className="space-y-2">
                 <Label>Diagnóstico secundario</Label>
-                <Textarea value={form.diagnostico_secundario || ''} onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => handleChange('diagnostico_secundario', e.target.value)} rows={2} />
+                <Textarea
+                  value={form.diagnostico_secundario || ''}
+                  onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => { handleChange('diagnostico_secundario', e.target.value); clearFieldError('diagnostico_secundario'); }}
+                  rows={2}
+                  placeholder={PLACEHOLDERS.diagnosticoSecundario}
+                />
+                {validationErrors.diagnostico_secundario && <p className="text-xs text-red-600 dark:text-red-400">{validationErrors.diagnostico_secundario}</p>}
               </div>
             </div>
           </section>
@@ -138,19 +177,43 @@ export function EditPatientModal({ open, onClose, patient, onSaved }: EditPatien
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>Medicamentos actuales</Label>
-                <Textarea value={form.medicamentos_actuales || ''} onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => handleChange('medicamentos_actuales', e.target.value)} rows={2} />
+                <Textarea
+                  value={form.medicamentos_actuales || ''}
+                  onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => { handleChange('medicamentos_actuales', e.target.value); clearFieldError('medicamentos_actuales'); }}
+                  rows={2}
+                  placeholder={PLACEHOLDERS.medicamentosActuales}
+                />
+                {validationErrors.medicamentos_actuales && <p className="text-xs text-red-600 dark:text-red-400">{validationErrors.medicamentos_actuales}</p>}
               </div>
               <div className="space-y-2">
                 <Label>Alergias</Label>
-                <Textarea value={form.alergias || ''} onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => handleChange('alergias', e.target.value)} rows={2} />
+                <Textarea
+                  value={form.alergias || ''}
+                  onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => { handleChange('alergias', e.target.value); clearFieldError('alergias'); }}
+                  rows={2}
+                  placeholder={PLACEHOLDERS.alergias}
+                />
+                {validationErrors.alergias && <p className="text-xs text-red-600 dark:text-red-400">{validationErrors.alergias}</p>}
               </div>
               <div className="space-y-2">
                 <Label>Enfermedades crónicas</Label>
-                <Textarea value={form.enfermedades_cronicas || ''} onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => handleChange('enfermedades_cronicas', e.target.value)} rows={2} />
+                <Textarea
+                  value={form.enfermedades_cronicas || ''}
+                  onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => { handleChange('enfermedades_cronicas', e.target.value); clearFieldError('enfermedades_cronicas'); }}
+                  rows={2}
+                  placeholder={PLACEHOLDERS.enfermedadesCronicas}
+                />
+                {validationErrors.enfermedades_cronicas && <p className="text-xs text-red-600 dark:text-red-400">{validationErrors.enfermedades_cronicas}</p>}
               </div>
               <div className="space-y-2">
                 <Label>Lesiones previas</Label>
-                <Textarea value={form.lesiones_previas || ''} onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => handleChange('lesiones_previas', e.target.value)} rows={2} />
+                <Textarea
+                  value={form.lesiones_previas || ''}
+                  onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => { handleChange('lesiones_previas', e.target.value); clearFieldError('lesiones_previas'); }}
+                  rows={2}
+                  placeholder={PLACEHOLDERS.lesionesPrevias}
+                />
+                {validationErrors.lesiones_previas && <p className="text-xs text-red-600 dark:text-red-400">{validationErrors.lesiones_previas}</p>}
               </div>
             </div>
           </section>
@@ -160,19 +223,49 @@ export function EditPatientModal({ open, onClose, patient, onSaved }: EditPatien
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               <div className="space-y-2">
                 <Label>Extremidad afectada</Label>
-                <Input value={form.extremidad_afectada || ''} onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange('extremidad_afectada', e.target.value)} />
+                <Select
+                  value={form.extremidad_afectada || ''}
+                  onChange={(e: React.ChangeEvent<HTMLSelectElement>) => { handleChange('extremidad_afectada', e.target.value); clearFieldError('extremidad_afectada'); }}
+                >
+                  <option value="">{t('profile.selectAffectedLimb')}</option>
+                  {SELECT_OPTIONS.affectedLimb.map((opt) => (
+                    <option key={opt.value} value={opt.value}>{opt.label}</option>
+                  ))}
+                </Select>
+                {validationErrors.extremidad_afectada && <p className="text-xs text-red-600 dark:text-red-400">{validationErrors.extremidad_afectada}</p>}
               </div>
               <div className="space-y-2">
                 <Label>ROM objetivo</Label>
-                <Input value={form.rom_objetivo || ''} onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange('rom_objetivo', e.target.value)} />
+                <Input
+                  type="number"
+                  value={form.rom_objetivo || ''}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => { handleChange('rom_objetivo', e.target.value); clearFieldError('rom_objetivo'); }}
+                  placeholder={PLACEHOLDERS.romObjetivo}
+                  min={0}
+                  max={180}
+                />
+                {validationErrors.rom_objetivo && <p className="text-xs text-red-600 dark:text-red-400">{validationErrors.rom_objetivo}</p>}
               </div>
               <div className="space-y-2">
                 <Label>Frecuencia de sesiones</Label>
-                <Input value={form.frecuencia_sesiones || ''} onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange('frecuencia_sesiones', e.target.value)} />
+                <Input
+                  type="number"
+                  value={form.frecuencia_sesiones || ''}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => { handleChange('frecuencia_sesiones', e.target.value); clearFieldError('frecuencia_sesiones'); }}
+                  placeholder={PLACEHOLDERS.frecuenciaSesiones}
+                  min={1}
+                  max={7}
+                />
+                {validationErrors.frecuencia_sesiones && <p className="text-xs text-red-600 dark:text-red-400">{validationErrors.frecuencia_sesiones}</p>}
               </div>
               <div className="space-y-2">
                 <Label>Médico remitente</Label>
-                <Input value={form.medico_remitente || ''} onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange('medico_remitente', e.target.value)} />
+                <Input
+                  value={form.medico_remitente || ''}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => { handleChange('medico_remitente', e.target.value); clearFieldError('medico_remitente'); }}
+                  placeholder={PLACEHOLDERS.medicoRemitente}
+                />
+                {validationErrors.medico_remitente && <p className="text-xs text-red-600 dark:text-red-400">{validationErrors.medico_remitente}</p>}
               </div>
             </div>
           </section>
@@ -182,27 +275,73 @@ export function EditPatientModal({ open, onClose, patient, onSaved }: EditPatien
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               <div className="space-y-2">
                 <Label>Teléfono</Label>
-                <Input value={form.telefono || ''} onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange('telefono', e.target.value)} />
+                <Input
+                  type="tel"
+                  value={form.telefono || ''}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => { handleChange('telefono', e.target.value); clearFieldError('telefono'); }}
+                  placeholder={PLACEHOLDERS.telefono}
+                />
+                {validationErrors.telefono && <p className="text-xs text-red-600 dark:text-red-400">{validationErrors.telefono}</p>}
               </div>
               <div className="space-y-2">
                 <Label>Tipo de sangre</Label>
-                <Input value={form.tipo_sangre || ''} onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange('tipo_sangre', e.target.value)} />
+                <Select
+                  value={form.tipo_sangre || ''}
+                  onChange={(e: React.ChangeEvent<HTMLSelectElement>) => { handleChange('tipo_sangre', e.target.value); clearFieldError('tipo_sangre'); }}
+                >
+                  <option value="">{t('profile.selectBloodType')}</option>
+                  {SELECT_OPTIONS.bloodType.map((opt) => (
+                    <option key={opt.value} value={opt.value}>{opt.label}</option>
+                  ))}
+                </Select>
+                {validationErrors.tipo_sangre && <p className="text-xs text-red-600 dark:text-red-400">{validationErrors.tipo_sangre}</p>}
               </div>
               <div className="space-y-2">
                 <Label>Ocupación</Label>
-                <Input value={form.ocupacion || ''} onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange('ocupacion', e.target.value)} />
+                <Input
+                  value={form.ocupacion || ''}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => { handleChange('ocupacion', e.target.value); clearFieldError('ocupacion'); }}
+                  placeholder={PLACEHOLDERS.ocupacion}
+                />
+                {validationErrors.ocupacion && <p className="text-xs text-red-600 dark:text-red-400">{validationErrors.ocupacion}</p>}
               </div>
               <div className="space-y-2">
                 <Label>Nivel de actividad</Label>
-                <Input value={form.nivel_actividad || ''} onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange('nivel_actividad', e.target.value)} />
+                <Select
+                  value={form.nivel_actividad || ''}
+                  onChange={(e: React.ChangeEvent<HTMLSelectElement>) => { handleChange('nivel_actividad', e.target.value); clearFieldError('nivel_actividad'); }}
+                >
+                  <option value="">{t('profile.selectActivityLevel')}</option>
+                  {SELECT_OPTIONS.activityLevel.map((opt) => (
+                    <option key={opt.value} value={opt.value}>{opt.label}</option>
+                  ))}
+                </Select>
+                {validationErrors.nivel_actividad && <p className="text-xs text-red-600 dark:text-red-400">{validationErrors.nivel_actividad}</p>}
               </div>
               <div className="space-y-2">
                 <Label>Estatura (cm)</Label>
-                <Input type="number" value={form.estatura_cm ?? ''} onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange('estatura_cm', e.target.value)} />
+                <Input
+                  type="number"
+                  value={form.estatura_cm ?? ''}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => { handleChange('estatura_cm', e.target.value); clearFieldError('estatura_cm'); }}
+                  min={50}
+                  max={250}
+                  placeholder={PLACEHOLDERS.estaturaCm}
+                />
+                {validationErrors.estatura_cm && <p className="text-xs text-red-600 dark:text-red-400">{validationErrors.estatura_cm}</p>}
               </div>
               <div className="space-y-2">
                 <Label>Peso (kg)</Label>
-                <Input type="number" value={form.peso_kg ?? ''} onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange('peso_kg', e.target.value)} />
+                <Input
+                  type="number"
+                  step="0.1"
+                  value={form.peso_kg ?? ''}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => { handleChange('peso_kg', e.target.value); clearFieldError('peso_kg'); }}
+                  min={2}
+                  max={300}
+                  placeholder={PLACEHOLDERS.pesoKg}
+                />
+                {validationErrors.peso_kg && <p className="text-xs text-red-600 dark:text-red-400">{validationErrors.peso_kg}</p>}
               </div>
             </div>
           </section>
@@ -212,11 +351,22 @@ export function EditPatientModal({ open, onClose, patient, onSaved }: EditPatien
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>Nombre</Label>
-                <Input value={form.contacto_emergencia_nombre || ''} onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange('contacto_emergencia_nombre', e.target.value)} />
+                <Input
+                  value={form.contacto_emergencia_nombre || ''}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => { handleChange('contacto_emergencia_nombre', e.target.value); clearFieldError('contacto_emergencia_nombre'); }}
+                  placeholder={PLACEHOLDERS.contactoEmergenciaNombre}
+                />
+                {validationErrors.contacto_emergencia_nombre && <p className="text-xs text-red-600 dark:text-red-400">{validationErrors.contacto_emergencia_nombre}</p>}
               </div>
               <div className="space-y-2">
                 <Label>Teléfono</Label>
-                <Input value={form.contacto_emergencia_telefono || ''} onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange('contacto_emergencia_telefono', e.target.value)} />
+                <Input
+                  type="tel"
+                  value={form.contacto_emergencia_telefono || ''}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => { handleChange('contacto_emergencia_telefono', e.target.value); clearFieldError('contacto_emergencia_telefono'); }}
+                  placeholder={PLACEHOLDERS.contactoEmergenciaTelefono}
+                />
+                {validationErrors.contacto_emergencia_telefono && <p className="text-xs text-red-600 dark:text-red-400">{validationErrors.contacto_emergencia_telefono}</p>}
               </div>
             </div>
           </section>
@@ -226,15 +376,32 @@ export function EditPatientModal({ open, onClose, patient, onSaved }: EditPatien
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="space-y-2">
                 <Label>Nombre</Label>
-                <Input value={form.tutor_nombre || ''} onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange('tutor_nombre', e.target.value)} />
+                <Input
+                  value={form.tutor_nombre || ''}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => { handleChange('tutor_nombre', e.target.value); clearFieldError('tutor_nombre'); }}
+                  placeholder={PLACEHOLDERS.tutorNombre}
+                />
+                {validationErrors.tutor_nombre && <p className="text-xs text-red-600 dark:text-red-400">{validationErrors.tutor_nombre}</p>}
               </div>
               <div className="space-y-2">
                 <Label>Teléfono</Label>
-                <Input value={form.tutor_telefono || ''} onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange('tutor_telefono', e.target.value)} />
+                <Input
+                  type="tel"
+                  value={form.tutor_telefono || ''}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => { handleChange('tutor_telefono', e.target.value); clearFieldError('tutor_telefono'); }}
+                  placeholder={PLACEHOLDERS.tutorTelefono}
+                />
+                {validationErrors.tutor_telefono && <p className="text-xs text-red-600 dark:text-red-400">{validationErrors.tutor_telefono}</p>}
               </div>
               <div className="space-y-2">
                 <Label>Email</Label>
-                <Input value={form.tutor_email || ''} onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange('tutor_email', e.target.value)} />
+                <Input
+                  type="email"
+                  value={form.tutor_email || ''}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => { handleChange('tutor_email', e.target.value); clearFieldError('tutor_email'); }}
+                  placeholder={PLACEHOLDERS.tutorEmail}
+                />
+                {validationErrors.tutor_email && <p className="text-xs text-red-600 dark:text-red-400">{validationErrors.tutor_email}</p>}
               </div>
             </div>
           </section>

@@ -45,6 +45,7 @@ export interface Profile {
   tutor_telefono?: string | null;
   tutor_email?: string | null;
   consentimiento?: boolean | null;
+  email_verified_at?: string | null;
 }
 
 export interface Ejercicio {

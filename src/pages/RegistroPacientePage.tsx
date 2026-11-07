@@ -17,6 +17,11 @@ import { useToast } from '../components/ui/toastApi';
 import { TurnstileWidget, type TurnstileWidgetRef } from '../components/auth/TurnstileWidget';
 import { Button } from '../components/ui/Button';
 import { OtpInput } from '../components/ui/OtpInput';
+import {
+  patientRegisterSchema,
+  formatZodError,
+  PLACEHOLDERS,
+} from '../lib/validation';
 
 export function RegistroPacientePage() {
   const { t } = useTranslation();
@@ -44,6 +49,9 @@ export function RegistroPacientePage() {
 
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const turnstileRef = useRef<TurnstileWidgetRef>(null);
+
+  // Validation errors
+  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
 
   // Validate Token against Supabase activation_tokens table
   const validateToken = useCallback(async (tokenToTest: string) => {
@@ -82,7 +90,7 @@ export function RegistroPacientePage() {
         return;
       }
 
-      if (tokenData.used) {
+      if (tokenData.is_used) {
         setTokenError('Este código de acceso ya fue utilizado anteriormente');
         setTokenValidated(false);
         return;
@@ -140,6 +148,10 @@ export function RegistroPacientePage() {
     }
   }, [queryToken, validateToken]);
 
+  const clearFieldError = (field: string) => {
+    setValidationErrors(prev => { const n = { ...prev }; delete n[field]; return n; });
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -148,18 +160,19 @@ export function RegistroPacientePage() {
       return;
     }
 
-    if (password.length < 6) {
-      toast.error('La contraseña debe tener al menos 6 caracteres');
-      return;
-    }
+    // Validate form with Zod
+    const formData = {
+      token,
+      email,
+      password,
+      confirmPassword,
+      fullName: fullName || undefined,
+      turnstileToken,
+    };
 
-    if (password !== confirmPassword) {
-      toast.error('Las contraseñas no coinciden');
-      return;
-    }
-
-    if (!turnstileToken) {
-      toast.error('Por favor completa la verificación de seguridad Cloudflare');
+    const result = patientRegisterSchema.safeParse(formData);
+    if (!result.success) {
+      setValidationErrors(formatZodError(result.error));
       return;
     }
 
@@ -232,6 +245,7 @@ export function RegistroPacientePage() {
                 onChange={(val) => {
                   setToken(val);
                   setTokenError(null);
+                  clearFieldError('token');
                 }}
                 onComplete={(fullCode) => {
                   validateToken(fullCode);
@@ -239,7 +253,7 @@ export function RegistroPacientePage() {
                 error={Boolean(tokenError)}
               />
             </div>
-            
+
             <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
               {!tokenValidated ? (
                 <Button
@@ -280,6 +294,13 @@ export function RegistroPacientePage() {
             </div>
           )}
 
+          {validationErrors.token && (
+            <div className="mt-2 flex items-center gap-1.5 text-xs text-red-600 dark:text-red-400 font-medium">
+              <AlertCircle size={14} />
+              <span>{validationErrors.token}</span>
+            </div>
+          )}
+
           {tokenValidated && (
             <div className="mt-3 p-3 rounded-xl bg-teal-50 dark:bg-teal-950/40 border border-teal-200 dark:border-teal-800 text-xs text-teal-800 dark:text-teal-200 space-y-1">
               <div className="flex items-center gap-1.5 font-bold">
@@ -311,10 +332,15 @@ export function RegistroPacientePage() {
               type="text"
               required
               value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
-              placeholder={t('reg.namePh')}
-              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500"
+              onChange={(e) => { setFullName(e.target.value); clearFieldError('fullName'); }}
+              placeholder={PLACEHOLDERS.fullName}
+              className={`w-full px-4 py-2.5 rounded-xl border bg-slate-50 dark:bg-slate-800 text-xs text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 ${
+                validationErrors.fullName ? 'border-red-500 focus:border-red-500' : 'border-slate-200 dark:border-slate-700'
+              }`}
             />
+            {validationErrors.fullName && (
+              <p className="mt-1 text-xs text-red-600 dark:text-red-400">{validationErrors.fullName}</p>
+            )}
           </div>
 
           <div>
@@ -327,11 +353,16 @@ export function RegistroPacientePage() {
                 type="email"
                 required
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder={t('reg.emailPh')}
-                className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500"
+                onChange={(e) => { setEmail(e.target.value); clearFieldError('email'); }}
+                placeholder={PLACEHOLDERS.email}
+                className={`w-full pl-10 pr-4 py-2.5 rounded-xl border bg-slate-50 dark:bg-slate-800 text-xs text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 ${
+                  validationErrors.email ? 'border-red-500 focus:border-red-500' : 'border-slate-200 dark:border-slate-700'
+                }`}
               />
             </div>
+            {validationErrors.email && (
+              <p className="mt-1 text-xs text-red-600 dark:text-red-400">{validationErrors.email}</p>
+            )}
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -345,9 +376,11 @@ export function RegistroPacientePage() {
                   type={showPassword ? 'text' : 'password'}
                   required
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder={t('reg.passPh')}
-                  className="w-full pl-10 pr-9 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500"
+                  onChange={(e) => { setPassword(e.target.value); clearFieldError('password'); }}
+                  placeholder={PLACEHOLDERS.password}
+                  className={`w-full pl-10 pr-9 py-2.5 rounded-xl border bg-slate-50 dark:bg-slate-800 text-xs text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 ${
+                    validationErrors.password ? 'border-red-500 focus:border-red-500' : 'border-slate-200 dark:border-slate-700'
+                  }`}
                 />
                 <button
                   type="button"
@@ -357,6 +390,9 @@ export function RegistroPacientePage() {
                   {showPassword ? <EyeOff size={14} /> : <Eye size={14} />}
                 </button>
               </div>
+              {validationErrors.password && (
+                <p className="mt-1 text-xs text-red-600 dark:text-red-400">{validationErrors.password}</p>
+              )}
             </div>
 
             <div>
@@ -369,11 +405,16 @@ export function RegistroPacientePage() {
                   type={showPassword ? 'text' : 'password'}
                   required
                   value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  placeholder={t('reg.pass2Ph')}
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500"
+                  onChange={(e) => { setConfirmPassword(e.target.value); clearFieldError('confirmPassword'); }}
+                  placeholder={PLACEHOLDERS.confirmPassword}
+                  className={`w-full pl-10 pr-4 py-2.5 rounded-xl border bg-slate-50 dark:bg-slate-800 text-xs text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 ${
+                    validationErrors.confirmPassword ? 'border-red-500 focus:border-red-500' : 'border-slate-200 dark:border-slate-700'
+                  }`}
                 />
               </div>
+              {validationErrors.confirmPassword && (
+                <p className="mt-1 text-xs text-red-600 dark:text-red-400">{validationErrors.confirmPassword}</p>
+              )}
             </div>
           </div>
 

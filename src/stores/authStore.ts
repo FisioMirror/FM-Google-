@@ -89,6 +89,10 @@ interface AuthState {
   updatePassword: (currentPassword: string, newPassword: string) => Promise<{ success: boolean; error?: string }>;
   signOut: () => void;
   clearError: () => void;
+  // Email verification
+  isEmailVerified: () => boolean;
+  resendVerificationEmail: (email: string) => Promise<{ success: boolean; error?: string }>;
+  checkEmailVerification: (email: string) => Promise<boolean>;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -175,16 +179,21 @@ export const useAuthStore = create<AuthState>()(
               const userEmail = data.email as string | null;
               let profile = userId ? await fetchProfileById(userId) : null;
               if (!profile && userEmail) profile = await fetchProfileByEmail(userEmail);
-              if (profile) {
-                logAuthEvent('AUTH_LOGIN_SUCCESS', {
-                  email: cleanEmail,
-                  userId: profile.id,
-                  role: profile.role,
-                  success: true,
-                }).catch(() => {});
-                set({ user: profile, loading: false });
-                return true;
-              }
+if (profile) {
+            // Check email verification for non-demo users
+            if (!isDemoAccount(profile) && profile.email_verified_at === null) {
+              set({ error: 'Por favor verifica tu correo electrónico antes de iniciar sesión.', loading: false });
+              return false;
+            }
+            logAuthEvent('AUTH_LOGIN_SUCCESS', {
+              email: cleanEmail,
+              userId: profile.id,
+              role: profile.role,
+              success: true,
+            }).catch(() => {});
+            set({ user: profile, loading: false });
+            return true;
+          }
             }
           } catch (edgeErr) {
             console.warn('Edge function auth-login error, fallback to direct DB:', edgeErr);
@@ -504,6 +513,12 @@ export const useAuthStore = create<AuthState>()(
             return false;
           }
 
+          // Check email verification for non-demo users
+          if (!isDemoAccount(profile) && profile.email_verified_at === null) {
+            set({ error: 'Por favor verifica tu correo electrónico antes de iniciar sesión.', loading: false });
+            return false;
+          }
+
           const { password_hash: _, ...userWithoutPassword } = profile;
           set({ user: userWithoutPassword as Profile, loading: false });
           return true;
@@ -580,6 +595,7 @@ export const useAuthStore = create<AuthState>()(
                 email: cleanEmail,
                 password_hash: passwordHash,
                 is_active: true,
+                email_verified_at: new Date().toISOString(),
                 ...(fullName ? { full_name: fullName } : {}),
                 updated_at: new Date().toISOString(),
               })
@@ -603,6 +619,7 @@ export const useAuthStore = create<AuthState>()(
                 full_name: fullName || 'Paciente FisioMirror',
                 role: 'paciente',
                 is_active: true,
+                email_verified_at: new Date().toISOString(),
               });
 
             if (insErr) {
@@ -853,6 +870,47 @@ export const useAuthStore = create<AuthState>()(
       },
 
       clearError: () => set({ error: null }),
+
+      // Email verification methods
+      isEmailVerified: () => {
+        const user = get().user;
+        if (!user) return false;
+        // Check if user has email_verified_at or similar field
+        // For custom auth, we check if the user was created via email verification flow
+        return (user as any).email_verified_at !== null && (user as any).email_verified_at !== undefined;
+      },
+
+      resendVerificationEmail: async (email: string) => {
+        try {
+          const cleanEmail = email.toLowerCase().trim();
+          const res = await fetch('/api/send-verification-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: cleanEmail }),
+          });
+          const data = await res.json();
+          if (!res.ok) {
+            return { success: false, error: data.error || 'Error al enviar email de verificación' };
+          }
+          return { success: true };
+        } catch (err) {
+          return { success: false, error: (err as Error).message || 'Error de conexión' };
+        }
+      },
+
+      checkEmailVerification: async (email: string) => {
+        try {
+          const cleanEmail = email.toLowerCase().trim();
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('email_verified_at')
+            .eq('email', cleanEmail)
+            .maybeSingle();
+          return profile?.email_verified_at !== null && profile?.email_verified_at !== undefined;
+        } catch {
+          return false;
+        }
+      },
     }),
     {
       name: STORAGE_KEY,
