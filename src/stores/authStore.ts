@@ -9,6 +9,32 @@ import { logAuthEvent } from '../lib/auditService';
 const STORAGE_KEY = 'fisiomirror-auth';
 const SESSION_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000;
 
+// Custom storage that handles localStorage errors (private browsing, etc.)
+// Custom storage that handles localStorage errors (private browsing, etc.)
+const safeStorage = {
+  getItem: (name: string): string | null => {
+    try {
+      return localStorage.getItem(name);
+    } catch {
+      return null;
+    }
+  },
+  setItem: (name: string, value: string): void => {
+    try {
+      localStorage.setItem(name, value);
+    } catch {
+      // Ignore quota exceeded or private browsing errors
+    }
+  },
+  removeItem: (name: string): void => {
+    try {
+      localStorage.removeItem(name);
+    } catch {
+      // Ignore
+    }
+  },
+};
+
 const functionsUrl = `${supabaseUrl}/functions/v1`;
 const SALT = 'fisiomirror-salt-2024';
 
@@ -104,47 +130,66 @@ export const useAuthStore = create<AuthState>()(
       initialized: false,
 
       initialize: async () => {
+        // Synchronous fallback: ensure initialized is true immediately
+        // This prevents blank screen if async initialization fails
+        set({ initialized: true });
+
         try {
-          const raw = localStorage.getItem(STORAGE_KEY);
+          let raw: string | null = null;
+          try {
+            raw = localStorage.getItem(STORAGE_KEY);
+          } catch {
+            // localStorage may throw in private browsing mode
+            raw = null;
+          }
+
           if (!raw) {
-            set({ initialized: true });
             return;
           }
-          const parsed = JSON.parse(raw);
+
+          let parsed: { state?: { user?: Profile; storedAt?: number } } | null = null;
+          try {
+            parsed = JSON.parse(raw);
+          } catch {
+            // Corrupted localStorage data
+            localStorage.removeItem(STORAGE_KEY);
+            return;
+          }
+
           const storedAt = parsed?.state?.storedAt as number | undefined;
           if (storedAt && Date.now() - storedAt > SESSION_MAX_AGE_MS) {
             localStorage.removeItem(STORAGE_KEY);
-            set({ user: null, initialized: true });
+            set({ user: null });
             return;
           }
+
           const storedUser = parsed?.state?.user as Profile | null;
-          if (storedUser) {
-            if (storedUser.id === DEMO_PATIENT_PROFILE.id) {
-              set({ user: DEMO_PATIENT_PROFILE, initialized: true });
-              return;
-            }
-            if (storedUser.id === DEMO_FISIO_PROFILE.id) {
-              set({ user: DEMO_FISIO_PROFILE, initialized: true });
-              return;
-            }
-            set({ user: storedUser, initialized: true });
-            try {
-              const refreshed = await Promise.race([
-                fetchProfileById(storedUser.id),
-                new Promise<null>((resolve) => setTimeout(() => resolve(null), 3000)),
-              ]);
-              if (refreshed) set({ user: refreshed });
-            } catch {
-              // keep stored user
-            } finally {
-              // Ensure initialized is true even if refresh times out
-              set({ initialized: true });
-            }
-          } else {
-            set({ initialized: true });
+          if (!storedUser) {
+            return;
+          }
+
+          if (storedUser.id === DEMO_PATIENT_PROFILE.id) {
+            set({ user: DEMO_PATIENT_PROFILE });
+            return;
+          }
+          if (storedUser.id === DEMO_FISIO_PROFILE.id) {
+            set({ user: DEMO_FISIO_PROFILE });
+            return;
+          }
+
+          set({ user: storedUser });
+
+          try {
+            const refreshed = await Promise.race([
+              fetchProfileById(storedUser.id),
+              new Promise<null>((resolve) => setTimeout(() => resolve(null), 3000)),
+            ]);
+            if (refreshed) set({ user: refreshed });
+          } catch {
+            // keep stored user
           }
         } catch {
-          set({ initialized: true });
+          // Silently fail - initialized is already true
         }
       },
 
@@ -917,10 +962,11 @@ if (profile) {
     }),
     {
       name: STORAGE_KEY,
+      storage: safeStorage as any,
       partialize: (state) => ({
         user: state.user,
         storedAt: Date.now(),
-      }),
+      }) as unknown as AuthState,
     },
   ),
 );
