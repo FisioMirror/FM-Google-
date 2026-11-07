@@ -25,45 +25,41 @@ export function QuickVoiceSelector({
   const [fishKey, setFishKeyState] = useState<string>('');
   const [isPlayingTest, setIsPlayingTest] = useState(false);
   const triggerRef = useRef<HTMLButtonElement>(null);
-  const [isDesktop, setIsDesktop] = useState(
-    () => typeof window !== 'undefined' && window.matchMedia('(min-width: 640px)').matches,
-  );
   const [panelPos, setPanelPos] = useState<{ top: number; left: number; width: number; maxHeight: number } | null>(null);
 
+  // El panel se portaliza a body y se ancla al trigger SIEMPRE (móvil incluido).
+  // Así no tapa la burbuja de PhysiGuide ni queda atrapado por el backdrop-filter.
   useEffect(() => {
-    const mq = window.matchMedia('(min-width: 640px)');
-    const onChange = () => setIsDesktop(mq.matches);
-    mq.addEventListener('change', onChange);
-    return () => mq.removeEventListener('change', onChange);
-  }, []);
-
-  // El panel se portaliza a body para no quedar recortado ni atrapado por el
-  // backdrop-filter del chat de PhysiGuide. En escritorio se ancla al trigger.
-  useEffect(() => {
-    if (!isOpen || !isDesktop) {
+    if (!isOpen) {
       setPanelPos(null);
       return;
     }
     const update = () => {
       const rect = triggerRef.current?.getBoundingClientRect();
       if (!rect) return;
-      const width = Math.min(384, window.innerWidth - 24);
-      const left = Math.max(12, Math.min(rect.right - width, window.innerWidth - width - 12));
-      const spaceBelow = window.innerHeight - rect.bottom - 12;
+      const vw = window.visualViewport?.width ?? window.innerWidth;
+      const vh = window.visualViewport?.height ?? window.innerHeight;
+      const width = Math.min(384, vw - 24);
+      const left = Math.max(12, Math.min(rect.left, vw - width - 12));
+      const spaceBelow = vh - rect.bottom - 12;
       const spaceAbove = rect.top - 12;
-      const placeAbove = spaceBelow < 260 && spaceAbove > spaceBelow;
-      const maxHeight = Math.max(200, Math.min(544, placeAbove ? spaceAbove : spaceBelow));
-      const top = placeAbove ? Math.max(12, rect.top - maxHeight - 8) : rect.bottom + 8;
+      const placeAbove = spaceBelow < 360 && spaceAbove > spaceBelow;
+      const maxHeight = Math.max(220, Math.min(560, placeAbove ? spaceAbove : spaceBelow));
+      const top = placeAbove
+        ? Math.max(12, rect.top - maxHeight - 8)
+        : Math.min(rect.bottom + 8, vh - maxHeight - 12);
       setPanelPos({ top, left, width, maxHeight });
     };
     update();
     window.addEventListener('resize', update);
     window.addEventListener('scroll', update, true);
+    window.visualViewport?.addEventListener('resize', update);
     return () => {
       window.removeEventListener('resize', update);
       window.removeEventListener('scroll', update, true);
+      window.visualViewport?.removeEventListener('resize', update);
     };
-  }, [isOpen, isDesktop]);
+  }, [isOpen]);
 
   useEffect(() => {
     setGenderState(getVoiceGender());
@@ -158,7 +154,7 @@ export function QuickVoiceSelector({
           <>
             {/* Backdrop for click outside */}
             <div
-              className="fixed inset-0 z-[190]"
+              className="fixed inset-0 z-[210] bg-slate-950/20"
               onClick={() => {
                 setIsOpen(false);
                 if (isPlayingTest) {
@@ -173,16 +169,8 @@ export function QuickVoiceSelector({
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 8, scale: 0.95 }}
               transition={{ duration: 0.2, ease: 'easeOut' }}
-              style={
-                isDesktop && panelPos
-                  ? { top: panelPos.top, left: panelPos.left, width: panelPos.width, maxHeight: panelPos.maxHeight }
-                  : undefined
-              }
-              className={
-                isDesktop
-                  ? 'fixed z-[200] overflow-y-auto overflow-x-hidden overscroll-contain rounded-3xl bg-surface dark:bg-surface-container border border-outline-variant/40 dark:border-outline-variant/35 shadow-2xl p-5 text-on-surface'
-                  : 'fixed inset-x-3 bottom-3 z-[200] max-h-[min(75vh,34rem)] w-auto overflow-y-auto overflow-x-hidden overscroll-contain rounded-3xl bg-surface dark:bg-surface-container border border-outline-variant/40 dark:border-outline-variant/35 shadow-2xl p-4 pb-[max(1rem,env(safe-area-inset-bottom))] text-on-surface'
-              }
+              style={panelPos ?? { top: 12, left: 12, width: Math.min(384, window.innerWidth - 24), maxHeight: 560 }}
+              className="fixed z-[220] overflow-y-auto overflow-x-hidden overscroll-contain rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 shadow-2xl p-4 sm:p-5 text-on-surface"
             >
               {/* Header */}
               <div className="flex items-center justify-between pb-3 border-b border-outline-variant/25 dark:border-outline-variant/25">
@@ -240,7 +228,7 @@ export function QuickVoiceSelector({
                       {gender === 'female' && <Check className="size-3.5 text-teal-600 dark:text-teal-400" />}
                     </div>
                     <p className="text-[10px] text-on-surface-variant leading-tight break-words">
-                      Femenina suave, articulada y motivadora.
+                      {t('qvs.femaleDesc','Femenina suave, articulada y motivadora.')}
                     </p>
                   </button>
                 </div>
@@ -290,10 +278,10 @@ export function QuickVoiceSelector({
                       <div className="flex items-center gap-1.5">
                         <span className="text-xs font-bold">Fish Audio S2.1 Pro</span>
                         <span className="text-[9px] font-bold px-1.5 py-0.2 rounded-full bg-emerald-500/20 text-emerald-700 dark:text-emerald-300">
-                          Predeterminada
+                          {t('qvs.defaultBadge','Predeterminada')}
                         </span>
                         <span className="text-[9px] font-bold px-1.5 py-0.2 rounded-full bg-blue-500/20 text-blue-700 dark:text-blue-300">
-                          Clave Opcional
+                          {t('qvs.optionalKeyBadge','Clave opcional')}
                         </span>
                       </div>
                       <p className="text-[11px] text-on-surface-variant">{t('qvs.fishDesc')}</p>
@@ -355,7 +343,7 @@ export function QuickVoiceSelector({
                   <span className="flex items-center gap-1.5">
                     <Sliders className="size-3.5 text-teal-600 dark:text-teal-400" />{t('qvs.articulationRate')}</span>
                   <span className="text-[11px] font-mono text-teal-600 dark:text-teal-400 font-bold">
-                    {speed === 0.9 ? '0.9x (Pausado)' : speed === 1.1 ? '1.1x (Ágil)' : '1.0x (Normal)'}
+                    {speed === 0.9 ? t('qvs.speedTherapy','0.9x Terapia') : speed === 1.1 ? t('qvs.speedBrisk','1.1x Ágil') : t('qvs.speedStandard','1.0x Estándar')}
                   </span>
                 </label>
                 <div className="grid grid-cols-3 gap-1.5">
@@ -392,7 +380,7 @@ export function QuickVoiceSelector({
                   }`}
                 >
                   {isPlayingTest ? <Square className="size-3.5" /> : <Play className="size-3.5" />}
-                  <span>{isPlayingTest ? 'Detener Prueba' : 'Probar Voz'}</span>
+                  <span>{isPlayingTest ? t('qvs.stopTest','Detener') : t('qvs.testVoice','Probar voz')}</span>
                 </button>
 
                 <button
@@ -406,7 +394,7 @@ export function QuickVoiceSelector({
                   }}
                   className="px-4 py-2 rounded-xl text-xs font-bold bg-teal-600 hover:bg-teal-700 text-white transition-colors cursor-pointer"
                 >
-                  Aplicar
+                  {t('qvs.apply','Aplicar')}
                 </button>
               </div>
             </motion.div>

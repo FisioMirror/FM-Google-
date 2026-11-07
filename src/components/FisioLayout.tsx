@@ -450,7 +450,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
   const desktopSidebar = (
     <aside
       data-sidebar="left"
-      className="fixed left-0 top-0 h-[100dvh] flex flex-col z-30 bg-gradient-to-b from-white/90 via-sky-50/30 to-surface/90 dark:from-slate-900 dark:via-slate-900/95 dark:to-slate-950 border-r border-sky-200/50 dark:border-slate-800 text-slate-900 dark:text-slate-200 transition-all duration-300 overflow-hidden backdrop-blur-xl"
+      className="fixed left-0 top-0 h-[100dvh] flex flex-col z-30 bg-white dark:bg-slate-900 border-r border-slate-200/70 dark:border-slate-800 text-slate-900 dark:text-slate-200 transition-all duration-300 overflow-hidden"
       style={{ width: `${sidebarWidth}px` }}
     >
       {sidebarContent(sidebarCollapsed, { showToggle: true })}
@@ -485,7 +485,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
               exit={{ x: '-100%' }}
               transition={{ type: 'spring', damping: 28, stiffness: 320 }}
               onClick={(e) => e.stopPropagation()}
-              className="h-full w-72 max-w-[85vw] flex flex-col bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl border-r border-sky-200/50 dark:border-slate-800 text-slate-900 dark:text-slate-100 rounded-r-3xl shadow-2xl overflow-hidden"
+              className="h-full w-72 max-w-[85vw] flex flex-col bg-white dark:bg-slate-900 border-r border-slate-200/70 dark:border-slate-800 text-slate-900 dark:text-slate-100 rounded-r-3xl shadow-2xl overflow-hidden"
             >
               <div className="p-4 flex items-center justify-between border-b border-sky-100/60 dark:border-slate-800">
                 <div className="flex items-center gap-3">
@@ -513,7 +513,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
 
       {/* Main content */}
       <main className="flex-1 flex flex-col h-full overflow-y-auto overscroll-contain lg:ml-[var(--fisio-sidebar-w)]" data-scroll-root>
-        <header className="h-16 w-full min-w-0 max-w-full glass-panel sticky top-0 z-30 flex items-center justify-between px-3 sm:px-6 gap-2">
+        <header className="h-16 w-full min-w-0 max-w-full bg-white dark:bg-slate-900 sticky top-0 z-30 flex items-center justify-between px-3 sm:px-6 gap-2 border-b border-slate-200/80 dark:border-slate-800 shadow-sm">
           <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
             <button
               onClick={() => setSidebarOpen(true)}

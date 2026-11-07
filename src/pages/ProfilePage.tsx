@@ -36,6 +36,7 @@ export function ProfilePage() {
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   // ---- Avatar upload (vista previa antes de guardar) ----
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+  const [avatarFile, setAvatarFile] = useState<File | Blob | null>(null);
   const [avatarUploading, setAvatarUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [legalModal, setLegalModal] = useState<LegalDocType | null>(null);
@@ -200,8 +201,9 @@ export function ProfilePage() {
         return;
       }
       // 4. Generar vista previa local (sin subir).
-      const previewUrl = URL.createObjectURL(compressed);
-      setAvatarPreview(previewUrl);
+      if (avatarPreview) URL.revokeObjectURL(avatarPreview);
+      setAvatarFile(compressed);
+      setAvatarPreview(URL.createObjectURL(compressed));
     } catch (err) {
       const msg = (err as Error)?.message || '';
       if (/corrupta|no se puede cargar/i.test(msg)) {
@@ -216,23 +218,20 @@ export function ProfilePage() {
 
   // Sube la imagen previamente seleccionada al bucket 'avatars' y guarda la URL.
   const handleAvatarSave = async () => {
-    if (!user?.id || !avatarPreview) return;
+    if (!user?.id || !avatarFile) return;
     setAvatarUploading(true);
     try {
-      // Recuperar el File desde la URL de previsualización (object URL).
-      const resp = await fetch(avatarPreview);
-      const blob = await resp.blob();
-      const file = new File([blob], 'avatar.jpg', { type: 'image/jpeg' });
-
       const path = `${user.id}/avatar.jpg`;
-      const { error: upErr } = await supabase.storage.from('avatars').upload(path, file, {
+      const { error: upErr } = await supabase.storage.from('avatars').upload(path, avatarFile, {
         upsert: true,
         contentType: 'image/jpeg',
+        cacheControl: '3600',
       });
       if (upErr) throw upErr;
 
+      // cache-bust para que PWA/navegador no siga mostrando la versión vieja.
       const { data } = supabase.storage.from('avatars').getPublicUrl(path);
-      const publicUrl = data.publicUrl;
+      const publicUrl = `${data.publicUrl}?v=${Date.now()}`;
 
       const { error: updateErr } = await supabase
         .from('profiles')
@@ -264,7 +263,13 @@ export function ProfilePage() {
   const cancelAvatarPreview = () => {
     if (avatarPreview) URL.revokeObjectURL(avatarPreview);
     setAvatarPreview(null);
+    setAvatarFile(null);
   };
+
+  // Limpieza de la object URL si el componente se desmonta.
+  useEffect(() => () => {
+    if (avatarPreview) URL.revokeObjectURL(avatarPreview);
+  }, [avatarPreview]);
 
   return (
     <div className="space-y-6 overflow-x-hidden max-w-7xl mx-auto w-full">

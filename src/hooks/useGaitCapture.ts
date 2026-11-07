@@ -134,26 +134,36 @@ export function useGaitCapture() {
 
   const finish = useCallback(() => {
     const { l, r, t } = samplesRef.current;
-    if (l.length < 30) {
+    const seconds = t.length > 1 ? (t[t.length - 1] - t[0]) / 1000 : 0;
+    if (l.length < 20 || seconds < 3) {
       stop();
-      setError('Muestras insuficientes (menos de 3 s con ambas piernas visibles).');
+      setError('Muestras insuficientes: caminá al menos 3 segundos con ambas piernas visibles.');
       setStatus('error');
       return;
     }
     const excursion = (arr: number[]) => Math.max(...arr) - Math.min(...arr);
     const el = excursion(l);
     const er = excursion(r);
+    if (el < 5 || er < 5) {
+      stop();
+      setError('Movimiento insuficiente para calcular la simetría. Acercate y caminá con pasos amplios.');
+      setStatus('error');
+      return;
+    }
     const total = el + er;
     const leftRatio = total > 0 ? Math.round((el / total) * 100) : null;
     const rightRatio = leftRatio !== null ? 100 - leftRatio : null;
 
-    const seconds = (t[t.length - 1] - t[0]) / 1000;
-    let steps = 0;
-    for (let i = 1; i < l.length - 1; i++) {
-      const prev = l[i - 1];
-      const next = l[i + 1];
-      if (prev > l[i] && next > l[i] && l[i] < 140) steps++;
-    }
+    // Cada mínimo de rodilla equivale a un apoyo. Sumando ambas piernas se
+    // obtienen los pasos reales (antes solo se contaba una pierna).
+    const countMinima = (arr: number[]) => {
+      let n = 0;
+      for (let i = 1; i < arr.length - 1; i++) {
+        if (arr[i - 1] > arr[i] && arr[i + 1] > arr[i] && arr[i] < 150) n++;
+      }
+      return n;
+    };
+    const steps = countMinima(l) + countMinima(r);
     const cadenceSteps = seconds > 0 ? Math.round((steps / seconds) * 60) : null;
 
     setResult({ leftRatio, rightRatio, cadenceSteps });

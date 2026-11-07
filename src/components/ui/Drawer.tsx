@@ -112,7 +112,7 @@ export function DrawerBackdrop({ children, className }: { children: React.ReactN
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
             onClick={close}
-            className="fixed inset-0 bg-slate-950/60 backdrop-blur-sm"
+            className="fixed inset-0 bg-slate-950/70"
             aria-hidden="true"
           />
           {children}
@@ -175,7 +175,7 @@ export function DrawerDialog({
       onClick={(e) => e.stopPropagation()}
       className={cn(
         "pointer-events-auto relative w-screen max-w-md h-full flex flex-col",
-        "bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl",
+        "bg-white dark:bg-slate-900",
         "border-slate-200/80 dark:border-slate-800/80 shadow-2xl shadow-slate-950/20",
         roundedClasses[placement],
         className
@@ -282,6 +282,39 @@ Drawer.Heading = DrawerHeading;
 Drawer.Body = DrawerBody;
 Drawer.Footer = DrawerFooter;
 
+/** Slider clínico reutilizable con valor y unidad visibles. */
+function ClinicalRange({
+  label, value, min, max, suffix = '', hint, onChange,
+}: {
+  label: string;
+  value: number;
+  min: number;
+  max: number;
+  suffix?: string;
+  hint?: string;
+  onChange: (v: number) => void;
+}) {
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-1">
+        <label className="text-xs font-bold text-on-surface">{label}</label>
+        <span className="text-xs font-mono font-black text-primary">{value}{suffix}</span>
+      </div>
+      <input
+        type="range"
+        min={min}
+        max={max}
+        step={1}
+        value={value}
+        aria-label={label}
+        onChange={(e) => onChange(Number(e.target.value))}
+        className="w-full accent-teal-600"
+      />
+      {hint && <p className="text-[11px] text-muted">{hint}</p>}
+    </div>
+  );
+}
+
 /**
  * DrawerClinicalDemo con formulario clínico y métricas de fisioterapia en tiempo real
  */
@@ -303,6 +336,14 @@ export function DrawerClinicalDemo({ patientId, patientName }: DrawerClinicalDem
   const [maxReps, setMaxReps] = useState(12);
   const [focus, setFocus] = useState<'movilidad' | 'fuerza' | 'control' | 'dolor'>('movilidad');
   const [notes, setNotes] = useState('');
+  const [painEva, setPainEva] = useState(3);
+  const [romActual, setRomActual] = useState(90);
+  const [romObjetivo, setRomObjetivo] = useState(120);
+  const [progression, setProgression] = useState(50);
+  const [frequency, setFrequency] = useState(3);
+  const [duration, setDuration] = useState(30);
+  const [precautions, setPrecautions] = useState('');
+  const [nextReview, setNextReview] = useState('');
   const [saving, setSaving] = useState(false);
   const [lastAt, setLastAt] = useState<string | null>(null);
 
@@ -311,7 +352,7 @@ export function DrawerClinicalDemo({ patientId, patientName }: DrawerClinicalDem
     let alive = true;
     supabase
       .from('session_adjustments')
-      .select('tolerancia_grados, repeticiones_max, foco, notas, creado_en')
+      .select('tolerancia_grados, repeticiones_max, foco, notas, dolor_eva, rom_actual, rom_objetivo, progresion, frecuencia_semanal, duracion_min, precauciones, proxima_revision, creado_en')
       .eq('paciente_id', patientId)
       .order('creado_en', { ascending: false })
       .limit(1)
@@ -322,6 +363,14 @@ export function DrawerClinicalDemo({ patientId, patientName }: DrawerClinicalDem
         setMaxReps(data.repeticiones_max ?? 12);
         setFocus((data.foco as typeof focus) ?? 'movilidad');
         setNotes(data.notas ?? '');
+        setPainEva(data.dolor_eva ?? 3);
+        setRomActual(data.rom_actual ?? 90);
+        setRomObjetivo(data.rom_objetivo ?? 120);
+        setProgression(data.progresion ?? 50);
+        setFrequency(data.frecuencia_semanal ?? 3);
+        setDuration(data.duracion_min ?? 30);
+        setPrecautions(data.precauciones ?? '');
+        setNextReview(data.proxima_revision ?? '');
         setLastAt(data.creado_en ?? null);
       });
     return () => {
@@ -339,6 +388,14 @@ export function DrawerClinicalDemo({ patientId, patientName }: DrawerClinicalDem
       repeticiones_max: maxReps,
       foco: focus,
       notas: notes.trim() || null,
+      dolor_eva: painEva,
+      rom_actual: romActual,
+      rom_objetivo: romObjetivo,
+      progresion: progression,
+      frecuencia_semanal: frequency,
+      duracion_min: duration,
+      precauciones: precautions.trim() || null,
+      proxima_revision: nextReview || null,
     });
     setSaving(false);
     if (error) {
@@ -382,71 +439,102 @@ export function DrawerClinicalDemo({ patientId, patientName }: DrawerClinicalDem
               </Drawer.Header>
 
               <Drawer.Body className="space-y-5">
-                <div>
-                  <div className="flex items-center justify-between mb-1">
-                    <label className="text-xs font-bold text-on-surface">{t('sa.tolerance')}</label>
-                    <span className="text-xs font-mono font-black text-primary">{tolerance}°</span>
-                  </div>
-                  <input
-                    type="range"
-                    min={0}
-                    max={45}
-                    step={1}
-                    value={tolerance}
-                    aria-label={t('sa.tolerance')}
-                    onChange={(e) => setTolerance(Number(e.target.value))}
-                    className="w-full accent-teal-600"
-                  />
-                  <p className="text-[11px] text-muted">{t('sa.toleranceHint')}</p>
+                <div className="rounded-2xl border border-teal-500/25 bg-teal-500/5 p-3">
+                  <p className="text-[11px] font-bold uppercase tracking-wide text-teal-700 dark:text-teal-300 mb-1">
+                    {t('sa.clinicalSummary')}
+                  </p>
+                  <p className="text-xs text-on-surface leading-relaxed">
+                    {t('sa.summaryText', {
+                      pain: painEva,
+                      romActual,
+                      romObjetivo,
+                      prog: progression,
+                      freq: frequency,
+                      dur: duration,
+                    })}
+                  </p>
+                  {romObjetivo < romActual && (
+                    <p className="text-[11px] text-error mt-1">{t('sa.romWarning')}</p>
+                  )}
                 </div>
 
-                <div>
-                  <div className="flex items-center justify-between mb-1">
-                    <label className="text-xs font-bold text-on-surface">{t('sa.reps')}</label>
-                    <span className="text-xs font-mono font-black text-primary">{maxReps}</span>
-                  </div>
-                  <input
-                    type="range"
-                    min={1}
-                    max={30}
-                    step={1}
-                    value={maxReps}
-                    aria-label={t('sa.reps')}
-                    onChange={(e) => setMaxReps(Number(e.target.value))}
-                    className="w-full accent-teal-600"
-                  />
-                </div>
+                <section className="space-y-3">
+                  <h4 className="text-[11px] font-bold uppercase tracking-widest text-muted">
+                    {t('sa.assessment')}
+                  </h4>
+                  <ClinicalRange label={t('sa.pain')} value={painEva} min={0} max={10} suffix="/10" onChange={setPainEva} />
+                  <ClinicalRange label={t('sa.romActual')} value={romActual} min={0} max={180} suffix="°" onChange={setRomActual} />
+                  <ClinicalRange label={t('sa.romObjetivo')} value={romObjetivo} min={0} max={180} suffix="°" onChange={setRomObjetivo} />
+                </section>
 
-                <div>
-                  <label className="text-xs font-bold text-on-surface block mb-2">{t('sa.focus')}</label>
-                  <div className="grid grid-cols-2 gap-2">
-                    {(['movilidad', 'fuerza', 'control', 'dolor'] as const).map((f) => (
-                      <button
-                        key={f}
-                        type="button"
-                        onClick={() => setFocus(f)}
-                        className={`px-3 py-2 rounded-xl text-xs font-bold border transition-colors ${
-                          focus === f
-                            ? 'bg-teal-600 text-white border-teal-600'
-                            : 'bg-surface border-outline/20 text-on-surface hover:border-teal-500/40'
-                        }`}
-                      >
-                        {t(`sa.focus_${f}`)}
-                      </button>
-                    ))}
-                  </div>
-                </div>
+                <section className="space-y-3">
+                  <h4 className="text-[11px] font-bold uppercase tracking-widest text-muted">
+                    {t('sa.loadAndProgress')}
+                  </h4>
+                  <ClinicalRange label={t('sa.tolerance')} value={tolerance} min={0} max={45} suffix="°" hint={t('sa.toleranceHint')} onChange={setTolerance} />
+                  <ClinicalRange label={t('sa.reps')} value={maxReps} min={1} max={30} onChange={setMaxReps} />
+                  <ClinicalRange label={t('sa.progression')} value={progression} min={0} max={100} suffix="%" onChange={setProgression} />
+                  <ClinicalRange label={t('sa.frequency')} value={frequency} min={1} max={7} suffix="×" onChange={setFrequency} />
+                  <ClinicalRange label={t('sa.duration')} value={duration} min={5} max={120} suffix=" min" onChange={setDuration} />
+                </section>
 
-                <div>
-                  <label className="text-xs font-bold text-on-surface block mb-2">{t('sa.notes')}</label>
-                  <textarea
-                    value={notes}
-                    onChange={(e) => setNotes(e.target.value)}
-                    placeholder={t('sa.notesPlaceholder')}
-                    rows={3}
-                    className="w-full rounded-xl bg-surface border border-outline/20 px-3 py-2 text-sm text-on-surface"
-                  />
-                </div>
+                <section className="space-y-3">
+                  <h4 className="text-[11px] font-bold uppercase tracking-widest text-muted">
+                    {t('sa.safety')}
+                  </h4>
+                  <div>
+                    <label className="text-xs font-bold text-on-surface block mb-2">{t('sa.focus')}</label>
+                    <div className="grid grid-cols-2 gap-2">
+                      {(['movilidad', 'fuerza', 'control', 'dolor'] as const).map((f) => (
+                        <button
+                          key={f}
+                          type="button"
+                          onClick={() => setFocus(f)}
+                          className={`px-3 py-2 rounded-xl text-xs font-bold border transition-colors ${
+                            focus === f
+                              ? 'bg-teal-600 text-white border-teal-600'
+                              : 'bg-surface border-outline/20 text-on-surface hover:border-teal-500/40'
+                          }`}
+                        >
+                          {t(`sa.focus_${f}`)}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-bold text-on-surface block mb-2">{t('sa.precautions')}</label>
+                    <textarea
+                      value={precautions}
+                      onChange={(e) => setPrecautions(e.target.value)}
+                      placeholder={t('sa.precautionsPlaceholder')}
+                      rows={2}
+                      className="w-full rounded-xl bg-surface border border-outline/20 px-3 py-2 text-sm text-on-surface"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-bold text-on-surface block mb-2">{t('sa.notes')}</label>
+                    <textarea
+                      value={notes}
+                      onChange={(e) => setNotes(e.target.value)}
+                      placeholder={t('sa.notesPlaceholder')}
+                      rows={2}
+                      className="w-full rounded-xl bg-surface border border-outline/20 px-3 py-2 text-sm text-on-surface"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-bold text-on-surface block mb-2">{t('sa.nextReview')}</label>
+                    <input
+                      type="date"
+                      value={nextReview}
+                      min={new Date().toISOString().split('T')[0]}
+                      onChange={(e) => setNextReview(e.target.value)}
+                      className="w-full rounded-xl bg-surface border border-outline/20 px-3 py-2 text-sm text-on-surface"
+                    />
+                  </div>
+                </section>
 
                 {lastAt && (
                   <p className="text-[11px] text-muted">
@@ -458,7 +546,7 @@ export function DrawerClinicalDemo({ patientId, patientName }: DrawerClinicalDem
                   <Button variant="secondary" onClick={() => setOpen(false)}>
                     {t('common.cancel')}
                   </Button>
-                  <Button onClick={handleSave} disabled={saving || !patientId}>
+                  <Button onClick={handleSave} disabled={saving || !patientId || romObjetivo < romActual}>
                     {saving ? t('sa.saving') : t('sa.save')}
                   </Button>
                 </div>

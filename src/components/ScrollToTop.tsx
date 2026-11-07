@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowUp } from "lucide-react";
 
@@ -49,10 +49,18 @@ function scrollToTop() {
 export function ScrollToTop() {
   const { t } = useTranslation();
   const [visible, setVisible] = useState(false);
+  const visibleRef = useRef(false);
   const location = useLocation();
+
+  const updateVisible = (next: boolean) => {
+    if (visibleRef.current === next) return;
+    visibleRef.current = next;
+    setVisible(next);
+  };
 
   // Scroll to top on route change — targets the layout's scroll container
   useEffect(() => {
+    updateVisible(false);
     scrollToTop();
   }, [location.pathname]);
 
@@ -60,13 +68,16 @@ export function ScrollToTop() {
   // un hijo interno o la ventana, sin depender de que el nodo exista al montar.
   useEffect(() => {
     const readScrollTop = (target: EventTarget | null): number => {
-      if (target instanceof HTMLElement) return target.scrollTop;
-      return window.scrollY;
+      if (target instanceof HTMLElement && target !== document.documentElement && target !== document.body) {
+        return target.scrollTop;
+      }
+      const container = getScrollContainer();
+      return Math.max(window.scrollY, container?.scrollTop ?? 0);
     };
 
     const handleScroll = (event: Event) => {
       const top = readScrollTop(event.target);
-      setVisible(top > 280);
+      updateVisible(top > 280);
     };
 
     document.addEventListener("scroll", handleScroll, { capture: true, passive: true });
@@ -84,7 +95,7 @@ export function ScrollToTop() {
           whileTap={{ scale: 0.9 }}
           onClick={scrollToTop}
           aria-label={t('tr.volver_arriba')}
-          className="fixed bottom-[calc(6.5rem+env(safe-area-inset-bottom))] right-6 z-50 w-12 h-12 rounded-full bg-gradient-to-br from-secondary-400 to-accent text-white shadow-glass flex items-center justify-center"
+          className="fixed bottom-[calc(6.5rem+env(safe-area-inset-bottom))] right-6 z-[70] w-12 h-12 rounded-full bg-white dark:bg-slate-900 text-teal-700 dark:text-teal-300 border border-teal-600/30 shadow-xl flex items-center justify-center"
         >
           <ArrowUp className="w-5 h-5" />
         </motion.button>

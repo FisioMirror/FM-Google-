@@ -48,6 +48,9 @@ export default defineConfig({
         // entorno (Unexpected early exit / renderChunk). El SW sin minificar
         // pesa unos KB mas y funciona igual.
         mode: 'development',
+        skipWaiting: true,
+        clientsClaim: true,
+        cleanupOutdatedCaches: true,
         globPatterns: ['**/*.{js,css,html,ico,png,svg,webp,woff2}'],
         maximumFileSizeToCacheInBytes: 3 * 1024 * 1024,
         runtimeCaching: [

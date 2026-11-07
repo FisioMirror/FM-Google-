@@ -15,11 +15,29 @@ export function GaitCapturePanel({ className }: { className?: string }) {
       {/* El video debe existir siempre: el botón de inicio le pasa su ref a la
           cámara. Antes solo se montaba en estado "measuring", así que la ref era
           null y la captura no arrancaba nunca. */}
-      <div className={measuring ? 'mb-3 rounded-2xl overflow-hidden bg-black/80 aspect-video relative' : 'hidden'}>
-        <video ref={videoRef} playsInline muted className="w-full h-full object-cover" />
-        <span className="absolute top-2 left-2 text-[10px] font-bold uppercase tracking-wider bg-error text-white px-2 py-1 rounded-full">
-          {status === 'loading' ? (t('gait.loading') || 'Cargando modelo...') : (t('gait.recording') || 'Midiendo')}
-        </span>
+      {/* El video queda montado y visible siempre. Si estuviera en display:none,
+          algunos WebViews no reproducen el stream y la captura nunca arranca. */}
+      <div className="mb-3 rounded-2xl overflow-hidden bg-slate-950 aspect-video relative border border-slate-800">
+        <video
+          ref={videoRef}
+          playsInline
+          muted
+          autoPlay
+          className={`w-full h-full object-cover transition-opacity duration-300 ${measuring ? 'opacity-100' : 'opacity-25'}`}
+        />
+        {!measuring && (
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-white/70 px-4 text-center pointer-events-none">
+            <Video size={30} />
+            <span className="text-[11px] font-semibold">
+              {t('gait.previewHint', 'La cámara se activará al iniciar la captura')}
+            </span>
+          </div>
+        )}
+        {measuring && (
+          <span className="absolute top-2 left-2 text-[10px] font-bold uppercase tracking-wider bg-error text-white px-2 py-1 rounded-full">
+            {status === 'loading' ? (t('gait.loading') || 'Cargando modelo...') : (t('gait.recording') || 'Midiendo')}
+          </span>
+        )}
       </div>
 
       <GaitSymmetryCard

@@ -1,4 +1,5 @@
 import { type ReactNode, useCallback, useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Video, Phone, MessageCircle, Mail, Bot, Home, Dumbbell, Activity, User, Settings, X, Bell, Sun, Moon, LogOut } from 'lucide-react';
@@ -351,7 +352,7 @@ export function PatientLayout({ children }: PatientLayoutProps) {
   const desktopSidebar = (
     <aside
       data-sidebar="left"
-      className="fixed left-0 top-0 h-[100dvh] z-40 flex flex-col bg-gradient-to-b from-white/90 via-teal-50/30 to-surface/90 dark:from-slate-900 dark:via-slate-900/95 dark:to-slate-950 border-r border-teal-200/50 dark:border-slate-800 text-slate-900 dark:text-slate-200 transition-all duration-300 overflow-hidden backdrop-blur-xl"
+      className="fixed left-0 top-0 h-[100dvh] z-40 flex flex-col bg-white dark:bg-slate-900 border-r border-slate-200/70 dark:border-slate-800 text-slate-900 dark:text-slate-200 transition-all duration-300 overflow-hidden"
       style={{ width: `${sidebarWidth}px` }}
     >
       {sidebarContent(sidebarCollapsed, { showToggle: true })}
@@ -386,7 +387,7 @@ export function PatientLayout({ children }: PatientLayoutProps) {
               exit={{ x: '-100%' }}
               transition={{ type: 'spring', damping: 28, stiffness: 320 }}
               onClick={(e) => e.stopPropagation()}
-              className="h-full w-72 max-w-[85vw] flex flex-col bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl border-r border-teal-200/50 dark:border-slate-800 text-slate-900 dark:text-slate-100 rounded-r-3xl shadow-2xl overflow-hidden"
+              className="h-full w-72 max-w-[85vw] flex flex-col bg-white dark:bg-slate-900 border-r border-slate-200/70 dark:border-slate-800 text-slate-900 dark:text-slate-100 rounded-r-3xl shadow-2xl overflow-hidden"
             >
               <div className="p-4 flex items-center justify-between border-b border-teal-100/60 dark:border-slate-800">
                 <div className="flex items-center gap-3">
@@ -437,7 +438,7 @@ export function PatientLayout({ children }: PatientLayoutProps) {
       {/* Main content area with sticky header */}
       <main className="flex-1 flex flex-col w-full max-w-full min-w-0 overflow-hidden overflow-x-hidden lg:ml-[var(--patient-sidebar-w)]" data-scroll-root>
         {/* Sticky header — mobile (hamburger + title + actions) and desktop (breadcrumb + actions) */}
-        <header className="glass-panel sticky top-0 z-30 w-full min-w-0 max-w-full flex items-center justify-between px-3 sm:px-6 h-16 border-b divider-teal shrink-0 gap-2">
+        <header className="bg-white dark:bg-slate-900 sticky top-0 z-30 w-full min-w-0 max-w-full flex items-center justify-between px-3 sm:px-6 h-16 border-b border-slate-200/80 dark:border-slate-800 shadow-sm shrink-0 gap-2">
           {/* Left: hamburger (mobile) + breadcrumb (desktop) */}
           <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
             <button
@@ -528,12 +529,13 @@ export function PatientLayout({ children }: PatientLayoutProps) {
       </main>
 
       {/* Botón de acción flotante — oculto en la página de chat de Physi */}
-      {location.pathname !== '/ai-assistant' && (
+      {location.pathname !== '/ai-assistant' && createPortal(
         <FloatingMenu
           items={quickActionItems}
           ariaLabel="Acciones del paciente"
           className="fab-anchor fixed bottom-[calc(1.5rem+env(safe-area-inset-bottom))] right-6 z-40"
-        />
+        />,
+        document.body
       )}
 
       {/* Centro de Notificaciones Clínico Avanzado */}

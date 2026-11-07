@@ -183,7 +183,7 @@ export function ExerciseImage({ src, name, articulacion, categoria, className, h
         className,
       )}
     >
-      <div className="size-12 rounded-2xl bg-white/70 dark:bg-slate-800/80 shadow-xs flex items-center justify-center mb-2.5 backdrop-blur-md">
+      <div className="size-12 rounded-2xl bg-white dark:bg-slate-800 shadow-xs flex items-center justify-center mb-2.5">
         <IconCmp className={cn('size-6 animate-breathe-icon', visual.iconClass)} />
       </div>
       <span className="text-[10px] font-bold uppercase tracking-wider text-teal-700 dark:text-teal-300 bg-white/60 dark:bg-slate-900/60 px-2.5 py-0.5 rounded-full mb-1">

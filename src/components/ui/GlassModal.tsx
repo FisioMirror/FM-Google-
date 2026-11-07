@@ -67,7 +67,10 @@ export function GlassModal({
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
             onClick={() => dismissable && onClose()}
-            className="fixed inset-0 bg-slate-950/60 backdrop-blur-md"
+            className={cn(
+              'fixed inset-0',
+              variant === 'solid' ? 'bg-slate-950/70' : 'bg-slate-950/60 backdrop-blur-md'
+            )}
             aria-hidden="true"
           />
 

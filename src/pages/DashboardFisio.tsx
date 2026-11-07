@@ -367,17 +367,16 @@ export function DashboardFisio() {
         if (r.paciente_id && r.nombre) routineByPatient.set(r.paciente_id, r.nombre);
       });
 
-      let queryProfs = supabase
-        .from('profiles')
-        .select('id, full_name, email, diagnostico, patologia, documento_identidad, role');
-
-      if (pIds.length > 0) {
-        queryProfs = queryProfs.or(`id.in.(${pIds.join(',')}),role.eq.paciente`);
-      } else {
-        queryProfs = queryProfs.eq('role', 'paciente');
-      }
-
-      const { data: profs } = await queryProfs.limit(50);
+      // Solo pacientes vinculados al fisio (pacientes_terapeutas). Antes se
+      // incluía `role.eq.paciente`, lo que sumaba todos los pacientes de la
+      // plataforma y rompía la coherencia 22 vs 31 del dashboard.
+      const { data: profs } = pIds.length > 0
+        ? await supabase
+            .from('profiles')
+            .select('id, full_name, email, diagnostico, patologia, documento_identidad, role')
+            .in('id', pIds)
+            .limit(50)
+        : { data: [] as any[] };
 
       if (profs && profs.length > 0) {
         setDisplayedPatients(
@@ -811,6 +810,13 @@ export function DashboardFisio() {
             </TextAnimate>
           </div>
           <div className="ml-auto flex items-center gap-2.5">
+            <ConfettiSideCannons
+              className="inline-flex items-center gap-2 text-xs px-3 py-2 rounded-2xl shadow-sm"
+              onClick={() => toast.success(t('dashboard.celebrationToast', 'Celebración lanzada'))}
+            >
+              <Icon name="celebration" size={16} />
+              <span className="hidden sm:inline">{t('dashboard.celebrateAchievement', 'Celebrar logro')}</span>
+            </ConfettiSideCannons>
             <PulsatingButton
               variant="pulse"
               pulseColor="rgba(13, 148, 136, 0.6)"
@@ -1202,12 +1208,6 @@ export function DashboardFisio() {
             >
               Ver Expedientes
             </InteractiveHoverButton>
-            <ConfettiSideCannons
-              className="px-4 py-2.5 rounded-xl text-xs font-bold"
-              onClick={() => toast.success(t('dashboard.celebrationToast', 'Celebración lanzada'))}
-            >
-              {t('dashboard.celebrateAchievement', 'Celebrar logro')}
-            </ConfettiSideCannons>
           </div>
         </GlassPanel>
 

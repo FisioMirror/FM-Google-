@@ -313,7 +313,7 @@ export function ReassignRoutineModal({
           className="fixed inset-0 z-[100] bg-background overflow-y-auto"
         >
           {/* Header */}
-          <div className="sticky top-0 z-10 bg-surface/95 backdrop-blur-md border-b border-outline-variant/20">
+          <div className="sticky top-0 z-10 bg-surface border-b border-outline-variant/20">
             <div className="max-w-5xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
               <div className="flex items-center gap-3 min-w-0">
                 <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
@@ -665,7 +665,7 @@ export function ReassignRoutineModal({
           </div>
 
           {/* Footer — acciones */}
-          <div className="sticky bottom-0 bg-surface/95 backdrop-blur-md border-t border-outline-variant/20">
+          <div className="sticky bottom-0 bg-surface border-t border-outline-variant/20">
             <div className="max-w-5xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-3">
               <button
                 onClick={step === 0 ? handleClose : () => setStep((s) => (s - 1) as Step)}

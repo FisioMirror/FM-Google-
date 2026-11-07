@@ -94,6 +94,27 @@ export function markOnboardingComplete() {
   localStorage.setItem(ONBOARDING_KEY, 'true');
 }
 
+function loadPendingIds(): string[] {
+  try {
+    const raw = localStorage.getItem(PENDING_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    if (Array.isArray(parsed)) return parsed.filter((x): x is string => typeof x === 'string');
+    return [raw];
+  } catch {
+    return [];
+  }
+}
+
+function savePendingIds(ids: string[]) {
+  try {
+    if (ids.length === 0) localStorage.removeItem(PENDING_KEY);
+    else localStorage.setItem(PENDING_KEY, JSON.stringify(ids));
+  } catch {
+    // ignore
+  }
+}
+
 function loadPoints(): number {
   try {
     const raw = localStorage.getItem(POINTS_KEY);
@@ -116,15 +137,8 @@ function savePoints(pts: number) {
 export function useGamification() {
   const [points, setPoints] = useState<number>(() => loadPoints());
   const [achievements, setAchievements] = useState<Achievement[]>(() => loadAchievements());
-  const [newlyUnlocked, setNewlyUnlocked] = useState<Achievement | null>(() => {
-    try {
-      const pendingId = localStorage.getItem(PENDING_KEY);
-      if (!pendingId) return null;
-      return achievements.find((a) => a.id === pendingId && a.unlocked) ?? null;
-    } catch {
-      return null;
-    }
-  });
+  const [pendingIds, setPendingIds] = useState<string[]>(() => loadPendingIds());
+  const newlyUnlocked = achievements.find((a) => a.id === pendingIds[0] && a.unlocked) ?? null;
   const prevUnlockedRef = useRef<Set<string>>(new Set(achievements.filter(a => a.unlocked).map(a => a.id)));
 
   useEffect(() => {
@@ -158,11 +172,26 @@ export function useGamification() {
     const currentUnlocked = new Set(achievements.filter(a => a.unlocked).map(a => a.id));
     const newly = achievements.filter(a => a.unlocked && !prevUnlockedRef.current.has(a.id));
     if (newly.length > 0) {
-      setNewlyUnlocked(newly[0]);
+      setPendingIds((prev) => {
+        const merged = [...prev, ...newly.map((a) => a.id).filter((id) => !prev.includes(id))];
+        savePendingIds(merged);
+        return merged;
+      });
       addPoints(100 * newly.length); // 100 FisioCoins por logro
+      celebrateAchievement();
     }
     prevUnlockedRef.current = currentUnlocked;
   }, [achievements, addPoints]);
+
+  // Descarta IDs pendientes que ya no estén desbloqueados (datos viejos).
+  useEffect(() => {
+    setPendingIds((prev) => {
+      const next = prev.filter((id) => achievements.some((a) => a.id === id && a.unlocked));
+      if (next.length === prev.length) return prev;
+      savePendingIds(next);
+      return next;
+    });
+  }, [achievements]);
 
   const recordSession = useCallback((options?: { quality?: number; exerciseName?: string; at?: Date }) => {
     const now = options?.at ?? new Date();
@@ -194,7 +223,6 @@ export function useGamification() {
 
     setAchievements(prev => {
       const updated = [...prev];
-      const newUnlocks: Achievement[] = [];
 
       updated.forEach((ach, idx) => {
         if (ach.unlocked) return;
@@ -204,25 +232,21 @@ export function useGamification() {
           updated[idx] = newProgress >= ach.maxProgress
             ? { ...ach, progress: ach.maxProgress, unlocked: true, unlockedAt: new Date().toISOString() }
             : { ...ach, progress: newProgress };
-          if (updated[idx].unlocked) newUnlocks.push(updated[idx]);
           return;
         }
 
         if (ach.id === 'night_owl' && hour >= 20) {
           updated[idx] = { ...ach, progress: ach.maxProgress, unlocked: true, unlockedAt: new Date().toISOString() };
-          newUnlocks.push(updated[idx]);
           return;
         }
 
         if (ach.id === 'early_bird' && hour < 7) {
           updated[idx] = { ...ach, progress: ach.maxProgress, unlocked: true, unlockedAt: new Date().toISOString() };
-          newUnlocks.push(updated[idx]);
           return;
         }
 
         if (ach.id === 'perfect_form' && quality >= 90) {
           updated[idx] = { ...ach, progress: ach.maxProgress, unlocked: true, unlockedAt: new Date().toISOString() };
-          newUnlocks.push(updated[idx]);
           return;
         }
 
@@ -230,18 +254,9 @@ export function useGamification() {
           updated[idx] = practicedCount >= ach.maxProgress
             ? { ...ach, progress: ach.maxProgress, unlocked: true, unlockedAt: new Date().toISOString() }
             : { ...ach, progress: practicedCount };
-          if (updated[idx].unlocked) newUnlocks.push(updated[idx]);
         }
       });
 
-      if (newUnlocks.length > 0) {
-        try {
-          localStorage.setItem(PENDING_KEY, newUnlocks[0].id);
-        } catch {
-          // ignore
-        }
-        celebrateAchievement();
-      }
       return updated;
     });
   }, [addPoints]);
@@ -249,25 +264,15 @@ export function useGamification() {
   const recordStreak = useCallback((days: number) => {
     setAchievements(prev => {
       const updated = [...prev];
-      const newUnlocks: Achievement[] = [];
       updated.forEach((ach, idx) => {
         if (ach.unlocked || !ach.id.startsWith('streak_')) return;
         const target = ach.id === 'streak_3' ? 3 : 7;
         if (days >= target) {
           updated[idx] = { ...ach, progress: ach.maxProgress, unlocked: true, unlockedAt: new Date().toISOString() };
-          newUnlocks.push(updated[idx]);
         } else {
           updated[idx] = { ...ach, progress: Math.max(ach.progress, Math.min(days, ach.maxProgress)) };
         }
       });
-      if (newUnlocks.length > 0) {
-        try {
-          localStorage.setItem(PENDING_KEY, newUnlocks[0].id);
-        } catch {
-          // ignore
-        }
-        celebrateAchievement();
-      }
       return updated;
     });
   }, []);
@@ -277,53 +282,37 @@ export function useGamification() {
     if (!Number.isFinite(total) || total <= 0) return;
     setAchievements(prev => {
       const updated = [...prev];
-      const newUnlocks: Achievement[] = [];
       updated.forEach((ach, idx) => {
         if (ach.unlocked || !SESSION_ACHIEVEMENTS.has(ach.id)) return;
         const progress = Math.max(ach.progress, Math.min(total, ach.maxProgress));
         if (total >= ach.maxProgress) {
           updated[idx] = { ...ach, progress: ach.maxProgress, unlocked: true, unlockedAt: new Date().toISOString() };
-          newUnlocks.push(updated[idx]);
         } else {
           updated[idx] = { ...ach, progress };
         }
       });
-      if (newUnlocks.length > 0) {
-        try {
-          localStorage.setItem(PENDING_KEY, newUnlocks[0].id);
-        } catch {
-          // ignore
-        }
-        celebrateAchievement();
-      }
       return updated;
     });
   }, []);
 
   const unlockSpecial = useCallback((achievementId: string) => {
+    if (achievements.find((a) => a.id === achievementId)?.unlocked) return;
     addPoints(75);
     setAchievements(prev => {
       const idx = prev.findIndex(a => a.id === achievementId);
       if (idx === -1 || prev[idx].unlocked) return prev;
       const updated = [...prev];
       updated[idx] = { ...updated[idx], unlocked: true, progress: updated[idx].maxProgress, unlockedAt: new Date().toISOString() };
-      try {
-        localStorage.setItem(PENDING_KEY, achievementId);
-      } catch {
-        // ignore
-      }
-      celebrateAchievement();
       return updated;
     });
-  }, [addPoints]);
+  }, [achievements, addPoints]);
 
   const dismissUnlock = useCallback(() => {
-    setNewlyUnlocked(null);
-    try {
-      localStorage.removeItem(PENDING_KEY);
-    } catch {
-      // ignore
-    }
+    setPendingIds((prev) => {
+      const next = prev.slice(1);
+      savePendingIds(next);
+      return next;
+    });
   }, []);
 
   const unlockedCount = achievements.filter(a => a.unlocked).length;
