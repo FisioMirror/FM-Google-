@@ -127,7 +127,7 @@ export const useAuthStore = create<AuthState>()(
       user: null,
       loading: false,
       error: null,
-      initialized: false,
+      initialized: true,
 
       initialize: async () => {
         // Synchronous fallback: ensure initialized is true immediately

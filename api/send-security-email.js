@@ -1,5 +1,6 @@
 import nodemailer from 'nodemailer';
 import { createClient } from '@supabase/supabase-js';
+import { getCleanSupabaseUrl, getCleanSupabaseKey } from './supabase-config.js';
 
 const DEFAULT_RESEND_KEY = process.env.RESEND_API_KEY || '';
 
@@ -92,8 +93,8 @@ export default async function handler(req, res) {
 
     // 1. Guardar notificación interna en Supabase
     try {
-      const supabaseUrl = process.env.VITE_SUPABASE_URL || 'https://mnkqfrulcpxpwaftokdi.supabase.co';
-      const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1ua3FmcnVsY3B4cHdhZnRva2RpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIwNzA5OTAsImV4cCI6MjA5NzY0Njk5MH0.lsbk4vs8F3uvp4gOqs0Ydz7V7zh04MJqWC919KssRQ0';
+      const supabaseUrl = getCleanSupabaseUrl();
+      const supabaseKey = getCleanSupabaseKey();
       const supabase = createClient(supabaseUrl, supabaseKey);
 
       const { data: prof } = await supabase

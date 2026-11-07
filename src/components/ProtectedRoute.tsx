@@ -12,7 +12,13 @@ export function ProtectedRoute({ children, role }: ProtectedRouteProps) {
   const user = useAuthStore((s) => s.user);
   const initialized = useAuthStore((s) => s.initialized);
 
-  if (!initialized) return null;
+  if (!initialized) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background" role="status" aria-label="Cargando">
+        <div className="w-8 h-8 border-3 border-teal-500 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
   if (!user) return <Navigate to="/login" replace />;
   if (role) {
     const roles = Array.isArray(role) ? role : [role];

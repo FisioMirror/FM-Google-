@@ -13,7 +13,7 @@ import { LegalModal, type LegalDocType } from './ui/LegalModal';
 import { useAuthStore } from '../stores/authStore';
 import { useTheme } from '../context/themeApi';
 import { useToast } from './ui/toastApi';
-import { supabase } from '../lib/supabase';
+import { supabase, supabaseUrl, supabaseAnonKey } from '../lib/supabase';
 import { cn } from '../lib/utils';
 import MascotAnimation from './ui/MascotAnimation';
 import { NotificationDrawer } from './notifications/NotificationDrawer';
@@ -160,16 +160,14 @@ export function PatientLayout({ children }: PatientLayoutProps) {
             meetLink: jitsiUrl,
           });
 
-          // Intento complementario de Edge Function si existe
-          try {
-            const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string;
-            const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string;
-            await fetch(`${supabaseUrl}/functions/v1/send-notification`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${supabaseAnonKey}`,
-              },
+            // Intento complementario de Edge Function si existe
+            try {
+              await fetch(`${supabaseUrl}/functions/v1/send-notification`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${supabaseAnonKey}`,
+                },
               body: JSON.stringify({
                 fisio_id: fisioId,
                 type: 'videollamada',

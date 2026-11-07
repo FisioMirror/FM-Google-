@@ -335,6 +335,14 @@ export function Login() {
   const greeting = useMemo(() => getTimeGreeting(), []);
 
   useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('stay') === '1' || params.get('switch') === '1') {
+      return;
+    }
+    if (params.get('logout') === 'true' || params.get('logout') === '1') {
+      useAuthStore.getState().signOut();
+      return;
+    }
     if (user) {
       navigate(user.role === 'fisioterapeuta' ? '/dashboard-fisio' : '/dashboard-paciente', {
         replace: true,

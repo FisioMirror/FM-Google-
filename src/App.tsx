@@ -213,7 +213,7 @@ function AIAssistantRoute() {
 function RoleRedirect() {
   const user = useAuthStore((s) => s.user);
   const initialized = useAuthStore((s) => s.initialized);
-  if (!initialized) return null;
+  if (!initialized) return <PageLoader />;
   if (!user) return <Navigate to="/login" replace />;
   return <Navigate to={user.role === 'fisioterapeuta' ? '/dashboard-fisio' : '/dashboard-paciente'} replace />;
 }
@@ -221,20 +221,31 @@ function RoleRedirect() {
 function Router() {
   const initialized = useAuthStore((s) => s.initialized);
 
-  const [splashDone, setSplashDone] = useState(false);
-  useEffect(() => {
-    const t = setTimeout(() => setSplashDone(true), 2200);
-    return () => clearTimeout(t);
-  }, []);
+  // Responsive splash screen: quickly shows for 300ms on first session load
+  // and does not block subsequent route loads or app initialization.
+  const [splashDone, setSplashDone] = useState(() => {
+    try {
+      return !!sessionStorage.getItem('fisiomirror_splash_shown');
+    } catch {
+      return false;
+    }
+  });
 
-  // Hard fallback: if initialized is still false after 4s, force splash away
-  const [forceHideSplash, setForceHideSplash] = useState(false);
   useEffect(() => {
-    const t = setTimeout(() => setForceHideSplash(true), 4000);
-    return () => clearTimeout(t);
-  }, []);
+    if (!splashDone) {
+      const t = setTimeout(() => {
+        setSplashDone(true);
+        try {
+          sessionStorage.setItem('fisiomirror_splash_shown', '1');
+        } catch {
+          // ignore
+        }
+      }, 300);
+      return () => clearTimeout(t);
+    }
+  }, [splashDone]);
 
-  const splashVisible = (!splashDone || !initialized) && !forceHideSplash;
+  const splashVisible = !splashDone && !initialized;
 
   return (
     <>

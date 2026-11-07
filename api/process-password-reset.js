@@ -1,6 +1,7 @@
 import nodemailer from 'nodemailer';
 import crypto from 'crypto';
 import { createClient } from '@supabase/supabase-js';
+import { getCleanSupabaseUrl, getCleanSupabaseKey } from './supabase-config.js';
 
 const SALT = 'fisiomirror-salt-2024';
 
@@ -37,8 +38,8 @@ export default async function handler(req, res) {
       return res.status(400).json({ success: false, error: 'La nueva contraseña debe tener al menos 6 caracteres' });
     }
 
-    const supabaseUrl = process.env.VITE_SUPABASE_URL || 'https://mnkqfrulcpxpwaftokdi.supabase.co';
-    const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1ua3FmcnVsY3B4cHdhZnRva2RpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIwNzA5OTAsImV4cCI6MjA5NzY0Njk5MH0.lsbk4vs8F3uvp4gOqs0Ydz7V7zh04MJqWC919KssRQ0';
+    const supabaseUrl = getCleanSupabaseUrl();
+    const supabaseKey = getCleanSupabaseKey();
     const supabase = createClient(supabaseUrl, supabaseKey);
 
     // 1. Obtener usuario de profiles

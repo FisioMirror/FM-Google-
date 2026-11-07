@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
 import { Crosshair, Info, X } from 'lucide-react';
 
@@ -28,9 +29,11 @@ export const JointDetailPopover: React.FC<JointDetailPopoverProps> = ({
     status: 'normal',
   },
   className,
-  triggerLabel = 'Inspeccionar Articulación',
+  triggerLabel,
 }) => {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
+  const effectiveTriggerLabel = triggerLabel || t('jointDetail.inspectJoint') || 'Inspeccionar Articulación';
 
   return (
     <div className={cn('relative inline-block', className)}>
@@ -47,7 +50,7 @@ export const JointDetailPopover: React.FC<JointDetailPopoverProps> = ({
         aria-expanded={isOpen}
       >
         <Crosshair className="w-4 h-4 text-primary dark:text-teal-400" />
-        <span>{triggerLabel}</span>
+        <span>{effectiveTriggerLabel}</span>
       </button>
 
       {/* Floating Popover Card */}

@@ -34,12 +34,15 @@ export const ROLES = ['fisioterapeuta', 'paciente'] as const;
 // REUSABLE VALIDATORS
 // ============================================================================
 
-/** Venezuelan ID: 6-8 digits, only numbers */
+/** Venezuelan ID: 6-9 digits, with optional V-, E-, J- prefix and hyphens */
 export const cedulaSchema = z
   .string()
-  .min(6, 'La cédula debe tener al menos 6 dígitos')
-  .max(8, 'La cédula no puede tener más de 8 dígitos')
-  .regex(/^\d+$/, 'La cédula solo puede contener números')
+  .min(6, 'La cédula debe tener al menos 6 caracteres')
+  .max(14, 'La cédula es demasiado larga')
+  .refine(
+    (val) => !val || /^(?:[VEJPvejp][- ]?)?\d{6,9}$/.test(val.trim()),
+    'Formato de cédula inválido (ej: 12345678 o V-12345678)'
+  )
   .transform((val) => val.trim());
 
 /** Email with strict validation */
@@ -71,14 +74,14 @@ export const fullNameSchema = z
   .regex(/^[\p{L}\s'-]+$/u, 'El nombre solo puede contener letras, espacios, guiones y apóstrofes')
   .trim();
 
-/** Phone: Venezuelan format (optional) */
+/** Phone: Venezuelan format (optional, handles spaces, hyphens and parentheses) */
 export const phoneSchema = z
   .string()
   .optional()
   .nullable()
   .refine(
-    (val) => !val || /^(\+58|0)?[24]\d{9}$/.test(val.replace(/\s/g, '')),
-    'Formato de teléfono inválido (ej: 04121234567 o +584121234567)'
+    (val) => !val || /^(\+58|0)?[24]\d{9}$/.test(val.replace(/[\s\-()]/g, '')),
+    'Formato de teléfono inválido (ej: 04121234567 o +58 412-1234567)'
   )
   .transform((val) => val?.trim() || null);
 
@@ -243,8 +246,8 @@ export const fisioLoginSchema = z.object({
   turnstileToken: z.string().min(1, 'Completa la verificación de seguridad'),
 });
 
-/** Physiotherapist Register - Step 1 (Basic) */
-export const fisioRegisterStep1Schema = z.object({
+/** Physiotherapist Register - Step 1 base shape without refinement */
+const fisioRegisterStep1Base = z.object({
   fullName: fullNameSchema,
   email: emailSchema,
   password: passwordSchema,
@@ -252,7 +255,10 @@ export const fisioRegisterStep1Schema = z.object({
   cedula: cedulaSchema,
   telefono: phoneSchema,
   turnstileToken: z.string().min(1, 'Completa la verificación de seguridad'),
-}).refine((data) => data.password === data.confirmPassword, {
+});
+
+/** Physiotherapist Register - Step 1 (Basic) */
+export const fisioRegisterStep1Schema = fisioRegisterStep1Base.refine((data) => data.password === data.confirmPassword, {
   message: 'Las contraseñas no coinciden',
   path: ['confirmPassword'],
 });
@@ -267,10 +273,47 @@ export const fisioRegisterStep2Schema = z.object({
 });
 
 /** Complete Physiotherapist Register (combined) */
-export const fisioRegisterSchema = fisioRegisterStep1Schema.merge(fisioRegisterStep2Schema);
+export const fisioRegisterSchema = fisioRegisterStep1Base
+  .merge(fisioRegisterStep2Schema)
+  .refine((data) => data.password === data.confirmPassword, {
+    message: 'Las contraseñas no coinciden',
+    path: ['confirmPassword'],
+  });
 
-/** Patient Profile Form (22 fields) */
-export const patientProfileSchema = z.object({
+/** Patient Profile Form (22 fields) - Supports both camelCase and snake_case */
+export const patientProfileSchema = z.preprocess((val: any) => {
+  if (!val || typeof val !== 'object') return val;
+  return {
+    ...val,
+    fullName: val.fullName ?? val.full_name ?? '',
+    email: val.email || 'paciente@fisiomirror.app',
+    fechaNacimiento: val.fechaNacimiento ?? val.fecha_nacimiento ?? null,
+    telefono: val.telefono ?? null,
+    tipoSangre: val.tipoSangre ?? val.tipo_sangre ?? null,
+    ocupacion: val.ocupacion ?? null,
+    nivelActividad: val.nivelActividad ?? val.nivel_actividad ?? null,
+    estaturaCm: val.estaturaCm !== undefined && val.estaturaCm !== '' ? Number(val.estaturaCm) : (val.estatura_cm !== undefined && val.estatura_cm !== '' ? Number(val.estatura_cm) : null),
+    pesoKg: val.pesoKg !== undefined && val.pesoKg !== '' ? Number(val.pesoKg) : (val.peso_kg !== undefined && val.peso_kg !== '' ? Number(val.peso_kg) : null),
+    esMenorEdad: val.esMenorEdad ?? val.es_menor_edad ?? false,
+    diagnostico: val.diagnostico ?? null,
+    patologia: val.patologia ?? null,
+    diagnosticoSecundario: val.diagnosticoSecundario ?? val.diagnostico_secundario ?? null,
+    medicamentosActuales: val.medicamentosActuales ?? val.medicamentos_actuales ?? null,
+    alergias: val.alergias ?? null,
+    enfermedadesCronicas: val.enfermedadesCronicas ?? val.enfermedades_cronicas ?? null,
+    lesionesPrevias: val.lesionesPrevias ?? val.lesiones_previas ?? null,
+    extremidadAfectada: val.extremidadAfectada ?? val.extremidad_afectada ?? null,
+    romObjetivo: val.romObjetivo !== undefined && val.romObjetivo !== '' ? Number(val.romObjetivo) : (val.rom_objetivo !== undefined && val.rom_objetivo !== '' ? Number(val.rom_objetivo) : null),
+    frecuenciaSesiones: val.frecuenciaSesiones !== undefined && val.frecuenciaSesiones !== '' ? Number(val.frecuenciaSesiones) : (val.frecuencia_sesiones !== undefined && val.frecuencia_sesiones !== '' ? Number(val.frecuencia_sesiones) : null),
+    medicoRemitente: val.medicoRemitente ?? val.medico_remitente ?? null,
+    contactoEmergenciaNombre: val.contactoEmergenciaNombre ?? val.contacto_emergencia_nombre ?? null,
+    contactoEmergenciaTelefono: val.contactoEmergenciaTelefono ?? val.contacto_emergencia_telefono ?? null,
+    tutorNombre: val.tutorNombre ?? val.tutor_nombre ?? null,
+    tutorTelefono: val.tutorTelefono ?? val.tutor_telefono ?? null,
+    tutorEmail: val.tutorEmail ?? val.tutor_email ?? null,
+    consentimiento: val.consentimiento ?? true,
+  };
+}, z.object({
   // Personal
   fullName: fullNameSchema,
   email: emailSchema,
@@ -332,10 +375,24 @@ export const patientProfileSchema = z.object({
       });
     }
   }
-});
+}));
 
-/** Physiotherapist Profile Form */
-export const fisioProfileSchema = z.object({
+/** Physiotherapist Profile Form - Supports both camelCase and snake_case */
+export const fisioProfileSchema = z.preprocess((val: any) => {
+  if (!val || typeof val !== 'object') return val;
+  return {
+    ...val,
+    fullName: val.fullName ?? val.full_name ?? '',
+    email: val.email || 'fisio@fisiomirror.app',
+    cedula: val.cedula ?? null,
+    universidad: val.universidad ?? null,
+    anioEgreso: val.anioEgreso !== undefined && val.anioEgreso !== '' ? Number(val.anioEgreso) : (val.anio_egreso !== undefined && val.anio_egreso !== '' ? Number(val.anio_egreso) : null),
+    colegiadoId: val.colegiadoId ?? val.colegiado_id ?? null,
+    telefono: val.telefono ?? null,
+    especialidad: val.especialidad ?? null,
+    clinicName: val.clinicName ?? val.clinic_name ?? null,
+  };
+}, z.object({
   fullName: fullNameSchema,
   email: emailSchema,
   cedula: cedulaSchema.optional().nullable(),
@@ -345,7 +402,7 @@ export const fisioProfileSchema = z.object({
   telefono: phoneSchema,
   especialidad: optionalText(200, 'Especialidad'),
   clinicName: optionalText(100, 'Nombre de clínica'),
-});
+}));
 
 /** Session Adjustments (Clinical) */
 export const sessionAdjustmentsSchema = z.object({
@@ -502,6 +559,15 @@ export function formatZodError(error: z.ZodError): Record<string, string> {
     const path = issue.path.join('.');
     if (!formatted[path] || issue.code === 'custom') {
       formatted[path] = issue.message;
+    }
+    // Also provide snake_case version of camelCase keys and vice-versa
+    const snakePath = path.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`);
+    if (!formatted[snakePath]) {
+      formatted[snakePath] = issue.message;
+    }
+    const camelPath = path.replace(/_([a-z])/g, (_, letter) => letter.toUpperCase());
+    if (!formatted[camelPath]) {
+      formatted[camelPath] = issue.message;
     }
   }
   return formatted;

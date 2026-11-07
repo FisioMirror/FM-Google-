@@ -42,6 +42,30 @@ if (!i18n.isInitialized) {
         bindI18nStore: 'added removed',
       },
     });
+
+  // Intelligent translation wrapper:
+  // When a key or Spanish default string is requested in EN or PT,
+  // resolve via phrase dictionary even if the key is untranslated or passed as raw text.
+  const originalT = i18n.t.bind(i18n);
+  (i18n as any).t = function (key: any, ...args: any[]): any {
+    const res = (originalT as any)(key, ...args);
+    const currentLang = normalizeLanguage(i18n.language);
+    if (currentLang !== 'es' && typeof key === 'string') {
+      const defaultVal =
+        typeof args[0] === 'string'
+          ? args[0]
+          : args[0] && typeof args[0] === 'object'
+          ? args[0].defaultValue
+          : null;
+      if (res === key || (defaultVal && res === defaultVal)) {
+        const phraseKey = (defaultVal || key).trim();
+        const dict = currentLang === 'en' ? (en as Record<string, unknown>) : (pt as Record<string, unknown>);
+        const translated = dict[phraseKey];
+        if (typeof translated === 'string') return translated;
+      }
+    }
+    return res;
+  };
 }
 
 export function changeAppLanguage(lang: SupportedLanguage) {
@@ -55,5 +79,7 @@ export function changeAppLanguage(lang: SupportedLanguage) {
     );
   }
 }
+
+export const t = i18n.t.bind(i18n);
 
 export default i18n;
