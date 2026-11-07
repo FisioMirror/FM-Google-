@@ -133,9 +133,12 @@ export const useAuthStore = create<AuthState>()(
                 fetchProfileById(storedUser.id),
                 new Promise<null>((resolve) => setTimeout(() => resolve(null), 3000)),
               ]);
-              if (refreshed) set({ user: refreshed, initialized: true });
+              if (refreshed) set({ user: refreshed });
             } catch {
               // keep stored user
+            } finally {
+              // Ensure initialized is true even if refresh times out
+              set({ initialized: true });
             }
           } else {
             set({ initialized: true });
