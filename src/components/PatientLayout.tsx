@@ -86,7 +86,7 @@ export function PatientLayout({ children }: PatientLayoutProps) {
         .maybeSingle();
       if (link?.terapeuta_id) {
         const { data: fisio } = await supabase
-          .from('fisioterapeutas_simple')
+          .from('profiles')
           .select('telefono')
           .eq('id', link.terapeuta_id)
           .maybeSingle();
