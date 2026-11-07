@@ -510,6 +510,140 @@ export const exerciseSchema = z.object({
   articulacion: z.enum(['hombro', 'codo', 'rodilla', 'cadera', 'tobillo']),
   lado: z.enum(['izquierdo', 'derecho', 'ambos']),
   complejidad: z.enum(['baja', 'media', 'alta']).optional(),
+}).superRefine((data, ctx) => {
+  // Clinical audit: High complexity exercises should have appropriate ROM targets
+  if (data.complejidad === 'alta' && data.anguloObjetivo !== null && data.anguloObjetivo !== undefined && data.anguloObjetivo < 90) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: 'Ejercicios de alta complejidad suelen requerir ROM objetivo ≥ 90°',
+      path: ['anguloObjetivo'],
+    });
+  }
+});
+
+/** Clinical Audit: Recovery Phase vs ROM Validation */
+export const recoveryPhaseRomSchema = z.object({
+  fase: recoveryPhaseSchema,
+  romActual: romSchema,
+  romObjetivo: romSchema,
+  dolorReportado: painLevelSchema,
+}).superRefine((data, ctx) => {
+  if (!data.fase || data.romActual === null || data.romActual === undefined || data.romObjetivo === null || data.romObjetivo === undefined) return;
+
+  // Clinical audit: Phase vs ROM consistency
+  const phaseRomRanges: Record<string, { min: number; max: number }> = {
+    Aguda: { min: 0, max: 45 },
+    Subaguda: { min: 30, max: 90 },
+    Remodelación: { min: 60, max: 135 },
+    Funcional: { min: 90, max: 180 },
+  };
+
+  const range = phaseRomRanges[data.fase];
+  if (range) {
+    if (data.romActual < range.min || data.romActual > range.max) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: `ROM actual (${data.romActual}°) fuera del rango típico para fase ${data.fase} (${range.min}-${range.max}°)`,
+        path: ['romActual'],
+      });
+    }
+    if (data.romObjetivo < range.min || data.romObjetivo > range.max) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: `ROM objetivo (${data.romObjetivo}°) fuera del rango típico para fase ${data.fase} (${range.min}-${range.max}°)`,
+        path: ['romObjetivo'],
+      });
+    }
+  }
+
+  // Clinical audit: Pain level vs Phase consistency
+  if (data.dolorReportado !== null && data.dolorReportado !== undefined) {
+    if (data.fase === 'Aguda' && data.dolorReportado < 4) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Fase aguda típicamente presenta dolor ≥ 4/10',
+        path: ['dolorReportado'],
+      });
+    }
+    if (data.fase === 'Funcional' && data.dolorReportado > 3) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Fase funcional típicamente presenta dolor ≤ 3/10',
+        path: ['dolorReportado'],
+      });
+    }
+  }
+});
+
+/** Clinical Audit: Session Adjustments Validation */
+export const sessionAdjustmentsClinicalSchema = z.object({
+  toleranciaGrados: z.number().min(0).max(45).optional().nullable(),
+  repeticionesMax: z.number().min(1).max(30).optional().nullable(),
+  foco: z.enum(['movilidad', 'fuerza', 'control', 'dolor']).optional().nullable(),
+  notas: optionalText(500, 'Notas'),
+  dolorEva: z.number().min(0).max(10).optional().nullable(),
+  romActual: z.number().min(0).max(180).optional().nullable(),
+  romObjetivo: z.number().min(0).max(180).optional().nullable(),
+  progresion: z.number().min(0).max(100).optional().nullable(),
+  frecuenciaSemanal: z.number().min(1).max(7).optional().nullable(),
+  duracionMin: z.number().min(5).max(120).optional().nullable(),
+  precauciones: optionalText(500, 'Precauciones'),
+  proximaRevision: z.string().optional().nullable().refine((val) => {
+    if (!val) return true;
+    const date = new Date(val);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return date >= today;
+  }, 'La próxima revisión no puede ser en el pasado'),
+}).superRefine((data, ctx) => {
+  // Clinical audit: ROM objetivo vs ROM actual
+  if (data.romActual !== null && data.romActual !== undefined && data.romObjetivo !== null && data.romObjetivo !== undefined && data.romObjetivo < data.romActual) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: 'El ROM objetivo no puede ser menor al ROM actual',
+      path: ['romObjetivo'],
+    });
+  }
+
+  // Clinical audit: Progression vs ROM improvement
+  if (data.progresion !== null && data.progresion !== undefined && data.romActual !== null && data.romActual !== undefined && data.romObjetivo !== null && data.romObjetivo !== undefined) {
+    const romImprovement = data.romObjetivo - data.romActual;
+    if (romImprovement > 0 && data.progresion < 20) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Progresión baja (<20%) con mejora de ROM esperada. Revisar coherencia.',
+        path: ['progresion'],
+      });
+    }
+    if (romImprovement <= 0 && data.progresion > 50) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Progresión alta (>50%) sin mejora de ROM. Revisar coherencia.',
+        path: ['progresion'],
+      });
+    }
+  }
+
+  // Clinical audit: Pain vs Focus consistency
+  if (data.foco === 'dolor' && (data.dolorEva === null || data.dolorEva === undefined || data.dolorEva < 4)) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: 'Foco en dolor requiere EVA ≥ 4 para justificar intervención',
+      path: ['dolorEva'],
+    });
+  }
+
+  // Clinical audit: Frequency vs Duration consistency
+  if (data.frecuenciaSemanal !== null && data.frecuenciaSemanal !== undefined && data.duracionMin !== null && data.duracionMin !== undefined) {
+    const weeklyMinutes = data.frecuenciaSemanal * data.duracionMin;
+    if (weeklyMinutes > 300) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: `Carga semanal alta (${weeklyMinutes} min). Considerar reducir frecuencia o duración.`,
+        path: ['frecuenciaSemanal'],
+      });
+    }
+  }
 });
 
 /** Password Reset */

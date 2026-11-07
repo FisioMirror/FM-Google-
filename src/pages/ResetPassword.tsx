@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { useToast } from '../components/ui/toastApi';
+import { passwordResetSchema, passwordUpdateSchema, formatZodError } from '../lib/validation';
 
 export function ResetPassword() {
 
@@ -99,12 +100,20 @@ export function ResetPassword() {
     e.preventDefault();
     setErrorMessage(null);
 
-    const cleanEmail = email.trim().toLowerCase();
-    if (!cleanEmail || !cleanEmail.includes('@')) {
-      toast.error('Por favor ingresa un correo electrónico válido');
+    // Validate using Zod schema
+    const validation = passwordResetSchema.safeParse({
+      email,
+      turnstileToken: 'bypass', // Turnstile handled separately if needed
+    });
+
+    if (!validation.success) {
+      const errors = formatZodError(validation.error);
+      const firstError = Object.values(errors)[0];
+      toast.error(firstError || 'Correo electrónico inválido');
       return;
     }
 
+    const cleanEmail = email.trim().toLowerCase();
     setLoading(true);
     try {
       // Llamar al endpoint dedicado con transporte SMTP verificado
@@ -141,6 +150,20 @@ export function ResetPassword() {
     const cleanEmail = email.trim().toLowerCase();
     const cleanToken = tokenOrCode.trim();
 
+    // Validate using Zod schema (passwordUpdateSchema without currentPassword for reset flow)
+    const validation = passwordUpdateSchema.safeParse({
+      currentPassword: 'reset-flow', // Placeholder for reset flow
+      newPassword: password,
+      confirmNewPassword: confirmPassword,
+    });
+
+    if (!validation.success) {
+      const errors = formatZodError(validation.error);
+      const firstError = Object.values(errors)[0];
+      toast.error(firstError || 'Error de validación');
+      return;
+    }
+
     if (!cleanEmail || !cleanEmail.includes('@')) {
       toast.error('Por favor especifica tu correo electrónico');
       return;
@@ -148,16 +171,6 @@ export function ResetPassword() {
 
     if (!cleanToken) {
       toast.error('Por favor ingresa el código PIN de 6 dígitos o el token de recuperación');
-      return;
-    }
-
-    if (password.length < 8) {
-      toast.error('La contraseña debe tener al menos 8 caracteres');
-      return;
-    }
-
-    if (password !== confirmPassword) {
-      toast.error('Las contraseñas no coinciden');
       return;
     }
 

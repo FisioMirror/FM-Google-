@@ -1,16 +1,19 @@
 import { type ReactNode } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../stores/authStore';
 import type { Rol } from '../types';
 
 interface ProtectedRouteProps {
   children: ReactNode;
   role?: Rol | Rol[];
+  requireEmailVerification?: boolean;
 }
 
-export function ProtectedRoute({ children, role }: ProtectedRouteProps) {
+export function ProtectedRoute({ children, role, requireEmailVerification = true }: ProtectedRouteProps) {
   const user = useAuthStore((s) => s.user);
   const initialized = useAuthStore((s) => s.initialized);
+  const isEmailVerified = useAuthStore((s) => s.isEmailVerified);
+  const location = useLocation();
 
   if (!initialized) {
     return (
@@ -19,7 +22,13 @@ export function ProtectedRoute({ children, role }: ProtectedRouteProps) {
       </div>
     );
   }
-  if (!user) return <Navigate to="/login" replace />;
+  if (!user) return <Navigate to="/login" replace state={{ from: location }} />;
+  
+  // Check email verification for non-demo users
+  if (requireEmailVerification && !isEmailVerified()) {
+    return <Navigate to="/verify-email" replace state={{ from: location }} />;
+  }
+  
   if (role) {
     const roles = Array.isArray(role) ? role : [role];
     if (!roles.includes(user.role)) {

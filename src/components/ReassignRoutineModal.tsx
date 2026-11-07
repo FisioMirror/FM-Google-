@@ -503,9 +503,12 @@ export function ReassignRoutineModal({
                               <input
                                 type="number"
                                 min={1}
-                                max={99}
+                                max={20}
                                 value={ex.series}
-                                onChange={(e) => updateConfig(ex.libraryId, 'series', parseInt(e.target.value, 10))}
+                                onChange={(e) => {
+                                  const val = parseInt(e.target.value, 10);
+                                  if (!isNaN(val)) updateConfig(ex.libraryId, 'series', Math.min(Math.max(val, 1), 20));
+                                }}
                                 className="input-base w-full text-center px-2 py-2 rounded-lg bg-surface border border-outline-variant/20 font-bold"
                               />
                               <button
@@ -532,9 +535,12 @@ export function ReassignRoutineModal({
                               <input
                                 type="number"
                                 min={1}
-                                max={99}
+                                max={100}
                                 value={ex.repeticiones}
-                                onChange={(e) => updateConfig(ex.libraryId, 'repeticiones', parseInt(e.target.value, 10))}
+                                onChange={(e) => {
+                                  const val = parseInt(e.target.value, 10);
+                                  if (!isNaN(val)) updateConfig(ex.libraryId, 'repeticiones', Math.min(Math.max(val, 1), 100));
+                                }}
                                 className="input-base w-full text-center px-2 py-2 rounded-lg bg-surface border border-outline-variant/20 font-bold"
                               />
                               <button

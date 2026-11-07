@@ -6,6 +6,7 @@ import { hashPassword } from '../stores/authStore';
 import { useToast } from '../components/ui/toastApi';
 import { TurnstileWidget, type TurnstileWidgetRef } from '../components/auth/TurnstileWidget';
 import { useTranslation } from 'react-i18next';
+import { passwordUpdateSchema, formatZodError } from '../lib/validation';
 
 export function UpdatePasswordPage() {
   const { t } = useTranslation();
@@ -56,13 +57,17 @@ export function UpdatePasswordPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (password.length < 6) {
-      toast.error('La contraseña debe tener al menos 6 caracteres');
-      return;
-    }
+    // Validate using Zod schema
+    const validation = passwordUpdateSchema.safeParse({
+      currentPassword: '', // Not needed for reset flow
+      newPassword: password,
+      confirmNewPassword: confirmPassword,
+    });
 
-    if (password !== confirmPassword) {
-      toast.error('Las contraseñas no coinciden');
+    if (!validation.success) {
+      const errors = formatZodError(validation.error);
+      const firstError = Object.values(errors)[0];
+      toast.error(firstError || 'Error de validación');
       return;
     }
 

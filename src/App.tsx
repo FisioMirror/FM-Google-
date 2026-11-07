@@ -6,6 +6,7 @@ import { Login } from './pages/Login';
 import { ResetPassword } from './pages/ResetPassword';
 import { RegistroPacientePage } from './pages/RegistroPacientePage';
 import { UpdatePasswordPage } from './pages/UpdatePasswordPage';
+import { EmailVerification } from './pages/EmailVerification';
 import { SplashScreen } from './components/SplashScreen';
 import { ErrorBoundary } from './components/ui/ErrorBoundary';
 import { ThemeProvider } from './context/ThemeContext';
@@ -154,6 +155,7 @@ function AppRoutes() {
       <Route path="/registro-paciente" element={<RegistroPacientePage />} />
       <Route path="/update-password" element={<UpdatePasswordPage />} />
       <Route path="/reset-password" element={<ResetPassword />} />
+      <Route path="/verify-email" element={<EmailVerification />} />
       <Route path="/ui-showcase" element={<Suspense fallback={<PageLoader />}><UIShowcasePage /></Suspense>} />
 
       {/* Fisioterapeuta routes */}

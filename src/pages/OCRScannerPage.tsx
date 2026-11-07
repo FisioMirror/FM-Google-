@@ -834,11 +834,11 @@ export function OCRScannerPage() {
                 </div>
                 <div>
                   <label className={labelClass}>{t('tr.estatura_cm')}</label>
-                  <input type="number" value={extractedData.estatura_cm} onChange={(e) => setExtractedData({ ...extractedData, estatura_cm: e.target.value })} placeholder="No detectado" className={inputClass} />
+                  <input type="number" value={extractedData.estatura_cm} onChange={(e) => setExtractedData({ ...extractedData, estatura_cm: e.target.value })} placeholder="No detectado" className={inputClass} min={50} max={250} />
                 </div>
                 <div>
                   <label className={labelClass}>{t('tr.peso_kg')}</label>
-                  <input type="number" step="0.01" value={extractedData.peso_kg} onChange={(e) => setExtractedData({ ...extractedData, peso_kg: e.target.value })} placeholder="No detectado" className={inputClass} />
+                  <input type="number" step="0.01" value={extractedData.peso_kg} onChange={(e) => setExtractedData({ ...extractedData, peso_kg: e.target.value })} placeholder="No detectado" className={inputClass} min={2} max={300} />
                 </div>
               </div>
               <div className="mt-4 flex items-center gap-3 p-4 rounded-xl bg-primary/5 border border-primary/10">

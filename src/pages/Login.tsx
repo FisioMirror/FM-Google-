@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo } from 'react';
+import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence, useAnimation, useReducedMotion } from 'framer-motion';
 import { Icon } from '../components/ui/Icon';
@@ -14,6 +14,7 @@ import { TurnstileWidget, type TurnstileWidgetRef } from '../components/auth/Tur
 import { AuroraText } from '../components/ui/AuroraText';
 import { useTranslation } from 'react-i18next';
 import { LanguageSelector } from '../components/ui/LanguageSelector';
+import { useAuthValidation, createPatientLoginData, createPatientRegisterData, createFisioLoginData, createFisioRegisterData } from '../hooks/useAuthValidation';
 
 type AuthMode = 'login' | 'register';
 type LoginRole = 'paciente' | 'fisioterapeuta';
@@ -334,6 +335,16 @@ export function Login() {
   const pwStrength = useMemo(() => getPasswordStrength(password), [password]);
   const greeting = useMemo(() => getTimeGreeting(), []);
 
+  // Validation hook
+  const {
+    validatePatientLogin,
+    validatePatientRegister,
+    validateFisioLogin,
+    validateFisioRegister,
+    validateFisioStep1,
+    getFieldError,
+  } = useAuthValidation();
+
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get('stay') === '1' || params.get('switch') === '1') {
@@ -472,16 +483,14 @@ export function Login() {
 
     // Physio Step 1 transition doesn't require Turnstile yet
     if (isFisio && mode === 'register' && fisioStep === 1) {
-      if (password !== confirmPassword) {
-        toast.error(t('auth.errPasswordMismatch'));
-        return;
-      }
-      if (!fullName.trim() || !email.trim() || !password.trim() || !cedula.trim()) {
-        toast.error('Completa los campos requeridos');
-        return;
-      }
-      if (!telefono.trim()) {
-        toast.error(t('auth.errPhoneRequired'));
+      const step1Data = createFisioRegisterData(
+        fullName, email, password, confirmPassword, cedula, telefono,
+        universidad, colegiadoId, anioEgreso, especialidadesSel, credencialFile, turnstileToken || ''
+      );
+      const validation = validateFisioStep1(step1Data);
+      if (!validation.success) {
+        const firstError = Object.values(validation.errors)[0];
+        toast.error(firstError || 'Completa los campos requeridos');
         return;
       }
       setFisioStep(2);
@@ -514,8 +523,11 @@ export function Login() {
     // PACIENTE: INICIAR SESIÓN (EMAIL Y PASSWORD)
     // ─────────────────────────────────────────────
     if (isPaciente && mode === 'login') {
-      if (!email.trim() || !password.trim()) {
-        toast.error(t('auth.errCredentials'));
+      const loginData = createPatientLoginData(email, password, turnstileToken);
+      const validation = validatePatientLogin(loginData);
+      if (!validation.success) {
+        const firstError = Object.values(validation.errors)[0];
+        toast.error(firstError || t('auth.errCredentials'));
         return;
       }
       const ok = await signInPatientWithEmail(email, password);
@@ -539,32 +551,22 @@ export function Login() {
     // PACIENTE: REGISTRO (TOKEN + EMAIL + PASSWORD)
     // ─────────────────────────────────────────────
     if (isPaciente && mode === 'register') {
-      const cleanTok = token.trim();
-      if (!cleanTok || cleanTok.length < 4) {
-        toast.error(t('auth.errCode'));
-        return;
-      }
-      if (!email.trim() || !password.trim()) {
-        toast.error(t('auth.errSignup'));
-        return;
-      }
-      if (password !== confirmPassword) {
-        toast.error(t('auth.errPasswordMismatch'));
-        return;
-      }
-      if (password.length < 6) {
-        toast.error(t('auth.errPasswordShort'));
+      const registerData = createPatientRegisterData(token, email, password, confirmPassword, fullName, turnstileToken);
+      const validation = validatePatientRegister(registerData);
+      if (!validation.success) {
+        const firstError = Object.values(validation.errors)[0];
+        toast.error(firstError || t('auth.errSignup'));
         return;
       }
 
       // Special demo shortcut
-      if (cleanTok === '123456' || email === 'paciente@demo.com') {
-        const ok = await linkTokenToEmail(cleanTok, email, password, fullName || undefined);
+      if (token.trim() === '123456' || email === 'paciente@demo.com') {
+        const ok = await linkTokenToEmail(token.trim(), email, password, fullName || undefined);
         if (ok) toast.success(t('auth.signupLinked'));
         return;
       }
 
-      const ok = await linkTokenToEmail(cleanTok, email, password, fullName || undefined);
+      const ok = await linkTokenToEmail(token.trim(), email, password, fullName || undefined);
       if (ok) {
         toast.success(t('auth.signupTokenLinked'));
       } else {
@@ -581,8 +583,11 @@ export function Login() {
     // FISIOTERAPEUTA: INICIAR SESIÓN (EMAIL Y PASSWORD)
     // ─────────────────────────────────────────────
     if (isFisio && mode === 'login') {
-      if (!email.trim() || !password.trim()) {
-        toast.error(t('auth.errCredentials'));
+      const loginData = createFisioLoginData(email, password, turnstileToken);
+      const validation = validateFisioLogin(loginData);
+      if (!validation.success) {
+        const firstError = Object.values(validation.errors)[0];
+        toast.error(firstError || t('auth.errCredentials'));
         return;
       }
       const ok = await signIn(email, password);
@@ -602,20 +607,14 @@ export function Login() {
     // FISIOTERAPEUTA: REGISTRO PROFESIONAL
     // ─────────────────────────────────────────────
     if (isFisio && mode === 'register') {
-      if (password !== confirmPassword) {
-        toast.error(t('auth.errPasswordMismatch'));
-        return;
-      }
-      if (fisioStep === 1) {
-        if (!fullName.trim() || !email.trim() || !password.trim() || !cedula.trim()) {
-          toast.error('Completa los campos requeridos');
-          return;
-        }
-        if (!telefono.trim()) {
-          toast.error(t('auth.errPhoneRequired'));
-          return;
-        }
-        setFisioStep(2);
+      const registerData = createFisioRegisterData(
+        fullName, email, password, confirmPassword, cedula, telefono,
+        universidad, colegiadoId, anioEgreso, especialidadesSel, credencialFile, turnstileToken
+      );
+      const validation = validateFisioRegister(registerData);
+      if (!validation.success) {
+        const firstError = Object.values(validation.errors)[0];
+        toast.error(firstError || 'Completa los campos requeridos');
         return;
       }
 

@@ -364,6 +364,7 @@ if (profile) {
                 role: 'fisioterapeuta',
                 password_hash: computedHash,
                 is_active: true,
+                email_verified_at: new Date().toISOString(),
                 cedula: signupData.cedula || null,
                 universidad: signupData.universidad || null,
                 colegiado_id: signupData.colegiadoId || null,
@@ -749,6 +750,7 @@ if (profile) {
               full_name: fullName,
               role: 'paciente',
               is_active: true,
+              email_verified_at: new Date().toISOString(),
             })
             .select('*')
             .maybeSingle();
