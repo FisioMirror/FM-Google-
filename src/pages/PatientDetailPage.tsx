@@ -1068,8 +1068,8 @@ export function PatientDetailPage() {
                     };
                     for (const [label, newValue] of Object.entries(ocrSuggestedChanges)) {
                       const dbField = fieldMap[label];
-                      if (dbField === 'estatura_cm') updates[dbField] = parseInt(newValue);
-                      else if (dbField === 'peso_kg') updates[dbField] = parseFloat(newValue);
+                      if (dbField === 'estatura_cm') updates[dbField] = Math.min(250, Math.max(40, parseInt(newValue, 10) || 170));
+                      else if (dbField === 'peso_kg') updates[dbField] = Math.min(300, Math.max(2, parseFloat(newValue) || 70));
                       else updates[dbField] = newValue;
                     }
                     updates['updated_at'] = new Date().toISOString();

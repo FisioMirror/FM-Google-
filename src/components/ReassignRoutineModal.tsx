@@ -147,9 +147,10 @@ export function ReassignRoutineModal({
   };
 
   const updateConfig = (libraryId: string, field: 'series' | 'repeticiones', value: number) => {
+    const maxVal = field === 'series' ? 6 : 30;
     setSelected((prev) =>
       prev.map((p) =>
-        p.libraryId === libraryId ? { ...p, [field]: Math.max(1, Math.min(99, value || 1)) } : p,
+        p.libraryId === libraryId ? { ...p, [field]: Math.max(1, Math.min(maxVal, value || 1)) } : p,
       ),
     );
   };
@@ -503,11 +504,11 @@ export function ReassignRoutineModal({
                               <input
                                 type="number"
                                 min={1}
-                                max={20}
+                                max={6}
                                 value={ex.series}
                                 onChange={(e) => {
                                   const val = parseInt(e.target.value, 10);
-                                  if (!isNaN(val)) updateConfig(ex.libraryId, 'series', Math.min(Math.max(val, 1), 20));
+                                  if (!isNaN(val)) updateConfig(ex.libraryId, 'series', Math.min(Math.max(val, 1), 6));
                                 }}
                                 className="input-base w-full text-center px-2 py-2 rounded-lg bg-surface border border-outline-variant/20 font-bold"
                               />
@@ -535,11 +536,11 @@ export function ReassignRoutineModal({
                               <input
                                 type="number"
                                 min={1}
-                                max={100}
+                                max={30}
                                 value={ex.repeticiones}
                                 onChange={(e) => {
                                   const val = parseInt(e.target.value, 10);
-                                  if (!isNaN(val)) updateConfig(ex.libraryId, 'repeticiones', Math.min(Math.max(val, 1), 100));
+                                  if (!isNaN(val)) updateConfig(ex.libraryId, 'repeticiones', Math.min(Math.max(val, 1), 30));
                                 }}
                                 className="input-base w-full text-center px-2 py-2 rounded-lg bg-surface border border-outline-variant/20 font-bold"
                               />

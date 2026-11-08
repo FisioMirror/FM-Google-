@@ -34,22 +34,26 @@ export const ROLES = ['fisioterapeuta', 'paciente'] as const;
 // REUSABLE VALIDATORS
 // ============================================================================
 
-/** Venezuelan ID: 6-9 digits, with optional V-, E-, J- prefix and hyphens */
+/** Venezuelan ID: 6-8 digits, with optional V-, E-, J- prefix and hyphens */
 export const cedulaSchema = z
   .string()
-  .min(6, 'La cédula debe tener al menos 6 caracteres')
-  .max(14, 'La cédula es demasiado larga')
+  .min(1, 'La cédula de identidad es requerida')
+  .max(14, 'La cédula no puede tener más de 14 caracteres')
   .refine(
-    (val) => !val || /^(?:[VEJPvejp][- ]?)?\d{6,9}$/.test(val.trim()),
-    'Formato de cédula inválido (ej: 12345678 o V-12345678)'
+    (val) => {
+      if (!val) return false;
+      const clean = val.replace(/^[VEJPvejp][- ]?/, '').trim();
+      return /^\d{6,8}$/.test(clean);
+    },
+    'La cédula debe contener entre 6 y 8 dígitos numéricos, sin letras ni símbolos (ej: 12345678 o V-12345678)'
   )
   .transform((val) => val.trim());
 
 /** Email with strict validation */
 export const emailSchema = z
   .string()
-  .min(1, 'El correo es obligatorio')
-  .email('Formato de correo inválido')
+  .min(1, 'El correo electrónico es obligatorio')
+  .email('Introduce un formato de correo electrónico válido (ej: nombre@ejemplo.com)')
   .max(254, 'El correo es demasiado largo')
   .toLowerCase()
   .trim();
@@ -58,10 +62,10 @@ export const emailSchema = z
 export const passwordSchema = z
   .string()
   .min(8, 'La contraseña debe tener al menos 8 caracteres')
-  .max(128, 'La contraseña es demasiado larga')
-  .regex(/[A-Z]/, 'Debe contener al menos una mayúscula')
-  .regex(/[0-9]/, 'Debe contener al menos un número')
-  .regex(/[^A-Za-z0-9]/, 'Debe contener al menos un símbolo');
+  .max(128, 'La contraseña no puede exceder 128 caracteres')
+  .regex(/[A-Z]/, 'La contraseña debe contener al menos una letra mayúscula')
+  .regex(/[0-9]/, 'La contraseña debe contener al menos un número')
+  .regex(/[^A-Za-z0-9]/, 'La contraseña debe contener al menos un carácter especial o símbolo');
 
 /** Confirm password (validated in parent schema) */
 export const confirmPasswordSchema = z.string().min(1, 'Confirma tu contraseña');
@@ -70,22 +74,63 @@ export const confirmPasswordSchema = z.string().min(1, 'Confirma tu contraseña'
 export const fullNameSchema = z
   .string()
   .min(2, 'El nombre debe tener al menos 2 caracteres')
-  .max(100, 'El nombre es demasiado largo')
-  .regex(/^[\p{L}\s'-]+$/u, 'El nombre solo puede contener letras, espacios, guiones y apóstrofes')
+  .max(100, 'El nombre no puede exceder 100 caracteres')
+  .regex(/^[\p{L}\s'.-]+$/u, 'El nombre solo puede contener letras, espacios, puntos, guiones y apóstrofes')
   .trim();
 
-/** Phone: Venezuelan format (optional, handles spaces, hyphens and parentheses) */
+/** Strict Phone Validation: Venezuelan mobile/landlines and ITU E.164 international */
 export const phoneSchema = z
+  .string()
+  .min(1, 'El número telefónico es obligatorio')
+  .max(20, 'El teléfono no puede exceder 20 caracteres')
+  .transform((val) => val.trim())
+  .refine(
+    (val) => {
+      if (!val) return false;
+      const clean = val.replace(/[\s\-().+]/g, '');
+      if (!/^\d+$/.test(clean)) return false;
+      if (clean.length < 10 || clean.length > 15) return false;
+      // Reject dummy repetitive numbers (e.g., 0000000000, 1111111111)
+      if (/^(\d)\1{7,}$/.test(clean)) return false;
+      // Venezuelan local format: must be 11 digits and start with valid operator/area
+      if (clean.startsWith('0')) {
+        return clean.length === 11 && /^(0412|0414|0424|0416|0426|02\d{2})/.test(clean);
+      }
+      // Venezuelan international format: starts with 58 and is 12 digits total
+      if (clean.startsWith('58')) {
+        return clean.length === 12 && /^58(412|414|424|416|426|2\d{2})/.test(clean);
+      }
+      // Otherwise valid international standard number
+      return true;
+    },
+    'Ingresa un número telefónico válido (ej: 0412-1234567 o +58 412 1234567)'
+  );
+
+/** Optional Phone Validation */
+export const optionalPhoneSchema = z
   .string()
   .optional()
   .nullable()
+  .transform((val) => val?.trim() || null)
   .refine(
-    (val) => !val || /^(\+58|0)?[24]\d{9}$/.test(val.replace(/[\s\-()]/g, '')),
-    'Formato de teléfono inválido (ej: 04121234567 o +58 412-1234567)'
-  )
-  .transform((val) => val?.trim() || null);
+    (val) => {
+      if (!val) return true;
+      const clean = val.replace(/[\s\-().+]/g, '');
+      if (!/^\d+$/.test(clean)) return false;
+      if (clean.length < 10 || clean.length > 15) return false;
+      if (/^(\d)\1{7,}$/.test(clean)) return false;
+      if (clean.startsWith('0')) {
+        return clean.length === 11 && /^(0412|0414|0424|0416|0426|02\d{2})/.test(clean);
+      }
+      if (clean.startsWith('58')) {
+        return clean.length === 12 && /^58(412|414|424|416|426|2\d{2})/.test(clean);
+      }
+      return true;
+    },
+    'Ingresa un número telefónico válido (ej: 0412-1234567 o +58 412 1234567)'
+  );
 
-/** Date of birth: not future, not > 120 years, not "born yesterday" */
+/** Date of birth: not future, not > 120 years */
 export const birthDateSchema = z
   .string()
   .optional()
@@ -94,106 +139,115 @@ export const birthDateSchema = z
     if (!val) return true;
     const date = new Date(val);
     const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    today.setHours(23, 59, 59, 999);
+    if (isNaN(date.getTime())) return false;
     if (date > today) return false;
     const age = today.getFullYear() - date.getFullYear();
-    const monthDiff = today.getMonth() - date.getMonth();
-    const dayDiff = today.getDate() - date.getDate();
-    const actualAge = monthDiff < 0 || (monthDiff === 0 && dayDiff < 0) ? age - 1 : age;
-    return actualAge >= 0 && actualAge <= 120;
-  }, 'Fecha de nacimiento inválida (no futura, edad 0-120 años)')
+    return age >= 0 && age <= 120;
+  }, 'La fecha de nacimiento no puede ser futura ni mayor a 120 años')
   .transform((val) => val || null);
 
-/** Height in cm: 50-250 */
+/** Height in cm: 40-250 */
 export const heightSchema = z
   .number()
   .nullable()
   .optional()
-  .refine((val) => val === null || val === undefined || (val >= 50 && val <= 250), 'Estatura debe estar entre 50 y 250 cm');
+  .refine((val) => val === null || val === undefined || (val >= 40 && val <= 250), 'La estatura debe estar entre 40 y 250 cm');
 
 /** Weight in kg: 2-300 */
 export const weightSchema = z
   .number()
   .nullable()
   .optional()
-  .refine((val) => val === null || val === undefined || (val >= 2 && val <= 300), 'Peso debe estar entre 2 y 300 kg');
+  .refine((val) => val === null || val === undefined || (val >= 2 && val <= 300), 'El peso debe estar entre 2 y 300 kg');
 
 /** Pain level: 0-10 */
 export const painLevelSchema = z
   .number()
   .nullable()
   .optional()
-  .refine((val) => val === null || val === undefined || (val >= 0 && val <= 10), 'Nivel de dolor debe ser 0-10');
+  .refine((val) => val === null || val === undefined || (val >= 0 && val <= 10), 'El nivel de dolor debe ser entre 0 y 10 (Escala EVA)');
 
-/** Repetitions per set: 1-100 (with warning > 50) */
+/** Repetitions per set: 1-30 (safe clinical rehabilitation limit) */
 export const repsSchema = z
   .number()
   .nullable()
   .optional()
-  .refine((val) => val === null || val === undefined || (val >= 1 && val <= 100), 'Repeticiones deben ser 1-100');
+  .refine((val) => val === null || val === undefined || (val >= 1 && val <= 30), 'Las repeticiones deben ser entre 1 y 30 por serie para seguridad articular');
 
-/** Sets: 1-20 */
+/** Sets: 1-6 (safe clinical limit to prevent acute muscle overload) */
 export const setsSchema = z
   .number()
   .nullable()
   .optional()
-  .refine((val) => val === null || val === undefined || (val >= 1 && val <= 20), 'Series deben ser 1-20');
+  .refine((val) => val === null || val === undefined || (val >= 1 && val <= 6), 'Las series deben ser entre 1 y 6 por ejercicio');
 
 /** Duration seconds: 1-7200 (2 hours max) */
 export const durationSchema = z
   .number()
   .nullable()
   .optional()
-  .refine((val) => val === null || val === undefined || (val >= 1 && val <= 7200), 'Duración debe ser 1-7200 segundos');
+  .refine((val) => val === null || val === undefined || (val >= 1 && val <= 7200), 'La duración debe ser entre 1 y 7200 segundos');
 
 /** ROM objective: 0-180 degrees */
 export const romSchema = z
   .number()
   .nullable()
   .optional()
-  .refine((val) => val === null || val === undefined || (val >= 0 && val <= 180), 'ROM debe ser 0-180 grados');
+  .refine((val) => val === null || val === undefined || (val >= 0 && val <= 180), 'El rango articular ROM debe ser entre 0° y 180°');
 
-/** Frequency per week: 1-7 */
+/** Frequency per week: 1-7 days */
 export const frequencySchema = z
   .number()
   .nullable()
   .optional()
-  .refine((val) => val === null || val === undefined || (val >= 1 && val <= 7), 'Frecuencia semanal 1-7');
+  .refine((val) => val === null || val === undefined || (val >= 1 && val <= 7), 'La frecuencia semanal debe ser entre 1 y 7 días');
 
 /** Year of graduation: 1950 - current year */
 export const graduationYearSchema = z
-  .number()
+  .union([
+    z.number(),
+    z.string().transform((val) => (val === 'anterior' ? 2014 : parseInt(val, 10))),
+  ])
   .nullable()
   .optional()
   .refine((val) => {
-    if (val === null || val === undefined) return true;
+    if (val === null || val === undefined || isNaN(val as number)) return true;
     const currentYear = new Date().getFullYear();
-    return val >= 1950 && val <= currentYear;
-  }, `Año de egreso debe estar entre 1950 y ${new Date().getFullYear()}`);
+    return (val as number) >= 1950 && (val as number) <= currentYear;
+  }, `El año de egreso debe estar entre 1950 y ${new Date().getFullYear()}`);
 
-/** Blood type enum */
-export const bloodTypeSchema = z
-  .enum(BLOOD_TYPES)
-  .nullable()
-  .optional();
+/** Blood type enum with friendly Spanish error */
+export const bloodTypeSchema = z.preprocess(
+  (v) => (v === '' ? null : v),
+  z.enum(BLOOD_TYPES, {
+    errorMap: () => ({ message: 'Selecciona un grupo sanguíneo válido (ej: O+, A+, B+)' }),
+  }).nullable().optional()
+);
 
-/** Activity level enum */
-export const activityLevelSchema = z
-  .enum(ACTIVITY_LEVELS)
-  .nullable()
-  .optional();
+/** Activity level enum with friendly Spanish error */
+export const activityLevelSchema = z.preprocess(
+  (v) => (v === '' ? null : v),
+  z.enum(ACTIVITY_LEVELS, {
+    errorMap: () => ({ message: 'Selecciona un nivel de actividad física válido' }),
+  }).nullable().optional()
+);
 
-/** Affected limb enum */
-export const affectedLimbSchema = z
-  .enum(AFFECTED_LIMBS)
-  .nullable()
-  .optional();
+/** Affected limb enum - friendly message for clinical users */
+export const affectedLimbSchema = z.preprocess(
+  (v) => (v === '' ? null : v),
+  z.enum(AFFECTED_LIMBS, {
+    errorMap: () => ({ message: 'Todavía no se ha seleccionado una extremidad o articulación afectada' }),
+  }).nullable().optional()
+);
 
-/** Recovery phase enum */
-export const recoveryPhaseSchema = z
-  .enum(RECOVERY_PHASES)
-  .nullable()
-  .optional();
+/** Recovery phase enum with friendly error */
+export const recoveryPhaseSchema = z.preprocess(
+  (v) => (v === '' ? null : v),
+  z.enum(RECOVERY_PHASES, {
+    errorMap: () => ({ message: 'Selecciona una fase de recuperación válida' }),
+  }).nullable().optional()
+);
 
 /** Role enum */
 export const roleSchema = z.enum(ROLES);
@@ -246,24 +300,27 @@ export const fisioLoginSchema = z.object({
   turnstileToken: z.string().min(1, 'Completa la verificación de seguridad'),
 });
 
-/** Physiotherapist Register - Step 1 base shape without refinement */
-const fisioRegisterStep1Base = z.object({
+/** Physiotherapist Register - Step 1 base shape (before Turnstile & credential) */
+export const fisioRegisterStep1Base = z.object({
   fullName: fullNameSchema,
   email: emailSchema,
   password: passwordSchema,
   confirmPassword: confirmPasswordSchema,
   cedula: cedulaSchema,
   telefono: phoneSchema,
-  turnstileToken: z.string().min(1, 'Completa la verificación de seguridad'),
+  turnstileToken: z.string().optional().nullable(),
 });
 
-/** Physiotherapist Register - Step 1 (Basic) */
-export const fisioRegisterStep1Schema = fisioRegisterStep1Base.refine((data) => data.password === data.confirmPassword, {
-  message: 'Las contraseñas no coinciden',
-  path: ['confirmPassword'],
-});
+/** Physiotherapist Register - Step 1 with password match refinement */
+export const fisioRegisterStep1Schema = fisioRegisterStep1Base.refine(
+  (data) => data.password === data.confirmPassword,
+  {
+    message: 'Las contraseñas no coinciden',
+    path: ['confirmPassword'],
+  }
+);
 
-/** Physiotherapist Register - Step 2 (Professional) */
+/** Physiotherapist Register - Step 2 (Professional & Credential) */
 export const fisioRegisterStep2Schema = z.object({
   universidad: optionalText(100, 'Universidad'),
   colegiadoId: optionalText(50, 'Número de colegiado'),
@@ -272,8 +329,11 @@ export const fisioRegisterStep2Schema = z.object({
   credencialFile: z.instanceof(File).nullable().optional(),
 });
 
-/** Complete Physiotherapist Register (combined) */
+/** Complete Physiotherapist Register (combined with Turnstile required at final submit) */
 export const fisioRegisterSchema = fisioRegisterStep1Base
+  .extend({
+    turnstileToken: z.string().min(1, 'Completa la verificación de seguridad'),
+  })
   .merge(fisioRegisterStep2Schema)
   .refine((data) => data.password === data.confirmPassword, {
     message: 'Las contraseñas no coinciden',
@@ -285,7 +345,8 @@ export const patientProfileSchema = z.preprocess((val: any) => {
   if (!val || typeof val !== 'object') return val;
   return {
     ...val,
-    fullName: val.fullName ?? val.full_name ?? '',
+    fullName: val.fullName ?? val.full_name ?? val.nombre_completo ?? '',
+    documentoIdentidad: val.documentoIdentidad ?? val.documento_identidad ?? null,
     email: val.email || 'paciente@fisiomirror.app',
     fechaNacimiento: val.fechaNacimiento ?? val.fecha_nacimiento ?? null,
     telefono: val.telefono ?? null,
@@ -318,7 +379,7 @@ export const patientProfileSchema = z.preprocess((val: any) => {
   fullName: fullNameSchema,
   email: emailSchema,
   fechaNacimiento: birthDateSchema,
-  telefono: phoneSchema,
+  telefono: optionalPhoneSchema,
   tipoSangre: bloodTypeSchema,
   ocupacion: optionalText(100, 'Ocupación'),
   nivelActividad: activityLevelSchema,
@@ -341,11 +402,11 @@ export const patientProfileSchema = z.preprocess((val: any) => {
 
   // Emergency contact
   contactoEmergenciaNombre: optionalText(100, 'Nombre contacto emergencia'),
-  contactoEmergenciaTelefono: phoneSchema,
+  contactoEmergenciaTelefono: optionalPhoneSchema,
 
   // Guardian (required if esMenorEdad)
   tutorNombre: optionalText(100, 'Nombre del tutor'),
-  tutorTelefono: phoneSchema,
+  tutorTelefono: optionalPhoneSchema,
   tutorEmail: emailSchema.optional().nullable(),
 
   // Consent
@@ -691,17 +752,40 @@ export function formatZodError(error: z.ZodError): Record<string, string> {
   const formatted: Record<string, string> = {};
   for (const issue of error.issues) {
     const path = issue.path.join('.');
+    let msg = issue.message;
+
+    // Humanize technical or generic Zod validation messages
+    if (msg.includes('Expected') || issue.code === 'invalid_enum_value') {
+      if (path.includes('extremidad') || path.includes('affectedLimb') || path.includes('articulacion')) {
+        msg = 'Todavía no se ha elegido una extremidad o articulación válida';
+      } else if (path.includes('sangre') || path.includes('bloodType') || path.includes('tipoSangre')) {
+        msg = 'Selecciona un grupo sanguíneo válido (ej: O+, A+, B+)';
+      } else if (path.includes('actividad') || path.includes('activityLevel') || path.includes('nivelActividad')) {
+        msg = 'Selecciona un nivel de actividad física válido';
+      } else if (path.includes('fase') || path.includes('recoveryPhase')) {
+        msg = 'Selecciona una fase de recuperación válida';
+      } else {
+        msg = 'Por favor selecciona una opción válida de la lista';
+      }
+    } else if (issue.code === 'invalid_type') {
+      if (msg.includes('number')) {
+        msg = 'Debes introducir un valor numérico válido';
+      } else if (msg.includes('string')) {
+        msg = 'Este campo no puede quedar en blanco';
+      }
+    }
+
     if (!formatted[path] || issue.code === 'custom') {
-      formatted[path] = issue.message;
+      formatted[path] = msg;
     }
     // Also provide snake_case version of camelCase keys and vice-versa
     const snakePath = path.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`);
     if (!formatted[snakePath]) {
-      formatted[snakePath] = issue.message;
+      formatted[snakePath] = msg;
     }
     const camelPath = path.replace(/_([a-z])/g, (_, letter) => letter.toUpperCase());
     if (!formatted[camelPath]) {
-      formatted[camelPath] = issue.message;
+      formatted[camelPath] = msg;
     }
   }
   return formatted;

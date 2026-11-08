@@ -15,6 +15,8 @@ import { WaveformVisualizer } from '../components/ui/WaveformVisualizer';
 import { MedicalIcon } from '../components/ui/MedicalIcon';
 import { EmailFeatureModal } from '../components/ui/EmailFeatureModal';
 import { notifyTokenCreated } from '../lib/notificationService';
+import { patientProfileSchema, PLACEHOLDERS, SELECT_OPTIONS, formatZodError } from '../lib/validation';
+import { cn } from '../lib/utils';
 
 type Step = 1 | 2 | 3 | 4;
 
@@ -57,8 +59,7 @@ const emptyData: ExtractedData = {
   tutor_nombre: '', tutor_telefono: '', tutor_email: '',
 };
 
-const BLOOD_TYPES = ['O+', 'O-', 'A+', 'A-', 'B+', 'B-', 'AB+', 'AB-'];
-const ACTIVITY_LEVELS = ['Sedentario', 'Moderado', 'Activo'];
+
 
 interface ExerciseItem {
   name: string;
@@ -87,6 +88,7 @@ export function OCRScannerPage() {
   const [transcribing, setTranscribing] = useState(false);
   const [files, setFiles] = useState<File[]>([]);
   const [extractedData, setExtractedData] = useState<ExtractedData>({ ...emptyData });
+  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
   const [audioTranscription, setAudioTranscription] = useState('');
   const [prescription, setPrescription] = useState<ExerciseItem[]>([]);
   const [generatedToken, setGeneratedToken] = useState<string | null>(null);
@@ -315,7 +317,9 @@ export function OCRScannerPage() {
     const next = [...prescription];
     const item = next[index];
     if (item) {
-      next[index] = { ...item, [field]: Math.max(1, (item[field] as number) + delta) };
+      const maxVal = field === 'sets' ? 6 : field === 'reps' ? 30 : 7;
+      const current = (item[field] as number) || 1;
+      next[index] = { ...item, [field]: Math.min(maxVal, Math.max(1, current + delta)) };
       setPrescription(next);
     }
   };
@@ -387,8 +391,8 @@ export function OCRScannerPage() {
             alergias: extractedData.alergias || null,
             enfermedades_cronicas: extractedData.enfermedades_cronicas || null,
             lesiones_previas: extractedData.lesiones_previas || null,
-            estatura_cm: extractedData.estatura_cm ? parseInt(extractedData.estatura_cm) : null,
-            peso_kg: extractedData.peso_kg ? parseFloat(extractedData.peso_kg) : null,
+            estatura_cm: extractedData.estatura_cm ? Math.min(250, Math.max(40, parseInt(extractedData.estatura_cm, 10))) : null,
+            peso_kg: extractedData.peso_kg ? Math.min(300, Math.max(2, parseFloat(extractedData.peso_kg))) : null,
             extremidad_afectada: extractedData.extremidad_afectada || null,
             rom_objetivo: extractedData.rom_objetivo || null,
             frecuencia_sesiones: extractedData.frecuencia_sesiones || null,
@@ -518,8 +522,15 @@ export function OCRScannerPage() {
         }).catch(() => {});
       }
       toast.success('Paciente registrado y token generado exitosamente');
-    } catch (e) {
-      toast.error('Error al registrar paciente: ' + (e as Error).message);
+    } catch (e: any) {
+      const msg = e?.message || 'Error desconocido';
+      if (msg.includes('overflow') || msg.includes('numeric')) {
+        toast.error('Uno de los campos numéricos (peso o estatura) supera el límite permitido');
+      } else if (msg.includes('duplicate key') || msg.includes('23505')) {
+        toast.error('Ya existe un paciente con este correo electrónico o identificación');
+      } else {
+        toast.error('Error al registrar paciente: ' + msg);
+      }
     }
   };
 
@@ -533,6 +544,31 @@ export function OCRScannerPage() {
         toast.error('No se pudo copiar el token');
       }
     }
+  };
+
+  const updateField = (field: keyof ExtractedData, value: any) => {
+    setExtractedData((prev) => ({ ...prev, [field]: value }));
+    if (validationErrors[field]) {
+      setValidationErrors((prev) => {
+        const copy = { ...prev };
+        delete copy[field];
+        return copy;
+      });
+    }
+  };
+
+  const handleConfirmAndProceedToStep3 = () => {
+    // Validate the 22 clinical intake fields
+    const result = patientProfileSchema.safeParse(extractedData);
+    if (!result.success) {
+      const errs = formatZodError(result.error);
+      setValidationErrors(errs);
+      const firstErr = Object.values(errs)[0];
+      toast.error(firstErr || 'Por favor completa y corrige los datos del paciente');
+      return;
+    }
+    setValidationErrors({});
+    setStep(3);
   };
 
   const steps = [
@@ -795,69 +831,223 @@ export function OCRScannerPage() {
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 <div>
-                  <label className={labelClass}>{t('tr.nombre_y_apellido')}</label>
-                  <input value={extractedData.nombre_completo} onChange={(e) => setExtractedData({ ...extractedData, nombre_completo: e.target.value })} className={inputClass} />
+                  <label className={labelClass}>
+                    {t('tr.nombre_y_apellido')} <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    value={extractedData.nombre_completo}
+                    onChange={(e) => updateField('nombre_completo', e.target.value)}
+                    placeholder={PLACEHOLDERS.fullName}
+                    className={cn(inputClass, validationErrors.fullName && 'border-red-500 focus:ring-red-400/20')}
+                  />
+                  {validationErrors.fullName && (
+                    <p className="text-[11px] text-red-500 font-semibold mt-1 flex items-center gap-1">
+                      <Icon name="error" size={13} />
+                      {validationErrors.fullName}
+                    </p>
+                  )}
                 </div>
                 <div>
                   <label className={labelClass}>{t('ocr.idDocument')}</label>
-                  <input value={extractedData.documento_identidad} onChange={(e) => setExtractedData({ ...extractedData, documento_identidad: e.target.value })} placeholder="No detectado" className={inputClass} />
+                  <input
+                    value={extractedData.documento_identidad}
+                    onChange={(e) => updateField('documento_identidad', e.target.value)}
+                    placeholder={PLACEHOLDERS.cedula}
+                    className={cn(inputClass, validationErrors.documentoIdentidad && 'border-red-500 focus:ring-red-400/20')}
+                  />
+                  {validationErrors.documentoIdentidad && (
+                    <p className="text-[11px] text-red-500 font-semibold mt-1 flex items-center gap-1">
+                      <Icon name="error" size={13} />
+                      {validationErrors.documentoIdentidad}
+                    </p>
+                  )}
                 </div>
                 <div>
                   <label className={labelClass}>{t('ocr.birthDateReq')}</label>
-                  <input type="date" value={extractedData.fecha_nacimiento} onChange={(e) => setExtractedData({ ...extractedData, fecha_nacimiento: e.target.value })} className={inputClass} />
+                  <input
+                    type="date"
+                    value={extractedData.fecha_nacimiento}
+                    max={new Date().toISOString().split('T')[0]}
+                    onChange={(e) => updateField('fecha_nacimiento', e.target.value)}
+                    className={cn(inputClass, validationErrors.fechaNacimiento && 'border-red-500 focus:ring-red-400/20')}
+                  />
+                  {validationErrors.fechaNacimiento && (
+                    <p className="text-[11px] text-red-500 font-semibold mt-1 flex items-center gap-1">
+                      <Icon name="error" size={13} />
+                      {validationErrors.fechaNacimiento}
+                    </p>
+                  )}
                 </div>
                 <div>
                   <label className={labelClass}>{t('ocr.phone')}</label>
-                  <input value={extractedData.telefono} onChange={(e) => setExtractedData({ ...extractedData, telefono: e.target.value })} placeholder="No detectado" className={inputClass} />
+                  <input
+                    value={extractedData.telefono}
+                    onChange={(e) => updateField('telefono', e.target.value)}
+                    placeholder={PLACEHOLDERS.telefono}
+                    className={cn(inputClass, validationErrors.telefono && 'border-red-500 focus:ring-red-400/20')}
+                  />
+                  {validationErrors.telefono && (
+                    <p className="text-[11px] text-red-500 font-semibold mt-1 flex items-center gap-1">
+                      <Icon name="error" size={13} />
+                      {validationErrors.telefono}
+                    </p>
+                  )}
                 </div>
                 <div>
                   <label className={labelClass}>{t('tr.email')}</label>
-                  <input type="email" value={extractedData.email} onChange={(e) => setExtractedData({ ...extractedData, email: e.target.value })} placeholder="No detectado" className={inputClass} />
+                  <input
+                    type="email"
+                    value={extractedData.email}
+                    onChange={(e) => updateField('email', e.target.value)}
+                    placeholder={PLACEHOLDERS.email}
+                    className={cn(inputClass, validationErrors.email && 'border-red-500 focus:ring-red-400/20')}
+                  />
+                  {validationErrors.email && (
+                    <p className="text-[11px] text-red-500 font-semibold mt-1 flex items-center gap-1">
+                      <Icon name="error" size={13} />
+                      {validationErrors.email}
+                    </p>
+                  )}
                 </div>
                 <div>
                   <label className={labelClass}>{t('ocr.bloodType')}</label>
-                  <select value={extractedData.tipo_sangre} onChange={(e) => setExtractedData({ ...extractedData, tipo_sangre: e.target.value })} className={inputClass}>
+                  <select
+                    value={extractedData.tipo_sangre}
+                    onChange={(e) => updateField('tipo_sangre', e.target.value)}
+                    className={cn(inputClass, validationErrors.tipoSangre && 'border-red-500 focus:ring-red-400/20')}
+                  >
                     <option value="">{t('tr.no_detectado')}</option>
-                    {BLOOD_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
+                    {SELECT_OPTIONS.bloodType.map((t) => (
+                      <option key={t.value} value={t.value}>
+                        {t.label}
+                      </option>
+                    ))}
                   </select>
                 </div>
                 <div>
                   <label className={labelClass}>{t('ocr.occupation')}</label>
-                  <input value={extractedData.ocupacion} onChange={(e) => setExtractedData({ ...extractedData, ocupacion: e.target.value })} placeholder="No detectado" className={inputClass} />
+                  <input
+                    value={extractedData.ocupacion}
+                    onChange={(e) => updateField('ocupacion', e.target.value)}
+                    placeholder={PLACEHOLDERS.ocupacion}
+                    className={inputClass}
+                  />
                 </div>
                 <div>
                   <label className={labelClass}>{t('ocr.activityLevel')}</label>
-                  <select value={extractedData.nivel_actividad} onChange={(e) => setExtractedData({ ...extractedData, nivel_actividad: e.target.value })} className={inputClass}>
-                    <option value="">No detectado</option>
-                    {ACTIVITY_LEVELS.map((l) => <option key={l} value={l}>{l}</option>)}
+                  <select
+                    value={extractedData.nivel_actividad}
+                    onChange={(e) => updateField('nivel_actividad', e.target.value)}
+                    className={cn(inputClass, validationErrors.nivelActividad && 'border-red-500 focus:ring-red-400/20')}
+                  >
+                    <option value="">Selecciona nivel de actividad</option>
+                    {SELECT_OPTIONS.activityLevel.map((l) => (
+                      <option key={l.value} value={l.value}>
+                        {l.label}
+                      </option>
+                    ))}
                   </select>
                 </div>
                 <div>
                   <label className={labelClass}>{t('tr.estatura_cm')}</label>
-                  <input type="number" value={extractedData.estatura_cm} onChange={(e) => setExtractedData({ ...extractedData, estatura_cm: e.target.value })} placeholder="No detectado" className={inputClass} min={50} max={250} />
+                  <input
+                    type="number"
+                    value={extractedData.estatura_cm}
+                    onChange={(e) => updateField('estatura_cm', e.target.value)}
+                    placeholder={PLACEHOLDERS.estaturaCm}
+                    className={cn(inputClass, validationErrors.estaturaCm && 'border-red-500 focus:ring-red-400/20')}
+                    min={40}
+                    max={250}
+                  />
+                  {validationErrors.estaturaCm && (
+                    <p className="text-[11px] text-red-500 font-semibold mt-1 flex items-center gap-1">
+                      <Icon name="error" size={13} />
+                      {validationErrors.estaturaCm}
+                    </p>
+                  )}
                 </div>
                 <div>
                   <label className={labelClass}>{t('tr.peso_kg')}</label>
-                  <input type="number" step="0.01" value={extractedData.peso_kg} onChange={(e) => setExtractedData({ ...extractedData, peso_kg: e.target.value })} placeholder="No detectado" className={inputClass} min={2} max={300} />
+                  <input
+                    type="number"
+                    step="0.01"
+                    value={extractedData.peso_kg}
+                    onChange={(e) => updateField('peso_kg', e.target.value)}
+                    placeholder={PLACEHOLDERS.pesoKg}
+                    className={cn(inputClass, validationErrors.pesoKg && 'border-red-500 focus:ring-red-400/20')}
+                    min={2}
+                    max={300}
+                  />
+                  {validationErrors.pesoKg && (
+                    <p className="text-[11px] text-red-500 font-semibold mt-1 flex items-center gap-1">
+                      <Icon name="error" size={13} />
+                      {validationErrors.pesoKg}
+                    </p>
+                  )}
                 </div>
               </div>
               <div className="mt-4 flex items-center gap-3 p-4 rounded-xl bg-primary/5 border border-primary/10">
-                <input type="checkbox" id="es_menor" checked={extractedData.es_menor_edad} onChange={(e) => setExtractedData({ ...extractedData, es_menor_edad: e.target.checked })} className="w-5 h-5 rounded accent-primary" />
-                <label htmlFor="es_menor" className="text-sm font-bold text-on-surface cursor-pointer">{t('ocr.isMinor')}</label>
+                <input
+                  type="checkbox"
+                  id="es_menor"
+                  checked={extractedData.es_menor_edad}
+                  onChange={(e) => updateField('es_menor_edad', e.target.checked)}
+                  className="w-5 h-5 rounded accent-primary"
+                />
+                <label htmlFor="es_menor" className="text-sm font-bold text-on-surface cursor-pointer">
+                  {t('ocr.isMinor')}
+                </label>
               </div>
               {extractedData.es_menor_edad && (
                 <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4 p-4 rounded-xl bg-tertiary-fixed/10 border border-tertiary-fixed/20">
                   <div>
-                    <label className={labelClass}>{t('ocr.guardianName')}</label>
-                    <input value={extractedData.tutor_nombre} onChange={(e) => setExtractedData({ ...extractedData, tutor_nombre: e.target.value })} placeholder={t('ocr.guardianNamePh')} className={inputClass} />
+                    <label className={labelClass}>
+                      {t('ocr.guardianName')} <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      value={extractedData.tutor_nombre}
+                      onChange={(e) => updateField('tutor_nombre', e.target.value)}
+                      placeholder={PLACEHOLDERS.tutorNombre}
+                      className={cn(inputClass, validationErrors.tutorNombre && 'border-red-500 focus:ring-red-400/20')}
+                    />
+                    {validationErrors.tutorNombre && (
+                      <p className="text-[11px] text-red-500 font-semibold mt-1 flex items-center gap-1">
+                        <Icon name="error" size={13} />
+                        {validationErrors.tutorNombre}
+                      </p>
+                    )}
                   </div>
                   <div>
-                    <label className={labelClass}>{t('ocr.guardianPhone')}</label>
-                    <input value={extractedData.tutor_telefono} onChange={(e) => setExtractedData({ ...extractedData, tutor_telefono: e.target.value })} placeholder={t('ocr.guardianPhonePh')} className={inputClass} />
+                    <label className={labelClass}>
+                      {t('ocr.guardianPhone')} <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      value={extractedData.tutor_telefono}
+                      onChange={(e) => updateField('tutor_telefono', e.target.value)}
+                      placeholder={PLACEHOLDERS.tutorTelefono}
+                      className={cn(inputClass, validationErrors.tutorTelefono && 'border-red-500 focus:ring-red-400/20')}
+                    />
+                    {validationErrors.tutorTelefono && (
+                      <p className="text-[11px] text-red-500 font-semibold mt-1 flex items-center gap-1">
+                        <Icon name="error" size={13} />
+                        {validationErrors.tutorTelefono}
+                      </p>
+                    )}
                   </div>
                   <div>
                     <label className={labelClass}>{t('ocr.guardianEmail')}</label>
-                    <input value={extractedData.tutor_email} onChange={(e) => setExtractedData({ ...extractedData, tutor_email: e.target.value })} placeholder={t('ocr.guardianEmailPh')} className={inputClass} />
+                    <input
+                      value={extractedData.tutor_email}
+                      onChange={(e) => updateField('tutor_email', e.target.value)}
+                      placeholder={PLACEHOLDERS.tutorEmail}
+                      className={cn(inputClass, validationErrors.tutorEmail && 'border-red-500 focus:ring-red-400/20')}
+                    />
+                    {validationErrors.tutorEmail && (
+                      <p className="text-[11px] text-red-500 font-semibold mt-1 flex items-center gap-1">
+                        <Icon name="error" size={13} />
+                        {validationErrors.tutorEmail}
+                      </p>
+                    )}
                   </div>
                 </div>
               )}
@@ -875,43 +1065,135 @@ export function OCRScannerPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className={labelClass}>{t('ocr.pathologyReq')}</label>
-                  <textarea value={extractedData.patologia} onChange={(e) => setExtractedData({ ...extractedData, patologia: e.target.value })} rows={2} placeholder={t('ocr.mainDiagnosisPh')} className={textareaClass} />
+                  <textarea
+                    value={extractedData.patologia}
+                    onChange={(e) => updateField('patologia', e.target.value)}
+                    rows={2}
+                    placeholder={PLACEHOLDERS.patologia}
+                    className={cn(textareaClass, validationErrors.patologia && 'border-red-500 focus:ring-red-400/20')}
+                  />
+                  {validationErrors.patologia && (
+                    <p className="text-[11px] text-red-500 font-semibold mt-1 flex items-center gap-1">
+                      <Icon name="error" size={13} />
+                      {validationErrors.patologia}
+                    </p>
+                  )}
                 </div>
                 <div>
                   <label className={labelClass}>{t('ocr.secondaryDiagnosis')}</label>
-                  <textarea value={extractedData.diagnostico_secundario} onChange={(e) => setExtractedData({ ...extractedData, diagnostico_secundario: e.target.value })} rows={2} placeholder="No detectado" className={textareaClass} />
+                  <textarea
+                    value={extractedData.diagnostico_secundario}
+                    onChange={(e) => updateField('diagnostico_secundario', e.target.value)}
+                    rows={2}
+                    placeholder={PLACEHOLDERS.diagnosticoSecundario}
+                    className={textareaClass}
+                  />
                 </div>
                 <div>
                   <label className={labelClass}>{t('tr.medicamentos_actuales')}</label>
-                  <textarea value={extractedData.medicamentos_actuales} onChange={(e) => setExtractedData({ ...extractedData, medicamentos_actuales: e.target.value })} rows={2} placeholder="No detectado" className={textareaClass} />
+                  <textarea
+                    value={extractedData.medicamentos_actuales}
+                    onChange={(e) => updateField('medicamentos_actuales', e.target.value)}
+                    rows={2}
+                    placeholder={PLACEHOLDERS.medicamentosActuales}
+                    className={textareaClass}
+                  />
                 </div>
                 <div>
                   <label className={labelClass}>{t('tr.alergias_a_medicamentos')}</label>
-                  <textarea value={extractedData.alergias} onChange={(e) => setExtractedData({ ...extractedData, alergias: e.target.value })} rows={2} placeholder="No detectado" className={textareaClass} />
+                  <textarea
+                    value={extractedData.alergias}
+                    onChange={(e) => updateField('alergias', e.target.value)}
+                    rows={2}
+                    placeholder={PLACEHOLDERS.alergias}
+                    className={textareaClass}
+                  />
                 </div>
                 <div>
                   <label className={labelClass}>{t('ocr.chronicDiseases')}</label>
-                  <textarea value={extractedData.enfermedades_cronicas} onChange={(e) => setExtractedData({ ...extractedData, enfermedades_cronicas: e.target.value })} rows={2} placeholder="No detectado" className={textareaClass} />
+                  <textarea
+                    value={extractedData.enfermedades_cronicas}
+                    onChange={(e) => updateField('enfermedades_cronicas', e.target.value)}
+                    rows={2}
+                    placeholder={PLACEHOLDERS.enfermedadesCronicas}
+                    className={textareaClass}
+                  />
                 </div>
                 <div>
                   <label className={labelClass}>{t('tr.lesiones_previas')}</label>
-                  <textarea value={extractedData.lesiones_previas} onChange={(e) => setExtractedData({ ...extractedData, lesiones_previas: e.target.value })} rows={2} placeholder="No detectado" className={textareaClass} />
+                  <textarea
+                    value={extractedData.lesiones_previas}
+                    onChange={(e) => updateField('lesiones_previas', e.target.value)}
+                    rows={2}
+                    placeholder={PLACEHOLDERS.lesionesPrevias}
+                    className={textareaClass}
+                  />
                 </div>
                 <div>
                   <label className={labelClass}>{t('tr.extremidad_afectada')}</label>
-                  <input value={extractedData.extremidad_afectada} onChange={(e) => setExtractedData({ ...extractedData, extremidad_afectada: e.target.value })} placeholder={t('tr.ej_rodilla_derecha')} className={inputClass} />
+                  <select
+                    value={extractedData.extremidad_afectada}
+                    onChange={(e) => updateField('extremidad_afectada', e.target.value)}
+                    className={cn(inputClass, validationErrors.extremidadAfectada && 'border-red-500 focus:ring-red-400/20')}
+                  >
+                    <option value="">Selecciona extremidad o articulación...</option>
+                    {SELECT_OPTIONS.affectedLimb.map((limb) => (
+                      <option key={limb.value} value={limb.value}>
+                        {limb.label}
+                      </option>
+                    ))}
+                  </select>
+                  {validationErrors.extremidadAfectada && (
+                    <p className="text-[11px] text-red-500 font-semibold mt-1 flex items-center gap-1">
+                      <Icon name="error" size={13} />
+                      {validationErrors.extremidadAfectada}
+                    </p>
+                  )}
                 </div>
                 <div>
                   <label className={labelClass}>{t('tr.rom_objetivo')}</label>
-                  <input value={extractedData.rom_objetivo} onChange={(e) => setExtractedData({ ...extractedData, rom_objetivo: e.target.value })} placeholder={t('ocr.anglePh')} className={inputClass} />
+                  <input
+                    type="number"
+                    value={extractedData.rom_objetivo}
+                    onChange={(e) => updateField('rom_objetivo', e.target.value)}
+                    placeholder={PLACEHOLDERS.romObjetivo}
+                    min={0}
+                    max={180}
+                    className={cn(inputClass, validationErrors.romObjetivo && 'border-red-500 focus:ring-red-400/20')}
+                  />
+                  {validationErrors.romObjetivo && (
+                    <p className="text-[11px] text-red-500 font-semibold mt-1 flex items-center gap-1">
+                      <Icon name="error" size={13} />
+                      {validationErrors.romObjetivo}
+                    </p>
+                  )}
                 </div>
                 <div>
                   <label className={labelClass}>{t('ocr.sessionFrequency')}</label>
-                  <input value={extractedData.frecuencia_sesiones} onChange={(e) => setExtractedData({ ...extractedData, frecuencia_sesiones: e.target.value })} placeholder={t('ocr.frequencyPh')} className={inputClass} />
+                  <input
+                    type="number"
+                    value={extractedData.frecuencia_sesiones}
+                    onChange={(e) => updateField('frecuencia_sesiones', e.target.value)}
+                    placeholder={PLACEHOLDERS.frecuenciaSesiones}
+                    min={1}
+                    max={7}
+                    className={cn(inputClass, validationErrors.frecuenciaSesiones && 'border-red-500 focus:ring-red-400/20')}
+                  />
+                  {validationErrors.frecuenciaSesiones && (
+                    <p className="text-[11px] text-red-500 font-semibold mt-1 flex items-center gap-1">
+                      <Icon name="error" size={13} />
+                      {validationErrors.frecuenciaSesiones}
+                    </p>
+                  )}
                 </div>
                 <div>
                   <label className={labelClass}>{t('ocr.attendingDoctor')}</label>
-                  <input value={extractedData.medico_remitente} onChange={(e) => setExtractedData({ ...extractedData, medico_remitente: e.target.value })} placeholder="No detectado" className={inputClass} />
+                  <input
+                    value={extractedData.medico_remitente}
+                    onChange={(e) => updateField('medico_remitente', e.target.value)}
+                    placeholder={PLACEHOLDERS.medicoRemitente}
+                    className={inputClass}
+                  />
                 </div>
               </div>
             </div>
@@ -928,11 +1210,27 @@ export function OCRScannerPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className={labelClass}>{t('ocr.contactName')}</label>
-                  <input value={extractedData.contacto_emergencia_nombre} onChange={(e) => setExtractedData({ ...extractedData, contacto_emergencia_nombre: e.target.value })} placeholder="No detectado" className={inputClass} />
+                  <input
+                    value={extractedData.contacto_emergencia_nombre}
+                    onChange={(e) => updateField('contacto_emergencia_nombre', e.target.value)}
+                    placeholder={PLACEHOLDERS.contactoEmergenciaNombre}
+                    className={inputClass}
+                  />
                 </div>
                 <div>
                   <label className={labelClass}>{t('ocr.contactPhone')}</label>
-                  <input value={extractedData.contacto_emergencia_telefono} onChange={(e) => setExtractedData({ ...extractedData, contacto_emergencia_telefono: e.target.value })} placeholder="No detectado" className={inputClass} />
+                  <input
+                    value={extractedData.contacto_emergencia_telefono}
+                    onChange={(e) => updateField('contacto_emergencia_telefono', e.target.value)}
+                    placeholder={PLACEHOLDERS.contactoEmergenciaTelefono}
+                    className={cn(inputClass, validationErrors.contactoEmergenciaTelefono && 'border-red-500 focus:ring-red-400/20')}
+                  />
+                  {validationErrors.contactoEmergenciaTelefono && (
+                    <p className="text-[11px] text-red-500 font-semibold mt-1 flex items-center gap-1">
+                      <Icon name="error" size={13} />
+                      {validationErrors.contactoEmergenciaTelefono}
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
@@ -941,7 +1239,7 @@ export function OCRScannerPage() {
               <button onClick={() => setStep(1)} className="flex items-center gap-2 px-8 py-4 rounded-2xl bg-surface-variant/30 text-on-surface-variant font-bold hover:bg-surface-variant/50 transition-all">
                 <Icon name="arrow_back" size={20} /> Volver
               </button>
-              <button onClick={() => setStep(3)} className="premium-btn flex items-center gap-3 px-10 py-4 rounded-2xl bg-primary text-on-primary font-bold shadow-xl shadow-primary/30 hover:scale-[1.02] active:scale-95 transition-all">
+              <button onClick={handleConfirmAndProceedToStep3} className="premium-btn flex items-center gap-3 px-10 py-4 rounded-2xl bg-primary text-on-primary font-bold shadow-xl shadow-primary/30 hover:scale-[1.02] active:scale-95 transition-all">
                 Confirmar y Continuar <Icon name="arrow_forward" size={20} />
               </button>
             </div>

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence, useAnimation, useReducedMotion } from 'framer-motion';
 import { Icon } from '../components/ui/Icon';
@@ -15,6 +15,7 @@ import { AuroraText } from '../components/ui/AuroraText';
 import { useTranslation } from 'react-i18next';
 import { LanguageSelector } from '../components/ui/LanguageSelector';
 import { useAuthValidation, createPatientLoginData, createPatientRegisterData, createFisioLoginData, createFisioRegisterData } from '../hooks/useAuthValidation';
+import { PLACEHOLDERS } from '../lib/validation';
 
 type AuthMode = 'login' | 'register';
 type LoginRole = 'paciente' | 'fisioterapeuta';
@@ -313,6 +314,7 @@ export function Login() {
   const [showResetModal, setShowResetModal] = useState(false);
   const [resetEmail, setResetEmail] = useState('');
   const [resetLoading, setResetLoading] = useState(false);
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
   const [failedAttempts, setFailedAttempts] = useState(0);
   const [cooldown, setCooldown] = useState(0);
@@ -342,7 +344,6 @@ export function Login() {
     validateFisioLogin,
     validateFisioRegister,
     validateFisioStep1,
-    getFieldError,
   } = useAuthValidation();
 
   useEffect(() => {
@@ -423,6 +424,7 @@ export function Login() {
   const switchRole = (role: LoginRole) => {
     setLoginRole(role);
     clearError();
+    setFormErrors({});
     setToken('');
     setEmail('');
     setPassword('');
@@ -440,6 +442,7 @@ export function Login() {
     setMode(m);
     setFisioStep(1);
     clearError();
+    setFormErrors({});
     if (m === 'register' && isFisio) loadEspecialidades();
   };
 
@@ -489,10 +492,12 @@ export function Login() {
       );
       const validation = validateFisioStep1(step1Data);
       if (!validation.success) {
+        setFormErrors(validation.errors);
         const firstError = Object.values(validation.errors)[0];
-        toast.error(firstError || 'Completa los campos requeridos');
+        toast.error(firstError || 'Por favor completa todos los campos obligatorios correctamente');
         return;
       }
+      setFormErrors({});
       setFisioStep(2);
       return;
     }
@@ -526,10 +531,12 @@ export function Login() {
       const loginData = createPatientLoginData(email, password, turnstileToken);
       const validation = validatePatientLogin(loginData);
       if (!validation.success) {
+        setFormErrors(validation.errors);
         const firstError = Object.values(validation.errors)[0];
         toast.error(firstError || t('auth.errCredentials'));
         return;
       }
+      setFormErrors({});
       const ok = await signInPatientWithEmail(email, password);
       if (ok) {
         toast.success('Bienvenido a FisioMirror');
@@ -554,10 +561,12 @@ export function Login() {
       const registerData = createPatientRegisterData(token, email, password, confirmPassword, fullName, turnstileToken);
       const validation = validatePatientRegister(registerData);
       if (!validation.success) {
+        setFormErrors(validation.errors);
         const firstError = Object.values(validation.errors)[0];
         toast.error(firstError || t('auth.errSignup'));
         return;
       }
+      setFormErrors({});
 
       // Special demo shortcut
       if (token.trim() === '123456' || email === 'paciente@demo.com') {
@@ -586,10 +595,12 @@ export function Login() {
       const loginData = createFisioLoginData(email, password, turnstileToken);
       const validation = validateFisioLogin(loginData);
       if (!validation.success) {
+        setFormErrors(validation.errors);
         const firstError = Object.values(validation.errors)[0];
         toast.error(firstError || t('auth.errCredentials'));
         return;
       }
+      setFormErrors({});
       const ok = await signIn(email, password);
       if (ok) {
         toast.success('Bienvenido a FisioMirror');
@@ -613,10 +624,12 @@ export function Login() {
       );
       const validation = validateFisioRegister(registerData);
       if (!validation.success) {
+        setFormErrors(validation.errors);
         const firstError = Object.values(validation.errors)[0];
         toast.error(firstError || 'Completa los campos requeridos');
         return;
       }
+      setFormErrors({});
 
       const tempId = crypto.randomUUID();
       const url = await uploadCredencial(tempId);
@@ -670,14 +683,6 @@ export function Login() {
     setEspecialidadesSel(especialidadesSel.filter((e) => e !== esp));
   };
 
-  const canSubmitFisioStep1 =
-    fullName.trim() &&
-    email.trim() &&
-    password.trim() &&
-    confirmPassword.trim() &&
-    password === confirmPassword &&
-    cedula.trim() &&
-    telefono.trim();
 
   const handleResetPassword = async () => {
     const cleanEmail = resetEmail.trim().toLowerCase();
@@ -930,49 +935,79 @@ export function Login() {
                   className="space-y-4 pt-1"
                 >
                   <div className="space-y-3">
-                    <div className="relative">
-                      <Icon
-                        name="alternate_email"
-                        size={19}
-                        className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
-                      />
-                      <input
-                        ref={emailRef}
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        placeholder={t('auth.email', 'Correo electrónico')}
-                        aria-label={t('auth.ariaPatientEmail')}
-                        autoComplete="email"
-                        required
-                        className="w-full rounded-2xl border border-slate-200/80 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 pl-11 pr-4 py-3.5 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 outline-none transition-all focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20 dark:focus:border-teal-400 dark:focus:ring-teal-400/20 shadow-sm"
-                      />
+                    <div>
+                      <div className="relative">
+                        <Icon
+                          name="alternate_email"
+                          size={19}
+                          className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+                        />
+                        <input
+                          ref={emailRef}
+                          type="email"
+                          value={email}
+                          onChange={(e) => {
+                            setEmail(e.target.value);
+                            if (formErrors.email) setFormErrors((prev) => ({ ...prev, email: '' }));
+                          }}
+                          placeholder={t('auth.email', 'Correo electrónico')}
+                          aria-label={t('auth.ariaPatientEmail')}
+                          autoComplete="email"
+                          required
+                          className={cn(
+                            'w-full rounded-2xl border bg-white/80 dark:bg-slate-800/80 pl-11 pr-4 py-3.5 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 outline-none transition-all shadow-sm',
+                            formErrors.email
+                              ? 'border-red-500 focus:ring-2 focus:ring-red-400/20'
+                              : 'border-slate-200/80 dark:border-slate-700 focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20 dark:focus:border-teal-400 dark:focus:ring-teal-400/20'
+                          )}
+                        />
+                      </div>
+                      {formErrors.email && (
+                        <p className="mt-1 text-xs text-red-500 dark:text-red-400 font-medium pl-1">
+                          {formErrors.email}
+                        </p>
+                      )}
                     </div>
 
-                    <div className="relative">
-                      <Icon
-                        name="lock"
-                        size={19}
-                        className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
-                      />
-                      <input
-                        type={showPassword ? 'text' : 'password'}
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        placeholder={t('auth.password', 'Contraseña')}
-                        aria-label={t('auth.ariaPatientPass')}
-                        autoComplete="current-password"
-                        required
-                        className="w-full rounded-2xl border border-slate-200/80 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 pl-11 pr-11 py-3.5 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 outline-none transition-all focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20 dark:focus:border-teal-400 dark:focus:ring-teal-400/20 shadow-sm"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowPassword(!showPassword)}
-                        aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-1.5 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00504d]/40 dark:focus-visible:ring-teal-400/50"
-                      >
-                        <Icon name={showPassword ? 'visibility_off' : 'visibility'} size={19} />
-                      </button>
+                    <div>
+                      <div className="relative">
+                        <Icon
+                          name="lock"
+                          size={19}
+                          className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+                        />
+                        <input
+                          type={showPassword ? 'text' : 'password'}
+                          value={password}
+                          onChange={(e) => {
+                            setPassword(e.target.value);
+                            if (formErrors.password) setFormErrors((prev) => ({ ...prev, password: '' }));
+                          }}
+                          placeholder={t('auth.password', 'Contraseña')}
+                          aria-label={t('auth.ariaPatientPass')}
+                          autoComplete="current-password"
+                          required
+                          className={cn(
+                            'w-full rounded-2xl border bg-white/80 dark:bg-slate-800/80 pl-11 pr-11 py-3.5 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 outline-none transition-all shadow-sm',
+                            formErrors.password
+                              ? 'border-red-500 focus:ring-2 focus:ring-red-400/20'
+                              : 'border-slate-200/80 dark:border-slate-700 focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20 dark:focus:border-teal-400 dark:focus:ring-teal-400/20'
+                          )}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-1.5 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00504d]/40 dark:focus-visible:ring-teal-400/50"
+                        >
+                          <Icon name={showPassword ? 'visibility_off' : 'visibility'} size={19} />
+                        </button>
+                      </div>
+                      {formErrors.password && (
+                        <p className="mt-1 text-xs text-red-500 dark:text-red-400 font-medium pl-1">
+                          {formErrors.password}
+                        </p>
+                      )}
                     </div>
                   </div>
 
@@ -1054,75 +1089,126 @@ export function Login() {
                       </label>
                       <PinInput
                         value={token}
-                        onChange={setToken}
-                        onComplete={(full) => setToken(full)}
+                        onChange={(val) => {
+                          setToken(val);
+                          if (formErrors.token) setFormErrors((prev) => ({ ...prev, token: '' }));
+                        }}
+                        onComplete={(full) => {
+                          setToken(full);
+                          if (formErrors.token) setFormErrors((prev) => ({ ...prev, token: '' }));
+                        }}
                         disabled={loading || cooldown > 0}
                         autoFocus
                       />
+                      {formErrors.token && (
+                        <p className="mt-1 text-xs text-red-500 dark:text-red-400 font-medium text-center">
+                          {formErrors.token}
+                        </p>
+                      )}
                     </div>
 
-                    <div className="relative">
-                      <Icon
-                        name="alternate_email"
-                        size={19}
-                        className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
-                      />
-                      <input
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        placeholder={t('auth.phPersonalEmail')}
-                        autoComplete="email"
-                        required
-                        className="w-full rounded-2xl border border-slate-200/80 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 pl-11 pr-4 py-3 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 outline-none transition-all focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20 dark:focus:border-teal-400 dark:focus:ring-teal-400/20 shadow-sm"
-                      />
+                    <div>
+                      <div className="relative">
+                        <Icon
+                          name="alternate_email"
+                          size={19}
+                          className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+                        />
+                        <input
+                          type="email"
+                          value={email}
+                          onChange={(e) => {
+                            setEmail(e.target.value);
+                            if (formErrors.email) setFormErrors((prev) => ({ ...prev, email: '' }));
+                          }}
+                          placeholder={t('auth.phPersonalEmail')}
+                          autoComplete="email"
+                          required
+                          className={cn(
+                            'w-full rounded-2xl border bg-white/80 dark:bg-slate-800/80 pl-11 pr-4 py-3 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 outline-none transition-all shadow-sm',
+                            formErrors.email
+                              ? 'border-red-500 focus:ring-2 focus:ring-red-400/20'
+                              : 'border-slate-200/80 dark:border-slate-700 focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20 dark:focus:border-teal-400 dark:focus:ring-teal-400/20'
+                          )}
+                        />
+                      </div>
+                      {formErrors.email && (
+                        <p className="mt-1 text-xs text-red-500 dark:text-red-400 font-medium pl-1">
+                          {formErrors.email}
+                        </p>
+                      )}
                     </div>
 
-                    <div className="relative">
-                      <Icon
-                        name="lock"
-                        size={19}
-                        className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
-                      />
-                      <input
-                        type={showPassword ? 'text' : 'password'}
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        placeholder={t('auth.phCreatePass')}
-                        autoComplete="new-password"
-                        required
-                        className="w-full rounded-2xl border border-slate-200/80 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 pl-11 pr-11 py-3 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 outline-none transition-all focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20 dark:focus:border-teal-400 dark:focus:ring-teal-400/20 shadow-sm"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowPassword(!showPassword)}
-                        aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-1.5 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00504d]/40 dark:focus-visible:ring-teal-400/50"
-                      >
-                        <Icon name={showPassword ? 'visibility_off' : 'visibility'} size={19} />
-                      </button>
+                    <div>
+                      <div className="relative">
+                        <Icon
+                          name="lock"
+                          size={19}
+                          className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+                        />
+                        <input
+                          type={showPassword ? 'text' : 'password'}
+                          value={password}
+                          onChange={(e) => {
+                            setPassword(e.target.value);
+                            if (formErrors.password) setFormErrors((prev) => ({ ...prev, password: '' }));
+                          }}
+                          placeholder={t('auth.phCreatePass')}
+                          autoComplete="new-password"
+                          required
+                          className={cn(
+                            'w-full rounded-2xl border bg-white/80 dark:bg-slate-800/80 pl-11 pr-11 py-3 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 outline-none transition-all shadow-sm',
+                            formErrors.password
+                              ? 'border-red-500 focus:ring-2 focus:ring-red-400/20'
+                              : 'border-slate-200/80 dark:border-slate-700 focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20 dark:focus:border-teal-400 dark:focus:ring-teal-400/20'
+                          )}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-1.5 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00504d]/40 dark:focus-visible:ring-teal-400/50"
+                        >
+                          <Icon name={showPassword ? 'visibility_off' : 'visibility'} size={19} />
+                        </button>
+                      </div>
+                      {formErrors.password && (
+                        <p className="mt-1 text-xs text-red-500 dark:text-red-400 font-medium pl-1">
+                          {formErrors.password}
+                        </p>
+                      )}
                     </div>
 
-                    <div className="relative">
-                      <Icon
-                        name="lock_reset"
-                        size={19}
-                        className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
-                      />
-                      <input
-                        type={showPassword ? 'text' : 'password'}
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                        placeholder={t('auth.phConfirmPass')}
-                        autoComplete="new-password"
-                        required
-                        className={cn(
-                          'w-full rounded-2xl border bg-white/80 dark:bg-slate-800/80 pl-11 pr-4 py-3 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 outline-none transition-all shadow-sm',
-                          confirmPassword && password !== confirmPassword
-                            ? 'border-red-500 focus:ring-2 focus:ring-red-400/20'
-                            : 'border-slate-200/80 dark:border-slate-700 focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20 dark:focus:border-teal-400'
-                        )}
-                      />
+                    <div>
+                      <div className="relative">
+                        <Icon
+                          name="lock_reset"
+                          size={19}
+                          className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+                        />
+                        <input
+                          type={showPassword ? 'text' : 'password'}
+                          value={confirmPassword}
+                          onChange={(e) => {
+                            setConfirmPassword(e.target.value);
+                            if (formErrors.confirmPassword) setFormErrors((prev) => ({ ...prev, confirmPassword: '' }));
+                          }}
+                          placeholder={t('auth.phConfirmPass')}
+                          autoComplete="new-password"
+                          required
+                          className={cn(
+                            'w-full rounded-2xl border bg-white/80 dark:bg-slate-800/80 pl-11 pr-4 py-3 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 outline-none transition-all shadow-sm',
+                            formErrors.confirmPassword || (confirmPassword && password !== confirmPassword)
+                              ? 'border-red-500 focus:ring-2 focus:ring-red-400/20'
+                              : 'border-slate-200/80 dark:border-slate-700 focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20 dark:focus:border-teal-400'
+                          )}
+                        />
+                      </div>
+                      {formErrors.confirmPassword && (
+                        <p className="mt-1 text-xs text-red-500 dark:text-red-400 font-medium pl-1">
+                          {formErrors.confirmPassword}
+                        </p>
+                      )}
                     </div>
 
                     {password.length > 0 && (
@@ -1161,7 +1247,7 @@ export function Login() {
 
                   <button
                     type="submit"
-                    disabled={loading || cooldown > 0 || token.length < 4 || !email.trim() || !password.trim()}
+                    disabled={loading || cooldown > 0}
                     className="w-full h-12 rounded-2xl bg-[#00504d] dark:bg-teal-600 text-sm font-bold text-white shadow-md shadow-teal-900/20 hover:bg-[#0c403d] dark:hover:bg-teal-500 active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed disabled:shadow-none disabled:active:scale-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00504d]/40 dark:focus-visible:ring-teal-400/50 focus-visible:ring-offset-2 focus-visible:ring-offset-white/70 dark:focus-visible:ring-offset-slate-900"
                   >
                     {loading ? (
@@ -1200,49 +1286,79 @@ export function Login() {
                   className="space-y-4 pt-1"
                 >
                   <div className="space-y-3">
-                    <div className="relative">
-                      <Icon
-                        name="alternate_email"
-                        size={19}
-                        className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
-                      />
-                      <input
-                        ref={emailRef}
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        placeholder={t('tr.correo_profesional')}
-                        aria-label={t('auth.therapistEmail')}
-                        autoComplete="email"
-                        required
-                        className="w-full rounded-2xl border border-slate-200/80 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 pl-11 pr-4 py-3.5 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 outline-none transition-all focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20 dark:focus:border-teal-400 dark:focus:ring-teal-400/20 shadow-sm"
-                      />
+                    <div>
+                      <div className="relative">
+                        <Icon
+                          name="alternate_email"
+                          size={19}
+                          className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+                        />
+                        <input
+                          ref={emailRef}
+                          type="email"
+                          value={email}
+                          onChange={(e) => {
+                            setEmail(e.target.value);
+                            if (formErrors.email) setFormErrors((prev) => ({ ...prev, email: '' }));
+                          }}
+                          placeholder={t('tr.correo_profesional')}
+                          aria-label={t('auth.therapistEmail')}
+                          autoComplete="email"
+                          required
+                          className={cn(
+                            'w-full rounded-2xl border bg-white/80 dark:bg-slate-800/80 pl-11 pr-4 py-3.5 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 outline-none transition-all shadow-sm',
+                            formErrors.email
+                              ? 'border-red-500 focus:ring-2 focus:ring-red-400/20'
+                              : 'border-slate-200/80 dark:border-slate-700 focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20 dark:focus:border-teal-400 dark:focus:ring-teal-400/20'
+                          )}
+                        />
+                      </div>
+                      {formErrors.email && (
+                        <p className="mt-1 text-xs text-red-500 dark:text-red-400 font-medium pl-1">
+                          {formErrors.email}
+                        </p>
+                      )}
                     </div>
 
-                    <div className="relative">
-                      <Icon
-                        name="lock"
-                        size={19}
-                        className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
-                      />
-                      <input
-                        type={showPassword ? 'text' : 'password'}
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        placeholder={t('auth.password')}
-                        aria-label={t('auth.ariaFisioPass')}
-                        autoComplete="current-password"
-                        required
-                        className="w-full rounded-2xl border border-slate-200/80 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 pl-11 pr-11 py-3.5 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 outline-none transition-all focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20 dark:focus:border-teal-400 dark:focus:ring-teal-400/20 shadow-sm"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowPassword(!showPassword)}
-                        aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-1.5 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00504d]/40 dark:focus-visible:ring-teal-400/50"
-                      >
-                        <Icon name={showPassword ? 'visibility_off' : 'visibility'} size={19} />
-                      </button>
+                    <div>
+                      <div className="relative">
+                        <Icon
+                          name="lock"
+                          size={19}
+                          className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+                        />
+                        <input
+                          type={showPassword ? 'text' : 'password'}
+                          value={password}
+                          onChange={(e) => {
+                            setPassword(e.target.value);
+                            if (formErrors.password) setFormErrors((prev) => ({ ...prev, password: '' }));
+                          }}
+                          placeholder={t('auth.password')}
+                          aria-label={t('auth.ariaFisioPass')}
+                          autoComplete="current-password"
+                          required
+                          className={cn(
+                            'w-full rounded-2xl border bg-white/80 dark:bg-slate-800/80 pl-11 pr-11 py-3.5 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 outline-none transition-all shadow-sm',
+                            formErrors.password
+                              ? 'border-red-500 focus:ring-2 focus:ring-red-400/20'
+                              : 'border-slate-200/80 dark:border-slate-700 focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20 dark:focus:border-teal-400 dark:focus:ring-teal-400/20'
+                          )}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-1.5 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00504d]/40 dark:focus-visible:ring-teal-400/50"
+                        >
+                          <Icon name={showPassword ? 'visibility_off' : 'visibility'} size={19} />
+                        </button>
+                      </div>
+                      {formErrors.password && (
+                        <p className="mt-1 text-xs text-red-500 dark:text-red-400 font-medium pl-1">
+                          {formErrors.password}
+                        </p>
+                      )}
                     </div>
                   </div>
 
@@ -1329,11 +1445,24 @@ export function Login() {
                             </label>
                             <input
                               value={fullName}
-                              onChange={(e) => setFullName(e.target.value)}
-                              placeholder="Lic. Roberto Silva"
-                              required
-                              className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 px-3.5 py-2.5 text-sm text-slate-900 dark:text-slate-100 outline-none focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20"
+                              onChange={(e) => {
+                                setFullName(e.target.value);
+                                if (formErrors.fullName) setFormErrors((prev) => ({ ...prev, fullName: '' }));
+                              }}
+                              placeholder={PLACEHOLDERS.fullName}
+                              className={cn(
+                                'w-full rounded-xl border bg-white/80 dark:bg-slate-800/80 px-3.5 py-2.5 text-sm text-slate-900 dark:text-slate-100 outline-none transition-colors',
+                                formErrors.fullName
+                                  ? 'border-red-500 focus:ring-2 focus:ring-red-400/20'
+                                  : 'border-slate-200 dark:border-slate-700 focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20'
+                              )}
                             />
+                            {formErrors.fullName && (
+                              <p className="text-[11px] text-red-500 font-semibold mt-1 flex items-center gap-1">
+                                <Icon name="error" size={13} />
+                                {formErrors.fullName}
+                              </p>
+                            )}
                           </div>
                           <div>
                             <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
@@ -1342,11 +1471,24 @@ export function Login() {
                             <input
                               type="email"
                               value={email}
-                              onChange={(e) => setEmail(e.target.value)}
-                              placeholder="roberto.fisio@ejemplo.com"
-                              required
-                              className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 px-3.5 py-2.5 text-sm text-slate-900 dark:text-slate-100 outline-none focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20"
+                              onChange={(e) => {
+                                setEmail(e.target.value);
+                                if (formErrors.email) setFormErrors((prev) => ({ ...prev, email: '' }));
+                              }}
+                              placeholder={PLACEHOLDERS.email}
+                              className={cn(
+                                'w-full rounded-xl border bg-white/80 dark:bg-slate-800/80 px-3.5 py-2.5 text-sm text-slate-900 dark:text-slate-100 outline-none transition-colors',
+                                formErrors.email
+                                  ? 'border-red-500 focus:ring-2 focus:ring-red-400/20'
+                                  : 'border-slate-200 dark:border-slate-700 focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20'
+                              )}
                             />
+                            {formErrors.email && (
+                              <p className="text-[11px] text-red-500 font-semibold mt-1 flex items-center gap-1">
+                                <Icon name="error" size={13} />
+                                {formErrors.email}
+                              </p>
+                            )}
                           </div>
                           <div>
                             <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
@@ -1355,11 +1497,24 @@ export function Login() {
                             <input
                               type={showPassword ? 'text' : 'password'}
                               value={password}
-                              onChange={(e) => setPassword(e.target.value)}
-                              placeholder="••••••••"
-                              required
-                              className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 px-3.5 py-2.5 text-sm text-slate-900 dark:text-slate-100 outline-none focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20"
+                              onChange={(e) => {
+                                setPassword(e.target.value);
+                                if (formErrors.password) setFormErrors((prev) => ({ ...prev, password: '' }));
+                              }}
+                              placeholder={PLACEHOLDERS.password}
+                              className={cn(
+                                'w-full rounded-xl border bg-white/80 dark:bg-slate-800/80 px-3.5 py-2.5 text-sm text-slate-900 dark:text-slate-100 outline-none transition-colors',
+                                formErrors.password
+                                  ? 'border-red-500 focus:ring-2 focus:ring-red-400/20'
+                                  : 'border-slate-200 dark:border-slate-700 focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20'
+                              )}
                             />
+                            {formErrors.password && (
+                              <p className="text-[11px] text-red-500 font-semibold mt-1 flex items-center gap-1">
+                                <Icon name="error" size={13} />
+                                {formErrors.password}
+                              </p>
+                            )}
                           </div>
                           <div>
                             <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
@@ -1368,16 +1523,24 @@ export function Login() {
                             <input
                               type={showPassword ? 'text' : 'password'}
                               value={confirmPassword}
-                              onChange={(e) => setConfirmPassword(e.target.value)}
-                              placeholder="••••••••"
-                              required
+                              onChange={(e) => {
+                                setConfirmPassword(e.target.value);
+                                if (formErrors.confirmPassword) setFormErrors((prev) => ({ ...prev, confirmPassword: '' }));
+                              }}
+                              placeholder={PLACEHOLDERS.confirmPassword}
                               className={cn(
-                                'w-full rounded-xl border bg-white/80 dark:bg-slate-800/80 px-3.5 py-2.5 text-sm text-slate-900 dark:text-slate-100 outline-none',
-                                confirmPassword && password !== confirmPassword
+                                'w-full rounded-xl border bg-white/80 dark:bg-slate-800/80 px-3.5 py-2.5 text-sm text-slate-900 dark:text-slate-100 outline-none transition-colors',
+                                formErrors.confirmPassword || (confirmPassword && password !== confirmPassword)
                                   ? 'border-red-500 focus:ring-2 focus:ring-red-400/20'
                                   : 'border-slate-200 dark:border-slate-700 focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20'
                               )}
                             />
+                            {formErrors.confirmPassword && (
+                              <p className="text-[11px] text-red-500 font-semibold mt-1 flex items-center gap-1">
+                                <Icon name="error" size={13} />
+                                {formErrors.confirmPassword}
+                              </p>
+                            )}
                           </div>
                         </div>
 
@@ -1406,11 +1569,24 @@ export function Login() {
                             </label>
                             <input
                               value={cedula}
-                              onChange={(e) => setCedula(e.target.value)}
-                              placeholder="000000-F"
-                              required
-                              className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 px-3.5 py-2.5 text-sm text-slate-900 dark:text-slate-100 outline-none focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20"
+                              onChange={(e) => {
+                                setCedula(e.target.value);
+                                if (formErrors.cedula) setFormErrors((prev) => ({ ...prev, cedula: '' }));
+                              }}
+                              placeholder={PLACEHOLDERS.cedula}
+                              className={cn(
+                                'w-full rounded-xl border bg-white/80 dark:bg-slate-800/80 px-3.5 py-2.5 text-sm text-slate-900 dark:text-slate-100 outline-none transition-colors',
+                                formErrors.cedula
+                                  ? 'border-red-500 focus:ring-2 focus:ring-red-400/20'
+                                  : 'border-slate-200 dark:border-slate-700 focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20'
+                              )}
                             />
+                            {formErrors.cedula && (
+                              <p className="text-[11px] text-red-500 font-semibold mt-1 flex items-center gap-1">
+                                <Icon name="error" size={13} />
+                                {formErrors.cedula}
+                              </p>
+                            )}
                           </div>
                           <div>
                             <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
@@ -1418,21 +1594,43 @@ export function Login() {
                             </label>
                             <input
                               value={telefono}
-                              onChange={(e) => setTelefono(e.target.value)}
-                              placeholder="+58 412-1234567"
+                              onChange={(e) => {
+                                setTelefono(e.target.value);
+                                if (formErrors.telefono) setFormErrors((prev) => ({ ...prev, telefono: '' }));
+                              }}
+                              placeholder={PLACEHOLDERS.telefono}
                               inputMode="tel"
-                              required
-                              className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 px-3.5 py-2.5 text-sm text-slate-900 dark:text-slate-100 outline-none focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20"
+                              className={cn(
+                                'w-full rounded-xl border bg-white/80 dark:bg-slate-800/80 px-3.5 py-2.5 text-sm text-slate-900 dark:text-slate-100 outline-none transition-colors',
+                                formErrors.telefono
+                                  ? 'border-red-500 focus:ring-2 focus:ring-red-400/20'
+                                  : 'border-slate-200 dark:border-slate-700 focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20'
+                              )}
                             />
+                            {formErrors.telefono && (
+                              <p className="text-[11px] text-red-500 font-semibold mt-1 flex items-center gap-1">
+                                <Icon name="error" size={13} />
+                                {formErrors.telefono}
+                              </p>
+                            )}
                           </div>
                           <div>
                             <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">{t('auth.graduationUniversity')}</label>
                             <input
                               value={universidad}
-                              onChange={(e) => setUniversidad(e.target.value)}
-                              placeholder={t('auth.phInstitution')}
+                              onChange={(e) => {
+                                setUniversidad(e.target.value);
+                                if (formErrors.universidad) setFormErrors((prev) => ({ ...prev, universidad: '' }));
+                              }}
+                              placeholder={PLACEHOLDERS.universidad}
                               className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 px-3.5 py-2.5 text-sm text-slate-900 dark:text-slate-100 outline-none focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20"
                             />
+                            {formErrors.universidad && (
+                              <p className="text-[11px] text-red-500 font-semibold mt-1 flex items-center gap-1">
+                                <Icon name="error" size={13} />
+                                {formErrors.universidad}
+                              </p>
+                            )}
                           </div>
                           <div>
                             <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
@@ -1440,10 +1638,19 @@ export function Login() {
                             </label>
                             <input
                               value={colegiadoId}
-                              onChange={(e) => setColegiadoId(e.target.value)}
-                              placeholder="Ej: COL-12345"
+                              onChange={(e) => {
+                                setColegiadoId(e.target.value);
+                                if (formErrors.colegiadoId) setFormErrors((prev) => ({ ...prev, colegiadoId: '' }));
+                              }}
+                              placeholder={PLACEHOLDERS.colegiadoId}
                               className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 px-3.5 py-2.5 text-sm text-slate-900 dark:text-slate-100 outline-none focus:border-[#00504d] focus:ring-2 focus:ring-[#00504d]/20"
                             />
+                            {formErrors.colegiadoId && (
+                              <p className="text-[11px] text-red-500 font-semibold mt-1 flex items-center gap-1">
+                                <Icon name="error" size={13} />
+                                {formErrors.colegiadoId}
+                              </p>
+                            )}
                           </div>
                           <div>
                             <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
@@ -1638,7 +1845,7 @@ export function Login() {
 
                   <button
                     type="submit"
-                    disabled={loading || uploading || cooldown > 0 || (fisioStep === 1 && !canSubmitFisioStep1)}
+                    disabled={loading || uploading || cooldown > 0}
                     className="w-full h-12 rounded-2xl bg-[#00504d] dark:bg-teal-600 text-sm font-bold text-white shadow-md shadow-teal-900/20 hover:bg-[#0c403d] dark:hover:bg-teal-500 active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed disabled:shadow-none disabled:active:scale-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00504d]/40 dark:focus-visible:ring-teal-400/50 focus-visible:ring-offset-2 focus-visible:ring-offset-white/70 dark:focus-visible:ring-offset-slate-900"
                   >
                     {loading || uploading ? (

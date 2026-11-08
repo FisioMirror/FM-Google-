@@ -153,11 +153,11 @@ export function EmailVerification() {
                     {t('auth.verifyEmailTitle', 'Verifica tu correo electrónico')}
                   </h1>
                   <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
-                    {t('auth.verifyEmailDesc', 'Hemos enviado un enlace de verificación a')}
+                    Hemos enviado un enlace de confirmación a tu correo. Por favor verifícalo para ingresar a FisioMirror.
                     <br />
                     <span className="font-semibold text-slate-900 dark:text-slate-100 break-all">{email}</span>
                     <br />
-                    {t('auth.verifyEmailInstruction', 'Revisa tu bandeja de entrada (y carpeta de spam) y haz clic en el enlace para activar tu cuenta.')}
+                    <span className="text-xs text-slate-500 dark:text-slate-400">{t('auth.verifyEmailInstruction', 'Revisa tu bandeja de entrada (y carpeta de spam) y haz clic en el enlace para activar tu cuenta.')}</span>
                   </p>
                 </div>
 

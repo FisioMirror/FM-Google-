@@ -1397,11 +1397,11 @@ export function ExercisesPage() {
                       value={form.series}
                       onChange={(e) => {
                         const val = parseInt(e.target.value) || 1;
-                        setForm({ ...form, series: Math.min(Math.max(val, 1), 20) });
+                        setForm({ ...form, series: Math.min(Math.max(val, 1), 6) });
                       }}
                       className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-teal-500 text-xs outline-none text-slate-900 dark:text-white"
                       min={1}
-                      max={20}
+                      max={6}
                     />
                   </div>
 
@@ -1412,11 +1412,11 @@ export function ExercisesPage() {
                       value={form.repeticiones}
                       onChange={(e) => {
                         const val = parseInt(e.target.value) || 1;
-                        setForm({ ...form, repeticiones: Math.min(Math.max(val, 1), 100) });
+                        setForm({ ...form, repeticiones: Math.min(Math.max(val, 1), 30) });
                       }}
                       className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-teal-500 text-xs outline-none text-slate-900 dark:text-white"
                       min={1}
-                      max={100}
+                      max={30}
                     />
                   </div>
 

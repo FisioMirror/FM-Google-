@@ -1,17 +1,16 @@
-import { useCallback, useMemo } from 'react';
-import { z } from 'zod';
+import { useCallback } from 'react';
 import {
   patientLoginSchema,
   patientRegisterSchema,
   fisioLoginSchema,
   fisioRegisterSchema,
+  fisioRegisterStep1Schema,
   formatZodError,
   type PatientLoginInput,
   type PatientRegisterInput,
   type FisioLoginInput,
   type FisioRegisterInput,
 } from '../lib/validation';
-import { useTranslation } from 'react-i18next';
 
 interface ValidationResult<T> {
   success: boolean;
@@ -20,7 +19,6 @@ interface ValidationResult<T> {
 }
 
 export function useAuthValidation() {
-  const { t } = useTranslation();
 
   const validatePatientLogin = useCallback(
     (data: PatientLoginInput): ValidationResult<PatientLoginInput> => {
@@ -68,15 +66,7 @@ export function useAuthValidation() {
 
   const validateFisioStep1 = useCallback(
     (data: Partial<FisioRegisterInput>): ValidationResult<Partial<FisioRegisterInput>> => {
-      const step1Schema = fisioRegisterSchema.pick({
-        fullName: true,
-        email: true,
-        password: true,
-        confirmPassword: true,
-        cedula: true,
-        telefono: true,
-      });
-      const result = step1Schema.safeParse(data);
+      const result = fisioRegisterStep1Schema.safeParse(data);
       if (result.success) {
         return { success: true, data: result.data, errors: {} };
       }
