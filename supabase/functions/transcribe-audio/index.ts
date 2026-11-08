@@ -107,11 +107,12 @@ Deno.serve(async (req: Request) => {
     const geminiKey = Deno.env.get("GEMINI_API_KEY");
     if (geminiKey) {
       const GEMINI_MODELS = [
+        "gemini-3.5-transcribe",
         "gemini-3.6-flash",
+        "gemini-3.8-flash",
         "gemini-3.5-flash-lite",
-        "gemini-3.1-flash",
-        "gemini-2.5-flash",
-        "gemini-2.5-flash-lite",
+        "gemini-flash-latest",
+        "gemini-flash-lite-latest",
       ];
 
       for (const model of GEMINI_MODELS) {
@@ -142,10 +143,14 @@ Deno.serve(async (req: Request) => {
 
           if (geminiRes.ok) {
             const geminiData = await geminiRes.json();
-            const responseText = geminiData?.candidates?.[0]?.content?.parts?.[0]?.text;
-            if (responseText && responseText.trim()) {
+            const parts = geminiData?.candidates?.[0]?.content?.parts || [];
+            const responseText = parts
+              .map((p: any) => p?.text ?? p?.audioTranscription?.text ?? "")
+              .join(" ")
+              .trim();
+            if (responseText) {
               return new Response(
-                JSON.stringify({ text: responseText.trim(), provider: `Gemini Multimodal (${model})`, success: true }),
+                JSON.stringify({ text: responseText, provider: `Gemini Multimodal (${model})`, success: true }),
                 { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } },
               );
             }
