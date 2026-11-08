@@ -7,6 +7,11 @@ export default defineConfig({
   server: {
     host: '0.0.0.0',
     port: 3000,
+    // En Android/proot el límite de inotify es bajo: vigilar artefactos
+    // generados (.aistudio, dist, .git) tumba el dev server con ENOSPC.
+    watch: {
+      ignored: ['**/.aistudio/**', '**/dist/**', '**/.git/**', '**/supabase/**', '**/.cache/**'],
+    },
   },
   resolve: {
     alias: {
