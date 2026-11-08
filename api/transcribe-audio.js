@@ -78,7 +78,7 @@ export default async function handler(req, res) {
     // 3. Gemini Multimodal
     const geminiKey = process.env.GEMINI_API_KEY;
     if (geminiKey) {
-      const models = ['gemini-2.5-flash', 'gemini-2.5-flash-lite', 'gemini-3.1-flash'];
+      const models = ['gemini-3.8-flash', 'gemini-3.6-flash', 'gemini-3.5-flash-lite', 'gemini-flash-latest'];
       for (const model of models) {
         try {
           const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${geminiKey}`;
@@ -97,9 +97,14 @@ export default async function handler(req, res) {
           });
           if (gRes.ok) {
             const gData = await gRes.json();
-            const text = gData?.candidates?.[0]?.content?.parts?.[0]?.text;
-            if (text && text.trim()) {
-              return res.status(200).json({ text: text.trim(), provider: `Gemini (${model})`, success: true });
+            const parts = gData?.candidates?.[0]?.content?.parts || [];
+            const text = parts
+              .map((p) => p?.text ?? p?.audioTranscription?.text ?? '')
+              .join(' ')
+              .replace(/\s+/g, ' ')
+              .trim();
+            if (text) {
+              return res.status(200).json({ text, provider: `Gemini (${model})`, success: true });
             }
           }
         } catch (err) {
