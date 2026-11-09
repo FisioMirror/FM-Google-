@@ -429,6 +429,8 @@ export function Login() {
     setEmail('');
     setPassword('');
     setConfirmPassword('');
+    setTurnstileToken(null);
+    turnstileRef.current?.reset();
     setGlowPhase('pulse');
     if (glowTimeoutRef.current) clearTimeout(glowTimeoutRef.current);
     glowTimeoutRef.current = setTimeout(() => setGlowPhase('settled'), 1000);
@@ -443,6 +445,8 @@ export function Login() {
     setFisioStep(1);
     clearError();
     setFormErrors({});
+    setTurnstileToken(null);
+    turnstileRef.current?.reset();
     if (m === 'register' && isFisio) loadEspecialidades();
   };
 
