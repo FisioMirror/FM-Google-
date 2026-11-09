@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, type ReactNode } from 'react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { UserPlus, Dumbbell, Video, Sparkles, ScanLine, Phone, Bot, LayoutDashboard, Users, Activity, Wrench, UserCheck, Settings, X, ChevronRight, ChevronLeft, Download, LogOut, Sun, Moon, Bell } from 'lucide-react';
+import { UserPlus, Dumbbell, Video, Sparkles, ScanLine, Phone, Bot, LayoutDashboard, Users, Activity, Wrench, UserCheck, Settings, X, ChevronRight, ChevronLeft, Download, LogOut, Sun, Moon, Bell, Menu, Search } from 'lucide-react';
 import { Icon } from './ui/Icon';
 import { HelpGuideButton, ContextualFAQCard } from './ui/HelpGuideButton';
 import { BackButton } from './ui/BackButton';
@@ -464,8 +464,13 @@ export function FisioLayout({ children }: FisioLayoutProps) {
         <div className="absolute -bottom-24 left-1/3 w-96 h-96 rounded-full bg-indigo-400/8 dark:bg-indigo-500/8 blur-[120px]" />
       </div>
 
-      {/* Desktop sidebar */}
-      <div className="hidden lg:block relative z-30">{desktopSidebar}</div>
+      {/* Desktop sidebar wrapper */}
+      <div
+        className="hidden lg:block shrink-0 h-full relative z-30 transition-all duration-300"
+        style={{ width: `${sidebarWidth}px` }}
+      >
+        {desktopSidebar}
+      </div>
 
       {/* Mobile drawer with slide-over */}
       <AnimatePresence>
@@ -510,42 +515,49 @@ export function FisioLayout({ children }: FisioLayoutProps) {
       </AnimatePresence>
 
       {/* Main content */}
-      <main className="flex-1 flex flex-col h-full overflow-y-auto overscroll-contain lg:ml-[var(--fisio-sidebar-w)]" data-scroll-root>
-        <header className="h-16 w-full min-w-0 max-w-full bg-white dark:bg-slate-900 sticky top-0 z-30 flex items-center justify-between px-3 sm:px-6 gap-2 border-b border-slate-200/80 dark:border-slate-800 shadow-sm">
+      <main className="flex-1 min-w-0 flex flex-col h-full overflow-y-auto overflow-x-hidden overscroll-contain" data-scroll-root>
+        <header className="h-16 w-full min-w-0 shrink-0 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md sticky top-0 z-20 flex items-center justify-between px-3 sm:px-6 gap-2 sm:gap-4 border-b border-slate-200/80 dark:border-slate-800 shadow-xs">
           <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
             <button
-              onClick={() => setSidebarOpen(true)}
-              aria-label={t('fl.openMenu')}
-              className="lg:hidden text-primary shrink-0 p-1.5 rounded-lg hover:bg-primary/10 transition-colors"
+              onClick={() => {
+                if (window.innerWidth >= 1024) {
+                  setSidebarCollapsed(!sidebarCollapsed);
+                } else {
+                  setSidebarOpen(true);
+                }
+              }}
+              aria-label={t('fl.openMenu', 'Menú')}
+              title={sidebarCollapsed ? 'Expandir menú lateral' : 'Colapsar / Abrir menú lateral'}
+              className="text-slate-700 dark:text-slate-200 shrink-0 p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500/40"
             >
-              <Icon name="menu" size={22} />
+              <Menu size={22} className="text-teal-600 dark:text-teal-400" />
             </button>
             <BackButton />
-            {/* Mobile title */}
-            <div className="flex items-center gap-2 lg:hidden min-w-0 flex-1">
-              <span className="text-on-surface font-bold text-sm truncate min-w-0">{currentCrumb}</span>
-            </div>
-            {/* Desktop breadcrumb */}
-            <div className="hidden lg:flex items-center text-outline text-label-sm gap-2 min-w-0 truncate">
-              <span onClick={() => navigate('/dashboard-fisio')} className="hover:text-primary cursor-pointer shrink-0">{t('navigation.dashboard', 'Inicio')}</span>
-              <Icon name="chevron_right" size={14} className="shrink-0" />
-              <span className="text-on-surface font-bold truncate">{currentCrumb}</span>
+            {/* Title / Breadcrumb */}
+            <div className="flex items-center gap-2 min-w-0">
+              <span className="text-slate-900 dark:text-white font-extrabold text-sm sm:text-base truncate">
+                {currentCrumb}
+              </span>
+              <span className="hidden xl:inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-teal-500/10 text-teal-700 dark:text-teal-300 border border-teal-500/20 shrink-0">
+                Fisioterapeuta
+              </span>
             </div>
           </div>
-          <div className="flex items-center gap-1 sm:gap-3 shrink-0">
-            <HelpGuideButton /><div className={`hidden md:inline-flex online-indicator is-${isOnline ? 'online' : 'offline'}`}>
+          <div className="flex items-center gap-1 sm:gap-2.5 shrink-0">
+            <HelpGuideButton />
+            <div className={`hidden md:inline-flex online-indicator is-${isOnline ? 'online' : 'offline'}`}>
               <span className="dot" />
               <span>{isOnline ? t('common.online', 'En línea') : t('common.offline', 'Sin conexión')}</span>
             </div>
-            <form onSubmit={handleSearch} className="hidden md:flex items-center bg-surface-variant/30 rounded-full pl-10 pr-4 py-2 w-72 relative">
-              <Icon name="search" size={18} className="absolute left-3 text-outline" />
+            <form onSubmit={handleSearch} className="hidden lg:flex items-center bg-slate-100/80 dark:bg-slate-800/80 border border-slate-200/60 dark:border-slate-700/60 rounded-full pl-9 pr-3 py-1.5 w-60 xl:w-72 relative">
+              <Search size={16} className="absolute left-3 text-slate-400" />
               <input
                 value={searchQuery}
                 onChange={(e) => onSearchChange(e.target.value)}
                 onFocus={() => setShowSearchDropdown(true)}
                 onBlur={() => setTimeout(() => setShowSearchDropdown(false), 200)}
-                className="bg-transparent border-none focus:ring-0 text-label-sm w-full outline-none placeholder:text-outline"
-                placeholder={t('navigation.searchPlaceholder', 'Buscar pacientes o ejercicios... (⌘K)')}
+                className="bg-transparent border-none focus:ring-0 text-xs w-full outline-none placeholder:text-slate-400 text-slate-800 dark:text-slate-200"
+                placeholder={t('navigation.searchPlaceholder', 'Buscar... (⌘K)')}
               />
               {showSearchDropdown && (searchResults.patients.length > 0 || searchResults.exercises.length > 0) && (
                 <div className="absolute top-full left-0 right-0 mt-2 glass-panel rounded-2xl shadow-2xl overflow-hidden z-50">

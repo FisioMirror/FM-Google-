@@ -2,7 +2,7 @@ import { type ReactNode, useCallback, useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Video, Phone, MessageCircle, Mail, Bot, Home, Dumbbell, Activity, User, Settings, X, Bell, Sun, Moon, LogOut } from 'lucide-react';
+import { Video, Phone, MessageCircle, Mail, Bot, Home, Dumbbell, Activity, User, Settings, X, Bell, Sun, Moon, LogOut, Menu } from 'lucide-react';
 import { Icon } from './ui/Icon';
 import { HelpGuideButton, ContextualFAQCard } from './ui/HelpGuideButton';
 import { BackButton } from './ui/BackButton';
@@ -366,8 +366,13 @@ export function PatientLayout({ children }: PatientLayoutProps) {
         <div className="absolute -bottom-24 left-1/3 w-96 h-96 rounded-full bg-indigo-400/8 dark:bg-indigo-500/8 blur-[120px]" />
       </div>
 
-      {/* Desktop sidebar navigation */}
-      <div className="hidden lg:block relative z-30">{desktopSidebar}</div>
+      {/* Desktop sidebar navigation wrapper */}
+      <div
+        className="hidden lg:block shrink-0 h-full relative z-30 transition-all duration-300"
+        style={{ width: `${sidebarWidth}px` }}
+      >
+        {desktopSidebar}
+      </div>
 
       {/* Mobile sidebar drawer (slide-in from left with smooth glassmorphism) */}
       <AnimatePresence>
@@ -434,28 +439,34 @@ export function PatientLayout({ children }: PatientLayoutProps) {
       </AnimatePresence>
 
       {/* Main content area with sticky header */}
-      <main className="flex-1 flex flex-col w-full max-w-full min-w-0 overflow-hidden overflow-x-hidden lg:ml-[var(--patient-sidebar-w)]" data-scroll-root>
+      <main className="flex-1 min-w-0 flex flex-col w-full h-full overflow-hidden" data-scroll-root>
         {/* Sticky header — mobile (hamburger + title + actions) and desktop (breadcrumb + actions) */}
-        <header className="bg-white dark:bg-slate-900 sticky top-0 z-30 w-full min-w-0 max-w-full flex items-center justify-between px-3 sm:px-6 h-16 border-b border-slate-200/80 dark:border-slate-800 shadow-sm shrink-0 gap-2">
-          {/* Left: hamburger (mobile) + breadcrumb (desktop) */}
+        <header className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-md sticky top-0 z-20 w-full min-w-0 flex items-center justify-between px-3 sm:px-6 h-16 border-b border-slate-200/80 dark:border-slate-800 shadow-xs shrink-0 gap-2 sm:gap-4">
+          {/* Left: hamburger + back button + section title */}
           <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
             <button
-              onClick={() => setSidebarOpen(true)}
-              aria-label={t('play.openMenu')}
-              className="lg:hidden text-primary shrink-0 p-1.5 rounded-lg hover:bg-primary/10 transition-colors"
+              onClick={() => {
+                if (window.innerWidth >= 1024) {
+                  setSidebarCollapsed(!sidebarCollapsed);
+                } else {
+                  setSidebarOpen(true);
+                }
+              }}
+              aria-label={t('play.openMenu', 'Menú')}
+              title={sidebarCollapsed ? 'Expandir menú lateral' : 'Colapsar / Abrir menú lateral'}
+              className="text-slate-700 dark:text-slate-200 shrink-0 p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500/40"
             >
-              <Icon name="menu" size={22} />
+              <Menu size={22} className="text-teal-600 dark:text-teal-400" />
             </button>
             <BackButton />
-            {/* Mobile title */}
-            <div className="flex items-center gap-2 lg:hidden min-w-0 flex-1">
-              <span className="text-on-surface font-bold text-sm truncate min-w-0">{currentCrumb}</span>
-            </div>
-            {/* Desktop breadcrumb */}
-            <div className="hidden lg:flex items-center text-outline text-label-sm gap-2 min-w-0 truncate">
-              <span onClick={() => navigate('/dashboard-paciente')} className="hover:text-primary cursor-pointer shrink-0">{t('navigation.dashboard', 'Inicio')}</span>
-              <Icon name="chevron_right" size={14} className="shrink-0" />
-              <span className="text-on-surface font-bold truncate">{currentCrumb}</span>
+            {/* Title / Section */}
+            <div className="flex items-center gap-2 min-w-0">
+              <span className="text-slate-900 dark:text-white font-extrabold text-sm sm:text-base truncate">
+                {currentCrumb}
+              </span>
+              <span className="hidden xl:inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-teal-500/10 text-teal-700 dark:text-teal-300 border border-teal-500/20 shrink-0">
+                Paciente
+              </span>
             </div>
           </div>
           {/* Right: actions — all buttons directly in header */}

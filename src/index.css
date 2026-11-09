@@ -1965,7 +1965,7 @@ html { font-size: var(--font-size-base, 16px); }
    Se usa --app-scale (1 = 100%). El contenedor se ensancha y
    eleva su min-height con 100vh/scale para que nunca quede hueco.
    ═══════════════════════════════════════════════════════════════ */
-#app-root {
+html[data-scaled="true"] #app-root {
   transform: scale(var(--app-scale, 1));
   transform-origin: top left;
   width: calc(100% / var(--app-scale, 1));

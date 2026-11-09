@@ -23,8 +23,9 @@
           var z = localStorage.getItem('fisio-zoom');
           if (z) {
             var zVal = parseInt(z, 10);
-            if (zVal === 80 || zVal === 90 || zVal === 100 || zVal === 110 || zVal === 120) {
+            if (zVal && zVal !== 100) {
               document.documentElement.style.setProperty('--app-scale', zVal / 100);
+              document.documentElement.setAttribute('data-scaled', 'true');
             }
           }
         } catch (e) { /* localStorage no disponible */ }

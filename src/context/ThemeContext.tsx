@@ -47,6 +47,11 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const root = document.documentElement
     root.style.setProperty('--app-scale', String(zoom / 100))
+    if (zoom !== 100) {
+      root.setAttribute('data-scaled', 'true')
+    } else {
+      root.removeAttribute('data-scaled')
+    }
     localStorage.setItem('fisio-zoom', String(zoom))
   }, [zoom])
 
