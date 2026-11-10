@@ -101,7 +101,7 @@ export function EmailVerification() {
       <div className="pointer-events-none absolute -left-12 top-16 h-72 w-72 rounded-full bg-[#00504d]/10 dark:bg-teal-500/10 blur-[90px]" />
       <div className="pointer-events-none absolute bottom-10 right-0 h-64 w-64 rounded-full bg-cyan-500/10 blur-[90px]" />
 
-      <SparkleEffect activeRole="paciente" phase="settled" reduceMotion={false} onSelectRole={() => {}} />
+      <SparkleEffect active={true} color="teal" />
 
       {/* Main Content */}
       <div className="w-full flex flex-col items-center justify-center px-4 py-8 md:px-8 relative z-20">

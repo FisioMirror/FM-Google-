@@ -182,68 +182,142 @@ export function CalibrationPage() {
 
   return (
     <div className="fixed inset-0 z-[100] bg-slate-950 text-white flex flex-col overflow-hidden select-none">
-      <video ref={vRef} className="absolute inset-0 w-full h-full object-cover scale-x-[-1]" autoPlay playsInline muted style={{ zIndex: 1 }} />
+      <video
+        ref={vRef}
+        className="absolute inset-0 w-full h-full object-cover scale-x-[-1]"
+        autoPlay
+        playsInline
+        muted
+        style={{ zIndex: 1, filter: 'brightness(0.75) contrast(1.15)' }}
+      />
       <canvas ref={cRef} className="absolute inset-0 w-full h-full object-cover scale-x-[-1]" style={{ zIndex: 2 }} />
 
-      {/* Header Compacto y Translúcido */}
-      <header className="relative z-30 flex items-center justify-between px-3 sm:px-5 py-2.5 sm:py-3.5 bg-slate-950/60 backdrop-blur-md border-b border-white/10">
+      {/* Header Compacto de Alto Contraste */}
+      <header className="relative z-30 flex items-center justify-between px-3.5 sm:px-6 py-2.5 sm:py-3.5 bg-slate-950/85 backdrop-blur-2xl border-b border-teal-500/30 shadow-xl">
         <button
           onClick={() => navigate('/dashboard-paciente')}
-          className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors"
+          className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-slate-900/90 hover:bg-slate-800 text-white flex items-center justify-center border border-teal-500/30 transition-all shadow-md active:scale-95"
           aria-label="Volver"
         >
           <Icon name="arrow_back" size={20} className="text-white" />
         </button>
         <div className="flex flex-col items-center">
-          <h1 className="font-bold text-sm sm:text-base tracking-wide">{t('cal.title')}</h1>
-          <span className="text-[10px] text-teal-300 font-semibold uppercase tracking-wider">{t('cal.cameraAlignment')}</span>
+          <h1 className="font-bold text-sm sm:text-base tracking-wide text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]">{t('cal.title')}</h1>
+          <span className="text-[10px] text-teal-300 font-bold uppercase tracking-wider">{t('cal.cameraAlignment')}</span>
         </div>
         <div className="flex items-center gap-2">
           <PoseConfidenceLiveIndicator
-            confidencePercent={isReady && poseData?.isTracking ? 95 : 30}
-            className="bg-slate-900/70 border-white/20 text-white text-[10px] sm:text-[11px] py-1 px-2.5"
+            confidencePercent={isReady && poseData?.isTracking ? 96 : 30}
+            className="bg-slate-900/90 border-teal-500/40 text-teal-200 text-[10px] sm:text-[11px] py-1 px-3 shadow-md"
           />
           <button
             onClick={() => setShowSkipConfirm(true)}
-            className="text-[11px] font-bold text-white/70 hover:text-white px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/15 transition-colors sm:hidden"
+            className="text-[11px] font-bold text-white/80 hover:text-white px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 transition-colors sm:hidden border border-white/15"
           >
             Omitir
           </button>
         </div>
       </header>
 
-      {/* Sutiles Guías de Encuadre en las Esquinas (sin obstruir el cuerpo) */}
+      {/* Guías de Encuadre Luminosas en las Esquinas */}
       <div className="absolute inset-4 sm:inset-10 pointer-events-none z-10">
-        <div className="w-full h-full relative rounded-3xl border border-white/10">
+        <div className="w-full h-full relative rounded-3xl border border-teal-500/20">
           {/* Esquina Superior Izquierda */}
-          <div className="absolute top-0 left-0 w-6 sm:w-10 h-6 sm:h-10 border-t-2 border-l-2 border-teal-400/70 rounded-tl-xl" />
+          <div className="absolute top-0 left-0 w-8 sm:w-12 h-8 sm:h-12 border-t-3 border-l-3 border-teal-400 rounded-tl-xl drop-shadow-[0_0_10px_rgba(45,212,191,0.7)]" />
           {/* Esquina Superior Derecha */}
-          <div className="absolute top-0 right-0 w-6 sm:w-10 h-6 sm:h-10 border-t-2 border-r-2 border-teal-400/70 rounded-tr-xl" />
+          <div className="absolute top-0 right-0 w-8 sm:w-12 h-8 sm:h-12 border-t-3 border-r-3 border-teal-400 rounded-tr-xl drop-shadow-[0_0_10px_rgba(45,212,191,0.7)]" />
           {/* Esquina Inferior Izquierda */}
-          <div className="absolute bottom-0 left-0 w-6 sm:w-10 h-6 sm:h-10 border-b-2 border-l-2 border-teal-400/70 rounded-bl-xl" />
+          <div className="absolute bottom-0 left-0 w-8 sm:w-12 h-8 sm:h-12 border-b-3 border-l-3 border-teal-400 rounded-bl-xl drop-shadow-[0_0_10px_rgba(45,212,191,0.7)]" />
           {/* Esquina Inferior Derecha */}
-          <div className="absolute bottom-0 right-0 w-6 sm:w-10 h-6 sm:h-10 border-b-2 border-r-2 border-teal-400/70 rounded-br-xl" />
+          <div className="absolute bottom-0 right-0 w-8 sm:w-12 h-8 sm:h-12 border-b-3 border-r-3 border-teal-400 rounded-br-xl drop-shadow-[0_0_10px_rgba(45,212,191,0.7)]" />
         </div>
+      </div>
+
+      {/* Silueta Anatómica Guía en Pantalla (Alta visibilidad y contraste) */}
+      <div className="absolute inset-0 z-10 pointer-events-none flex items-center justify-center">
+        <svg
+          viewBox="0 0 400 600"
+          className="w-full h-full max-w-[340px] sm:max-w-[420px] max-h-[85vh] transition-opacity duration-300"
+          style={{ opacity: poseData?.isTracking ? 0.45 : 0.75 }}
+        >
+          {/* Cabeza */}
+          <circle
+            cx="200"
+            cy="110"
+            r="38"
+            fill="none"
+            stroke={poseData?.isTracking ? '#34d399' : '#2dd4bf'}
+            strokeWidth="2.5"
+            strokeDasharray="6 6"
+            className="drop-shadow-[0_0_8px_rgba(45,212,191,0.5)]"
+          />
+          {/* Línea Nivel de Hombros */}
+          <line
+            x1="120"
+            y1="175"
+            x2="280"
+            y2="175"
+            stroke={poseData?.isTracking ? '#34d399' : '#2dd4bf'}
+            strokeWidth="2"
+            strokeDasharray="4 4"
+          />
+          {/* Torso */}
+          <rect
+            x="145"
+            y="175"
+            width="110"
+            height="170"
+            rx="16"
+            fill="none"
+            stroke={poseData?.isTracking ? '#34d399' : '#2dd4bf'}
+            strokeWidth="2"
+            strokeDasharray="6 6"
+          />
+          {/* Posición de Manos de Calibración (Zonas objetivo para alzar la mano) */}
+          <circle
+            cx="80"
+            cy="140"
+            r="26"
+            fill="none"
+            stroke={handRaisedDetected ? '#34d399' : 'rgba(245, 158, 11, 0.6)'}
+            strokeWidth="2"
+            strokeDasharray="4 4"
+            className="animate-pulse"
+          />
+          <circle
+            cx="320"
+            cy="140"
+            r="26"
+            fill="none"
+            stroke={handRaisedDetected ? '#34d399' : 'rgba(245, 158, 11, 0.6)'}
+            strokeWidth="2"
+            strokeDasharray="4 4"
+            className="animate-pulse"
+          />
+          {/* Piernas / Postura */}
+          <line x1="165" y1="345" x2="155" y2="530" stroke={poseData?.isTracking ? '#34d399' : '#2dd4bf'} strokeWidth="2" strokeDasharray="6 6" />
+          <line x1="235" y1="345" x2="245" y2="530" stroke={poseData?.isTracking ? '#34d399' : '#2dd4bf'} strokeWidth="2" strokeDasharray="6 6" />
+        </svg>
       </div>
 
       {/* Indicador Flotante Superior de Detección */}
       {isReady && !error && state !== 'idle' && state !== 'success' && (
-        <div className="absolute top-14 sm:top-16 left-3 sm:left-6 z-20 flex items-center gap-2 bg-slate-900/80 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/15 shadow-lg">
-          <span className={`w-2 h-2 rounded-full ${poseData?.isTracking ? 'bg-teal-400 animate-pulse' : 'bg-amber-400'}`} />
-          <span className="text-white text-[10px] sm:text-xs font-bold uppercase tracking-wider">
-            {poseData?.isTracking ? (isSimulated ? 'Simulación en vivo' : 'Cuerpo en cuadro') : 'Buscando postura...'}
+        <div className="absolute top-14 sm:top-18 left-3 sm:left-6 z-20 flex items-center gap-2.5 bg-slate-950/90 backdrop-blur-xl px-3.5 py-1.5 rounded-full border border-teal-500/35 shadow-xl">
+          <span className={`w-2.5 h-2.5 rounded-full ${poseData?.isTracking ? 'bg-emerald-400 animate-pulse shadow-[0_0_10px_rgba(52,211,153,0.8)]' : 'bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.6)]'}`} />
+          <span className="text-white text-[11px] sm:text-xs font-bold uppercase tracking-wider">
+            {poseData?.isTracking ? (isSimulated ? 'Simulación en vivo' : 'Cuerpo alineado') : 'Buscando postura...'}
           </span>
         </div>
       )}
 
       {/* Banner de Modo Simulación cuando la cámara física no está accesible */}
       {isSimulated && isReady && (
-        <div className="absolute top-14 sm:top-16 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 bg-amber-500/20 border border-amber-400/40 backdrop-blur-md px-3 py-1.5 rounded-full text-amber-200 text-[11px] sm:text-xs font-medium shadow-md">
-          <Icon name="sensors" size={14} className="text-amber-400 shrink-0" />
+        <div className="absolute top-14 sm:top-18 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 bg-amber-500/25 border border-amber-400/50 backdrop-blur-2xl px-3.5 py-1.5 rounded-full text-amber-200 text-[11px] sm:text-xs font-semibold shadow-xl">
+          <Icon name="sensors" size={15} className="text-amber-400 shrink-0" />
           <span>{t('cal.simMode')}</span>
           <button
             onClick={reconnectCamera}
-            className="ml-1 px-2 py-0.5 rounded-full bg-amber-400/30 hover:bg-amber-400/50 text-white text-[10px] font-bold uppercase tracking-wider transition-colors cursor-pointer"
+            className="ml-1.5 px-2 py-0.5 rounded-full bg-amber-400/35 hover:bg-amber-400/60 text-white text-[10px] font-bold uppercase tracking-wider transition-colors cursor-pointer"
           >
             Reconectar
           </button>
@@ -251,22 +325,25 @@ export function CalibrationPage() {
       )}
 
       {/* Brújula y Sensor de Nivel Espacial (Desktop) */}
-      <div className="absolute top-16 right-6 z-20 pointer-events-auto hidden md:block">
-        <CalibrationCompass pitch={3} roll={-1} className="bg-slate-900/80 backdrop-blur-md border-white/20 text-white" />
+      <div className="absolute top-18 right-6 z-20 pointer-events-auto hidden md:block">
+        <CalibrationCompass pitch={3} roll={-1} className="bg-slate-950/90 backdrop-blur-2xl border-teal-500/35 text-white shadow-2xl" />
       </div>
 
-      {/* Cuenta atrás sutil flotante en modo calibrando */}
+      {/* Gran Cuenta Regresiva Luminosa Central durante Calibración */}
       {state === 'calibrating' && countdown > 0 && (
-        <div className="absolute top-14 sm:top-16 right-3 sm:right-6 z-20 pointer-events-none">
+        <div className="absolute top-20 sm:top-24 left-1/2 -translate-x-1/2 z-30 pointer-events-none flex flex-col items-center gap-2">
           <motion.div
             key={countdown}
-            initial={{ scale: 1.4, opacity: 0 }}
+            initial={{ scale: 1.5, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.8, opacity: 0 }}
-            className="w-11 h-11 sm:w-14 sm:h-14 rounded-full bg-teal-500/90 text-slate-950 font-black text-xl sm:text-2xl flex items-center justify-center shadow-lg shadow-teal-500/30 border-2 border-white/40"
+            className="w-18 h-18 sm:w-22 sm:h-22 rounded-full bg-slate-950/95 border-4 border-teal-400 text-teal-300 font-black text-3xl sm:text-4xl flex items-center justify-center shadow-[0_0_35px_rgba(45,212,191,0.6)]"
           >
             {countdown}
           </motion.div>
+          <span className="text-white text-xs sm:text-sm font-bold bg-slate-950/80 px-3 py-1 rounded-full border border-teal-500/30 backdrop-blur-md">
+            {handRaisedDetected ? '¡Sostén la mano arriba!' : 'Alza tu mano para iniciar'}
+          </span>
         </div>
       )}
 
@@ -298,7 +375,7 @@ export function CalibrationPage() {
         </div>
       )}
 
-      {/* PANEL INFERIOR COLAPSABLE TIPO TARJETA FLOTANTE (Preferido por el usuario) */}
+      {/* PANEL INFERIOR COLAPSABLE TIPO TARJETA FLOTANTE (Alta nitidez y contraste en modo oscuro) */}
       {!error && (state === 'detecting' || state === 'calibrating') && (
         <motion.div
           initial={{ y: 80, opacity: 0 }}
@@ -306,26 +383,26 @@ export function CalibrationPage() {
           transition={{ type: 'spring', damping: 25, stiffness: 200 }}
           className="fixed bottom-3 sm:bottom-6 left-3 right-3 sm:left-auto sm:right-6 sm:w-[420px] z-30 pointer-events-auto"
         >
-          <div className="bg-slate-900/85 backdrop-blur-2xl border border-white/15 rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden transition-all duration-300">
+          <div className="bg-slate-950/95 backdrop-blur-2xl border border-teal-500/40 rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden transition-all duration-300">
             {/* Cabecera de la tarjeta con botón colapsar */}
             <div
               onClick={() => setIsPanelCollapsed((prev) => !prev)}
-              className="flex items-center justify-between px-4 py-3 cursor-pointer hover:bg-white/5 transition-colors border-b border-white/10 select-none"
+              className="flex items-center justify-between px-4 py-3 cursor-pointer hover:bg-white/5 transition-colors border-b border-teal-500/20 select-none"
             >
               <div className="flex items-center gap-2.5">
-                <div className={`w-3 h-3 rounded-full ${poseData?.isTracking ? 'bg-teal-400 shadow-[0_0_8px_rgba(45,212,191,0.6)]' : 'bg-amber-400'}`} />
+                <div className={`w-3 h-3 rounded-full ${poseData?.isTracking ? 'bg-teal-400 shadow-[0_0_10px_rgba(45,212,191,0.8)]' : 'bg-amber-400'}`} />
                 <span className="font-bold text-xs sm:text-sm text-white tracking-wide">
                   {state === 'calibrating' ? 'Paso 2: Calibración Activa' : 'Paso 1: Encuadre Inicial'}
                 </span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-[10px] text-white/50 hidden xs:inline">
+                <span className="text-[10px] text-teal-300/80 font-semibold hidden xs:inline">
                   {isPanelCollapsed ? 'Expandir' : 'Minimizar'}
                 </span>
                 <button
                   type="button"
                   aria-label={isPanelCollapsed ? 'Expandir guía de calibración' : 'Minimizar guía de calibración'}
-                  className="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center text-white/80 hover:bg-white/20 transition-all"
+                  className="w-7 h-7 rounded-full bg-slate-900/90 border border-teal-500/30 flex items-center justify-center text-white/90 hover:bg-slate-800 transition-all"
                 >
                   <Icon name={isPanelCollapsed ? 'expand_less' : 'expand_more'} size={18} />
                 </button>

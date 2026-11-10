@@ -221,7 +221,7 @@ export const graduationYearSchema = z
 export const bloodTypeSchema = z.preprocess(
   (v) => (v === '' ? null : v),
   z.enum(BLOOD_TYPES, {
-    errorMap: () => ({ message: 'Selecciona un grupo sanguíneo válido (ej: O+, A+, B+)' }),
+    message: 'Selecciona un grupo sanguíneo válido (ej: O+, A+, B+)',
   }).nullable().optional()
 );
 
@@ -229,7 +229,7 @@ export const bloodTypeSchema = z.preprocess(
 export const activityLevelSchema = z.preprocess(
   (v) => (v === '' ? null : v),
   z.enum(ACTIVITY_LEVELS, {
-    errorMap: () => ({ message: 'Selecciona un nivel de actividad física válido' }),
+    message: 'Selecciona un nivel de actividad física válido',
   }).nullable().optional()
 );
 
@@ -237,7 +237,7 @@ export const activityLevelSchema = z.preprocess(
 export const affectedLimbSchema = z.preprocess(
   (v) => (v === '' ? null : v),
   z.enum(AFFECTED_LIMBS, {
-    errorMap: () => ({ message: 'Todavía no se ha seleccionado una extremidad o articulación afectada' }),
+    message: 'Todavía no se ha seleccionado una extremidad o articulación afectada',
   }).nullable().optional()
 );
 
@@ -245,7 +245,7 @@ export const affectedLimbSchema = z.preprocess(
 export const recoveryPhaseSchema = z.preprocess(
   (v) => (v === '' ? null : v),
   z.enum(RECOVERY_PHASES, {
-    errorMap: () => ({ message: 'Selecciona una fase de recuperación válida' }),
+    message: 'Selecciona una fase de recuperación válida',
   }).nullable().optional()
 );
 
@@ -755,7 +755,7 @@ export function formatZodError(error: z.ZodError): Record<string, string> {
     let msg = issue.message;
 
     // Humanize technical or generic Zod validation messages
-    if (msg.includes('Expected') || issue.code === 'invalid_enum_value') {
+    if (msg.includes('Expected') || (issue.code as string) === 'invalid_enum_value' || (issue.code as string) === 'invalid_value') {
       if (path.includes('extremidad') || path.includes('affectedLimb') || path.includes('articulacion')) {
         msg = 'Todavía no se ha elegido una extremidad o articulación válida';
       } else if (path.includes('sangre') || path.includes('bloodType') || path.includes('tipoSangre')) {

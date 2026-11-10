@@ -280,28 +280,38 @@ export function ARMirrorPage() {
         setQualityScore((prev) => (Math.abs(prev - blended) >= 1 ? blended : prev));
       }
 
-      // Compensation detection: check hip and torso alignment
-      const leftHip = poseData.landmarks[23];
-      const rightHip = poseData.landmarks[24];
-      const leftShoulder = poseData.landmarks[11];
-      const rightShoulder = poseData.landmarks[12];
+      // Compensation detection: use direct biomechanical tilt degrees from poseData with fallback
+      let detectedCompensation: string | null = poseData.compensationIssue ?? null;
 
-      let detectedCompensation: string | null = null;
+      if (detectedCompensation) {
+        if (poseData.shoulderTiltDeg && poseData.shoulderTiltDeg > 8) {
+          speak('Nivela tus hombros');
+        } else if (poseData.hipTiltDeg && poseData.hipTiltDeg > 7) {
+          speak('Equilibra tus caderas');
+        } else if (poseData.lateralLeanDeg && poseData.lateralLeanDeg > 9) {
+          speak('Mantén el tronco erguido');
+        }
+      } else {
+        const leftHip = poseData.landmarks[23];
+        const rightHip = poseData.landmarks[24];
+        const leftShoulder = poseData.landmarks[11];
+        const rightShoulder = poseData.landmarks[12];
 
-      if (leftHip && rightHip && leftShoulder && rightShoulder) {
-        const hipTilt = Math.abs(leftHip.y - rightHip.y);
-        const shoulderTilt = Math.abs(leftShoulder.y - rightShoulder.y);
-        const torsoLean = Math.abs(((leftShoulder.x + rightShoulder.x) / 2) - ((leftHip.x + rightHip.x) / 2));
+        if (leftHip && rightHip && leftShoulder && rightShoulder) {
+          const hipTilt = Math.abs(leftHip.y - rightHip.y);
+          const shoulderTilt = Math.abs(leftShoulder.y - rightShoulder.y);
+          const torsoLean = Math.abs(((leftShoulder.x + rightShoulder.x) / 2) - ((leftHip.x + rightHip.x) / 2));
 
-        if (hipTilt > 0.08) {
-          detectedCompensation = 'Compensación detectada: cadera desalineada. Nivela las caderas.';
-          speak('Nivela las caderas');
-        } else if (shoulderTilt > 0.08) {
-          detectedCompensation = 'Compensación detectada: hombros desalineados. Mantén los hombros nivelados.';
-          speak('Mantén los hombros nivelados');
-        } else if (torsoLean > 0.15) {
-          detectedCompensation = 'Compensación detectada: torso inclinado. Mantén el torso erguido.';
-          speak('Mantén el torso erguido');
+          if (hipTilt > 0.08) {
+            detectedCompensation = 'Compensación detectada: cadera desalineada. Nivela las caderas.';
+            speak('Nivela las caderas');
+          } else if (shoulderTilt > 0.08) {
+            detectedCompensation = 'Compensación detectada: hombros desalineados. Mantén los hombros nivelados.';
+            speak('Mantén los hombros nivelados');
+          } else if (torsoLean > 0.14) {
+            detectedCompensation = 'Compensación detectada: tronco inclinado. Mantén la espalda recta.';
+            speak('Mantén la espalda recta');
+          }
         }
       }
 
@@ -553,27 +563,27 @@ export function ARMirrorPage() {
         style={{ zIndex: 2 }}
       />
 
-      {/* Barra Superior Flotante Unificada de Micro-Métricas (Mobile First & Desktop) */}
+      {/* Barra Superior Flotante Unificada de Micro-Métricas (Alta nitidez y contraste en modo oscuro) */}
       {sessionStarted && !error && (
-        <header className="fixed top-2 sm:top-3 left-2 right-2 sm:left-4 sm:right-4 z-[35] flex items-center justify-between gap-1.5 sm:gap-3 pointer-events-none select-none">
+        <header className="fixed top-2 sm:top-3.5 left-2 right-2 sm:left-4 sm:right-4 z-[35] flex items-center justify-between gap-1.5 sm:gap-3 pointer-events-none select-none">
           {/* Lado Izquierdo: Salir y Estado de Detección */}
           <div className="flex items-center gap-1.5 sm:gap-2 pointer-events-auto shrink-0">
             <button
               onClick={() => navigate('/dashboard-paciente')}
               title={t('ar.backToPanel')}
               aria-label={t('ar.backToPatientPanel')}
-              className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-slate-900/80 hover:bg-slate-900 text-white/80 hover:text-white flex items-center justify-center border border-white/15 backdrop-blur-xl transition-all shadow-md active:scale-95"
+              className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-slate-950/90 hover:bg-slate-900 text-white flex items-center justify-center border border-teal-500/35 backdrop-blur-2xl transition-all shadow-xl hover:border-teal-400 active:scale-95"
             >
-              <Icon name="arrow_back" size={18} />
+              <Icon name="arrow_back" size={19} />
             </button>
 
             <div
-              className="rounded-full px-2 sm:px-2.5 py-1 flex items-center gap-1.5 bg-slate-900/80 backdrop-blur-xl border border-white/15 shadow-md"
+              className="rounded-full px-2.5 sm:px-3 py-1 sm:py-1.5 flex items-center gap-1.5 bg-slate-950/90 backdrop-blur-2xl border border-teal-500/35 shadow-xl"
               title={poseData?.isTracking ? 'Seguimiento corporal activo' : 'Buscando postura corporal'}
             >
-              <span className={`w-2 h-2 rounded-full ${poseData?.isTracking ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'}`} />
-              <span className="text-white/80 text-[10px] font-bold uppercase tracking-wider hidden xs:inline">
-                {poseData?.isTracking ? 'AR' : 'Buscando'}
+              <span className={`w-2.5 h-2.5 rounded-full ${poseData?.isTracking ? 'bg-emerald-400 animate-pulse shadow-[0_0_10px_rgba(52,211,153,0.8)]' : 'bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.6)]'}`} />
+              <span className="text-white text-[11px] font-bold uppercase tracking-wider hidden xs:inline">
+                {poseData?.isTracking ? 'AR ACTIVO' : 'BUSCANDO'}
               </span>
             </div>
           </div>
@@ -581,83 +591,87 @@ export function ARMirrorPage() {
           {/* Centro: Cápsula de Micro-Métricas Unificadas (Ejercicio, Reps, Series, Ángulo y Tiempo) */}
           <div className="pointer-events-auto min-w-0 max-w-full">
             <div
-              className="rounded-2xl px-2.5 sm:px-3.5 py-1 sm:py-1.5 flex items-center gap-1.5 sm:gap-2.5 bg-slate-900/90 backdrop-blur-2xl border border-teal-500/35 shadow-xl text-white"
+              className="rounded-2xl px-3 sm:px-4 py-1.5 sm:py-2 flex items-center gap-2 sm:gap-3 bg-slate-950/95 backdrop-blur-2xl border border-teal-500/40 shadow-2xl text-white"
             >
               {/* Nombre de Ejercicio con truncado inteligente */}
-              <div className="flex items-center gap-1 min-w-0">
-                <span className="w-1.5 h-1.5 rounded-full bg-teal-400 shrink-0 hidden sm:inline-block" />
-                <span className="text-[11px] sm:text-xs md:text-sm font-bold text-white truncate max-w-[80px] xs:max-w-[110px] sm:max-w-[170px]">
+              <div className="flex items-center gap-1.5 min-w-0">
+                <span className="w-2 h-2 rounded-full bg-teal-400 shrink-0 hidden sm:inline-block shadow-[0_0_6px_rgba(45,212,191,0.8)]" />
+                <span className="text-xs sm:text-sm font-bold text-white truncate max-w-[85px] xs:max-w-[120px] sm:max-w-[180px] tracking-tight">
                   {exerciseName}
                 </span>
               </div>
 
-              <div className="w-px h-3.5 bg-white/20 shrink-0" />
+              <div className="w-px h-4 bg-teal-500/25 shrink-0" />
 
               {/* Repeticiones */}
               <div className="flex items-baseline gap-0.5 shrink-0" title={`Repeticiones: ${repCount} de ${TARGET_REPS}`}>
-                <span className="text-teal-300 font-black text-xs sm:text-sm md:text-base leading-none">{repCount}</span>
-                <span className="text-white/40 text-[9px] sm:text-[10px]">/{TARGET_REPS}</span>
+                <span className="text-teal-300 font-black text-xs sm:text-base md:text-lg leading-none tabular-nums drop-shadow-[0_0_8px_rgba(45,212,191,0.5)]">
+                  {repCount}
+                </span>
+                <span className="text-white/50 text-[10px] sm:text-xs">/{TARGET_REPS}</span>
               </div>
 
-              <div className="w-px h-3.5 bg-white/20 shrink-0" />
+              <div className="w-px h-4 bg-teal-500/25 shrink-0" />
 
               {/* Serie Actual */}
-              <span className="text-white/80 font-bold text-[10px] sm:text-xs shrink-0" title={`Serie ${currentSet} de ${TOTAL_SETS}`}>
+              <span className="text-white/90 font-bold text-[11px] sm:text-xs shrink-0 tracking-wide" title={`Serie ${currentSet} de ${TOTAL_SETS}`}>
                 S{currentSet}/{TOTAL_SETS}
               </span>
 
-              <div className="w-px h-3.5 bg-white/20 shrink-0" />
+              <div className="w-px h-4 bg-teal-500/25 shrink-0" />
 
               {/* Ángulo Biomecánico en Tiempo Real */}
               <div
-                className="font-mono text-[10px] sm:text-xs font-bold text-teal-300 bg-teal-500/20 px-1.5 py-0.5 rounded flex items-center shrink-0 border border-teal-500/30"
-                title={`Ángulo articular actual: ${currentAngle}°`}
+                className="font-mono text-xs sm:text-sm font-black text-teal-200 bg-teal-500/25 px-2 py-0.5 rounded-lg flex items-center shrink-0 border border-teal-400/45 shadow-[0_0_10px_rgba(45,212,191,0.3)] tabular-nums"
+                title={`Ángulo articular actual: ${currentAngle}° (Objetivo: ${presetTargetAngle}°)`}
               >
                 <span>{currentAngle}°</span>
               </div>
 
-              <div className="w-px h-3.5 bg-white/20 shrink-0 hidden xs:block" />
+              <div className="w-px h-4 bg-teal-500/25 shrink-0 hidden xs:block" />
 
               {/* Cronómetro de Sesión */}
-              <span className="font-mono text-[10px] sm:text-xs text-white/90 font-medium shrink-0 hidden xs:inline" title="Tiempo transcurrido">
+              <span className="font-mono text-xs text-white/90 font-semibold shrink-0 hidden xs:inline tabular-nums" title="Tiempo transcurrido">
                 {formatTime(timer)}
               </span>
             </div>
           </div>
 
           {/* Lado Derecho: Controles Rápidos de Cámara y Modo HUD */}
-          <div className="flex items-center gap-1 sm:gap-1.5 pointer-events-auto shrink-0">
+          <div className="flex items-center gap-1.5 sm:gap-2 pointer-events-auto shrink-0">
             <button
               onClick={toggleFacingMode}
               title={facingMode === 'user' ? 'Cámara trasera' : 'Cámara frontal'}
               aria-label={t('ar.toggleCamera')}
-              className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-slate-900/80 hover:bg-slate-900 text-white/80 hover:text-white flex items-center justify-center border border-white/15 backdrop-blur-xl transition-all shadow-md active:scale-95"
+              className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-slate-950/90 hover:bg-slate-900 text-white flex items-center justify-center border border-teal-500/35 backdrop-blur-2xl transition-all shadow-xl hover:border-teal-400 active:scale-95"
             >
-              <Icon name="flip_camera_ios" size={17} />
+              <Icon name="flip_camera_ios" size={18} />
             </button>
             <button
               onClick={() => setIsMirrored((prev) => !prev)}
-              title={isMirrored ? 'Desactivar efecto espejo' : 'Activar efecto espejo'}
+              title={isMirrored ? 'Modo espejo activado (Toca para desactivar)' : 'Activar modo espejo'}
               aria-label={t('ar.mirrorMode')}
               className={cn(
-                'w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-slate-900/80 hover:bg-slate-900 flex items-center justify-center border backdrop-blur-xl transition-all shadow-md active:scale-95',
-                isMirrored ? 'text-teal-300 border-teal-500/50' : 'text-white/60 border-white/15'
+                'w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-slate-950/90 hover:bg-slate-900 flex items-center justify-center border backdrop-blur-2xl transition-all shadow-xl active:scale-95',
+                isMirrored
+                  ? 'text-teal-300 border-teal-400/60 shadow-[0_0_12px_rgba(45,212,191,0.3)]'
+                  : 'text-white/60 border-white/20'
               )}
             >
-              <Icon name="sync_alt" size={17} />
+              <Icon name="sync_alt" size={18} />
             </button>
             <button
               onClick={() => setHudMode((prev) => (prev === 'full' ? 'minimal' : 'full'))}
               title={hudMode === 'minimal' ? 'Modo Esencial Activo. Toca para Modo Completo.' : 'Modo Completo. Toca para Modo Esencial.'}
               aria-label={hudMode === 'minimal' ? 'Cambiar a modo completo' : 'Cambiar a modo esencial'}
               className={cn(
-                'px-2.5 sm:px-3 h-8 sm:h-9 rounded-full flex items-center gap-1 border backdrop-blur-xl transition-all shadow-md active:scale-95 text-[10px] sm:text-xs font-bold uppercase tracking-wider',
+                'px-2.5 sm:px-3 h-8 sm:h-10 rounded-full flex items-center gap-1.5 border backdrop-blur-2xl transition-all shadow-xl active:scale-95 text-[10px] sm:text-xs font-bold uppercase tracking-wider',
                 hudMode === 'minimal'
-                  ? 'bg-amber-500/30 text-amber-300 border-amber-400/50 shadow-amber-500/20'
-                  : 'bg-slate-900/80 text-white/80 border-white/15 hover:text-white'
+                  ? 'bg-amber-500/25 text-amber-300 border-amber-400/60 shadow-[0_0_12px_rgba(245,158,11,0.25)]'
+                  : 'bg-slate-950/90 text-white/90 border-teal-500/35 hover:text-white hover:border-teal-400'
               )}
             >
-              <Icon name={hudMode === 'minimal' ? 'auto_awesome' : 'visibility'} size={16} />
+              <Icon name={hudMode === 'minimal' ? 'auto_awesome' : 'visibility'} size={17} />
               <span className="hidden sm:inline">{hudMode === 'minimal' ? 'Esencial' : 'Completo'}</span>
             </button>
           </div>
@@ -779,23 +793,23 @@ export function ARMirrorPage() {
                 <motion.div
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
-                  className="rounded-2xl p-3.5 w-48 bg-slate-900/80 backdrop-blur-xl border border-white/15 text-white shadow-xl"
+                  className="rounded-2xl p-4 w-52 bg-slate-950/92 backdrop-blur-2xl border border-teal-500/35 text-white shadow-2xl"
                 >
-                  <p className="text-white/60 text-[10px] uppercase font-bold tracking-wider mb-1">{t('ar.sets')}</p>
+                  <p className="text-teal-300/80 text-[10px] uppercase font-bold tracking-wider mb-1">{t('ar.sets')}</p>
                   <div className="flex items-baseline gap-2">
-                    <span className="text-white text-3xl font-black">{currentSet}</span>
-                    <span className="text-white/40 text-base">/ {TOTAL_SETS}</span>
+                    <span className="text-white text-3xl font-black tabular-nums">{currentSet}</span>
+                    <span className="text-white/40 text-base font-semibold">/ {TOTAL_SETS}</span>
                   </div>
-                  <div className="mt-2 pt-2 border-t border-white/10 flex items-center justify-between text-xs">
-                    <span className="text-white/60">{t('tr.repeticiones')}</span>
-                    <span className="text-teal-300 font-bold">{repCount} / {TARGET_REPS}</span>
+                  <div className="mt-2.5 pt-2.5 border-t border-teal-500/20 flex items-center justify-between text-xs">
+                    <span className="text-white/70">{t('tr.repeticiones')}</span>
+                    <span className="text-teal-300 font-bold tabular-nums">{repCount} / {TARGET_REPS}</span>
                   </div>
                 </motion.div>
 
-                <div className="w-48">
+                <div className="w-52">
                   <RepCadenceMetronome
                     durationSeconds={2}
-                    className="w-full bg-slate-900/80 backdrop-blur-xl border-white/15 text-white"
+                    className="w-full bg-slate-950/92 backdrop-blur-2xl border-teal-500/35 text-white shadow-2xl"
                   />
                 </div>
               </div>
@@ -813,7 +827,7 @@ export function ARMirrorPage() {
                       jointName={exerciseName}
                       safeTolerance={10}
                       size={140}
-                      className="bg-slate-900/80 backdrop-blur-xl border-white/15 text-white shadow-2xl"
+                      className="bg-slate-950/92 backdrop-blur-2xl border border-teal-500/35 text-white shadow-2xl"
                     />
                   </motion.div>
                 )}
@@ -826,7 +840,7 @@ export function ARMirrorPage() {
 
         {/* Zona Inferior: Alertas, Feedback por Voz y Dock Ergonómico */}
         <div className="space-y-2 pointer-events-auto flex flex-col items-center w-full max-w-2xl mx-auto">
-          {/* Banner de Compensación Postural */}
+          {/* Banner de Compensación Postural con contraste clínico */}
           {compensation && (
             <motion.div
               initial={{ opacity: 0, y: 15 }}
@@ -852,50 +866,50 @@ export function ARMirrorPage() {
               <VoiceFeedbackWaveHUD
                 isSpeaking={Boolean(aiFeedbackRef.current)}
                 instructionText={aiFeedbackRef.current || 'Postura adecuada. Mantén la velocidad y respira naturalmente.'}
-                className="bg-slate-900/85 backdrop-blur-xl border-white/15 text-white py-1.5 px-3 text-xs"
+                className="bg-slate-950/92 backdrop-blur-2xl border-teal-500/35 text-white py-1.5 px-3.5 text-xs shadow-xl"
               />
             </motion.div>
           )}
 
-          {/* Dock de Controles Inferior Unificado (Mobile First, Touch Targets >= 44px) */}
-          <div className="bg-slate-900/85 backdrop-blur-2xl border border-white/15 rounded-2xl sm:rounded-3xl p-1.5 sm:p-2 shadow-2xl flex items-center justify-center gap-1.5 sm:gap-2.5 max-w-full overflow-x-auto">
+          {/* Dock de Controles Inferior Unificado (Mobile First, Touch Targets >= 44px, Alto Contraste) */}
+          <div className="bg-slate-950/95 backdrop-blur-2xl border border-teal-500/40 rounded-2xl sm:rounded-3xl p-1.5 sm:p-2 shadow-2xl flex items-center justify-center gap-1.5 sm:gap-2.5 max-w-full overflow-x-auto">
             {state === 'active' && (
               <>
                 {/* Pausar */}
                 <button
                   onClick={() => setState('paused')}
-                  className="rounded-xl px-3 sm:px-4 py-2 sm:py-2.5 bg-white/10 hover:bg-white/15 text-white flex items-center gap-1.5 hover:scale-105 active:scale-95 transition-all cursor-pointer font-bold text-xs sm:text-sm min-h-[40px] sm:min-h-[44px]"
+                  className="rounded-xl px-3.5 sm:px-4 py-2 sm:py-2.5 bg-white/10 hover:bg-white/20 text-white flex items-center gap-1.5 hover:scale-105 active:scale-95 transition-all cursor-pointer font-bold text-xs sm:text-sm min-h-[44px]"
                   aria-label={t('ar.pauseExercise')}
                 >
-                  <Icon name="pause" size={18} />
+                  <Icon name="pause" size={19} />
                   <span>Pausar</span>
                 </button>
 
                 {/* Finalizar */}
                 <button
                   onClick={() => { setState('finished'); setShowPainReport(true); }}
-                  className="rounded-xl px-3 sm:px-4 py-2 sm:py-2.5 bg-red-500/80 hover:bg-red-500 text-white flex items-center gap-1.5 hover:scale-105 active:scale-95 transition-all cursor-pointer font-bold text-xs sm:text-sm min-h-[40px] sm:min-h-[44px]"
+                  className="rounded-xl px-3.5 sm:px-4 py-2 sm:py-2.5 bg-rose-600/90 hover:bg-rose-500 text-white flex items-center gap-1.5 hover:scale-105 active:scale-95 transition-all cursor-pointer font-bold text-xs sm:text-sm min-h-[44px] shadow-lg shadow-rose-600/30"
                   aria-label={t('ar.finishExercise')}
                 >
-                  <Icon name="stop" size={18} />
+                  <Icon name="stop" size={19} />
                   <span>Finalizar</span>
                 </button>
 
-                <div className="w-px h-6 bg-white/15 my-auto" />
+                <div className="w-px h-6 bg-teal-500/30 my-auto shrink-0" />
 
                 {/* Botón Particular Modelo 3D (Elemento Esencial y Clínico) */}
                 <button
                   onClick={() => setShowModel3D((prev) => !prev)}
                   aria-label={showModel3D ? 'Ocultar modelo 3D demostrador' : 'Mostrar modelo 3D demostrador'}
                   className={cn(
-                    "rounded-xl px-2.5 sm:px-3 py-2 sm:py-2.5 flex items-center gap-1.5 hover:scale-105 active:scale-95 transition-all cursor-pointer min-h-[40px] sm:min-h-[44px]",
+                    "rounded-xl px-3 sm:px-3.5 py-2 sm:py-2.5 flex items-center gap-1.5 hover:scale-105 active:scale-95 transition-all cursor-pointer min-h-[44px]",
                     showModel3D
-                      ? "bg-teal-500/30 text-teal-300 border border-teal-400/50 shadow-md shadow-teal-500/20"
-                      : "bg-white/5 text-white/70 hover:text-white"
+                      ? "bg-teal-500/30 text-teal-300 border border-teal-400/60 shadow-lg shadow-teal-500/25 font-bold"
+                      : "bg-white/10 text-white/80 hover:text-white"
                   )}
                   title={showModel3D ? 'Guía 3D Activa (Toca para ocultar)' : 'Mostrar Guía 3D de ejercicio'}
                 >
-                  <Icon name="view_in_ar" size={18} />
+                  <Icon name="view_in_ar" size={19} />
                   <span className="text-xs font-bold hidden sm:inline">
                     {showModel3D ? 'Guía 3D ON' : 'Guía 3D'}
                   </span>
@@ -906,14 +920,14 @@ export function ARMirrorPage() {
                   onClick={() => setHudMode((prev) => (prev === 'full' ? 'minimal' : 'full'))}
                   aria-label={hudMode === 'minimal' ? 'Cambiar a modo completo' : 'Cambiar a modo esencial'}
                   className={cn(
-                    "rounded-xl px-2.5 sm:px-3 py-2 sm:py-2.5 flex items-center gap-1.5 hover:scale-105 active:scale-95 transition-all cursor-pointer min-h-[40px] sm:min-h-[44px]",
+                    "rounded-xl px-3 sm:px-3.5 py-2 sm:py-2.5 flex items-center gap-1.5 hover:scale-105 active:scale-95 transition-all cursor-pointer min-h-[44px]",
                     hudMode === 'minimal'
-                      ? "bg-amber-500/25 text-amber-300 border border-amber-400/50"
-                      : "bg-white/5 text-white/70 hover:text-white"
+                      ? "bg-amber-500/25 text-amber-300 border border-amber-400/60 shadow-lg shadow-amber-500/25 font-bold"
+                      : "bg-white/10 text-white/80 hover:text-white"
                   )}
                   title={hudMode === 'minimal' ? 'Modo Esencial Activo' : 'Modo Completo Activo'}
                 >
-                  <Icon name={hudMode === 'minimal' ? 'auto_awesome' : 'dashboard'} size={18} />
+                  <Icon name={hudMode === 'minimal' ? 'auto_awesome' : 'dashboard'} size={19} />
                   <span className="text-xs font-bold hidden sm:inline">
                     {hudMode === 'minimal' ? 'Esencial' : 'Completo'}
                   </span>

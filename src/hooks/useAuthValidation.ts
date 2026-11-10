@@ -10,6 +10,7 @@ import {
   type PatientRegisterInput,
   type FisioLoginInput,
   type FisioRegisterInput,
+  type FisioRegisterStep1Input,
 } from '../lib/validation';
 
 interface ValidationResult<T> {
@@ -65,7 +66,7 @@ export function useAuthValidation() {
   );
 
   const validateFisioStep1 = useCallback(
-    (data: Partial<FisioRegisterInput>): ValidationResult<Partial<FisioRegisterInput>> => {
+    (data: unknown): ValidationResult<FisioRegisterStep1Input> => {
       const result = fisioRegisterStep1Schema.safeParse(data);
       if (result.success) {
         return { success: true, data: result.data, errors: {} };
@@ -121,7 +122,7 @@ export function createFisioRegisterData(
   telefono: string,
   universidad: string,
   colegiadoId: string,
-  anioEgreso: string,
+  anioEgreso: string | number,
   especialidades: string[],
   credencialFile: File | null,
   turnstileToken: string
@@ -135,7 +136,7 @@ export function createFisioRegisterData(
     telefono,
     universidad,
     colegiadoId,
-    anioEgreso,
+    anioEgreso: typeof anioEgreso === 'number' ? anioEgreso : (parseInt(anioEgreso, 10) || (undefined as any)),
     especialidades,
     credencialFile,
     turnstileToken,

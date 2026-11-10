@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { Icon } from './Icon';
 import { GlassModal } from './GlassModal';
+import { cn } from '../../lib/utils';
 
 type FaqSection =
   | 'fisioDashboard'

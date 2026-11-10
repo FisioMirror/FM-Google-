@@ -23,6 +23,22 @@ export interface PoseData {
   /** Ángulo de codo (hombro-codo-muñeca) de cada lado. */
   leftElbowAngle: number;
   rightElbowAngle: number;
+  /** Ángulo de rodilla (cadera-rodilla-tobillo) de cada lado. */
+  leftKneeAngle?: number;
+  rightKneeAngle?: number;
+  /** Ángulo de cadera (hombro-cadera-rodilla) de cada lado. */
+  leftHipAngle?: number;
+  rightHipAngle?: number;
+  /** Inclinación de hombros en grados (desbalance horizontal) */
+  shoulderTiltDeg?: number;
+  /** Inclinación pélvica en grados */
+  hipTiltDeg?: number;
+  /** Inclinación lateral de columna en grados */
+  lateralLeanDeg?: number;
+  /** Alerta de compensación postural detectada en tiempo real */
+  compensationIssue?: string | null;
+  /** Índice del landmark de la articulación objetivo monitorizada */
+  trackedJointIndex?: number;
   /** Ángulo de la articulación que cuenta repeticiones para el ejercicio actual. */
   primaryAngle: number;
   /** Objetivo clínico configurado para esa articulación. */
@@ -226,27 +242,79 @@ export function usePoseDetection(options: UsePoseDetectionOptions = {}): UsePose
     let mounted = true;
     let isProcessingFrame = false;
 
-    // Helper to draw skeleton & joints on canvas
+    // Helper to draw skeleton & joints on canvas with clinical high contrast and sharpness
     const drawOverlay = (
       ctx: CanvasRenderingContext2D,
       landmarks: PoseLandmark[],
       postureColor: string,
       w: number,
-      h: number
+      h: number,
+      activeJointIdx?: number,
+      primaryAngle?: number
     ) => {
       ctx.save();
       ctx.clearRect(0, 0, w, h);
 
-      // Connections
-      ctx.strokeStyle = postureColor;
-      ctx.lineWidth = 5;
+      // 1) Vertical plumb-line reference from neck to pelvis (faint clinical spinal guideline)
+      const lSh = landmarks[LM.LEFT_SHOULDER];
+      const rSh = landmarks[LM.RIGHT_SHOULDER];
+      const lHip = landmarks[LM.LEFT_HIP];
+      const rHip = landmarks[LM.RIGHT_HIP];
+      if (lSh && rSh && lHip && rHip && (lSh.visibility ?? 0) > 0.4 && (rSh.visibility ?? 0) > 0.4) {
+        const neckX = ((lSh.x + rSh.x) / 2) * w;
+        const neckY = ((lSh.y + rSh.y) / 2) * h;
+        const pelvisX = ((lHip.x + rHip.x) / 2) * w;
+        const pelvisY = ((lHip.y + rHip.y) / 2) * h;
+
+        ctx.save();
+        // Dark contrast backline
+        ctx.strokeStyle = 'rgba(2, 6, 23, 0.85)';
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        ctx.moveTo(neckX, neckY - 15);
+        ctx.lineTo(pelvisX, pelvisY + 25);
+        ctx.stroke();
+
+        // High contrast dashed line
+        ctx.strokeStyle = 'rgba(45, 212, 191, 0.7)';
+        ctx.lineWidth = 2;
+        ctx.setLineDash([5, 5]);
+        ctx.beginPath();
+        ctx.moveTo(neckX, neckY - 15);
+        ctx.lineTo(pelvisX, pelvisY + 25);
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      // 2) Pass 1: High-Contrast Obsidian Outer Shadow / Rim on all bones (prevents blending with clothing)
+      ctx.strokeStyle = 'rgba(2, 6, 23, 0.92)';
+      ctx.lineWidth = 9;
       ctx.lineCap = 'round';
-      ctx.shadowBlur = 8;
+      ctx.lineJoin = 'round';
+      for (const [a, b] of POSE_CONNECTIONS) {
+        const pa = landmarks[a];
+        const pb = landmarks[b];
+        if (pa && pb && (pa.visibility ?? 0) > 0.35 && (pb.visibility ?? 0) > 0.35) {
+          ctx.beginPath();
+          ctx.moveTo(pa.x * w, pa.y * h);
+          ctx.lineTo(pb.x * w, pb.y * h);
+          ctx.stroke();
+        }
+      }
+
+      // 3) Pass 2: Neon Core Phosphor Lines
+      ctx.lineWidth = 4.5;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      ctx.shadowBlur = 10;
       ctx.shadowColor = postureColor;
       for (const [a, b] of POSE_CONNECTIONS) {
         const pa = landmarks[a];
         const pb = landmarks[b];
-        if (pa && pb && pa.visibility > 0.3 && pb.visibility > 0.3) {
+        if (pa && pb && (pa.visibility ?? 0) > 0.35 && (pb.visibility ?? 0) > 0.35) {
+          // Highlight bones directly connected to the active tracked joint
+          const isActiveBone = activeJointIdx != null && (a === activeJointIdx || b === activeJointIdx);
+          ctx.strokeStyle = isActiveBone ? '#38bdf8' : postureColor;
           ctx.beginPath();
           ctx.moveTo(pa.x * w, pa.y * h);
           ctx.lineTo(pb.x * w, pb.y * h);
@@ -255,20 +323,100 @@ export function usePoseDetection(options: UsePoseDetectionOptions = {}): UsePose
       }
       ctx.shadowBlur = 0;
 
-      // Joints
-      for (const lm of landmarks) {
-        if (lm.visibility > 0.3) {
-          ctx.beginPath();
-          ctx.arc(lm.x * w, lm.y * h, 7, 0, Math.PI * 2);
-          ctx.fillStyle = '#ffffff';
-          ctx.fill();
+      // 4) Pass 3: Concentric High-Contrast Joint Nodes
+      for (let i = 0; i < landmarks.length; i++) {
+        const lm = landmarks[i];
+        if (!lm || (lm.visibility ?? 0) <= 0.35) continue;
+        const x = lm.x * w;
+        const y = lm.y * h;
+        const isTarget = activeJointIdx === i;
 
+        // Outer black contrast ring
+        ctx.beginPath();
+        ctx.arc(x, y, isTarget ? 11 : 8.5, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(2, 6, 23, 0.95)';
+        ctx.fill();
+
+        // Vivid colored ring
+        ctx.beginPath();
+        ctx.arc(x, y, isTarget ? 8 : 6, 0, Math.PI * 2);
+        ctx.fillStyle = isTarget ? '#38bdf8' : postureColor;
+        ctx.fill();
+
+        // Inner white specular pinpoint
+        ctx.beginPath();
+        ctx.arc(x, y, isTarget ? 4.5 : 3, 0, Math.PI * 2);
+        ctx.fillStyle = '#ffffff';
+        ctx.fill();
+      }
+
+      // 5) Pass 4: Active Tracked Joint HUD Target Reticle & Floating Angle Readout
+      if (activeJointIdx != null && landmarks[activeJointIdx] && (landmarks[activeJointIdx].visibility ?? 0) > 0.4) {
+        const targetLm = landmarks[activeJointIdx];
+        const jx = targetLm.x * w;
+        const jy = targetLm.y * h;
+
+        // Pulsating reticle circle
+        const pulse = (Math.sin(performance.now() / 200) + 1) * 3; // 0 to 6
+        ctx.strokeStyle = '#38bdf8';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(jx, jy, 16 + pulse, 0, Math.PI * 2);
+        ctx.stroke();
+
+        // Corner brackets / tick marks for clinical target lock
+        const bracketR = 19 + pulse;
+        for (let a = 0; a < 4; a++) {
+          const theta = (Math.PI / 2) * a + Math.PI / 4;
+          const bx = jx + Math.cos(theta) * bracketR;
+          const by = jy + Math.sin(theta) * bracketR;
           ctx.beginPath();
-          ctx.arc(lm.x * w, lm.y * h, 4.5, 0, Math.PI * 2);
-          ctx.fillStyle = postureColor;
+          ctx.arc(bx, by, 1.5, 0, Math.PI * 2);
+          ctx.fillStyle = '#38bdf8';
           ctx.fill();
         }
+
+        // Floating Angle Readout Badge:
+        // IMPORTANT: Because canvas is rendered with CSS -scale-x-100,
+        // we invert horizontally (scale(-1, 1)) so the text renders upright and unmirrored!
+        if (primaryAngle != null && Number.isFinite(primaryAngle)) {
+          ctx.save();
+          // Position badge slightly offset from joint
+          const badgeOffsetX = 26;
+          const badgeOffsetY = -24;
+          ctx.translate(jx + badgeOffsetX, jy + badgeOffsetY);
+          ctx.scale(-1, 1); // Counter-mirror horizontally!
+
+          const angleText = `${Math.round(primaryAngle)}°`;
+          ctx.font = 'bold 13px system-ui, -apple-system, sans-serif';
+          const textMetrics = ctx.measureText(angleText);
+          const padX = 8;
+          const bW = Math.max(38, textMetrics.width + padX * 2);
+          const bH = 22;
+
+          // Badge background
+          ctx.fillStyle = 'rgba(2, 6, 23, 0.92)';
+          ctx.strokeStyle = '#38bdf8';
+          ctx.lineWidth = 1.5;
+          ctx.beginPath();
+          if (typeof ctx.roundRect === 'function') {
+            ctx.roundRect(-bW / 2, -bH / 2, bW, bH, 6);
+          } else {
+            ctx.rect(-bW / 2, -bH / 2, bW, bH);
+          }
+          ctx.fill();
+          ctx.stroke();
+
+          // Text
+          ctx.fillStyle = '#ffffff';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(angleText, 0, 1);
+
+          ctx.restore();
+        }
       }
+
       ctx.restore();
     };
 
@@ -452,7 +600,7 @@ export function usePoseDetection(options: UsePoseDetectionOptions = {}): UsePose
             const h = canvas.height || 480;
             if (canvas.width !== 640) canvas.width = 640;
             if (canvas.height !== 480) canvas.height = 480;
-            drawOverlay(cCtx, simulatedLandmarks, postureColor, w, h);
+            drawOverlay(cCtx, simulatedLandmarks, postureColor, w, h, LM.RIGHT_ELBOW, rightAngle);
           }
         }
 
@@ -462,6 +610,15 @@ export function usePoseDetection(options: UsePoseDetectionOptions = {}): UsePose
           rightArmAngle: rightAngle,
           leftElbowAngle: leftAngle,
           rightElbowAngle: rightAngle,
+          leftKneeAngle: 175,
+          rightKneeAngle: 175,
+          leftHipAngle: 175,
+          rightHipAngle: 175,
+          shoulderTiltDeg: 0,
+          hipTiltDeg: 0,
+          lateralLeanDeg: 0,
+          compensationIssue: null,
+          trackedJointIndex: LM.RIGHT_ELBOW,
           primaryAngle: rightAngle,
           targetAngle: targetAngleRef.current,
           lastRepQuality: lastRepQualityRef.current,
@@ -555,7 +712,10 @@ export function usePoseDetection(options: UsePoseDetectionOptions = {}): UsePose
             enableSegmentation: false,
             minDetectionConfidence: 0.6,
             minTrackingConfidence: 0.65,
-            selfieMode: facingMode === 'user',
+            // CRÍTICO: selfieMode: false garantiza que las coordenadas del esqueleto no sufran
+            // una doble inversión horizontal cuando el <video> y <canvas> ya tienen la clase CSS -scale-x-100.
+            // De este modo el esqueleto se mueve en el mismo exacto sentido que la persona pixel por pixel.
+            selfieMode: false,
           });
 
           pose.onResults((results: any) => {
@@ -576,15 +736,13 @@ export function usePoseDetection(options: UsePoseDetectionOptions = {}): UsePose
             if (results.poseLandmarks) {
               let landmarks = results.poseLandmarks as PoseLandmark[];
 
-              // Exponential smoothing for stability without lag
+              // Filtro EMA adaptativo dual: elimina temblores en reposo y responde sin lag a movimientos rápidos
               if (lastLandmarksRef.current) {
                 landmarks = landmarks.map((lm, i) => {
                   const prev = lastLandmarksRef.current![i];
                   if (!prev) return lm;
-                  // EMA adaptativa: sigue rápido los movimientos amplios y
-                  // estabiliza cuando el paciente está quieto (menos lag, menos jitter).
                   const dist = Math.sqrt((lm.x - prev.x) ** 2 + (lm.y - prev.y) ** 2);
-                  const alpha = dist > 0.04 ? 0.85 : 0.55;
+                  const alpha = dist > 0.04 ? 0.92 : dist > 0.015 ? 0.70 : 0.40;
                   return {
                     x: prev.x + alpha * (lm.x - prev.x),
                     y: prev.y + alpha * (lm.y - prev.y),
@@ -595,27 +753,28 @@ export function usePoseDetection(options: UsePoseDetectionOptions = {}): UsePose
               }
               lastLandmarksRef.current = landmarks;
 
-              // Ángulo sólo si los tres puntos son visibles: evita valores
-              // basura (0,0) cuando la persona sale del encuadre.
+              // Cálculo robusto de ángulos articulares en 3D
               const angleOf = (a: number, b: number, c: number): number | null => {
                 const la = landmarks[a];
                 const lb = landmarks[b];
                 const lc = landmarks[c];
                 if (!la || !lb || !lc) return null;
-                if ((la.visibility ?? 0) < 0.5 || (lb.visibility ?? 0) < 0.5 || (lc.visibility ?? 0) < 0.5) {
+                if ((la.visibility ?? 0) < 0.4 || (lb.visibility ?? 0) < 0.4 || (lc.visibility ?? 0) < 0.4) {
                   return null;
                 }
                 return calculateAngle(la, lb, lc);
               };
 
-              // Hombro y codo se miden por separado: antes ambos campos recibían
-              // el ángulo de codo y el HUD mostraba un valor incorrecto.
               const leftShoulderAngle = angleOf(LM.LEFT_HIP, LM.LEFT_SHOULDER, LM.LEFT_ELBOW);
               const rightShoulderAngle = angleOf(LM.RIGHT_HIP, LM.RIGHT_SHOULDER, LM.RIGHT_ELBOW);
               const leftElbowAngle = angleOf(LM.LEFT_SHOULDER, LM.LEFT_ELBOW, LM.LEFT_WRIST);
               const rightElbowAngle = angleOf(LM.RIGHT_SHOULDER, LM.RIGHT_ELBOW, LM.RIGHT_WRIST);
+              const leftKneeAngle = angleOf(LM.LEFT_HIP, LM.LEFT_KNEE, LM.LEFT_ANKLE);
+              const rightKneeAngle = angleOf(LM.RIGHT_HIP, LM.RIGHT_KNEE, LM.RIGHT_ANKLE);
+              const leftHipAngle = angleOf(LM.LEFT_SHOULDER, LM.LEFT_HIP, LM.LEFT_KNEE);
+              const rightHipAngle = angleOf(LM.RIGHT_SHOULDER, LM.RIGHT_HIP, LM.RIGHT_KNEE);
 
-              const visibleCount = landmarks.filter((lm) => lm.visibility > 0.5).length;
+              const visibleCount = landmarks.filter((lm) => (lm.visibility ?? 0) > 0.45).length;
               const lSh = landmarks[LM.LEFT_SHOULDER];
               const rSh = landmarks[LM.RIGHT_SHOULDER];
               const lHip = landmarks[LM.LEFT_HIP];
@@ -624,24 +783,44 @@ export function usePoseDetection(options: UsePoseDetectionOptions = {}): UsePose
               const hipVisible = (lHip?.visibility ?? 0) > 0.4 || (rHip?.visibility ?? 0) > 0.4;
               const isTracking = visibleCount >= 14 && shoulderVisible && hipVisible;
 
-              // Postura real: visibilidad + alineación de hombros/caderas y
-              // verticalidad del torso (antes era solo % de landmarks visibles).
+              // Detección clínica de compensaciones posturales y puntuación biomecánica
               let postureScore = Math.round(clamp((visibleCount / 33) * 100, 0, 100));
+              let detectedCompensation: string | null = null;
+              let shoulderTiltDeg = 0;
+              let hipTiltDeg = 0;
+              let lateralLeanDeg = 0;
+
               if (
                 (lSh?.visibility ?? 0) > 0.4 && (rSh?.visibility ?? 0) > 0.4 &&
                 (lHip?.visibility ?? 0) > 0.4 && (rHip?.visibility ?? 0) > 0.4
               ) {
-                const shoulderTilt = Math.abs(lSh.y - rSh.y);
-                const hipTilt = Math.abs(lHip.y - rHip.y);
+                const dySh = (rSh.y - lSh.y) * h;
+                const dxSh = (rSh.x - lSh.x) * w;
+                shoulderTiltDeg = Math.abs(Math.round((Math.atan2(dySh, dxSh) * 180) / Math.PI));
+
+                const dyHip = (rHip.y - lHip.y) * h;
+                const dxHip = (rHip.x - lHip.x) * w;
+                hipTiltDeg = Math.abs(Math.round((Math.atan2(dyHip, dxHip) * 180) / Math.PI));
+
                 const midShoulderX = (lSh.x + rSh.x) / 2;
                 const midShoulderY = (lSh.y + rSh.y) / 2;
                 const midHipX = (lHip.x + rHip.x) / 2;
                 const midHipY = (lHip.y + rHip.y) / 2;
                 const torsoLength = Math.hypot(midShoulderX - midHipX, midShoulderY - midHipY) || 0.1;
                 const lateralLean = Math.abs(midShoulderX - midHipX) / torsoLength;
+                lateralLeanDeg = Math.round(Math.asin(Math.min(1, lateralLean)) * (180 / Math.PI));
+
+                if (shoulderTiltDeg > 8) {
+                  detectedCompensation = 'Nivela tus hombros: evita elevar un lado más que el otro.';
+                } else if (hipTiltDeg > 7) {
+                  detectedCompensation = 'Equilibra tus caderas: apoya el peso simétricamente.';
+                } else if (lateralLeanDeg > 9) {
+                  detectedCompensation = 'Tronco inclinado: mantén la columna vertical y erguida.';
+                }
+
                 const alignmentPenalty = Math.min(
                   55,
-                  shoulderTilt * 260 + hipTilt * 260 + Math.max(0, lateralLean - 0.12) * 90
+                  shoulderTiltDeg * 3.5 + hipTiltDeg * 3.5 + Math.max(0, lateralLeanDeg - 5) * 4
                 );
                 const visibilityScore = clamp((visibleCount / 33) * 100 * 1.15, 0, 100);
                 postureScore = Math.round(
@@ -650,12 +829,7 @@ export function usePoseDetection(options: UsePoseDetectionOptions = {}): UsePose
               }
               const postureColor = getPostureColor(postureScore);
 
-              drawOverlay(ctx, landmarks, postureColor, canvas.width, canvas.height);
-
-              // Articulación que cuenta el ejercicio: se elige el lado con mayor
-              // visibilidad de los 3 puntos (un brazo quieto no tapa la flexión
-              // del otro). El detector por excursión funciona para flexión y
-              // elevación, sin umbrales fijos por articulación.
+              // Articulación objetivo de recuento de repeticiones (selecciona el lado con mejor visibilidad)
               const repJoint = repJointRef.current;
               const sideTriplets: Record<string, [number, number, number][]> = {
                 knee: [
@@ -684,7 +858,8 @@ export function usePoseDetection(options: UsePoseDetectionOptions = {}): UsePose
                 visibilityOf(cur) > visibilityOf(best) ? cur : best
               );
               const rawAngle = angleOf(bestTriplet[0], bestTriplet[1], bestTriplet[2]);
-              const sideVisible = visibilityOf(bestTriplet) >= 0.5;
+              const sideVisible = visibilityOf(bestTriplet) >= 0.45;
+              const activeJointIdx = bestTriplet[1];
 
               let primaryAngle = 0;
               if (isTracking && rawAngle !== null && sideVisible) {
@@ -697,12 +872,32 @@ export function usePoseDetection(options: UsePoseDetectionOptions = {}): UsePose
                 }
               }
 
+              // Renderizado HUD de alta nitidez y contraste en el canvas
+              drawOverlay(
+                ctx,
+                landmarks,
+                postureColor,
+                canvas.width,
+                canvas.height,
+                activeJointIdx,
+                primaryAngle
+              );
+
               setPoseData({
                 landmarks,
                 leftArmAngle: leftShoulderAngle ?? 0,
                 rightArmAngle: rightShoulderAngle ?? 0,
                 leftElbowAngle: leftElbowAngle ?? 0,
                 rightElbowAngle: rightElbowAngle ?? 0,
+                leftKneeAngle: leftKneeAngle ?? 0,
+                rightKneeAngle: rightKneeAngle ?? 0,
+                leftHipAngle: leftHipAngle ?? 0,
+                rightHipAngle: rightHipAngle ?? 0,
+                shoulderTiltDeg,
+                hipTiltDeg,
+                lateralLeanDeg,
+                compensationIssue: detectedCompensation,
+                trackedJointIndex: activeJointIdx,
                 primaryAngle: Math.round(primaryAngle),
                 targetAngle: targetAngleRef.current,
                 lastRepQuality: lastRepQualityRef.current,
