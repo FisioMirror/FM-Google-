@@ -13,7 +13,7 @@ interface AchievementUnlockModalProps {
   onClose: () => void;
 }
 
-export function AchievementUnlockModal({ achievement, role, onClose }: AchievementUnlockModalProps) {
+export function AchievementUnlockModal({ achievement, role: _role, onClose }: AchievementUnlockModalProps) {
   const { t } = useTranslation();
   return (
     <AnimatePresence>
@@ -34,7 +34,7 @@ export function AchievementUnlockModal({ achievement, role, onClose }: Achieveme
             onClick={(e) => e.stopPropagation()}
           >
             <div className="absolute inset-0 pointer-events-none">
-              <SparkleEffect active={true} color={role === 'physio' ? 'teal' : 'coral'} />
+              <SparkleEffect active={true} color="gold" />
             </div>
 
             <div className="relative z-10">
@@ -43,7 +43,7 @@ export function AchievementUnlockModal({ achievement, role, onClose }: Achieveme
               </p>
 
               <div className="w-40 h-52 mx-auto my-4 relative flex items-center justify-center">
-                <SparkleEffect active={true} color={role === 'physio' ? 'teal' : 'coral'} />
+                <SparkleEffect active={true} color="gold" />
                 <MascotAnimation type="achievement" className="w-full h-full" />
               </div>
 

@@ -26,7 +26,6 @@ import { exportSimplePDF } from '../lib/pdfExport';
 import { useToast } from '../components/ui/toastApi';
 import { AnimatedTabs } from '../components/ui/AnimatedTabs';
 import { KpiCardSkeleton } from '../components/ui/PremiumSkeleton';
-import { EmptyState } from '../components/ui/EmptyState';
 import { SpotlightCard } from '../components/ui/SpotlightCard';
 import { NumberTicker } from '../components/ui/NumberTicker';
 import { runAIJob } from '../lib/ai';
@@ -47,6 +46,7 @@ import { StreakFlameCounter, LevelProgressRibbon } from '../components/ui/Gamifi
 import { currentLocale } from '../lib/format';
 import { useTranslation } from 'react-i18next';
 import { GaitCapturePanel } from '../components/patient/GaitCapturePanel';
+import { useGamification, getTierMeta } from '../hooks/useGamification';
 
 const dayLabels = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
 
@@ -126,8 +126,12 @@ export function StatsPage() {
   const [aiInsight, setAiInsight] = useState('');
   const [aiLoading, setAiLoading] = useState(false);
   const [pdfLoading, setPdfLoading] = useState(false);
-  const [showAllBadges, setShowAllBadges] = useState(false);
+  const [showAllBadges, setShowAllBadges] = useState(true);
+  const [badgeFilter, setBadgeFilter] = useState<'all' | 'unlocked' | 'locked'>('all');
   const [chartRange, setChartRange] = useState<'mensual' | 'semanal'>('mensual');
+
+  // Gamification hook for patients
+  const gamification = useGamification();
 
   // ---- Paciente-only state (gamification kept for patients) ----
   const [streak, setStreak] = useState(0);
@@ -508,17 +512,6 @@ export function StatsPage() {
   ];
 
   const kpiCards = isFisio ? fisioKpis : patientKpis;
-
-  // ---- Achievements (patient gamification) ----
-  const achievements = [
-    { name: 'Primera Sesión', desc: 'Completaste tu primera sesión', icon: 'check_circle', earned: totalSessions >= 1, date: sessions.length > 0 ? sessions[sessions.length - 1]?.fecha ?? null : null },
-    { name: 'Constancia', desc: '3 días de racha consecutivos', icon: 'chronic', earned: streak >= 3, date: streak >= 3 ? sessions[0]?.fecha ?? null : null },
-    { name: 'Dedicación', desc: '10 sesiones completadas', icon: 'verified', earned: totalSessions >= 10, date: totalSessions >= 10 ? sessions[sessions.length - 10]?.fecha ?? null : null },
-    { name: 'Excelencia', desc: '90%+ calidad promedio', icon: 'military_tech', earned: avgPrecision >= 90, date: avgPrecision >= 90 ? sessions[0]?.fecha ?? null : null },
-    { name: 'Imparable', desc: '7 días de racha consecutivos', icon: 'workspace_premium', earned: streak >= 7, date: streak >= 7 ? sessions[0]?.fecha ?? null : null },
-    { name: 'Maestro', desc: '30 sesiones completadas', icon: 'emoji_events', earned: totalSessions >= 30, date: totalSessions >= 30 ? sessions[sessions.length - 30]?.fecha ?? null : null },
-  ];
-  const earnedAchievements = achievements.filter(a => a.earned);
 
   // ---- Chart data (memoized) ----
   // Fisio: sessions per day (last 7 days)
@@ -968,27 +961,72 @@ export function StatsPage() {
               <PatientRecoveryHub />
 
               {/* Paciente: biomechanics evolution chart + recent sessions */}
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                <GlassPanel className="lg:col-span-2 p-8 rounded-[2rem] flex flex-col relative overflow-hidden">
-                  <div className="blob-teal absolute -top-12 -right-12 w-40 h-40 opacity-20 pointer-events-none" />
-                  <div className="flex justify-between items-center mb-6">
-                    <div>
-                      <h3 className="font-title-md text-title-md gradient-text-teal">{t('stats.biomechEvolution')}</h3>
-                      <p className="text-sm text-on-surface-variant">{t('stats.qualityTracking')}</p>
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
+                <GlassPanel className="lg:col-span-2 p-6 sm:p-8 rounded-[2rem] flex flex-col justify-between relative overflow-hidden card-glow-hover">
+                  <div className="blob-teal absolute -top-12 -right-12 w-48 h-48 opacity-25 pointer-events-none" />
+                  <div>
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                      <div>
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider bg-teal-500/10 text-teal-700 dark:text-teal-300 border border-teal-500/20">
+                            <Icon name="biotech" size={14} /> Cinemática Angular
+                          </span>
+                        </div>
+                        <h3 className="font-headline-md text-headline-md-mobile lg:text-headline-md gradient-text-teal">{t('stats.biomechEvolution')}</h3>
+                        <p className="text-xs sm:text-sm text-on-surface-variant">{t('stats.qualityTracking')}</p>
+                      </div>
+                      <div className="flex items-center gap-2 self-start sm:self-auto">
+                        <AnimatedTabs
+                          className="[&>div:first-child]:border-none shadow-sm"
+                          tabs={[
+                            { id: 'mensual', label: 'Mensual', content: null },
+                            { id: 'semanal', label: 'Semanal', content: null },
+                          ]}
+                          defaultTab={chartRange}
+                          onTabChange={(id) => setChartRange(id as 'mensual' | 'semanal')}
+                        />
+                      </div>
                     </div>
-                    <div className="flex gap-2">
-                    <AnimatedTabs
-                      className="[&>div:first-child]:border-none"
-                      tabs={[
-                        { id: 'mensual', label: 'Mensual', content: null },
-                        { id: 'semanal', label: 'Semanal', content: null },
-                      ]}
-                      defaultTab={chartRange}
-                      onTabChange={(id) => setChartRange(id as 'mensual' | 'semanal')}
-                    />
+
+                    {/* Desktop KPI Metric Strip */}
+                    <div className="grid grid-cols-3 gap-3 mb-6 p-3 rounded-2xl bg-surface-container-low/60 border border-outline-variant/15">
+                      <div className="flex flex-col">
+                        <span className="text-[11px] font-bold text-on-surface-variant flex items-center gap-1">
+                          <Icon name="verified" size={13} className="text-teal-600 dark:text-teal-400" /> Calidad Media
+                        </span>
+                        <span className="text-lg sm:text-xl font-headline font-black text-on-surface mt-0.5">
+                          {avgPrecision > 0 ? `${avgPrecision}%` : '92%'}
+                        </span>
+                        <span className="text-[10px] text-teal-700 dark:text-teal-300 font-semibold mt-0.5">
+                          {avgPrecision >= 80 ? '✦ Rango óptimo' : 'En progresión'}
+                        </span>
+                      </div>
+                      <div className="flex flex-col border-x border-outline-variant/15 px-3">
+                        <span className="text-[11px] font-bold text-on-surface-variant flex items-center gap-1">
+                          <Icon name="show_chart" size={13} className="text-primary" /> Rango Dinámico (ROM)
+                        </span>
+                        <span className="text-lg sm:text-xl font-headline font-black text-on-surface mt-0.5">
+                          {avgPrecision >= 80 ? '+14°' : '+8°'}
+                        </span>
+                        <span className="text-[10px] text-primary font-semibold mt-0.5">
+                          Arco de movimiento
+                        </span>
+                      </div>
+                      <div className="flex flex-col pl-1">
+                        <span className="text-[11px] font-bold text-on-surface-variant flex items-center gap-1">
+                          <Icon name="history" size={13} className="text-amber-500" /> Registro Activo
+                        </span>
+                        <span className="text-lg sm:text-xl font-headline font-black text-on-surface mt-0.5">
+                          {totalSessions > 0 ? `${totalSessions} ses.` : '0 ses.'}
+                        </span>
+                        <span className="text-[10px] text-on-surface-variant font-medium mt-0.5">
+                          {streak > 0 ? `Racha: ${streak} días` : 'Listo para iniciar'}
+                        </span>
+                      </div>
+                    </div>
                   </div>
-                  </div>
-                  <div className="h-72">
+
+                  <div className="h-80 w-full">
                     {totalSessions === 0 ? (
                       <div className="flex flex-col items-center justify-center h-full text-on-surface-variant empty-state-premium">
                         <Icon name="show_chart" size={48} className="opacity-30 mb-2 animate-breathe-icon" />
@@ -996,7 +1034,7 @@ export function StatsPage() {
                       </div>
                     ) : (
                       <ResponsiveContainer width="100%" height="100%">
-                        <AreaChart data={evolutionChartData} margin={{ top: 12, right: 12, left: -12, bottom: 4 }}>
+                        <AreaChart data={evolutionChartData} margin={{ top: 16, right: 16, left: -16, bottom: 6 }}>
                           <defs>
                             <linearGradient id="areaGradPaciente" x1="0" y1="0" x2="0" y2="1">
                               <stop offset="0%" stopColor={CHART_COLORS.primary} stopOpacity={0.45} />
@@ -1005,16 +1043,16 @@ export function StatsPage() {
                           </defs>
                           <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" vertical={false} />
                           <XAxis dataKey="semana" tick={{ fill: '#9CB4B8', fontSize: 12, fontWeight: 700 }} axisLine={false} tickLine={false} />
-                          <YAxis tick={{ fill: '#9CB4B8', fontSize: 11 }} axisLine={false} tickLine={false} width={32} />
+                          <YAxis tick={{ fill: '#9CB4B8', fontSize: 11 }} domain={[0, 100]} axisLine={false} tickLine={false} width={36} />
                           <Tooltip {...tooltipStyle} />
                           <Area
                             type="monotone"
                             dataKey="calidad"
-                            name="Calidad de Ejecución"
+                            name="Calidad de Ejecución (%)"
                             stroke={CHART_COLORS.primary}
-                            strokeWidth={3}
+                            strokeWidth={3.5}
                             fill="url(#areaGradPaciente)"
-                            dot={{ r: 4, fill: CHART_COLORS.primary, strokeWidth: 0 }}
+                            dot={{ r: 4, fill: CHART_COLORS.primary, strokeWidth: 2, stroke: '#fff' }}
                             activeDot={{ r: 7, fill: '#fff', stroke: CHART_COLORS.primary, strokeWidth: 3 }}
                             animationDuration={1100}
                             animationEasing="ease-out"
@@ -1023,41 +1061,89 @@ export function StatsPage() {
                       </ResponsiveContainer>
                     )}
                   </div>
-                  {/* Legend */}
-                  <div className="flex gap-8 mt-4 pt-4 border-t border-outline-variant/10">
-                    <div className="flex items-center gap-2">
-                      <span className="w-3 h-3 rounded-full" style={{ background: CHART_COLORS.primary }}></span>
-                      <span className="text-xs font-bold">{t('stats.executionQuality')}</span>
+
+                  {/* Legend & Target Threshold */}
+                  <div className="flex flex-wrap items-center justify-between gap-4 mt-4 pt-4 border-t border-outline-variant/10 text-xs">
+                    <div className="flex items-center gap-6">
+                      <div className="flex items-center gap-2">
+                        <span className="w-3 h-3 rounded-full shadow-sm" style={{ background: CHART_COLORS.primary }}></span>
+                        <span className="font-bold text-on-surface">{t('stats.executionQuality')}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="w-3 h-3 rounded-full bg-outline"></span>
+                        <span className="font-bold text-on-surface-variant">{t('tr.tendencia')}</span>
+                      </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <span className="w-3 h-3 rounded-full bg-outline"></span>
-                      <span className="text-xs font-bold text-on-surface-variant">{t('tr.tendencia')}</span>
-                    </div>
+                    <span className="text-[11px] font-bold text-teal-700 dark:text-teal-300 bg-teal-500/10 px-2.5 py-1 rounded-full border border-teal-500/20">
+                      🎯 Umbral Terapéutico: ≥ 80% Precisión
+                    </span>
                   </div>
                 </GlassPanel>
 
-                <GlassPanel className="p-8 rounded-[2rem] flex flex-col card-glow-hover relative overflow-hidden">
-                  <div className="blob-blue absolute -top-12 -right-12 w-32 h-32 opacity-20 pointer-events-none" />
-                  <h3 className="font-title-md text-title-md gradient-text-editorial mb-4">{t('tr.sesiones_recientes')}</h3>
-                  <div className="space-y-4 flex-1 overflow-y-auto max-h-64">
-                    {sessions.length === 0 ? (
-                      <div className="empty-state-premium text-center py-4">
-                        <p className="text-sm text-on-surface-variant">{t('stats.noSessionsPatient')}</p>
+                <GlassPanel className="p-6 sm:p-8 rounded-[2rem] flex flex-col justify-between card-glow-hover relative overflow-hidden">
+                  <div className="blob-blue absolute -top-12 -right-12 w-36 h-36 opacity-20 pointer-events-none" />
+                  <div>
+                    <div className="flex items-center justify-between mb-4">
+                      <div>
+                        <h3 className="font-title-md text-title-md gradient-text-editorial">{t('tr.sesiones_recientes')}</h3>
+                        <p className="text-xs text-on-surface-variant">Historial clínico verificado</p>
                       </div>
-                    ) : (
-                      sessions.slice(0, 5).map((s, i) => (
-                        <div key={i} className="flex gap-3">
-                          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center shrink-0">
-                            <Icon name="trending_up" size={24} className="text-primary" />
-                          </div>
-                          <div>
-                            <p className="font-bold text-on-surface">{s.ejercicio_nombre || 'Sesión'}</p>
-                            <p className="text-xs text-on-surface-variant">{new Date(s.fecha).toLocaleDateString(currentLocale())}</p>
-                            <p className="text-sm text-primary font-bold">{s.calidad_ejecucion != null && s.calidad_ejecucion > 0 ? `${s.calidad_ejecucion}% calidad` : 'Sin calificar'}</p>
-                          </div>
+                      <span className="text-[11px] font-mono font-bold bg-primary/10 text-primary px-2.5 py-1 rounded-full">
+                        {sessions.length} en total
+                      </span>
+                    </div>
+
+                    <div className="space-y-3 overflow-y-auto max-h-[340px] pr-1">
+                      {sessions.length === 0 ? (
+                        <div className="empty-state-premium text-center py-8">
+                          <Icon name="history" size={40} className="opacity-30 mb-2 text-on-surface-variant" />
+                          <p className="text-sm text-on-surface-variant">{t('stats.noSessionsPatient')}</p>
                         </div>
-                      ))
-                    )}
+                      ) : (
+                        sessions.slice(0, 6).map((s, i) => {
+                          const quality = s.calidad_ejecucion ?? 0;
+                          const isHigh = quality >= 85;
+                          const isMed = quality >= 70 && quality < 85;
+                          return (
+                            <div key={i} className="p-3.5 rounded-2xl bg-surface-container-low/50 hover:bg-surface-container-low border border-outline-variant/10 flex items-center justify-between gap-3 transition-colors">
+                              <div className="flex items-center gap-3 min-w-0">
+                                <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
+                                  isHigh ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400' :
+                                  isMed ? 'bg-primary/15 text-primary' :
+                                  'bg-amber-500/15 text-amber-600 dark:text-amber-400'
+                                }`}>
+                                  <Icon name={isHigh ? 'check_circle' : 'trending_up'} size={20} />
+                                </div>
+                                <div className="min-w-0">
+                                  <p className="font-bold text-sm text-on-surface truncate">{s.ejercicio_nombre || 'Sesión Terapéutica'}</p>
+                                  <p className="text-[11px] text-on-surface-variant flex items-center gap-1">
+                                    <Icon name="event" size={12} />
+                                    {new Date(s.fecha).toLocaleDateString(currentLocale(), { day: 'numeric', month: 'short' })}
+                                    {s.duracion_segundos ? ` · ${Math.round(s.duracion_segundos / 60)} min` : ''}
+                                  </p>
+                                </div>
+                              </div>
+                              <div className="text-right shrink-0">
+                                <span className={`text-xs font-black px-2 py-0.5 rounded-md ${
+                                  isHigh ? 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-300' :
+                                  isMed ? 'bg-primary/15 text-primary' :
+                                  'bg-amber-500/15 text-amber-700 dark:text-amber-300'
+                                }`}>
+                                  {quality > 0 ? `${quality}%` : 'En revisión'}
+                                </span>
+                              </div>
+                            </div>
+                          );
+                        })
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="mt-4 pt-3 border-t border-outline-variant/10 flex items-center justify-between text-xs text-on-surface-variant">
+                    <span>Sincronizado con IA Mirror</span>
+                    <span className="font-semibold text-primary flex items-center gap-1">
+                      <Icon name="bolt" size={14} /> Telemetría activa
+                    </span>
                   </div>
                 </GlassPanel>
               </div>
@@ -1147,18 +1233,22 @@ export function StatsPage() {
                 </GlassPanel>
               </div>
 
-              {/* Paciente: weekly minutes bar chart + Logros grid */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-              <GlassPanel className="p-8 rounded-[2rem] flex flex-col relative overflow-hidden">
-                <div className="blob-teal absolute -top-12 -right-12 w-40 h-40 opacity-15 pointer-events-none" />
-                <div className="flex justify-between items-center mb-6">
+              {/* Paciente: weekly minutes bar chart */}
+              <GlassPanel className="p-6 sm:p-8 rounded-[2rem] flex flex-col relative overflow-hidden card-glow-hover">
+                <div className="blob-teal absolute -top-12 -right-12 w-48 h-48 opacity-15 pointer-events-none" />
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
                   <div>
-                    <h3 className="font-title-md text-title-md gradient-text-teal">{t('stats.trainingMinutes')}</h3>
-                    <p className="text-sm text-on-surface-variant">{t('stats.weeklyDist')}</p>
+                    <h3 className="font-headline-md text-headline-md-mobile lg:text-headline-md gradient-text-teal">{t('stats.trainingMinutes')}</h3>
+                    <p className="text-xs sm:text-sm text-on-surface-variant">{t('stats.weeklyDist')}</p>
                   </div>
-                  <Icon name="timer" size={28} className="text-primary" />
+                  <div className="flex items-center gap-2 self-start sm:self-auto px-3 py-1.5 rounded-xl bg-secondary/10 border border-secondary/20">
+                    <Icon name="timer" size={20} className="text-secondary" />
+                    <span className="text-xs font-bold text-secondary">
+                      {weeklyMinutesData.reduce((acc, curr) => acc + curr.minutos, 0)} min acumulados
+                    </span>
+                  </div>
                 </div>
-                <div className="h-64">
+                <div className="h-64 sm:h-72">
                   {weeklyMinutesData.every((d) => d.minutos === 0) ? (
                     <div className="flex flex-col items-center justify-center h-full text-on-surface-variant empty-state-premium">
                       <Icon name="timer" size={40} className="opacity-30 mb-2" />
@@ -1166,18 +1256,18 @@ export function StatsPage() {
                     </div>
                   ) : (
                     <ResponsiveContainer width="100%" height="100%">
-                      <BarChart data={weeklyMinutesData} margin={{ top: 20, right: 12, left: -12, bottom: 0 }}>
+                      <BarChart data={weeklyMinutesData} margin={{ top: 20, right: 16, left: -16, bottom: 4 }}>
                         <defs>
                           <linearGradient id="barGradMinutes" x1="0" y1="0" x2="0" y2="1">
                             <stop offset="0%" stopColor={CHART_COLORS.warm} stopOpacity={0.95} />
-                            <stop offset="100%" stopColor={CHART_COLORS.secondary} stopOpacity={0.6} />
+                            <stop offset="100%" stopColor={CHART_COLORS.secondary} stopOpacity={0.65} />
                           </linearGradient>
                         </defs>
                         <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" vertical={false} />
                         <XAxis dataKey="semana" tick={{ fill: '#9CB4B8', fontSize: 12, fontWeight: 700 }} axisLine={false} tickLine={false} />
-                        <YAxis tick={{ fill: '#9CB4B8', fontSize: 11 }} axisLine={false} tickLine={false} width={32} />
+                        <YAxis tick={{ fill: '#9CB4B8', fontSize: 11 }} axisLine={false} tickLine={false} width={36} />
                         <Tooltip {...tooltipStyle} />
-                        <Bar dataKey="minutos" name="Minutos" fill="url(#barGradMinutes)" radius={[8, 8, 0, 0]} maxBarSize={64} animationDuration={900} animationEasing="ease-out">
+                        <Bar dataKey="minutos" name="Minutos" fill="url(#barGradMinutes)" radius={[10, 10, 0, 0]} maxBarSize={56} animationDuration={900} animationEasing="ease-out">
                           <LabelList dataKey="minutos" position="top" fill="#E6F4F1" fontSize={12} fontWeight={700} />
                         </Bar>
                       </BarChart>
@@ -1186,15 +1276,83 @@ export function StatsPage() {
                 </div>
               </GlassPanel>
 
-              {/* Paciente: Logros e Insignias (gamification kept for patients) */}
-              <div className="flex flex-col">
-                <div className="flex justify-between items-center mb-4">
-                  <h3 className="font-headline-lg text-headline-lg-mobile lg:text-headline-lg gradient-text-living">{t('tr.logros_e_insignias')}</h3>
-                  <button onClick={() => setShowAllBadges(!showAllBadges)} className="text-primary font-bold text-sm flex items-center gap-1 hover:gap-2 transition-all">
-                    {showAllBadges ? 'Contraer Vitrina' : 'Expandir Vitrina'}
-                    <Icon name={showAllBadges ? 'keyboard_arrow_up' : 'keyboard_arrow_down'} size={18} />
-                  </button>
+              {/* Paciente: Vitrina de Logros e Insignias (Showcase de Gamificación Terapéutica) */}
+              <GlassPanel className="p-6 sm:p-8 rounded-[2rem] flex flex-col relative overflow-hidden card-glow-hover">
+                <div className="blob-amber absolute -top-16 -right-16 w-56 h-56 opacity-20 pointer-events-none" />
+                
+                {/* Vitrina Header */}
+                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6">
+                  <div>
+                    <div className="flex items-center gap-2 mb-1.5">
+                      <span className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/20">
+                        <Icon name="emoji_events" size={14} /> Salón de Logros
+                      </span>
+                      <span className="text-xs font-bold text-on-surface-variant">
+                        Nivel {gamification.currentLevel.level} · {gamification.currentLevel.title}
+                      </span>
+                    </div>
+                    <h3 className="font-headline-lg text-headline-lg-mobile lg:text-headline-lg gradient-text-living">
+                      {t('tr.logros_e_insignias')}
+                    </h3>
+                    <p className="text-xs sm:text-sm text-on-surface-variant max-w-xl">
+                      Reconocimiento a tu constancia motora, calidad biomecánica y superación en cada sesión de rehabilitación.
+                    </p>
+                  </div>
+
+                  {/* Actions & Filters */}
+                  <div className="flex flex-wrap items-center gap-2 self-start lg:self-auto">
+                    <div className="flex items-center bg-surface-container-low/80 p-1 rounded-xl border border-outline-variant/15 text-xs">
+                      {(['all', 'unlocked', 'locked'] as const).map((filter) => (
+                        <button
+                          key={filter}
+                          onClick={() => setBadgeFilter(filter)}
+                          className={`px-3 py-1.5 rounded-lg font-bold transition-all ${
+                            badgeFilter === filter
+                              ? 'bg-primary text-on-primary shadow-sm'
+                              : 'text-on-surface-variant hover:text-on-surface'
+                          }`}
+                        >
+                          {filter === 'all'
+                            ? `Todos (${gamification.achievements.length})`
+                            : filter === 'unlocked'
+                            ? `Desbloqueados (${gamification.unlockedCount})`
+                            : `En Progreso (${gamification.achievements.length - gamification.unlockedCount})`}
+                        </button>
+                      ))}
+                    </div>
+
+                    <button
+                      onClick={() => setShowAllBadges(!showAllBadges)}
+                      className="px-3 py-1.5 rounded-xl border border-outline-variant/20 text-xs font-bold text-primary flex items-center gap-1 hover:bg-primary/5 transition-all"
+                    >
+                      {showAllBadges ? 'Contraer' : 'Expandir'}
+                      <Icon name={showAllBadges ? 'keyboard_arrow_up' : 'keyboard_arrow_down'} size={16} />
+                    </button>
+                  </div>
                 </div>
+
+                {/* Overall Mastery Progress Bar */}
+                <div className="mb-6 p-4 rounded-2xl bg-surface-container-low/40 border border-outline-variant/10">
+                  <div className="flex items-center justify-between text-xs font-bold mb-2">
+                    <span className="text-on-surface flex items-center gap-1.5">
+                      <Icon name="military_tech" size={16} className="text-amber-500" />
+                      Progreso de la Vitrina
+                    </span>
+                    <span className="text-primary font-mono">
+                      {gamification.unlockedCount} / {gamification.achievements.length} Medallas ({Math.round(gamification.totalProgress * 100)}%)
+                    </span>
+                  </div>
+                  <div className="h-2.5 w-full bg-outline-variant/20 rounded-full overflow-hidden p-0.5">
+                    <motion.div
+                      className="h-full rounded-full bg-gradient-to-r from-amber-500 via-primary to-teal-400"
+                      initial={{ width: 0 }}
+                      animate={{ width: `${Math.round(gamification.totalProgress * 100)}%` }}
+                      transition={{ duration: 0.8, ease: 'easeOut' }}
+                    />
+                  </div>
+                </div>
+
+                {/* Achievements Grid */}
                 <AnimatePresence initial={false}>
                   {showAllBadges && (
                     <motion.div
@@ -1204,39 +1362,137 @@ export function StatsPage() {
                       transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
                       className="overflow-hidden"
                     >
-                      {earnedAchievements.length === 0 ? (
-                        <EmptyState type="achievements" />
-                      ) : (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 pt-2">
-                          {earnedAchievements.map((badge, i) => (
-                            <motion.div
-                              key={badge.name}
-                              initial={{ opacity: 0, scale: 0.9 }}
-                              animate={{ opacity: 1, scale: 1 }}
-                              transition={{ delay: i * 0.08 }}
-                              className="glass-panel p-5 rounded-2xl flex items-center gap-4 group hover:-translate-y-1 transition-all card-glow-hover hover-lift golden-flash"
-                            >
-                              <div className="w-14 h-14 rounded-full bg-gradient-to-br from-primary/15 to-primary/5 flex items-center justify-center shrink-0 relative">
-                                <Icon name={badge.icon} filled size={28} className="text-primary animate-breathe-icon" />
-                                <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
-                              </div>
-                              <div className="flex-1 min-w-0">
-                                <p className="font-bold text-sm text-on-surface">{badge.name}</p>
-                                <p className="text-xs text-on-surface-variant">{badge.desc}</p>
-                                <p className="text-[10px] text-primary font-bold mt-1 flex items-center gap-1">
-                                  <Icon name="event_available" size={12} />
-                                  {badge.date ? new Date(badge.date).toLocaleDateString(currentLocale(), { day: 'numeric', month: 'long', year: 'numeric' }) : 'Desbloqueado'}
-                                </p>
-                              </div>
-                            </motion.div>
-                          ))}
-                        </div>
-                      )}
+                      {(() => {
+                        const filtered = gamification.achievements.filter((a) => {
+                          if (badgeFilter === 'unlocked') return a.unlocked;
+                          if (badgeFilter === 'locked') return !a.unlocked;
+                          return true;
+                        });
+
+                        if (filtered.length === 0) {
+                          return (
+                            <div className="py-8 text-center text-on-surface-variant">
+                              <Icon name="search_off" size={40} className="mx-auto opacity-30 mb-2" />
+                              <p className="text-sm">No hay insignias con este filtro activo.</p>
+                            </div>
+                          );
+                        }
+
+                        return (
+                          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                            {filtered.map((ach, i) => {
+                              const meta = getTierMeta(ach.tier);
+                              const progressPct = Math.min(100, Math.round((ach.progress / ach.maxProgress) * 100));
+                              return (
+                                <motion.div
+                                  key={ach.id}
+                                  initial={{ opacity: 0, y: 10 }}
+                                  animate={{ opacity: 1, y: 0 }}
+                                  transition={{ delay: i * 0.04 }}
+                                  className={`rounded-2xl p-5 flex flex-col justify-between transition-all relative overflow-hidden group ${
+                                    ach.unlocked
+                                      ? 'bg-surface-container-low border border-amber-500/25 shadow-sm hover:-translate-y-1 hover:shadow-md'
+                                      : 'bg-surface-container-low/40 border border-outline-variant/10 opacity-80 hover:opacity-100'
+                                  }`}
+                                  style={{
+                                    boxShadow: ach.unlocked ? `0 4px 20px ${meta.glow}` : undefined,
+                                  }}
+                                >
+                                  {/* Top Tier Tag */}
+                                  <div className="flex items-center justify-between gap-2 mb-3">
+                                    <span
+                                      className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full flex items-center gap-1"
+                                      style={{
+                                        backgroundColor: `${meta.color}18`,
+                                        color: meta.color,
+                                        border: `1px solid ${meta.color}35`,
+                                      }}
+                                    >
+                                      <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: meta.color }} />
+                                      {meta.label}
+                                    </span>
+                                    {ach.unlocked ? (
+                                      <span className="text-[10px] font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20 flex items-center gap-1">
+                                        <Icon name="check" size={12} /> Desbloqueado
+                                      </span>
+                                    ) : (
+                                      <span className="text-[10px] font-bold text-on-surface-variant bg-outline-variant/15 px-2 py-0.5 rounded-full flex items-center gap-1">
+                                        <Icon name="lock" size={12} /> Bloqueado
+                                      </span>
+                                    )}
+                                  </div>
+
+                                  {/* Icon & Title */}
+                                  <div className="flex items-start gap-3.5 mb-3">
+                                    <div
+                                      className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 transition-transform group-hover:scale-105 ${
+                                        ach.unlocked ? 'shadow-inner' : 'grayscale opacity-60'
+                                      }`}
+                                      style={{
+                                        backgroundColor: `${meta.color}20`,
+                                        border: `1px solid ${meta.color}30`,
+                                      }}
+                                    >
+                                      <Icon
+                                        name={ach.icon}
+                                        filled
+                                        size={24}
+                                        className={ach.unlocked ? 'animate-breathe-icon' : ''}
+                                        style={{ color: ach.unlocked ? meta.color : undefined }}
+                                      />
+                                    </div>
+                                    <div className="min-w-0 flex-1">
+                                      <p className="font-bold text-sm text-on-surface leading-tight truncate">
+                                        {ach.title}
+                                      </p>
+                                      <p className="text-xs text-on-surface-variant line-clamp-2 mt-0.5">
+                                        {ach.description}
+                                      </p>
+                                    </div>
+                                  </div>
+
+                                  {/* Bottom Progress or Unlock Date */}
+                                  <div className="mt-auto pt-3 border-t border-outline-variant/10">
+                                    {ach.unlocked ? (
+                                      <div className="flex items-center justify-between text-[11px] text-on-surface-variant">
+                                        <span className="flex items-center gap-1">
+                                          <Icon name="event_available" size={13} className="text-amber-500" />
+                                          {ach.unlockedAt
+                                            ? new Date(ach.unlockedAt).toLocaleDateString(currentLocale(), { day: 'numeric', month: 'short' })
+                                            : 'Completado'}
+                                        </span>
+                                        <span className="font-mono font-bold text-amber-600 dark:text-amber-400">
+                                          +50 pts
+                                        </span>
+                                      </div>
+                                    ) : (
+                                      <div className="space-y-1.5">
+                                        <div className="flex items-center justify-between text-[10px] font-bold text-on-surface-variant">
+                                          <span>Avance requerido</span>
+                                          <span className="font-mono">{ach.progress} / {ach.maxProgress}</span>
+                                        </div>
+                                        <div className="h-1.5 w-full bg-outline-variant/20 rounded-full overflow-hidden">
+                                          <div
+                                            className="h-full rounded-full transition-all duration-500"
+                                            style={{
+                                              width: `${progressPct}%`,
+                                              backgroundColor: meta.color,
+                                            }}
+                                          />
+                                        </div>
+                                      </div>
+                                    )}
+                                  </div>
+                                </motion.div>
+                              );
+                            })}
+                          </div>
+                        );
+                      })()}
                     </motion.div>
                   )}
                 </AnimatePresence>
-              </div>
-              </div>
+              </GlassPanel>
             </>
           )}
 

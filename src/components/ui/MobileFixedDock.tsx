@@ -54,9 +54,9 @@ export function MobileFixedDock({
 
   const tabs = role === 'paciente' ? patientTabs : fisioTabs;
 
-  // Centro de acción rápida (AR Mirror o Calibración)
-  const defaultActionRoute = role === 'paciente' ? '/calibration' : '/ar-mirror';
-  const defaultActionText = actionLabel || (role === 'paciente' ? 'Sesión AR' : 'Espejo AR');
+  // Centro de acción rápida (AR Mirror para paciente o Cargar Paciente para fisio)
+  const defaultActionRoute = role === 'paciente' ? '/calibration' : '/ocr-scanner';
+  const defaultActionText = actionLabel || (role === 'paciente' ? 'Sesión AR' : 'Cargar Paciente');
 
   const handleHeroAction = () => {
     if (onActionClick) {

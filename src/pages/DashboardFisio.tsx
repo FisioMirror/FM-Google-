@@ -19,7 +19,6 @@ import { BorderBeam } from '../components/ui/BorderBeam';
 import { ClinicalActivityFeed, type ClinicalFeedItem } from '../components/ui/ClinicalActivityFeed';
 import { KineticText } from '../components/ui/KineticText';
 import { ClinicalHighlighter } from '../components/ui/Highlighter';
-import { PulsatingButton } from '../components/ui/PulsatingButton';
 import { ShimmerButton } from '../components/ui/ShimmerButton';
 import { ShimmerText } from '../components/ui/ShimmerText';
 import { ShineBorder } from '../components/ui/ShineBorder';
@@ -30,7 +29,7 @@ import { ConfettiSideCannons } from '../components/ui/ConfettiButton';
 import { CompactJointSelector } from '../components/ui/CompactQuickSelector';
 import { TextAnimate } from '../components/ui/TextAnimate';
 import { UNIFIED_DEMO_PATIENTS } from '../data/unifiedDemoData';
-import { ArrowRight, ChevronRight, Sparkles } from 'lucide-react';
+import { ArrowRight, ChevronRight } from 'lucide-react';
 import { isValidUUID } from '../lib/utils';
 import { isDemoAccount } from '../lib/demoAuth';
 import { staggerContainer, staggerItem, springTactile } from '../lib/motionVariants';
@@ -239,7 +238,7 @@ export function DashboardFisio() {
   const [priorities, setPriorities] = useState<Priority[]>([]);
   const [checkedPriorities, setCheckedPriorities] = useState<boolean[]>([]);
   const [loadingKpis, setLoadingKpis] = useState(true);
-  const [evolution, setEvolution] = useState<{ week: string; value: number }[]>([]);
+  const [_evolution, setEvolution] = useState<{ week: string; value: number }[]>([]);
   const [displayedPatients, setDisplayedPatients] = useState<any[]>([]);
   const [allPatientsForSearch, setAllPatientsForSearch] = useState<Array<{ id: string; name: string; condition?: string; email?: string }>>([]);
   const [allExercisesForSearch, setAllExercisesForSearch] = useState<Array<{ id: string; name: string; group?: string }>>([]);
@@ -817,15 +816,6 @@ export function DashboardFisio() {
               <Icon name="celebration" size={16} />
               <span className="hidden sm:inline">{t('dashboard.celebrateAchievement', 'Celebrar logro')}</span>
             </ConfettiSideCannons>
-            <PulsatingButton
-              variant="pulse"
-              pulseColor="rgba(13, 148, 136, 0.6)"
-              onClick={() => navigate('/ar-mirror')}
-              className="hidden lg:flex text-xs px-4 py-2 rounded-2xl shadow-sm"
-            >
-              <Sparkles className="size-3.5" />
-              <span>{t('dashboard.startSession', 'Iniciar Espejo AR')}</span>
-            </PulsatingButton>
             <div className="hidden md:block">
               <DateRangePicker value={dateRange} onChange={setDateRange}>
                 <DateRangePicker.Trigger placeholder={t('df.filterRange')} />
@@ -1362,47 +1352,6 @@ export function DashboardFisio() {
         )}
       </section>
 
-      {/* Progress section */}
-      <section className="section-bg-emerald relative">
-        <div className="flex items-center justify-between mb-6 relative z-10">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center ring-1 ring-emerald-500/20">
-              <Icon name="trending_up" size={26} className="icon-accent-emerald animate-breathe-icon" />
-            </div>
-            <div>
-              <h3 className="font-headline-md text-headline-sm lg:text-headline-md text-on-surface">{t('df.adherenceProgress')}</h3>
-              <p className="text-xs text-on-surface-variant font-semibold uppercase tracking-wider mt-0.5">{t('df.weeklyEvolution')}</p>
-            </div>
-          </div>
-        </div>
-        <div className="glass-card p-6 rounded-[32px] accent-emerald hover-lift relative overflow-hidden z-10">
-          {evolution.length === 0 ? (
-            <div className="flex flex-col items-center justify-center text-center py-8 gap-3">
-              <Icon name="trending_up" size={32} className="text-primary/40" />
-              <p className="text-sm text-on-surface-variant leading-relaxed max-w-xs">{t('df.noAdherenceData')}</p>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {evolution.map((e, i) => (
-                <div key={e.week}>
-                  <div className="flex justify-between text-sm mb-1">
-                    <span className="text-on-surface font-medium">{e.week}</span>
-                    <span className="icon-accent-emerald font-bold">{e.value}%</span>
-                  </div>
-                  <div className="h-3 bg-surface-variant/20 rounded-full overflow-hidden">
-                    <motion.div
-                      initial={{ width: 0 }}
-                      animate={{ width: `${e.value}%` }}
-                      transition={{ delay: i * 0.1, duration: 0.6 }}
-                      className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-primary"
-                    />
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      </section>
     </div>
   );
 }

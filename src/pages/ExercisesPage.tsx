@@ -14,6 +14,7 @@ import { SkeletonJointSelectorHUD } from '../components/ui/RealTimeMetricsSuite'
 import { celebrateAchievement } from '../lib/confetti';
 import { GlassModal } from '../components/ui/GlassModal';
 import { SpotlightCard } from '../components/ui/SpotlightCard';
+import { ExerciseImage } from '../components/ui/ExerciseImage';
 import { getExerciseImage } from '../data/exerciseImages';
 import { SkeletonDemo } from '../components/rehabilitation/SkeletonDemo';
 import { buildExerciseDefinition, getExerciseDescription } from '../data/exercisePresets';
@@ -875,24 +876,23 @@ export function ExercisesPage() {
                 )}
 
                 <div>
-                  {/* Image container */}
-                  {exerciseImage && (
-                    <div className="relative rounded-2xl overflow-hidden mb-3.5">
-                      <img
-                        src={exerciseImage}
-                        alt={ex.nombre}
-                        loading="lazy"
-                        className="w-full h-40 object-cover rounded-2xl"
-                      />
-                      <button
-                        onClick={() => setDescriptionExercise(ex)}
-                        aria-label={t('tr.ver_guia_anatomica')}
-                        className="absolute bottom-3 right-3 size-9 rounded-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-md flex items-center justify-center text-teal-700 dark:text-teal-300 hover:scale-110 active:scale-95 shadow-md transition-transform"
-                      >
-                        <BookOpen className="size-4" />
-                      </button>
-                    </div>
-                  )}
+                  {/* Image & Biomechanical Banner container */}
+                  <div className="relative mb-3.5">
+                    <ExerciseImage
+                      src={exerciseImage}
+                      name={ex.nombre}
+                      articulacion={ex.articulacion}
+                      categoria={ex.categoria}
+                      heightClass="h-40"
+                    />
+                    <button
+                      onClick={() => setDescriptionExercise(ex)}
+                      aria-label={t('tr.ver_guia_anatomica')}
+                      className="absolute bottom-3 right-3 size-9 rounded-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-md flex items-center justify-center text-teal-700 dark:text-teal-300 hover:scale-110 active:scale-95 shadow-md transition-transform z-10"
+                    >
+                      <BookOpen className="size-4" />
+                    </button>
+                  </div>
 
                   {/* Title and Badges */}
                   <div className="space-y-1.5 mb-2.5">

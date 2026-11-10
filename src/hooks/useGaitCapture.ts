@@ -56,10 +56,18 @@ export function useGaitCapture() {
     samplesRef.current = { l: [], r: [], t: [] };
     try {
       setStatus('loading');
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: 'environment', width: 640, height: 480 },
-        audio: false,
-      });
+      let stream: MediaStream;
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: { ideal: 'environment' }, width: { ideal: 640 }, height: { ideal: 480 } },
+          audio: false,
+        });
+      } catch {
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: true,
+          audio: false,
+        });
+      }
       streamRef.current = stream;
       video.srcObject = stream;
       await video.play();
@@ -126,8 +134,8 @@ export function useGaitCapture() {
       setStatus('error');
       setError(
         e?.name === 'NotAllowedError'
-          ? 'Permiso de camara denegado. Habilitalo para medir la marcha.'
-          : 'No se pudo iniciar la captura de marcha (camara o modelo no disponibles).'
+          ? 'Permiso de cámara no concedido. Puedes habilitarlo o usar la simulación biomecánica interactiva.'
+          : 'Cámara física no disponible en este entorno. Puedes activar la simulación clínica de marcha.'
       );
     }
   }, [stop]);
@@ -170,6 +178,39 @@ export function useGaitCapture() {
     stop();
   }, [stop]);
 
+  // Modo interactivo de prueba y simulación biomecánica de marcha
+  const startSimulation = useCallback(() => {
+    stop();
+    setError(null);
+    setStatus('measuring');
+    samplesRef.current = { l: [], r: [], t: [] };
+    const startTime = performance.now();
+    let simStep = 0;
+
+    const simLoop = () => {
+      const now = performance.now();
+      const elapsedSec = (now - startTime) / 1000;
+      simStep += 0.12;
+
+      // Generar ángulos de rodilla que oscilan en fases de marcha reales (apoyo 165°, oscilación 115°)
+      const leftKnee = 140 + Math.sin(simStep) * 28;
+      const rightKnee = 140 + Math.sin(simStep + Math.PI) * 27.5;
+
+      samplesRef.current.l.push(leftKnee);
+      samplesRef.current.r.push(rightKnee);
+      samplesRef.current.t.push(now);
+
+      if (elapsedSec >= 4) {
+        // Finalizar automáticamente la simulación tras 4 segundos
+        finish();
+      } else {
+        rafRef.current = requestAnimationFrame(simLoop);
+      }
+    };
+
+    rafRef.current = requestAnimationFrame(simLoop);
+  }, [stop, finish]);
+
   useEffect(() => () => stop(), [stop]);
 
   const reset = useCallback(() => {
@@ -178,5 +219,5 @@ export function useGaitCapture() {
     setResult({ leftRatio: null, rightRatio: null, cadenceSteps: null });
   }, [stop]);
 
-  return { status, error, result, videoRef, start, finish, stop, reset };
+  return { status, error, result, videoRef, start, startSimulation, finish, stop, reset };
 }

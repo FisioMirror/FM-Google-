@@ -172,12 +172,30 @@ export function useGamification() {
     const currentUnlocked = new Set(achievements.filter(a => a.unlocked).map(a => a.id));
     const newly = achievements.filter(a => a.unlocked && !prevUnlockedRef.current.has(a.id));
     if (newly.length > 0) {
+      // Filtrar para evitar que salten bronce, plata y oro seguidos si se alcanzan varias metas juntas:
+      // Solo encolamos para el modal el nivel más alto de cada familia progresiva.
+      const tieredFamilies = [
+        ['first_session', 'three_sessions', 'five_sessions', 'ten_sessions'],
+        ['streak_3', 'streak_7'],
+      ];
+
+      const filteredForModal = newly.filter((ach) => {
+        for (const family of tieredFamilies) {
+          if (family.includes(ach.id)) {
+            const unlockedInFamily = family.filter(id => newly.some(n => n.id === id));
+            const highestId = unlockedInFamily[unlockedInFamily.length - 1];
+            return ach.id === highestId;
+          }
+        }
+        return true;
+      });
+
       setPendingIds((prev) => {
-        const merged = [...prev, ...newly.map((a) => a.id).filter((id) => !prev.includes(id))];
+        const merged = [...prev, ...filteredForModal.map((a) => a.id).filter((id) => !prev.includes(id))];
         savePendingIds(merged);
         return merged;
       });
-      addPoints(100 * newly.length); // 100 FisioCoins por logro
+      addPoints(100 * newly.length); // FisioCoins otorgados por cada logro real
       celebrateAchievement();
     }
     prevUnlockedRef.current = currentUnlocked;

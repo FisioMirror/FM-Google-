@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 interface SparkleProps {
   active: boolean;
-  color: 'teal' | 'blue' | 'coral';
+  color?: 'teal' | 'blue' | 'coral' | 'gold' | 'amber';
 }
 
 interface SparkItem {
@@ -51,20 +51,25 @@ const sparks: SparkItem[] = [
   { x: '78%', y: '82%', size: 14, duration: 2.2, delay: 1.25, type: 'star' },
 ];
 
-export const SparkleEffect: React.FC<SparkleProps> = ({ active, color }) => {
+export const SparkleEffect: React.FC<SparkleProps> = ({ active, color = 'gold' }) => {
+  const isGold = color === 'gold' || color === 'amber';
   const glowColor =
-    color === 'teal'
-      ? 'rgba(16, 185, 129, 0.65)'
-      : color === 'coral'
-        ? 'rgba(251, 113, 133, 0.65)'
-        : 'rgba(14, 165, 233, 0.65)';
-  const sparkColor = color === 'teal' ? '#34D399' : color === 'coral' ? '#FB7185' : '#38BDF8';
+    isGold
+      ? 'rgba(245, 158, 11, 0.7)'
+      : color === 'teal'
+        ? 'rgba(16, 185, 129, 0.65)'
+        : color === 'coral'
+          ? 'rgba(245, 158, 11, 0.65)'
+          : 'rgba(14, 165, 233, 0.65)';
+  const sparkColor = isGold ? '#FBBF24' : color === 'teal' ? '#34D399' : color === 'coral' ? '#FBBF24' : '#38BDF8';
   const sparkGlowShadow =
-    color === 'teal'
-      ? 'drop-shadow(0 0 5px rgba(52, 211, 153, 0.8))'
-      : color === 'coral'
-        ? 'drop-shadow(0 0 5px rgba(251, 113, 133, 0.8))'
-        : 'drop-shadow(0 0 5px rgba(56, 189, 248, 0.8))';
+    isGold
+      ? 'drop-shadow(0 0 6px rgba(245, 158, 11, 0.85))'
+      : color === 'teal'
+        ? 'drop-shadow(0 0 5px rgba(52, 211, 153, 0.8))'
+        : color === 'coral'
+          ? 'drop-shadow(0 0 6px rgba(245, 158, 11, 0.85))'
+          : 'drop-shadow(0 0 5px rgba(56, 189, 248, 0.8))';
 
   return (
     <AnimatePresence>

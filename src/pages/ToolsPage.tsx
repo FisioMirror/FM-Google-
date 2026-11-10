@@ -23,7 +23,8 @@ import {
   QuickPrescriptionModalButton,
 } from '../components/ui/FloatingControlsSuite';
 import { BentoGrid, BentoCard } from '../components/ui/BentoGrid';
-import { Calculator, Camera, FileText } from 'lucide-react';
+import { Calculator, Camera, FileText, Footprints, RotateCcw, Copy, Send, Bot } from 'lucide-react';
+import { GaitCapturePanel } from '../components/patient/GaitCapturePanel';
 import { currentLocale } from '../lib/format';
 
 interface ChatMessage {
@@ -417,7 +418,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
   };
 
   const toolsGrid = (filter: 'todas' | 'ia' | 'ocr') => {
-    const isIA = (id: string) => id === 'ocr' || id === 'summary' || id === 'patient-summary' || id === 'pdf-ai' || id === 'chat' || id === 'bmi';
+    const isIA = (id: string) => id === 'ocr' || id === 'summary' || id === 'patient-summary' || id === 'pdf-ai' || id === 'chat' || id === 'bmi' || id === 'gait';
     const isOCR = (id: string) => id === 'ocr';
     const showTool = (id: string) => filter === 'todas' || (filter === 'ia' && isIA(id)) || (filter === 'ocr' && isOCR(id));
 
@@ -533,74 +534,183 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
           </div>
           )}
 
-          {/* BMI Calculator with SpotlightCard & ClinicalSliders */}
+          {/* BMI Calculator with SpotlightCard & ClinicalSliders - Desktop Responsive Split */}
           {showTool('bmi') && (
-          <div id="tool-bmi" className="md:col-span-2 lg:col-span-1 scroll-mt-24">
-          <SpotlightCard className="p-6 sm:p-8 rounded-3xl flex flex-col justify-between relative overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 w-full">
-            <div>
-              <div className="flex items-center gap-3 mb-6 relative">
-                <div className="size-12 rounded-2xl bg-teal-500/10 text-teal-700 dark:text-teal-300 flex items-center justify-center">
-                  <Icon name="calculate" size={24} className="animate-breathe-icon" />
+          <div id="tool-bmi" className="md:col-span-2 lg:col-span-3 scroll-mt-24">
+            <SpotlightCard className="p-6 sm:p-8 rounded-3xl relative overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 w-full border border-teal-500/20 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl">
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                {/* Left Column: Sliders and numerical inputs */}
+                <div className="lg:col-span-6 space-y-6">
+                  <div className="flex items-center gap-3 relative">
+                    <div className="size-12 rounded-2xl bg-teal-500/10 text-teal-700 dark:text-teal-300 flex items-center justify-center shrink-0">
+                      <Icon name="calculate" size={24} className="animate-breathe-icon" />
+                    </div>
+                    <div>
+                      <h3 className="font-title-md text-xl font-bold text-teal-950 dark:text-teal-100">{t('tr.calculadora_imc', 'Calculadora de IMC y Composición')}</h3>
+                      <p className="text-xs text-on-surface-variant mt-0.5">{t('tl.ocrClassification', 'Clasificación antropométrica según estándares clínicos de la OMS')}</p>
+                    </div>
+                  </div>
+
+                  <div className="space-y-5 p-4 rounded-2xl bg-teal-50/50 dark:bg-slate-800/40 border border-teal-100/60 dark:border-slate-700/60">
+                    <div>
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-xs font-bold uppercase tracking-wider text-teal-900 dark:text-teal-200">{t('tr.estatura', 'Estatura')}</span>
+                        <div className="flex items-center gap-1.5">
+                          {[160, 170, 180].map((hPreset) => (
+                            <button
+                              key={hPreset}
+                              onClick={() => setHeight(hPreset)}
+                              className={`text-[10px] font-bold px-2 py-0.5 rounded-lg transition-colors ${height === hPreset ? 'bg-teal-600 text-white' : 'bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-600'}`}
+                            >
+                              {hPreset} cm
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                      <ClinicalSlider
+                        value={height}
+                        onChange={setHeight}
+                        min={100}
+                        max={240}
+                        step={1}
+                        label=""
+                        unit=" cm"
+                        ticks={[120, 150, 175, 200, 220]}
+                      />
+                    </div>
+
+                    <div className="pt-2 border-t border-teal-200/40 dark:border-slate-700/60">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-xs font-bold uppercase tracking-wider text-teal-900 dark:text-teal-200">{t('tr.peso', 'Peso')}</span>
+                        <div className="flex items-center gap-1.5">
+                          {[60, 72, 85].map((wPreset) => (
+                            <button
+                              key={wPreset}
+                              onClick={() => setWeight(wPreset)}
+                              className={`text-[10px] font-bold px-2 py-0.5 rounded-lg transition-colors ${weight === wPreset ? 'bg-teal-600 text-white' : 'bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-600'}`}
+                            >
+                              {wPreset} kg
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                      <ClinicalSlider
+                        value={weight}
+                        onChange={setWeight}
+                        min={30}
+                        max={180}
+                        step={1}
+                        label=""
+                        unit=" kg"
+                        ticks={[40, 70, 100, 130, 160]}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Right Column: Diagnostic Result Card */}
+                <div className="lg:col-span-6">
+                  <div className="p-6 sm:p-7 bg-gradient-to-br from-teal-800 via-teal-900 to-slate-900 text-white rounded-3xl shadow-xl border border-teal-500/30 relative overflow-hidden">
+                    <div className="relative z-10 flex items-start justify-between mb-4">
+                      <div>
+                        <span className="text-[10px] uppercase font-bold tracking-widest text-teal-300 block mb-1">
+                          {t('tr.imc_calculado', 'Índice de Masa Corporal')}
+                        </span>
+                        <div className="flex items-baseline gap-2">
+                          <span className="text-4xl sm:text-5xl font-black font-mono tracking-tight text-white">{bmi}</span>
+                          <span className="text-xs font-semibold text-teal-300">kg/m²</span>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <span className={`px-3 py-1.5 rounded-full text-xs font-bold shadow-md inline-block ${
+                          bmiStatus === 'Peso Saludable' ? 'bg-emerald-500 text-white' :
+                          bmiStatus === 'Bajo Peso' ? 'bg-amber-500 text-white' :
+                          bmiStatus === 'Sobrepeso' ? 'bg-orange-500 text-white' :
+                          'bg-rose-500 text-white'
+                        }`}>
+                          {bmiStatus}
+                        </span>
+                        <p className="text-[10px] text-teal-200 font-medium mt-1">Rango normal: 18.5 - 24.9</p>
+                      </div>
+                    </div>
+
+                    {/* Gradient Scale Spectrum */}
+                    <div className="relative my-4">
+                      <div className="flex h-2.5 rounded-full overflow-hidden bg-white/20 p-0.5">
+                        <div className="bg-amber-400 rounded-l-full" style={{ width: '14%' }} title="Bajo Peso (< 18.5)" />
+                        <div className="bg-emerald-400" style={{ width: '26%' }} title="Peso Saludable (18.5 - 24.9)" />
+                        <div className="bg-orange-400" style={{ width: '20%' }} title="Sobrepeso (25.0 - 29.9)" />
+                        <div className="bg-rose-500 rounded-r-full" style={{ width: '40%' }} title="Obesidad (≥ 30.0)" />
+                      </div>
+                      {Number.isFinite(Number(bmi)) && (
+                        <div
+                          className="absolute -top-1.5 transition-all duration-300"
+                          style={{ left: `calc(${Math.min(100, Math.max(0, ((Number(bmi) - 15) / 25) * 100))}% - 8px)` }}
+                          title={`IMC ${bmi}`}
+                        >
+                          <div className="w-4 h-5 rounded-md bg-white shadow-lg border-2 border-slate-900 flex items-center justify-center">
+                            <div className="w-1 h-2 rounded-full bg-teal-700" />
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* 3 Clinical Recommendations Metrics */}
+                    <div className="grid grid-cols-3 gap-2.5 pt-4 mt-2 border-t border-teal-700/60 text-center">
+                      <div className="p-2.5 rounded-xl bg-white/10 backdrop-blur-sm">
+                        <span className="text-[9px] uppercase tracking-wider text-teal-300 block mb-0.5">Peso Óptimo</span>
+                        <span className="text-xs font-bold font-mono">
+                          {(18.5 * (height / 100) ** 2).toFixed(0)} - {(24.9 * (height / 100) ** 2).toFixed(0)} kg
+                        </span>
+                      </div>
+                      <div className="p-2.5 rounded-xl bg-white/10 backdrop-blur-sm">
+                        <span className="text-[9px] uppercase tracking-wider text-teal-300 block mb-0.5">Agua / Día</span>
+                        <span className="text-xs font-bold font-mono">
+                          {(weight * 0.035).toFixed(1)} L
+                        </span>
+                      </div>
+                      <div className="p-2.5 rounded-xl bg-white/10 backdrop-blur-sm">
+                        <span className="text-[9px] uppercase tracking-wider text-teal-300 block mb-0.5">Tasa Basal</span>
+                        <span className="text-xs font-bold font-mono">
+                          {Math.round(10 * weight + 6.25 * height - 5 * 30 + 5)} kcal
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Clinical prescription note */}
+                    <p className="text-[11px] text-teal-200/90 leading-relaxed mt-3.5 italic bg-black/20 p-2.5 rounded-xl border border-white/5">
+                      {bmi < 18.5 ? '💡 Enfoque clínico: Priorizar fortalecimiento neuromuscular progresivo para ganancia de masa magra.' :
+                       bmi < 25 ? '💡 Enfoque clínico: Relación peso-potencia óptima. Apto para cargas completas y pliometría funcional.' :
+                       bmi < 30 ? '💡 Enfoque clínico: Evitar sobrecarga en articulaciones de choque. Priorizar cadena cinética cerrada y piscina.' :
+                       '💡 Enfoque clínico: Protección articular mandatoria: descargar rodillas y tobillos con cicloergómetro o elíptica.'}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </SpotlightCard>
+          </div>
+          )}
+
+          {/* Gait Capture & Plantar Support Symmetry */}
+          {showTool('gait') && (
+          <div id="tool-gait" className="md:col-span-2 lg:col-span-3 p-6 sm:p-8 rounded-3xl relative overflow-hidden ios-glass-heavy refraction-border shadow-sm hover:shadow-xl transition-all duration-300 w-full scroll-mt-24">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 relative">
+              <div className="flex items-center gap-3">
+                <div className="size-12 rounded-2xl bg-teal-500/10 text-teal-700 dark:text-teal-300 flex items-center justify-center shrink-0">
+                  <Footprints size={24} className="animate-breathe-icon" />
                 </div>
                 <div>
-                  <h3 className="font-title-md text-xl font-bold text-teal-900 dark:text-teal-100">{t('tr.calculadora_imc')}</h3>
-                  <p className="text-xs text-on-surface-variant mt-0.5">{t('tl.ocrClassification')}</p>
+                  <h3 className="font-title-md text-xl font-bold text-teal-950 dark:text-teal-100">Captura de Marcha y Simetría de Apoyo Plantar</h3>
+                  <p className="text-xs text-on-surface-variant mt-0.5">Telemetría de carga bilateral, baropodometría dinámica y fases de apoyo articular</p>
                 </div>
               </div>
-              <div className="space-y-6">
-                <ClinicalSlider
-                  value={height}
-                  onChange={setHeight}
-                  min={100}
-                  max={250}
-                  step={1}
-                  label={t('tr.estatura')}
-                  unit=" cm"
-                  ticks={[120, 150, 175, 200, 220]}
-                />
-                <ClinicalSlider
-                  value={weight}
-                  onChange={setWeight}
-                  min={30}
-                  max={200}
-                  step={1}
-                  label={t('tr.peso')}
-                  unit=" kg"
-                  ticks={[40, 70, 100, 130, 160]}
-                />
-              </div>
+              <span className="inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1 rounded-full bg-teal-500/15 text-teal-700 dark:text-teal-300 border border-teal-500/30">
+                <span className="w-2 h-2 rounded-full bg-teal-500 animate-pulse" />
+                Visión MediaPipe &amp; Sensor
+              </span>
             </div>
 
-            <div className="mt-8 p-6 bg-teal-700 text-white rounded-2xl shadow-xl relative overflow-hidden">
-              <div className="relative z-10 flex items-center justify-between">
-                <div>
-                  <p className="text-[10px] uppercase font-bold tracking-widest text-teal-200 mb-0.5">{t('tr.imc_calculado')}</p>
-                  <span className="text-4xl font-black font-mono tracking-tight">{bmi}</span>
-                </div>
-                <div className="text-right">
-                  <span className={`px-3 py-1 rounded-full text-xs font-bold shadow-xs ${bmiStatus === 'Peso Saludable' ? 'bg-emerald-500 text-white' : bmiStatus === 'Bajo Peso' ? 'bg-amber-500 text-white' : bmiStatus === 'Sobrepeso' ? 'bg-orange-500 text-white' : 'bg-red-500 text-white'}`}>{bmiStatus}</span>
-                  <p className="text-[10px] text-teal-200 font-medium mt-1">{t('tr.normal_18_5_24_9')}</p>
-                </div>
-              </div>
-              <div className="relative mt-6">
-              <div className="flex h-2 rounded-full overflow-hidden bg-white/20">
-                <div className="bg-amber-400" style={{ width: '14%' }} />
-                <div className="bg-emerald-400" style={{ width: '26%' }} />
-                <div className="bg-orange-400" style={{ width: '20%' }} />
-                <div className="bg-red-400" style={{ width: '40%' }} />
-              </div>
-              {Number.isFinite(Number(bmi)) && (
-                <div
-                  className="absolute -top-1 transition-all"
-                  style={{ left: 'calc(' + Math.min(100, Math.max(0, ((Number(bmi) - 15) / 25) * 100)) + '% - 6px)' }}
-                  title={'IMC ' + bmi}
-                >
-                  <div className="w-3 h-4 rounded-sm bg-white shadow-md border border-black/30" />
-                </div>
-              )}
-              </div>
-            </div>
-          </SpotlightCard>
+            <GaitCapturePanel />
           </div>
           )}
 
@@ -844,6 +954,17 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
                 }}
               />
               <BentoCard
+                name="Captura de Marcha & Apoyo Plantar"
+                description="Simetría de carga bilateral, cadencia en pasos/minuto y fases de apoyo del pie."
+                badge="Cinemática"
+                Icon={Footprints}
+                cta="Analizar Marcha"
+                onClick={() => {
+                  const el = document.getElementById('tool-gait');
+                  el?.scrollIntoView({ behavior: 'smooth' });
+                }}
+              />
+              <BentoCard
                 name="Digitalizador OCR & Visión Médica"
                 description="Extracción instantánea de prescripciones, rangos articulares y antecedentes."
                 badge="Visión IA"
@@ -890,51 +1011,138 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
           />
         </div>
 
-      {/* AI Assistant sidebar */}
-      <div className="hidden xl:flex flex-col w-[320px] lg:w-[380px] shrink-0 h-[calc(100vh-140px)] sticky top-[100px] glass-panel rounded-3xl overflow-hidden">
-        <div className="p-6 bg-primary-container text-on-primary-container">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Icon name="smart_toy" filled size={28} className="animate-breathe-icon" />
-              <div>
-                <h3 className="font-bold gradient-text-teal">Physi</h3>
-                <p className="text-xs opacity-80">{t('tr.activo_y_listo')}</p>
+      {/* AI Assistant sidebar - Elevated Clinical UI */}
+      <div className="hidden xl:flex flex-col w-[340px] lg:w-[400px] shrink-0 h-[calc(100vh-140px)] sticky top-[100px] rounded-3xl overflow-hidden bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border border-teal-500/25 shadow-xl">
+        {/* Header */}
+        <div className="p-4 sm:p-5 bg-gradient-to-r from-teal-600 via-teal-700 to-cyan-700 text-white flex items-center justify-between shrink-0 shadow-sm">
+          <div className="flex items-center gap-3">
+            <div className="size-11 rounded-2xl bg-white/15 backdrop-blur-md flex items-center justify-center text-white shrink-0 relative">
+              <Bot size={22} className="animate-breathe-icon" />
+              <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-400 border-2 border-teal-700" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h3 className="font-bold text-base leading-tight">Physi IA</h3>
+                <span className="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-white/20 text-white">
+                  Clínico
+                </span>
               </div>
+              <p className="text-[11px] text-teal-100 mt-0.5 flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-300 animate-pulse" />
+                Asistente Kinesiológico &amp; ROM
+              </p>
             </div>
           </div>
+          <button
+            onClick={() => {
+              setChatMessages([{ role: 'assistant', text: 'Conversación reiniciada. ¿En qué protocolo o paciente te ayudo ahora?' }]);
+              toast.info('Chat reiniciado');
+            }}
+            aria-label="Reiniciar chat"
+            title="Reiniciar chat"
+            className="p-2 rounded-xl text-white/80 hover:text-white hover:bg-white/10 transition-colors"
+          >
+            <RotateCcw size={16} />
+          </button>
         </div>
-        <div className="flex-1 p-6 space-y-4 overflow-y-auto">
+
+        {/* Suggestion Chips */}
+        <div className="p-3 bg-teal-50/70 dark:bg-slate-800/60 border-b border-teal-100/60 dark:border-slate-800 flex items-center gap-1.5 overflow-x-auto scrollbar-none shrink-0">
+          {[
+            { label: '📊 ROM hombro', query: '¿Cuáles son los criterios de progresión en flexión de hombro de 90° a 120°?' },
+            { label: '🩹 Tendinopatía', query: 'Protocolo de ejercicios excéntricos para tendinopatía rotuliana.' },
+            { label: '🦶 Simetría', query: '¿Qué valores de asimetría plantar requieren corrección ortésica o propioceptiva?' },
+            { label: '📄 Criterios alta', query: 'Criterios clínicos de alta para esguince lateral de tobillo grado II.' },
+          ].map((chip) => (
+            <button
+              key={chip.label}
+              onClick={() => {
+                setChatInput(chip.query);
+              }}
+              className="text-[10px] font-bold px-2.5 py-1 rounded-full bg-white dark:bg-slate-700 text-teal-800 dark:text-teal-200 border border-teal-500/20 hover:border-teal-500/50 hover:bg-teal-500/10 transition-colors whitespace-nowrap shadow-xs"
+            >
+              {chip.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Messages Body */}
+        <div className="flex-1 p-4 space-y-3.5 overflow-y-auto">
           {chatMessages.map((msg, i) => (
-            <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-              <div className={`max-w-[80%] p-3 rounded-2xl text-sm shadow-lg transition-transform hover:scale-[1.01] ${msg.role === 'user' ? 'bg-gradient-to-br from-blue-100/80 to-blue-200/60 dark:from-slate-700/80 dark:to-slate-800/60 text-on-surface rounded-tr-none shadow-blue-200/40' : 'bg-gradient-to-br from-teal-100/80 to-teal-200/50 dark:from-slate-800/80 dark:to-slate-900/60 text-on-surface rounded-tl-none shadow-teal-200/40'}`}>
-                {msg.text}
+            <div key={i} className={`flex gap-2.5 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+              {msg.role === 'assistant' && (
+                <div className="size-8 rounded-xl bg-teal-500/15 text-teal-700 dark:text-teal-300 flex items-center justify-center shrink-0 mt-0.5">
+                  <Bot size={16} />
+                </div>
+              )}
+              <div className="max-w-[85%] group relative">
+                <div
+                  className={`p-3.5 rounded-2xl text-xs sm:text-[13px] leading-relaxed shadow-sm transition-all ${
+                    msg.role === 'user'
+                      ? 'bg-gradient-to-br from-teal-600 to-teal-700 text-white rounded-tr-none'
+                      : 'bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-100 border border-slate-200/60 dark:border-slate-700/60 rounded-tl-none'
+                  }`}
+                >
+                  <p className="whitespace-pre-wrap">{msg.text}</p>
+                </div>
+                {msg.role === 'assistant' && (
+                  <button
+                    onClick={() => {
+                      navigator.clipboard?.writeText(msg.text);
+                      toast.success('Mensaje copiado');
+                    }}
+                    aria-label="Copiar respuesta"
+                    className="opacity-0 group-hover:opacity-100 transition-opacity mt-1 text-[10px] text-slate-400 hover:text-teal-600 flex items-center gap-1"
+                  >
+                    <Copy size={11} /> Copiar texto
+                  </button>
+                )}
               </div>
             </div>
           ))}
           {aiLoading && (
-            <div className="flex justify-start">
-              <div className="bg-gradient-to-br from-teal-100/80 to-teal-200/50 dark:from-slate-800/80 dark:to-slate-900/60 p-3 rounded-2xl shadow-teal-200/40">
-                <div className="chat-typing-dots flex items-center gap-1 text-primary">
-                  <span /><span /><span />
+            <div className="flex gap-2.5 justify-start items-center">
+              <div className="size-8 rounded-xl bg-teal-500/15 text-teal-700 dark:text-teal-300 flex items-center justify-center shrink-0">
+                <Bot size={16} />
+              </div>
+              <div className="bg-slate-100 dark:bg-slate-800/90 p-3.5 rounded-2xl border border-slate-200/60 dark:border-slate-700/60 rounded-tl-none">
+                <div className="flex items-center gap-1.5 text-teal-600 dark:text-teal-400">
+                  <span className="w-2 h-2 rounded-full bg-current animate-bounce" style={{ animationDelay: '0ms' }} />
+                  <span className="w-2 h-2 rounded-full bg-current animate-bounce" style={{ animationDelay: '150ms' }} />
+                  <span className="w-2 h-2 rounded-full bg-current animate-bounce" style={{ animationDelay: '300ms' }} />
+                  <span className="text-[11px] font-semibold ml-2">Analizando criterio clínico...</span>
                 </div>
               </div>
             </div>
           )}
         </div>
-        <div className="p-6 border-t border-outline-variant/20 bg-surface-variant/10">
-          <div className="flex gap-2">
+
+        {/* Input Bar */}
+        <div className="p-3.5 border-t border-slate-200/80 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/40 shrink-0">
+          <div className="flex gap-2 items-center">
             <input
               value={chatInput}
               onChange={(e) => setChatInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && sendChat()}
-              placeholder={t('tl.askPlaceholder')}
-              className="flex-1 px-4 py-3 rounded-xl bg-surface-variant/20 border border-outline-variant/30 outline-none focus:ring-2 focus:ring-primary/20 text-on-surface placeholder:text-on-surface-variant"
+              placeholder={t('tl.askPlaceholder', 'Haz una consulta clínica a Physi...')}
+              className="flex-1 px-3.5 py-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100 placeholder:text-slate-400 outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 transition-all"
             />
-            <button onClick={sendChat} disabled={aiLoading} aria-label={t('tl.sendQuery')} className="premium-btn w-12 h-12 rounded-xl bg-primary text-on-primary flex items-center justify-center hover:scale-105 active:scale-95 transition-all disabled:opacity-50">
-              <Icon name="send" size={20} />
+            <button
+              onClick={sendChat}
+              disabled={aiLoading || !chatInput.trim()}
+              aria-label={t('tl.sendQuery', 'Enviar consulta')}
+              className="size-10 rounded-xl bg-teal-600 hover:bg-teal-700 text-white flex items-center justify-center hover:scale-105 active:scale-95 transition-all disabled:opacity-40 disabled:hover:scale-100 shrink-0 shadow-md shadow-teal-600/20"
+            >
+              <Send size={16} />
             </button>
           </div>
-          <p className="text-[10px] text-outline mt-2 flex items-center gap-1"><span className="w-2 h-2 bg-green-500 rounded-full" />{t('tr.cumple_hipaa')}</p>
+          <div className="flex items-center justify-between mt-2 px-1 text-[10px] text-slate-400">
+            <span className="flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+              {t('tr.cumple_hipaa', 'Cifrado seguro & HIPAA compliant')}
+            </span>
+            <span className="font-mono text-[9px]">Enter ↵</span>
+          </div>
         </div>
       </div>
 
