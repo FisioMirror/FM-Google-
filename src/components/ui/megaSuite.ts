@@ -16,3 +16,9 @@ export * from './GamificationSuite';
 
 // Categoría 5: Docks y Navegación Ergonómica (41 - 50)
 export * from './NavigationDocksSuite';
+
+// Componentes Biomecánicos Avanzados AR HUD
+export * from './ClinicalCadenceAnalyzer';
+export * from './BiomechanicalROMIndicator';
+export * from './BiomechanicalAngleDial';
+

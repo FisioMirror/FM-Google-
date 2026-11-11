@@ -95,7 +95,7 @@ export const SparklesText: React.FC<SparklesTextProps> = ({
         {sparkles.map((sparkle) => (
           <SparkleIcon key={sparkle.id} {...sparkle} />
         ))}
-        <strong>{children}</strong>
+        <span className="relative z-10 inline-block">{children}</span>
       </span>
     </div>
   )

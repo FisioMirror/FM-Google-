@@ -57,69 +57,65 @@ export const StreakFlameCounter: React.FC<StreakFlameCounterProps> = ({
   );
 };
 
-/* 32. LevelProgressRibbon */
 export interface LevelProgressRibbonProps {
   currentLevel?: number;
   currentXp?: number;
   nextLevelXp?: number;
+  levelTitle?: string;
   className?: string;
 }
 
 export const LevelProgressRibbon: React.FC<LevelProgressRibbonProps> = ({
-  currentLevel = 5,
-  currentXp = 480,
-  nextLevelXp = 600,
+  currentLevel = 1,
+  currentXp = 0,
+  nextLevelXp = 150,
+  levelTitle,
   className,
 }) => {
   const { t } = useTranslation();
-  const [xp, setXp] = useState(currentXp);
-  const percent = Math.min(100, Math.round((xp / nextLevelXp) * 100));
-
-  const addBonusXP = () => {
-    setXp((prev) => Math.min(nextLevelXp, prev + 30));
-  };
+  const percent = nextLevelXp > 0 ? Math.min(100, Math.max(0, Math.round((currentXp / nextLevelXp) * 100))) : 100;
 
   return (
     <motion.div
-      whileHover={{ y: -3, scale: 1.01 }}
+      whileHover={{ y: -2, scale: 1.005 }}
       transition={{ duration: 0.2 }}
       className={cn(
-        "relative p-5 rounded-3xl bg-gradient-to-br from-surface/95 via-surface-container/85 to-surface/95 dark:from-surface-container/80 dark:via-slate-900/90 dark:to-surface-container/80 backdrop-blur-2xl border border-teal-500/25 dark:border-teal-500/35 shadow-lg overflow-hidden space-y-3 group",
+        "relative p-4 sm:p-5 rounded-3xl bg-surface/95 dark:bg-slate-900/90 backdrop-blur-2xl border border-teal-500/25 dark:border-teal-500/35 shadow-lg overflow-hidden space-y-3 group",
         className
       )}
     >
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <div className="p-1.5 rounded-xl bg-teal-500/15 text-teal-600 dark:text-teal-400">
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex items-center gap-2.5">
+          <div className="p-2 rounded-xl bg-teal-500/15 text-teal-600 dark:text-teal-400 shrink-0">
             <Medal className="w-4 h-4" />
           </div>
           <div>
-            <span className="text-xs font-bold text-slate-800 dark:text-white block">
+            <span className="text-xs sm:text-sm font-bold text-slate-800 dark:text-white block">
               Nivel Terapéutico
             </span>
-            <span className="text-[10px] text-slate-400">{t('gam.romRange')}</span>
+            <span className="text-[10px] text-slate-500 dark:text-slate-400">
+              {levelTitle || t('gam.romRange', 'Progresión neuromuscular real')}
+            </span>
           </div>
         </div>
-        <button
-          type="button"
-          onClick={addBonusXP}
-          className="text-xs font-black px-3 py-1 rounded-full bg-teal-500/15 text-teal-600 dark:text-teal-400 border border-teal-500/30 hover:bg-teal-500/25 transition-colors cursor-pointer"
+        <div
+          className="text-[11px] sm:text-xs font-black px-3 py-1 rounded-full bg-teal-500/15 text-teal-700 dark:text-teal-300 border border-teal-500/30 whitespace-nowrap shadow-xs"
         >
-          Nivel {currentLevel} • +XP
-        </button>
+          Nivel {currentLevel} • {levelTitle || 'En recuperación'}
+        </div>
       </div>
 
-      <div className="relative w-full h-3.5 rounded-full bg-slate-200 dark:bg-slate-800 overflow-hidden p-0.5 border border-black/5 dark:border-white/5">
+      <div className="relative w-full h-3 rounded-full bg-slate-200 dark:bg-slate-800 overflow-hidden p-0.5 border border-black/5 dark:border-white/5">
         <motion.div
           animate={{ width: `${percent}%` }}
-          transition={{ type: 'spring', stiffness: 200, damping: 20 }}
-          className="h-full bg-gradient-to-r from-teal-500 via-cyan-400 to-lime-300 rounded-full shadow-sm"
+          transition={{ type: 'spring', stiffness: 180, damping: 22 }}
+          className="h-full bg-gradient-to-r from-teal-500 via-cyan-400 to-emerald-400 rounded-full shadow-sm"
         />
       </div>
 
-      <div className="flex justify-between text-xs text-slate-500 font-mono font-semibold">
-        <span>{xp} XP</span>
-        <span className="text-teal-600 dark:text-teal-400">{percent}% completado</span>
+      <div className="flex justify-between text-[11px] text-slate-500 dark:text-slate-400 font-mono font-semibold">
+        <span>{currentXp} XP</span>
+        <span className="text-teal-600 dark:text-teal-400 font-bold">{percent}% completado</span>
         <span>{nextLevelXp} XP</span>
       </div>
     </motion.div>

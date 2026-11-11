@@ -286,9 +286,9 @@ export function usePoseDetection(options: UsePoseDetectionOptions = {}): UsePose
         ctx.restore();
       }
 
-      // 2) Pass 1: High-Contrast Obsidian Outer Shadow / Rim on all bones (prevents blending with clothing)
-      ctx.strokeStyle = 'rgba(2, 6, 23, 0.92)';
-      ctx.lineWidth = 9;
+      // 2) Subtle dark contrast backing (prevents lines from disappearing over white clothing)
+      ctx.strokeStyle = 'rgba(0, 21, 20, 0.5)';
+      ctx.lineWidth = 5;
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
       for (const [a, b] of POSE_CONNECTIONS) {
@@ -302,19 +302,19 @@ export function usePoseDetection(options: UsePoseDetectionOptions = {}): UsePose
         }
       }
 
-      // 3) Pass 2: Neon Core Phosphor Lines
-      ctx.lineWidth = 4.5;
+      // 3) Clinical Glowing Teal/Cyan Skeleton Lines
+      ctx.lineWidth = 3.2;
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
-      ctx.shadowBlur = 10;
-      ctx.shadowColor = postureColor;
+      ctx.shadowBlur = 8;
       for (const [a, b] of POSE_CONNECTIONS) {
         const pa = landmarks[a];
         const pb = landmarks[b];
         if (pa && pb && (pa.visibility ?? 0) > 0.35 && (pb.visibility ?? 0) > 0.35) {
-          // Highlight bones directly connected to the active tracked joint
           const isActiveBone = activeJointIdx != null && (a === activeJointIdx || b === activeJointIdx);
-          ctx.strokeStyle = isActiveBone ? '#38bdf8' : postureColor;
+          const boneColor = isActiveBone ? '#38bdf8' : (postureColor === COLOR_GOOD ? '#8ad3cf' : postureColor);
+          ctx.strokeStyle = boneColor;
+          ctx.shadowColor = boneColor;
           ctx.beginPath();
           ctx.moveTo(pa.x * w, pa.y * h);
           ctx.lineTo(pb.x * w, pb.y * h);
@@ -323,7 +323,7 @@ export function usePoseDetection(options: UsePoseDetectionOptions = {}): UsePose
       }
       ctx.shadowBlur = 0;
 
-      // 4) Pass 3: Concentric High-Contrast Joint Nodes
+      // 4) Clean, Luminous Medical Joint Nodes (No heavy muddy borders)
       for (let i = 0; i < landmarks.length; i++) {
         const lm = landmarks[i];
         if (!lm || (lm.visibility ?? 0) <= 0.35) continue;
@@ -331,21 +331,20 @@ export function usePoseDetection(options: UsePoseDetectionOptions = {}): UsePose
         const y = lm.y * h;
         const isTarget = activeJointIdx === i;
 
-        // Outer black contrast ring
+        // Joint Node Body
         ctx.beginPath();
-        ctx.arc(x, y, isTarget ? 11 : 8.5, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(2, 6, 23, 0.95)';
+        ctx.arc(x, y, isTarget ? 7.5 : 5, 0, Math.PI * 2);
+        ctx.fillStyle = isTarget ? '#a6f0eb' : '#8ad3cf';
         ctx.fill();
 
-        // Vivid colored ring
-        ctx.beginPath();
-        ctx.arc(x, y, isTarget ? 8 : 6, 0, Math.PI * 2);
-        ctx.fillStyle = isTarget ? '#38bdf8' : postureColor;
-        ctx.fill();
+        // Thin elegant rim
+        ctx.lineWidth = 1.5;
+        ctx.strokeStyle = isTarget ? '#00504d' : 'rgba(0, 30, 28, 0.6)';
+        ctx.stroke();
 
-        // Inner white specular pinpoint
+        // Delicate inner specular core
         ctx.beginPath();
-        ctx.arc(x, y, isTarget ? 4.5 : 3, 0, Math.PI * 2);
+        ctx.arc(x, y, isTarget ? 3.5 : 2, 0, Math.PI * 2);
         ctx.fillStyle = '#ffffff';
         ctx.fill();
       }

@@ -374,11 +374,13 @@ export function PatientDashboard() {
             <SparklesText
               sparklesCount={4}
               colors={{ first: '#0d9488', second: '#c1ff72' }}
-              className="font-display font-headline-lg text-headline-lg-mobile lg:text-headline-lg gradient-text-living"
+              className="inline-block"
             >
-              {greeting}, {user?.full_name?.split(' ')[0] || 'Paciente'}
+              <h1 className="font-display font-headline-lg text-headline-lg-mobile lg:text-headline-lg gradient-text-living font-bold tracking-tight">
+                {greeting}, {user?.full_name?.split(' ')[0] || 'Paciente'}
+              </h1>
             </SparklesText>
-            <p className="text-outline font-title-md text-title-md">
+            <p className="text-outline font-title-md text-title-md mt-1">
               {new Date().toLocaleDateString(i18n.language === 'en' ? 'en-US' : i18n.language === 'pt' ? 'pt-BR' : currentLocale(), { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
             </p>
           </div>
@@ -492,13 +494,14 @@ export function PatientDashboard() {
       <div className="space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-3xl bg-surface/80 dark:bg-surface-container/60 border border-outline/10 shadow-sm">
           <LevelProgressRibbon
-            currentLevel={Math.max(1, Math.floor((kpi.totalSessions * 40) / 500) + 1)}
-            currentXp={(kpi.totalSessions * 40) % 500}
-            nextLevelXp={500}
+            currentLevel={gamification.currentLevel.level}
+            levelTitle={gamification.currentLevel.title}
+            currentXp={gamification.points}
+            nextLevelXp={gamification.nextLevel ? gamification.nextLevel.minPoints : gamification.currentLevel.maxPoints}
             className="w-full sm:w-auto"
           />
           <span className="text-xs font-bold text-teal-600 dark:text-teal-400">
-            Fase de Recuperación Articular • Nivel {Math.max(1, Math.floor((kpi.totalSessions * 40) / 500) + 1)}
+            Fase de Recuperación Articular • Nivel {gamification.currentLevel.level} ({gamification.currentLevel.title})
           </span>
         </div>
 
@@ -540,7 +543,10 @@ export function PatientDashboard() {
               </div>
 
               <PulsatingButton
-                onClick={() => navigate('/calibration')}
+                onClick={() => {
+                  const exName = exercises[0]?.name || 'Sesión AR';
+                  navigate(`/calibration?ejercicio=${encodeURIComponent(exName)}&next=${encodeURIComponent('/ar-mirror?ejercicio=' + exName)}`);
+                }}
                 variant="pulse"
                 pulseColor="rgba(13, 148, 136, 0.6)"
                 className="px-6 py-3.5 rounded-2xl text-white font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-teal-700/25 shrink-0 bg-teal-600 hover:bg-teal-500"
@@ -587,7 +593,7 @@ export function PatientDashboard() {
                     variants={staggerItem}
                     whileHover={{ y: -3, scale: 1.015, transition: springTactile }}
                     whileTap={{ scale: 0.98 }}
-                    onClick={() => navigate('/calibration')}
+                    onClick={() => navigate(`/calibration?ejercicio=${encodeURIComponent(ex.name)}&next=${encodeURIComponent('/ar-mirror?ejercicio=' + ex.name)}`)}
                     className="p-4 rounded-2xl bg-surface/80 dark:bg-surface-container-low/60 border border-outline/10 hover:border-teal-500/40 transition-all cursor-pointer flex items-center justify-between gap-3 group"
                   >
                     <div className="flex items-center gap-3">

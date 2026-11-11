@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Icon } from '../components/ui/Icon';
 import { useToast } from '../components/ui/toastApi';
@@ -22,14 +22,18 @@ const COUNTDOWN_FROM = 3;
 export function CalibrationPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const toast = useToast();
   const { videoRef, canvasRef, poseData, isReady, error, startCamera, isSimulated, reconnectCamera } = usePoseDetection();
   const vRef = videoRef as React.RefObject<HTMLVideoElement>;
   const cRef = canvasRef as React.RefObject<HTMLCanvasElement>;
 
+  const nextUrl = searchParams.get('next') || (searchParams.get('ejercicio') ? `/ar-mirror?ejercicio=${encodeURIComponent(searchParams.get('ejercicio')!)}` : '/ar-mirror');
+
   const [state, setState] = useState<CalibState>('idle');
   const [countdown, setCountdown] = useState(COUNTDOWN_FROM);
   const [showSkipConfirm, setShowSkipConfirm] = useState(false);
+  const [isPanelCollapsed, setIsPanelCollapsed] = useState(false);
   const [detectElapsed, setDetectElapsed] = useState(0);
   const [handRaisedDetected, setHandRaisedDetected] = useState(false);
 
@@ -127,6 +131,7 @@ export function CalibrationPage() {
             }
             isCountingDownRef.current = false;
             try {
+              sessionStorage.setItem('fisiomirror-calibrated-session', 'true');
               localStorage.setItem(STORAGE_KEY, 'true');
               localStorage.removeItem(SKIP_KEY);
             } catch { /* storage fallback */ }
@@ -158,12 +163,18 @@ export function CalibrationPage() {
     };
   }, []);
 
-  const goAR = () => navigate('/ar-mirror');
+  const goAR = () => {
+    try {
+      sessionStorage.setItem('fisiomirror-calibrated-session', 'true');
+      localStorage.setItem(STORAGE_KEY, 'true');
+    } catch { /* ignore */ }
+    navigate(nextUrl);
+  };
 
   const handleSkip = () => {
     try {
+      sessionStorage.setItem('fisiomirror-calibrated-session', 'true');
       localStorage.setItem(SKIP_KEY, 'true');
-      localStorage.removeItem(STORAGE_KEY);
     } catch { /* */ }
     setShowSkipConfirm(false);
     goAR();
@@ -177,8 +188,6 @@ export function CalibrationPage() {
     setState('detecting');
     detectStartRef.current = Date.now();
   };
-
-  const [isPanelCollapsed, setIsPanelCollapsed] = useState(false);
 
   return (
     <div className="fixed inset-0 z-[100] bg-slate-950 text-white flex flex-col overflow-hidden select-none">

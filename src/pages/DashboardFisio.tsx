@@ -22,6 +22,7 @@ import { ClinicalHighlighter } from '../components/ui/Highlighter';
 import { ShimmerButton } from '../components/ui/ShimmerButton';
 import { ShimmerText } from '../components/ui/ShimmerText';
 import { ShineBorder } from '../components/ui/ShineBorder';
+import { SparklesText } from '../components/ui/SparklesText';
 import { MagicCard } from '../components/ui/MagicCard';
 import { NumberTicker } from '../components/ui/NumberTicker';
 import { InteractiveHoverButton } from '../components/ui/InteractiveHoverButton';
@@ -797,9 +798,15 @@ export function DashboardFisio() {
                 <ShimmerText text="Edición Clínica IA" className="text-[10px] font-bold uppercase" />
               </span>
             </div>
-            <h2 className="font-display text-2xl sm:text-headline-lg-mobile lg:text-headline-lg leading-tight gradient-text-living">
-              {greeting}, <AuroraText>{user?.full_name?.split(' ')[0] || 'Doctor'}</AuroraText>
-            </h2>
+            <SparklesText
+              sparklesCount={4}
+              colors={{ first: '#0d9488', second: '#c1ff72' }}
+              className="inline-block"
+            >
+              <h2 className="font-display font-headline-lg text-headline-lg-mobile lg:text-headline-lg gradient-text-living font-bold tracking-tight leading-tight">
+                {greeting}, <AuroraText>{user?.full_name?.split(' ')[0] || 'Doctor'}</AuroraText>
+              </h2>
+            </SparklesText>
             <TextAnimate
               animation="fadeIn"
               by="word"

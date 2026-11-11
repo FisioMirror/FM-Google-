@@ -18,32 +18,33 @@ import { BookOpen } from 'lucide-react';
 
 import { Modal } from '../components/ui/Modal';
 import { PulsatingButton } from '../components/ui/PulsatingButton';
-import { BiomechanicalAngleGauge } from '../components/ui/BiomechanicalAngleGauge';
-
-
+import { BiomechanicalAngleDial } from '../components/ui/BiomechanicalAngleDial';
+import { BiomechanicalROMIndicator } from '../components/ui/BiomechanicalROMIndicator';
+import { ClinicalCadenceAnalyzer } from '../components/ui/ClinicalCadenceAnalyzer';
 import { CompensationAlertBanner } from '../components/ui/CompensationAlertBanner';
-import { VoiceFeedbackWaveHUD, RepCadenceMetronome, SessionQualityScoreTile } from '../components/ui/RealTimeMetricsSuite';
+import { SessionQualityScoreTile } from '../components/ui/RealTimeMetricsSuite';
 
 import { ARModel3DOverlayPiP } from '../components/rehabilitation/ARModel3DOverlayPiP';
 import { getExercisePreset } from '../data/exercisePresets';
 
 // Rep completion particle burst
 function repParticleBurst() {
-  const canvas = document.getElementById('particle-canvas');
+  const canvas = document.getElementById('particle-canvas') as HTMLCanvasElement | null;
   if (!canvas) return;
-  const ctx = (canvas as HTMLCanvasElement).getContext('2d');
+  const ctx = canvas.getContext('2d');
   if (!ctx) return;
-  const c = canvas as HTMLCanvasElement;
-  c.width = window.innerWidth;
-  c.height = window.innerHeight;
+  if (canvas.width !== window.innerWidth || canvas.height !== window.innerHeight) {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
   const particles: Array<{x:number;y:number;vx:number;vy:number;life:number;color:string}> = [];
-  const colors = ['#22c55e', '#06B6D4', '#0D9488', '#eab308'];
-  for (let i = 0; i < 24; i++) {
-    const angle = (Math.PI * 2 * i) / 24;
-    const speed = 3 + Math.random() * 4;
+  const colors = ['#8ad3cf', '#2dd4bf', '#14b8a6', '#f59e0b'];
+  for (let i = 0; i < 20; i++) {
+    const angle = (Math.PI * 2 * i) / 20;
+    const speed = 2.5 + Math.random() * 3.5;
     particles.push({
-      x: c.width / 2,
-      y: c.height / 2,
+      x: canvas.width / 2,
+      y: canvas.height / 2,
       vx: Math.cos(angle) * speed,
       vy: Math.sin(angle) * speed,
       life: 1,
@@ -52,25 +53,25 @@ function repParticleBurst() {
   }
   let frame = 0;
   const animate = () => {
-    ctx.clearRect(0, 0, c.width, c.height);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     let alive = false;
     for (const p of particles) {
       if (p.life <= 0) continue;
       alive = true;
       p.x += p.vx;
       p.y += p.vy;
-      p.vy += 0.15;
-      p.life -= 0.02;
+      p.vy += 0.12;
+      p.life -= 0.025;
       ctx.globalAlpha = Math.max(0, p.life);
       ctx.fillStyle = p.color;
       ctx.beginPath();
-      ctx.arc(p.x, p.y, 4, 0, Math.PI * 2);
+      ctx.arc(p.x, p.y, 3.5, 0, Math.PI * 2);
       ctx.fill();
     }
     ctx.globalAlpha = 1;
     frame++;
-    if (alive && frame < 80) requestAnimationFrame(animate);
-    else ctx.clearRect(0, 0, c.width, c.height);
+    if (alive && frame < 45) requestAnimationFrame(animate);
+    else ctx.clearRect(0, 0, canvas.width, canvas.height);
   };
   animate();
 }
@@ -178,14 +179,42 @@ export function ARMirrorPage() {
     setTargetAngle(presetTargetAngle);
   }, [presetTargetAngle, setTargetAngle]);
 
-  // Read calibration state from localStorage (set by CalibrationPage).
+  // Verificación estricta: nunca iniciar AR sin calibración previa en esta sesión
   useEffect(() => {
     try {
-      setCalibrated(localStorage.getItem('calibrationCompleted') === 'true');
+      const isCalibrated = sessionStorage.getItem('fisiomirror-calibrated-session') === 'true';
+      if (!isCalibrated) {
+        const returnPath = window.location.pathname + window.location.search;
+        navigate(`/calibration?next=${encodeURIComponent(returnPath)}`, { replace: true });
+        return;
+      }
+      setCalibrated(true);
     } catch {
       setCalibrated(false);
     }
-  }, []);
+  }, [navigate]);
+
+  // Medición de cadencia y tiempo por repetición (segundos / rep)
+  const [lastRepDuration, setLastRepDuration] = useState<number>(2.4);
+  const repStartTimeRef = useRef<number>(Date.now());
+  const prevRepCountRef = useRef<number>(0);
+
+  useEffect(() => {
+    if (repCount > prevRepCountRef.current) {
+      const now = Date.now();
+      const dur = Math.max(0.6, (now - repStartTimeRef.current) / 1000);
+      setLastRepDuration(dur);
+      repStartTimeRef.current = now;
+      prevRepCountRef.current = repCount;
+
+      // Feedback verbal biomecánico inmediato sobre velocidad
+      if (dur < 1.3) {
+        speak('Desacelera el descenso, mantén el control articular.');
+      } else if (dur > 4.5) {
+        speak('Buen esfuerzo, continúa con ritmo constante.');
+      }
+    }
+  }, [repCount, speak]);
 
   // Start the camera automatically on mount so pose detection begins.
   useEffect(() => {
@@ -210,6 +239,7 @@ export function ARMirrorPage() {
       repQualitySumRef.current = 0;
       repQualityCountRef.current = 0;
       lastQualityRepRef.current = 0;
+      repStartTimeRef.current = Date.now();
     }
   }, [cameraStarted]);
 
@@ -484,9 +514,14 @@ export function ARMirrorPage() {
         }
       }
 
-      // Logros locales: sesión, horario, calidad y ejercicios distintos.
+      // Cálculo y acumulación de XP terapéutico real no simulado:
+      // +15 XP por cada serie completada
+      // +50 XP base por sesión finalizada
+      // +25 XP bonus de precisión postural biomecánica (calidad >= 80)
+      const earnedXp = (currentSet * 15) + 50 + (qualityScore >= 80 ? 25 : 0);
+      gamification.addPoints(earnedXp);
       gamification.recordSession({ quality: qualityScore, exerciseName });
-      toast.success('Sesión guardada correctamente');
+      toast.success(`¡Sesión guardada! Has obtenido +${earnedXp} XP de nivel terapéutico`);
       sessionStorage.removeItem('ar_session_backup');
       setShowPainReport(false);
       setShowFinishModal(true);
@@ -782,55 +817,102 @@ export function ARMirrorPage() {
         )}
       </AnimatePresence>
 
-      {/* HUD — Espacio central despejado en móvil; widgets adaptativos en escritorio */}
-      <div className="relative z-20 flex flex-col h-full pt-12 sm:pt-14 pb-3 sm:pb-5 px-2.5 sm:px-4 md:px-8 pointer-events-none transition-opacity duration-300">
-        {/* Espacio Central: En móvil 100% libre para el paciente; en escritorio muestra paneles laterales discretos */}
+      {/* HUD — Espacio central despejado en móvil; widgets adaptativos en escritorio y tablet */}
+      <div className="relative z-20 flex flex-col h-full pt-14 sm:pt-16 pb-3 sm:pb-5 px-3 sm:px-6 md:px-8 pointer-events-none transition-opacity duration-300">
+        {/* Espacio Central: Layout adaptable para móvil, tablet y escritorio */}
         <div className="flex-1 flex items-center justify-between transition-all duration-300">
           {hudMode === 'full' ? (
             <>
-              {/* Escritorio Izquierda: Series y Cadencia (Oculto en móvil para no tapar el cuerpo) */}
-              <div className="hidden md:block space-y-3 pointer-events-auto">
-                <motion.div
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  className="rounded-2xl p-4 w-52 bg-slate-950/92 backdrop-blur-2xl border border-teal-500/35 text-white shadow-2xl"
-                >
-                  <p className="text-teal-300/80 text-[10px] uppercase font-bold tracking-wider mb-1">{t('ar.sets')}</p>
-                  <div className="flex items-baseline gap-2">
-                    <span className="text-white text-3xl font-black tabular-nums">{currentSet}</span>
-                    <span className="text-white/40 text-base font-semibold">/ {TOTAL_SETS}</span>
+              {/* Lado Izquierdo: Series, Repeticiones y Cadencia Clínica */}
+              <div className="flex flex-col gap-3 pointer-events-auto">
+                {/* En móvil: Tarjeta compacta de micro-métricas */}
+                <div className="md:hidden rounded-2xl p-3 bg-slate-950/90 backdrop-blur-2xl border border-teal-500/40 text-white shadow-2xl flex items-center gap-3">
+                  <div>
+                    <span className="text-[10px] text-teal-300 font-bold uppercase tracking-wider block">Series</span>
+                    <span className="text-xl font-black text-white">{currentSet} <span className="text-xs text-white/50 font-normal">/ {TOTAL_SETS}</span></span>
                   </div>
-                  <div className="mt-2.5 pt-2.5 border-t border-teal-500/20 flex items-center justify-between text-xs">
-                    <span className="text-white/70">{t('tr.repeticiones')}</span>
-                    <span className="text-teal-300 font-bold tabular-nums">{repCount} / {TARGET_REPS}</span>
+                  <div className="w-px h-7 bg-teal-500/30" />
+                  <div>
+                    <span className="text-[10px] text-teal-300 font-bold uppercase tracking-wider block">Reps</span>
+                    <span className="text-2xl font-black text-teal-300">{repCount} <span className="text-xs text-white/50 font-normal">/ {TARGET_REPS}</span></span>
                   </div>
-                </motion.div>
+                </div>
 
-                <div className="w-52">
-                  <RepCadenceMetronome
-                    durationSeconds={2}
-                    className="w-full bg-slate-950/92 backdrop-blur-2xl border-teal-500/35 text-white shadow-2xl"
-                  />
+                {/* En Tablet y Escritorio: Paneles grandes de vidrio pulido tipo HUD clínico */}
+                <div className="hidden md:flex flex-col gap-3">
+                  {/* Tarjeta de Series */}
+                  <motion.div
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    whileHover={{ scale: 1.02 }}
+                    className="rounded-2xl p-5 w-48 lg:w-56 text-center bg-slate-950/90 backdrop-blur-2xl border border-teal-500/35 text-white shadow-2xl"
+                  >
+                    <p className="text-teal-300/80 text-xs font-bold uppercase tracking-[0.2em] mb-1.5">
+                      Series
+                    </p>
+                    <div className="flex items-baseline justify-center gap-1.5">
+                      <span className="text-white text-4xl lg:text-5xl font-black tabular-nums">{currentSet}</span>
+                      <span className="text-white/40 text-xl font-medium">/ {TOTAL_SETS}</span>
+                    </div>
+                  </motion.div>
+
+                  {/* Tarjeta de Repeticiones */}
+                  <motion.div
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.05 }}
+                    whileHover={{ scale: 1.02 }}
+                    className="rounded-2xl p-5 w-48 lg:w-56 text-center bg-slate-950/90 backdrop-blur-2xl border border-teal-500/40 text-white shadow-2xl"
+                  >
+                    <p className="text-teal-300/80 text-xs font-bold uppercase tracking-[0.2em] mb-1.5">
+                      Repeticiones
+                    </p>
+                    <div className="flex items-baseline justify-center gap-1.5">
+                      <motion.span
+                        key={repCount}
+                        initial={{ scale: 1.25 }}
+                        animate={{ scale: 1 }}
+                        className="text-white text-5xl lg:text-7xl font-black tabular-nums text-teal-300 drop-shadow-[0_0_15px_rgba(45,212,191,0.6)]"
+                      >
+                        {repCount}
+                      </motion.span>
+                      <span className="text-white/40 text-2xl font-bold">/ {TARGET_REPS}</span>
+                    </div>
+                  </motion.div>
+
+                  {/* Analizador de Cadencia Clínica (Reemplazo real del metrónomo) */}
+                  <div className="w-48 lg:w-56">
+                    <ClinicalCadenceAnalyzer
+                      lastRepDurationSeconds={lastRepDuration}
+                      isMoving={poseData?.isTracking}
+                    />
+                  </div>
                 </div>
               </div>
 
-              {/* Escritorio Derecha: Medidor Biomecánico (Solo si el modelo 3D no está activo para no recargar) */}
-              <div className="hidden md:block pointer-events-auto">
-                {!showModel3D && (
-                  <motion.div
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                  >
-                    <BiomechanicalAngleGauge
-                      currentAngle={currentAngle}
-                      targetAngle={presetTargetAngle}
-                      jointName={exerciseName}
-                      safeTolerance={10}
-                      size={140}
-                      className="bg-slate-950/92 backdrop-blur-2xl border border-teal-500/35 text-white shadow-2xl"
-                    />
-                  </motion.div>
-                )}
+              {/* Lado Derecho: Separación técnica entre Columna Vertical de ROM e Indicador Circular de Ángulo */}
+              <div className="flex items-center gap-3 sm:gap-5 pointer-events-auto">
+                {/* Medidor Circular de Ángulo Biomecánico (visible en tablet y escritorio) */}
+                <div className="hidden md:block">
+                  {!showModel3D && (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                    >
+                      <BiomechanicalAngleDial
+                        currentAngle={currentAngle}
+                        targetAngle={presetTargetAngle}
+                        size={180}
+                      />
+                    </motion.div>
+                  )}
+                </div>
+
+                {/* Columna Vertical de Intensidad y Rango Articular (Siempre visible con contraste óptimo) */}
+                <BiomechanicalROMIndicator
+                  currentAngle={currentAngle}
+                  targetAngle={presetTargetAngle}
+                />
               </div>
             </>
           ) : (
@@ -856,18 +938,40 @@ export function ARMirrorPage() {
             </motion.div>
           )}
 
-          {/* Banner de Feedback por Voz — Píldora ultra-compacta no invasiva */}
+          {/* Banner de Feedback por Voz con visualizador de onda interactivo */}
           {hudMode === 'full' && !compensation && (
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="w-full px-2 max-w-lg"
+              className="w-full px-2 max-w-xl"
             >
-              <VoiceFeedbackWaveHUD
-                isSpeaking={Boolean(aiFeedbackRef.current)}
-                instructionText={aiFeedbackRef.current || 'Postura adecuada. Mantén la velocidad y respira naturalmente.'}
-                className="bg-slate-950/92 backdrop-blur-2xl border-teal-500/35 text-white py-1.5 px-3.5 text-xs shadow-xl"
-              />
+              <div className="w-full px-4 py-2.5 rounded-2xl bg-slate-950/92 backdrop-blur-2xl border-l-4 border-l-teal-400 border border-teal-500/35 text-white shadow-2xl flex items-center gap-3">
+                <div className="flex items-center gap-1 shrink-0">
+                  {[0.2, 0.6, 0.9, 0.4, 0.7].map((h, i) => (
+                    <motion.div
+                      key={i}
+                      animate={{
+                        scaleY: poseData?.isTracking ? [0.3, 1.3, 0.3] : 0.3,
+                      }}
+                      transition={{
+                        repeat: Infinity,
+                        duration: 1.1,
+                        delay: i * 0.15,
+                        ease: 'easeInOut',
+                      }}
+                      className="w-1 h-4 bg-teal-300 rounded-full origin-center"
+                    />
+                  ))}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <span className="text-[10px] text-teal-300 font-bold uppercase tracking-wider block">
+                    Asistente Clínico AI
+                  </span>
+                  <p className="text-xs sm:text-sm text-white font-medium truncate sm:whitespace-normal drop-shadow-sm">
+                    "{aiFeedbackRef.current || 'Excelente postura. Mantén el ritmo controlado y la espalda recta.'}"
+                  </p>
+                </div>
+              </div>
             </motion.div>
           )}
 

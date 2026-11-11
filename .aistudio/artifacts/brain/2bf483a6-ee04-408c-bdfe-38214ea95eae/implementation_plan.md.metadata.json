@@ -1,6 +1,0 @@
-{
-  "summary": "Plan de implementación revisado con base en la retroalimentación del usuario: ampliación de reportes PDF (dolor, informe médico, récipe/prescripción, evolución), gestión 100% interna en Supabase para respaldos y bitácora de auditoría (sin interfaz en la app), verificación del modelo 3D en modo AR, integración funcional de la galería UI y verificación de internacionalización (ES/EN/PT).",
-  "updatedAt": "2026-10-16T15:21:54.460213910Z",
-  "requestFeedback": true,
-  "userFacing": true
-}
