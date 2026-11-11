@@ -489,7 +489,6 @@ export function PatientDetailPage() {
         <div className="flex flex-wrap items-center gap-2.5">
           <TherapistQuickToolbar
             onOpenRoutine={() => { void loadRoutineHistory(); }}
-            onNewSession={() => navigate(`/ar-mirror?patientId=${patient.id}`)}
             onAssessWithAi={() => navigate('/ai-assistant')}
           />
 
@@ -510,15 +509,8 @@ export function PatientDetailPage() {
           </button>
 
           <button
-            onClick={() => navigate(`/ar-mirror?patientId=${patient.id}`)}
-            className="px-5 py-2.5 rounded-2xl bg-primary text-on-primary hover:bg-primary/90 text-xs font-bold transition-all shadow-md shadow-primary/20 flex items-center gap-2"
-          >
-            <Icon name="videocam" size={16} />
-            <span>{t('pdp.startArSession')}</span>
-          </button>
-                    <button
             onClick={() => setShowEditModal(true)}
-            className="px-4 py-2 rounded-xl bg-surface-container/60 border border-outline/10 hover:bg-surface-container text-xs font-bold transition-all flex items-center gap-2"
+            className="px-4 py-2.5 rounded-2xl bg-primary text-on-primary hover:bg-primary/90 text-xs font-bold transition-all shadow-md shadow-primary/20 flex items-center gap-2"
           >
             <Icon name="edit" size={16} />
             <span>{t('pdp.editClinicalRecord') || 'Editar expediente'}</span>

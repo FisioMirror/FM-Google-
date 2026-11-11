@@ -644,7 +644,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
         </header>
 
         {/* Main scrollable content with clean spacing */}
-        <div className="p-4 sm:p-6 lg:p-8 pb-8 flex-1 bg-teal-50/20 dark:bg-slate-950/20">{children}<ContextualFAQCard className="mt-8 max-w-4xl" /></div>
+        <div className="p-4 sm:p-6 lg:p-8 pb-8 flex-1 bg-teal-50/20 dark:bg-slate-950/20">{children}<ContextualFAQCard className="mt-8 w-full" /></div>
 
         <footer className="pt-6 pb-6 px-4 sm:px-8 flex flex-col md:flex-row justify-between text-outline text-xs gap-4 border-t border-white/10">
           <span>{t('fl.rights')}</span>

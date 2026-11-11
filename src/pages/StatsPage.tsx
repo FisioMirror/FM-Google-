@@ -961,8 +961,8 @@ export function StatsPage() {
               <PatientRecoveryHub />
 
               {/* Paciente: biomechanics evolution chart + recent sessions */}
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
-                <GlassPanel className="lg:col-span-2 p-6 sm:p-8 rounded-[2rem] flex flex-col justify-between relative overflow-hidden card-glow-hover">
+              <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-stretch">
+                <GlassPanel className="xl:col-span-8 p-6 sm:p-8 rounded-[2rem] flex flex-col justify-between relative overflow-hidden card-glow-hover">
                   <div className="blob-teal absolute -top-12 -right-12 w-48 h-48 opacity-25 pointer-events-none" />
                   <div>
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
@@ -998,7 +998,7 @@ export function StatsPage() {
                           {avgPrecision > 0 ? `${avgPrecision}%` : '92%'}
                         </span>
                         <span className="text-[10px] text-teal-700 dark:text-teal-300 font-semibold mt-0.5">
-                          {avgPrecision >= 80 ? '✦ Rango óptimo' : 'En progresión'}
+                          {avgPrecision >= 80 ? 'Rango óptimo' : 'En progresión'}
                         </span>
                       </div>
                       <div className="flex flex-col border-x border-outline-variant/15 px-3">
@@ -1075,12 +1075,12 @@ export function StatsPage() {
                       </div>
                     </div>
                     <span className="text-[11px] font-bold text-teal-700 dark:text-teal-300 bg-teal-500/10 px-2.5 py-1 rounded-full border border-teal-500/20">
-                      🎯 Umbral Terapéutico: ≥ 80% Precisión
+                      Umbral Terapéutico: ≥ 80% Precisión
                     </span>
                   </div>
                 </GlassPanel>
 
-                <GlassPanel className="p-6 sm:p-8 rounded-[2rem] flex flex-col justify-between card-glow-hover relative overflow-hidden">
+                <GlassPanel className="xl:col-span-4 p-6 sm:p-8 rounded-[2rem] flex flex-col justify-between card-glow-hover relative overflow-hidden">
                   <div className="blob-blue absolute -top-12 -right-12 w-36 h-36 opacity-20 pointer-events-none" />
                   <div>
                     <div className="flex items-center justify-between mb-4">

@@ -298,6 +298,42 @@ const EXERCISE_OVERRIDES: Record<string, ExerciseJointPreset> = {
     holdDurationSec: 2,
     position: 'sentado',
   },
+  'retracción escapular': {
+    description: 'Aproximación bilateral de escápulas hacia la columna con tronco erguido.',
+    detailedDescription: 'Sentado o de pie con codos a 90° junto al tronco. Junta las escápulas hacia la línea media dorsal abriendo el pecho sin proyectar el cuello hacia adelante. Sostén 3 segundos la contracción interescapular y regresa a neutro de forma controlada.',
+    targetJoints: [
+      { joint: 'hombro_izquierdo', targetAngle: 45, neutralAngle: 0, tolerance: 10, axis: 'z' },
+      { joint: 'hombro_derecho', targetAngle: 45, neutralAngle: 0, tolerance: 10, axis: 'z' },
+      { joint: 'tronco_torax', targetAngle: 0, neutralAngle: 0, tolerance: 8, axis: 'x' },
+    ],
+    holdDurationSec: 3,
+    position: 'pie',
+  },
+  'dorsiflexión y flexión plantar': {
+    description: 'Movilidad articular activa de tobillo en flexo-extensión sagital.',
+    detailedDescription: 'Sentado con la pierna extendida y el talón libre. Lleva la punta del pie hacia la espinilla (dorsiflexión a 20°) y luego apunta hacia el frente (flexión plantar a 40°). Sostén 2 segundos en cada extremo. Mantén la rodilla completamente fija.',
+    targetJoints: [
+      { joint: 'tobillo_izquierdo', targetAngle: 20, neutralAngle: 0, tolerance: 8, axis: 'x' },
+      { joint: 'tobillo_derecho', targetAngle: 20, neutralAngle: 0, tolerance: 8, axis: 'x' },
+      { joint: 'rodilla_izquierda', targetAngle: 0, neutralAngle: 0, tolerance: 12, axis: 'x' },
+      { joint: 'rodilla_derecha', targetAngle: 0, neutralAngle: 0, tolerance: 12, axis: 'x' },
+    ],
+    holdDurationSec: 2,
+    position: 'sentado',
+  },
+  'puente glúteo': {
+    description: 'Elevación lumbopélvica en decúbito supino para extensión de cadera y activación de glúteo.',
+    detailedDescription: 'Tumbado boca arriba con rodillas a 90° y pies apoyados al ancho de caderas. Eleva la pelvis hasta alinear rodillas, caderas y tronco en línea recta. Mantén 3 segundos sin arquear la zona lumbar. Desciende con control vértebra a vértebra.',
+    targetJoints: [
+      { joint: 'cadera_izquierda', targetAngle: 0, neutralAngle: 45, tolerance: 8, axis: 'x' },
+      { joint: 'cadera_derecha', targetAngle: 0, neutralAngle: 45, tolerance: 8, axis: 'x' },
+      { joint: 'rodilla_izquierda', targetAngle: 90, neutralAngle: 90, tolerance: 10, axis: 'x' },
+      { joint: 'rodilla_derecha', targetAngle: 90, neutralAngle: 90, tolerance: 10, axis: 'x' },
+      { joint: 'tronco_torax', targetAngle: 0, neutralAngle: 0, tolerance: 8, axis: 'x' },
+    ],
+    holdDurationSec: 3,
+    position: 'acostado',
+  },
 };
 
 function normalizeName(name: string): string {

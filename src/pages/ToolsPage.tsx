@@ -678,11 +678,14 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
                     </div>
 
                     {/* Clinical prescription note */}
-                    <p className="text-[11px] text-teal-200/90 leading-relaxed mt-3.5 italic bg-black/20 p-2.5 rounded-xl border border-white/5">
-                      {bmi < 18.5 ? '💡 Enfoque clínico: Priorizar fortalecimiento neuromuscular progresivo para ganancia de masa magra.' :
-                       bmi < 25 ? '💡 Enfoque clínico: Relación peso-potencia óptima. Apto para cargas completas y pliometría funcional.' :
-                       bmi < 30 ? '💡 Enfoque clínico: Evitar sobrecarga en articulaciones de choque. Priorizar cadena cinética cerrada y piscina.' :
-                       '💡 Enfoque clínico: Protección articular mandatoria: descargar rodillas y tobillos con cicloergómetro o elíptica.'}
+                    <p className="text-[11px] text-teal-200/90 leading-relaxed mt-3.5 italic bg-black/20 p-2.5 rounded-xl border border-white/5 flex items-start gap-1.5">
+                      <Icon name="lightbulb" size={14} className="text-amber-400 shrink-0 mt-0.5" />
+                      <span>
+                        {bmi < 18.5 ? 'Enfoque clínico: Priorizar fortalecimiento neuromuscular progresivo para ganancia de masa magra.' :
+                         bmi < 25 ? 'Enfoque clínico: Relación peso-potencia óptima. Apto para cargas completas y pliometría funcional.' :
+                         bmi < 30 ? 'Enfoque clínico: Evitar sobrecarga en articulaciones de choque. Priorizar cadena cinética cerrada y piscina.' :
+                         'Enfoque clínico: Protección articular mandatoria: descargar rodillas y tobillos con cicloergómetro o elíptica.'}
+                      </span>
                     </p>
                   </div>
                 </div>
@@ -1049,10 +1052,10 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
         {/* Suggestion Chips */}
         <div className="p-3 bg-teal-50/70 dark:bg-slate-800/60 border-b border-teal-100/60 dark:border-slate-800 flex items-center gap-1.5 overflow-x-auto scrollbar-none shrink-0">
           {[
-            { label: '📊 ROM hombro', query: '¿Cuáles son los criterios de progresión en flexión de hombro de 90° a 120°?' },
-            { label: '🩹 Tendinopatía', query: 'Protocolo de ejercicios excéntricos para tendinopatía rotuliana.' },
-            { label: '🦶 Simetría', query: '¿Qué valores de asimetría plantar requieren corrección ortésica o propioceptiva?' },
-            { label: '📄 Criterios alta', query: 'Criterios clínicos de alta para esguince lateral de tobillo grado II.' },
+            { label: 'ROM hombro', query: '¿Cuáles son los criterios de progresión en flexión de hombro de 90° a 120°?' },
+            { label: 'Tendinopatía', query: 'Protocolo de ejercicios excéntricos para tendinopatía rotuliana.' },
+            { label: 'Simetría', query: '¿Qué valores de asimetría plantar requieren corrección ortésica o propioceptiva?' },
+            { label: 'Criterios alta', query: 'Criterios clínicos de alta para esguince lateral de tobillo grado II.' },
           ].map((chip) => (
             <button
               key={chip.label}

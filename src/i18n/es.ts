@@ -910,7 +910,7 @@ export const es = {
   fl: {
     inConsultation: "En consulta",
     clinicalEdition: "Edición Clínica",
-    rights: "&copy; 2025 FisioMirror S.A. | Edición Clínica Premium v2.0.42",
+    rights: "&copy; 2026 FisioMirror S.A. | Edición Clínica Premium v2.0.42",
     terms: "Términos de Servicio",
     privacy: "Privacidad de Datos",
     startVideoCall: "Iniciar videollamada",

@@ -51,7 +51,7 @@ export interface PoseData {
   isTracking: boolean;
 }
 
-export type RepJoint = 'elbow' | 'knee' | 'shoulder' | 'hip';
+export type RepJoint = 'elbow' | 'knee' | 'shoulder' | 'hip' | 'ankle' | 'cervical' | 'scapula';
 
 export interface UsePoseDetectionOptions {
   /** Joint used to count repetitions. Defaults to elbow. */
@@ -69,9 +69,12 @@ export interface UsePoseDetectionOptions {
 
 function inferRepJoint(exerciseName?: string): RepJoint {
   const name = (exerciseName || '').toLowerCase();
+  if (/(tobillo|ankle|dorsiflexi|plantar|pie|foot)/.test(name)) return 'ankle';
+  if (/(cervical|cuello|neck|menton|mentón|chin|trapecio)/.test(name)) return 'cervical';
+  if (/(escapul|escápul|scapul|postural|retracci|romboid)/.test(name)) return 'scapula';
   if (/(sentadilla|squat|rodilla|knee|prensa|leg press|zancada|lunge)/.test(name)) return 'knee';
   if (/(hombro|shoulder|elevaci|abducci|press militar|overhead)/.test(name)) return 'shoulder';
-  if (/(cadera|hip|puente|bridge|gluteo|glúteo)/.test(name)) return 'hip';
+  if (/(cadera|hip|puente|bridge|gluteo|glúteo|pelvis)/.test(name)) return 'hip';
   return 'elbow';
 }
 
@@ -90,6 +93,12 @@ function expectedRangeFor(joint: RepJoint, targetAngle: number): number {
       return Math.max(25, Math.min(90, targetAngle || 45));
     case 'knee':
       return Math.max(45, Math.min(100, targetAngle > 0 ? Math.max(70, targetAngle) : 70));
+    case 'ankle':
+      return Math.max(20, Math.min(60, targetAngle || 35));
+    case 'cervical':
+      return Math.max(20, Math.min(50, targetAngle || 30));
+    case 'scapula':
+      return Math.max(25, Math.min(60, targetAngle || 45));
     default:
       return 70;
   }
@@ -115,6 +124,8 @@ export interface UsePoseDetectionResult {
 // MediaPipe pose landmark indices
 const LM = {
   NOSE: 0,
+  LEFT_EAR: 7,
+  RIGHT_EAR: 8,
   LEFT_SHOULDER: 11,
   RIGHT_SHOULDER: 12,
   LEFT_ELBOW: 13,
@@ -127,6 +138,10 @@ const LM = {
   RIGHT_KNEE: 26,
   LEFT_ANKLE: 27,
   RIGHT_ANKLE: 28,
+  LEFT_HEEL: 29,
+  RIGHT_HEEL: 30,
+  LEFT_FOOT_INDEX: 31,
+  RIGHT_FOOT_INDEX: 32,
 };
 
 // Skeleton connections drawn on the canvas
@@ -846,6 +861,18 @@ export function usePoseDetection(options: UsePoseDetectionOptions = {}): UsePose
                 elbow: [
                   [LM.LEFT_SHOULDER, LM.LEFT_ELBOW, LM.LEFT_WRIST],
                   [LM.RIGHT_SHOULDER, LM.RIGHT_ELBOW, LM.RIGHT_WRIST],
+                ],
+                ankle: [
+                  [LM.LEFT_KNEE, LM.LEFT_ANKLE, LM.LEFT_FOOT_INDEX],
+                  [LM.RIGHT_KNEE, LM.RIGHT_ANKLE, LM.RIGHT_FOOT_INDEX],
+                ],
+                cervical: [
+                  [LM.LEFT_SHOULDER, LM.NOSE, LM.RIGHT_SHOULDER],
+                  [LM.LEFT_EAR, LM.NOSE, LM.RIGHT_EAR],
+                ],
+                scapula: [
+                  [LM.LEFT_ELBOW, LM.LEFT_SHOULDER, LM.RIGHT_SHOULDER],
+                  [LM.RIGHT_ELBOW, LM.RIGHT_SHOULDER, LM.LEFT_SHOULDER],
                 ],
               };
               const visibilityOf = (triplet: [number, number, number]): number => {

@@ -64,41 +64,55 @@ export function ContextualFAQCard({ className }: { className?: string }) {
   if (items.length === 0) return null;
 
   return (
-    <section className={className}>
-      <div className="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
-        <div className="flex items-center gap-2 px-4 py-3 border-b border-slate-200 dark:border-slate-800">
-          <Icon name="help" size={18} className="text-teal-600 dark:text-teal-400" />
-          <h3 className="text-sm font-bold text-slate-900 dark:text-white">
-            {t('faqctx.title')}
-          </h3>
-          <span className="ml-auto text-[10px] font-semibold uppercase tracking-wider text-slate-400">
+    <section className={cn('w-full', className)}>
+      <div className="w-full rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden p-4 sm:p-6">
+        <div className="flex items-center justify-between gap-3 pb-3 sm:pb-4 mb-4 border-b border-slate-200 dark:border-slate-800">
+          <div className="flex items-center gap-2.5">
+            <div className="p-2 rounded-xl bg-teal-500/10 text-teal-600 dark:text-teal-400">
+              <Icon name="help" size={20} />
+            </div>
+            <div>
+              <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white">
+                {t('faqctx.title')}
+              </h3>
+              <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400">
+                Orientación clínica y respuestas rápidas para esta pantalla
+              </p>
+            </div>
+          </div>
+          <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-teal-500/10 text-teal-700 dark:text-teal-300 border border-teal-500/20">
             {t('faqctx.thisSection')}
           </span>
         </div>
-        <div className="divide-y divide-slate-100 dark:divide-slate-800">
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
           {items.map((faq, index) => {
             const id = `${section}-${index}`;
             const isOpen = openId === id;
             return (
-              <div key={id}>
-                <button
-                  type="button"
-                  onClick={() => setOpenId(isOpen ? null : id)}
-                  aria-expanded={isOpen}
-                  className="w-full text-left px-4 py-3 flex items-center justify-between gap-3 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
-                >
-                  <span className="text-xs font-semibold text-slate-800 dark:text-slate-200">{faq.q}</span>
-                  <Icon
-                    name={isOpen ? 'expand_less' : 'expand_more'}
-                    size={16}
-                    className="text-slate-400 shrink-0"
-                  />
-                </button>
-                {isOpen && (
-                  <p className="px-4 pb-3 -mt-0.5 text-xs leading-relaxed text-slate-600 dark:text-slate-300">
+              <div
+                key={id}
+                className="p-4 rounded-2xl bg-slate-50/80 dark:bg-slate-800/50 border border-slate-200/80 dark:border-slate-700/60 flex flex-col justify-between transition-all hover:border-teal-500/40"
+              >
+                <div>
+                  <button
+                    type="button"
+                    onClick={() => setOpenId(isOpen ? null : id)}
+                    className="w-full text-left flex items-start justify-between gap-2 mb-2 group"
+                  >
+                    <span className="text-xs sm:text-sm font-bold text-slate-900 dark:text-slate-100 leading-snug group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
+                      {faq.q}
+                    </span>
+                    <Icon
+                      name={isOpen ? 'expand_less' : 'expand_more'}
+                      size={18}
+                      className="text-slate-400 shrink-0 md:hidden"
+                    />
+                  </button>
+                  <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-300">
                     {faq.a}
                   </p>
-                )}
+                </div>
               </div>
             );
           })}

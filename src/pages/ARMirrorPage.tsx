@@ -155,6 +155,19 @@ export function ARMirrorPage() {
   const lastQualityUpdateRef = useRef(0);
   const lostTrackingNotifiedRef = useRef(false);
 
+  const speak = useCallback((text: string) => {
+    if (volumeLevel === 'muted') return;
+    const now = Date.now();
+    if (now - lastSpokenRef.current < 2500) return;
+    lastSpokenRef.current = now;
+    
+    speakHumanVoice(text, {
+      rate: volumeLevel === 'low' ? 0.94 : 1.0,
+      volume: volumeLevel === 'low' ? 0.5 : 1.0,
+      pitch: 1.02,
+      interrupt: true,
+    });
+  }, [volumeLevel]);
 
   // Timer
   useEffect(() => {
@@ -244,20 +257,6 @@ export function ARMirrorPage() {
   }, [cameraStarted]);
 
   // Quality score from pose data + compensation detection
-
-  const speak = useCallback((text: string) => {
-    if (volumeLevel === 'muted') return;
-    const now = Date.now();
-    if (now - lastSpokenRef.current < 2500) return;
-    lastSpokenRef.current = now;
-    
-    speakHumanVoice(text, {
-      rate: volumeLevel === 'low' ? 0.94 : 1.0,
-      volume: volumeLevel === 'low' ? 0.5 : 1.0,
-      pitch: 1.02,
-      interrupt: true,
-    });
-  }, [volumeLevel]);
 
   // Calidad real por repetición y feedback de voz según el rango logrado.
   // Se acumula durante toda la sesión (no se reinicia entre series).

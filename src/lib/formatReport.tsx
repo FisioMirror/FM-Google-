@@ -158,38 +158,48 @@ export function formatAIReport(text: string): ReactNode {
     }
   }
 
+  // Pre-process: merge split list items where number or bullet was broken onto its own line
+  cleaned = cleaned.replace(/^(\s*\d+[.)])\s*\n+(\S)/gm, '$1 $2');
+  cleaned = cleaned.replace(/^(\s*[-*•])\s*\n+(\S)/gm, '$1 $2');
+
   // Normalize line endings
   const lines = cleaned.replace(/\r\n/g, '\n').split('\n');
 
   type Block =
     | { kind: 'header'; level: number; text: string }
     | { kind: 'bullets'; items: string[] }
+    | { kind: 'numbered'; items: { num: number; text: string }[] }
     | { kind: 'alert'; text: string; type: 'warning' | 'info' | 'success' }
     | { kind: 'metric_badge'; label: string; value: string; detail?: string }
     | { kind: 'paragraph'; text: string };
 
   const blocks: Block[] = [];
   let currentBullets: string[] | null = null;
+  let currentNumbered: { num: number; text: string }[] | null = null;
 
-  const flushBullets = () => {
+  const flushLists = () => {
     if (currentBullets && currentBullets.length > 0) {
       blocks.push({ kind: 'bullets', items: currentBullets });
     }
     currentBullets = null;
+    if (currentNumbered && currentNumbered.length > 0) {
+      blocks.push({ kind: 'numbered', items: currentNumbered });
+    }
+    currentNumbered = null;
   };
 
   for (const rawLine of lines) {
     const line = rawLine.trimEnd();
 
     if (!line.trim()) {
-      flushBullets();
+      flushLists();
       continue;
     }
 
     // Headers: ## or ###
     const headerMatch = line.match(/^(#{1,6})\s+(.+)$/);
     if (headerMatch) {
-      flushBullets();
+      flushLists();
       blocks.push({
         kind: 'header',
         level: headerMatch[1].length,
@@ -206,7 +216,7 @@ export function formatAIReport(text: string): ReactNode {
       line.toLowerCase().startsWith('warning:') ||
       line.toLowerCase().startsWith('urgent:')
     ) {
-      flushBullets();
+      flushLists();
       blocks.push({
         kind: 'alert',
         text: line.replace(/^(alerta|atención|precaución|warning|urgent):\s*/i, '').trim(),
@@ -215,28 +225,36 @@ export function formatAIReport(text: string): ReactNode {
       continue;
     }
 
+    // Numbered items: e.g. 1. or 1)
+    const numMatch = line.match(/^(\d+)[.)]\s+(.+)$/);
+    if (numMatch) {
+      if (currentBullets && currentBullets.length > 0) {
+        blocks.push({ kind: 'bullets', items: currentBullets });
+        currentBullets = null;
+      }
+      if (!currentNumbered) currentNumbered = [];
+      currentNumbered.push({ num: parseInt(numMatch[1], 10), text: numMatch[2].trim() });
+      continue;
+    }
+
     // Bullet items
     const bulletMatch = line.match(/^[-*•]\s+(.+)$/);
     if (bulletMatch) {
+      if (currentNumbered && currentNumbered.length > 0) {
+        blocks.push({ kind: 'numbered', items: currentNumbered });
+        currentNumbered = null;
+      }
       if (!currentBullets) currentBullets = [];
       currentBullets.push(bulletMatch[1].trim());
       continue;
     }
 
-    // Numbered items
-    const numMatch = line.match(/^\d+\.\s+(.+)$/);
-    if (numMatch) {
-      if (!currentBullets) currentBullets = [];
-      currentBullets.push(numMatch[1].trim());
-      continue;
-    }
-
     // Regular paragraph
-    flushBullets();
+    flushLists();
     blocks.push({ kind: 'paragraph', text: line.trim() });
   }
 
-  flushBullets();
+  flushLists();
 
   const getHeaderIcon = (headerText: string) => {
     const lower = headerText.toLowerCase();
@@ -256,13 +274,13 @@ export function formatAIReport(text: string): ReactNode {
   };
 
   return (
-    <div className="space-y-4 min-w-0 break-words [overflow-wrap:anywhere]">
+    <div className="space-y-3 min-w-0 break-words [overflow-wrap:anywhere]">
       {blocks.map((block, idx) => {
         if (block.kind === 'header') {
           return (
-            <div key={idx} className="pt-2.5 first:pt-0">
-              <div className="flex items-center gap-2.5 mb-2">
-                <div className="p-1.5 rounded-xl bg-teal-500/10 dark:bg-teal-400/10 border border-teal-500/20 shrink-0">
+            <div key={idx} className="pt-2 first:pt-0">
+              <div className="flex items-center gap-2 mb-1.5">
+                <div className="p-1 rounded-lg bg-teal-500/10 dark:bg-teal-400/10 border border-teal-500/20 shrink-0">
                   {getHeaderIcon(block.text)}
                 </div>
                 <h4 className="font-bold text-xs uppercase tracking-wider text-teal-900 dark:text-teal-200 break-words min-w-0">
@@ -278,7 +296,7 @@ export function formatAIReport(text: string): ReactNode {
           return (
             <div
               key={idx}
-              className="flex items-start gap-3 p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-950 dark:text-amber-200 text-xs leading-relaxed shadow-xs"
+              className="flex items-start gap-2.5 p-3 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-950 dark:text-amber-200 text-xs leading-snug shadow-xs"
             >
               <AlertTriangle className="size-4 text-amber-600 shrink-0 mt-0.5" />
               <div className="flex-1 min-w-0 font-medium break-words">{renderInline(block.text)}</div>
@@ -286,13 +304,31 @@ export function formatAIReport(text: string): ReactNode {
           );
         }
 
-        if (block.kind === 'bullets') {
+        if (block.kind === 'numbered') {
           return (
-            <div key={idx} className="grid grid-cols-1 gap-2.5 pl-0.5">
+            <div key={idx} className="grid grid-cols-1 gap-2 pl-0.5">
               {block.items.map((item, i) => (
                 <div
                   key={i}
-                  className="flex items-start gap-2.5 p-3 rounded-2xl bg-surface-container-low/80 dark:bg-surface-container-low/50 border border-outline/10 text-xs text-on-surface leading-relaxed transition-all hover:border-teal-500/30"
+                  className="flex items-start gap-2.5 p-2.5 sm:p-3 rounded-2xl bg-surface-container-low/80 dark:bg-surface-container-low/50 border border-outline/10 text-xs text-on-surface leading-snug transition-all hover:border-teal-500/30"
+                >
+                  <span className="w-5 h-5 rounded-lg bg-teal-500/20 border border-teal-500/30 text-teal-700 dark:text-teal-300 font-mono font-bold text-[11px] flex items-center justify-center shrink-0 mt-0.5">
+                    {item.num}
+                  </span>
+                  <span className="flex-1 min-w-0 font-normal break-words">{renderInline(item.text)}</span>
+                </div>
+              ))}
+            </div>
+          );
+        }
+
+        if (block.kind === 'bullets') {
+          return (
+            <div key={idx} className="grid grid-cols-1 gap-2 pl-0.5">
+              {block.items.map((item, i) => (
+                <div
+                  key={i}
+                  className="flex items-start gap-2.5 p-2.5 sm:p-3 rounded-2xl bg-surface-container-low/80 dark:bg-surface-container-low/50 border border-outline/10 text-xs text-on-surface leading-snug transition-all hover:border-teal-500/30"
                 >
                   <CheckCircle2 className="size-4 text-teal-600 dark:text-teal-400 shrink-0 mt-0.5" />
                   <span className="flex-1 min-w-0 font-normal break-words">{renderInline(item)}</span>

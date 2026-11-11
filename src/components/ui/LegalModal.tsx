@@ -31,7 +31,7 @@ interface LegalDoc {
 const PRIVACY_DOC: LegalDoc = {
   title: 'Política de Privacidad',
   subtitle: 'Protección de datos personales y datos de salud',
-  lastUpdated: 'Julio 2025',
+  lastUpdated: '2026',
   icon: ShieldCheck,
   sections: [
     {
@@ -121,7 +121,7 @@ const PRIVACY_DOC: LegalDoc = {
 const TERMS_DOC: LegalDoc = {
   title: 'Términos de Servicio',
   subtitle: 'Condiciones de uso y conducta profesional',
-  lastUpdated: 'Julio 2025',
+  lastUpdated: '2026',
   icon: FileText,
   sections: [
     {
@@ -213,7 +213,7 @@ const TERMS_DOC: LegalDoc = {
 const CONSENT_DOC: LegalDoc = {
   title: 'Consentimiento Informado',
   subtitle: 'Autorización para uso de IA, procesamiento de datos y captura con cámara',
-  lastUpdated: 'Julio 2025',
+  lastUpdated: '2026',
   icon: HeartPulse,
   sections: [
     {
@@ -333,8 +333,8 @@ export function LegalModal({ isOpen, onClose, type }: LegalModalProps) {
   const showConsentLegend = type === 'consent';
 
   return (
-    <GlassModal isOpen={isOpen} onClose={onClose} size="lg" dismissable>
-      <div className="pr-2">
+    <GlassModal isOpen={isOpen} onClose={onClose} size="lg" dismissable variant="solid">
+      <div className="pr-2 bg-white dark:bg-slate-900 rounded-3xl p-2 sm:p-4">
         <DocHeader doc={doc} />
         {showConsentLegend && <ConsentLegend />}
 

@@ -803,7 +803,7 @@ export function DashboardFisio() {
               colors={{ first: '#0d9488', second: '#c1ff72' }}
               className="inline-block"
             >
-              <h2 className="font-display font-headline-lg text-headline-lg-mobile lg:text-headline-lg gradient-text-living font-bold tracking-tight leading-tight">
+              <h2 className="font-headline font-black text-3xl sm:text-4xl lg:text-5xl gradient-text-living tracking-tight leading-tight">
                 {greeting}, <AuroraText>{user?.full_name?.split(' ')[0] || 'Doctor'}</AuroraText>
               </h2>
             </SparklesText>
@@ -950,13 +950,14 @@ export function DashboardFisio() {
       </motion.div>
 
       {/* Insights & Priorities */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
+          className="h-full flex flex-col"
         >
-          <GlassPanel className="rounded-[32px] overflow-hidden shadow-[0_12px_40px_rgba(13,148,136,0.12)] hover-lift border-l-4 border-l-teal-400/60 dark:border-l-teal-600/40 relative">
+          <GlassPanel className="rounded-[32px] overflow-hidden shadow-[0_12px_40px_rgba(13,148,136,0.12)] hover-lift border-l-4 border-l-teal-400/60 dark:border-l-teal-600/40 relative flex-1 flex flex-col justify-between">
             <ShineBorder borderWidth={1.5} duration={12} shineColor={["#00504d", "#14b8a6", "#c1ff72"]} />
             {/* Header */}
             <div className="flex items-center justify-between px-8 py-6 bg-gradient-to-r from-primary/15 via-primary/5 to-transparent border-b border-primary/15">
@@ -975,14 +976,14 @@ export function DashboardFisio() {
             </div>
 
             {/* Body */}
-            <div className="px-8 py-6 bg-primary-container/10">
+            <div className="px-8 py-5 bg-primary-container/10 flex-1">
               {insightLoading ? (
                 <div className="flex items-center gap-3 text-sm text-on-surface-variant py-8">
                   <Spinner size={20} className="text-primary" />
                   <span>{t('df.analyzing')}</span>
                 </div>
               ) : insight ? (
-                <div className="space-y-4">
+                <div className="space-y-3">
                   {/* Severity badge */}
                   {(() => {
                     const lower = insight.toLowerCase();
@@ -1002,7 +1003,7 @@ export function DashboardFisio() {
                       </div>
                     );
                   })()}
-                  <div className="min-h-[120px] p-4 bg-primary-container/20 rounded-2xl border border-primary/10">
+                  <div className="min-h-[100px] max-h-[290px] overflow-y-auto p-3.5 sm:p-4 bg-primary-container/20 rounded-2xl border border-primary/10 pr-2">
                     {formatAIReport(insight)}
                   </div>
                 </div>
@@ -1073,8 +1074,8 @@ export function DashboardFisio() {
             </div>
           )}
 
-          <ScrollShadow className="max-h-[340px] pr-1.5" size={32}>
-            <div className="space-y-3 relative py-1">
+          <ScrollShadow className="max-h-[280px] pr-1.5" size={28}>
+            <div className="space-y-2.5 relative py-0.5">
               {priorities.length === 0 ? (
                 <p className="text-sm text-on-surface-variant text-center py-8">{t('df.noPriorities')}</p>
               ) : (
@@ -1092,7 +1093,7 @@ export function DashboardFisio() {
                       transition={{ delay: i * 0.06 }}
                       whileHover={{ scale: 1.01 }}
                       whileTap={{ scale: 0.99 }}
-                      className={`flex items-center gap-4 cursor-pointer p-4 rounded-2xl border transition-all duration-300 ${
+                      className={`flex items-center gap-3 sm:gap-4 cursor-pointer p-3 sm:p-3.5 rounded-2xl border transition-all duration-300 ${
                         checked
                           ? 'bg-gradient-to-r from-teal-50/80 via-surface/90 to-sky-50/60 dark:from-teal-950/30 dark:via-surface-container/80 dark:to-sky-950/20 border-teal-300/60 dark:border-teal-500/30 shadow-xs'
                           : 'bg-gradient-to-r from-sky-50/40 via-surface/90 to-surface dark:from-slate-900/60 dark:via-surface-container/70 dark:to-slate-900/60 border-sky-100/60 dark:border-white/5 hover:border-teal-400/40'
@@ -1234,7 +1235,7 @@ export function DashboardFisio() {
         </div>
 
         {/* Selector rápido 1-Tap por articulación clínica */}
-        <div className="mb-6 relative z-10 max-w-2xl bg-white/70 dark:bg-slate-900/70 p-3.5 rounded-2xl border border-sky-100/60 dark:border-slate-800 shadow-xs backdrop-blur-md">
+        <div className="mb-6 relative z-10 w-full bg-white/70 dark:bg-slate-900/70 p-3.5 rounded-2xl border border-sky-100/60 dark:border-slate-800 shadow-xs backdrop-blur-md">
           <CompactJointSelector
             selectedJoint={selectedJointFilter}
             onSelectJoint={(id) => {

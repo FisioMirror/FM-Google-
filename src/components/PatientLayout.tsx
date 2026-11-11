@@ -524,11 +524,11 @@ export function PatientLayout({ children }: PatientLayoutProps) {
           </div>
         </header>
         {/* Scrollable content with clean spacing */}
-        <div data-scroll-body className="flex-1 w-full min-w-0 overflow-y-auto overflow-x-hidden overscroll-contain px-4 sm:px-6 pt-8 pb-24 space-y-8 lg:p-10 lg:pb-10 bg-teal-50/20 dark:bg-slate-950/20">{children}<ContextualFAQCard className="max-w-4xl" /></div>
+        <div data-scroll-body className="flex-1 w-full min-w-0 overflow-y-auto overflow-x-hidden overscroll-contain px-4 sm:px-6 pt-8 pb-24 space-y-8 lg:p-10 lg:pb-10 bg-teal-50/20 dark:bg-slate-950/20">{children}<ContextualFAQCard className="w-full" /></div>
 
         {/* Desktop footer */}
         <footer className="hidden lg:flex pt-6 pb-6 px-8 justify-between text-outline text-xs border-t divider-teal shrink-0">
-          <span>&copy; 2025 FisioMirror</span>
+          <span>&copy; 2026 FisioMirror</span>
           <div className="flex gap-4">
             <button onClick={() => setLegalModal('consent')} className="transition-colors hover:text-primary">{t('play.consent')}</button>
             <button onClick={() => setLegalModal('terms')} className="transition-colors hover:text-primary">{t('play.terms')}</button>

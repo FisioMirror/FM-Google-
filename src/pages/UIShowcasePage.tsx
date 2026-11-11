@@ -2319,7 +2319,7 @@ export function UIShowcasePage() {
                         className="w-full sm:w-auto text-xs"
                         onClick={() => toast.info("¡Estrellas de Logro!", { description: "Recompensa gamificada asignada." })}
                       >
-                        ⭐ Estrellas de Logro
+                        Estrellas de Logro
                       </ConfettiStars>
                     </div>
                   </div>

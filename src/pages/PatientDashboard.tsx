@@ -376,7 +376,7 @@ export function PatientDashboard() {
               colors={{ first: '#0d9488', second: '#c1ff72' }}
               className="inline-block"
             >
-              <h1 className="font-display font-headline-lg text-headline-lg-mobile lg:text-headline-lg gradient-text-living font-bold tracking-tight">
+              <h1 className="font-headline font-black text-3xl sm:text-4xl lg:text-5xl gradient-text-living tracking-tight leading-tight">
                 {greeting}, {user?.full_name?.split(' ')[0] || 'Paciente'}
               </h1>
             </SparklesText>

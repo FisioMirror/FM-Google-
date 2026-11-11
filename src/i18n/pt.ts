@@ -906,7 +906,7 @@ export const pt: TranslationSchema = {
   fl: {
     inConsultation: "Em consulta",
     clinicalEdition: "Edição Clínica",
-    rights: "&copy; 2025 FisioMirror S.A. | Edição Clínica Premium v2.0.42",
+    rights: "&copy; 2026 FisioMirror S.A. | Edição Clínica Premium v2.0.42",
     terms: "Termos de Serviço",
     privacy: "Privacidade de Dados",
     startVideoCall: "Iniciar videochamada",
