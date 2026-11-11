@@ -625,23 +625,33 @@ export function StatsPage() {
   }, [sessions]);
 
   return (
-    <div className="space-y-8 overflow-x-hidden max-w-7xl mx-auto w-full">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
-        <div>
-          <h2 className="font-headline-lg text-headline-lg-mobile lg:text-headline-lg gradient-text-living mb-2">
-            {isFisio ? 'Métricas de Práctica Clínica' : 'Progreso de Recuperación'}
-          </h2>
-          {!isFisio && (
-            <div className="flex flex-wrap items-center gap-3 mt-2">
-              <StreakFlameCounter streakDays={streak} />
-              <LevelProgressRibbon currentLevel={3} currentXp={340} nextLevelXp={500} className="w-fit" />
-            </div>
-          )}
+    <div className="space-y-5 overflow-x-hidden max-w-7xl mx-auto w-full pb-8">
+      <div className="space-y-4">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
+          <div>
+            <h2 className="font-headline-lg text-headline-lg-mobile lg:text-headline-lg gradient-text-living">
+              {isFisio ? 'Métricas de Práctica Clínica' : 'Progreso de Recuperación'}
+            </h2>
+          </div>
+          <div className="glass-panel px-4 py-2 rounded-xl flex items-center gap-2 shrink-0">
+            <Icon name="calendar_today" size={18} className="text-outline" />
+            <span className="font-bold text-on-surface text-sm">{new Date().toLocaleDateString(currentLocale(), { month: 'long', day: 'numeric', year: 'numeric' })}</span>
+          </div>
         </div>
-        <div className="glass-panel px-4 py-2 rounded-xl flex items-center gap-2">
-          <Icon name="calendar_today" size={18} className="text-outline" />
-          <span className="font-bold text-on-surface">{new Date().toLocaleDateString(currentLocale(), { month: 'long', day: 'numeric', year: 'numeric' })}</span>
-        </div>
+
+        {!isFisio && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-stretch">
+            <StreakFlameCounter streakDays={streak} className="h-full" />
+            <LevelProgressRibbon
+              currentLevel={gamification.currentLevel.level}
+              levelTitle={gamification.currentLevel.title}
+              subtitle="Evolución Terapéutica Activa"
+              currentXp={gamification.points}
+              nextLevelXp={gamification.nextLevel ? gamification.nextLevel.minPoints : gamification.currentLevel.maxPoints}
+              className="w-full h-full"
+            />
+          </div>
+        )}
       </div>
 
       {isFisio && patients.length > 0 && (
@@ -744,10 +754,10 @@ export function StatsPage() {
           {isFisio ? (
             <>
               {/* Sessions per day (last 7 days) + Quality distribution pie */}
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                <GlassPanel className="lg:col-span-2 p-8 rounded-[2rem] flex flex-col relative overflow-hidden">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-stretch">
+                <GlassPanel className="lg:col-span-2 p-5 sm:p-6 rounded-3xl flex flex-col relative overflow-hidden">
                   <div className="blob-teal absolute -top-12 -right-12 w-40 h-40 opacity-20 pointer-events-none" />
-                  <div className="flex justify-between items-center mb-6">
+                  <div className="flex justify-between items-center mb-4">
                     <div>
                       <h3 className="font-title-md text-title-md gradient-text-teal">{t('stats.sessionsPerDay')}</h3>
                       <p className="text-sm text-on-surface-variant">Últimos 7 días {selectedPatient ? `· ${patients.find(p => p.id === selectedPatient)?.full_name || ''}` : '· Todos los pacientes'}</p>
@@ -782,7 +792,7 @@ export function StatsPage() {
                   </div>
                 </GlassPanel>
 
-                <GlassPanel className="p-8 rounded-[2rem] flex flex-col card-glow-hover relative overflow-hidden">
+                <GlassPanel className="p-5 sm:p-6 rounded-3xl flex flex-col card-glow-hover relative overflow-hidden">
                   <div className="blob-warm absolute -top-12 -right-12 w-32 h-32 opacity-20 pointer-events-none" />
                   <div className="flex justify-between items-center mb-4">
                     <h3 className="font-title-md text-title-md gradient-text-editorial">{t('stats.qualityDist')}</h3>
@@ -827,8 +837,8 @@ export function StatsPage() {
               </div>
 
               {/* Top patients bar chart + Diagnosis distribution */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <GlassPanel className="p-6 sm:p-8 rounded-[2rem] flex flex-col card-glow-hover relative overflow-hidden">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-stretch">
+                <GlassPanel className="p-5 sm:p-6 rounded-3xl flex flex-col card-glow-hover relative overflow-hidden">
                   <div className="blob-blue absolute -top-12 -right-12 w-32 h-32 opacity-20 pointer-events-none" />
                   <div className="flex justify-between items-center mb-4">
                     <h3 className="font-title-md text-title-md gradient-text-blue">{t('stats.mostActive')}</h3>
@@ -862,7 +872,7 @@ export function StatsPage() {
                   </div>
                 </GlassPanel>
 
-                <GlassPanel className="p-6 sm:p-8 rounded-[2rem] flex flex-col card-glow-hover relative overflow-hidden">
+                <GlassPanel className="p-5 sm:p-6 rounded-3xl flex flex-col card-glow-hover relative overflow-hidden">
                   <div className="blob-warm absolute -top-12 -right-12 w-32 h-32 opacity-20 pointer-events-none" />
                   <div className="flex justify-between items-center mb-4">
                     <div>
@@ -910,7 +920,7 @@ export function StatsPage() {
 
               {/* Patient summary table */}
               {patients.length > 0 && (
-                <GlassPanel className="p-8 rounded-[2rem] relative overflow-hidden">
+                <GlassPanel className="p-5 sm:p-6 rounded-3xl relative overflow-hidden">
                   <div className="blob-warm absolute -bottom-12 -right-12 w-32 h-32 opacity-15 pointer-events-none" />
                   <h3 className="font-title-md text-title-md gradient-text-editorial mb-4">{t('stats.summaryByPatient')}</h3>
                   <div className="overflow-x-auto">
@@ -947,12 +957,35 @@ export function StatsPage() {
               {/* Advanced Clinical Analytics for Fisioterapeuta */}
               <div className="mt-4 space-y-6">
                 <ClinicalAnalyticsHub />
-                <IncidentReportCard />
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <PatientAdherenceHeatmapCard />
-                  <PostureStabilityCard balanceScore={Math.min(99, Math.max(0, Math.round(avgPrecision || 0)))} />
-                  <GaitCapturePanel />
+
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
+                  <div className="lg:col-span-7 xl:col-span-8 flex">
+                    <IncidentReportCard
+                      fullWidth
+                      sessions={sessions}
+                      className="w-full h-full justify-between"
+                    />
+                  </div>
+                  <div className="lg:col-span-5 xl:col-span-4 flex flex-col gap-5">
+                    <PostureStabilityCard
+                      balanceScore={Math.min(99, Math.max(0, Math.round(avgPrecision || 0)))}
+                      className="w-full"
+                    />
+                    <PatientAdherenceHeatmapCard className="w-full flex-1 flex flex-col justify-between" />
+                  </div>
                 </div>
+
+                <GlassPanel className="p-5 sm:p-6 rounded-3xl border border-outline/15 shadow-sm">
+                  <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
+                    <div>
+                      <h3 className="font-title-md text-lg font-bold text-on-surface">
+                        {t('gait.panelTitle')}
+                      </h3>
+                      <p className="text-xs text-on-surface-variant">{t('gait.panelSub')}</p>
+                    </div>
+                  </div>
+                  <GaitCapturePanel layout="horizontal" />
+                </GlassPanel>
               </div>
             </>
           ) : (
@@ -961,8 +994,8 @@ export function StatsPage() {
               <PatientRecoveryHub />
 
               {/* Paciente: biomechanics evolution chart + recent sessions */}
-              <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-stretch">
-                <GlassPanel className="xl:col-span-8 p-6 sm:p-8 rounded-[2rem] flex flex-col justify-between relative overflow-hidden card-glow-hover">
+              <div className="grid grid-cols-1 xl:grid-cols-12 gap-5 items-stretch">
+                <GlassPanel className="xl:col-span-8 p-5 sm:p-6 rounded-3xl flex flex-col justify-between relative overflow-hidden card-glow-hover">
                   <div className="blob-teal absolute -top-12 -right-12 w-48 h-48 opacity-25 pointer-events-none" />
                   <div>
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
@@ -1080,7 +1113,7 @@ export function StatsPage() {
                   </div>
                 </GlassPanel>
 
-                <GlassPanel className="xl:col-span-4 p-6 sm:p-8 rounded-[2rem] flex flex-col justify-between card-glow-hover relative overflow-hidden">
+                <GlassPanel className="xl:col-span-4 p-5 sm:p-6 rounded-3xl flex flex-col justify-between card-glow-hover relative overflow-hidden">
                   <div className="blob-blue absolute -top-12 -right-12 w-36 h-36 opacity-20 pointer-events-none" />
                   <div>
                     <div className="flex items-center justify-between mb-4">
@@ -1149,10 +1182,10 @@ export function StatsPage() {
               </div>
 
               {/* Paciente: per-session quality line + exercise distribution pie */}
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                <GlassPanel className="lg:col-span-2 p-8 rounded-[2rem] flex flex-col relative overflow-hidden">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-stretch">
+                <GlassPanel className="lg:col-span-2 p-5 sm:p-6 rounded-3xl flex flex-col relative overflow-hidden">
                   <div className="blob-blue absolute -top-12 -right-12 w-40 h-40 opacity-20 pointer-events-none" />
-                  <div className="flex justify-between items-center mb-6">
+                  <div className="flex justify-between items-center mb-4">
                     <div>
                       <h3 className="font-title-md text-title-md gradient-text-blue">{t('stats.qualityPerSession')}</h3>
                       <p className="text-sm text-on-surface-variant">{t('stats.last12')}</p>
@@ -1189,7 +1222,7 @@ export function StatsPage() {
                   </div>
                 </GlassPanel>
 
-                <GlassPanel className="p-8 rounded-[2rem] flex flex-col card-glow-hover relative overflow-hidden">
+                <GlassPanel className="p-5 sm:p-6 rounded-3xl flex flex-col card-glow-hover relative overflow-hidden">
                   <div className="blob-warm absolute -top-12 -right-12 w-32 h-32 opacity-20 pointer-events-none" />
                   <div className="flex justify-between items-center mb-4">
                     <h3 className="font-title-md text-title-md gradient-text-editorial">{t('stats.exerciseDist')}</h3>
@@ -1234,9 +1267,9 @@ export function StatsPage() {
               </div>
 
               {/* Paciente: weekly minutes bar chart */}
-              <GlassPanel className="p-6 sm:p-8 rounded-[2rem] flex flex-col relative overflow-hidden card-glow-hover">
+              <GlassPanel className="p-5 sm:p-6 rounded-3xl flex flex-col relative overflow-hidden card-glow-hover">
                 <div className="blob-teal absolute -top-12 -right-12 w-48 h-48 opacity-15 pointer-events-none" />
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
                   <div>
                     <h3 className="font-headline-md text-headline-md-mobile lg:text-headline-md gradient-text-teal">{t('stats.trainingMinutes')}</h3>
                     <p className="text-xs sm:text-sm text-on-surface-variant">{t('stats.weeklyDist')}</p>
@@ -1277,7 +1310,7 @@ export function StatsPage() {
               </GlassPanel>
 
               {/* Paciente: Vitrina de Logros e Insignias (Showcase de Gamificación Terapéutica) */}
-              <GlassPanel className="p-6 sm:p-8 rounded-[2rem] flex flex-col relative overflow-hidden card-glow-hover">
+              <GlassPanel className="p-5 sm:p-6 rounded-3xl flex flex-col relative overflow-hidden card-glow-hover">
                 <div className="blob-amber absolute -top-16 -right-16 w-56 h-56 opacity-20 pointer-events-none" />
                 
                 {/* Vitrina Header */}
@@ -1497,9 +1530,9 @@ export function StatsPage() {
           )}
 
           {/* AI recommendation + PDF report (both roles) */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <GlassPanel className="p-8 rounded-[2rem] bg-primary/5 border-primary/10 md:col-span-2">
-              <div className="flex flex-col gap-4 mb-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-stretch">
+            <GlassPanel className="p-5 sm:p-6 rounded-3xl bg-primary/5 border-primary/10 md:col-span-2 flex flex-col justify-between h-full">
+              <div className="flex flex-col gap-3.5 mb-4">
                 <div className="flex items-center gap-3">
                   <div className="mascot-container w-12 h-12 rounded-full overflow-hidden bg-primary/10 flex items-center justify-center shrink-0">
                     <img src="/animations/mascot/consejo.webp" alt="Physi aconsejando" className="w-full h-full object-contain animate-breathe" onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }} />
@@ -1536,10 +1569,10 @@ export function StatsPage() {
                 </button>
               </div>
             </GlassPanel>
-            <GlassPanel className="p-8 rounded-[2rem] border-2 border-dashed border-outline-variant/30">
+            <GlassPanel className="p-5 sm:p-6 rounded-3xl border-2 border-dashed border-outline-variant/30 flex flex-col justify-center h-full">
               <div className="flex flex-col items-center text-center gap-3">
-                <Icon name="add_chart" size={40} className="text-outline" />
-                <p className="text-on-surface-variant">{t('stats.pdfDesc')}</p>
+                <Icon name="add_chart" size={36} className="text-outline" />
+                <p className="text-sm text-on-surface-variant">{t('stats.pdfDesc')}</p>
                 <button
                   onClick={handleGeneratePDF}
                   disabled={pdfLoading}

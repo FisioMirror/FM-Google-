@@ -20,18 +20,18 @@ export const StreakFlameCounter: React.FC<StreakFlameCounterProps> = ({
       whileHover={{ y: -3, scale: 1.01 }}
       transition={{ duration: 0.2 }}
       className={cn(
-        "relative p-5 rounded-3xl bg-gradient-to-br from-amber-500/20 via-surface/90 to-orange-500/10 dark:from-amber-500/20 dark:via-slate-900/90 dark:to-orange-500/10 border border-amber-500/40 shadow-xl overflow-hidden flex items-center gap-4 group",
+        "relative p-4 rounded-3xl bg-gradient-to-br from-amber-500/20 via-surface/90 to-orange-500/10 dark:from-amber-500/20 dark:via-slate-900/90 dark:to-orange-500/10 border border-amber-500/40 shadow-lg overflow-hidden flex items-center gap-3.5 group",
         className
       )}
     >
-      <div className="absolute -top-12 -right-12 size-36 rounded-full bg-amber-500/15 blur-3xl pointer-events-none group-hover:bg-amber-500/25 transition-all" />
+      <div className="absolute -top-12 -right-12 size-32 rounded-full bg-amber-500/15 blur-3xl pointer-events-none group-hover:bg-amber-500/25 transition-all" />
 
-      <div className="relative p-4 rounded-2xl bg-gradient-to-br from-amber-500/30 to-orange-500/20 text-amber-500 border border-amber-500/40 shadow-lg flex items-center justify-center shrink-0">
+      <div className="relative p-3.5 rounded-2xl bg-gradient-to-br from-amber-500/30 to-orange-500/20 text-amber-500 border border-amber-500/40 shadow-md flex items-center justify-center shrink-0">
         <motion.div
           animate={{ scale: [1, 1.15, 1], rotate: [-2, 2, -2] }}
           transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }}
         >
-          <Flame className="w-8 h-8 fill-amber-500" />
+          <Flame className="w-7 h-7 fill-amber-500" />
         </motion.div>
         <span className="absolute -bottom-1.5 text-[9px] font-black uppercase tracking-wider bg-gradient-to-r from-amber-500 to-orange-500 text-white px-2 py-0.5 rounded-full shadow-sm">
           Racha
@@ -40,14 +40,14 @@ export const StreakFlameCounter: React.FC<StreakFlameCounterProps> = ({
 
       <div className="flex-1 min-w-0">
         <div className="flex items-baseline gap-2">
-          <span className="text-3xl font-black font-mono text-slate-900 dark:text-white tabular-nums">
+          <span className="text-2xl sm:text-3xl font-black font-mono text-slate-900 dark:text-white tabular-nums">
             {streakDays}
           </span>
           <span className="text-xs font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider">
             Días Consecutivos
           </span>
         </div>
-        <p className="text-[11px] text-slate-600 dark:text-slate-300 font-medium">
+        <p className="text-[11px] text-slate-600 dark:text-slate-300 font-medium leading-snug">
           {streakDays > 0
             ? <>¡Constancia clínica ejemplar! Multiplicador de XP <strong className="text-amber-500">x1.5 activo</strong>.</>
             : <>{t('gam.noStreak')}</>}
@@ -62,6 +62,7 @@ export interface LevelProgressRibbonProps {
   currentXp?: number;
   nextLevelXp?: number;
   levelTitle?: string;
+  subtitle?: string;
   className?: string;
 }
 
@@ -70,6 +71,7 @@ export const LevelProgressRibbon: React.FC<LevelProgressRibbonProps> = ({
   currentXp = 0,
   nextLevelXp = 150,
   levelTitle,
+  subtitle,
   className,
 }) => {
   const { t } = useTranslation();
@@ -80,21 +82,21 @@ export const LevelProgressRibbon: React.FC<LevelProgressRibbonProps> = ({
       whileHover={{ y: -2, scale: 1.005 }}
       transition={{ duration: 0.2 }}
       className={cn(
-        "relative p-4 sm:p-5 rounded-3xl bg-surface/95 dark:bg-slate-900/90 backdrop-blur-2xl border border-teal-500/25 dark:border-teal-500/35 shadow-lg overflow-hidden space-y-3 group",
+        "relative p-3.5 sm:p-4 rounded-3xl bg-surface/95 dark:bg-slate-900/90 backdrop-blur-2xl border border-teal-500/25 dark:border-teal-500/35 shadow-md overflow-hidden flex flex-col justify-between gap-2 group",
         className
       )}
     >
-      <div className="flex items-center justify-between gap-3">
-        <div className="flex items-center gap-2.5">
+      <div className="flex flex-wrap items-center justify-between gap-2.5">
+        <div className="flex items-center gap-2.5 min-w-0">
           <div className="p-2 rounded-xl bg-teal-500/15 text-teal-600 dark:text-teal-400 shrink-0">
             <Medal className="w-4 h-4" />
           </div>
-          <div>
-            <span className="text-xs sm:text-sm font-bold text-slate-800 dark:text-white block">
+          <div className="min-w-0">
+            <span className="text-xs sm:text-sm font-bold text-slate-800 dark:text-white block leading-tight">
               Nivel Terapéutico
             </span>
-            <span className="text-[10px] text-slate-500 dark:text-slate-400">
-              {levelTitle || t('gam.romRange', 'Progresión neuromuscular real')}
+            <span className="text-[11px] text-slate-500 dark:text-slate-400 truncate block">
+              {subtitle || levelTitle || t('gam.romRange', 'Progresión neuromuscular real')}
             </span>
           </div>
         </div>
@@ -105,18 +107,20 @@ export const LevelProgressRibbon: React.FC<LevelProgressRibbonProps> = ({
         </div>
       </div>
 
-      <div className="relative w-full h-3 rounded-full bg-slate-200 dark:bg-slate-800 overflow-hidden p-0.5 border border-black/5 dark:border-white/5">
-        <motion.div
-          animate={{ width: `${percent}%` }}
-          transition={{ type: 'spring', stiffness: 180, damping: 22 }}
-          className="h-full bg-gradient-to-r from-teal-500 via-cyan-400 to-emerald-400 rounded-full shadow-sm"
-        />
-      </div>
+      <div className="space-y-1.5">
+        <div className="relative w-full h-2.5 rounded-full bg-slate-200 dark:bg-slate-800 overflow-hidden p-0.5 border border-black/5 dark:border-white/5">
+          <motion.div
+            animate={{ width: `${percent}%` }}
+            transition={{ type: 'spring', stiffness: 180, damping: 22 }}
+            className="h-full bg-gradient-to-r from-teal-500 via-cyan-400 to-emerald-400 rounded-full shadow-sm"
+          />
+        </div>
 
-      <div className="flex justify-between text-[11px] text-slate-500 dark:text-slate-400 font-mono font-semibold">
-        <span>{currentXp} XP</span>
-        <span className="text-teal-600 dark:text-teal-400 font-bold">{percent}% completado</span>
-        <span>{nextLevelXp} XP</span>
+        <div className="flex justify-between text-[11px] text-slate-500 dark:text-slate-400 font-mono font-semibold tabular-nums">
+          <span>{currentXp} XP</span>
+          <span className="text-teal-600 dark:text-teal-400 font-bold">{percent}% completado</span>
+          <span>{nextLevelXp} XP</span>
+        </div>
       </div>
     </motion.div>
   );
@@ -195,11 +199,11 @@ export const MobilityQuestCard: React.FC<MobilityQuestCardProps> = ({
       whileHover={{ y: -3, scale: 1.01 }}
       transition={{ duration: 0.2 }}
       className={cn(
-        "relative p-5 rounded-3xl bg-gradient-to-br from-surface/95 via-surface-container/85 to-surface/95 dark:from-surface-container/80 dark:via-slate-900/90 dark:to-surface-container/80 backdrop-blur-2xl border border-teal-500/25 dark:border-teal-500/35 shadow-lg overflow-hidden flex items-center justify-between gap-3 group",
+        "relative p-4 rounded-3xl bg-gradient-to-br from-surface/95 via-surface-container/85 to-surface/95 dark:from-surface-container/80 dark:via-slate-900/90 dark:to-surface-container/80 backdrop-blur-2xl border border-teal-500/25 dark:border-teal-500/35 shadow-lg overflow-hidden flex items-center justify-between gap-3 group",
         className
       )}
     >
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3 min-w-0">
         <motion.button
           type="button"
           whileTap={{ scale: 0.85 }}
@@ -213,16 +217,16 @@ export const MobilityQuestCard: React.FC<MobilityQuestCardProps> = ({
         >
           {completed ? <Check className="w-5 h-5" /> : <Compass className="w-5 h-5" />}
         </motion.button>
-        <div>
+        <div className="min-w-0">
           <h4 className={cn("text-xs font-bold text-slate-800 dark:text-white", completed && "line-through text-slate-400")}>
             {questTitle}
           </h4>
-          <span className="text-[11px] text-slate-400 font-mono">
+          <span className="text-[11px] text-slate-400 font-mono tabular-nums">
             {completed ? '3 / 3 Completada' : progressText}
           </span>
         </div>
       </div>
-      <span className="text-xs font-mono font-bold text-amber-500 bg-amber-500/15 border border-amber-500/30 px-2.5 py-1 rounded-full">
+      <span className="text-xs font-mono font-bold text-amber-500 bg-amber-500/15 border border-amber-500/30 px-2.5 py-1 rounded-full shrink-0 tabular-nums">
         +{xpReward} XP
       </span>
     </motion.div>
@@ -288,11 +292,11 @@ export const DailyHealthPointsWidget: React.FC<DailyHealthPointsWidgetProps> = (
       whileHover={{ y: -3, scale: 1.01 }}
       transition={{ duration: 0.2 }}
       className={cn(
-        "relative p-5 rounded-3xl bg-gradient-to-br from-amber-500/15 via-surface/90 to-surface dark:from-amber-500/15 dark:via-slate-900/90 dark:to-surface-container/80 border border-amber-500/35 shadow-lg overflow-hidden flex items-center justify-between group",
+        "relative p-4 rounded-3xl bg-gradient-to-br from-amber-500/15 via-surface/90 to-surface dark:from-amber-500/15 dark:via-slate-900/90 dark:to-surface-container/80 border border-amber-500/35 shadow-lg overflow-hidden flex items-center justify-between gap-3 group",
         className
       )}
     >
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3 min-w-0">
         <motion.div
           animate={{ rotateY: [0, 180, 360] }}
           transition={{ repeat: Infinity, duration: 4, ease: 'easeInOut' }}
@@ -300,7 +304,7 @@ export const DailyHealthPointsWidget: React.FC<DailyHealthPointsWidgetProps> = (
         >
           <Coins className="w-6 h-6" />
         </motion.div>
-        <div>
+        <div className="min-w-0">
           <h4 className="text-xs font-bold text-slate-800 dark:text-white">{t('gam.healthPoints')}</h4>
           <span className="text-[11px] text-slate-400">{t('gam.redeem')}</span>
         </div>
@@ -308,7 +312,7 @@ export const DailyHealthPointsWidget: React.FC<DailyHealthPointsWidgetProps> = (
       <button
         type="button"
         onClick={() => setPts((p) => p + 50)}
-        className="text-2xl font-black font-mono text-amber-500 hover:scale-105 transition-transform"
+        className="text-xl sm:text-2xl font-black font-mono text-amber-500 hover:scale-105 transition-transform shrink-0 tabular-nums"
       >
         {pts} pts
       </button>

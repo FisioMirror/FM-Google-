@@ -784,7 +784,7 @@ export function DashboardFisio() {
   ];
 
   return (
-    <div className="space-y-8 overflow-x-hidden max-w-7xl mx-auto w-full">
+    <div className="space-y-5 overflow-x-hidden max-w-7xl mx-auto w-full">
       <OnboardingGuide />
       {/* Welcome */}
       <div className="relative">
@@ -923,7 +923,7 @@ export function DashboardFisio() {
         variants={staggerContainer}
         initial="hidden"
         animate="show"
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6"
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5"
       >
         {quickActions.map((action) => (
           <motion.button
@@ -932,7 +932,7 @@ export function DashboardFisio() {
             whileHover={{ scale: 1.02, y: -3, transition: springTactile }}
             whileTap={{ scale: 0.98 }}
             onClick={() => navigate(action.route)}
-            className={`relative overflow-hidden group border ${action.pastelBg} p-6 sm:p-7 rounded-[2rem] text-left transition-all hover-lift flex flex-col justify-between shadow-sm hover:shadow-md`}
+            className={`relative overflow-hidden group border ${action.pastelBg} p-5 sm:p-6 rounded-[2rem] text-left transition-all hover-lift flex flex-col justify-between shadow-sm hover:shadow-md`}
           >
             <div className={`absolute -right-8 -bottom-8 w-40 h-40 ${action.color} opacity-10 blur-3xl group-hover:scale-150 transition-transform duration-500`} />
             <div>
@@ -950,17 +950,17 @@ export function DashboardFisio() {
       </motion.div>
 
       {/* Insights & Priorities */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 items-stretch">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
           className="h-full flex flex-col"
         >
-          <GlassPanel className="rounded-[32px] overflow-hidden shadow-[0_12px_40px_rgba(13,148,136,0.12)] hover-lift border-l-4 border-l-teal-400/60 dark:border-l-teal-600/40 relative flex-1 flex flex-col justify-between">
+          <GlassPanel className="rounded-3xl overflow-hidden shadow-[0_12px_40px_rgba(13,148,136,0.12)] hover-lift border border-teal-500/20 dark:border-teal-500/25 relative flex-1 flex flex-col justify-between">
             <ShineBorder borderWidth={1.5} duration={12} shineColor={["#00504d", "#14b8a6", "#c1ff72"]} />
             {/* Header */}
-            <div className="flex items-center justify-between px-8 py-6 bg-gradient-to-r from-primary/15 via-primary/5 to-transparent border-b border-primary/15">
+            <div className="flex items-center justify-between px-6 py-4 sm:py-5 bg-gradient-to-r from-primary/15 via-primary/5 to-transparent border-b border-primary/15">
               <div className="flex items-center gap-4">
                 <div className="w-14 h-14 rounded-2xl bg-primary/15 flex items-center justify-center ring-1 ring-primary/20">
                   <MedicalIcon name="activity" size={28} className="text-primary animate-breathe-icon" />
@@ -976,7 +976,7 @@ export function DashboardFisio() {
             </div>
 
             {/* Body */}
-            <div className="px-8 py-5 bg-primary-container/10 flex-1">
+            <div className="px-6 py-4 bg-primary-container/10 flex-1">
               {insightLoading ? (
                 <div className="flex items-center gap-3 text-sm text-on-surface-variant py-8">
                   <Spinner size={20} className="text-primary" />
@@ -1016,7 +1016,7 @@ export function DashboardFisio() {
             </div>
 
             {/* Footer */}
-            <div className="flex items-center justify-between px-8 py-4 bg-surface-variant/10 border-t border-outline-variant/20">
+            <div className="flex items-center justify-between px-6 py-3.5 bg-surface-variant/10 border-t border-outline-variant/20">
               <div className="flex items-center gap-2 text-xs text-on-surface-variant">
                 <Icon name="schedule" size={14} className="opacity-60" />
                 <span>{new Date().toLocaleString(currentLocale(), { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}</span>
@@ -1031,7 +1031,7 @@ export function DashboardFisio() {
             </div>
 
             {/* Action */}
-            <div className="px-8 pb-6">
+            <div className="px-6 pb-5">
               <ShimmerButton
                 onClick={loadInsight}
                 disabled={insightLoading}
@@ -1046,7 +1046,7 @@ export function DashboardFisio() {
           </GlassPanel>
         </motion.div>
 
-        <GlassPanel className="p-8 rounded-[32px] hover-lift relative overflow-hidden border-l-4 border-l-teal-400/60 dark:border-l-teal-600/40 shadow-[0_8px_30px_rgba(13,148,136,0.10)]">
+        <GlassPanel className="p-6 rounded-3xl hover-lift relative overflow-hidden border border-teal-500/20 dark:border-teal-500/25 shadow-[0_8px_30px_rgba(13,148,136,0.10)]">
           <div className="absolute -top-10 -right-10 w-32 h-32 rounded-full bg-gradient-to-br from-cyan-400/15 to-teal-500/10 blur-2xl pointer-events-none" />
           <div className="flex justify-between items-center mb-5 relative">
             <div className="flex items-center gap-3">
@@ -1158,8 +1158,8 @@ export function DashboardFisio() {
       </div>
 
       {/* Remote monitoring & live activity hub */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        <GlassPanel className="lg:col-span-5 p-8 rounded-3xl relative overflow-hidden hover-lift border-l-4 border-l-teal-400/60 dark:border-l-teal-600/40 shadow-[0_8px_30px_rgba(13,148,136,0.10)] flex flex-col justify-between h-full min-h-[380px]">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
+        <GlassPanel className="lg:col-span-5 p-6 rounded-3xl relative overflow-hidden hover-lift border border-teal-500/20 dark:border-teal-500/25 shadow-[0_8px_30px_rgba(13,148,136,0.10)] flex flex-col justify-between h-full">
           <BorderBeam size={130} duration={7} colorFrom="#14b8a6" colorTo="#06b6d4" />
           <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent pointer-events-none" />
           <div className="relative z-10 space-y-4">
@@ -1209,8 +1209,8 @@ export function DashboardFisio() {
           </div>
         </GlassPanel>
 
-        <div className="lg:col-span-7">
-          <ClinicalActivityFeed delay={2600} items={feedItems} />
+        <div className="lg:col-span-7 flex">
+          <ClinicalActivityFeed delay={2600} items={feedItems} className="max-w-none w-full h-full justify-between" />
         </div>
       </div>
 

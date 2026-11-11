@@ -286,7 +286,10 @@ export const patientRegisterSchema = z.object({
   email: emailSchema,
   password: passwordSchema,
   confirmPassword: confirmPasswordSchema,
-  fullName: fullNameSchema.optional(),
+  fullName: z.preprocess(
+    (v) => (typeof v === 'string' && v.trim() === '' ? undefined : v),
+    fullNameSchema.optional()
+  ),
   turnstileToken: z.string().min(1, 'Completa la verificación de seguridad'),
 }).refine((data) => data.password === data.confirmPassword, {
   message: 'Las contraseñas no coinciden',

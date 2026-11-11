@@ -622,11 +622,11 @@ export function SettingsPage() {
           <h3 className="font-semibold text-on-surface gradient-text-teal mb-4">{t('settings.accountInfo')}</h3>
           <div className="space-y-3">
             <div className="flex items-center justify-between p-3 rounded-xl bg-surface-container-low/60">
-              <div className="flex items-center gap-2 text-on-surface-variant"><Icon name="alternate_email" size={18} /><span className="text-sm">Email</span></div>
+              <div className="flex items-center gap-2 text-on-surface-variant"><Icon name="alternate_email" size={18} /><span className="text-sm">{t('settings.emailLabel')}</span></div>
               <span className="font-medium text-on-surface text-sm">{user?.email || '—'}</span>
             </div>
             <div className="flex items-center justify-between p-3 rounded-xl bg-surface-container-low/60">
-              <div className="flex items-center gap-2 text-on-surface-variant"><Icon name="badge" size={18} /><span className="text-sm">Rol</span></div>
+              <div className="flex items-center gap-2 text-on-surface-variant"><Icon name="badge" size={18} /><span className="text-sm">{t('settings.roleLabel')}</span></div>
               <span className="font-medium text-on-surface text-sm capitalize">{user?.role || '—'}</span>
             </div>
           </div>
@@ -689,24 +689,54 @@ export function SettingsPage() {
         </div>
       </GlassPanel>
 
-      {/* Créditos del equipo */}
+      {/* Créditos de UI, Arquitectura, Documentación y Asesoría Clínica */}
       <GlassPanel className="p-6 rounded-2xl relative overflow-hidden">
         <div className="blob-cyan absolute -top-12 -right-12 w-32 h-32 opacity-20 pointer-events-none" />
         <div className="relative">
           <h3 className="font-semibold text-on-surface gradient-text-cyan mb-4">{t('settings.teamCredits')}</h3>
-          <div className="space-y-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {[
-              { icon: Code2, color: 'text-primary', bg: 'bg-primary/10', label: 'Equipo Desarrollador', value: '4 tazas de café y 2 horas de sueño durante un mes.' },
-              { icon: Palette, color: 'text-cyan-600', bg: 'bg-cyan-500/10', label: 'Equipo de Diseño', value: 'Dios y yo.' },
-              { icon: Heart, color: 'text-emerald-600', bg: 'bg-emerald-500/10', label: 'Equipo Clínico', value: 'Todas y cada una de las personas que nos han apoyado con su conocimiento profesional hasta este punto, y Dios.' },
+              {
+                icon: Code2,
+                color: 'text-teal-700 dark:text-teal-300',
+                bg: 'bg-teal-500/12',
+                role: t('settings.creditArchitectRole'),
+                name: t('settings.creditArchitectName'),
+                desc: t('settings.creditArchitectDesc'),
+              },
+              {
+                icon: Palette,
+                color: 'text-sky-700 dark:text-sky-300',
+                bg: 'bg-sky-500/12',
+                role: t('settings.creditUiRole'),
+                name: t('settings.creditUiName'),
+                desc: t('settings.creditUiDesc'),
+              },
+              {
+                icon: FileText,
+                color: 'text-indigo-700 dark:text-indigo-300',
+                bg: 'bg-indigo-500/12',
+                role: t('settings.creditDocsRole'),
+                name: t('settings.creditDocsName'),
+                desc: t('settings.creditDocsDesc'),
+              },
+              {
+                icon: Heart,
+                color: 'text-emerald-700 dark:text-emerald-300',
+                bg: 'bg-emerald-500/12',
+                role: t('settings.creditClinicalRole'),
+                name: t('settings.creditClinicalName'),
+                desc: t('settings.creditClinicalDesc'),
+              },
             ].map((item) => (
-              <div key={item.label} className="flex items-start gap-3 p-3 rounded-xl bg-surface-container-low/60">
+              <div key={item.name} className="flex items-start gap-3 p-3.5 rounded-xl bg-surface-container-low/70 border border-outline-variant/15">
                 <div className={`w-10 h-10 rounded-xl ${item.bg} flex items-center justify-center shrink-0`}>
                   <item.icon size={20} className={item.color} />
                 </div>
                 <div className="min-w-0">
-                  <p className="font-medium text-on-surface text-sm">{item.label}</p>
-                  <p className="text-xs text-on-surface-variant mt-0.5">{item.value}</p>
+                  <p className="text-[11px] font-semibold uppercase tracking-wide text-on-surface-variant">{item.role}</p>
+                  <p className="font-bold text-on-surface text-sm mt-0.5">{item.name}</p>
+                  <p className="text-xs text-on-surface-variant mt-1 leading-relaxed">{item.desc}</p>
                 </div>
               </div>
             ))}
@@ -937,7 +967,7 @@ export function SettingsPage() {
                   <Icon name="warning" size={24} className="text-error" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-error">Eliminar Cuenta</h3>
+                  <h3 className="text-lg font-bold text-error">{t('settings.deleteAccountTitle')}</h3>
                   <p className="text-sm text-on-surface-variant">{t('settings.irreversible')}</p>
                 </div>
               </div>
@@ -952,7 +982,7 @@ export function SettingsPage() {
               </div>
               <div className="flex gap-3 mt-6">
                 <button onClick={() => setShowDeleteModal(false)} className="flex-1 py-3 rounded-xl bg-surface-container-low text-on-surface-variant font-semibold hover:bg-surface-container-high transition-colors">{t('settings.cancel')}</button>
-                <button onClick={handleDeleteAccount} disabled={deleteLoading} className="flex-1 py-3 rounded-xl bg-error text-white font-semibold hover:bg-error/90 transition-colors disabled:opacity-50">{deleteLoading ? 'Eliminando...' : 'Eliminar definitivamente'}</button>
+                <button onClick={handleDeleteAccount} disabled={deleteLoading} className="flex-1 py-3 rounded-xl bg-error text-white font-semibold hover:bg-error/90 transition-colors disabled:opacity-50">{deleteLoading ? t('settings.deletingAccount') : t('settings.deleteConfirmBtn')}</button>
               </div>
             </motion.div>
           </motion.div>
@@ -981,7 +1011,7 @@ export function SettingsPage() {
               <div className="space-y-4 text-sm text-on-surface-variant leading-relaxed">
                 <div>
                   <h4 className="font-semibold text-on-surface mb-1">{t('settings.systemArch')}</h4>
-                  <p>FisioMirror es una aplicación web progresiva (PWA) construida con una arquitectura cliente-servidor. El frontend utiliza React 18 con TypeScript, renderizado con Vite. El backend utiliza Supabase (PostgreSQL) para persistencia de datos, autenticación y funciones serverless (Edge Functions en Deno).</p>
+                  <p>{t('settings.systemArchDesc')}</p>
                 </div>
                 <div>
                   <h4 className="font-semibold text-on-surface mb-1">{t('settings.coreTech')}</h4>
@@ -995,7 +1025,7 @@ export function SettingsPage() {
                   </ul>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-on-surface mb-1">Flujos Principales</h4>
+                  <h4 className="font-semibold text-on-surface mb-1">{t('settings.mainFlowsTitle')}</h4>
                   <ul className="list-disc list-inside space-y-1">
                     <li>{t('settings.archAuth')}</li>
                     <li>{t('settings.archCalib')}</li>

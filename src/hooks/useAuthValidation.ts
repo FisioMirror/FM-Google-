@@ -103,10 +103,18 @@ export function createPatientRegisterData(
   email: string,
   password: string,
   confirmPassword: string,
-  fullName: string,
+  fullName: string | undefined,
   turnstileToken: string
 ): PatientRegisterInput {
-  return { token, email, password, confirmPassword, fullName, turnstileToken };
+  const cleanName = fullName?.trim();
+  return {
+    token,
+    email,
+    password,
+    confirmPassword,
+    fullName: cleanName || undefined,
+    turnstileToken,
+  };
 }
 
 export function createFisioLoginData(email: string, password: string, turnstileToken: string): FisioLoginInput {

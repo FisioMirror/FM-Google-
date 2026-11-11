@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { persist, createJSONStorage, type StateStorage } from 'zustand/middleware';
 import type { Profile } from '../types';
 import { supabase, supabaseUrl, supabaseAnonKey } from '../lib/supabase';
 import { DEMO_PATIENT_PROFILE, DEMO_FISIO_PROFILE, DEMO_TOKENS } from '../data/demoProfiles';
@@ -9,12 +9,16 @@ import { logAuthEvent } from '../lib/auditService';
 const STORAGE_KEY = 'fisiomirror-auth';
 const SESSION_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000;
 
-// Custom storage that handles localStorage errors (private browsing, etc.)
-// Custom storage that handles localStorage errors (private browsing, etc.)
-const safeStorage = {
+// Custom storage that handles localStorage errors (private browsing, legacy serialization bugs, etc.)
+const safeStorage: StateStorage = {
   getItem: (name: string): string | null => {
     try {
-      return localStorage.getItem(name);
+      const value = localStorage.getItem(name);
+      if (value === '[object Object]') {
+        localStorage.removeItem(name);
+        return null;
+      }
+      return value;
     } catch {
       return null;
     }
@@ -95,6 +99,7 @@ async function fetchProfileByEmail(email: string): Promise<Profile | null> {
 
 interface AuthState {
   user: Profile | null;
+  storedAt: number | null;
   loading: boolean;
   error: string | null;
   initialized: boolean;
@@ -125,68 +130,71 @@ export const useAuthStore = create<AuthState>()(
   persist(
     (set, get) => ({
       user: null,
+      storedAt: null,
       loading: false,
       error: null,
       initialized: true,
 
       initialize: async () => {
-        // Synchronous fallback: ensure initialized is true immediately
-        // This prevents blank screen if async initialization fails
         set({ initialized: true });
 
         try {
-          let raw: string | null = null;
-          try {
-            raw = localStorage.getItem(STORAGE_KEY);
-          } catch {
-            // localStorage may throw in private browsing mode
-            raw = null;
+          let storedUser = get().user;
+          let storedAt = get().storedAt;
+
+          if (!storedUser) {
+            const raw = safeStorage.getItem(STORAGE_KEY);
+            if (!raw) return;
+
+            let parsed: { state?: { user?: Profile | null; storedAt?: number | null } } | null = null;
+            try {
+              parsed = JSON.parse(raw);
+            } catch {
+              safeStorage.removeItem(STORAGE_KEY);
+              return;
+            }
+            storedUser = parsed?.state?.user ?? null;
+            storedAt = parsed?.state?.storedAt ?? null;
           }
 
-          if (!raw) {
-            return;
-          }
-
-          let parsed: { state?: { user?: Profile; storedAt?: number } } | null = null;
-          try {
-            parsed = JSON.parse(raw);
-          } catch {
-            // Corrupted localStorage data
-            localStorage.removeItem(STORAGE_KEY);
-            return;
-          }
-
-          const storedAt = parsed?.state?.storedAt as number | undefined;
           if (storedAt && Date.now() - storedAt > SESSION_MAX_AGE_MS) {
-            localStorage.removeItem(STORAGE_KEY);
-            set({ user: null });
+            safeStorage.removeItem(STORAGE_KEY);
+            set({ user: null, storedAt: null });
             return;
           }
 
-          const storedUser = parsed?.state?.user as Profile | null;
           if (!storedUser) {
             return;
           }
 
           if (storedUser.id === DEMO_PATIENT_PROFILE.id) {
-            set({ user: DEMO_PATIENT_PROFILE });
+            set({ user: DEMO_PATIENT_PROFILE, storedAt: storedAt ?? Date.now() });
             return;
           }
           if (storedUser.id === DEMO_FISIO_PROFILE.id) {
-            set({ user: DEMO_FISIO_PROFILE });
+            set({ user: DEMO_FISIO_PROFILE, storedAt: storedAt ?? Date.now() });
             return;
           }
 
-          set({ user: storedUser });
+          set({ user: storedUser, storedAt: storedAt ?? Date.now() });
 
           try {
             const refreshed = await Promise.race([
               fetchProfileById(storedUser.id),
-              new Promise<null>((resolve) => setTimeout(() => resolve(null), 3000)),
+              new Promise<null>((resolve) => setTimeout(() => resolve(null), 3500)),
             ]);
-            if (refreshed) set({ user: refreshed });
+            if (refreshed) {
+              const { password_hash: _ph, ...cleanRefreshed } = refreshed as Profile & { password_hash?: string };
+              set({
+                user: {
+                  ...cleanRefreshed,
+                  email_verified_at: cleanRefreshed.email_verified_at ?? storedUser.email_verified_at ?? new Date().toISOString(),
+                } as Profile,
+                storedAt: storedAt ?? Date.now(),
+              });
+            }
           } catch {
-            // keep stored user
+            // keep stored user across offline/network transients
           }
         } catch {
           // Silently fail - initialized is already true
@@ -199,11 +207,11 @@ export const useAuthStore = create<AuthState>()(
 
         // Acceso directo a credenciales Demo
         if (cleanEmail === 'fisio@demo.com' || cleanEmail === 'demo@fisiomirror.com' || cleanEmail === 'demo@fisio.com') {
-          set({ user: DEMO_FISIO_PROFILE, loading: false, error: null });
+          set({ user: DEMO_FISIO_PROFILE, storedAt: Date.now(), loading: false, error: null });
           return true;
         }
         if (cleanEmail === 'paciente@demo.com' || cleanEmail === 'demo@paciente.com') {
-          set({ user: DEMO_PATIENT_PROFILE, loading: false, error: null });
+          set({ user: DEMO_PATIENT_PROFILE, storedAt: Date.now(), loading: false, error: null });
           return true;
         }
 
@@ -228,18 +236,26 @@ export const useAuthStore = create<AuthState>()(
               let profile = userId ? await fetchProfileById(userId) : null;
               if (!profile && userEmail) profile = await fetchProfileByEmail(userEmail);
 if (profile) {
-            // Check email verification for non-demo users
-            if (!isDemoAccount(profile) && profile.email_verified_at === null) {
+            // Check email verification only for explicitly inactive unverified users
+            if (!isDemoAccount(profile) && !profile.is_active && profile.email_verified_at === null) {
               set({ error: 'Por favor verifica tu correo electrónico antes de iniciar sesión.', loading: false });
               return false;
             }
+            const { password_hash: _ph, ...cleanProfile } = profile as Profile & { password_hash?: string };
             logAuthEvent('AUTH_LOGIN_SUCCESS', {
               email: cleanEmail,
-              userId: profile.id,
-              role: profile.role,
+              userId: cleanProfile.id,
+              role: cleanProfile.role,
               success: true,
             }).catch(() => {});
-            set({ user: profile, loading: false });
+            set({
+              user: {
+                ...cleanProfile,
+                email_verified_at: cleanProfile.email_verified_at ?? new Date().toISOString(),
+              } as Profile,
+              storedAt: Date.now(),
+              loading: false,
+            });
             return true;
           }
             }
@@ -290,7 +306,14 @@ if (profile) {
           }).catch(() => {});
 
           const { password_hash: _, ...userWithoutHash } = profile;
-          set({ user: userWithoutHash as Profile, loading: false });
+          set({
+            user: {
+              ...userWithoutHash,
+              email_verified_at: userWithoutHash.email_verified_at ?? new Date().toISOString(),
+            } as Profile,
+            storedAt: Date.now(),
+            loading: false,
+          });
           return true;
         } catch (e) {
           logAuthEvent('AUTH_LOGIN_FAILED', {
@@ -424,7 +447,14 @@ if (profile) {
             }
           }
 
-          set({ user: profile, loading: false });
+          set({
+            user: {
+              ...(profile as Profile),
+              email_verified_at: profile.email_verified_at ?? new Date().toISOString(),
+            },
+            storedAt: Date.now(),
+            loading: false,
+          });
           return true;
         } catch (e) {
           set({ error: (e as Error).message, loading: false });
@@ -438,7 +468,7 @@ if (profile) {
 
         // Acceso demo inmediato para tokens de prueba
         if (DEMO_TOKENS.includes(cleanToken) || cleanToken === '123456' || cleanToken.toLowerCase() === 'demo') {
-          set({ user: DEMO_PATIENT_PROFILE, loading: false, error: null });
+          set({ user: DEMO_PATIENT_PROFILE, storedAt: Date.now(), loading: false, error: null });
           return true;
         }
 
@@ -451,7 +481,7 @@ if (profile) {
 
           if (tokenError || !tokenRow) {
             if (cleanToken === '123456' || DEMO_TOKENS.includes(cleanToken)) {
-              set({ user: DEMO_PATIENT_PROFILE, loading: false, error: null });
+              set({ user: DEMO_PATIENT_PROFILE, storedAt: Date.now(), loading: false, error: null });
               return true;
             }
             set({ error: 'Token no encontrado o inválido', loading: false });
@@ -482,9 +512,10 @@ if (profile) {
             return false;
           }
 
+          const verifiedAt = profile.email_verified_at ?? new Date().toISOString();
           await supabase
             .from('profiles')
-            .update({ is_active: true, updated_at: new Date().toISOString() })
+            .update({ is_active: true, email_verified_at: verifiedAt, updated_at: new Date().toISOString() })
             .eq('id', row.paciente_id);
 
           if (row.terapeuta_id) {
@@ -494,11 +525,19 @@ if (profile) {
           }
 
           const { password_hash: _, ...userWithoutHash } = profile;
-          set({ user: userWithoutHash as Profile, loading: false });
+          set({
+            user: {
+              ...userWithoutHash,
+              is_active: true,
+              email_verified_at: verifiedAt,
+            } as Profile,
+            storedAt: Date.now(),
+            loading: false,
+          });
           return true;
         } catch (e) {
           if (cleanToken === '123456' || DEMO_TOKENS.includes(cleanToken)) {
-            set({ user: DEMO_PATIENT_PROFILE, loading: false, error: null });
+            set({ user: DEMO_PATIENT_PROFILE, storedAt: Date.now(), loading: false, error: null });
             return true;
           }
           set({ error: (e as Error).message, loading: false });
@@ -512,7 +551,7 @@ if (profile) {
 
         // Acceso demo
         if (cleanEmail === 'paciente@demo.com' || cleanEmail === 'demo@paciente.com' || token === '123456') {
-          set({ user: DEMO_PATIENT_PROFILE, loading: false, error: null });
+          set({ user: DEMO_PATIENT_PROFILE, storedAt: Date.now(), loading: false, error: null });
           return true;
         }
 
@@ -536,7 +575,15 @@ if (profile) {
               let profile = userId ? await fetchProfileById(userId) : null;
               if (!profile) profile = await fetchProfileByEmail(cleanEmail);
               if (profile) {
-                set({ user: profile, loading: false });
+                const { password_hash: _ph, ...cleanProfile } = profile as Profile & { password_hash?: string };
+                set({
+                  user: {
+                    ...cleanProfile,
+                    email_verified_at: cleanProfile.email_verified_at ?? new Date().toISOString(),
+                  } as Profile,
+                  storedAt: Date.now(),
+                  loading: false,
+                });
                 return true;
               }
             }
@@ -562,14 +609,21 @@ if (profile) {
             return false;
           }
 
-          // Check email verification for non-demo users
-          if (!isDemoAccount(profile) && profile.email_verified_at === null) {
+          // Check email verification only if inactive and unverified
+          if (!isDemoAccount(profile) && !profile.is_active && profile.email_verified_at === null) {
             set({ error: 'Por favor verifica tu correo electrónico antes de iniciar sesión.', loading: false });
             return false;
           }
 
           const { password_hash: _, ...userWithoutPassword } = profile;
-          set({ user: userWithoutPassword as Profile, loading: false });
+          set({
+            user: {
+              ...userWithoutPassword,
+              email_verified_at: userWithoutPassword.email_verified_at ?? new Date().toISOString(),
+            } as Profile,
+            storedAt: Date.now(),
+            loading: false,
+          });
           return true;
         } catch (e) {
           set({ error: (e as Error).message, loading: false });
@@ -584,7 +638,7 @@ if (profile) {
 
         // Demo shortcut
         if (DEMO_TOKENS.includes(cleanToken) || cleanToken === '123456' || cleanEmail === 'paciente@demo.com') {
-          set({ user: DEMO_PATIENT_PROFILE, loading: false, error: null });
+          set({ user: DEMO_PATIENT_PROFILE, storedAt: Date.now(), loading: false, error: null });
           return true;
         }
 
@@ -608,7 +662,16 @@ if (profile) {
               let profile = userId ? await fetchProfileById(userId) : null;
               if (!profile) profile = await fetchProfileByEmail(cleanEmail);
               if (profile) {
-                set({ user: profile, loading: false });
+                const { password_hash: _ph, ...cleanProfile } = profile as Profile & { password_hash?: string };
+                set({
+                  user: {
+                    ...cleanProfile,
+                    is_active: true,
+                    email_verified_at: cleanProfile.email_verified_at ?? new Date().toISOString(),
+                  } as Profile,
+                  storedAt: Date.now(),
+                  loading: false,
+                });
                 return true;
               }
             }
@@ -700,7 +763,15 @@ if (profile) {
           }
 
           const { password_hash: _ph, ...userWithoutHash } = finalProfile as Profile & { password_hash?: string };
-          set({ user: userWithoutHash as Profile, loading: false });
+          set({
+            user: {
+              ...userWithoutHash,
+              is_active: true,
+              email_verified_at: userWithoutHash.email_verified_at ?? new Date().toISOString(),
+            } as Profile,
+            storedAt: Date.now(),
+            loading: false,
+          });
           return true;
         } catch (e) {
           set({ error: (e as Error).message, loading: false });
@@ -731,7 +802,16 @@ if (profile) {
             if (res.ok && data.success && data.user_id) {
               const profile = await fetchProfileById(data.user_id);
               if (profile) {
-                set({ user: profile, loading: false });
+                const { password_hash: _ph, ...cleanProfile } = profile as Profile & { password_hash?: string };
+                set({
+                  user: {
+                    ...cleanProfile,
+                    is_active: true,
+                    email_verified_at: cleanProfile.email_verified_at ?? new Date().toISOString(),
+                  } as Profile,
+                  storedAt: Date.now(),
+                  loading: false,
+                });
                 return true;
               }
             }
@@ -786,7 +866,8 @@ if (profile) {
             }
           }
 
-          set({ user: newProfile as Profile, loading: false });
+          const { password_hash: _ph2, ...cleanNew } = newProfile as Profile & { password_hash?: string };
+          set({ user: cleanNew as Profile, storedAt: Date.now(), loading: false });
           return true;
         } catch (e) {
           set({ error: (e as Error).message, loading: false });
@@ -915,8 +996,8 @@ if (profile) {
             success: true,
           }).catch(() => {});
         }
-        localStorage.removeItem(STORAGE_KEY);
-        set({ user: null, error: null });
+        safeStorage.removeItem(STORAGE_KEY);
+        set({ user: null, storedAt: null, error: null });
       },
 
       clearError: () => set({ error: null }),
@@ -925,9 +1006,9 @@ if (profile) {
       isEmailVerified: () => {
         const user = get().user;
         if (!user) return false;
-        // Check if user has email_verified_at or similar field
-        // For custom auth, we check if the user was created via email verification flow
-        return (user as any).email_verified_at !== null && (user as any).email_verified_at !== undefined;
+        if (isDemoAccount(user)) return true;
+        if (user.is_active) return true;
+        return user.email_verified_at !== null && user.email_verified_at !== undefined;
       },
 
       resendVerificationEmail: async (email: string) => {
@@ -953,10 +1034,10 @@ if (profile) {
           const cleanEmail = email.toLowerCase().trim();
           const { data: profile } = await supabase
             .from('profiles')
-            .select('email_verified_at')
+            .select('email_verified_at, is_active')
             .eq('email', cleanEmail)
             .maybeSingle();
-          return profile?.email_verified_at !== null && profile?.email_verified_at !== undefined;
+          return Boolean(profile?.is_active) || (profile?.email_verified_at !== null && profile?.email_verified_at !== undefined);
         } catch {
           return false;
         }
@@ -964,11 +1045,19 @@ if (profile) {
     }),
     {
       name: STORAGE_KEY,
-      storage: safeStorage as any,
+      storage: createJSONStorage(() => safeStorage),
       partialize: (state) => ({
         user: state.user,
-        storedAt: Date.now(),
+        storedAt: state.user ? (state.storedAt ?? Date.now()) : null,
       }) as unknown as AuthState,
+      onRehydrateStorage: () => (state) => {
+        if (!state) return;
+        if (state.storedAt && Date.now() - state.storedAt > SESSION_MAX_AGE_MS) {
+          safeStorage.removeItem(STORAGE_KEY);
+          state.user = null;
+          state.storedAt = null;
+        }
+      },
     },
   ),
 );

@@ -562,7 +562,8 @@ export function Login() {
     // PACIENTE: REGISTRO (TOKEN + EMAIL + PASSWORD)
     // ─────────────────────────────────────────────
     if (isPaciente && mode === 'register') {
-      const registerData = createPatientRegisterData(token, email, password, confirmPassword, fullName, turnstileToken);
+      const normalizedName = fullName.trim() || undefined;
+      const registerData = createPatientRegisterData(token, email, password, confirmPassword, normalizedName, turnstileToken);
       const validation = validatePatientRegister(registerData);
       if (!validation.success) {
         setFormErrors(validation.errors);
@@ -574,12 +575,12 @@ export function Login() {
 
       // Special demo shortcut
       if (token.trim() === '123456' || email === 'paciente@demo.com') {
-        const ok = await linkTokenToEmail(token.trim(), email, password, fullName || undefined);
+        const ok = await linkTokenToEmail(token.trim(), email, password, normalizedName);
         if (ok) toast.success(t('auth.signupLinked'));
         return;
       }
 
-      const ok = await linkTokenToEmail(token.trim(), email, password, fullName || undefined);
+      const ok = await linkTokenToEmail(token.trim(), email, password, normalizedName);
       if (ok) {
         toast.success(t('auth.signupTokenLinked'));
       } else {
@@ -778,15 +779,26 @@ export function Login() {
     <div className="min-h-screen w-full flex font-sans text-slate-900 dark:text-slate-100 relative overflow-hidden bg-[#f9f9fc] dark:bg-slate-950">
       {/* ── MESH BACKGROUND GRADIENT ── */}
       <div
-        className="pointer-events-none absolute inset-0 z-0"
+        className="pointer-events-none absolute inset-0 z-0 transition-all duration-500"
         style={{
-          backgroundImage:
-            'radial-gradient(at 0% 0%, rgba(0, 80, 77, 0.12) 0px, transparent 50%), radial-gradient(at 100% 0%, rgba(14, 165, 233, 0.09) 0px, transparent 50%), radial-gradient(at 100% 100%, rgba(13, 148, 136, 0.15) 0px, transparent 50%), radial-gradient(at 0% 100%, rgba(6, 182, 212, 0.10) 0px, transparent 50%)',
+          backgroundImage: isPaciente
+            ? 'radial-gradient(at 0% 0%, rgba(37, 99, 235, 0.14) 0px, transparent 50%), radial-gradient(at 100% 0%, rgba(14, 165, 233, 0.12) 0px, transparent 50%), radial-gradient(at 100% 100%, rgba(56, 189, 248, 0.14) 0px, transparent 50%), radial-gradient(at 0% 100%, rgba(59, 130, 246, 0.10) 0px, transparent 50%)'
+            : 'radial-gradient(at 0% 0%, rgba(16, 185, 129, 0.15) 0px, transparent 50%), radial-gradient(at 100% 0%, rgba(34, 197, 94, 0.12) 0px, transparent 50%), radial-gradient(at 100% 100%, rgba(0, 80, 77, 0.16) 0px, transparent 50%), radial-gradient(at 0% 100%, rgba(52, 211, 153, 0.10) 0px, transparent 50%)',
         }}
       />
       {/* Ambient glowing orbs */}
-      <div className="pointer-events-none absolute -left-12 top-16 h-72 w-72 rounded-full bg-[#00504d]/10 dark:bg-teal-500/10 blur-[90px]" />
-      <div className="pointer-events-none absolute bottom-10 right-0 h-64 w-64 rounded-full bg-cyan-500/10 blur-[90px]" />
+      <div
+        className={cn(
+          'pointer-events-none absolute -left-12 top-16 h-72 w-72 rounded-full blur-[90px] transition-colors duration-500',
+          isPaciente ? 'bg-blue-500/15 dark:bg-sky-500/15' : 'bg-emerald-500/15 dark:bg-green-500/15'
+        )}
+      />
+      <div
+        className={cn(
+          'pointer-events-none absolute bottom-10 right-0 h-64 w-64 rounded-full blur-[90px] transition-colors duration-500',
+          isPaciente ? 'bg-sky-500/15' : 'bg-green-500/15'
+        )}
+      />
 
       {/* ═══════════════════════════════════════════════════
           LEFT PANEL — MAIN FORM
@@ -823,8 +835,18 @@ export function Login() {
           )}
         >
           {/* Internal ambient color spots */}
-          <div className="pointer-events-none absolute -top-12 -right-12 h-40 w-40 rounded-full bg-teal-500/15 blur-2xl" />
-          <div className="pointer-events-none absolute -bottom-10 -left-10 h-36 w-36 rounded-full bg-cyan-500/10 blur-2xl" />
+          <div
+            className={cn(
+              'pointer-events-none absolute -top-12 -right-12 h-40 w-40 rounded-full blur-2xl transition-colors duration-500',
+              isPaciente ? 'bg-blue-500/15' : 'bg-emerald-500/15'
+            )}
+          />
+          <div
+            className={cn(
+              'pointer-events-none absolute -bottom-10 -left-10 h-36 w-36 rounded-full blur-2xl transition-colors duration-500',
+              isPaciente ? 'bg-sky-500/15' : 'bg-green-500/12'
+            )}
+          />
 
           {/* Registration Progress Indicator (Physio Multi-step) */}
           {isFisio && isRegister && (
@@ -900,7 +922,15 @@ export function Login() {
                 {greeting}
               </span>
               <h2 className="font-extrabold text-2xl sm:text-[26px] tracking-tight leading-tight">
-                <AuroraText>{getHeaderTitle()}</AuroraText>
+                <AuroraText
+                  colors={
+                    isPaciente
+                      ? ['#38bdf8', '#2563eb', '#0ea5e9', '#60a5fa']
+                      : ['#22c55e', '#10b981', '#059669', '#34d399']
+                  }
+                >
+                  {getHeaderTitle()}
+                </AuroraText>
               </h2>
               <p className="text-sm text-slate-600 dark:text-slate-400 leading-snug px-1">
                 {getHeaderSubtitle()}
@@ -1937,8 +1967,8 @@ export function Login() {
             />
           </motion.div>
 
-          {/* Sparkles with role color (Blue for Paciente, Teal/Green for Fisio) */}
-          <SparkleEffect active={true} color={isPaciente ? 'blue' : 'teal'} />
+          {/* Sparkles with role color (Blue for Paciente, Green for Fisioterapeuta) */}
+          <SparkleEffect key={`sparkles-${loginRole}`} active={true} color={isPaciente ? 'blue' : 'green'} />
 
           {/* Interactive Character Spotlight & Illuminations */}
           <CharacterSpotlight

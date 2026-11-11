@@ -449,7 +449,7 @@ export function PatientDetailPage() {
   }
 
   return (
-    <div className="space-y-8 max-w-7xl mx-auto pb-12">
+    <div className="space-y-5 max-w-7xl mx-auto pb-8">
       <ScrollProgress className="top-0 fixed z-50 h-1 bg-gradient-to-r from-teal-500 to-cyan-400" />
 
       {/* Patient Header Section */}
@@ -558,17 +558,17 @@ export function PatientDetailPage() {
       </div>
 
       {activeTab === 'overview' && (
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="grid grid-cols-1 lg:grid-cols-3 gap-5 items-stretch">
           {/* Clinical data card */}
-          <GlassPanel className="card-glow-hover lg:col-span-3 p-8 rounded-[2rem]">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="p-3 bg-primary/10 rounded-2xl text-primary"><MedicalIcon name="activity" size={24} /></div>
+          <GlassPanel className="card-glow-hover lg:col-span-3 p-5 sm:p-6 rounded-3xl">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="p-2.5 bg-primary/10 rounded-2xl text-primary"><MedicalIcon name="activity" size={22} /></div>
               <div>
                 <h3 className="font-title-md text-title-md text-on-surface">{t('pdp.clinicalData')}</h3>
                 <p className="text-xs text-on-surface-variant">{t('pdp.clinicalDataDesc')}</p>
               </div>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
               {[
                 { label: 'Patología', value: patient.patologia || patient.diagnostico, icon: 'medical_information' },
                 { label: 'Diagnóstico Secundario', value: patient.diagnostico_secundario, icon: 'medical_information' },
@@ -589,12 +589,12 @@ export function PatientDetailPage() {
                 { label: 'Teléfono', value: patient.telefono, icon: 'phone' },
                 { label: 'Fecha de Nacimiento', value: patient.fecha_nacimiento, icon: 'cake' },
               ].map((field) => (
-                <div key={field.label} className="p-4 rounded-xl bg-surface-variant/10 border border-outline-variant/10">
-                  <div className="flex items-center gap-2 mb-1">
+                <div key={field.label} className="p-3 rounded-xl bg-surface-variant/10 border border-outline-variant/10">
+                  <div className="flex items-center gap-2 mb-0.5">
                     <Icon name={field.icon} size={14} className="text-outline" />
                     <span className="text-[10px] font-bold uppercase tracking-wider text-outline">{field.label}</span>
                   </div>
-                  <p className="text-sm text-on-surface font-medium">{field.value || 'No registrado'}</p>
+                  <p className="text-sm text-on-surface font-medium truncate">{field.value || 'No registrado'}</p>
                 </div>
               ))}
             </div>
@@ -621,35 +621,37 @@ export function PatientDetailPage() {
               </div>
             )}
           </GlassPanel>
-          <GlassPanel className="card-glow-hover lg:col-span-2 p-8 rounded-[2rem]">
-            <h3 className="font-title-md text-title-md text-on-surface mb-2 flex items-center gap-2">
-              <MedicalIcon name="activity" size={20} className="text-primary" />{t('pdp.biomechProgress')}</h3>
-            <p className="text-sm text-on-surface-variant mb-6">{t('pdp.romEvolution')}</p>
+          <GlassPanel className="card-glow-hover lg:col-span-2 p-5 sm:p-6 rounded-3xl flex flex-col justify-between">
+            <div>
+              <h3 className="font-title-md text-title-md text-on-surface mb-1.5 flex items-center gap-2">
+                <MedicalIcon name="activity" size={20} className="text-primary" />{t('pdp.biomechProgress')}</h3>
+              <p className="text-sm text-on-surface-variant mb-4">{t('pdp.romEvolution')}</p>
 
-            <div className="flex items-end gap-3 mb-4">
-              <span className="text-5xl font-extrabold text-primary">{recoveryProgress > 0 ? `${recoveryProgress}%` : '—'}</span>
-              <span className="text-sm text-on-surface-variant mb-2">{t('pdp.globalRecovery')}</span>
-            </div>
+              <div className="flex items-end gap-3 mb-4">
+                <span className="text-5xl font-extrabold text-primary tabular-nums">{recoveryProgress > 0 ? `${recoveryProgress}%` : '—'}</span>
+                <span className="text-sm text-on-surface-variant mb-2">{t('pdp.globalRecovery')}</span>
+              </div>
 
-            <div className="h-48 flex items-end justify-between gap-2">
-              {weekBuckets.map((v, i) => (
-                <div key={i} className="flex-1 flex flex-col items-center gap-1">
-                  <div
-                    className={cn(
-                      "w-full rounded-t-xl relative group cursor-pointer transition-all",
-                      i === 7
-                        ? "bg-gradient-to-t from-teal-600 to-teal-400 shadow-md shadow-teal-500/30"
-                        : "bg-teal-500/20 hover:bg-teal-500/35 dark:bg-teal-400/20 dark:hover:bg-teal-400/35"
-                    )}
-                    style={{ height: `${Math.max((v / maxWeekVal) * 100, 8)}%` }}
-                  >
-                    {i === 7 && recoveryProgress > 0 && (
-                      <div className="absolute -top-8 left-1/2 -translate-x-1/2 text-[10px] font-bold bg-primary text-on-primary px-2 py-1 rounded-full shadow-lg whitespace-nowrap">ACT: {recoveryProgress}%</div>
-                    )}
+              <div className="h-52 flex items-end justify-between gap-2">
+                {weekBuckets.map((v, i) => (
+                  <div key={i} className="flex-1 flex flex-col items-center gap-1">
+                    <div
+                      className={cn(
+                        "w-full rounded-t-xl relative group cursor-pointer transition-all",
+                        i === 7
+                          ? "bg-gradient-to-t from-teal-600 to-teal-400 shadow-md shadow-teal-500/30"
+                          : "bg-teal-500/20 hover:bg-teal-500/35 dark:bg-teal-400/20 dark:hover:bg-teal-400/35"
+                      )}
+                      style={{ height: `${Math.max((v / maxWeekVal) * 100, 8)}%` }}
+                    >
+                      {i === 7 && recoveryProgress > 0 && (
+                        <div className="absolute -top-8 left-1/2 -translate-x-1/2 text-[10px] font-bold bg-primary text-on-primary px-2 py-1 rounded-full shadow-lg whitespace-nowrap">ACT: {recoveryProgress}%</div>
+                      )}
+                    </div>
+                    <span className="text-[10px] text-outline font-medium">{weekLabels[i]}</span>
                   </div>
-                  <span className="text-[10px] text-outline font-medium">{weekLabels[i]}</span>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
 
             <div className="flex items-center justify-between pt-4 border-t border-outline/10 mt-4">
@@ -662,14 +664,14 @@ export function PatientDetailPage() {
             </div>
           </GlassPanel>
 
-          <div className="space-y-4">
+          <div className="flex flex-col gap-4 h-full">
 
-            <GlassPanel className="card-glow-hover p-6 rounded-3xl">
+            <GlassPanel className="card-glow-hover p-5 rounded-3xl">
               <div className="flex items-center gap-2 mb-2">
                 <Icon name="check_circle" size={20} className="text-primary" />
                 <span className="text-sm text-on-surface-variant font-semibold">{t('tr.sesiones_completadas')}</span>
               </div>
-              <p className="text-2xl font-bold text-on-surface">{totalSessions}</p>
+              <p className="text-2xl font-bold text-on-surface tabular-nums">{totalSessions}</p>
               {sessions.length > 1 && (
                 <p className="text-xs text-outline">{daysSinceLast !== null ? `Última: hace ${daysSinceLast} día(s)` : ''}</p>
               )}
@@ -686,38 +688,45 @@ export function PatientDetailPage() {
 
             {clinicalFeed.length > 0 ? (
               <ClinicalActivityFeed
-                items={clinicalFeed}
+                items={clinicalFeed.slice(0, 5)}
                 title={t('tr.historial_de_sesiones')}
                 subtitle={t('pdp.realRecordDesc')}
+                className="flex-1 max-w-none"
               />
             ) : (
-              <GlassPanel className="card-glow-hover p-6 rounded-3xl">
+              <GlassPanel className="card-glow-hover p-5 rounded-3xl flex-1 flex flex-col justify-center">
                 <p className="text-sm font-semibold text-on-surface">{t('pdp.sessionHistory')}</p>
                 <p className="text-xs text-outline mt-1">{t('pdp.noSessions')}</p>
               </GlassPanel>
             )}
           </div>
 
-          <div className="lg:col-span-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <PatientAdherenceHeatmapCard />
-            <GlassPanel className="card-glow-hover p-6 rounded-3xl">
+          <div className="lg:col-span-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-stretch">
+            <PatientAdherenceHeatmapCard className="h-full" />
+            <GlassPanel className="card-glow-hover p-5 rounded-3xl h-full flex flex-col justify-between">
               <p className="text-xs font-semibold text-on-surface-variant">{t('pdp.avgQuality')}</p>
-              <p className="text-2xl font-bold text-on-surface mt-1">{avgQuality > 0 ? `${avgQuality}%` : '—'}</p>
-              <p className="text-[11px] text-outline mt-1">{sessions.length > 0 ? 'Promedio de sesiones registradas' : 'Sin sesiones registradas'}</p>
+              <div>
+                <p className="text-2xl font-bold text-on-surface mt-1 tabular-nums">{avgQuality > 0 ? `${avgQuality}%` : '—'}</p>
+                <p className="text-[11px] text-outline mt-1">{sessions.length > 0 ? 'Promedio de sesiones registradas' : 'Sin sesiones registradas'}</p>
+              </div>
             </GlassPanel>
-            <GlassPanel className="card-glow-hover p-6 rounded-3xl">
+            <GlassPanel className="card-glow-hover p-5 rounded-3xl h-full flex flex-col justify-between">
               <p className="text-xs font-semibold text-on-surface-variant">{t('pdp.lastSession')}</p>
-              <p className="text-sm font-bold text-on-surface mt-1">{lastSession ? new Date(lastSession.fecha).toLocaleDateString(currentLocale()) : '—'}</p>
-              <p className="text-[11px] text-outline mt-1">{lastSession?.ejercicio_nombre || 'Sin registro'}</p>
+              <div>
+                <p className="text-sm font-bold text-on-surface mt-1">{lastSession ? new Date(lastSession.fecha).toLocaleDateString(currentLocale()) : '—'}</p>
+                <p className="text-[11px] text-outline mt-1">{lastSession?.ejercicio_nombre || 'Sin registro'}</p>
+              </div>
             </GlassPanel>
-            <GlassPanel className="card-glow-hover p-6 rounded-3xl">
+            <GlassPanel className="card-glow-hover p-5 rounded-3xl h-full flex flex-col justify-between">
               <p className="text-xs font-semibold text-on-surface-variant">{t('pdp.recoveryPhase')}</p>
-              <p className="text-sm font-bold text-on-surface mt-1">{routineHistory[0]?.fase || routineHistory[0]?.fase_recuperacion || 'Sin registrar'}</p>
-              <p className="text-[11px] text-outline mt-1">{routineHistory[0]?.nombre || 'Sin rutina activa'}</p>
+              <div>
+                <p className="text-sm font-bold text-on-surface mt-1">{routineHistory[0]?.fase || routineHistory[0]?.fase_recuperacion || 'Sin registrar'}</p>
+                <p className="text-[11px] text-outline mt-1">{routineHistory[0]?.nombre || 'Sin rutina activa'}</p>
+              </div>
             </GlassPanel>
           </div>
 
-          <GlassPanel className="card-glow-hover lg:col-span-3 p-8 rounded-[2rem] bg-primary-container border-primary/20">
+          <GlassPanel className="card-glow-hover lg:col-span-3 p-5 sm:p-6 rounded-3xl bg-primary-container border-primary/20">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center">
                 <Icon name="psychology" filled size={24} className="text-on-primary-container" />
@@ -758,7 +767,7 @@ export function PatientDetailPage() {
 
       {activeTab === 'history' && (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-          <GlassPanel className="card-glow-hover p-8 rounded-[2rem]">
+          <GlassPanel className="card-glow-hover p-5 sm:p-6 rounded-3xl">
             <h3 className="font-title-md text-title-md text-on-surface mb-6">{t('pdp.clinicalHistory')}</h3>
             {sessions.length === 0 ? (
               <div className="empty-state-premium text-center py-12">
@@ -810,7 +819,7 @@ export function PatientDetailPage() {
 
       {activeTab === 'routine' && (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
-          <GlassPanel className="card-glow-hover p-8 rounded-[2rem]">
+          <GlassPanel className="card-glow-hover p-5 sm:p-6 rounded-3xl">
             <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
               <h3 className="font-title-md text-title-md text-on-surface">{t('pdp.assignedRoutine')}</h3>
               <div className="flex gap-2 flex-wrap">

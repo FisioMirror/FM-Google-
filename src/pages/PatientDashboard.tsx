@@ -355,7 +355,7 @@ export function PatientDashboard() {
     : t('dashboard.greetingEvening', 'Buenas noches');
 
   return (
-    <div className="space-y-8 max-w-7xl mx-auto w-full pb-12">
+    <div className="space-y-5 max-w-7xl mx-auto w-full pb-8">
       <OnboardingGuide />
 
       {/* Achievement Unlock Modal */}
@@ -492,41 +492,38 @@ export function PatientDashboard() {
 
       {/* Gamificación Interactiva & Registro del Umbral de Dolor */}
       <div className="space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-3xl bg-surface/80 dark:bg-surface-container/60 border border-outline/10 shadow-sm">
-          <LevelProgressRibbon
-            currentLevel={gamification.currentLevel.level}
-            levelTitle={gamification.currentLevel.title}
-            currentXp={gamification.points}
-            nextLevelXp={gamification.nextLevel ? gamification.nextLevel.minPoints : gamification.currentLevel.maxPoints}
-            className="w-full sm:w-auto"
-          />
-          <span className="text-xs font-bold text-teal-600 dark:text-teal-400">
-            Fase de Recuperación Articular • Nivel {gamification.currentLevel.level} ({gamification.currentLevel.title})
-          </span>
-        </div>
+        <LevelProgressRibbon
+          currentLevel={gamification.currentLevel.level}
+          levelTitle={gamification.currentLevel.title}
+          subtitle="Fase de Recuperación Articular"
+          currentXp={gamification.points}
+          nextLevelXp={gamification.nextLevel ? gamification.nextLevel.minPoints : gamification.currentLevel.maxPoints}
+          className="w-full"
+        />
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div>
-            <StreakFlameCounter streakDays={kpi.streak} />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-stretch">
+          <div className="h-full">
+            <StreakFlameCounter streakDays={kpi.streak} className="h-full" />
           </div>
-          <div>
+          <div className="h-full">
             <MobilityQuestCard
               questTitle="Sesiones de esta semana"
               progressText={`${kpi.totalSessions} completadas en total`}
               xpReward={0}
+              className="h-full"
             />
           </div>
-          <div>
-            <DailyHealthPointsWidget points={kpi.streak * 100} />
+          <div className="h-full">
+            <DailyHealthPointsWidget points={kpi.streak * 100} className="h-full" />
           </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left 2 Cols: Daily Routine & Primary Action */}
-        <div className="lg:col-span-2 space-y-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 items-start">
+        {/* Left 2 Cols: Daily Routine, Assigned Exercises, Pain Scale & AI Physi */}
+        <div className="lg:col-span-2 space-y-5">
           {/* Featured AR Session Card con fondo pastel menta/celeste clínico */}
-          <div className="relative overflow-hidden rounded-3xl p-6 lg:p-8 bg-gradient-to-br from-teal-50/80 via-surface/95 to-sky-50/60 dark:from-teal-950/30 dark:via-surface-container/85 dark:to-sky-950/20 border border-teal-200/60 dark:border-teal-500/30 shadow-lg">
+          <div className="relative overflow-hidden rounded-3xl p-5 sm:p-6 bg-gradient-to-br from-teal-50/80 via-surface/95 to-sky-50/60 dark:from-teal-950/30 dark:via-surface-container/85 dark:to-sky-950/20 border border-teal-200/60 dark:border-teal-500/30 shadow-lg">
             <BorderBeam size={120} duration={8} colorFrom="#14b8a6" colorTo="#38bdf8" />
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 relative z-10">
               <div className="space-y-2 max-w-md">
@@ -622,20 +619,126 @@ export function PatientDashboard() {
               </div>
             )}
           </CollapsibleSection>
+
+          {/* Row below Mis Ejercicios Asignados: Dolor + Physi IA balanced side-by-side */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-stretch">
+            <PainScaleInteractiveCard
+              initialPain={2}
+              onSubmit={handlePainSubmit}
+              submitting={savingPain}
+              className="h-full"
+            />
+
+            {/* AI Physi Recommendation Card */}
+            <div className="p-5 rounded-3xl bg-surface/80 dark:bg-surface-container-low/60 border border-outline/10 flex flex-col justify-between gap-3.5 h-full">
+              <div className="space-y-3">
+                <div className="flex items-center gap-2.5">
+                  <div className="size-8 rounded-xl bg-teal-500/10 text-teal-600 flex items-center justify-center shrink-0">
+                    <Bot className="size-4" />
+                  </div>
+                  <div>
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-on-surface">{t('pdash.physi')}</h4>
+                    <p className="text-[11px] text-outline">{t('pdash.physiSub')}</p>
+                  </div>
+                </div>
+
+                <div className="p-3.5 rounded-2xl bg-surface-container/50 text-xs text-on-surface-variant leading-relaxed italic border border-outline/5">
+                  {recommendation && recGeneratedAt && (
+                    <div className="flex items-center gap-1.5 mb-1.5 not-italic text-2xs text-on-surface-variant/80">
+                      <Sparkles className="size-3" />
+                      <span className="font-bold uppercase tracking-wider">{t('patientDashboard.aiGenerated', 'Generado por IA')}</span>
+                      <span className="tabular-nums">· {new Date(recGeneratedAt).toLocaleString(i18n.language, { dateStyle: 'short', timeStyle: 'short' })}</span>
+                    </div>
+                  )}
+                  {recLoading ? (
+                    <span className="flex items-center gap-2">
+                      <Activity className="size-3.5 animate-spin text-primary" /> Analizando tu progreso biomecánico...
+                    </span>
+                  ) : recommendation ? (
+                    recommendation
+                  ) : (
+                    kpi.streak >= 3
+                      ? `¡Excelente trabajo! Llevas ${kpi.streak} días consecutivos. Tu adherencia al tratamiento reduce el tiempo de recuperación.`
+                      : 'Completa al menos una sesión hoy para mantener la movilidad articular y evitar rigidez.'
+                  )}
+                </div>
+              </div>
+
+              <div className="flex gap-2 items-center pt-1">
+                <button
+                  onClick={() => {
+                    if (isSpeakingCopilot || isHumanVoiceSpeaking()) {
+                      stopHumanVoice();
+                      setIsSpeakingCopilot(false);
+                    } else {
+                      const textToSpeak =
+                        recommendation ||
+                        (kpi.streak >= 3
+                          ? `¡Excelente trabajo! Llevas ${kpi.streak} días consecutivos. Tu adherencia al tratamiento reduce el tiempo de recuperación.`
+                          : 'Completa al menos una sesión hoy para mantener la movilidad articular y evitar rigidez.');
+                      setIsSpeakingCopilot(true);
+                      humanVoice.speak(textToSpeak, {
+                        onEnd: () => setIsSpeakingCopilot(false),
+                        onError: () => setIsSpeakingCopilot(false),
+                      });
+                    }
+                  }}
+                  className={`py-2 px-3 rounded-xl border text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                    isSpeakingCopilot
+                      ? 'bg-teal-500 text-white shadow-xs animate-pulse border-teal-400'
+                      : 'bg-teal-500/10 hover:bg-teal-500/20 text-teal-700 dark:text-teal-300 border-teal-500/20'
+                  }`}
+                  title={t('pdash.listen')}
+                >
+                  {isSpeakingCopilot ? <VolumeX className="size-3.5" /> : <Volume2 className="size-3.5" />}
+                  <span>{isSpeakingCopilot ? 'Detener voz' : 'Escuchar consejo'}</span>
+                </button>
+
+                <button
+                  onClick={async () => {
+                    if (!recommendation && !recLoading) {
+                      setRecLoading(true);
+                      try {
+                        const result = await runAIJob('insights', {
+                          userPrompt: `Genera un consejo clínico breve y motivador para un paciente con ${kpi.totalSessions} sesiones y ${kpi.streak} días de racha. Máximo 2 frases. Responde en español.`,
+                        });
+                        if (result.success && result.result) {
+                          setRecommendation(result.result);
+                          setRecGeneratedAt(new Date().toISOString());
+                          toast.success('Consejo clínico actualizado');
+                        }
+                      } catch {
+                        toast.error('No se pudo conectar con Physi');
+                      } finally {
+                        setRecLoading(false);
+                      }
+                    } else {
+                      navigate('/calibration');
+                    }
+                  }}
+                  disabled={recLoading}
+                  className="flex-1 py-2 rounded-xl bg-primary/10 hover:bg-primary/20 text-primary text-xs font-bold transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+                >
+                  <Sparkles className="size-3.5" />
+                  <span>{recommendation ? 'Iniciar sesión' : 'Consultar'}</span>
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
 
-        {/* Right Col: Weekly Progress & Physi Assistant */}
-        <div className="space-y-6">
+        {/* Right Col: Weekly Progress */}
+        <div className="space-y-5">
           {/* Activity Graph */}
           <CollapsibleSection title={t('pdash.weekly')} icon="trending_up" defaultOpen>
             <SimpleCalendar markedDates={allSessionDates} />
 
-            <div className="p-5 rounded-2xl bg-surface/80 dark:bg-surface-container-low/60 border border-outline/10 mt-4">
-              <div className="flex justify-between items-center text-xs mb-3 text-on-surface-variant">
+            <div className="p-4 rounded-2xl bg-surface/80 dark:bg-surface-container-low/60 border border-outline/10 mt-3">
+              <div className="flex justify-between items-center text-xs mb-2 text-on-surface-variant">
                 <span className="font-semibold">{t('pdash.dailyMin')}</span>
                 <span>{t('pdash.goal')}</span>
               </div>
-              <div className="h-32 flex items-end justify-between gap-2 pt-4">
+              <div className="h-28 flex items-end justify-between gap-2 pt-3">
                 {weekActivity.map((d, i) => (
                   <div key={i} className="flex-1 flex flex-col items-center gap-1.5 h-full justify-end">
                     <motion.div
@@ -655,7 +758,7 @@ export function PatientDashboard() {
             </div>
 
             {evolution && (
-              <div className="p-4 rounded-2xl bg-surface/80 dark:bg-surface-container-low/60 border border-outline/10 mt-4 space-y-2">
+              <div className="p-4 rounded-2xl bg-surface/80 dark:bg-surface-container-low/60 border border-outline/10 mt-3 space-y-2">
                 <div className="flex justify-between items-center text-xs text-on-surface-variant mb-1">
                   <span className="font-semibold">{t('pdash.rom')}</span>
                   <span className="font-bold text-teal-600 dark:text-teal-400">
@@ -677,7 +780,7 @@ export function PatientDashboard() {
             )}
 
             {therapist && (
-              <div className="p-4 rounded-2xl bg-teal-500/5 border border-teal-500/15 flex items-center gap-3 mt-4">
+              <div className="p-3.5 rounded-2xl bg-teal-500/5 border border-teal-500/15 flex items-center gap-3 mt-3">
                 <div className="size-10 rounded-xl bg-teal-500/10 text-teal-600 flex items-center justify-center font-bold">
                   <User className="size-5" />
                 </div>
@@ -688,103 +791,6 @@ export function PatientDashboard() {
               </div>
             )}
           </CollapsibleSection>
-
-          {/* Registro del Umbral de Dolor */}
-          <PainScaleInteractiveCard initialPain={2} onSubmit={handlePainSubmit} submitting={savingPain} />
-
-          {/* AI Physi Recommendation Card */}
-          <div className="p-6 rounded-3xl bg-surface/80 dark:bg-surface-container-low/60 border border-outline/10 space-y-4">
-            <div className="flex items-center gap-2.5">
-              <div className="size-8 rounded-xl bg-teal-500/10 text-teal-600 flex items-center justify-center">
-                <Bot className="size-4" />
-              </div>
-              <div>
-                <h4 className="text-xs font-bold uppercase tracking-wider text-on-surface">{t('pdash.physi')}</h4>
-                <p className="text-[11px] text-outline">{t('pdash.physiSub')}</p>
-              </div>
-            </div>
-
-            <div className="p-3.5 rounded-2xl bg-surface-container/50 text-xs text-on-surface-variant leading-relaxed italic border border-outline/5">
-              {recommendation && recGeneratedAt && (
-                <div className="flex items-center gap-1.5 mb-1.5 not-italic text-2xs text-on-surface-variant/80">
-                  <Sparkles className="size-3" />
-                  <span className="font-bold uppercase tracking-wider">{t('patientDashboard.aiGenerated', 'Generado por IA')}</span>
-                  <span className="tabular-nums">· {new Date(recGeneratedAt).toLocaleString(i18n.language, { dateStyle: 'short', timeStyle: 'short' })}</span>
-                </div>
-              )}
-              {recLoading ? (
-                <span className="flex items-center gap-2">
-                  <Activity className="size-3.5 animate-spin text-primary" /> Analizando tu progreso biomecánico...
-                </span>
-              ) : recommendation ? (
-                recommendation
-              ) : (
-                kpi.streak >= 3
-                  ? `¡Excelente trabajo! Llevas ${kpi.streak} días consecutivos. Tu adherencia al tratamiento reduce el tiempo de recuperación.`
-                  : 'Completa al menos una sesión hoy para mantener la movilidad articular y evitar rigidez.'
-              )}
-            </div>
-
-            <div className="flex gap-2 items-center">
-              <button
-                onClick={() => {
-                  if (isSpeakingCopilot || isHumanVoiceSpeaking()) {
-                    stopHumanVoice();
-                    setIsSpeakingCopilot(false);
-                  } else {
-                    const textToSpeak =
-                      recommendation ||
-                      (kpi.streak >= 3
-                        ? `¡Excelente trabajo! Llevas ${kpi.streak} días consecutivos. Tu adherencia al tratamiento reduce el tiempo de recuperación.`
-                        : 'Completa al menos una sesión hoy para mantener la movilidad articular y evitar rigidez.');
-                    setIsSpeakingCopilot(true);
-                    humanVoice.speak(textToSpeak, {
-                      onEnd: () => setIsSpeakingCopilot(false),
-                      onError: () => setIsSpeakingCopilot(false),
-                    });
-                  }
-                }}
-                className={`py-2 px-3 rounded-xl border text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
-                  isSpeakingCopilot
-                    ? 'bg-teal-500 text-white shadow-xs animate-pulse border-teal-400'
-                    : 'bg-teal-500/10 hover:bg-teal-500/20 text-teal-700 dark:text-teal-300 border-teal-500/20'
-                }`}
-                title={t('pdash.listen')}
-              >
-                {isSpeakingCopilot ? <VolumeX className="size-3.5" /> : <Volume2 className="size-3.5" />}
-                <span>{isSpeakingCopilot ? 'Detener voz' : 'Escuchar consejo'}</span>
-              </button>
-
-              <button
-                onClick={async () => {
-                  if (!recommendation && !recLoading) {
-                    setRecLoading(true);
-                    try {
-                      const result = await runAIJob('insights', {
-                        userPrompt: `Genera un consejo clínico breve y motivador para un paciente con ${kpi.totalSessions} sesiones y ${kpi.streak} días de racha. Máximo 2 frases. Responde en español.`,
-                      });
-                      if (result.success && result.result) {
-                        setRecommendation(result.result);
-                        setRecGeneratedAt(new Date().toISOString());
-                        toast.success('Consejo clínico actualizado');
-                      }
-                    } catch {
-                      toast.error('No se pudo conectar con Physi');
-                    } finally {
-                      setRecLoading(false);
-                    }
-                  } else {
-                    navigate('/calibration');
-                  }
-                }}
-                disabled={recLoading}
-                className="flex-1 py-2 rounded-xl bg-primary/10 hover:bg-primary/20 text-primary text-xs font-bold transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
-              >
-                <Sparkles className="size-3.5" />
-                <span>{recommendation ? 'Iniciar sesión' : 'Consultar'}</span>
-              </button>
-            </div>
-          </div>
         </div>
       </div>
 

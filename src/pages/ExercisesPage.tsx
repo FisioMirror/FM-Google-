@@ -700,11 +700,11 @@ export function ExercisesPage() {
   });
 
   return (
-    <div className="max-w-7xl mx-auto space-y-7 pb-16">
+    <div className="max-w-7xl mx-auto space-y-5 pb-10">
       {/* Header section with notification-like glass aesthetics */}
-      <div className="relative rounded-3xl p-6 sm:p-8 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border border-white/60 dark:border-teal-500/20 shadow-[0_8px_32px_rgba(0,80,77,0.06)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.35)] border-l-4 border-l-teal-600 dark:border-l-teal-400 overflow-hidden">
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 relative z-10">
-          <div className="space-y-2">
+      <div className="relative rounded-3xl p-5 sm:p-6 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border border-teal-500/25 dark:border-teal-500/25 shadow-[0_8px_32px_rgba(0,80,77,0.06)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.35)] overflow-hidden">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5 relative z-10">
+          <div className="space-y-1.5">
             <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white">
               {t('exercises.catalogTitle', 'Catálogo de Ejercicios & Guía Anatómica')}
             </h1>
@@ -725,7 +725,7 @@ export function ExercisesPage() {
         </div>
 
         {/* Radar de Activación Muscular & Calibración de Tolerancia */}
-        <div className="mt-6 pt-6 border-t border-slate-200/60 dark:border-slate-800 grid grid-cols-1 lg:grid-cols-3 gap-6 items-center">
+        <div className="mt-4 pt-4 border-t border-slate-200/60 dark:border-slate-800 grid grid-cols-1 lg:grid-cols-3 gap-5 items-center">
           <div className="lg:col-span-2">
             <MuscleTargetRadarCard
               className="bg-transparent border-0 p-0 shadow-none"

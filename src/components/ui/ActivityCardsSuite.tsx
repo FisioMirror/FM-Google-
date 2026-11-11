@@ -263,7 +263,7 @@ export const PainScaleInteractiveCard: React.FC<PainScaleInteractiveCardProps> =
       whileHover={{ y: -3, scale: 1.01 }}
       transition={{ duration: 0.2 }}
       className={cn(
-        "relative p-5 rounded-3xl bg-gradient-to-br border border-outline-variant/30 dark:border-white/10 shadow-lg overflow-hidden transition-all",
+        "relative p-5 rounded-3xl bg-gradient-to-br border border-outline-variant/30 dark:border-white/10 shadow-lg overflow-hidden transition-all flex flex-col justify-between",
         getAccentGradient(),
         className
       )}

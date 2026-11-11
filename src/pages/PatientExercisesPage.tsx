@@ -360,7 +360,7 @@ export function PatientExercisesPage() {
           ))}
         </div>
       ) : filteredExercises.length === 0 ? (
-        <div className="p-8 rounded-3xl bg-surface-container-low border border-outline-variant/30 text-center">
+        <div className="p-6 rounded-3xl bg-surface-container-low border border-outline-variant/30 text-center">
           <p className="text-sm font-semibold text-on-surface">{t('px.noExercisesZone')}</p>
           <p className="text-xs text-on-surface-variant mt-1">{t('px.noExercisesZoneDesc')}</p>
           <button

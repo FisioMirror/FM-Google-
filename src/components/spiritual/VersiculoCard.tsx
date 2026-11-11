@@ -158,7 +158,7 @@ export function VersiculoCard({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
       className={cn(
-        'relative overflow-hidden rounded-3xl p-6 lg:p-7 bg-surface/90 dark:bg-surface-container-low/75 border border-teal-500/20 shadow-sm',
+        'relative overflow-hidden rounded-3xl p-4 sm:p-5 bg-surface/90 dark:bg-surface-container-low/75 border border-teal-500/20 shadow-sm',
         className
       )}
     >
@@ -167,7 +167,7 @@ export function VersiculoCard({
       <div className="absolute -bottom-10 -left-10 w-48 h-48 bg-teal-500/5 rounded-full blur-2xl pointer-events-none" />
 
       {/* Header bar */}
-      <div className="relative z-10 flex items-start justify-between gap-4 mb-4">
+      <div className="relative z-10 flex items-start justify-between gap-4 mb-3">
         <div className="flex items-center gap-3">
           <div className="size-10 rounded-2xl bg-teal-500/15 text-teal-600 dark:text-teal-400 flex items-center justify-center border border-teal-500/20">
             {categoryIcon(categoria)}
@@ -223,7 +223,7 @@ export function VersiculoCard({
 
       {/* Category Pills (Optional switch) */}
       {allowCategoryChange && (
-        <div className="relative z-10 flex items-center gap-1.5 flex-wrap mb-4 pb-1 border-b border-outline/10">
+        <div className="relative z-10 flex items-center gap-1.5 flex-wrap mb-3 pb-1 border-b border-outline/10">
           {categoriasList.map((cat) => {
             const isSelected = categoria === cat;
             const meta = CATEGORIAS_METADATA[cat];
@@ -288,7 +288,7 @@ export function VersiculoCard({
       </div>
 
       {/* Footer bar */}
-      <div className="relative z-10 mt-4 pt-3 border-t border-outline/10 flex items-center justify-between">
+      <div className="relative z-10 mt-3 pt-2.5 border-t border-outline/10 flex items-center justify-between">
         <p className="text-[11px] text-on-surface-variant">
           Persevera con fe: cada repetición y cada esfuerzo renuevan tu salud.
         </p>

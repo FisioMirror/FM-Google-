@@ -23,9 +23,10 @@ import {
   QuickPrescriptionModalButton,
 } from '../components/ui/FloatingControlsSuite';
 import { BentoGrid, BentoCard } from '../components/ui/BentoGrid';
-import { Calculator, Camera, FileText, Footprints, RotateCcw, Copy, Send, Bot } from 'lucide-react';
+import { Calculator, Camera, FileText, Footprints, RotateCcw, Copy, Send, Bot, Volume2, VolumeX, PanelRightOpen, PanelRightClose, UserCheck } from 'lucide-react';
 import { GaitCapturePanel } from '../components/patient/GaitCapturePanel';
 import { currentLocale } from '../lib/format';
+import { humanVoice } from '../lib/humanVoice';
 
 interface ChatMessage {
   role: 'user' | 'assistant';
@@ -38,21 +39,25 @@ interface PatientOption {
   diagnostico: string | null;
 }
 
+type BmiCategory = 'under' | 'healthy' | 'over' | 'obese';
+
 export function ToolsPage() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const toast = useToast();
   const user = useAuthStore((s) => s.user);
   const [bmi, setBmi] = useState(23.5);
-  const [bmiStatus, setBmiStatus] = useState('Peso Saludable');
+  const [bmiCategory, setBmiCategory] = useState<BmiCategory>('healthy');
   const [height, setHeight] = useState(175);
   const [weight, setWeight] = useState(72);
   const [patients, setPatients] = useState<PatientOption[]>([]);
   const [selectedPatient, setSelectedPatient] = useState('');
-  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([
-    { role: 'assistant', text: 'Hola. Soy Physi, tu asistente clínico. ¿En qué puedo ayudarte?' },
+  const [chatMessages, setChatMessages] = useState<ChatMessage[]>(() => [
+    { role: 'assistant', text: t('tl.physiWelcome') },
   ]);
   const [chatInput, setChatInput] = useState('');
   const [aiLoading, setAiLoading] = useState(false);
+  const [speakingIdx, setSpeakingIdx] = useState<number | null>(null);
+  const [showMobilePhysi, setShowMobilePhysi] = useState(false);
   const [scanProcessing, setScanProcessing] = useState(false);
   const [scanComplete, setScanComplete] = useState(false);
   const [scanResult, setScanResult] = useState<Record<string, unknown> | null>(null);
@@ -74,11 +79,17 @@ export function ToolsPage() {
     const h = height / 100;
     const result = weight / (h * h);
     setBmi(parseFloat(result.toFixed(1)));
-    if (result < 18.5) setBmiStatus('Bajo Peso');
-    else if (result < 25) setBmiStatus('Peso Saludable');
-    else if (result < 30) setBmiStatus('Sobrepeso');
-    else setBmiStatus('Obesidad');
+    if (result < 18.5) setBmiCategory('under');
+    else if (result < 25) setBmiCategory('healthy');
+    else if (result < 30) setBmiCategory('over');
+    else setBmiCategory('obese');
   }, [height, weight]);
+
+  useEffect(() => {
+    return () => {
+      humanVoice.stop();
+    };
+  }, []);
 
   const loadPatients = useCallback(async () => {
     if (!user?.id) return;
@@ -200,7 +211,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
   const sendChat = async () => {
     if (!chatInput.trim() || aiLoading) return;
     const userMsg = chatInput;
-    setChatMessages([...chatMessages, { role: 'user', text: userMsg }]);
+    setChatMessages((prev) => [...prev, { role: 'user', text: userMsg }]);
     setChatInput('');
     setAiLoading(true);
 
@@ -213,8 +224,15 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
         });
       }
 
+      const activePatient = patients.find((p) => p.id === selectedPatient);
       const result = await runAIJob('text_generation', {
-        userPrompt: userMsg,
+        userPrompt: activePatient
+          ? `[Paciente en contexto: ${activePatient.full_name} · Diagnóstico: ${activePatient.diagnostico || 'Sin especificar'}]\n\n${userMsg}`
+          : userMsg,
+        context: {
+          language: i18n.language,
+          ...(activePatient ? { patientId: activePatient.id, patientName: activePatient.full_name, diagnosis: activePatient.diagnostico } : {}),
+        },
       });
 
       let text = result.success && result.result ? result.result : 'Lo siento, hubo un error procesando tu consulta.';
@@ -235,7 +253,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
         });
       }
     } catch {
-      setChatMessages((prev) => [...prev, { role: 'assistant', text: 'Error de conexión con Physi. Intenta de nuevo en unos momentos.' }]);
+      setChatMessages((prev) => [...prev, { role: 'assistant', text: 'Error de conexión con PhysioIA. Intenta de nuevo en unos momentos.' }]);
     } finally {
       setAiLoading(false);
     }
@@ -417,6 +435,33 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
     }
   };
 
+  const activePatientObj = patients.find((p) => p.id === selectedPatient);
+
+  const bmiLabel =
+    bmiCategory === 'under' ? t('tl.bmiUnder') :
+    bmiCategory === 'healthy' ? t('tl.bmiHealthy') :
+    bmiCategory === 'over' ? t('tl.bmiOver') : t('tl.bmiObese');
+
+  const bmiClinicalNote =
+    bmiCategory === 'under' ? t('tl.bmiClinicalUnder') :
+    bmiCategory === 'healthy' ? t('tl.bmiClinicalHealthy') :
+    bmiCategory === 'over' ? t('tl.bmiClinicalOver') : t('tl.bmiClinicalObese');
+
+  const toggleSpeakMessage = (idx: number, text: string) => {
+    if (speakingIdx === idx) {
+      humanVoice.stop();
+      setSpeakingIdx(null);
+      return;
+    }
+    setSpeakingIdx(idx);
+    humanVoice.speak(text, {
+      lang: i18n.language,
+      interrupt: true,
+      onEnd: () => setSpeakingIdx(null),
+      onError: () => setSpeakingIdx(null),
+    });
+  };
+
   const toolsGrid = (filter: 'todas' | 'ia' | 'ocr') => {
     const isIA = (id: string) => id === 'ocr' || id === 'summary' || id === 'patient-summary' || id === 'pdf-ai' || id === 'chat' || id === 'bmi' || id === 'gait';
     const isOCR = (id: string) => id === 'ocr';
@@ -425,41 +470,41 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
     return (
     <>
             {showTool('ocr') && (
-            <div id="tool-ocr" className="md:col-span-2 lg:col-span-3 p-6 sm:p-8 rounded-3xl relative overflow-hidden ios-glass-heavy refraction-border shadow-sm hover:shadow-xl transition-all duration-300 w-full scroll-mt-24">
-            <div className="flex justify-between items-start mb-6 relative">
+            <div id="tool-ocr" className={`${filter === 'ocr' ? 'lg:col-span-12' : 'lg:col-span-6'} p-5 sm:p-6 rounded-3xl relative overflow-hidden ios-glass-heavy refraction-border shadow-sm hover:shadow-xl transition-all duration-300 w-full scroll-mt-24 flex flex-col justify-between`}>
+            <div className="flex justify-between items-start mb-4 relative">
               <div className="flex items-center gap-3">
-                <div className="size-12 rounded-2xl bg-teal-500/10 text-teal-700 dark:text-teal-300 flex items-center justify-center">
-                  <MedicalIcon name="clipboard" size={24} className="animate-breathe-icon" />
+                <div className="size-11 rounded-2xl bg-teal-500/10 text-teal-700 dark:text-teal-300 flex items-center justify-center shrink-0">
+                  <MedicalIcon name="clipboard" size={22} className="animate-breathe-icon" />
                 </div>
                 <div>
-                  <h3 className="font-title-md text-xl font-bold text-teal-900 dark:text-teal-100">{t('tl.ocrTitle')}</h3>
+                  <h3 className="font-title-md text-lg font-bold text-teal-900 dark:text-teal-100">{t('tl.ocrTitle')}</h3>
                   <p className="text-xs text-on-surface-variant mt-0.5">{t('tl.ocrDesc')}</p>
                 </div>
               </div>
             </div>
             <div
               onClick={() => fileInputRef.current?.click()}
-              className="relative border-2 border-dashed border-outline-variant/40 rounded-2xl p-8 sm:p-12 flex flex-col items-center text-center gap-4 bg-white/30 dark:bg-white/5 hover:bg-white/50 dark:hover:bg-white/10 hover:border-teal-500/50 transition-all cursor-pointer overflow-hidden group"
+              className="relative border-2 border-dashed border-outline-variant/40 rounded-2xl p-5 sm:p-7 flex flex-col items-center justify-center text-center gap-3 bg-white/30 dark:bg-white/5 hover:bg-white/50 dark:hover:bg-white/10 hover:border-teal-500/50 transition-all cursor-pointer overflow-hidden group flex-1"
             >
               <div className="absolute inset-0 shimmer-wave opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
-              <div className="relative z-10 flex flex-col items-center gap-4">
-              <div className="size-16 bg-teal-500/10 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
-                {scanProcessing ? <Spinner size={32} className="text-teal-600 dark:text-teal-400" /> : scanComplete ? <Icon name="check_circle" filled size={32} className="text-teal-600 animate-breathe-icon" /> : <Icon name="upload_file" size={32} className="text-teal-600 dark:text-teal-400" />}
+              <div className="relative z-10 flex flex-col items-center gap-3">
+              <div className="size-14 bg-teal-500/10 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                {scanProcessing ? <Spinner size={28} className="text-teal-600 dark:text-teal-400" /> : scanComplete ? <Icon name="check_circle" filled size={28} className="text-teal-600 animate-breathe-icon" /> : <Icon name="upload_file" size={28} className="text-teal-600 dark:text-teal-400" />}
               </div>
               <div>
-                <p className="font-bold text-base text-on-surface">{scanProcessing ? <LoadingText context="ocr" /> : scanComplete ? 'Análisis Completado' : 'Arrastra o selecciona un documento clínico'}</p>
+                <p className="font-bold text-sm sm:text-base text-on-surface">{scanProcessing ? <LoadingText context="ocr" /> : scanComplete ? t('tl.uploadCompleted') : t('tl.uploadPrompt')}</p>
                 <p className="text-xs text-on-surface-variant mt-1">{t('tl.ocrFormats')}</p>
               </div>
-              <button onClick={(e) => { e.stopPropagation(); fileInputRef.current?.click(); }} className="bg-teal-600 hover:bg-teal-700 text-white px-6 py-2.5 rounded-full font-bold text-xs shadow-md shadow-teal-700/20 hover:scale-105 active:scale-95 transition-all">
-                Seleccionar Archivo
+              <button onClick={(e) => { e.stopPropagation(); fileInputRef.current?.click(); }} className="bg-teal-600 hover:bg-teal-700 text-white px-5 py-2 rounded-full font-bold text-xs shadow-md shadow-teal-700/20 hover:scale-105 active:scale-95 transition-all">
+                {t('tl.selectFileBtn')}
               </button>
               <input ref={fileInputRef} type="file" accept=".pdf,image/*" className="hidden" onChange={onFileSelected} />
               </div>
             </div>
 
             {scanResult && (
-              <div className="mt-4 p-5 ios-glass-heavy refraction-border rounded-2xl space-y-3">
-                <div className="flex items-center justify-between mb-2">
+              <div className="mt-4 p-4 ios-glass-heavy refraction-border rounded-2xl space-y-3">
+                <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
                   <h4 className="font-bold text-sm text-teal-800 dark:text-teal-200">{t('tr.resultado_del_analisis_22_campos')}</h4>
                   <div className="flex gap-2">
                     <button
@@ -468,17 +513,17 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
                           .filter(([, v]) => v != null && v !== '' && v !== false)
                           .map(([k, v]) => `${k}: ${String(v)}`)
                           .join('\n');
-                        try { navigator.clipboard?.writeText(text); toast.success('Texto copiado al portapapeles'); } catch { toast.error('No se pudo copiar'); }
+                        try { navigator.clipboard?.writeText(text); toast.success(t('common.copied')); } catch { toast.error(t('common.error')); }
                       }}
-                      className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-teal-600 text-white font-bold text-xs hover:bg-teal-700 transition-colors min-h-[36px]"
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-teal-600 text-white font-bold text-xs hover:bg-teal-700 transition-colors min-h-[34px]"
                     >
-                      <Icon name="content_copy" size={16} /> Copiar texto
+                      <Icon name="content_copy" size={15} /> {t('tl.copyTextBtn')}
                     </button>
                     <button
-                      onClick={() => { setShowUpdatePatientModal(true); setUpdatePreview({}); setUpdatePatientId(''); }}
-                      className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-teal-700 text-white font-bold text-xs hover:bg-teal-800 transition-colors min-h-[36px] shadow-md"
+                      onClick={() => { setShowUpdatePatientModal(true); setUpdatePreview({}); setUpdatePatientId(selectedPatient || ''); }}
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-teal-700 text-white font-bold text-xs hover:bg-teal-800 transition-colors min-h-[34px] shadow-md"
                     >
-                      <Icon name="person_update" size={16} /> Actualizar paciente
+                      <Icon name="person_update" size={15} /> {t('tl.updatePatientBtn')}
                     </button>
                   </div>
                 </div>
@@ -534,27 +579,50 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
           </div>
           )}
 
-          {/* BMI Calculator with SpotlightCard & ClinicalSliders - Desktop Responsive Split */}
+          {/* Gait Capture & Plantar Support Symmetry */}
+          {showTool('gait') && (
+          <div id="tool-gait" className="lg:col-span-6 p-5 sm:p-6 rounded-3xl relative overflow-hidden ios-glass-heavy refraction-border shadow-sm hover:shadow-xl transition-all duration-300 w-full scroll-mt-24 flex flex-col justify-between">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 relative">
+              <div className="flex items-center gap-3">
+                <div className="size-11 rounded-2xl bg-teal-500/10 text-teal-700 dark:text-teal-300 flex items-center justify-center shrink-0">
+                  <Footprints size={22} className="animate-breathe-icon" />
+                </div>
+                <div>
+                  <h3 className="font-title-md text-lg font-bold text-teal-950 dark:text-teal-100">{t('tl.gaitTitle')}</h3>
+                  <p className="text-xs text-on-surface-variant mt-0.5">{t('tl.gaitDesc')}</p>
+                </div>
+              </div>
+              <span className="inline-flex items-center gap-1.5 text-[11px] font-bold px-2.5 py-1 rounded-full bg-teal-500/15 text-teal-700 dark:text-teal-300 border border-teal-500/30 shrink-0 self-start sm:self-center">
+                <span className="w-2 h-2 rounded-full bg-teal-500 animate-pulse" />
+                {t('tl.visionSensor')}
+              </span>
+            </div>
+
+            <GaitCapturePanel />
+          </div>
+          )}
+
+          {/* BMI Calculator with SpotlightCard & ClinicalSliders - Compact Desktop Split */}
           {showTool('bmi') && (
-          <div id="tool-bmi" className="md:col-span-2 lg:col-span-3 scroll-mt-24">
-            <SpotlightCard className="p-6 sm:p-8 rounded-3xl relative overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 w-full border border-teal-500/20 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl">
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-                {/* Left Column: Sliders and numerical inputs */}
-                <div className="lg:col-span-6 space-y-6">
+          <div id="tool-bmi" className="lg:col-span-12 scroll-mt-24">
+            <SpotlightCard className="p-5 sm:p-6 rounded-3xl relative overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 w-full border border-teal-500/20 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl">
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+                {/* Left Column: Sliders */}
+                <div className="lg:col-span-6 space-y-4">
                   <div className="flex items-center gap-3 relative">
-                    <div className="size-12 rounded-2xl bg-teal-500/10 text-teal-700 dark:text-teal-300 flex items-center justify-center shrink-0">
-                      <Icon name="calculate" size={24} className="animate-breathe-icon" />
+                    <div className="size-11 rounded-2xl bg-teal-500/10 text-teal-700 dark:text-teal-300 flex items-center justify-center shrink-0">
+                      <Icon name="calculate" size={22} className="animate-breathe-icon" />
                     </div>
                     <div>
-                      <h3 className="font-title-md text-xl font-bold text-teal-950 dark:text-teal-100">{t('tr.calculadora_imc', 'Calculadora de IMC y Composición')}</h3>
-                      <p className="text-xs text-on-surface-variant mt-0.5">{t('tl.ocrClassification', 'Clasificación antropométrica según estándares clínicos de la OMS')}</p>
+                      <h3 className="font-title-md text-lg font-bold text-teal-950 dark:text-teal-100">{t('tl.bmiTitle')}</h3>
+                      <p className="text-xs text-on-surface-variant mt-0.5">{t('tl.ocrClassification')}</p>
                     </div>
                   </div>
 
-                  <div className="space-y-5 p-4 rounded-2xl bg-teal-50/50 dark:bg-slate-800/40 border border-teal-100/60 dark:border-slate-700/60">
+                  <div className="space-y-4 p-4 rounded-2xl bg-teal-50/50 dark:bg-slate-800/40 border border-teal-100/60 dark:border-slate-700/60">
                     <div>
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-xs font-bold uppercase tracking-wider text-teal-900 dark:text-teal-200">{t('tr.estatura', 'Estatura')}</span>
+                      <div className="flex items-center justify-between mb-1.5">
+                        <span className="text-xs font-bold uppercase tracking-wider text-teal-900 dark:text-teal-200">{t('tl.heightLabel')}</span>
                         <div className="flex items-center gap-1.5">
                           {[160, 170, 180].map((hPreset) => (
                             <button
@@ -580,8 +648,8 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
                     </div>
 
                     <div className="pt-2 border-t border-teal-200/40 dark:border-slate-700/60">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-xs font-bold uppercase tracking-wider text-teal-900 dark:text-teal-200">{t('tr.peso', 'Peso')}</span>
+                      <div className="flex items-center justify-between mb-1.5">
+                        <span className="text-xs font-bold uppercase tracking-wider text-teal-900 dark:text-teal-200">{t('tl.weightLabel')}</span>
                         <div className="flex items-center gap-1.5">
                           {[60, 72, 85].map((wPreset) => (
                             <button
@@ -610,37 +678,37 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
 
                 {/* Right Column: Diagnostic Result Card */}
                 <div className="lg:col-span-6">
-                  <div className="p-6 sm:p-7 bg-gradient-to-br from-teal-800 via-teal-900 to-slate-900 text-white rounded-3xl shadow-xl border border-teal-500/30 relative overflow-hidden">
-                    <div className="relative z-10 flex items-start justify-between mb-4">
+                  <div className="p-5 sm:p-6 bg-gradient-to-br from-teal-800 via-teal-900 to-slate-900 text-white rounded-3xl shadow-xl border border-teal-500/30 relative overflow-hidden">
+                    <div className="relative z-10 flex items-start justify-between mb-3.5">
                       <div>
                         <span className="text-[10px] uppercase font-bold tracking-widest text-teal-300 block mb-1">
-                          {t('tr.imc_calculado', 'Índice de Masa Corporal')}
+                          {t('tl.bmiCalculated')}
                         </span>
                         <div className="flex items-baseline gap-2">
-                          <span className="text-4xl sm:text-5xl font-black font-mono tracking-tight text-white">{bmi}</span>
+                          <span className="text-4xl font-black font-mono tracking-tight text-white tabular-nums">{bmi}</span>
                           <span className="text-xs font-semibold text-teal-300">kg/m²</span>
                         </div>
                       </div>
                       <div className="text-right">
-                        <span className={`px-3 py-1.5 rounded-full text-xs font-bold shadow-md inline-block ${
-                          bmiStatus === 'Peso Saludable' ? 'bg-emerald-500 text-white' :
-                          bmiStatus === 'Bajo Peso' ? 'bg-amber-500 text-white' :
-                          bmiStatus === 'Sobrepeso' ? 'bg-orange-500 text-white' :
+                        <span className={`px-3 py-1 rounded-full text-xs font-bold shadow-md inline-block ${
+                          bmiCategory === 'healthy' ? 'bg-emerald-500 text-white' :
+                          bmiCategory === 'under' ? 'bg-amber-500 text-white' :
+                          bmiCategory === 'over' ? 'bg-orange-500 text-white' :
                           'bg-rose-500 text-white'
                         }`}>
-                          {bmiStatus}
+                          {bmiLabel}
                         </span>
-                        <p className="text-[10px] text-teal-200 font-medium mt-1">Rango normal: 18.5 - 24.9</p>
+                        <p className="text-[10px] text-teal-200 font-medium mt-1">{t('tl.normalRange')}</p>
                       </div>
                     </div>
 
                     {/* Gradient Scale Spectrum */}
-                    <div className="relative my-4">
+                    <div className="relative my-3.5">
                       <div className="flex h-2.5 rounded-full overflow-hidden bg-white/20 p-0.5">
-                        <div className="bg-amber-400 rounded-l-full" style={{ width: '14%' }} title="Bajo Peso (< 18.5)" />
-                        <div className="bg-emerald-400" style={{ width: '26%' }} title="Peso Saludable (18.5 - 24.9)" />
-                        <div className="bg-orange-400" style={{ width: '20%' }} title="Sobrepeso (25.0 - 29.9)" />
-                        <div className="bg-rose-500 rounded-r-full" style={{ width: '40%' }} title="Obesidad (≥ 30.0)" />
+                        <div className="bg-amber-400 rounded-l-full" style={{ width: '14%' }} title={t('tl.bmiUnder')} />
+                        <div className="bg-emerald-400" style={{ width: '26%' }} title={t('tl.bmiHealthy')} />
+                        <div className="bg-orange-400" style={{ width: '20%' }} title={t('tl.bmiOver')} />
+                        <div className="bg-rose-500 rounded-r-full" style={{ width: '40%' }} title={t('tl.bmiObese')} />
                       </div>
                       {Number.isFinite(Number(bmi)) && (
                         <div
@@ -656,36 +724,31 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
                     </div>
 
                     {/* 3 Clinical Recommendations Metrics */}
-                    <div className="grid grid-cols-3 gap-2.5 pt-4 mt-2 border-t border-teal-700/60 text-center">
-                      <div className="p-2.5 rounded-xl bg-white/10 backdrop-blur-sm">
-                        <span className="text-[9px] uppercase tracking-wider text-teal-300 block mb-0.5">Peso Óptimo</span>
-                        <span className="text-xs font-bold font-mono">
+                    <div className="grid grid-cols-3 gap-2.5 pt-3.5 mt-2 border-t border-teal-700/60 text-center">
+                      <div className="p-2 rounded-xl bg-white/10 backdrop-blur-sm">
+                        <span className="text-[9px] uppercase tracking-wider text-teal-300 block mb-0.5">{t('tl.optimalWeight')}</span>
+                        <span className="text-xs font-bold font-mono tabular-nums">
                           {(18.5 * (height / 100) ** 2).toFixed(0)} - {(24.9 * (height / 100) ** 2).toFixed(0)} kg
                         </span>
                       </div>
-                      <div className="p-2.5 rounded-xl bg-white/10 backdrop-blur-sm">
-                        <span className="text-[9px] uppercase tracking-wider text-teal-300 block mb-0.5">Agua / Día</span>
-                        <span className="text-xs font-bold font-mono">
+                      <div className="p-2 rounded-xl bg-white/10 backdrop-blur-sm">
+                        <span className="text-[9px] uppercase tracking-wider text-teal-300 block mb-0.5">{t('tl.waterPerDay')}</span>
+                        <span className="text-xs font-bold font-mono tabular-nums">
                           {(weight * 0.035).toFixed(1)} L
                         </span>
                       </div>
-                      <div className="p-2.5 rounded-xl bg-white/10 backdrop-blur-sm">
-                        <span className="text-[9px] uppercase tracking-wider text-teal-300 block mb-0.5">Tasa Basal</span>
-                        <span className="text-xs font-bold font-mono">
+                      <div className="p-2 rounded-xl bg-white/10 backdrop-blur-sm">
+                        <span className="text-[9px] uppercase tracking-wider text-teal-300 block mb-0.5">{t('tl.basalRate')}</span>
+                        <span className="text-xs font-bold font-mono tabular-nums">
                           {Math.round(10 * weight + 6.25 * height - 5 * 30 + 5)} kcal
                         </span>
                       </div>
                     </div>
 
                     {/* Clinical prescription note */}
-                    <p className="text-[11px] text-teal-200/90 leading-relaxed mt-3.5 italic bg-black/20 p-2.5 rounded-xl border border-white/5 flex items-start gap-1.5">
+                    <p className="text-[11px] text-teal-200/90 leading-relaxed mt-3 italic bg-black/20 p-2.5 rounded-xl border border-white/5 flex items-start gap-1.5">
                       <Icon name="lightbulb" size={14} className="text-amber-400 shrink-0 mt-0.5" />
-                      <span>
-                        {bmi < 18.5 ? 'Enfoque clínico: Priorizar fortalecimiento neuromuscular progresivo para ganancia de masa magra.' :
-                         bmi < 25 ? 'Enfoque clínico: Relación peso-potencia óptima. Apto para cargas completas y pliometría funcional.' :
-                         bmi < 30 ? 'Enfoque clínico: Evitar sobrecarga en articulaciones de choque. Priorizar cadena cinética cerrada y piscina.' :
-                         'Enfoque clínico: Protección articular mandatoria: descargar rodillas y tobillos con cicloergómetro o elíptica.'}
-                      </span>
+                      <span>{bmiClinicalNote}</span>
                     </p>
                   </div>
                 </div>
@@ -694,58 +757,28 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
           </div>
           )}
 
-          {/* Gait Capture & Plantar Support Symmetry */}
-          {showTool('gait') && (
-          <div id="tool-gait" className="md:col-span-2 lg:col-span-3 p-6 sm:p-8 rounded-3xl relative overflow-hidden ios-glass-heavy refraction-border shadow-sm hover:shadow-xl transition-all duration-300 w-full scroll-mt-24">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 relative">
+          {/* Session Summary (Uses unified Active Patient selector) */}
+          {showTool('summary') && (
+          <div id="tool-summary" className="lg:col-span-7 p-5 sm:p-6 rounded-3xl relative overflow-hidden ios-glass-heavy refraction-border shadow-sm hover:shadow-xl transition-all duration-300 w-full scroll-mt-24 flex flex-col justify-between gap-4">
+            <div className="flex flex-wrap items-center justify-between gap-3 relative">
               <div className="flex items-center gap-3">
-                <div className="size-12 rounded-2xl bg-teal-500/10 text-teal-700 dark:text-teal-300 flex items-center justify-center shrink-0">
-                  <Footprints size={24} className="animate-breathe-icon" />
+                <div className="size-11 rounded-2xl bg-teal-500/10 text-teal-700 dark:text-teal-300 flex items-center justify-center shrink-0">
+                  <Icon name="auto_awesome" size={22} className="animate-breathe-icon" />
                 </div>
                 <div>
-                  <h3 className="font-title-md text-xl font-bold text-teal-950 dark:text-teal-100">Captura de Marcha y Simetría de Apoyo Plantar</h3>
-                  <p className="text-xs text-on-surface-variant mt-0.5">Telemetría de carga bilateral, baropodometría dinámica y fases de apoyo articular</p>
+                  <h3 className="font-title-md text-lg font-bold text-teal-900 dark:text-teal-100">{t('tl.aiSessionTitle')}</h3>
+                  <p className="text-xs text-on-surface-variant mt-0.5">{t('tl.aiSessionDesc')}</p>
                 </div>
               </div>
-              <span className="inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1 rounded-full bg-teal-500/15 text-teal-700 dark:text-teal-300 border border-teal-500/30">
-                <span className="w-2 h-2 rounded-full bg-teal-500 animate-pulse" />
-                Visión MediaPipe &amp; Sensor
-              </span>
-            </div>
-
-            <GaitCapturePanel />
-          </div>
-          )}
-
-          {/* Session Summary */}
-          {showTool('summary') && (
-          <div id="tool-summary" className="md:col-span-2 lg:col-span-3 p-6 sm:p-8 rounded-3xl relative overflow-hidden ios-glass-heavy refraction-border shadow-sm hover:shadow-xl transition-all duration-300 w-full scroll-mt-24">
-            <div className="flex items-center gap-3 mb-6 relative">
-              <div className="size-12 rounded-2xl bg-teal-500/10 text-teal-700 dark:text-teal-300 flex items-center justify-center">
-                <Icon name="auto_awesome" size={24} className="animate-breathe-icon" />
-              </div>
-              <div>
-                <h3 className="font-title-md text-xl font-bold text-teal-900 dark:text-teal-100">{t('tl.aiSessionTitle')}</h3>
-                <p className="text-xs text-on-surface-variant mt-0.5">{t('tl.aiSessionDesc')}</p>
-              </div>
-            </div>
-            <div className="flex flex-col sm:flex-row gap-4 mb-4">
-              <select value={selectedPatient} onChange={(e) => setSelectedPatient(e.target.value)} className="flex-1 px-4 py-3 rounded-xl bg-white/70 dark:bg-slate-800/70 border border-outline-variant/30 outline-none focus:ring-2 focus:ring-teal-500/20 text-on-surface text-sm font-semibold">
-                <option value="">{t('tl.selectPatient')}</option>
-                {patients.length === 0 && <option value="" disabled>{t('tr.no_hay_pacientes_asignados')}</option>}
-                {patients.map((p) => (
-                  <option key={p.id} value={p.id}>{p.full_name}</option>
-                ))}
-              </select>
-              <button onClick={generateSessionSummary} disabled={summaryLoading || !selectedPatient} className="bg-teal-600 hover:bg-teal-700 text-white shadow-md shadow-teal-700/20 px-6 py-3 rounded-xl font-bold text-xs flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50 whitespace-nowrap">
-                {summaryLoading ? <Spinner size={16} className="text-white" /> : <Icon name="auto_awesome" size={16} />}
-                {summaryLoading ? <LoadingText context="ai" /> : 'Generar Resumen'}
+              <button onClick={generateSessionSummary} disabled={summaryLoading || !selectedPatient} className="bg-teal-600 hover:bg-teal-700 text-white shadow-md shadow-teal-700/20 px-4 py-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50 whitespace-nowrap">
+                {summaryLoading ? <Spinner size={15} className="text-white" /> : <Icon name="auto_awesome" size={15} />}
+                {summaryLoading ? <LoadingText context="ai" /> : t('tl.generateSummaryBtn')}
               </button>
             </div>
 
             {/* Quick Clinical Controls Bar */}
-            <div className="flex flex-wrap items-center justify-between gap-3 mb-6 p-3 rounded-2xl bg-teal-500/5 border border-teal-500/15">
-              <div className="space-y-1.5">
+            <div className="flex flex-wrap items-center justify-between gap-2.5 p-3 rounded-2xl bg-teal-500/5 border border-teal-500/15">
+              <div className="space-y-1">
                 <span className="text-[10px] font-bold uppercase tracking-wider text-outline block">{t('tl.clinicalCriteria')}</span>
                 <BiomechanicalTagSelector tags={['Movilidad', 'Fuerza', 'Propiocepción', 'Sin Dolor', 'Post-Op']} />
               </div>
@@ -755,135 +788,125 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="ios-glass-heavy refraction-border p-5 rounded-2xl space-y-4">
-                <div>
-                  <div className="flex items-center gap-2 mb-2">
-                    <Icon name="sensors" size={18} className="text-teal-600 dark:text-teal-400 animate-breathe-icon" />
-                    <span className="font-bold text-sm text-on-surface">{t('tl.clinicalTelemetry')}</span>
+            <div className="ios-glass-heavy refraction-border rounded-2xl overflow-hidden shadow-sm">
+              {/* Header */}
+              <div className="flex items-center justify-between px-4 py-3 bg-teal-500/10 border-b border-teal-500/15">
+                <div className="flex items-center gap-2.5">
+                  <div className="size-9 rounded-xl bg-teal-600/15 text-teal-700 dark:text-teal-300 flex items-center justify-center">
+                    <MedicalIcon name="clipboard" size={18} />
                   </div>
-                  <p className="text-xs text-on-surface-variant leading-relaxed">{t('tl.aiSessionNote')}</p>
+                  <div>
+                    <h4 className="font-bold text-sm text-teal-950 dark:text-teal-100">{t('tl.sessionReport')}</h4>
+                    <p className="text-[10px] text-on-surface-variant font-semibold uppercase tracking-wider">
+                      {activePatientObj ? activePatientObj.full_name : t('tl.aiSummary')}
+                    </p>
+                  </div>
                 </div>
-                <PhysioNoteAnnotationBubble
-                  author="Fisio Supervisor"
-                  noteText="Revisar progresión de ROM antes de aumentar repeticiones."
-                  className="w-full"
-                />
-              </div>
-              <div className="md:col-span-2">
-                <div className="ios-glass-heavy refraction-border rounded-2xl overflow-hidden shadow-sm">
-                  {/* Header */}
-                  <div className="flex items-center justify-between px-5 py-4 bg-teal-500/10 border-b border-teal-500/15">
-                    <div className="flex items-center gap-3">
-                      <div className="size-10 rounded-xl bg-teal-600/15 text-teal-700 dark:text-teal-300 flex items-center justify-center">
-                        <MedicalIcon name="clipboard" size={20} />
-                      </div>
-                      <div>
-                        <h4 className="font-bold text-sm text-teal-950 dark:text-teal-100">{t('tl.sessionReport')}</h4>
-                        <p className="text-[10px] text-on-surface-variant font-semibold uppercase tracking-wider">{t('tl.aiSummary')}</p>
-                      </div>
-                    </div>
-                    <div className="flex gap-1.5">
-                      <button onClick={() => { if (summaryText) { try { navigator.clipboard?.writeText(summaryText); toast.info('Copiado al portapapeles'); } catch { toast.error('No se pudo copiar'); } } else { toast.error('No hay resumen para copiar'); } }} className="w-8 h-8 rounded-lg flex items-center justify-center text-outline hover:text-primary hover:bg-primary/10 transition-colors"><Icon name="content_copy" size={16} /></button>
-                      <button onClick={() => { try { window.print(); } catch { toast.error('No se pudo imprimir'); } }} className="w-8 h-8 rounded-lg flex items-center justify-center text-outline hover:text-primary hover:bg-primary/10 transition-colors"><Icon name="print" size={16} /></button>
-                    </div>
-                  </div>
-                  {/* Body */}
-                  <div className="px-5 py-5 min-h-[140px]">
-                    {summaryText ? (
-                      formatAIReport(summaryText)
-                    ) : summaryLoading ? (
-                      <SkeletonReport />
-                    ) : (
-                      <div className="empty-state-premium">
-                        <Icon name="auto_awesome" size={32} className="opacity-40 mb-2" />
-                        <p className="italic text-sm text-on-surface-variant leading-relaxed">Aún no hay un resumen clínico. Selecciona un paciente y pulsa «Generar Resumen» para obtener un análisis narrativo de las últimas sesiones.</p>
-                      </div>
-                    )}
-                  </div>
-                  {/* Footer */}
-                  {summaryText && (
-                    <div className="flex items-center justify-between px-5 py-3 bg-surface-variant/10 border-t border-outline-variant/20">
-                      <span className="flex items-center gap-1.5 text-xs text-on-surface-variant">
-                        <Icon name="schedule" size={12} className="opacity-60" />
-                        {new Date().toLocaleString(currentLocale(), { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
-                      </span>
-                      <div className="flex items-center gap-3">
-                        <button
-                          onClick={() => { try { exportPremiumPDF({ patientName: 'Resumen de Sesión', sessions: [], globalMetrics: { totalSessions: 0, avgQuality: 0 } }, `FisioMirror_Informe_Sesion_${Date.now()}.pdf`, summaryText); toast.success('Descargando PDF...'); } catch { toast.error('No se pudo exportar'); } }}
-                          className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-primary hover:bg-primary/10 px-2.5 py-1.5 rounded-lg transition-colors"
-                        >
-                          <Icon name="download" size={14} />
-                          Descargar PDF
-                        </button>
-                        <span className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">
-                          <Icon name="auto_awesome" size={11} className="text-teal-600 dark:text-teal-400" />{t('tl.generatedByAi')}</span>
-                      </div>
-                    </div>
-                  )}
+                <div className="flex gap-1">
+                  <button onClick={() => { if (summaryText) { try { navigator.clipboard?.writeText(summaryText); toast.info(t('common.copied')); } catch { toast.error(t('common.error')); } } else { toast.error(t('common.noDataShort')); } }} className="w-8 h-8 rounded-lg flex items-center justify-center text-outline hover:text-primary hover:bg-primary/10 transition-colors" aria-label={t('common.copy')}><Icon name="content_copy" size={16} /></button>
+                  <button onClick={() => { try { window.print(); } catch { toast.error(t('common.error')); } }} className="w-8 h-8 rounded-lg flex items-center justify-center text-outline hover:text-primary hover:bg-primary/10 transition-colors"><Icon name="print" size={16} /></button>
                 </div>
               </div>
+              {/* Body */}
+              <div className="px-4 py-4 min-h-[115px]">
+                {summaryText ? (
+                  formatAIReport(summaryText)
+                ) : summaryLoading ? (
+                  <SkeletonReport />
+                ) : (
+                  <div className="empty-state-premium py-3">
+                    <Icon name="auto_awesome" size={28} className="opacity-40 mb-1.5" />
+                    <p className="italic text-xs sm:text-sm text-on-surface-variant leading-relaxed">{t('tl.noSummaryHint')}</p>
+                  </div>
+                )}
+              </div>
+              {/* Footer */}
+              {summaryText && (
+                <div className="flex items-center justify-between px-4 py-2.5 bg-surface-variant/10 border-t border-outline-variant/20">
+                  <span className="flex items-center gap-1.5 text-xs text-on-surface-variant">
+                    <Icon name="schedule" size={12} className="opacity-60" />
+                    {new Date().toLocaleString(currentLocale(), { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
+                  </span>
+                  <div className="flex items-center gap-2.5">
+                    <button
+                      onClick={() => { try { exportPremiumPDF({ patientName: activePatientObj?.full_name || t('tl.sessionReport'), sessions: [], globalMetrics: { totalSessions: 0, avgQuality: 0 } }, `FisioMirror_Informe_Sesion_${Date.now()}.pdf`, summaryText); toast.success('PDF...'); } catch { toast.error(t('common.error')); } }}
+                      className="flex items-center gap-1 text-[11px] font-bold uppercase tracking-wider text-primary hover:bg-primary/10 px-2.5 py-1 rounded-lg transition-colors"
+                    >
+                      <Icon name="download" size={14} />
+                      {t('tl.downloadPdfBtn')}
+                    </button>
+                    <span className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">
+                      <Icon name="auto_awesome" size={11} className="text-teal-600 dark:text-teal-400" />{t('tl.generatedByAi')}
+                    </span>
+                  </div>
+                </div>
+              )}
             </div>
+
+            <PhysioNoteAnnotationBubble
+              author={t('common.therapist')}
+              noteText={t('tl.physioSupervisorNote')}
+              className="w-full"
+            />
           </div>
           )}
 
-          {/* Patient Summary */}
+          {/* Patient General Summary */}
           {showTool('patient-summary') && (
-          <GlassPanel className="md:col-span-2 lg:col-span-3 p-6 sm:p-8 rounded-3xl card-glow-hover relative overflow-hidden border-l-4 border-l-teal-400/60 dark:border-l-teal-600/40 shadow-teal-100/50 dark:shadow-none w-full">
-            <div className="blob-blue absolute -top-12 -right-12 w-40 h-40 opacity-25 pointer-events-none" />
-            <div className="flex items-center gap-3 mb-6 relative">
-              <div className="w-12 h-12 rounded-xl bg-secondary-container/20 flex items-center justify-center"><Icon name="group" size={24} className="text-secondary animate-breathe-icon" /></div>
-              <div>
-                <h3 className="font-title-md text-title-md gradient-text-blue">{t('tl.patientsSummary')}</h3>
-                <p className="text-sm text-on-surface-variant">{t('tl.patientsSummaryDesc')}</p>
+          <GlassPanel className="lg:col-span-5 p-5 sm:p-6 rounded-3xl card-glow-hover relative overflow-hidden border border-outline-variant/25 w-full flex flex-col justify-between gap-4">
+            <div className="blob-blue absolute -top-12 -right-12 w-36 h-36 opacity-20 pointer-events-none" />
+            <div>
+              <div className="flex items-center gap-3 mb-4 relative">
+                <div className="w-11 h-11 rounded-xl bg-secondary-container/20 flex items-center justify-center shrink-0"><Icon name="group" size={22} className="text-secondary animate-breathe-icon" /></div>
+                <div>
+                  <h3 className="font-title-md text-lg font-bold gradient-text-blue">{t('tl.patientsSummary')}</h3>
+                  <p className="text-xs text-on-surface-variant">{t('tl.patientsSummaryDesc')}</p>
+                </div>
               </div>
+              <button onClick={generatePatientSummary} disabled={patientSummaryLoading} className="premium-btn w-full mb-3 bg-secondary text-on-secondary-container px-5 py-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-2 hover:scale-[1.01] active:scale-95 transition-all disabled:opacity-50">
+                {patientSummaryLoading ? <Spinner size={18} className="text-on-secondary-container" /> : <Icon name="summarize" size={18} />}
+                {patientSummaryLoading ? <LoadingText context="ai" /> : t('tl.generateGeneralSummaryBtn')}
+              </button>
             </div>
-            <button onClick={generatePatientSummary} disabled={patientSummaryLoading} className="premium-btn mb-4 bg-secondary text-on-secondary-container px-6 py-3 rounded-xl font-bold flex items-center gap-2 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50">
-              {patientSummaryLoading ? <Spinner size={20} className="text-on-secondary-container" /> : <Icon name="summarize" size={20} />}
-              {patientSummaryLoading ? <LoadingText context="ai" /> : 'Generar Resumen General'}
-            </button>
             {patientSummaryLoading && !patientSummaryText ? (
               <SkeletonCard />
             ) : patientSummaryText ? (
-              <GlassPanel className="rounded-2xl overflow-hidden shadow-[0_12px_40px_rgba(0,0,0,0.08)]">
+              <GlassPanel className="rounded-2xl overflow-hidden shadow-[0_12px_40px_rgba(0,0,0,0.08)] flex-1 flex flex-col justify-between">
                 {/* Header */}
-                <div className="flex items-center justify-between px-5 py-4 bg-gradient-to-r from-secondary/15 via-secondary/5 to-transparent border-b border-secondary/15">
-                  <div className="flex items-center gap-3">
-                    <div className="w-11 h-11 rounded-xl bg-secondary/15 flex items-center justify-center ring-1 ring-secondary/20">
-                      <MedicalIcon name="heart" size={22} className="text-secondary" />
+                <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-secondary/15 via-secondary/5 to-transparent border-b border-secondary/15">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-secondary/15 flex items-center justify-center ring-1 ring-secondary/20">
+                      <MedicalIcon name="heart" size={18} className="text-secondary" />
                     </div>
                     <div>
-                      <h4 className="font-title-md text-title-md text-secondary tracking-wide">{t('tl.patientReport')}</h4>
-                      <p className="text-[10px] text-on-surface-variant font-semibold uppercase tracking-wider">{t('tl.aiGeneralProgress')}</p>
+                      <h4 className="font-bold text-sm text-on-surface">{t('tl.patientReport')}</h4>
+                      <p className="text-[10px] text-secondary font-semibold uppercase tracking-wider">{t('tl.aiGeneralProgress')}</p>
                     </div>
                   </div>
-                  <button
-                    onClick={() => { try { navigator.clipboard?.writeText(patientSummaryText); toast.info('Copiado al portapapeles'); } catch { toast.error('No se pudo copiar'); } }}
-                    className="w-8 h-8 rounded-lg flex items-center justify-center text-outline hover:text-secondary hover:bg-secondary/10 transition-colors"
-                  >
-                    <Icon name="content_copy" size={16} />
-                  </button>
+                  <div className="flex gap-1">
+                    <button onClick={() => { try { navigator.clipboard?.writeText(patientSummaryText); toast.info(t('common.copied')); } catch { toast.error(t('common.error')); } }} className="w-8 h-8 rounded-lg flex items-center justify-center text-outline hover:text-secondary hover:bg-secondary/10 transition-colors" aria-label={t('common.copy')}><Icon name="content_copy" size={16} /></button>
+                  </div>
                 </div>
                 {/* Body */}
-                <div className="px-5 py-5">
+                <div className="px-4 py-4">
                   {formatAIReport(patientSummaryText)}
                 </div>
                 {/* Footer */}
-                <div className="flex items-center justify-between px-5 py-3 bg-surface-variant/10 border-t border-outline-variant/20">
+                <div className="flex items-center justify-between px-4 py-2.5 bg-surface-variant/10 border-t border-outline-variant/20">
                   <span className="flex items-center gap-1.5 text-xs text-on-surface-variant">
                     <Icon name="schedule" size={12} className="opacity-60" />
                     {new Date().toLocaleString(currentLocale(), { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
                   </span>
                   <span className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">
                     <Icon name="auto_awesome" size={11} className="text-secondary" />
-                    Generado por IA
+                    {t('tl.generatedByAi')}
                   </span>
                 </div>
               </GlassPanel>
             ) : (
-              <div className="empty-state-premium">
-                <Icon name="group" size={32} className="opacity-40 mb-2" />
-                <p className="italic text-sm text-on-surface-variant leading-relaxed">Todavía no se ha generado un resumen general. Pulsa «Generar Resumen General» para ver el progreso conjunto de tus pacientes activos.</p>
+              <div className="empty-state-premium py-5 flex-1 flex flex-col items-center justify-center">
+                <Icon name="group" size={28} className="opacity-40 mb-1.5" />
+                <p className="italic text-xs sm:text-sm text-on-surface-variant leading-relaxed text-center">{t('tl.noGeneralSummaryHint')}</p>
               </div>
             )}
           </GlassPanel>
@@ -891,99 +914,291 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
 
           {/* PDF Export */}
           {showTool('pdf-ai') && (
-          <GlassPanel className="md:col-span-2 lg:col-span-3 p-6 sm:p-8 rounded-3xl card-glow-hover relative overflow-hidden w-full">
-            <div className="blob-warm absolute -bottom-12 -left-12 w-40 h-40 opacity-20 pointer-events-none" />
-            <div className="flex items-center gap-3 mb-6 relative">
-              <div className="w-12 h-12 rounded-xl bg-error/10 flex items-center justify-center"><Icon name="picture_as_pdf" size={24} className="text-error animate-breathe-icon" /></div>
-              <div>
-                <h3 className="font-title-md text-title-md gradient-text-editorial">{t('tr.exportar_reporte_pdf')}</h3>
-                <p className="text-sm text-on-surface-variant">{t('tl.pdfDesc')}</p>
+          <GlassPanel className={`${filter === 'todas' ? 'lg:col-span-7' : 'lg:col-span-12'} p-5 sm:p-6 rounded-3xl card-glow-hover relative overflow-hidden w-full flex flex-col justify-between gap-4`}>
+            <div className="blob-warm absolute -bottom-12 -left-12 w-36 h-36 opacity-20 pointer-events-none" />
+            <div className="flex items-center justify-between gap-3 relative">
+              <div className="flex items-center gap-3">
+                <div className="w-11 h-11 rounded-xl bg-error/10 flex items-center justify-center shrink-0"><Icon name="picture_as_pdf" size={22} className="text-error animate-breathe-icon" /></div>
+                <div>
+                  <h3 className="font-title-md text-lg font-bold gradient-text-editorial">{t('tr.exportar_reporte_pdf')}</h3>
+                  <p className="text-xs text-on-surface-variant">{t('tl.pdfDesc')}</p>
+                </div>
               </div>
+              {activePatientObj && (
+                <span className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-primary/10 text-primary border border-primary/20">
+                  <UserCheck size={13} />
+                  {activePatientObj.full_name}
+                </span>
+              )}
             </div>
-            <div className="flex flex-col sm:flex-row gap-4 mb-4">
-              <select value={selectedPatient} onChange={(e) => setSelectedPatient(e.target.value)} className="flex-1 px-4 py-3 rounded-xl bg-surface-variant/20 border border-outline-variant/30 outline-none focus:ring-2 focus:ring-primary/20 text-on-surface">
-                <option value="">{t('tr.seleccionar_paciente')}</option>
-                {patients.map((p) => (
-                  <option key={p.id} value={p.id}>{p.full_name}</option>
-                ))}
-              </select>
-            </div>
-            <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex flex-col sm:flex-row gap-3">
               <button
                 onClick={() => { setPdfMode('simple'); setPdfModalOpen(true); }}
                 disabled={!selectedPatient}
-                className="premium-btn flex-1 bg-primary text-on-primary px-6 py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50"
+                className="premium-btn flex-1 bg-primary text-on-primary px-5 py-3 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 hover:scale-[1.01] active:scale-95 transition-all disabled:opacity-50"
               >
-                <Icon name="flash_on" size={20} />{t('tl.pdfTitle')}</button>
+                <Icon name="flash_on" size={18} />{t('tl.pdfTitle')}
+              </button>
               <button
                 onClick={() => { setPdfMode('ai'); setPdfModalOpen(true); }}
                 disabled={!selectedPatient}
-                className="premium-btn flex-1 bg-secondary text-on-secondary shadow-glow-primary px-6 py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50"
+                className="premium-btn flex-1 bg-secondary text-on-secondary shadow-glow-primary px-5 py-3 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 hover:scale-[1.01] active:scale-95 transition-all disabled:opacity-50"
               >
-                <Icon name="auto_awesome" size={20} /> PDF Estilizado (IA)
+                <Icon name="auto_awesome" size={18} /> {t('tl.styledAiPdfBtn')}
               </button>
             </div>
           </GlassPanel>
           )}
+
+          {filter === 'todas' && (
+            <div className="lg:col-span-5">
+              <AuditLogCard />
+            </div>
+          )}
     </>
   );
-  }
+  };
+
+  const renderPhysiPanel = (isMobileDrawer = false) => (
+    <div
+      className={
+        isMobileDrawer
+          ? 'flex flex-col h-[70vh] rounded-3xl overflow-hidden bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border border-teal-500/25 shadow-2xl'
+          : 'hidden xl:flex flex-col w-[350px] 2xl:w-[390px] shrink-0 h-[calc(100vh-120px)] sticky top-[92px] rounded-3xl overflow-hidden bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border border-teal-500/25 shadow-xl'
+      }
+    >
+      {/* Header */}
+      <div className="p-4 bg-gradient-to-r from-teal-600 via-teal-700 to-cyan-700 text-white flex items-center justify-between shrink-0 shadow-sm">
+        <div className="flex items-center gap-3 min-w-0">
+          <div className="size-10 rounded-2xl bg-white/15 backdrop-blur-md flex items-center justify-center text-white shrink-0 relative">
+            <Bot size={20} className="animate-breathe-icon" />
+            <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-400 border-2 border-teal-700" />
+          </div>
+          <div className="min-w-0">
+            <div className="flex items-center gap-2">
+              <h3 className="font-bold text-base leading-tight">{t('tl.physiTitle')}</h3>
+              <span className="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-white/20 text-white">
+                {t('tl.physiBadge')}
+              </span>
+            </div>
+            <p className="text-[11px] text-teal-100 mt-0.5 flex items-center gap-1.5 truncate">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-300 animate-pulse shrink-0" />
+              <span className="truncate">
+                {activePatientObj ? activePatientObj.full_name : t('tl.physiSub')}
+              </span>
+            </p>
+          </div>
+        </div>
+        <div className="flex items-center gap-1 shrink-0">
+          <button
+            onClick={() => {
+              humanVoice.stop();
+              setSpeakingIdx(null);
+              setChatMessages([{ role: 'assistant', text: t('tl.physiResetMsg') }]);
+            }}
+            aria-label={t('tl.resetChatLabel')}
+            title={t('tl.resetChatLabel')}
+            className="p-2 rounded-xl text-white/80 hover:text-white hover:bg-white/10 transition-colors"
+          >
+            <RotateCcw size={16} />
+          </button>
+          {isMobileDrawer && (
+            <button
+              onClick={() => setShowMobilePhysi(false)}
+              aria-label={t('common.close')}
+              className="p-2 rounded-xl text-white/80 hover:text-white hover:bg-white/10 transition-colors"
+            >
+              <PanelRightClose size={16} />
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Suggestion Chips */}
+      <div className="p-2.5 bg-teal-50/70 dark:bg-slate-800/60 border-b border-teal-100/60 dark:border-slate-800 flex items-center gap-1.5 overflow-x-auto scrollbar-none shrink-0">
+        {[
+          { label: t('tl.chipShoulder'), query: t('tl.chipShoulderQuery') },
+          { label: t('tl.chipTendon'), query: t('tl.chipTendonQuery') },
+          { label: t('tl.chipSymmetry'), query: t('tl.chipSymmetryQuery') },
+          { label: t('tl.chipDischarge'), query: t('tl.chipDischargeQuery') },
+        ].map((chip) => (
+          <button
+            key={chip.label}
+            onClick={() => setChatInput(chip.query)}
+            className="text-[10px] font-bold px-2.5 py-1 rounded-full bg-white dark:bg-slate-700 text-teal-800 dark:text-teal-200 border border-teal-500/20 hover:border-teal-500/50 hover:bg-teal-500/10 transition-colors whitespace-nowrap shadow-xs"
+          >
+            {chip.label}
+          </button>
+        ))}
+      </div>
+
+      {/* Messages Body */}
+      <div className="flex-1 p-3.5 space-y-3 overflow-y-auto">
+        {chatMessages.map((msg, i) => (
+          <div key={i} className={`flex gap-2 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+            {msg.role === 'assistant' && (
+              <div className="size-7 rounded-xl bg-teal-500/15 text-teal-700 dark:text-teal-300 flex items-center justify-center shrink-0 mt-0.5">
+                <Bot size={15} />
+              </div>
+            )}
+            <div className="max-w-[88%] group relative">
+              <div
+                className={`p-3 rounded-2xl text-xs sm:text-[13px] leading-relaxed shadow-sm transition-all ${
+                  msg.role === 'user'
+                    ? 'bg-gradient-to-br from-teal-600 to-teal-700 text-white rounded-tr-none'
+                    : 'bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-100 border border-slate-200/60 dark:border-slate-700/60 rounded-tl-none'
+                }`}
+              >
+                {msg.role === 'assistant' ? formatAIReport(msg.text) : <p className="whitespace-pre-wrap">{msg.text}</p>}
+              </div>
+              {msg.role === 'assistant' && (
+                <div className="flex items-center gap-3 mt-1 px-1 opacity-75 group-hover:opacity-100 transition-opacity">
+                  <button
+                    onClick={() => {
+                      navigator.clipboard?.writeText(msg.text);
+                      toast.success(t('common.copied'));
+                    }}
+                    aria-label={t('tl.copyTextBtn')}
+                    className="text-[10px] text-slate-500 hover:text-teal-600 dark:hover:text-teal-400 flex items-center gap-1"
+                  >
+                    <Copy size={11} /> {t('tl.copyTextBtn')}
+                  </button>
+                  <button
+                    onClick={() => toggleSpeakMessage(i, msg.text)}
+                    aria-label={speakingIdx === i ? t('tl.stopSpeaking') : t('tl.speakResponse')}
+                    className={`text-[10px] flex items-center gap-1 transition-colors ${
+                      speakingIdx === i
+                        ? 'text-teal-600 dark:text-teal-400 font-bold'
+                        : 'text-slate-500 hover:text-teal-600 dark:hover:text-teal-400'
+                    }`}
+                  >
+                    {speakingIdx === i ? <VolumeX size={11} /> : <Volume2 size={11} />}
+                    {speakingIdx === i ? t('tl.stopSpeaking') : t('tl.speakResponse')}
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        ))}
+        {aiLoading && (
+          <div className="flex gap-2 justify-start items-center">
+            <div className="size-7 rounded-xl bg-teal-500/15 text-teal-700 dark:text-teal-300 flex items-center justify-center shrink-0">
+              <Bot size={15} />
+            </div>
+            <div className="bg-slate-100 dark:bg-slate-800/90 p-3 rounded-2xl border border-slate-200/60 dark:border-slate-700/60 rounded-tl-none">
+              <div className="flex items-center gap-1.5 text-teal-600 dark:text-teal-400">
+                <span className="w-2 h-2 rounded-full bg-current animate-bounce" style={{ animationDelay: '0ms' }} />
+                <span className="w-2 h-2 rounded-full bg-current animate-bounce" style={{ animationDelay: '150ms' }} />
+                <span className="w-2 h-2 rounded-full bg-current animate-bounce" style={{ animationDelay: '300ms' }} />
+                <span className="text-[11px] font-semibold ml-1.5">{t('tl.analyzingClinical')}</span>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Input Bar */}
+      <div className="p-3 border-t border-slate-200/80 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/40 shrink-0">
+        <div className="flex gap-2 items-center">
+          <input
+            value={chatInput}
+            onChange={(e) => setChatInput(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && sendChat()}
+            placeholder={t('tl.askPlaceholder')}
+            className="flex-1 px-3 py-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100 placeholder:text-slate-400 outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 transition-all"
+          />
+          <button
+            onClick={sendChat}
+            disabled={aiLoading || !chatInput.trim()}
+            aria-label={t('tl.sendQuery')}
+            className="size-9 rounded-xl bg-teal-600 hover:bg-teal-700 text-white flex items-center justify-center hover:scale-105 active:scale-95 transition-all disabled:opacity-40 disabled:hover:scale-100 shrink-0 shadow-md shadow-teal-600/20"
+          >
+            <Send size={15} />
+          </button>
+        </div>
+        <div className="flex items-center justify-between mt-1.5 px-1 text-[10px] text-slate-400">
+          <span className="flex items-center gap-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+            {t('tl.hipaaLabel')}
+          </span>
+          <span className="font-mono text-[9px]">Enter ↵</span>
+        </div>
+      </div>
+    </div>
+  );
 
   return (
-    <div className="max-w-7xl mx-auto px-4 lg:px-6 py-6 overflow-x-hidden">
-      <div className="flex flex-col xl:flex-row gap-6">
-        <div className="flex-1 flex flex-col gap-6 min-w-0">
-          <div>
-            <h1 className="font-headline-lg text-headline-lg-mobile lg:text-headline-lg gradient-text-editorial">{t('tl.toolsTitle')}</h1>
-            <p className="text-on-surface-variant font-body-lg">{t('tl.toolsDesc')}</p>
+    <div className="max-w-7xl mx-auto px-4 lg:px-6 py-5 overflow-x-hidden">
+      <div className="flex flex-col xl:flex-row gap-5">
+        <div className="flex-1 flex flex-col gap-5 min-w-0">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+            <div>
+              <h1 className="font-headline-lg text-headline-lg-mobile lg:text-headline-lg gradient-text-editorial">{t('tl.toolsTitle')}</h1>
+              <p className="text-on-surface-variant font-body-lg text-sm">{t('tl.toolsDesc')}</p>
+            </div>
+            <button
+              onClick={() => setShowMobilePhysi((v) => !v)}
+              className="xl:hidden inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-gradient-to-r from-teal-600 to-cyan-700 text-white text-xs font-bold shadow-md self-start sm:self-auto"
+            >
+              {showMobilePhysi ? <PanelRightClose size={16} /> : <PanelRightOpen size={16} />}
+              {showMobilePhysi ? t('tl.hidePhysiPanel') : t('tl.showPhysiPanel')}
+            </button>
           </div>
 
-          <AuditLogCard className="order-last" />
+          {showMobilePhysi && (
+            <div className="xl:hidden">
+              {renderPhysiPanel(true)}
+            </div>
+          )}
 
-          {/* Featured Clinical Bento Showcase */}
-          <div className="space-y-3">
+          {/* Featured Clinical Bento Showcase - Zero empty grid cells */}
+          <div className="space-y-2.5">
             <h2 className="text-xs font-bold uppercase tracking-wider text-teal-600 dark:text-teal-400 flex items-center gap-1.5">
               <Icon name="grid_view" size={16} />{t('tl.featuredTools')}</h2>
-            <BentoGrid className="auto-rows-[14rem]">
+            <BentoGrid className="md:grid-cols-2 xl:grid-cols-4 auto-rows-auto gap-3.5">
               <BentoCard
-                name="Calculadora de IMC y Composición"
-                description="Clasificación antropométrica y estimación en tiempo real con validación clínica."
-                badge="Biomecánica"
+                className="p-4"
+                name={t('tl.bmiTitle')}
+                description={t('tl.ocrClassification')}
+                badge={t('tl.bmiBadge')}
                 Icon={Calculator}
-                cta="Calcular Parámetros"
+                cta={t('tl.bmiCta')}
                 onClick={() => {
                   const el = document.getElementById('tool-bmi');
                   el?.scrollIntoView({ behavior: 'smooth' });
                 }}
               />
               <BentoCard
-                name="Captura de Marcha & Apoyo Plantar"
-                description="Simetría de carga bilateral, cadencia en pasos/minuto y fases de apoyo del pie."
-                badge="Cinemática"
+                className="p-4"
+                name={t('tl.gaitShortTitle')}
+                description={t('tl.gaitShortDesc')}
+                badge={t('tl.gaitBadge')}
                 Icon={Footprints}
-                cta="Analizar Marcha"
+                cta={t('tl.gaitCta')}
                 onClick={() => {
                   const el = document.getElementById('tool-gait');
                   el?.scrollIntoView({ behavior: 'smooth' });
                 }}
               />
               <BentoCard
-                name="Digitalizador OCR & Visión Médica"
-                description="Extracción instantánea de prescripciones, rangos articulares y antecedentes."
-                badge="Visión IA"
+                className="p-4"
+                name={t('tl.ocrTitle')}
+                description={t('tl.ocrCardDesc')}
+                badge={t('tl.ocrBadge')}
                 Icon={Camera}
-                cta="Escanear Documento"
+                cta={t('tl.ocrCta')}
                 onClick={() => {
                   const el = document.getElementById('tool-ocr');
                   el?.scrollIntoView({ behavior: 'smooth' });
                 }}
               />
               <BentoCard
-                name="Generador Narrativo de Sesión"
-                description="Síntesis clínica contextual con lenguaje profesional lista para exportar a PDF."
-                badge="Gemini AI"
+                className="p-4"
+                name={t('tl.aiSessionTitle')}
+                description={t('tl.summaryCardDesc')}
+                badge={t('tl.summaryBadge')}
                 Icon={FileText}
-                cta="Generar Informe"
+                cta={t('tl.summaryCta')}
                 onClick={() => {
                   const el = document.getElementById('tool-summary');
                   el?.scrollIntoView({ behavior: 'smooth' });
@@ -992,20 +1207,47 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
             </BentoGrid>
           </div>
 
+          {/* Unified Active Patient Context Toolbar */}
+          <div className="p-3.5 rounded-2xl ios-glass-heavy refraction-border flex flex-col md:flex-row md:items-center justify-between gap-3">
+            <div className="flex items-center gap-2.5 min-w-0">
+              <div className="size-9 rounded-xl bg-teal-500/15 text-teal-700 dark:text-teal-300 flex items-center justify-center shrink-0">
+                <UserCheck size={18} />
+              </div>
+              <div className="min-w-0">
+                <span className="text-xs font-bold text-on-surface block">{t('tl.activePatientContext')}</span>
+                <span className="text-[11px] text-on-surface-variant block truncate">{t('tl.activePatientHint')}</span>
+              </div>
+            </div>
+            <select
+              value={selectedPatient}
+              onChange={(e) => setSelectedPatient(e.target.value)}
+              aria-label={t('tl.selectPatient')}
+              className="md:w-72 px-3.5 py-2 rounded-xl bg-white/80 dark:bg-slate-800/80 border border-outline-variant/30 outline-none focus:ring-2 focus:ring-teal-500/20 text-on-surface text-xs sm:text-sm font-semibold shrink-0"
+            >
+              <option value="">{t('tl.allPatients')}</option>
+              {patients.length === 0 && <option value="" disabled>{t('tr.no_hay_pacientes_asignados')}</option>}
+              {patients.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {p.full_name}{p.diagnostico ? ` · ${p.diagnostico}` : ''}
+                </option>
+              ))}
+            </select>
+          </div>
+
           <AnimatedTabs
             tabs={[
-              { id: 'todas', label: 'Todas', content: (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+              { id: 'todas', label: t('tl.tabAll'), content: (
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 mt-4 items-stretch">
                   {toolsGrid('todas')}
                 </div>
               ) },
-              { id: 'ia', label: 'IA Clínica', content: (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+              { id: 'ia', label: t('tl.tabClinicalAi'), content: (
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 mt-4 items-stretch">
                   {toolsGrid('ia')}
                 </div>
               ) },
-              { id: 'ocr', label: 'OCR', content: (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+              { id: 'ocr', label: t('tl.tabOcr'), content: (
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 mt-4 items-stretch">
                   {toolsGrid('ocr')}
                 </div>
               ) },
@@ -1015,139 +1257,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
         </div>
 
       {/* AI Assistant sidebar - Elevated Clinical UI */}
-      <div className="hidden xl:flex flex-col w-[340px] lg:w-[400px] shrink-0 h-[calc(100vh-140px)] sticky top-[100px] rounded-3xl overflow-hidden bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border border-teal-500/25 shadow-xl">
-        {/* Header */}
-        <div className="p-4 sm:p-5 bg-gradient-to-r from-teal-600 via-teal-700 to-cyan-700 text-white flex items-center justify-between shrink-0 shadow-sm">
-          <div className="flex items-center gap-3">
-            <div className="size-11 rounded-2xl bg-white/15 backdrop-blur-md flex items-center justify-center text-white shrink-0 relative">
-              <Bot size={22} className="animate-breathe-icon" />
-              <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-400 border-2 border-teal-700" />
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h3 className="font-bold text-base leading-tight">Physi IA</h3>
-                <span className="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-white/20 text-white">
-                  Clínico
-                </span>
-              </div>
-              <p className="text-[11px] text-teal-100 mt-0.5 flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-300 animate-pulse" />
-                Asistente Kinesiológico &amp; ROM
-              </p>
-            </div>
-          </div>
-          <button
-            onClick={() => {
-              setChatMessages([{ role: 'assistant', text: 'Conversación reiniciada. ¿En qué protocolo o paciente te ayudo ahora?' }]);
-              toast.info('Chat reiniciado');
-            }}
-            aria-label="Reiniciar chat"
-            title="Reiniciar chat"
-            className="p-2 rounded-xl text-white/80 hover:text-white hover:bg-white/10 transition-colors"
-          >
-            <RotateCcw size={16} />
-          </button>
-        </div>
-
-        {/* Suggestion Chips */}
-        <div className="p-3 bg-teal-50/70 dark:bg-slate-800/60 border-b border-teal-100/60 dark:border-slate-800 flex items-center gap-1.5 overflow-x-auto scrollbar-none shrink-0">
-          {[
-            { label: 'ROM hombro', query: '¿Cuáles son los criterios de progresión en flexión de hombro de 90° a 120°?' },
-            { label: 'Tendinopatía', query: 'Protocolo de ejercicios excéntricos para tendinopatía rotuliana.' },
-            { label: 'Simetría', query: '¿Qué valores de asimetría plantar requieren corrección ortésica o propioceptiva?' },
-            { label: 'Criterios alta', query: 'Criterios clínicos de alta para esguince lateral de tobillo grado II.' },
-          ].map((chip) => (
-            <button
-              key={chip.label}
-              onClick={() => {
-                setChatInput(chip.query);
-              }}
-              className="text-[10px] font-bold px-2.5 py-1 rounded-full bg-white dark:bg-slate-700 text-teal-800 dark:text-teal-200 border border-teal-500/20 hover:border-teal-500/50 hover:bg-teal-500/10 transition-colors whitespace-nowrap shadow-xs"
-            >
-              {chip.label}
-            </button>
-          ))}
-        </div>
-
-        {/* Messages Body */}
-        <div className="flex-1 p-4 space-y-3.5 overflow-y-auto">
-          {chatMessages.map((msg, i) => (
-            <div key={i} className={`flex gap-2.5 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-              {msg.role === 'assistant' && (
-                <div className="size-8 rounded-xl bg-teal-500/15 text-teal-700 dark:text-teal-300 flex items-center justify-center shrink-0 mt-0.5">
-                  <Bot size={16} />
-                </div>
-              )}
-              <div className="max-w-[85%] group relative">
-                <div
-                  className={`p-3.5 rounded-2xl text-xs sm:text-[13px] leading-relaxed shadow-sm transition-all ${
-                    msg.role === 'user'
-                      ? 'bg-gradient-to-br from-teal-600 to-teal-700 text-white rounded-tr-none'
-                      : 'bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-100 border border-slate-200/60 dark:border-slate-700/60 rounded-tl-none'
-                  }`}
-                >
-                  <p className="whitespace-pre-wrap">{msg.text}</p>
-                </div>
-                {msg.role === 'assistant' && (
-                  <button
-                    onClick={() => {
-                      navigator.clipboard?.writeText(msg.text);
-                      toast.success('Mensaje copiado');
-                    }}
-                    aria-label="Copiar respuesta"
-                    className="opacity-0 group-hover:opacity-100 transition-opacity mt-1 text-[10px] text-slate-400 hover:text-teal-600 flex items-center gap-1"
-                  >
-                    <Copy size={11} /> Copiar texto
-                  </button>
-                )}
-              </div>
-            </div>
-          ))}
-          {aiLoading && (
-            <div className="flex gap-2.5 justify-start items-center">
-              <div className="size-8 rounded-xl bg-teal-500/15 text-teal-700 dark:text-teal-300 flex items-center justify-center shrink-0">
-                <Bot size={16} />
-              </div>
-              <div className="bg-slate-100 dark:bg-slate-800/90 p-3.5 rounded-2xl border border-slate-200/60 dark:border-slate-700/60 rounded-tl-none">
-                <div className="flex items-center gap-1.5 text-teal-600 dark:text-teal-400">
-                  <span className="w-2 h-2 rounded-full bg-current animate-bounce" style={{ animationDelay: '0ms' }} />
-                  <span className="w-2 h-2 rounded-full bg-current animate-bounce" style={{ animationDelay: '150ms' }} />
-                  <span className="w-2 h-2 rounded-full bg-current animate-bounce" style={{ animationDelay: '300ms' }} />
-                  <span className="text-[11px] font-semibold ml-2">Analizando criterio clínico...</span>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Input Bar */}
-        <div className="p-3.5 border-t border-slate-200/80 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/40 shrink-0">
-          <div className="flex gap-2 items-center">
-            <input
-              value={chatInput}
-              onChange={(e) => setChatInput(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && sendChat()}
-              placeholder={t('tl.askPlaceholder', 'Haz una consulta clínica a Physi...')}
-              className="flex-1 px-3.5 py-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100 placeholder:text-slate-400 outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 transition-all"
-            />
-            <button
-              onClick={sendChat}
-              disabled={aiLoading || !chatInput.trim()}
-              aria-label={t('tl.sendQuery', 'Enviar consulta')}
-              className="size-10 rounded-xl bg-teal-600 hover:bg-teal-700 text-white flex items-center justify-center hover:scale-105 active:scale-95 transition-all disabled:opacity-40 disabled:hover:scale-100 shrink-0 shadow-md shadow-teal-600/20"
-            >
-              <Send size={16} />
-            </button>
-          </div>
-          <div className="flex items-center justify-between mt-2 px-1 text-[10px] text-slate-400">
-            <span className="flex items-center gap-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-              {t('tr.cumple_hipaa', 'Cifrado seguro & HIPAA compliant')}
-            </span>
-            <span className="font-mono text-[9px]">Enter ↵</span>
-          </div>
-        </div>
-      </div>
+      {renderPhysiPanel(false)}
 
       {/* PDF Confirmation Modal */}
       {pdfModalOpen && (
@@ -1165,7 +1275,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
             <div className="flex gap-3">
               <button onClick={() => setPdfModalOpen(false)} className="flex-1 px-6 py-3 rounded-xl bg-surface-variant/30 text-on-surface-variant font-bold hover:bg-surface-variant/50 transition-all">{t('tr.cancelar')}</button>
               <button onClick={handleExportPDF} disabled={pdfLoading} className="premium-btn flex-1 px-6 py-3 rounded-xl bg-primary text-on-primary font-bold flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50">
-                {pdfLoading ? <><Spinner size={20} className="text-on-primary" /> <LoadingText context="pdf" /></> : 'Generar PDF'}
+                {pdfLoading ? <><Spinner size={20} className="text-on-primary" /> <LoadingText context="pdf" /></> : t('tl.generatePdfBtn')}
               </button>
             </div>
           </div>
@@ -1199,18 +1309,23 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
                     const extracted = scanResult as Record<string, unknown>;
                     const fields: Record<string, string> = {};
                     const fieldMap: Record<string, string> = {
+                      patologia: 'diagnostico',
                       diagnostico: 'diagnostico',
                       diagnostico_secundario: 'diagnostico_secundario',
                       rom_objetivo: 'rom_objetivo',
+                      medicamentos_actuales: 'medicamentos_actuales',
                       medicamentos: 'medicamentos_actuales',
                       alergias: 'alergias',
                       telefono: 'telefono',
+                      medico_remitente: 'medico_remitente',
                       medico_tratante: 'medico_remitente',
+                      extremidad_afectada: 'extremidad_afectada',
+                      frecuencia_sesiones: 'frecuencia_sesiones',
                       observaciones: 'notas',
                     };
                     for (const [scanKey, dbKey] of Object.entries(fieldMap)) {
                       const val = extracted[scanKey];
-                      if (val != null && String(val).trim() !== '') fields[dbKey] = String(val);
+                      if (val != null && String(val).trim() !== '' && !fields[dbKey]) fields[dbKey] = String(val);
                     }
                     if (Object.keys(fields).length === 0) {
                       toast.error('No se encontraron campos actualizables en el texto extraido');
@@ -1247,7 +1362,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
                 ))}
                 <div className="flex gap-3 mt-4">
                   <button onClick={() => setShowUpdatePatientModal(false)} className="flex-1 py-3 rounded-xl bg-surface-variant/30 text-on-surface-variant font-bold hover:bg-surface-variant/50 transition-all">
-                    Cancelar
+                    {t('common.cancel')}
                   </button>
                   <button
                     onClick={async () => {
@@ -1267,7 +1382,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
                     disabled={updateLoading}
                     className="premium-btn flex-1 py-3 rounded-xl bg-teal-600 text-white font-bold hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50 min-h-[44px]"
                   >
-                    Confirmar actualizacion
+                    {t('common.confirm')}
                   </button>
                 </div>
               </div>

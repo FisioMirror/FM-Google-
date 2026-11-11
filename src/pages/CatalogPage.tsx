@@ -45,9 +45,9 @@ export function CatalogPage() {
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 lg:px-8 py-8 space-y-12">
+    <div className="max-w-7xl mx-auto px-4 lg:px-8 py-5 space-y-8">
       {/* Header Banner */}
-      <div className="relative rounded-3xl p-8 overflow-hidden border border-outline/15 bg-gradient-to-br from-surface-container-low via-surface to-surface-container shadow-2xl">
+      <div className="relative rounded-3xl p-5 sm:p-6 overflow-hidden border border-outline/15 bg-gradient-to-br from-surface-container-low via-surface to-surface-container shadow-2xl">
         <BorderBeam size={130} duration={8} colorFrom="#14b8a6" colorTo="#0ea5e9" />
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-2 max-w-2xl">
@@ -557,7 +557,7 @@ export function CatalogPage() {
                 <div className="relative z-10">
                   <h3 className="text-base font-bold text-on-surface">AI Loader &amp; LightRays</h3>
                   <p className="text-xs text-on-surface-variant mb-6">Loader cinético con rayos de luz ambientales.</p>
-                  <div className="p-8 rounded-2xl bg-surface/70 border border-outline/15 backdrop-blur-sm flex flex-col items-center justify-center gap-6">
+                  <div className="p-6 rounded-2xl bg-surface/70 border border-outline/15 backdrop-blur-sm flex flex-col items-center justify-center gap-5">
                     <AILoader label="Analizando Biomecánica" textSize={20} />
                     <span className="text-xs text-on-surface-variant">Extrayendo ángulos articulares en tiempo real</span>
                   </div>
@@ -585,7 +585,7 @@ export function CatalogPage() {
 
       {/* BLOQUE MACRO SUITE (50 COMPONENTES DE ÉLITE) */}
       {(activeTab === 'all' || activeTab === 'megasuite') && (
-        <section className="space-y-8 p-6 sm:p-8 rounded-3xl bg-gradient-to-b from-cyan-500/10 via-surface/60 to-surface border border-cyan-500/25 shadow-xl">
+        <section className="space-y-6 p-5 sm:p-6 rounded-3xl bg-gradient-to-b from-cyan-500/10 via-surface/60 to-surface border border-cyan-500/25 shadow-xl">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-cyan-500/20">
             <div className="space-y-1">
               <div className="flex items-center gap-2">
@@ -735,7 +735,7 @@ export function CatalogPage() {
 
       {/* BLOQUE SUITE ESTELAR BIOMECÁNICA & HERRAMIENTAS CLÍNICAS */}
       {(activeTab === 'all' || activeTab === 'estelar') && (
-        <section className="space-y-8 p-6 sm:p-8 rounded-3xl bg-gradient-to-b from-teal-500/10 via-surface/60 to-surface border border-teal-500/30 shadow-xl">
+        <section className="space-y-6 p-5 sm:p-6 rounded-3xl bg-gradient-to-b from-teal-500/10 via-surface/60 to-surface border border-teal-500/30 shadow-xl">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-teal-500/20">
             <div className="space-y-1">
               <div className="flex items-center gap-2">

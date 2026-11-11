@@ -1,23 +1,31 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Timer, CheckCircle, AlertTriangle, Activity } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
+import type { RepPhase, TrafficLightState } from '@/hooks/usePoseDetection';
 
 export interface ClinicalCadenceAnalyzerProps {
   lastRepDurationSeconds?: number;
   isMoving?: boolean;
+  repPhase?: RepPhase;
+  trafficLight?: TrafficLightState;
   className?: string;
 }
 
 export const ClinicalCadenceAnalyzer: React.FC<ClinicalCadenceAnalyzerProps> = ({
   lastRepDurationSeconds = 2.4,
   isMoving = false,
+  repPhase,
+  trafficLight,
   className,
 }) => {
+  const { t } = useTranslation();
+
   // Clinical cadence guidelines:
-  // < 1.3s: Too fast (inadequate eccentric control)
-  // 1.8s - 3.8s: Optimal physiological tempo
-  // > 4.5s: Prolonged isometric pause / slow execution
+  // < 1.4s: Too fast (inadequate eccentric control)
+  // 1.4s - 4.2s: Optimal physiological tempo
+  // > 4.2s: Prolonged isometric pause / slow execution
   const duration = Math.max(0.5, lastRepDurationSeconds);
 
   let status: {
@@ -30,24 +38,24 @@ export const ClinicalCadenceAnalyzer: React.FC<ClinicalCadenceAnalyzerProps> = (
 
   if (duration < 1.4) {
     status = {
-      label: 'Demasiado Rápido',
-      description: 'Controla la fase de descenso (2-3s)',
+      label: t('ar.cadenceFast'),
+      description: t('ar.cadenceFastDesc'),
       color: 'text-amber-400',
       badgeBg: 'bg-amber-500/20 text-amber-300 border-amber-500/40',
       icon: AlertTriangle,
     };
   } else if (duration > 4.2) {
     status = {
-      label: 'Ritmo Pausado',
-      description: 'Mantén fluidez sin sobrecargar',
+      label: t('ar.cadenceSlow'),
+      description: t('ar.cadenceSlowDesc'),
       color: 'text-sky-400',
       badgeBg: 'bg-sky-500/20 text-sky-300 border-sky-500/40',
       icon: Activity,
     };
   } else {
     status = {
-      label: 'Cadencia Óptima',
-      description: 'Excelente control neuromuscular',
+      label: t('ar.cadenceOptimal'),
+      description: t('ar.cadenceOptimalDesc'),
       color: 'text-emerald-400',
       badgeBg: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40',
       icon: CheckCircle,
@@ -56,31 +64,54 @@ export const ClinicalCadenceAnalyzer: React.FC<ClinicalCadenceAnalyzerProps> = (
 
   const StatusIcon = status.icon;
 
+  const phaseText =
+    repPhase === 'hold'
+      ? t('ar.phaseHold')
+      : repPhase === 'concentric'
+      ? t('ar.phaseConcentric')
+      : repPhase === 'eccentric'
+      ? t('ar.phaseEccentric')
+      : repPhase === 'neutral'
+      ? t('ar.phaseNeutral')
+      : null;
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       className={cn(
-        "p-4 rounded-2xl bg-slate-950/90 backdrop-blur-2xl border border-teal-500/35 text-white shadow-2xl space-y-2.5",
+        'p-4 rounded-2xl bg-slate-950/90 backdrop-blur-2xl border text-white shadow-2xl space-y-2.5 transition-colors duration-300',
+        trafficLight === 'green'
+          ? 'border-emerald-400/50'
+          : trafficLight === 'yellow'
+          ? 'border-amber-400/45'
+          : trafficLight === 'red'
+          ? 'border-rose-500/45'
+          : 'border-teal-500/35',
         className
       )}
     >
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <div className="p-1.5 rounded-xl bg-teal-500/15 text-teal-400 border border-teal-500/30">
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2 min-w-0">
+          <div className="p-1.5 rounded-xl bg-teal-500/15 text-teal-400 border border-teal-500/30 shrink-0">
             <Timer className="w-4 h-4" />
           </div>
-          <div>
-            <span className="text-[11px] font-bold text-white uppercase tracking-wider block">
-              Cadencia Clínica
+          <div className="min-w-0">
+            <span className="text-[11px] font-bold text-white uppercase tracking-wider block truncate">
+              {t('ar.cadenceTitle')}
             </span>
-            <span className="text-[10px] text-teal-300/80 font-mono">
-              Tempo articular
+            <span className="text-[10px] text-teal-300/80 font-mono block truncate">
+              {phaseText || t('ar.cadenceTempo')}
             </span>
           </div>
         </div>
 
-        <div className={cn("text-[10px] font-bold px-2 py-0.5 rounded-full border flex items-center gap-1", status.badgeBg)}>
+        <div
+          className={cn(
+            'text-[10px] font-bold px-2 py-0.5 rounded-full border flex items-center gap-1 shrink-0',
+            status.badgeBg
+          )}
+        >
           <StatusIcon className="w-3 h-3" />
           <span>{status.label}</span>
         </div>
@@ -96,7 +127,7 @@ export const ClinicalCadenceAnalyzer: React.FC<ClinicalCadenceAnalyzerProps> = (
 
         {/* Dynamic tempo wave */}
         <div className="flex items-center gap-1">
-          {[0.2, 0.5, 0.8, 0.4].map((h, idx) => (
+          {[0.2, 0.5, 0.8, 0.4].map((_, idx) => (
             <motion.div
               key={idx}
               animate={{

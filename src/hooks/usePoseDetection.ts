@@ -15,6 +15,9 @@ export interface PoseLandmark {
   visibility: number;
 }
 
+export type TrafficLightState = 'red' | 'yellow' | 'green';
+export type RepPhase = 'neutral' | 'concentric' | 'hold' | 'eccentric';
+
 export interface PoseData {
   landmarks: PoseLandmark[];
   /** Ángulo de hombro (cadera-hombro-codo) de cada lado. */
@@ -37,9 +40,13 @@ export interface PoseData {
   lateralLeanDeg?: number;
   /** Alerta de compensación postural detectada en tiempo real */
   compensationIssue?: string | null;
+  /** Código de compensación i18n-friendly para feedback de voz/HUD */
+  compensationCode?: 'shoulder_tilt' | 'hip_tilt' | 'lateral_lean' | null;
   /** Índice del landmark de la articulación objetivo monitorizada */
   trackedJointIndex?: number;
-  /** Ángulo de la articulación que cuenta repeticiones para el ejercicio actual. */
+  /** Lado anatómico actualmente monitorizado */
+  trackedSide?: 'left' | 'right';
+  /** Ángulo clínico de la articulación que cuenta repeticiones para el ejercicio actual. */
   primaryAngle: number;
   /** Objetivo clínico configurado para esa articulación. */
   targetAngle: number;
@@ -47,6 +54,16 @@ export interface PoseData {
   lastRepQuality: number | null;
   /** Rango articular recorrido en la última repetición, en grados. */
   lastRepRange: number;
+  /** Estado del semáforo visual de postura/captura */
+  trafficLight: TrafficLightState;
+  /** Fase actual del movimiento dentro de la repetición */
+  repPhase: RepPhase;
+  /** Milisegundos restantes de mantenimiento isométrico en pico articular */
+  holdRemainingMs: number;
+  /** Porcentaje de ROM alcanzado hacia el objetivo (0-100) */
+  romPercent: number;
+  /** Diferencia angular absoluta respecto al ángulo objetivo */
+  angleErrorDeg: number;
   postureScore: number;
   isTracking: boolean;
 }
@@ -54,10 +71,20 @@ export interface PoseData {
 export type RepJoint = 'elbow' | 'knee' | 'shoulder' | 'hip' | 'ankle' | 'cervical' | 'scapula';
 
 export interface UsePoseDetectionOptions {
-  /** Joint used to count repetitions. Defaults to elbow. */
+  /** Joint used to count repetitions. Defaults to inferred from articulacion/exerciseName. */
   repJoint?: RepJoint;
   /** Exercise name used to infer the rep joint when repJoint is omitted. */
   exerciseName?: string;
+  /** Articulación clínica explícita del preset/rutina */
+  articulacion?: string;
+  /** Lado prescrito ('bilateral' | 'derecho' | 'izquierdo') */
+  lado?: 'bilateral' | 'derecho' | 'izquierdo' | string;
+  /** Si es false, pausa el conteo de repeticiones manteniendo cámara y esqueleto visibles */
+  enabled?: boolean;
+  /** Duración de retención isométrica recomendada en segundos */
+  holdDurationSec?: number;
+  /** Ángulo neutro inicial según preset clínico */
+  neutralAngle?: number;
   /**
    * Complejidad del modelo MediaPipe: 0 lite, 1 full, 2 heavy.
    * Si se omite se elige según el hardware (2 en equipos capaces, 1 en móvil).
@@ -67,38 +94,49 @@ export interface UsePoseDetectionOptions {
   maxFps?: number;
 }
 
-function inferRepJoint(exerciseName?: string): RepJoint {
+function inferRepJoint(exerciseName?: string, articulacion?: string): RepJoint {
+  const art = (articulacion || '').toLowerCase().trim();
+  if (art.includes('tobillo') || art.includes('ankle')) return 'ankle';
+  if (art.includes('cervical') || art.includes('cuello')) return 'cervical';
+  if (art.includes('escapul') || art.includes('escápul')) return 'scapula';
+  if (art.includes('rodilla') || art.includes('knee')) return 'knee';
+  if (art.includes('hombro') || art.includes('shoulder')) return 'shoulder';
+  if (art.includes('cadera') || art.includes('hip')) return 'hip';
+  if (art.includes('codo') || art.includes('elbow')) return 'elbow';
+
   const name = (exerciseName || '').toLowerCase();
   if (/(tobillo|ankle|dorsiflexi|plantar|pie|foot)/.test(name)) return 'ankle';
   if (/(cervical|cuello|neck|menton|mentón|chin|trapecio)/.test(name)) return 'cervical';
   if (/(escapul|escápul|scapul|postural|retracci|romboid)/.test(name)) return 'scapula';
   if (/(sentadilla|squat|rodilla|knee|prensa|leg press|zancada|lunge)/.test(name)) return 'knee';
   if (/(hombro|shoulder|elevaci|abducci|press militar|overhead)/.test(name)) return 'shoulder';
-  if (/(cadera|hip|puente|bridge|gluteo|glúteo|pelvis)/.test(name)) return 'hip';
+  if (/(cadera|hip|puente|bridge|gluteo|glúteo|pelvis|equilibrio)/.test(name)) return 'hip';
   return 'elbow';
 }
 
 /**
  * Rango articular esperado (en grados) para una repetición completa.
- * Los presets clínicos expresan flexión/elevación/abducción; la rodilla usa
- * extensión (target 0), por eso su rango se deja en un valor funcional.
  */
-function expectedRangeFor(joint: RepJoint, targetAngle: number): number {
+function expectedRangeFor(joint: RepJoint, targetAngle: number, neutralAngle?: number): number {
+  if (neutralAngle != null && Number.isFinite(neutralAngle) && Number.isFinite(targetAngle)) {
+    const delta = Math.abs(targetAngle - neutralAngle);
+    if (delta >= 20) return delta;
+  }
   switch (joint) {
     case 'elbow':
-      return Math.max(45, Math.min(140, targetAngle || 110));
+      return Math.max(45, Math.min(140, targetAngle || 120));
     case 'shoulder':
       return Math.max(45, Math.min(160, targetAngle || 90));
     case 'hip':
       return Math.max(25, Math.min(90, targetAngle || 45));
     case 'knee':
-      return Math.max(45, Math.min(100, targetAngle > 0 ? Math.max(70, targetAngle) : 70));
+      return Math.max(45, Math.min(100, targetAngle > 0 ? Math.max(60, targetAngle) : 75));
     case 'ankle':
-      return Math.max(20, Math.min(60, targetAngle || 35));
+      return Math.max(18, Math.min(60, targetAngle || 25));
     case 'cervical':
-      return Math.max(20, Math.min(50, targetAngle || 30));
+      return Math.max(18, Math.min(50, targetAngle || 30));
     case 'scapula':
-      return Math.max(25, Math.min(60, targetAngle || 45));
+      return Math.max(20, Math.min(60, targetAngle || 40));
     default:
       return 70;
   }
@@ -160,15 +198,49 @@ const POSE_CONNECTIONS: [number, number][] = [
   [LM.RIGHT_KNEE, LM.RIGHT_ANKLE],
 ];
 
-// Dynamic posture colors: red (bad), yellow (near), green (correct)
+// Dynamic posture semáforo colors: red (erroneous/poor capture), yellow (medium alignment), green (correct)
 const COLOR_BAD = '#ef4444';
 const COLOR_NEAR = '#eab308';
 const COLOR_GOOD = '#22c55e';
 
-function getPostureColor(score: number): string {
-  if (score >= 75) return COLOR_GOOD;
-  if (score >= 50) return COLOR_NEAR;
+function trafficLightToColor(tl: TrafficLightState): string {
+  if (tl === 'green') return COLOR_GOOD;
+  if (tl === 'yellow') return COLOR_NEAR;
   return COLOR_BAD;
+}
+
+/**
+ * Evalúa el semáforo visual de postura y captura biomecánica en 3 niveles claros:
+ * - Rojo ('red'): cuerpo fuera de encuadre, pocos landmarks o compensación severa (< 55)
+ * - Amarillo ('yellow'): captura parcial o desalineación leve/moderada (55..77 o compensación moderada)
+ * - Verde ('green'): captura nítida, buena alineación postural y ejecución segura (>= 78 sin compensación)
+ */
+function evaluateTrafficLight(
+  isTracking: boolean,
+  postureScore: number,
+  compensationCode: PoseData['compensationCode']
+): TrafficLightState {
+  if (!isTracking || postureScore < 55) return 'red';
+  if (compensationCode !== null || postureScore < 78) return 'yellow';
+  return 'green';
+}
+
+/** Convierte ángulo interno geométrico de 3 puntos a convención goniométrica clínica */
+function toClinicalAngle(joint: RepJoint, innerAngle: number): number {
+  switch (joint) {
+    case 'elbow':
+    case 'knee':
+    case 'hip':
+      return Math.max(0, Math.min(175, Math.round(180 - innerAngle)));
+    case 'ankle':
+      return Math.max(0, Math.min(70, Math.round(Math.abs(95 - innerAngle))));
+    case 'cervical':
+      return Math.max(0, Math.min(65, Math.round(Math.abs(90 - innerAngle))));
+    case 'shoulder':
+    case 'scapula':
+    default:
+      return Math.max(0, Math.min(180, Math.round(innerAngle)));
+  }
 }
 
 /**
@@ -205,31 +277,50 @@ export function usePoseDetection(options: UsePoseDetectionOptions = {}): UsePose
   const [isSimulated, setIsSimulated] = useState(false);
   const [retryKey, setRetryKey] = useState(0);
 
-  const repPhaseRef = useRef<'up' | 'down'>('down');
+  const repPhaseRef = useRef<RepPhase>('neutral');
   const repAngleSmoothRef = useRef<number | null>(null);
   const lastRepTsRef = useRef<number>(0);
   const targetAngleRef = useRef<number>(90);
+  const neutralAngleRef = useRef<number | undefined>(options.neutralAngle);
+  const enabledRef = useRef<boolean>(options.enabled ?? true);
+  const ladoRef = useRef<string | undefined>(options.lado);
+  const holdDurationRef = useRef<number>(Math.max(1, options.holdDurationSec ?? 2));
   const lastRepQualityRef = useRef<number | null>(null);
   const lastRepRangeRef = useRef<number>(0);
+
+  neutralAngleRef.current = options.neutralAngle;
+  enabledRef.current = options.enabled ?? true;
+  ladoRef.current = options.lado;
+  holdDurationRef.current = Math.max(1, options.holdDurationSec ?? 2);
+
   const repTrackRef = useRef({
-    phase: 'idle' as 'idle' | 'moving',
+    phase: 'neutral' as RepPhase,
     startAngle: 0,
     min: 0,
     max: 0,
     startTs: 0,
+    holdEnterTs: 0,
     lastRest: 0,
   });
-  const repJointRef = useRef<RepJoint>(options.repJoint ?? inferRepJoint(options.exerciseName));
-  repJointRef.current = options.repJoint ?? inferRepJoint(options.exerciseName);
+  const repJointRef = useRef<RepJoint>(options.repJoint ?? inferRepJoint(options.exerciseName, options.articulacion));
+  repJointRef.current = options.repJoint ?? inferRepJoint(options.exerciseName, options.articulacion);
 
   const resetReps = useCallback(() => {
     setRepCount(0);
-    repPhaseRef.current = 'down';
+    repPhaseRef.current = 'neutral';
     repAngleSmoothRef.current = null;
     lastRepTsRef.current = 0;
     lastRepQualityRef.current = null;
     lastRepRangeRef.current = 0;
-    repTrackRef.current = { phase: 'idle', startAngle: 0, min: 0, max: 0, startTs: 0, lastRest: 0 };
+    repTrackRef.current = {
+      phase: 'neutral',
+      startAngle: 0,
+      min: 0,
+      max: 0,
+      startTs: 0,
+      holdEnterTs: 0,
+      lastRest: 0,
+    };
   }, []);
 
   const toggleFacingMode = useCallback(() => {
@@ -290,8 +381,8 @@ export function usePoseDetection(options: UsePoseDetectionOptions = {}): UsePose
         ctx.lineTo(pelvisX, pelvisY + 25);
         ctx.stroke();
 
-        // High contrast dashed line
-        ctx.strokeStyle = 'rgba(45, 212, 191, 0.7)';
+        // High contrast dashed line following traffic-light tone
+        ctx.strokeStyle = postureColor === COLOR_GOOD ? 'rgba(34, 197, 94, 0.72)' : postureColor === COLOR_NEAR ? 'rgba(234, 179, 8, 0.72)' : 'rgba(239, 68, 68, 0.72)';
         ctx.lineWidth = 2;
         ctx.setLineDash([5, 5]);
         ctx.beginPath();
@@ -302,8 +393,8 @@ export function usePoseDetection(options: UsePoseDetectionOptions = {}): UsePose
       }
 
       // 2) Subtle dark contrast backing (prevents lines from disappearing over white clothing)
-      ctx.strokeStyle = 'rgba(0, 21, 20, 0.5)';
-      ctx.lineWidth = 5;
+      ctx.strokeStyle = 'rgba(0, 21, 20, 0.58)';
+      ctx.lineWidth = 6;
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
       for (const [a, b] of POSE_CONNECTIONS) {
@@ -317,19 +408,19 @@ export function usePoseDetection(options: UsePoseDetectionOptions = {}): UsePose
         }
       }
 
-      // 3) Clinical Glowing Teal/Cyan Skeleton Lines
-      ctx.lineWidth = 3.2;
+      // 3) Semáforo Visual Skeleton Lines (Red / Yellow / Green)
+      ctx.lineWidth = 3.5;
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
-      ctx.shadowBlur = 8;
+      ctx.shadowBlur = 10;
       for (const [a, b] of POSE_CONNECTIONS) {
         const pa = landmarks[a];
         const pb = landmarks[b];
         if (pa && pb && (pa.visibility ?? 0) > 0.35 && (pb.visibility ?? 0) > 0.35) {
           const isActiveBone = activeJointIdx != null && (a === activeJointIdx || b === activeJointIdx);
-          const boneColor = isActiveBone ? '#38bdf8' : (postureColor === COLOR_GOOD ? '#8ad3cf' : postureColor);
-          ctx.strokeStyle = boneColor;
-          ctx.shadowColor = boneColor;
+          ctx.strokeStyle = postureColor;
+          ctx.shadowColor = postureColor;
+          ctx.lineWidth = isActiveBone ? 4.4 : 3.2;
           ctx.beginPath();
           ctx.moveTo(pa.x * w, pa.y * h);
           ctx.lineTo(pb.x * w, pb.y * h);
@@ -338,7 +429,7 @@ export function usePoseDetection(options: UsePoseDetectionOptions = {}): UsePose
       }
       ctx.shadowBlur = 0;
 
-      // 4) Clean, Luminous Medical Joint Nodes (No heavy muddy borders)
+      // 4) Luminous Medical Joint Nodes tinted with semáforo state
       for (let i = 0; i < landmarks.length; i++) {
         const lm = landmarks[i];
         if (!lm || (lm.visibility ?? 0) <= 0.35) continue;
@@ -348,18 +439,18 @@ export function usePoseDetection(options: UsePoseDetectionOptions = {}): UsePose
 
         // Joint Node Body
         ctx.beginPath();
-        ctx.arc(x, y, isTarget ? 7.5 : 5, 0, Math.PI * 2);
-        ctx.fillStyle = isTarget ? '#a6f0eb' : '#8ad3cf';
+        ctx.arc(x, y, isTarget ? 8 : 5, 0, Math.PI * 2);
+        ctx.fillStyle = postureColor;
         ctx.fill();
 
-        // Thin elegant rim
+        // Thin high-contrast rim
         ctx.lineWidth = 1.5;
-        ctx.strokeStyle = isTarget ? '#00504d' : 'rgba(0, 30, 28, 0.6)';
+        ctx.strokeStyle = 'rgba(2, 6, 23, 0.85)';
         ctx.stroke();
 
-        // Delicate inner specular core
+        // Crisp inner white specular core
         ctx.beginPath();
-        ctx.arc(x, y, isTarget ? 3.5 : 2, 0, Math.PI * 2);
+        ctx.arc(x, y, isTarget ? 3.2 : 1.8, 0, Math.PI * 2);
         ctx.fillStyle = '#ffffff';
         ctx.fill();
       }
@@ -370,10 +461,10 @@ export function usePoseDetection(options: UsePoseDetectionOptions = {}): UsePose
         const jx = targetLm.x * w;
         const jy = targetLm.y * h;
 
-        // Pulsating reticle circle
-        const pulse = (Math.sin(performance.now() / 200) + 1) * 3; // 0 to 6
-        ctx.strokeStyle = '#38bdf8';
-        ctx.lineWidth = 2;
+        // Pulsating reticle circle in semáforo color
+        const pulse = (Math.sin(performance.now() / 200) + 1) * 3;
+        ctx.strokeStyle = postureColor;
+        ctx.lineWidth = 2.2;
         ctx.beginPath();
         ctx.arc(jx, jy, 16 + pulse, 0, Math.PI * 2);
         ctx.stroke();
@@ -385,33 +476,29 @@ export function usePoseDetection(options: UsePoseDetectionOptions = {}): UsePose
           const bx = jx + Math.cos(theta) * bracketR;
           const by = jy + Math.sin(theta) * bracketR;
           ctx.beginPath();
-          ctx.arc(bx, by, 1.5, 0, Math.PI * 2);
-          ctx.fillStyle = '#38bdf8';
+          ctx.arc(bx, by, 1.8, 0, Math.PI * 2);
+          ctx.fillStyle = postureColor;
           ctx.fill();
         }
 
-        // Floating Angle Readout Badge:
-        // IMPORTANT: Because canvas is rendered with CSS -scale-x-100,
-        // we invert horizontally (scale(-1, 1)) so the text renders upright and unmirrored!
+        // Floating Angle Readout Badge (counter-mirrored so text stays upright)
         if (primaryAngle != null && Number.isFinite(primaryAngle)) {
           ctx.save();
-          // Position badge slightly offset from joint
           const badgeOffsetX = 26;
           const badgeOffsetY = -24;
           ctx.translate(jx + badgeOffsetX, jy + badgeOffsetY);
-          ctx.scale(-1, 1); // Counter-mirror horizontally!
+          ctx.scale(-1, 1);
 
           const angleText = `${Math.round(primaryAngle)}°`;
           ctx.font = 'bold 13px system-ui, -apple-system, sans-serif';
           const textMetrics = ctx.measureText(angleText);
           const padX = 8;
-          const bW = Math.max(38, textMetrics.width + padX * 2);
+          const bW = Math.max(40, textMetrics.width + padX * 2);
           const bH = 22;
 
-          // Badge background
           ctx.fillStyle = 'rgba(2, 6, 23, 0.92)';
-          ctx.strokeStyle = '#38bdf8';
-          ctx.lineWidth = 1.5;
+          ctx.strokeStyle = postureColor;
+          ctx.lineWidth = 1.8;
           ctx.beginPath();
           if (typeof ctx.roundRect === 'function') {
             ctx.roundRect(-bW / 2, -bH / 2, bW, bH, 6);
@@ -421,7 +508,6 @@ export function usePoseDetection(options: UsePoseDetectionOptions = {}): UsePose
           ctx.fill();
           ctx.stroke();
 
-          // Text
           ctx.fillStyle = '#ffffff';
           ctx.textAlign = 'center';
           ctx.textBaseline = 'middle';
@@ -437,67 +523,128 @@ export function usePoseDetection(options: UsePoseDetectionOptions = {}): UsePose
     const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
 
     /**
-     * Detector de repeticiones por excursión articular.
-     * Funciona para flexión (el ángulo baja) y para elevación/abducción (sube):
-     * registra el extremo de partida, el rango recorrido y cuenta cuando el
-     * paciente vuelve cerca del punto inicial con un rango mínimo y un tiempo
-     * fisiológicamente plausible. Devuelve la calidad de la repetición.
+     * Detector biomecánico por excursión, fase clínica y mantenimiento isométrico.
+     * Soporta tanto flexión ascendente (0 -> 120°) como extensión hacia 0° (90° -> 0°).
      */
-    const trackAngle = (rawAngle: number, expectedRange: number) => {
+    const trackAngle = (clinicalAngle: number, expectedRange: number, postureScore: number, allowCount: boolean) => {
       const now = performance.now();
       const prevSmooth = repAngleSmoothRef.current;
       const alpha = prevSmooth === null ? 1 : 0.42;
-      const angle = prevSmooth === null ? rawAngle : prevSmooth + alpha * (rawAngle - prevSmooth);
+      const angle = prevSmooth === null ? clinicalAngle : prevSmooth + alpha * (clinicalAngle - prevSmooth);
       repAngleSmoothRef.current = angle;
 
       const track = repTrackRef.current;
-      if (track.phase === 'idle') {
+      const holdMsTarget = holdDurationRef.current * 1000;
+
+      if (!allowCount) {
+        return {
+          angle,
+          counted: false,
+          quality: null as number | null,
+          range: 0,
+          phase: track.phase,
+          holdRemainingMs: 0,
+          romPercent: 0,
+        };
+      }
+
+      if (track.phase === 'neutral') {
         if (track.lastRest === 0) track.lastRest = angle;
-        track.lastRest += 0.06 * (angle - track.lastRest);
-        const startDelta = Math.max(16, expectedRange * 0.22);
-        if (Math.abs(angle - track.lastRest) > startDelta) {
-          track.phase = 'moving';
+        track.lastRest += 0.08 * (angle - track.lastRest);
+        const startDelta = Math.max(12, expectedRange * 0.18);
+        const curExcursion = Math.abs(angle - track.lastRest);
+        const romPercent = clamp(Math.round((curExcursion / Math.max(1, expectedRange)) * 100), 0, 100);
+        if (curExcursion > startDelta) {
+          track.phase = 'concentric';
           track.startAngle = track.lastRest;
           track.min = angle;
           track.max = angle;
           track.startTs = now;
+          track.holdEnterTs = 0;
         }
-        return { angle, counted: false, quality: null as number | null, range: 0 };
+        return {
+          angle,
+          counted: false,
+          quality: null as number | null,
+          range: 0,
+          phase: track.phase,
+          holdRemainingMs: 0,
+          romPercent,
+        };
       }
 
       track.min = Math.min(track.min, angle);
       track.max = Math.max(track.max, angle);
       const range = track.max - track.min;
       const elapsed = now - track.startTs;
-      const minRange = Math.max(24, expectedRange * 0.5);
-      const returnTolerance = Math.max(10, expectedRange * 0.18);
+      const curExcursion = Math.abs(angle - track.startAngle);
+      const romPercent = clamp(Math.round((curExcursion / Math.max(1, expectedRange)) * 100), 0, 100);
+      const minRange = Math.max(20, expectedRange * 0.5);
+      const returnTolerance = Math.max(10, expectedRange * 0.2);
 
-      if (range >= minRange && elapsed >= 900 && Math.abs(angle - track.startAngle) <= returnTolerance) {
-        const rangeScore = clamp((range / expectedRange) * 100, 0, 100);
+      // Fase isométrica en el pico (>= 75% de ROM esperado)
+      let holdRemainingMs = 0;
+      if (romPercent >= 75) {
+        if (track.phase === 'concentric') {
+          track.phase = 'hold';
+          track.holdEnterTs = now;
+        }
+        if (track.phase === 'hold') {
+          const heldFor = now - track.holdEnterTs;
+          holdRemainingMs = Math.max(0, Math.round(holdMsTarget - heldFor));
+        }
+      } else if (track.phase === 'hold' && romPercent < 62) {
+        track.phase = 'eccentric';
+      } else if (track.phase === 'concentric' && range >= minRange && curExcursion < range * 0.72) {
+        track.phase = 'eccentric';
+      }
+
+      if (range >= minRange && elapsed >= 850 && Math.abs(angle - track.startAngle) <= returnTolerance) {
+        const rangeScore = clamp((range / Math.max(1, expectedRange)) * 100, 0, 100);
         const seconds = elapsed / 1000;
-        const tempoScore = seconds < 0.8 ? 40 : seconds < 1.2 ? 65 : seconds <= 6 ? 100 : seconds <= 8 ? 75 : 55;
-        const quality = Math.round(rangeScore * 0.8 + tempoScore * 0.2);
-        track.phase = 'idle';
+        const tempoScore = seconds < 0.8 ? 45 : seconds < 1.2 ? 70 : seconds <= 6.5 ? 100 : seconds <= 9 ? 78 : 55;
+        const heldFraction = track.holdEnterTs > 0 ? clamp((now - track.holdEnterTs) / Math.max(500, holdMsTarget * 0.5), 0.5, 1) : 0.7;
+        const quality = Math.round(rangeScore * 0.62 + tempoScore * 0.2 + postureScore * 0.1 + heldFraction * 8);
+        track.phase = 'neutral';
         track.startAngle = 0;
         track.min = 0;
         track.max = 0;
         track.startTs = 0;
+        track.holdEnterTs = 0;
         track.lastRest = angle;
         lastRepQualityRef.current = clamp(quality, 0, 100);
         lastRepRangeRef.current = Math.round(range);
-        return { angle, counted: true, quality: lastRepQualityRef.current, range };
+        return {
+          angle,
+          counted: true,
+          quality: lastRepQualityRef.current,
+          range: Math.round(range),
+          phase: 'neutral' as RepPhase,
+          holdRemainingMs: 0,
+          romPercent: 0,
+        };
       }
 
-      // Movimiento inconcluso (pérdida de encuadre, pausa larga): reiniciar.
-      if (elapsed > 8000) {
-        track.phase = 'idle';
+      // Movimiento inconcluso (pérdida de encuadre o pausa larga): reiniciar ciclo.
+      if (elapsed > 12000) {
+        track.phase = 'neutral';
         track.startAngle = 0;
         track.min = 0;
         track.max = 0;
         track.startTs = 0;
+        track.holdEnterTs = 0;
         track.lastRest = angle;
       }
-      return { angle, counted: false, quality: null as number | null, range: Math.round(range) };
+
+      return {
+        angle,
+        counted: false,
+        quality: null as number | null,
+        range: Math.round(range),
+        phase: track.phase,
+        holdRemainingMs,
+        romPercent,
+      };
     };
 
     // Resilient simulated rehabilitation stream for no-camera or busy-camera environments
@@ -565,17 +712,23 @@ export function usePoseDetection(options: UsePoseDetectionOptions = {}): UsePose
           sCtx.fill();
         }
 
-        // Oscillate elbow flexion from 65° to 165° smoothly
-        const angleCycle = Math.sin(simTick * 1.5);
-        const rightAngle = Math.round(115 + angleCycle * 50);
-        const leftAngle = 160;
+        // Oscillate anatomical clinical angle from 10° to 125° smoothly
+        const angleCycle = (Math.sin(simTick * 1.4) + 1) / 2; // 0 to 1
+        const clinicalSimAngle = Math.round(10 + angleCycle * 115);
+        const innerSimAngle = Math.max(45, 180 - clinicalSimAngle);
+        const leftAngle = 15;
 
-        // La simulación usa el mismo detector por excursión que la cámara real.
-        const simTrack = trackAngle(rightAngle, expectedRangeFor(repJointRef.current, targetAngleRef.current));
+        const simPostureScore = 92;
+        const simTrafficLight: TrafficLightState = 'green';
+        const simColor = trafficLightToColor(simTrafficLight);
+
+        const simExpRange = expectedRangeFor(repJointRef.current, targetAngleRef.current, neutralAngleRef.current);
+        const simTrack = trackAngle(clinicalSimAngle, simExpRange, simPostureScore, enabledRef.current);
         if (simTrack.counted) setRepCount((r) => r + 1);
+        repPhaseRef.current = simTrack.phase;
 
         // Build 33 landmarks for skeleton overlay
-        const rad = (rightAngle * Math.PI) / 180;
+        const rad = (innerSimAngle * Math.PI) / 180;
         const armLen = 0.16;
         const rElbowX = 0.58;
         const rElbowY = 0.44;
@@ -603,9 +756,6 @@ export function usePoseDetection(options: UsePoseDetectionOptions = {}): UsePose
         simulatedLandmarks[LM.LEFT_ANKLE] = { x: 0.44, y: 0.93, z: 0, visibility: 0.88 };
         simulatedLandmarks[LM.RIGHT_ANKLE] = { x: 0.56, y: 0.93, z: 0, visibility: 0.88 };
 
-        const postureScore = 92;
-        const postureColor = getPostureColor(postureScore);
-
         const canvas = canvasRef.current;
         if (canvas) {
           const cCtx = canvas.getContext('2d');
@@ -614,16 +764,16 @@ export function usePoseDetection(options: UsePoseDetectionOptions = {}): UsePose
             const h = canvas.height || 480;
             if (canvas.width !== 640) canvas.width = 640;
             if (canvas.height !== 480) canvas.height = 480;
-            drawOverlay(cCtx, simulatedLandmarks, postureColor, w, h, LM.RIGHT_ELBOW, rightAngle);
+            drawOverlay(cCtx, simulatedLandmarks, simColor, w, h, LM.RIGHT_ELBOW, clinicalSimAngle);
           }
         }
 
         setPoseData({
           landmarks: simulatedLandmarks,
           leftArmAngle: leftAngle,
-          rightArmAngle: rightAngle,
+          rightArmAngle: clinicalSimAngle,
           leftElbowAngle: leftAngle,
-          rightElbowAngle: rightAngle,
+          rightElbowAngle: clinicalSimAngle,
           leftKneeAngle: 175,
           rightKneeAngle: 175,
           leftHipAngle: 175,
@@ -632,12 +782,19 @@ export function usePoseDetection(options: UsePoseDetectionOptions = {}): UsePose
           hipTiltDeg: 0,
           lateralLeanDeg: 0,
           compensationIssue: null,
+          compensationCode: null,
           trackedJointIndex: LM.RIGHT_ELBOW,
-          primaryAngle: rightAngle,
+          trackedSide: 'right',
+          primaryAngle: Math.round(simTrack.angle),
           targetAngle: targetAngleRef.current,
           lastRepQuality: lastRepQualityRef.current,
           lastRepRange: lastRepRangeRef.current,
-          postureScore,
+          trafficLight: simTrafficLight,
+          repPhase: simTrack.phase,
+          holdRemainingMs: simTrack.holdRemainingMs,
+          romPercent: simTrack.romPercent,
+          angleErrorDeg: Math.abs(Math.round(simTrack.angle - targetAngleRef.current)),
+          postureScore: simPostureScore,
           isTracking: true,
         });
         setIsReady(true);
@@ -800,6 +957,7 @@ export function usePoseDetection(options: UsePoseDetectionOptions = {}): UsePose
               // Detección clínica de compensaciones posturales y puntuación biomecánica
               let postureScore = Math.round(clamp((visibleCount / 33) * 100, 0, 100));
               let detectedCompensation: string | null = null;
+              let compensationCode: PoseData['compensationCode'] = null;
               let shoulderTiltDeg = 0;
               let hipTiltDeg = 0;
               let lateralLeanDeg = 0;
@@ -825,25 +983,32 @@ export function usePoseDetection(options: UsePoseDetectionOptions = {}): UsePose
                 lateralLeanDeg = Math.round(Math.asin(Math.min(1, lateralLean)) * (180 / Math.PI));
 
                 if (shoulderTiltDeg > 8) {
+                  compensationCode = 'shoulder_tilt';
                   detectedCompensation = 'Nivela tus hombros: evita elevar un lado más que el otro.';
                 } else if (hipTiltDeg > 7) {
+                  compensationCode = 'hip_tilt';
                   detectedCompensation = 'Equilibra tus caderas: apoya el peso simétricamente.';
                 } else if (lateralLeanDeg > 9) {
+                  compensationCode = 'lateral_lean';
                   detectedCompensation = 'Tronco inclinado: mantén la columna vertical y erguida.';
                 }
 
                 const alignmentPenalty = Math.min(
-                  55,
-                  shoulderTiltDeg * 3.5 + hipTiltDeg * 3.5 + Math.max(0, lateralLeanDeg - 5) * 4
+                  58,
+                  Math.max(0, shoulderTiltDeg - 2) * 3.4 +
+                    Math.max(0, hipTiltDeg - 2) * 3.4 +
+                    Math.max(0, lateralLeanDeg - 4) * 3.8
                 );
-                const visibilityScore = clamp((visibleCount / 33) * 100 * 1.15, 0, 100);
+                const visibilityScore = clamp((visibleCount / 26) * 100, 0, 100);
                 postureScore = Math.round(
-                  clamp(visibilityScore * 0.45 + (100 - alignmentPenalty) * 0.55, 0, 100)
+                  clamp(visibilityScore * 0.4 + (100 - alignmentPenalty) * 0.6, 0, 100)
                 );
               }
-              const postureColor = getPostureColor(postureScore);
 
-              // Articulación objetivo de recuento de repeticiones (selecciona el lado con mejor visibilidad)
+              const trafficLight = evaluateTrafficLight(isTracking, postureScore, compensationCode);
+              const postureColor = trafficLightToColor(trafficLight);
+
+              // Articulación objetivo de recuento de repeticiones (respeta lado prescrito si visible)
               const repJoint = repJointRef.current;
               const sideTriplets: Record<string, [number, number, number][]> = {
                 knee: [
@@ -880,25 +1045,42 @@ export function usePoseDetection(options: UsePoseDetectionOptions = {}): UsePose
                 return Math.min(...vis);
               };
               const triplets = sideTriplets[repJoint] ?? sideTriplets.elbow;
-              const bestTriplet = triplets.reduce((best, cur) =>
-                visibilityOf(cur) > visibilityOf(best) ? cur : best
-              );
-              const rawAngle = angleOf(bestTriplet[0], bestTriplet[1], bestTriplet[2]);
-              const sideVisible = visibilityOf(bestTriplet) >= 0.45;
+              const prescribedSide = (ladoRef.current || '').toLowerCase();
+              let chosenIdx = visibilityOf(triplets[1]) > visibilityOf(triplets[0]) ? 1 : 0;
+              if (prescribedSide === 'izquierdo' && visibilityOf(triplets[0]) >= 0.35) {
+                chosenIdx = 0;
+              } else if (prescribedSide === 'derecho' && visibilityOf(triplets[1]) >= 0.35) {
+                chosenIdx = 1;
+              }
+              const bestTriplet = triplets[chosenIdx];
+              const trackedSide: 'left' | 'right' = chosenIdx === 0 ? 'left' : 'right';
+              const rawInnerAngle = angleOf(bestTriplet[0], bestTriplet[1], bestTriplet[2]);
+              const sideVisible = visibilityOf(bestTriplet) >= 0.42;
               const activeJointIdx = bestTriplet[1];
 
               let primaryAngle = 0;
-              if (isTracking && rawAngle !== null && sideVisible) {
-                const tracked = trackAngle(rawAngle, expectedRangeFor(repJoint, targetAngleRef.current));
+              let repPhase: RepPhase = repPhaseRef.current;
+              let holdRemainingMs = 0;
+              let romPercent = 0;
+
+              if (isTracking && rawInnerAngle !== null && sideVisible) {
+                const clinicalAngle = toClinicalAngle(repJoint, rawInnerAngle);
+                const expRange = expectedRangeFor(repJoint, targetAngleRef.current, neutralAngleRef.current);
+                const tracked = trackAngle(clinicalAngle, expRange, postureScore, enabledRef.current);
                 primaryAngle = tracked.angle;
-                repPhaseRef.current = repTrackRef.current.phase === 'moving' ? 'up' : 'down';
+                repPhase = tracked.phase;
+                repPhaseRef.current = tracked.phase;
+                holdRemainingMs = tracked.holdRemainingMs;
+                romPercent = tracked.romPercent;
                 if (tracked.counted) {
                   lastRepTsRef.current = performance.now();
                   setRepCount((r) => r + 1);
                 }
+              } else if (rawInnerAngle !== null) {
+                primaryAngle = toClinicalAngle(repJoint, rawInnerAngle);
               }
 
-              // Renderizado HUD de alta nitidez y contraste en el canvas
+              // Renderizado HUD de alta nitidez y semáforo visual (Rojo / Amarillo / Verde) en el canvas
               drawOverlay(
                 ctx,
                 landmarks,
@@ -913,28 +1095,35 @@ export function usePoseDetection(options: UsePoseDetectionOptions = {}): UsePose
                 landmarks,
                 leftArmAngle: leftShoulderAngle ?? 0,
                 rightArmAngle: rightShoulderAngle ?? 0,
-                leftElbowAngle: leftElbowAngle ?? 0,
-                rightElbowAngle: rightElbowAngle ?? 0,
-                leftKneeAngle: leftKneeAngle ?? 0,
-                rightKneeAngle: rightKneeAngle ?? 0,
-                leftHipAngle: leftHipAngle ?? 0,
-                rightHipAngle: rightHipAngle ?? 0,
+                leftElbowAngle: leftElbowAngle != null ? toClinicalAngle('elbow', leftElbowAngle) : 0,
+                rightElbowAngle: rightElbowAngle != null ? toClinicalAngle('elbow', rightElbowAngle) : 0,
+                leftKneeAngle: leftKneeAngle != null ? toClinicalAngle('knee', leftKneeAngle) : 0,
+                rightKneeAngle: rightKneeAngle != null ? toClinicalAngle('knee', rightKneeAngle) : 0,
+                leftHipAngle: leftHipAngle != null ? toClinicalAngle('hip', leftHipAngle) : 0,
+                rightHipAngle: rightHipAngle != null ? toClinicalAngle('hip', rightHipAngle) : 0,
                 shoulderTiltDeg,
                 hipTiltDeg,
                 lateralLeanDeg,
                 compensationIssue: detectedCompensation,
+                compensationCode,
                 trackedJointIndex: activeJointIdx,
+                trackedSide,
                 primaryAngle: Math.round(primaryAngle),
                 targetAngle: targetAngleRef.current,
                 lastRepQuality: lastRepQualityRef.current,
                 lastRepRange: lastRepRangeRef.current,
+                trafficLight,
+                repPhase,
+                holdRemainingMs,
+                romPercent,
+                angleErrorDeg: Math.abs(Math.round(primaryAngle - targetAngleRef.current)),
                 postureScore,
                 isTracking,
               });
             } else {
               lastLandmarksRef.current = null;
               ctx.clearRect(0, 0, canvas.width, canvas.height);
-              setPoseData((prev) => (prev ? { ...prev, isTracking: false } : null));
+              setPoseData((prev) => (prev ? { ...prev, isTracking: false, trafficLight: 'red' } : null));
             }
           });
 

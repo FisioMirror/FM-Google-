@@ -39,20 +39,20 @@ export function PatientRecoveryHub() {
   };
 
   return (
-    <div className="space-y-6 w-full">
+    <div className="space-y-4 w-full">
       {/* Recovery Meter Hero Card */}
-      <GlassPanel className="p-6 sm:p-10 rounded-[36px] border-l-4 border-l-teal-500 shadow-sm relative overflow-hidden">
-        <div className="absolute -top-16 -right-16 w-64 h-64 rounded-full bg-gradient-to-br from-teal-400/20 to-cyan-500/10 blur-3xl pointer-events-none" />
+      <GlassPanel className="p-5 sm:p-6 rounded-3xl border border-teal-500/25 shadow-sm relative overflow-hidden">
+        <div className="absolute -top-16 -right-16 w-56 h-56 rounded-full bg-gradient-to-br from-teal-400/20 to-cyan-500/10 blur-3xl pointer-events-none" />
 
-        <div className="flex flex-col lg:flex-row items-center justify-between gap-8 relative z-10">
+        <div className="flex flex-col lg:flex-row items-center justify-between gap-5 relative z-10">
           {/* Left: Empathetic text and score */}
-          <div className="space-y-4 max-w-xl text-center lg:text-left">
+          <div className="space-y-3 max-w-xl text-center lg:text-left">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-500/10 text-teal-700 dark:text-teal-300 border border-teal-500/20 text-xs font-bold">
               <Sparkles className="size-3.5" />
               <span>{t('wl.journey')}</span>
             </div>
 
-            <h3 className="font-display text-2xl sm:text-3xl lg:text-4xl font-extrabold text-on-surface tracking-tight leading-tight">
+            <h3 className="font-display text-2xl sm:text-3xl font-extrabold text-on-surface tracking-tight leading-tight">
               {t('wl.title')}
             </h3>
 
@@ -61,7 +61,7 @@ export function PatientRecoveryHub() {
             </p>
 
             {/* Micro badges */}
-            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3 pt-2">
+            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-2.5 pt-1">
               <div className="flex items-center gap-2 px-3 py-1.5 rounded-2xl bg-teal-500/5 dark:bg-teal-900/20 border border-teal-500/20 text-xs font-semibold text-teal-800 dark:text-teal-200">
                 <CheckCircle2 className="size-4 text-teal-600" />
                 <span>{t('wl.continuous')}</span>
@@ -79,7 +79,7 @@ export function PatientRecoveryHub() {
 
           {/* Right: Circular Gauge */}
           <div className="flex flex-col items-center justify-center relative shrink-0">
-            <div className="relative size-44 sm:size-48 flex items-center justify-center">
+            <div className="relative size-36 sm:size-40 flex items-center justify-center">
               <svg className="size-full -rotate-90" viewBox="0 0 120 120">
                 {/* Background circle */}
                 <circle
@@ -130,9 +130,9 @@ export function PatientRecoveryHub() {
       </GlassPanel>
 
       {/* Warm Physi Companion Card */}
-      <GlassPanel className="p-6 sm:p-8 rounded-[32px] border border-outline/15 shadow-sm relative overflow-hidden">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="flex items-center gap-5">
+      <GlassPanel className="p-4 sm:p-5 rounded-3xl border border-outline/15 shadow-sm relative overflow-hidden">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
             <div className="shrink-0">
               <MascotAnimation type={isPlayingAudio ? 'speaking' : 'greeting'} size="md" />
             </div>

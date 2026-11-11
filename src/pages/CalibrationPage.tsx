@@ -206,7 +206,7 @@ export function CalibrationPage() {
         <button
           onClick={() => navigate('/dashboard-paciente')}
           className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-slate-900/90 hover:bg-slate-800 text-white flex items-center justify-center border border-teal-500/30 transition-all shadow-md active:scale-95"
-          aria-label="Volver"
+          aria-label={t('ar.backBtn')}
         >
           <Icon name="arrow_back" size={20} className="text-white" />
         </button>
@@ -223,7 +223,7 @@ export function CalibrationPage() {
             onClick={() => setShowSkipConfirm(true)}
             className="text-[11px] font-bold text-white/80 hover:text-white px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 transition-colors sm:hidden border border-white/15"
           >
-            Omitir
+            {t('ar.skipBtn')}
           </button>
         </div>
       </header>
@@ -328,7 +328,7 @@ export function CalibrationPage() {
             onClick={reconnectCamera}
             className="ml-1.5 px-2 py-0.5 rounded-full bg-amber-400/35 hover:bg-amber-400/60 text-white text-[10px] font-bold uppercase tracking-wider transition-colors cursor-pointer"
           >
-            Reconectar
+            {t('ar.reconnectBtn')}
           </button>
         </div>
       )}
@@ -554,13 +554,13 @@ export function CalibrationPage() {
                 onClick={retry}
                 className="flex-1 py-3 bg-teal-500 hover:bg-teal-400 text-white rounded-xl font-bold flex items-center gap-2 justify-center transition-all cursor-pointer text-sm shadow-lg shadow-teal-500/25 active:scale-95"
               >
-                <Icon name="refresh" size={18} /> Reintentar
+                <Icon name="refresh" size={18} /> {t('common.retry')}
               </button>
               <button
                 onClick={() => setShowSkipConfirm(true)}
                 className="flex-1 py-3 bg-white/10 hover:bg-white/15 text-white rounded-xl font-bold flex items-center gap-2 justify-center transition-all cursor-pointer text-sm"
               >
-                Omitir
+                {t('ar.skipBtn')}
               </button>
             </div>
           </motion.div>
@@ -578,7 +578,7 @@ export function CalibrationPage() {
               <p className="text-white/70 text-sm mb-6">{t('cal.continueNoCalibDesc')}</p>
               <div className="flex gap-3">
                 <button onClick={() => setShowSkipConfirm(false)} className="flex-1 py-3 bg-white/10 text-white rounded-xl font-bold hover:bg-white/20 transition-colors">{t('tr.cancelar')}</button>
-                <button onClick={handleSkip} className="flex-1 py-3 bg-teal-500 text-white rounded-xl font-bold hover:scale-105 active:scale-95 transition-transform">Continuar</button>
+                <button onClick={handleSkip} className="flex-1 py-3 bg-teal-500 text-white rounded-xl font-bold hover:scale-105 active:scale-95 transition-transform">{t('common.confirm')}</button>
               </div>
             </motion.div>
           </motion.div>

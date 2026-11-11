@@ -122,6 +122,9 @@ Deno.serve(async (req: Request) => {
       .update({
         password_hash: passwordHash,
         email: normalizedEmail,
+        is_active: true,
+        email_verified_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
       })
       .eq("id", pacienteId);
 

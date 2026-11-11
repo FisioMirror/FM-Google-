@@ -7,10 +7,10 @@ import { useToast } from '../components/ui/toastApi';
 import { useAuthStore } from '../stores/authStore';
 import { supabase } from '../lib/supabase';
 import { celebrateSession } from '../lib/confetti';
-import { usePoseDetection } from '../hooks/usePoseDetection';
+import { usePoseDetection, type TrafficLightState } from '../hooks/usePoseDetection';
 import { useGamification } from '../hooks/useGamification';
 import { isValidUUID, cn } from '../lib/utils';
-import { speakHumanVoice } from '../lib/humanVoice';
+import { speakHumanVoice, stopHumanVoice } from '../lib/humanVoice';
 import { notifySessionCompleted, createNotification } from '../lib/notificationService';
 import { updatePresenceStatus } from '../lib/presenceService';
 import { isSpiritualModeEnabled, getVersiculoContextual, type Versiculo } from '../lib/versiculosService';
@@ -26,6 +26,8 @@ import { SessionQualityScoreTile } from '../components/ui/RealTimeMetricsSuite';
 
 import { ARModel3DOverlayPiP } from '../components/rehabilitation/ARModel3DOverlayPiP';
 import { getExercisePreset } from '../data/exercisePresets';
+import { TypewriterText } from '../components/ui/TypewriterText';
+import MascotAnimation from '../components/ui/MascotAnimation';
 
 // Rep completion particle burst
 function repParticleBurst() {
@@ -37,8 +39,8 @@ function repParticleBurst() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
   }
-  const particles: Array<{x:number;y:number;vx:number;vy:number;life:number;color:string}> = [];
-  const colors = ['#8ad3cf', '#2dd4bf', '#14b8a6', '#f59e0b'];
+  const particles: Array<{ x: number; y: number; vx: number; vy: number; life: number; color: string }> = [];
+  const colors = ['#22c55e', '#8ad3cf', '#2dd4bf', '#eab308'];
   for (let i = 0; i < 20; i++) {
     const angle = (Math.PI * 2 * i) / 20;
     const speed = 2.5 + Math.random() * 3.5;
@@ -76,27 +78,36 @@ function repParticleBurst() {
   animate();
 }
 
-import { TypewriterText } from '../components/ui/TypewriterText';
-import MascotAnimation from '../components/ui/MascotAnimation';
-
 type SessionState = 'active' | 'paused' | 'rest' | 'finished';
-
-const TARGET_REPS = 15;
-const TOTAL_SETS = 3;
-const REST_DURATION = 15;
+type VoiceCategory = 'correction' | 'rep' | 'phase' | 'system';
 
 export function ARMirrorPage() {
   const gamification = useGamification();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const toast = useToast();
   const user = useAuthStore((s) => s.user);
 
   const exerciseName = searchParams.get('ejercicio') || 'Sesión AR';
-  const [articulacion] = useState<string | undefined>(
-    searchParams.get('articulacion') || undefined
+  const articulacion = searchParams.get('articulacion') || undefined;
+  const lado = searchParams.get('lado') || undefined;
+  const targetReps = Math.max(1, Number(searchParams.get('repeticiones') || searchParams.get('reps')) || 15);
+  const totalSets = Math.max(1, Number(searchParams.get('series')) || 3);
+  const restDuration = Math.max(5, Number(searchParams.get('descanso')) || 15);
+  const urlTargetAngle = Number(searchParams.get('angulo')) || undefined;
+
+  const preset = useMemo(
+    () => getExercisePreset(exerciseName, articulacion, lado, urlTargetAngle),
+    [exerciseName, articulacion, lado, urlTargetAngle]
   );
+  const presetTargetAngle =
+    urlTargetAngle && urlTargetAngle > 0
+      ? urlTargetAngle
+      : (preset.targetJoints[0]?.targetAngle ?? 90);
+  const presetNeutralAngle = preset.targetJoints[0]?.neutralAngle ?? 0;
+
+  const [state, setState] = useState<SessionState>('active');
 
   const {
     videoRef,
@@ -113,15 +124,21 @@ export function ARMirrorPage() {
     toggleFacingMode,
     isSimulated,
     reconnectCamera,
-  } = usePoseDetection();
+  } = usePoseDetection({
+    exerciseName,
+    articulacion,
+    lado,
+    enabled: state === 'active',
+    holdDurationSec: preset.holdDurationSec,
+    neutralAngle: presetNeutralAngle,
+  });
   const vRef = videoRef as React.RefObject<HTMLVideoElement>;
   const cRef = canvasRef as React.RefObject<HTMLCanvasElement>;
 
-  const [state, setState] = useState<SessionState>('active');
   const [isMirrored, setIsMirrored] = useState(true);
   const [timer, setTimer] = useState(0);
   const [currentSet, setCurrentSet] = useState(1);
-  const [restCountdown, setRestCountdown] = useState(REST_DURATION);
+  const [restCountdown, setRestCountdown] = useState(restDuration);
   const [showFinishModal, setShowFinishModal] = useState(false);
   const [finishVerse, setFinishVerse] = useState<Versiculo | null>(null);
 
@@ -130,6 +147,7 @@ export function ARMirrorPage() {
       getVersiculoContextual('sanidad').then(setFinishVerse);
     }
   }, [showFinishModal]);
+
   const [qualityScore, setQualityScore] = useState(0);
   const [showSettings, setShowSettings] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -144,8 +162,16 @@ export function ARMirrorPage() {
   const [volumeLevel, setVolumeLevel] = useState<'high' | 'low' | 'muted'>('high');
   const [hudMode, setHudMode] = useState<'full' | 'minimal' | 'camera'>('full');
   const [showModel3D, setShowModel3D] = useState<boolean>(true);
-  const aiFeedbackRef = useRef<string>('Buen ritmo. Mantén la postura erguida y completa el rango de movimiento.');
-  const lastSpokenRef = useRef<number>(0);
+  const [aiFeedback, setAiFeedback] = useState<string>('');
+  const aiFeedbackRef = useRef<string>('');
+
+  const lastSpokenByCatRef = useRef<Record<VoiceCategory, number>>({
+    correction: 0,
+    rep: 0,
+    phase: 0,
+    system: 0,
+  });
+  const holdEnteredRef = useRef<boolean>(false);
   const peakAngleRef = useRef(0);
   const angleSumRef = useRef(0);
   const angleSamplesRef = useRef(0);
@@ -155,38 +181,50 @@ export function ARMirrorPage() {
   const lastQualityUpdateRef = useRef(0);
   const lostTrackingNotifiedRef = useRef(false);
 
-  const speak = useCallback((text: string) => {
-    if (volumeLevel === 'muted') return;
-    const now = Date.now();
-    if (now - lastSpokenRef.current < 2500) return;
-    lastSpokenRef.current = now;
-    
-    speakHumanVoice(text, {
-      rate: volumeLevel === 'low' ? 0.94 : 1.0,
-      volume: volumeLevel === 'low' ? 0.5 : 1.0,
-      pitch: 1.02,
-      interrupt: true,
-    });
-  }, [volumeLevel]);
+  const speak = useCallback(
+    (text: string, category: VoiceCategory = 'system') => {
+      if (volumeLevel === 'muted' || !text) return;
+      const now = Date.now();
+      const cooldowns: Record<VoiceCategory, number> = {
+        correction: 3400,
+        rep: 1100,
+        phase: 1600,
+        system: 400,
+      };
+      if (now - lastSpokenByCatRef.current[category] < cooldowns[category]) return;
+      lastSpokenByCatRef.current[category] = now;
+
+      speakHumanVoice(text, {
+        lang: i18n.language,
+        rate: volumeLevel === 'low' ? 0.94 : 1.0,
+        volume: volumeLevel === 'low' ? 0.5 : 1.0,
+        pitch: 1.02,
+        interrupt: category === 'system' || category === 'rep',
+      });
+    },
+    [volumeLevel, i18n.language]
+  );
+
+  // Stop voice output when paused, muted, or navigating away
+  useEffect(() => {
+    if (state === 'paused' || volumeLevel === 'muted') {
+      stopHumanVoice();
+    }
+  }, [state, volumeLevel]);
+
+  useEffect(() => {
+    return () => {
+      stopHumanVoice();
+    };
+  }, []);
 
   // Timer
   useEffect(() => {
     const interval = setInterval(() => {
-      if (state === 'active') setTimer((t) => t + 1);
+      if (state === 'active') setTimer((sec) => sec + 1);
     }, 1000);
     return () => clearInterval(interval);
   }, [state]);
-
-  // Ángulo objetivo real del ejercicio (preset clínico), no un 90° fijo.
-  const presetTargetAngle = useMemo(() => {
-    try {
-      const joints = getExercisePreset(exerciseName || '', articulacion).targetJoints;
-      return joints[0]?.targetAngle ?? 90;
-    } catch {
-      const joints = getExercisePreset(exerciseName || '').targetJoints;
-      return joints[0]?.targetAngle ?? 90;
-    }
-  }, [exerciseName, articulacion]);
 
   useEffect(() => {
     setTargetAngle(presetTargetAngle);
@@ -220,14 +258,32 @@ export function ARMirrorPage() {
       repStartTimeRef.current = now;
       prevRepCountRef.current = repCount;
 
-      // Feedback verbal biomecánico inmediato sobre velocidad
       if (dur < 1.3) {
-        speak('Desacelera el descenso, mantén el control articular.');
+        speak(t('ar.voiceSlowDown'), 'rep');
       } else if (dur > 4.5) {
-        speak('Buen esfuerzo, continúa con ritmo constante.');
+        speak(t('ar.voiceGoodPace'), 'rep');
       }
+    } else if (repCount < prevRepCountRef.current) {
+      prevRepCountRef.current = repCount;
+      repStartTimeRef.current = Date.now();
     }
-  }, [repCount, speak]);
+  }, [repCount, speak, t]);
+
+  // Announce peak isometric hold entry cleanly once per hold phase
+  useEffect(() => {
+    if (!sessionStarted || state !== 'active' || !poseData?.isTracking) {
+      holdEnteredRef.current = false;
+      return;
+    }
+    if (poseData.repPhase === 'hold') {
+      if (!holdEnteredRef.current && preset.holdDurationSec >= 2) {
+        holdEnteredRef.current = true;
+        speak(t('ar.voiceHoldPeak', { sec: preset.holdDurationSec }), 'phase');
+      }
+    } else {
+      holdEnteredRef.current = false;
+    }
+  }, [poseData?.repPhase, poseData?.isTracking, sessionStarted, state, preset.holdDurationSec, speak, t]);
 
   // Start the camera automatically on mount so pose detection begins.
   useEffect(() => {
@@ -256,10 +312,7 @@ export function ARMirrorPage() {
     }
   }, [cameraStarted]);
 
-  // Quality score from pose data + compensation detection
-
   // Calidad real por repetición y feedback de voz según el rango logrado.
-  // Se acumula durante toda la sesión (no se reinicia entre series).
   useEffect(() => {
     if (repCount < lastQualityRepRef.current) {
       lastQualityRepRef.current = repCount;
@@ -277,9 +330,9 @@ export function ARMirrorPage() {
     setQualityScore(Math.round(base * 0.45 + avg * 0.55));
 
     if (sessionStarted && state === 'active' && !isSimulated) {
-      if (q < 55) speak('Ampliá el rango del movimiento');
-      else if (q < 72) speak('Controlá la velocidad y completá el recorrido');
-      else if (q >= 92) speak('Excelente repetición');
+      if (q < 55) speak(t('ar.voiceWidenRange'), 'rep');
+      else if (q < 72) speak(t('ar.voiceControlSpeed'), 'rep');
+      else if (q >= 92) speak(t('ar.voiceGreatRep'), 'rep');
     }
   }, [repCount]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -289,12 +342,12 @@ export function ARMirrorPage() {
     if (!poseData.isTracking) {
       if (!lostTrackingNotifiedRef.current) {
         lostTrackingNotifiedRef.current = true;
-        speak('No veo tu cuerpo completo. Acercate o acomodá la cámara.');
+        speak(t('ar.voiceNotVisible'), 'correction');
       }
     } else {
       lostTrackingNotifiedRef.current = false;
     }
-  }, [poseData?.isTracking, sessionStarted, state, speak]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [poseData?.isTracking, sessionStarted, state, speak, t]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (poseData?.isTracking && poseData.landmarks) {
@@ -302,142 +355,147 @@ export function ARMirrorPage() {
       if (now - lastQualityUpdateRef.current > 350) {
         lastQualityUpdateRef.current = now;
         const base = poseData.postureScore;
-        const avg = repQualityCountRef.current > 0
-          ? repQualitySumRef.current / repQualityCountRef.current
-          : null;
+        const avg =
+          repQualityCountRef.current > 0
+            ? repQualitySumRef.current / repQualityCountRef.current
+            : null;
         const blended = avg != null ? Math.round(base * 0.45 + avg * 0.55) : base;
         setQualityScore((prev) => (Math.abs(prev - blended) >= 1 ? blended : prev));
       }
 
-      // Compensation detection: use direct biomechanical tilt degrees from poseData with fallback
-      let detectedCompensation: string | null = poseData.compensationIssue ?? null;
-
-      if (detectedCompensation) {
-        if (poseData.shoulderTiltDeg && poseData.shoulderTiltDeg > 8) {
-          speak('Nivela tus hombros');
-        } else if (poseData.hipTiltDeg && poseData.hipTiltDeg > 7) {
-          speak('Equilibra tus caderas');
-        } else if (poseData.lateralLeanDeg && poseData.lateralLeanDeg > 9) {
-          speak('Mantén el tronco erguido');
-        }
-      } else {
-        const leftHip = poseData.landmarks[23];
-        const rightHip = poseData.landmarks[24];
-        const leftShoulder = poseData.landmarks[11];
-        const rightShoulder = poseData.landmarks[12];
-
-        if (leftHip && rightHip && leftShoulder && rightShoulder) {
-          const hipTilt = Math.abs(leftHip.y - rightHip.y);
-          const shoulderTilt = Math.abs(leftShoulder.y - rightShoulder.y);
-          const torsoLean = Math.abs(((leftShoulder.x + rightShoulder.x) / 2) - ((leftHip.x + rightHip.x) / 2));
-
-          if (hipTilt > 0.08) {
-            detectedCompensation = 'Compensación detectada: cadera desalineada. Nivela las caderas.';
-            speak('Nivela las caderas');
-          } else if (shoulderTilt > 0.08) {
-            detectedCompensation = 'Compensación detectada: hombros desalineados. Mantén los hombros nivelados.';
-            speak('Mantén los hombros nivelados');
-          } else if (torsoLean > 0.14) {
-            detectedCompensation = 'Compensación detectada: tronco inclinado. Mantén la espalda recta.';
-            speak('Mantén la espalda recta');
-          }
-        }
+      // Compensation detection & localized voice feedback
+      let detectedCompensation: string | null = null;
+      if (poseData.compensationCode === 'shoulder_tilt') {
+        detectedCompensation = t('ar.voiceLevelShoulders');
+        if (state === 'active') speak(t('ar.voiceLevelShoulders'), 'correction');
+      } else if (poseData.compensationCode === 'hip_tilt') {
+        detectedCompensation = t('ar.voiceBalanceHips');
+        if (state === 'active') speak(t('ar.voiceBalanceHips'), 'correction');
+      } else if (poseData.compensationCode === 'lateral_lean') {
+        detectedCompensation = t('ar.voiceKeepTrunkUpright');
+        if (state === 'active') speak(t('ar.voiceKeepTrunkUpright'), 'correction');
+      } else if (poseData.compensationIssue) {
+        detectedCompensation = poseData.compensationIssue;
       }
 
       setCompensation(detectedCompensation);
 
-      if (!detectedCompensation) {
-        if (poseData.postureScore > 80) {
-          aiFeedbackRef.current = 'Excelente postura. Mantén la alineación corporal.';
-        } else if (poseData.postureScore > 50) {
-          aiFeedbackRef.current = 'Buen esfuerzo. Intenta extender más los brazos para mejor detección.';
-        } else {
-          aiFeedbackRef.current = 'No detecto tu cuerpo claramente. Asegúrate de estar a 2 metros de la cámara.';
-        }
-      } else {
-        aiFeedbackRef.current = detectedCompensation;
-      }
-    }
-  }, [poseData, volumeLevel, speak]);
+      const nextFeedback = detectedCompensation
+        ? detectedCompensation
+        : poseData.trafficLight === 'green'
+        ? t('ar.voiceFeedbackGood')
+        : poseData.trafficLight === 'yellow'
+        ? t('ar.voiceFeedbackMedium')
+        : t('ar.voiceFeedbackAdjust');
 
-  // Rep completion → rest or finish
+      aiFeedbackRef.current = nextFeedback;
+      setAiFeedback((prev) => (prev === nextFeedback ? prev : nextFeedback));
+    }
+  }, [poseData, state, speak, t]);
+
+  // Rep completion -> rest or finish
   useEffect(() => {
     if (state !== 'active') return;
-    if (repCount >= TARGET_REPS) {
-      if (currentSet < TOTAL_SETS) {
+    if (repCount >= targetReps) {
+      if (currentSet < totalSets) {
         setState('rest');
-        setRestCountdown(REST_DURATION);
-        toast.success(`Serie ${currentSet} completada!`);
+        setRestCountdown(restDuration);
+        toast.success(t('ar.setCompleted', { set: currentSet }));
         repParticleBurst();
-        speak('Serie completada. Descansa.');
+        speak(t('ar.voiceSetDone', { set: currentSet }), 'system');
       } else {
         setState('finished');
         setShowPainReport(true);
         celebrateSession();
         repParticleBurst();
-        speak('Sesión completada. Excelente trabajo.');
+        speak(t('ar.voiceSessionDone'), 'system');
       }
     }
-  }, [repCount, state, currentSet, volumeLevel, speak, toast]);
+  }, [repCount, targetReps, totalSets, restDuration, state, currentSet, speak, toast, t]);
 
   // Rest countdown
   useEffect(() => {
     if (state === 'rest' && restCountdown > 0) {
-      const t = setTimeout(() => setRestCountdown(restCountdown - 1), 1000);
-      return () => clearTimeout(t);
+      const timerId = setTimeout(() => setRestCountdown(restCountdown - 1), 1000);
+      return () => clearTimeout(timerId);
     }
     if (state === 'rest' && restCountdown === 0) {
       setCurrentSet((s) => s + 1);
       setState('active');
       resetReps();
-      toast.info('Serie reanudada');
-      speak('Comienza la siguiente serie.');
+      speak(t('ar.voiceNextSet'), 'system');
     }
-  }, [state, restCountdown, resetReps, speak, toast]);
+  }, [state, restCountdown, resetReps, speak, t]);
 
-  const saveSession = async (reportData?: { dolor_antes: number; dolor_despues: number; fatiga: number; comentario: string }) => {
+  const completedRepsTotal = Math.min(
+    targetReps * totalSets,
+    (currentSet - 1) * targetReps + repCount
+  );
+
+  const saveSession = async (reportData?: {
+    dolor_antes: number;
+    dolor_despues: number;
+    fatiga: number;
+    comentario: string;
+  }) => {
     if (!user?.id) return;
     try {
-      const completedReps = Math.min(TARGET_REPS * TOTAL_SETS, (currentSet - 1) * TARGET_REPS + repCount);
-      sessionStorage.setItem('ar_session_backup', JSON.stringify({
-        exerciseName, timer, repCount: completedReps, qualityScore, currentSet,
-      }));
+      const completedReps = completedRepsTotal;
+      sessionStorage.setItem(
+        'ar_session_backup',
+        JSON.stringify({
+          exerciseName,
+          timer,
+          repCount: completedReps,
+          qualityScore,
+          currentSet,
+        })
+      );
 
-      const ejerciciosData = [{
-        nombre: exerciseName,
-        series: currentSet,
-        repeticiones: completedReps,
-        duracion_segundos: timer,
-        calidad_promedio: qualityScore,
-      }];
+      const ejerciciosData = [
+        {
+          nombre: exerciseName,
+          series: currentSet,
+          repeticiones: completedReps,
+          duracion_segundos: timer,
+          calidad_promedio: qualityScore,
+        },
+      ];
 
-      // Calculate adherence: completed reps vs target reps (TARGET_REPS * TOTAL_SETS)
-      const targetTotal = TARGET_REPS * TOTAL_SETS;
-      const adherencia = targetTotal > 0 ? Math.min(100, Math.round((completedReps / targetTotal) * 100)) : 0;
+      const targetTotal = targetReps * totalSets;
+      const adherencia =
+        targetTotal > 0 ? Math.min(100, Math.round((completedReps / targetTotal) * 100)) : 0;
 
       const metricas = {
         max_angle: Math.round(peakAngleRef.current),
-        avg_angle: angleSamplesRef.current > 0 ? Math.round(angleSumRef.current / angleSamplesRef.current) : null,
+        avg_angle:
+          angleSamplesRef.current > 0
+            ? Math.round(angleSumRef.current / angleSamplesRef.current)
+            : null,
         samples: angleSamplesRef.current,
       };
 
       const isRealUser = isValidUUID(user.id);
 
       if (isRealUser) {
-        const { data: sessionData, error: sessionError } = await supabase.from('sesiones_completadas').insert({
-          paciente_id: user.id,
-          ejercicio_nombre: exerciseName,
-          duracion_segundos: timer,
-          repeticiones: completedReps,
-          calidad_ejecucion: qualityScore,
-          calidad_promedio: qualityScore,
-          ejercicios: ejerciciosData,
-          adherencia: adherencia,
-          notas: aiFeedbackRef.current,
-          metricas,
-          compensaciones_detectadas: compensation ? { tipo: compensation } : null,
-          dolor_reportado: reportData?.dolor_despues ?? null,
-        }).select('id').single();
+        const { data: sessionData, error: sessionError } = await supabase
+          .from('sesiones_completadas')
+          .insert({
+            paciente_id: user.id,
+            ejercicio_nombre: exerciseName,
+            duracion_segundos: timer,
+            repeticiones: completedReps,
+            calidad_ejecucion: qualityScore,
+            calidad_promedio: qualityScore,
+            ejercicios: ejerciciosData,
+            adherencia,
+            notas: aiFeedbackRef.current,
+            metricas,
+            compensaciones_detectadas: compensation ? { tipo: compensation } : null,
+            dolor_reportado: reportData?.dolor_despues ?? null,
+          })
+          .select('id')
+          .single();
 
         if (sessionError) throw sessionError;
 
@@ -453,7 +511,6 @@ export function ARMirrorPage() {
           if (reportError) console.error('Error saving pain report:', reportError.message);
         }
 
-        // Notificar en tiempo real al terapeuta asignado
         try {
           const { data: link } = await supabase
             .from('pacientes_terapeutas')
@@ -472,13 +529,12 @@ export function ARMirrorPage() {
             });
           }
 
-          // Notificación de logro y reconocimiento al paciente
           if (qualityScore >= 70) {
             createNotification({
               userId: user.id,
               type: 'logro',
-              title: '¡Sesión de rehabilitación completada!',
-              message: `Lograste ${Math.round(qualityScore)}% de precisión en "${exerciseName}" con ${completedReps} repeticiones completadas.`,
+              title: t('ar.sessionComplete'),
+              message: `${Math.round(qualityScore)}% · "${exerciseName}" (${completedReps} ${t('ar.repsLabel')})`,
               link: '/stats',
             });
           }
@@ -486,7 +542,6 @@ export function ARMirrorPage() {
           // Ignorar fallo de notificación
         }
       } else {
-        // Modo demostración: guardar la sesión localmente sin error de UUID
         try {
           const demoSessionRecord = {
             id: `demo-session-${Date.now()}`,
@@ -498,7 +553,7 @@ export function ARMirrorPage() {
             calidad_ejecucion: qualityScore,
             calidad_promedio: qualityScore,
             ejercicios: ejerciciosData,
-            adherencia: adherencia,
+            adherencia,
             notas: aiFeedbackRef.current,
             metricas,
             compensaciones_detectadas: compensation ? { tipo: compensation } : null,
@@ -513,24 +568,23 @@ export function ARMirrorPage() {
         }
       }
 
-      // Cálculo y acumulación de XP terapéutico real no simulado:
-      // +15 XP por cada serie completada
-      // +50 XP base por sesión finalizada
-      // +25 XP bonus de precisión postural biomecánica (calidad >= 80)
-      const earnedXp = (currentSet * 15) + 50 + (qualityScore >= 80 ? 25 : 0);
+      const earnedXp = currentSet * 15 + 50 + (qualityScore >= 80 ? 25 : 0);
       gamification.addPoints(earnedXp);
       gamification.recordSession({ quality: qualityScore, exerciseName });
-      toast.success(`¡Sesión guardada! Has obtenido +${earnedXp} XP de nivel terapéutico`);
+      toast.success(`+${earnedXp} XP`);
       sessionStorage.removeItem('ar_session_backup');
       setShowPainReport(false);
       setShowFinishModal(true);
     } catch (e) {
       console.error('Error saving session:', (e as Error).message);
-      toast.error('Error al guardar la sesión: ' + (e as Error).message);
+      toast.error((e as Error).message);
     }
   };
 
-  const formatTime = (s: number) => `${Math.floor(s / 60).toString().padStart(2, '0')}:${(s % 60).toString().padStart(2, '0')}`;
+  const formatTime = (s: number) =>
+    `${Math.floor(s / 60)
+      .toString()
+      .padStart(2, '0')}:${(s % 60).toString().padStart(2, '0')}`;
 
   const currentAngle = poseData?.primaryAngle ?? 0;
 
@@ -554,7 +608,7 @@ export function ARMirrorPage() {
         setIsFullscreen(false);
       }
     } catch {
-      toast.error('No se pudo cambiar a pantalla completa');
+      // Ignore fullscreen denial in embedded iframe
     }
   };
 
@@ -571,10 +625,46 @@ export function ARMirrorPage() {
     lastQualityRepRef.current = 0;
   };
 
+  const effectiveTrafficLight: TrafficLightState = poseData?.isTracking
+    ? poseData.trafficLight
+    : 'red';
+
+  const trafficMeta =
+    effectiveTrafficLight === 'green'
+      ? {
+          label: t('ar.trafficGreen'),
+          border: 'border-emerald-400/60',
+          badgeBg: 'bg-emerald-500/20 text-emerald-200 border-emerald-400/50',
+        }
+      : effectiveTrafficLight === 'yellow'
+      ? {
+          label: t('ar.trafficYellow'),
+          border: 'border-amber-400/60',
+          badgeBg: 'bg-amber-500/20 text-amber-200 border-amber-400/50',
+        }
+      : {
+          label: t('ar.trafficRed'),
+          border: 'border-rose-500/60',
+          badgeBg: 'bg-rose-500/20 text-rose-200 border-rose-500/50',
+        };
+
+  const sideBadgeLabel =
+    lado?.toLowerCase() === 'izquierdo'
+      ? t('ar.leftSide')
+      : lado?.toLowerCase() === 'derecho'
+      ? t('ar.rightSide')
+      : lado?.toLowerCase() === 'bilateral'
+      ? t('ar.bilateralSide')
+      : null;
+
   return (
     <div className="fixed inset-0 z-[100] bg-[#001514] flex flex-col overflow-hidden">
       {/* Particle canvas for rep completion bursts */}
-      <canvas id="particle-canvas" className="absolute inset-0 pointer-events-none" style={{ zIndex: 25 }} />
+      <canvas
+        id="particle-canvas"
+        className="absolute inset-0 pointer-events-none"
+        style={{ zIndex: 25 }}
+      />
 
       {/* Video as real background + canvas overlay on top */}
       <video
@@ -597,10 +687,10 @@ export function ARMirrorPage() {
         style={{ zIndex: 2 }}
       />
 
-      {/* Barra Superior Flotante Unificada de Micro-Métricas (Alta nitidez y contraste en modo oscuro) */}
+      {/* Barra Superior Flotante Unificada de Micro-Métricas */}
       {sessionStarted && !error && (
         <header className="fixed top-2 sm:top-3.5 left-2 right-2 sm:left-4 sm:right-4 z-[35] flex items-center justify-between gap-1.5 sm:gap-3 pointer-events-none select-none">
-          {/* Lado Izquierdo: Salir y Estado de Detección */}
+          {/* Lado Izquierdo: Salir + Estado AR + Semáforo Visual Postural (3 luces reales) */}
           <div className="flex items-center gap-1.5 sm:gap-2 pointer-events-auto shrink-0">
             <button
               onClick={() => navigate('/dashboard-paciente')}
@@ -612,52 +702,95 @@ export function ARMirrorPage() {
             </button>
 
             <div
-              className="rounded-full px-2.5 sm:px-3 py-1 sm:py-1.5 flex items-center gap-1.5 bg-slate-950/90 backdrop-blur-2xl border border-teal-500/35 shadow-xl"
-              title={poseData?.isTracking ? 'Seguimiento corporal activo' : 'Buscando postura corporal'}
+              className={cn(
+                'rounded-full px-2.5 sm:px-3 py-1 sm:py-1.5 flex items-center gap-2 bg-slate-950/90 backdrop-blur-2xl border shadow-xl transition-colors duration-300',
+                trafficMeta.border
+              )}
+              title={`${t('ar.trafficLightTitle')}: ${trafficMeta.label}`}
             >
-              <span className={`w-2.5 h-2.5 rounded-full ${poseData?.isTracking ? 'bg-emerald-400 animate-pulse shadow-[0_0_10px_rgba(52,211,153,0.8)]' : 'bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.6)]'}`} />
-              <span className="text-white text-[11px] font-bold uppercase tracking-wider hidden xs:inline">
-                {poseData?.isTracking ? 'AR ACTIVO' : 'BUSCANDO'}
+              {/* 3-bulb Semáforo Visual indicator */}
+              <div className="flex items-center gap-1" aria-label={t('ar.trafficLightTitle')}>
+                <span
+                  className={cn(
+                    'w-2 h-2 rounded-full transition-all',
+                    effectiveTrafficLight === 'red'
+                      ? 'bg-red-500 scale-115 shadow-[0_0_8px_rgba(239,68,68,0.95)]'
+                      : 'bg-red-500/20'
+                  )}
+                />
+                <span
+                  className={cn(
+                    'w-2 h-2 rounded-full transition-all',
+                    effectiveTrafficLight === 'yellow'
+                      ? 'bg-amber-400 scale-115 shadow-[0_0_8px_rgba(234,179,8,0.95)]'
+                      : 'bg-amber-400/20'
+                  )}
+                />
+                <span
+                  className={cn(
+                    'w-2 h-2 rounded-full transition-all',
+                    effectiveTrafficLight === 'green'
+                      ? 'bg-emerald-400 scale-115 shadow-[0_0_8px_rgba(34,197,94,0.95)]'
+                      : 'bg-emerald-400/20'
+                  )}
+                />
+              </div>
+
+              <span className="text-white text-[10px] sm:text-[11px] font-bold uppercase tracking-wider hidden sm:inline">
+                {poseData?.isTracking ? trafficMeta.label : t('ar.searching')}
+              </span>
+              <span className="text-white text-[10px] font-bold uppercase tracking-wider hidden xs:inline sm:hidden">
+                {poseData?.isTracking ? t('ar.arActive') : t('ar.searching')}
               </span>
             </div>
           </div>
 
-          {/* Centro: Cápsula de Micro-Métricas Unificadas (Ejercicio, Reps, Series, Ángulo y Tiempo) */}
+          {/* Centro: Cápsula de Micro-Métricas Unificadas */}
           <div className="pointer-events-auto min-w-0 max-w-full">
-            <div
-              className="rounded-2xl px-3 sm:px-4 py-1.5 sm:py-2 flex items-center gap-2 sm:gap-3 bg-slate-950/95 backdrop-blur-2xl border border-teal-500/40 shadow-2xl text-white"
-            >
-              {/* Nombre de Ejercicio con truncado inteligente */}
+            <div className="rounded-2xl px-3 sm:px-4 py-1.5 sm:py-2 flex items-center gap-2 sm:gap-3 bg-slate-950/95 backdrop-blur-2xl border border-teal-500/40 shadow-2xl text-white">
+              {/* Nombre de Ejercicio + Lado */}
               <div className="flex items-center gap-1.5 min-w-0">
                 <span className="w-2 h-2 rounded-full bg-teal-400 shrink-0 hidden sm:inline-block shadow-[0_0_6px_rgba(45,212,191,0.8)]" />
                 <span className="text-xs sm:text-sm font-bold text-white truncate max-w-[85px] xs:max-w-[120px] sm:max-w-[180px] tracking-tight">
                   {exerciseName}
                 </span>
+                {sideBadgeLabel && (
+                  <span className="hidden lg:inline-block text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-white/10 text-teal-200">
+                    {sideBadgeLabel}
+                  </span>
+                )}
               </div>
 
               <div className="w-px h-4 bg-teal-500/25 shrink-0" />
 
               {/* Repeticiones */}
-              <div className="flex items-baseline gap-0.5 shrink-0" title={`Repeticiones: ${repCount} de ${TARGET_REPS}`}>
+              <div className="flex items-baseline gap-0.5 shrink-0">
                 <span className="text-teal-300 font-black text-xs sm:text-base md:text-lg leading-none tabular-nums drop-shadow-[0_0_8px_rgba(45,212,191,0.5)]">
                   {repCount}
                 </span>
-                <span className="text-white/50 text-[10px] sm:text-xs">/{TARGET_REPS}</span>
+                <span className="text-white/50 text-[10px] sm:text-xs tabular-nums">/{targetReps}</span>
               </div>
 
               <div className="w-px h-4 bg-teal-500/25 shrink-0" />
 
               {/* Serie Actual */}
-              <span className="text-white/90 font-bold text-[11px] sm:text-xs shrink-0 tracking-wide" title={`Serie ${currentSet} de ${TOTAL_SETS}`}>
-                S{currentSet}/{TOTAL_SETS}
+              <span className="text-white/90 font-bold text-[11px] sm:text-xs shrink-0 tracking-wide tabular-nums">
+                S{currentSet}/{totalSets}
               </span>
 
               <div className="w-px h-4 bg-teal-500/25 shrink-0" />
 
-              {/* Ángulo Biomecánico en Tiempo Real */}
+              {/* Ángulo Biomecánico en Tiempo Real (con borde semáforo) */}
               <div
-                className="font-mono text-xs sm:text-sm font-black text-teal-200 bg-teal-500/25 px-2 py-0.5 rounded-lg flex items-center shrink-0 border border-teal-400/45 shadow-[0_0_10px_rgba(45,212,191,0.3)] tabular-nums"
-                title={`Ángulo articular actual: ${currentAngle}° (Objetivo: ${presetTargetAngle}°)`}
+                className={cn(
+                  'font-mono text-xs sm:text-sm font-black px-2 py-0.5 rounded-lg flex items-center shrink-0 border tabular-nums transition-colors duration-300',
+                  effectiveTrafficLight === 'green'
+                    ? 'text-emerald-200 bg-emerald-500/25 border-emerald-400/55'
+                    : effectiveTrafficLight === 'yellow'
+                    ? 'text-amber-200 bg-amber-500/25 border-amber-400/55'
+                    : 'text-rose-200 bg-rose-500/25 border-rose-500/55'
+                )}
+                title={`${t('ar.angleLabel')}: ${currentAngle}° (${t('ar.targetShort')} ${presetTargetAngle}°)`}
               >
                 <span>{currentAngle}°</span>
               </div>
@@ -665,7 +798,7 @@ export function ARMirrorPage() {
               <div className="w-px h-4 bg-teal-500/25 shrink-0 hidden xs:block" />
 
               {/* Cronómetro de Sesión */}
-              <span className="font-mono text-xs text-white/90 font-semibold shrink-0 hidden xs:inline tabular-nums" title="Tiempo transcurrido">
+              <span className="font-mono text-xs text-white/90 font-semibold shrink-0 hidden xs:inline tabular-nums">
                 {formatTime(timer)}
               </span>
             </div>
@@ -675,7 +808,7 @@ export function ARMirrorPage() {
           <div className="flex items-center gap-1.5 sm:gap-2 pointer-events-auto shrink-0">
             <button
               onClick={toggleFacingMode}
-              title={facingMode === 'user' ? 'Cámara trasera' : 'Cámara frontal'}
+              title={facingMode === 'user' ? t('ar.rearCamera') : t('ar.frontCamera')}
               aria-label={t('ar.toggleCamera')}
               className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-slate-950/90 hover:bg-slate-900 text-white flex items-center justify-center border border-teal-500/35 backdrop-blur-2xl transition-all shadow-xl hover:border-teal-400 active:scale-95"
             >
@@ -683,7 +816,7 @@ export function ARMirrorPage() {
             </button>
             <button
               onClick={() => setIsMirrored((prev) => !prev)}
-              title={isMirrored ? 'Modo espejo activado (Toca para desactivar)' : 'Activar modo espejo'}
+              title={t('ar.mirrorMode')}
               aria-label={t('ar.mirrorMode')}
               className={cn(
                 'w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-slate-950/90 hover:bg-slate-900 flex items-center justify-center border backdrop-blur-2xl transition-all shadow-xl active:scale-95',
@@ -696,8 +829,8 @@ export function ARMirrorPage() {
             </button>
             <button
               onClick={() => setHudMode((prev) => (prev === 'full' ? 'minimal' : 'full'))}
-              title={hudMode === 'minimal' ? 'Modo Esencial Activo. Toca para Modo Completo.' : 'Modo Completo. Toca para Modo Esencial.'}
-              aria-label={hudMode === 'minimal' ? 'Cambiar a modo completo' : 'Cambiar a modo esencial'}
+              title={hudMode === 'minimal' ? t('ar.essentialMode') : t('ar.fullMode')}
+              aria-label={hudMode === 'minimal' ? t('ar.fullMode') : t('ar.essentialMode')}
               className={cn(
                 'px-2.5 sm:px-3 h-8 sm:h-10 rounded-full flex items-center gap-1.5 border backdrop-blur-2xl transition-all shadow-xl active:scale-95 text-[10px] sm:text-xs font-bold uppercase tracking-wider',
                 hudMode === 'minimal'
@@ -706,7 +839,9 @@ export function ARMirrorPage() {
               )}
             >
               <Icon name={hudMode === 'minimal' ? 'auto_awesome' : 'visibility'} size={17} />
-              <span className="hidden sm:inline">{hudMode === 'minimal' ? 'Esencial' : 'Completo'}</span>
+              <span className="hidden sm:inline">
+                {hudMode === 'minimal' ? t('ar.essentialMode') : t('ar.fullMode')}
+              </span>
             </button>
           </div>
         </header>
@@ -721,12 +856,12 @@ export function ARMirrorPage() {
             onClick={reconnectCamera}
             className="ml-1 px-1.5 py-0.5 rounded bg-amber-400/30 hover:bg-amber-400/50 text-white font-bold uppercase tracking-wider text-[9px] transition-colors cursor-pointer"
           >
-            Reconectar
+            {t('ar.reconnectBtn')}
           </button>
         </div>
       )}
 
-      {/* Camera loading / scanning state — escaneando.webp durante calibración AR */}
+      {/* Camera loading / scanning state */}
       {!isReady && (
         <div className="absolute inset-0 flex flex-col items-center justify-center gap-4">
           <MascotAnimation type="scanning" size="md" />
@@ -741,12 +876,14 @@ export function ARMirrorPage() {
             <button
               onClick={reconnectCamera}
               className="px-5 py-2.5 bg-teal-500 hover:bg-teal-400 text-white rounded-xl font-bold transition-all text-sm cursor-pointer shadow-lg shadow-teal-500/25 active:scale-95"
-            >{t('ar.retryCamera')}</button>
+            >
+              {t('ar.retryCamera')}
+            </button>
             <button
               onClick={() => navigate('/dashboard-paciente')}
               className="px-5 py-2.5 bg-white/10 text-white rounded-xl hover:bg-white/20 transition-all font-semibold text-sm cursor-pointer"
             >
-              Volver
+              {t('ar.backBtn')}
             </button>
           </div>
         </div>
@@ -757,7 +894,7 @@ export function ARMirrorPage() {
         <div className="absolute inset-0 z-30 flex flex-col items-center justify-center gap-4 px-6 text-center">
           <MascotAnimation type="greeting" size="md" />
           <TypewriterText
-            text="Ajusta tu postura frente a la cámara..."
+            text={t('ar.preSessionPrompt')}
             className="text-white text-lg md:text-xl font-medium max-w-md"
           />
           {!calibrated && (
@@ -783,25 +920,28 @@ export function ARMirrorPage() {
               animate={{ scale: 1 }}
               className="text-white text-4xl font-bold mb-4"
             >
-              Descanso
+              {t('ar.restTitle')}
             </motion.h2>
             <motion.span
               key={restCountdown}
               initial={{ scale: 1.3, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              className="text-8xl font-black text-white"
+              className="text-8xl font-black text-white tabular-nums"
             >
               {restCountdown}
             </motion.span>
-            <p className="text-white/60 mt-4">Serie {currentSet} completada</p>
-            <button onClick={() => setRestCountdown(0)} className="mt-8 px-6 py-3 rounded-full bg-white/20 text-white font-bold hover:bg-white/30 active:scale-95 transition-all">
-              Saltar descanso
+            <p className="text-white/60 mt-4">{t('ar.setCompleted', { set: currentSet })}</p>
+            <button
+              onClick={() => setRestCountdown(0)}
+              className="mt-8 px-6 py-3 rounded-full bg-white/20 text-white font-bold hover:bg-white/30 active:scale-95 transition-all"
+            >
+              {t('ar.skipRestBtn')}
             </button>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* 3D Model Picture-in-Picture Exercise Demonstrator (Elemento Esencial y Clínico) */}
+      {/* 3D Model Picture-in-Picture Exercise Demonstrator */}
       <AnimatePresence>
         {showModel3D && state !== 'finished' && (
           <div className="absolute top-14 sm:top-16 md:top-20 right-2 sm:right-4 md:right-6 z-30 pointer-events-auto">
@@ -818,7 +958,6 @@ export function ARMirrorPage() {
 
       {/* HUD — Espacio central despejado en móvil; widgets adaptativos en escritorio y tablet */}
       <div className="relative z-20 flex flex-col h-full pt-14 sm:pt-16 pb-3 sm:pb-5 px-3 sm:px-6 md:px-8 pointer-events-none transition-opacity duration-300">
-        {/* Espacio Central: Layout adaptable para móvil, tablet y escritorio */}
         <div className="flex-1 flex items-center justify-between transition-all duration-300">
           {hudMode === 'full' ? (
             <>
@@ -827,17 +966,27 @@ export function ARMirrorPage() {
                 {/* En móvil: Tarjeta compacta de micro-métricas */}
                 <div className="md:hidden rounded-2xl p-3 bg-slate-950/90 backdrop-blur-2xl border border-teal-500/40 text-white shadow-2xl flex items-center gap-3">
                   <div>
-                    <span className="text-[10px] text-teal-300 font-bold uppercase tracking-wider block">Series</span>
-                    <span className="text-xl font-black text-white">{currentSet} <span className="text-xs text-white/50 font-normal">/ {TOTAL_SETS}</span></span>
+                    <span className="text-[10px] text-teal-300 font-bold uppercase tracking-wider block">
+                      {t('ar.setsLabel')}
+                    </span>
+                    <span className="text-xl font-black text-white tabular-nums">
+                      {currentSet}{' '}
+                      <span className="text-xs text-white/50 font-normal">/ {totalSets}</span>
+                    </span>
                   </div>
                   <div className="w-px h-7 bg-teal-500/30" />
                   <div>
-                    <span className="text-[10px] text-teal-300 font-bold uppercase tracking-wider block">Reps</span>
-                    <span className="text-2xl font-black text-teal-300">{repCount} <span className="text-xs text-white/50 font-normal">/ {TARGET_REPS}</span></span>
+                    <span className="text-[10px] text-teal-300 font-bold uppercase tracking-wider block">
+                      {t('ar.repsLabel')}
+                    </span>
+                    <span className="text-2xl font-black text-teal-300 tabular-nums">
+                      {repCount}{' '}
+                      <span className="text-xs text-white/50 font-normal">/ {targetReps}</span>
+                    </span>
                   </div>
                 </div>
 
-                {/* En Tablet y Escritorio: Paneles grandes de vidrio pulido tipo HUD clínico */}
+                {/* En Tablet y Escritorio: Paneles grandes HUD clínico */}
                 <div className="hidden md:flex flex-col gap-3">
                   {/* Tarjeta de Series */}
                   <motion.div
@@ -847,11 +996,15 @@ export function ARMirrorPage() {
                     className="rounded-2xl p-5 w-48 lg:w-56 text-center bg-slate-950/90 backdrop-blur-2xl border border-teal-500/35 text-white shadow-2xl"
                   >
                     <p className="text-teal-300/80 text-xs font-bold uppercase tracking-[0.2em] mb-1.5">
-                      Series
+                      {t('ar.setsLabel')}
                     </p>
                     <div className="flex items-baseline justify-center gap-1.5">
-                      <span className="text-white text-4xl lg:text-5xl font-black tabular-nums">{currentSet}</span>
-                      <span className="text-white/40 text-xl font-medium">/ {TOTAL_SETS}</span>
+                      <span className="text-white text-4xl lg:text-5xl font-black tabular-nums">
+                        {currentSet}
+                      </span>
+                      <span className="text-white/40 text-xl font-medium tabular-nums">
+                        / {totalSets}
+                      </span>
                     </div>
                   </motion.div>
 
@@ -864,34 +1017,37 @@ export function ARMirrorPage() {
                     className="rounded-2xl p-5 w-48 lg:w-56 text-center bg-slate-950/90 backdrop-blur-2xl border border-teal-500/40 text-white shadow-2xl"
                   >
                     <p className="text-teal-300/80 text-xs font-bold uppercase tracking-[0.2em] mb-1.5">
-                      Repeticiones
+                      {t('ar.repetitionsLabel')}
                     </p>
                     <div className="flex items-baseline justify-center gap-1.5">
                       <motion.span
                         key={repCount}
                         initial={{ scale: 1.25 }}
                         animate={{ scale: 1 }}
-                        className="text-white text-5xl lg:text-7xl font-black tabular-nums text-teal-300 drop-shadow-[0_0_15px_rgba(45,212,191,0.6)]"
+                        className="text-5xl lg:text-7xl font-black tabular-nums text-teal-300 drop-shadow-[0_0_15px_rgba(45,212,191,0.6)]"
                       >
                         {repCount}
                       </motion.span>
-                      <span className="text-white/40 text-2xl font-bold">/ {TARGET_REPS}</span>
+                      <span className="text-white/40 text-2xl font-bold tabular-nums">
+                        / {targetReps}
+                      </span>
                     </div>
                   </motion.div>
 
-                  {/* Analizador de Cadencia Clínica (Reemplazo real del metrónomo) */}
+                  {/* Analizador de Cadencia Clínica */}
                   <div className="w-48 lg:w-56">
                     <ClinicalCadenceAnalyzer
                       lastRepDurationSeconds={lastRepDuration}
                       isMoving={poseData?.isTracking}
+                      repPhase={poseData?.repPhase}
+                      trafficLight={effectiveTrafficLight}
                     />
                   </div>
                 </div>
               </div>
 
-              {/* Lado Derecho: Separación técnica entre Columna Vertical de ROM e Indicador Circular de Ángulo */}
+              {/* Lado Derecho: Medidor Circular + Indicador Vertical ROM Semáforo */}
               <div className="flex items-center gap-3 sm:gap-5 pointer-events-auto">
-                {/* Medidor Circular de Ángulo Biomecánico (visible en tablet y escritorio) */}
                 <div className="hidden md:block">
                   {!showModel3D && (
                     <motion.div
@@ -901,16 +1057,22 @@ export function ARMirrorPage() {
                       <BiomechanicalAngleDial
                         currentAngle={currentAngle}
                         targetAngle={presetTargetAngle}
+                        romPercent={poseData?.romPercent}
+                        trafficLight={effectiveTrafficLight}
+                        repPhase={poseData?.repPhase}
                         size={180}
                       />
                     </motion.div>
                   )}
                 </div>
 
-                {/* Columna Vertical de Intensidad y Rango Articular (Siempre visible con contraste óptimo) */}
                 <BiomechanicalROMIndicator
                   currentAngle={currentAngle}
                   targetAngle={presetTargetAngle}
+                  romPercent={poseData?.romPercent}
+                  trafficLight={effectiveTrafficLight}
+                  repPhase={poseData?.repPhase}
+                  holdRemainingMs={poseData?.holdRemainingMs}
                 />
               </div>
             </>
@@ -921,7 +1083,6 @@ export function ARMirrorPage() {
 
         {/* Zona Inferior: Alertas, Feedback por Voz y Dock Ergonómico */}
         <div className="space-y-2 pointer-events-auto flex flex-col items-center w-full max-w-2xl mx-auto">
-          {/* Banner de Compensación Postural con contraste clínico */}
           {compensation && (
             <motion.div
               initial={{ opacity: 0, y: 15 }}
@@ -932,21 +1093,26 @@ export function ARMirrorPage() {
                 deviationJoint={exerciseName}
                 detectedIssue={compensation}
                 severity="moderate"
-                onDismiss={() => {}}
+                onDismiss={() => setCompensation(null)}
               />
             </motion.div>
           )}
 
-          {/* Banner de Feedback por Voz con visualizador de onda interactivo */}
+          {/* Banner de Feedback Clínico + Semáforo */}
           {hudMode === 'full' && !compensation && (
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               className="w-full px-2 max-w-xl"
             >
-              <div className="w-full px-4 py-2.5 rounded-2xl bg-slate-950/92 backdrop-blur-2xl border-l-4 border-l-teal-400 border border-teal-500/35 text-white shadow-2xl flex items-center gap-3">
+              <div
+                className={cn(
+                  'w-full px-4 py-2.5 rounded-2xl bg-slate-950/92 backdrop-blur-2xl border text-white shadow-2xl flex items-center gap-3 transition-colors duration-300',
+                  trafficMeta.border
+                )}
+              >
                 <div className="flex items-center gap-1 shrink-0">
-                  {[0.2, 0.6, 0.9, 0.4, 0.7].map((h, i) => (
+                  {[0.2, 0.6, 0.9, 0.4, 0.7].map((_, i) => (
                     <motion.div
                       key={i}
                       animate={{
@@ -958,94 +1124,108 @@ export function ARMirrorPage() {
                         delay: i * 0.15,
                         ease: 'easeInOut',
                       }}
-                      className="w-1 h-4 bg-teal-300 rounded-full origin-center"
+                      className={cn(
+                        'w-1 h-4 rounded-full origin-center',
+                        effectiveTrafficLight === 'green'
+                          ? 'bg-emerald-400'
+                          : effectiveTrafficLight === 'yellow'
+                          ? 'bg-amber-400'
+                          : 'bg-rose-400'
+                      )}
                     />
                   ))}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <span className="text-[10px] text-teal-300 font-bold uppercase tracking-wider block">
-                    Asistente Clínico AI
-                  </span>
+                  <div className="flex items-center gap-2 mb-0.5">
+                    <span className="text-[10px] text-teal-300 font-bold uppercase tracking-wider">
+                      {t('ar.aiClinicalAssistant')}
+                    </span>
+                    <span
+                      className={cn(
+                        'text-[9px] font-bold px-1.5 py-0.5 rounded-full border uppercase tracking-wider',
+                        trafficMeta.badgeBg
+                      )}
+                    >
+                      {trafficMeta.label}
+                    </span>
+                  </div>
                   <p className="text-xs sm:text-sm text-white font-medium truncate sm:whitespace-normal drop-shadow-sm">
-                    "{aiFeedbackRef.current || 'Excelente postura. Mantén el ritmo controlado y la espalda recta.'}"
+                    “{aiFeedback || t('ar.defaultFeedback')}”
                   </p>
                 </div>
               </div>
             </motion.div>
           )}
 
-          {/* Dock de Controles Inferior Unificado (Mobile First, Touch Targets >= 44px, Alto Contraste) */}
+          {/* Dock de Controles Inferior Unificado */}
           <div className="bg-slate-950/95 backdrop-blur-2xl border border-teal-500/40 rounded-2xl sm:rounded-3xl p-1.5 sm:p-2 shadow-2xl flex items-center justify-center gap-1.5 sm:gap-2.5 max-w-full overflow-x-auto">
             {state === 'active' && (
               <>
-                {/* Pausar */}
                 <button
                   onClick={() => setState('paused')}
                   className="rounded-xl px-3.5 sm:px-4 py-2 sm:py-2.5 bg-white/10 hover:bg-white/20 text-white flex items-center gap-1.5 hover:scale-105 active:scale-95 transition-all cursor-pointer font-bold text-xs sm:text-sm min-h-[44px]"
                   aria-label={t('ar.pauseExercise')}
                 >
                   <Icon name="pause" size={19} />
-                  <span>Pausar</span>
+                  <span>{t('ar.pauseBtn')}</span>
                 </button>
 
-                {/* Finalizar */}
                 <button
-                  onClick={() => { setState('finished'); setShowPainReport(true); }}
+                  onClick={() => {
+                    setState('finished');
+                    setShowPainReport(true);
+                  }}
                   className="rounded-xl px-3.5 sm:px-4 py-2 sm:py-2.5 bg-rose-600/90 hover:bg-rose-500 text-white flex items-center gap-1.5 hover:scale-105 active:scale-95 transition-all cursor-pointer font-bold text-xs sm:text-sm min-h-[44px] shadow-lg shadow-rose-600/30"
                   aria-label={t('ar.finishExercise')}
                 >
                   <Icon name="stop" size={19} />
-                  <span>Finalizar</span>
+                  <span>{t('ar.finishBtn')}</span>
                 </button>
 
                 <div className="w-px h-6 bg-teal-500/30 my-auto shrink-0" />
 
-                {/* Botón Particular Modelo 3D (Elemento Esencial y Clínico) */}
                 <button
                   onClick={() => setShowModel3D((prev) => !prev)}
-                  aria-label={showModel3D ? 'Ocultar modelo 3D demostrador' : 'Mostrar modelo 3D demostrador'}
+                  aria-label={showModel3D ? t('ar.guide3dOn') : t('ar.guide3d')}
                   className={cn(
-                    "rounded-xl px-3 sm:px-3.5 py-2 sm:py-2.5 flex items-center gap-1.5 hover:scale-105 active:scale-95 transition-all cursor-pointer min-h-[44px]",
+                    'rounded-xl px-3 sm:px-3.5 py-2 sm:py-2.5 flex items-center gap-1.5 hover:scale-105 active:scale-95 transition-all cursor-pointer min-h-[44px]',
                     showModel3D
-                      ? "bg-teal-500/30 text-teal-300 border border-teal-400/60 shadow-lg shadow-teal-500/25 font-bold"
-                      : "bg-white/10 text-white/80 hover:text-white"
+                      ? 'bg-teal-500/30 text-teal-300 border border-teal-400/60 shadow-lg shadow-teal-500/25 font-bold'
+                      : 'bg-white/10 text-white/80 hover:text-white'
                   )}
-                  title={showModel3D ? 'Guía 3D Activa (Toca para ocultar)' : 'Mostrar Guía 3D de ejercicio'}
+                  title={showModel3D ? t('ar.guide3dOn') : t('ar.guide3d')}
                 >
                   <Icon name="view_in_ar" size={19} />
                   <span className="text-xs font-bold hidden sm:inline">
-                    {showModel3D ? 'Guía 3D ON' : 'Guía 3D'}
+                    {showModel3D ? t('ar.guide3dOn') : t('ar.guide3d')}
                   </span>
                 </button>
 
-                {/* Modo Esencial / Completo */}
                 <button
                   onClick={() => setHudMode((prev) => (prev === 'full' ? 'minimal' : 'full'))}
-                  aria-label={hudMode === 'minimal' ? 'Cambiar a modo completo' : 'Cambiar a modo esencial'}
+                  aria-label={hudMode === 'minimal' ? t('ar.fullMode') : t('ar.essentialMode')}
                   className={cn(
-                    "rounded-xl px-3 sm:px-3.5 py-2 sm:py-2.5 flex items-center gap-1.5 hover:scale-105 active:scale-95 transition-all cursor-pointer min-h-[44px]",
+                    'rounded-xl px-3 sm:px-3.5 py-2 sm:py-2.5 flex items-center gap-1.5 hover:scale-105 active:scale-95 transition-all cursor-pointer min-h-[44px]',
                     hudMode === 'minimal'
-                      ? "bg-amber-500/25 text-amber-300 border border-amber-400/60 shadow-lg shadow-amber-500/25 font-bold"
-                      : "bg-white/10 text-white/80 hover:text-white"
+                      ? 'bg-amber-500/25 text-amber-300 border border-amber-400/60 shadow-lg shadow-amber-500/25 font-bold'
+                      : 'bg-white/10 text-white/80 hover:text-white'
                   )}
-                  title={hudMode === 'minimal' ? 'Modo Esencial Activo' : 'Modo Completo Activo'}
+                  title={hudMode === 'minimal' ? t('ar.essentialMode') : t('ar.fullMode')}
                 >
                   <Icon name={hudMode === 'minimal' ? 'auto_awesome' : 'dashboard'} size={19} />
                   <span className="text-xs font-bold hidden sm:inline">
-                    {hudMode === 'minimal' ? 'Esencial' : 'Completo'}
+                    {hudMode === 'minimal' ? t('ar.essentialMode') : t('ar.fullMode')}
                   </span>
                 </button>
 
-                {/* Pantalla completa (oculto en móviles estrechos) */}
                 <button
                   onClick={toggleFullscreen}
-                  aria-label={isFullscreen ? 'Salir de pantalla completa' : 'Pantalla completa'}
+                  aria-label="Fullscreen"
                   className="rounded-xl p-2 sm:p-2.5 bg-white/5 hover:bg-white/10 text-white/70 hover:text-white hover:scale-105 active:scale-95 transition-all cursor-pointer hidden xs:flex items-center justify-center min-h-[40px] sm:min-h-[44px] min-w-[40px]"
                 >
                   <Icon name={isFullscreen ? 'fullscreen_exit' : 'fullscreen'} size={18} />
                 </button>
 
-                {/* Volumen */}
                 <button
                   onClick={() => {
                     const states: Array<'high' | 'low' | 'muted'> = ['high', 'low', 'muted'];
@@ -1054,12 +1234,20 @@ export function ARMirrorPage() {
                   }}
                   className="rounded-xl p-2 sm:p-2.5 bg-white/5 hover:bg-white/10 text-white/70 hover:text-white hover:scale-105 active:scale-95 transition-all cursor-pointer flex items-center justify-center min-h-[40px] sm:min-h-[44px] min-w-[40px]"
                   aria-label={t('ar.changeVolume')}
-                  title={`Volumen: ${volumeLevel}`}
+                  title={t('ar.changeVolume')}
                 >
-                  <Icon name={volumeLevel === 'muted' ? 'volume_off' : volumeLevel === 'low' ? 'volume_down' : 'volume_up'} size={18} />
+                  <Icon
+                    name={
+                      volumeLevel === 'muted'
+                        ? 'volume_off'
+                        : volumeLevel === 'low'
+                        ? 'volume_down'
+                        : 'volume_up'
+                    }
+                    size={18}
+                  />
                 </button>
 
-                {/* Configuración */}
                 <button
                   onClick={() => setShowSettings(true)}
                   aria-label={t('ar.openSettings')}
@@ -1078,18 +1266,23 @@ export function ARMirrorPage() {
                   onClick={() => setState('active')}
                   className="bg-teal-600 hover:bg-teal-500 rounded-xl px-4 sm:px-6 py-2 sm:py-2.5 text-white flex items-center gap-2 cursor-pointer font-bold text-xs sm:text-sm min-h-[40px] sm:min-h-[44px]"
                 >
-                  <Icon name="play_arrow" size={18} /> Reanudar
+                  <Icon name="play_arrow" size={18} /> {t('ar.resumeBtn')}
                 </PulsatingButton>
                 <button
                   onClick={handleRestart}
                   className="rounded-xl px-3 sm:px-4 py-2 sm:py-2.5 bg-white/10 hover:bg-white/15 text-white flex items-center gap-1.5 hover:scale-105 active:scale-95 transition-all cursor-pointer font-bold text-xs sm:text-sm min-h-[40px] sm:min-h-[44px]"
                 >
-                  <Icon name="refresh" size={18} />{t('tr.reiniciar')}</button>
+                  <Icon name="refresh" size={18} />
+                  {t('tr.reiniciar')}
+                </button>
                 <button
-                  onClick={() => { setState('finished'); setShowPainReport(true); }}
+                  onClick={() => {
+                    setState('finished');
+                    setShowPainReport(true);
+                  }}
                   className="rounded-xl px-3 sm:px-4 py-2 sm:py-2.5 bg-red-500/80 hover:bg-red-500 text-white flex items-center gap-1.5 hover:scale-105 active:scale-95 transition-all cursor-pointer font-bold text-xs sm:text-sm min-h-[40px] sm:min-h-[44px]"
                 >
-                  <Icon name="stop" size={18} /> Abandonar
+                  <Icon name="stop" size={18} /> {t('ar.abandonBtn')}
                 </button>
               </>
             )}
@@ -1097,7 +1290,7 @@ export function ARMirrorPage() {
         </div>
       </div>
 
-      {/* Settings modal accesible con HeroUI Modal */}
+      {/* Settings modal */}
       <Modal open={showSettings} onOpenChange={setShowSettings}>
         <Modal.Backdrop>
           <Modal.Container>
@@ -1112,18 +1305,24 @@ export function ARMirrorPage() {
               <Modal.Body className="space-y-3">
                 <button
                   type="button"
-                  onClick={() => { setVolumeLevel(volumeLevel === 'muted' ? 'high' : 'muted'); }}
+                  onClick={() => setVolumeLevel(volumeLevel === 'muted' ? 'high' : 'muted')}
                   className="w-full flex items-center justify-between p-3 rounded-xl bg-white/10 hover:bg-white/15 text-white transition-colors"
                 >
                   <span className="text-sm font-semibold">{t('ar.guideAudio')}</span>
-                  <Icon name={volumeLevel !== 'muted' ? 'toggle_on' : 'toggle_off'} size={28} className={volumeLevel !== 'muted' ? 'text-teal-300' : 'text-white/40'} />
+                  <Icon
+                    name={volumeLevel !== 'muted' ? 'toggle_on' : 'toggle_off'}
+                    size={28}
+                    className={volumeLevel !== 'muted' ? 'text-teal-300' : 'text-white/40'}
+                  />
                 </button>
                 <button
                   type="button"
                   onClick={toggleFacingMode}
                   className="w-full flex items-center justify-between p-3 rounded-xl bg-white/10 hover:bg-white/15 text-white transition-colors"
                 >
-                  <span className="text-sm font-semibold">Cámara ({facingMode === 'user' ? 'Frontal' : 'Trasera'})</span>
+                  <span className="text-sm font-semibold">
+                    {facingMode === 'user' ? t('ar.frontCamera') : t('ar.rearCamera')}
+                  </span>
                   <Icon name="flip_camera_ios" size={20} className="text-[#8ad3cf]" />
                 </button>
                 <button
@@ -1132,7 +1331,11 @@ export function ARMirrorPage() {
                   className="w-full flex items-center justify-between p-3 rounded-xl bg-white/10 hover:bg-white/15 text-white transition-colors"
                 >
                   <span className="text-sm font-semibold">{t('ar.mirroredMode')}</span>
-                  <Icon name={isMirrored ? 'toggle_on' : 'toggle_off'} size={28} className={isMirrored ? 'text-teal-300' : 'text-white/40'} />
+                  <Icon
+                    name={isMirrored ? 'toggle_on' : 'toggle_off'}
+                    size={28}
+                    className={isMirrored ? 'text-teal-300' : 'text-white/40'}
+                  />
                 </button>
                 <button
                   type="button"
@@ -1140,11 +1343,18 @@ export function ARMirrorPage() {
                   className="w-full flex items-center justify-between p-3 rounded-xl bg-white/10 hover:bg-white/15 text-white transition-colors"
                 >
                   <span className="text-sm font-semibold">{t('ar.liveDemo3d')}</span>
-                  <Icon name={showModel3D ? 'toggle_on' : 'toggle_off'} size={28} className={showModel3D ? 'text-teal-300' : 'text-white/40'} />
+                  <Icon
+                    name={showModel3D ? 'toggle_on' : 'toggle_off'}
+                    size={28}
+                    className={showModel3D ? 'text-teal-300' : 'text-white/40'}
+                  />
                 </button>
                 <button
                   type="button"
-                  onClick={() => { handleRestart(); setShowSettings(false); }}
+                  onClick={() => {
+                    handleRestart();
+                    setShowSettings(false);
+                  }}
                   className="w-full flex items-center justify-between p-3 rounded-xl bg-white/10 hover:bg-white/15 text-white transition-colors"
                 >
                   <span className="text-sm font-semibold">{t('ar.restartSession')}</span>
@@ -1158,7 +1368,7 @@ export function ARMirrorPage() {
                   onClick={() => setShowSettings(false)}
                   className="w-full py-2.5 px-4 rounded-xl bg-teal-500/25 hover:bg-teal-500/35 text-teal-200 font-bold border border-teal-500/40 transition-colors"
                 >
-                  Listo
+                  {t('ar.doneBtn')}
                 </button>
               </Modal.Footer>
             </Modal.Dialog>
@@ -1180,7 +1390,11 @@ export function ARMirrorPage() {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               className="glass-modal glass-panel rounded-3xl p-6 md:p-8 max-w-md w-full"
-              style={{ background: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(32px)', border: '1px solid rgba(255,255,255,0.2)' }}
+              style={{
+                background: 'rgba(255,255,255,0.1)',
+                backdropFilter: 'blur(32px)',
+                border: '1px solid rgba(255,255,255,0.2)',
+              }}
             >
               <h2 className="text-white text-2xl font-bold mb-2">{t('ar.postSessionReport')}</h2>
               <p className="text-white/60 text-sm mb-4">{t('ar.postSessionDesc')}</p>
@@ -1193,35 +1407,90 @@ export function ARMirrorPage() {
               <div className="space-y-5">
                 <div>
                   <label className="text-white/80 text-sm font-bold">{t('ar.painBefore')}</label>
-                  <input type="range" min={0} max={10} value={painBefore} onChange={(e) => setPainBefore(Number(e.target.value))} className="w-full mt-2 accent-[#8ad3cf]" />
-                  <div className="flex justify-between text-white/40 text-xs mt-1"><span>0</span><span className="text-white font-bold text-base">{painBefore}</span><span>10</span></div>
+                  <input
+                    type="range"
+                    min={0}
+                    max={10}
+                    value={painBefore}
+                    onChange={(e) => setPainBefore(Number(e.target.value))}
+                    className="w-full mt-2 accent-[#8ad3cf]"
+                  />
+                  <div className="flex justify-between text-white/40 text-xs mt-1 tabular-nums">
+                    <span>0</span>
+                    <span className="text-white font-bold text-base">{painBefore}</span>
+                    <span>10</span>
+                  </div>
                 </div>
                 <div>
                   <label className="text-white/80 text-sm font-bold">{t('ar.painAfter')}</label>
-                  <input type="range" min={0} max={10} value={painAfter} onChange={(e) => setPainAfter(Number(e.target.value))} className="w-full mt-2 accent-[#8ad3cf]" />
-                  <div className="flex justify-between text-white/40 text-xs mt-1"><span>0</span><span className="text-white font-bold text-base">{painAfter}</span><span>10</span></div>
+                  <input
+                    type="range"
+                    min={0}
+                    max={10}
+                    value={painAfter}
+                    onChange={(e) => setPainAfter(Number(e.target.value))}
+                    className="w-full mt-2 accent-[#8ad3cf]"
+                  />
+                  <div className="flex justify-between text-white/40 text-xs mt-1 tabular-nums">
+                    <span>0</span>
+                    <span className="text-white font-bold text-base">{painAfter}</span>
+                    <span>10</span>
+                  </div>
                 </div>
                 <div>
                   <label className="text-white/80 text-sm font-bold">{t('ar.fatigueLevel')}</label>
                   <div className="flex gap-2 mt-2">
                     {[1, 2, 3, 4, 5].map((n) => (
-                      <button key={n} onClick={() => setFatigueLevel(n)} className={`flex-1 py-2 rounded-xl font-bold transition-all ${fatigueLevel === n ? 'bg-[#8ad3cf] text-[#001514]' : 'bg-white/10 text-white/60'}`}>{n}</button>
+                      <button
+                        key={n}
+                        onClick={() => setFatigueLevel(n)}
+                        className={`flex-1 py-2 rounded-xl font-bold transition-all ${
+                          fatigueLevel === n
+                            ? 'bg-[#8ad3cf] text-[#001514]'
+                            : 'bg-white/10 text-white/60'
+                        }`}
+                      >
+                        {n}
+                      </button>
                     ))}
                   </div>
                 </div>
                 <div>
-                  <label className="text-white/80 text-sm font-bold">Comentario (opcional)</label>
-                  <textarea value={painComment} onChange={(e) => setPainComment(e.target.value)} placeholder={t('ar.notesPlaceholder')} className="w-full mt-2 p-3 rounded-xl bg-white/10 text-white placeholder-white/30 border border-white/10 focus:border-[#8ad3cf] outline-none resize-none" rows={2} />
+                  <label className="text-white/80 text-sm font-bold">
+                    {t('ar.optionalComment')}
+                  </label>
+                  <textarea
+                    value={painComment}
+                    onChange={(e) => setPainComment(e.target.value)}
+                    placeholder={t('ar.notesPlaceholder')}
+                    className="w-full mt-2 p-3 rounded-xl bg-white/10 text-white placeholder-white/30 border border-white/10 focus:border-[#8ad3cf] outline-none resize-none"
+                    rows={2}
+                  />
                 </div>
               </div>
 
               <div className="flex gap-3 mt-6">
-                <button onClick={() => saveSession({ dolor_antes: painBefore, dolor_despues: painAfter, fatiga: fatigueLevel, comentario: painComment })} className="premium-btn flex-1 py-4 bg-[#8ad3cf] text-[#001514] rounded-2xl font-bold hover:scale-[1.02] active:scale-95 transition-all">{t('ar.sendReport')}</button>
-                <button onClick={() => {
-                  setShowPainReport(false);
-                  saveSession();
-                }} className="flex-1 py-4 bg-white/10 text-white rounded-2xl font-bold hover:bg-white/20 transition-all">
-                  Omitir
+                <button
+                  onClick={() =>
+                    saveSession({
+                      dolor_antes: painBefore,
+                      dolor_despues: painAfter,
+                      fatiga: fatigueLevel,
+                      comentario: painComment,
+                    })
+                  }
+                  className="premium-btn flex-1 py-4 bg-[#8ad3cf] text-[#001514] rounded-2xl font-bold hover:scale-[1.02] active:scale-95 transition-all"
+                >
+                  {t('ar.sendReport')}
+                </button>
+                <button
+                  onClick={() => {
+                    setShowPainReport(false);
+                    saveSession();
+                  }}
+                  className="flex-1 py-4 bg-white/10 text-white rounded-2xl font-bold hover:bg-white/20 transition-all"
+                >
+                  {t('ar.skipBtn')}
                 </button>
               </div>
             </motion.div>
@@ -1242,7 +1511,11 @@ export function ARMirrorPage() {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               className="glass-modal glass-panel rounded-3xl p-8 md:p-10 max-w-md text-center mx-4"
-              style={{ background: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(32px)', border: '1px solid rgba(255,255,255,0.2)' }}
+              style={{
+                background: 'rgba(255,255,255,0.1)',
+                backdropFilter: 'blur(32px)',
+                border: '1px solid rgba(255,255,255,0.2)',
+              }}
             >
               <motion.div
                 initial={{ scale: 0 }}
@@ -1253,11 +1526,22 @@ export function ARMirrorPage() {
                 <MascotAnimation type="success" size="md" className="w-full h-full" />
               </motion.div>
               <h2 className="text-white text-3xl font-bold mb-2">{t('ar.sessionComplete')}</h2>
-              <p className="text-white/60 mb-6">Has completado {currentSet} series con {repCount} repeticiones.</p>
+              <p className="text-white/60 mb-6">
+                {t('ar.summaryText', { sets: currentSet, reps: completedRepsTotal })}
+              </p>
               <div className="grid grid-cols-3 gap-4 mb-6">
-                <div><p className="text-white/40 text-xs">Tiempo</p><p className="text-white text-xl font-bold">{formatTime(timer)}</p></div>
-                <div><p className="text-white/40 text-xs">Repeticiones</p><p className="text-white text-xl font-bold">{repCount}</p></div>
-                <div><p className="text-white/40 text-xs">{t('tr.calidad')}</p><p className="text-white text-xl font-bold">{qualityScore}%</p></div>
+                <div>
+                  <p className="text-white/40 text-xs">{t('ar.timeLabel')}</p>
+                  <p className="text-white text-xl font-bold tabular-nums">{formatTime(timer)}</p>
+                </div>
+                <div>
+                  <p className="text-white/40 text-xs">{t('ar.repetitionsLabel')}</p>
+                  <p className="text-white text-xl font-bold tabular-nums">{completedRepsTotal}</p>
+                </div>
+                <div>
+                  <p className="text-white/40 text-xs">{t('tr.calidad')}</p>
+                  <p className="text-white text-xl font-bold tabular-nums">{qualityScore}%</p>
+                </div>
               </div>
 
               {isSpiritualModeEnabled() && finishVerse && (
@@ -1276,13 +1560,21 @@ export function ARMirrorPage() {
               )}
 
               <div className="flex gap-3">
-                <button onClick={() => navigate('/stats')} className="premium-btn flex-1 py-4 bg-primary text-white rounded-2xl font-bold hover:scale-[1.02] active:scale-95 transition-all">{t('ar.viewProgress')}</button>
-                <button onClick={() => navigate('/dashboard-paciente')} className="flex-1 py-4 bg-white/10 text-white rounded-2xl font-bold hover:bg-white/20 transition-all">
-                  Inicio
+                <button
+                  onClick={() => navigate('/stats')}
+                  className="premium-btn flex-1 py-4 bg-primary text-white rounded-2xl font-bold hover:scale-[1.02] active:scale-95 transition-all"
+                >
+                  {t('ar.viewProgress')}
+                </button>
+                <button
+                  onClick={() => navigate('/dashboard-paciente')}
+                  className="flex-1 py-4 bg-white/10 text-white rounded-2xl font-bold hover:bg-white/20 transition-all"
+                >
+                  {t('ar.homeBtn')}
                 </button>
               </div>
             </motion.div>
-        </motion.div>
+          </motion.div>
         )}
       </AnimatePresence>
     </div>
