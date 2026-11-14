@@ -888,7 +888,7 @@ export function PatientDetailPage() {
       {/* Routine adjustment modal */}
       {showRoutineModal && (
         <div className="fixed inset-0 z-[100] bg-black/40 flex items-center justify-center p-4" onClick={() => setShowRoutineModal(false)}>
-          <div className="glass-panel rounded-3xl p-5 sm:p-6 lg:p-8 max-w-full sm:max-w-lg w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+          <div className="glass-panel rounded-3xl p-5 sm:p-6 lg:p-8 max-w-full sm:max-w-lg w-full max-h-[90dvh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center gap-3 mb-4">
               <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
                 <Icon name="tune" size={24} className="text-primary" />
@@ -953,7 +953,7 @@ export function PatientDetailPage() {
       {/* OCR Update Modal */}
       {showOcrUpdateModal && (
         <div className="fixed inset-0 z-[100] bg-black/40 flex items-center justify-center p-4" onClick={() => !ocrProcessing && setShowOcrUpdateModal(false)}>
-          <div className="glass-panel rounded-3xl p-6 max-w-lg w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+          <div className="glass-panel rounded-3xl p-6 max-w-lg w-full max-h-[90dvh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center gap-3 mb-4">
               <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
                 <Icon name="document_scanner" size={24} className="text-primary" />

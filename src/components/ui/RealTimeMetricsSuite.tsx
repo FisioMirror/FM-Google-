@@ -17,16 +17,9 @@ export const PoseConfidenceLiveIndicator: React.FC<PoseConfidenceLiveIndicatorPr
   className,
 }) => {
   const { t } = useTranslation();
-  const [jitter, setJitter] = useState(0);
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setJitter((Math.random() - 0.5) * 1.5);
-    }, 1500);
-    return () => clearInterval(timer);
-  }, []);
-
-  const displayConfidence = Math.min(100, Math.max(90, Math.round((confidencePercent + jitter) * 10) / 10));
+  const displayConfidence = Math.min(100, Math.max(0, Math.round(confidencePercent)));
+  const isHigh = displayConfidence >= 75;
+  const isMedium = displayConfidence >= 45 && displayConfidence < 75;
 
   return (
     <motion.div
@@ -50,25 +43,36 @@ export const PoseConfidenceLiveIndicator: React.FC<PoseConfidenceLiveIndicatorPr
         </div>
         <div>
           <span className="text-xs font-bold text-slate-800 dark:text-slate-100 flex items-center gap-1.5">
-            Certidumbre MediaPipe AR
-            <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            {t('cal.mediapipeConfidence', 'Captura MediaPipe')}
+            <span className={cn("size-1.5 rounded-full animate-pulse", isHigh ? "bg-emerald-500" : isMedium ? "bg-amber-400" : "bg-rose-500")} />
           </span>
-          <span className="text-[10px] text-slate-500 dark:text-slate-400 font-mono">
-            {visibleLandmarksCount}/33 puntos anatómicos rastreados a 60 FPS
+          <span className="text-[10px] text-slate-500 dark:text-slate-400 font-mono tabular-nums">
+            {visibleLandmarksCount}/33 {t('cal.trackedPointsShort', 'puntos visibles')}
           </span>
         </div>
       </div>
 
       <div className="text-right">
-        <motion.span
-          key={displayConfidence}
-          initial={{ opacity: 0.8 }}
-          animate={{ opacity: 1 }}
-          className="text-xl font-black font-mono text-teal-600 dark:text-teal-400 tabular-nums block"
+        <span
+          className={cn(
+            "text-xl font-black font-mono tabular-nums block",
+            isHigh ? "text-teal-500 dark:text-teal-400" : isMedium ? "text-amber-400" : "text-rose-400"
+          )}
         >
           {displayConfidence}%
-        </motion.span>
-        <span className="text-[9px] uppercase font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full">{t('rtm.kinematicLock')}</span>
+        </span>
+        <span
+          className={cn(
+            "text-[9px] uppercase font-bold border px-2 py-0.5 rounded-full",
+            isHigh
+              ? "text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border-emerald-500/20"
+              : isMedium
+              ? "text-amber-600 dark:text-amber-300 bg-amber-500/15 border-amber-500/30"
+              : "text-rose-600 dark:text-rose-300 bg-rose-500/15 border-rose-500/30"
+          )}
+        >
+          {t('rtm.kinematicLock')}
+        </span>
       </div>
     </motion.div>
   );
@@ -262,7 +266,7 @@ export const VoiceFeedbackWaveHUD: React.FC<VoiceFeedbackWaveHUDProps> = ({
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-between gap-2 mb-0.5">
           <span className="text-[10px] uppercase font-bold text-teal-600 dark:text-teal-400 tracking-wider">
-            Biofeedback Auditivo Physi IA
+            Biofeedback Auditivo por Cámara
           </span>
           {/* Ondas sonoras animadas */}
           <div className="flex items-center gap-0.5 h-3">

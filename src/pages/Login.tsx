@@ -776,7 +776,7 @@ export function Login() {
   };
 
   return (
-    <div className="min-h-screen w-full flex font-sans text-slate-900 dark:text-slate-100 relative overflow-hidden bg-[#f9f9fc] dark:bg-slate-950">
+    <div className="min-h-[100dvh] w-full flex font-sans text-slate-900 dark:text-slate-100 relative overflow-x-hidden bg-[#f9f9fc] dark:bg-slate-950">
       {/* ── MESH BACKGROUND GRADIENT ── */}
       <div
         className="pointer-events-none absolute inset-0 z-0 transition-all duration-500"
@@ -803,7 +803,8 @@ export function Login() {
       {/* ═══════════════════════════════════════════════════
           LEFT PANEL — MAIN FORM
           ═══════════════════════════════════════════════════ */}
-      <div className="w-full md:w-[45%] lg:w-[42%] flex flex-col items-center justify-center px-4 py-8 md:px-8 relative z-20 overflow-y-auto">
+      <div className="w-full md:w-[45%] lg:w-[42%] flex flex-col items-center pl-[max(1rem,env(safe-area-inset-left))] pr-[max(1rem,env(safe-area-inset-right))] py-6 sm:py-8 md:px-8 relative z-20 overflow-y-auto min-h-[100dvh]">
+        <div className="w-full flex flex-col items-center my-auto">
         {/* Top bar: logo + language + theme toggle */}
         <div className="w-full max-w-[480px] flex items-center justify-between mb-5">
           <div className="flex items-center gap-2.5">
@@ -1933,13 +1934,14 @@ export function Login() {
               <Icon name="person" size={15} className="text-blue-600 dark:text-blue-400" />{t('auth.demoPatient')}</button>
           </div>
         </div>
+        </div>
       </div>
 
       {/* ═══════════════════════════════════════════════════
           RIGHT PANEL — INTERACTIVE IMAGE & AMBIENT EFFECTS
           (Pristine image illumination & character spotlight)
           ═══════════════════════════════════════════════════ */}
-      <div className="relative hidden md:block md:w-[55%] lg:w-[58%] overflow-hidden bg-[#f9f9fc] dark:bg-slate-950">
+      <div className="relative hidden md:block md:w-[55%] lg:w-[58%] md:sticky md:top-0 md:h-[100dvh] overflow-hidden bg-[#f9f9fc] dark:bg-slate-950">
         <motion.div className="relative h-full w-full" animate={imageControls}>
           {/* Subtle breathing & optical focus framing on active role */}
           <motion.div
@@ -2069,7 +2071,7 @@ export function Login() {
               initial={{ scale: 0.92, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.92, opacity: 0 }}
-              className="bg-white dark:bg-slate-900 rounded-3xl p-7 max-w-sm w-full shadow-2xl border border-slate-200 dark:border-slate-800 max-h-[90vh] overflow-y-auto"
+              className="bg-white dark:bg-slate-900 rounded-3xl p-7 max-w-sm w-full shadow-2xl border border-slate-200 dark:border-slate-800 max-h-[90dvh] overflow-y-auto"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="w-12 h-12 bg-teal-50 dark:bg-teal-950/60 rounded-full flex items-center justify-center mx-auto mb-3 text-[#00504d] dark:text-teal-400">
@@ -2143,7 +2145,7 @@ export function Login() {
             <motion.div
               initial={{ scale: 0.92, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              className="max-w-md w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-8 rounded-[2.5rem] text-center space-y-5 shadow-2xl max-h-[90vh] overflow-y-auto"
+              className="max-w-md w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-8 rounded-[2.5rem] text-center space-y-5 shadow-2xl max-h-[90dvh] overflow-y-auto"
             >
               <div className="w-16 h-16 bg-teal-50 dark:bg-teal-950/60 rounded-full flex items-center justify-center mx-auto text-[#00504d] dark:text-teal-400 shadow-inner">
                 <Icon name="check_circle" filled size={38} />

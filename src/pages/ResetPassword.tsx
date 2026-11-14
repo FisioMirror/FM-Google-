@@ -225,7 +225,7 @@ export function ResetPassword() {
   const strengthScore = [hasMinLength, hasNumber, hasUpper, hasLower].filter(Boolean).length;
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center p-4 sm:p-6 bg-slate-50 dark:bg-slate-950 relative overflow-hidden">
+    <div className="min-h-[100dvh] w-full flex items-center justify-center p-4 pl-[max(1rem,env(safe-area-inset-left))] pr-[max(1rem,env(safe-area-inset-right))] sm:p-6 bg-slate-50 dark:bg-slate-950 relative overflow-x-hidden overflow-y-auto">
       {/* Background Subtle Blurs */}
       <div className="absolute -top-32 -right-32 w-80 h-80 rounded-full bg-teal-500/10 blur-3xl pointer-events-none" />
       <div className="absolute -bottom-32 -left-32 w-80 h-80 rounded-full bg-cyan-500/10 blur-3xl pointer-events-none" />

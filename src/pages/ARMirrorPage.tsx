@@ -25,7 +25,11 @@ import { CompensationAlertBanner } from '../components/ui/CompensationAlertBanne
 import { SessionQualityScoreTile } from '../components/ui/RealTimeMetricsSuite';
 
 import { ARModel3DOverlayPiP } from '../components/rehabilitation/ARModel3DOverlayPiP';
-import { getExercisePreset } from '../data/exercisePresets';
+import {
+  getExercisePreset,
+  lookupDefaultExerciseSpec,
+  resolveExerciseTrackingRule,
+} from '../data/exercisePresets';
 import { TypewriterText } from '../components/ui/TypewriterText';
 import MascotAnimation from '../components/ui/MascotAnimation';
 
@@ -90,24 +94,109 @@ export function ARMirrorPage() {
   const user = useAuthStore((s) => s.user);
 
   const exerciseName = searchParams.get('ejercicio') || 'Sesión AR';
-  const articulacion = searchParams.get('articulacion') || undefined;
-  const lado = searchParams.get('lado') || undefined;
-  const targetReps = Math.max(1, Number(searchParams.get('repeticiones') || searchParams.get('reps')) || 15);
-  const totalSets = Math.max(1, Number(searchParams.get('series')) || 3);
+  const urlExerciseId = searchParams.get('id') || undefined;
+  const urlArticulacion = searchParams.get('articulacion') || undefined;
+  const urlLado = searchParams.get('lado') || undefined;
+  const rawAnguloParam = searchParams.get('angulo');
+  const parsedUrlAngulo =
+    rawAnguloParam !== null && rawAnguloParam.trim() !== '' && Number.isFinite(Number(rawAnguloParam))
+      ? Number(rawAnguloParam)
+      : undefined;
+
+  const fallbackSpec = useMemo(
+    () => lookupDefaultExerciseSpec(exerciseName, urlExerciseId),
+    [exerciseName, urlExerciseId]
+  );
+
+  const [dbExerciseMeta, setDbExerciseMeta] = useState<{
+    articulacion?: string | null;
+    angulo_objetivo?: number | null;
+    lado?: string | null;
+    series?: number | null;
+    repeticiones?: number | null;
+    duracion_segundos?: number | null;
+  } | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    const needsLookup =
+      urlArticulacion === undefined || parsedUrlAngulo === undefined || urlLado === undefined;
+    if (!needsLookup || !exerciseName || exerciseName === 'Sesión AR') return;
+
+    const loadExerciseSpec = async () => {
+      try {
+        if (urlExerciseId && isValidUUID(urlExerciseId)) {
+          const { data } = await supabase
+            .from('exercises')
+            .select('articulacion, angulo_objetivo, lado, series, repeticiones, duracion_segundos')
+            .eq('id', urlExerciseId)
+            .maybeSingle();
+          if (active && data) {
+            setDbExerciseMeta(data);
+            return;
+          }
+        }
+        const { data: byName } = await supabase
+          .from('exercises')
+          .select('articulacion, angulo_objetivo, lado, series, repeticiones, duracion_segundos')
+          .ilike('nombre', exerciseName)
+          .limit(1)
+          .maybeSingle();
+        if (active && byName) {
+          setDbExerciseMeta(byName);
+        }
+      } catch {
+        /* fallback to preset/catalog resolution */
+      }
+    };
+    loadExerciseSpec();
+    return () => {
+      active = false;
+    };
+  }, [exerciseName, urlExerciseId, urlArticulacion, parsedUrlAngulo, urlLado]);
+
+  const articulacion = urlArticulacion ?? dbExerciseMeta?.articulacion ?? fallbackSpec?.articulacion ?? undefined;
+  const lado = urlLado ?? dbExerciseMeta?.lado ?? fallbackSpec?.lado ?? undefined;
+  const resolvedInputAngle =
+    parsedUrlAngulo !== undefined
+      ? parsedUrlAngulo
+      : typeof dbExerciseMeta?.angulo_objetivo === 'number'
+      ? dbExerciseMeta.angulo_objetivo
+      : fallbackSpec?.angulo_objetivo;
+
+  const targetReps = Math.max(
+    1,
+    Number(searchParams.get('repeticiones') || searchParams.get('reps')) ||
+      dbExerciseMeta?.repeticiones ||
+      fallbackSpec?.repeticiones ||
+      12
+  );
+  const totalSets = Math.max(
+    1,
+    Number(searchParams.get('series')) || dbExerciseMeta?.series || fallbackSpec?.series || 3
+  );
   const restDuration = Math.max(5, Number(searchParams.get('descanso')) || 15);
-  const urlTargetAngle = Number(searchParams.get('angulo')) || undefined;
 
   const preset = useMemo(
-    () => getExercisePreset(exerciseName, articulacion, lado, urlTargetAngle),
-    [exerciseName, articulacion, lado, urlTargetAngle]
+    () => getExercisePreset(exerciseName, articulacion, lado, resolvedInputAngle),
+    [exerciseName, articulacion, lado, resolvedInputAngle]
   );
-  const presetTargetAngle =
-    urlTargetAngle && urlTargetAngle > 0
-      ? urlTargetAngle
-      : (preset.targetJoints[0]?.targetAngle ?? 90);
-  const presetNeutralAngle = preset.targetJoints[0]?.neutralAngle ?? 0;
+  const trackingRule = useMemo(
+    () =>
+      resolveExerciseTrackingRule(
+        exerciseName,
+        articulacion,
+        lado,
+        resolvedInputAngle,
+        preset.holdDurationSec
+      ),
+    [exerciseName, articulacion, lado, resolvedInputAngle, preset.holdDurationSec]
+  );
+  const presetTargetAngle = trackingRule.targetAngle;
+  const presetNeutralAngle = trackingRule.neutralAngle;
 
   const [state, setState] = useState<SessionState>('active');
+  const [isMirrored, setIsMirrored] = useState(true);
 
   const {
     videoRef,
@@ -128,14 +217,17 @@ export function ARMirrorPage() {
     exerciseName,
     articulacion,
     lado,
+    repJoint: trackingRule.repJoint,
+    movementPattern: trackingRule.movementPattern,
+    trackingRule,
     enabled: state === 'active',
-    holdDurationSec: preset.holdDurationSec,
+    holdDurationSec: trackingRule.holdDurationSec,
     neutralAngle: presetNeutralAngle,
+    targetAngle: presetTargetAngle,
+    isMirrored,
   });
   const vRef = videoRef as React.RefObject<HTMLVideoElement>;
   const cRef = canvasRef as React.RefObject<HTMLCanvasElement>;
-
-  const [isMirrored, setIsMirrored] = useState(true);
   const [timer, setTimer] = useState(0);
   const [currentSet, setCurrentSet] = useState(1);
   const [restCountdown, setRestCountdown] = useState(restDuration);
@@ -689,7 +781,7 @@ export function ARMirrorPage() {
 
       {/* Barra Superior Flotante Unificada de Micro-Métricas */}
       {sessionStarted && !error && (
-        <header className="fixed top-2 sm:top-3.5 left-2 right-2 sm:left-4 sm:right-4 z-[35] flex items-center justify-between gap-1.5 sm:gap-3 pointer-events-none select-none">
+        <header className="fixed top-[max(0.5rem,env(safe-area-inset-top))] sm:top-[max(0.875rem,env(safe-area-inset-top))] left-[max(0.5rem,env(safe-area-inset-left))] right-[max(0.5rem,env(safe-area-inset-right))] sm:left-[max(1rem,env(safe-area-inset-left))] sm:right-[max(1rem,env(safe-area-inset-right))] z-[35] flex items-center justify-between gap-1.5 sm:gap-3 pointer-events-none select-none">
           {/* Lado Izquierdo: Salir + Estado AR + Semáforo Visual Postural (3 luces reales) */}
           <div className="flex items-center gap-1.5 sm:gap-2 pointer-events-auto shrink-0">
             <button
@@ -944,7 +1036,7 @@ export function ARMirrorPage() {
       {/* 3D Model Picture-in-Picture Exercise Demonstrator */}
       <AnimatePresence>
         {showModel3D && state !== 'finished' && (
-          <div className="absolute top-14 sm:top-16 md:top-20 right-2 sm:right-4 md:right-6 z-30 pointer-events-auto">
+          <div className="ar-pip-anchor absolute top-14 sm:top-16 md:top-20 right-[max(0.5rem,env(safe-area-inset-right))] sm:right-[max(1rem,env(safe-area-inset-right))] md:right-[max(1.5rem,env(safe-area-inset-right))] z-30 pointer-events-auto">
             <ARModel3DOverlayPiP
               exerciseName={exerciseName}
               articulacion={articulacion}
@@ -957,14 +1049,14 @@ export function ARMirrorPage() {
       </AnimatePresence>
 
       {/* HUD — Espacio central despejado en móvil; widgets adaptativos en escritorio y tablet */}
-      <div className="relative z-20 flex flex-col h-full pt-14 sm:pt-16 pb-3 sm:pb-5 px-3 sm:px-6 md:px-8 pointer-events-none transition-opacity duration-300">
-        <div className="flex-1 flex items-center justify-between transition-all duration-300">
+      <div className="relative z-20 flex flex-col h-full pt-[max(3.5rem,calc(env(safe-area-inset-top)+3rem))] sm:pt-[max(4rem,calc(env(safe-area-inset-top)+3.25rem))] pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:pb-[max(1.25rem,env(safe-area-inset-bottom))] pl-[max(0.75rem,env(safe-area-inset-left))] pr-[max(0.75rem,env(safe-area-inset-right))] sm:px-[max(1.5rem,env(safe-area-inset-left))] md:px-[max(2rem,env(safe-area-inset-left))] pointer-events-none transition-opacity duration-300">
+        <div className="flex-1 flex items-center justify-between transition-all duration-300 min-h-0">
           {hudMode === 'full' ? (
             <>
               {/* Lado Izquierdo: Series, Repeticiones y Cadencia Clínica */}
               <div className="flex flex-col gap-3 pointer-events-auto">
-                {/* En móvil: Tarjeta compacta de micro-métricas */}
-                <div className="md:hidden rounded-2xl p-3 bg-slate-950/90 backdrop-blur-2xl border border-teal-500/40 text-white shadow-2xl flex items-center gap-3">
+                {/* En móvil (y teléfonos en horizontal): Tarjeta compacta de micro-métricas */}
+                <div className="ar-mobile-side-hud md:hidden rounded-2xl p-2.5 sm:p-3 bg-slate-950/90 backdrop-blur-2xl border border-teal-500/40 text-white shadow-2xl flex items-center gap-3">
                   <div>
                     <span className="text-[10px] text-teal-300 font-bold uppercase tracking-wider block">
                       {t('ar.setsLabel')}
@@ -987,7 +1079,7 @@ export function ARMirrorPage() {
                 </div>
 
                 {/* En Tablet y Escritorio: Paneles grandes HUD clínico */}
-                <div className="hidden md:flex flex-col gap-3">
+                <div className="ar-desktop-side-hud hidden md:flex flex-col gap-3">
                   {/* Tarjeta de Series */}
                   <motion.div
                     initial={{ opacity: 0, x: -20 }}
@@ -1048,7 +1140,7 @@ export function ARMirrorPage() {
 
               {/* Lado Derecho: Medidor Circular + Indicador Vertical ROM Semáforo */}
               <div className="flex items-center gap-3 sm:gap-5 pointer-events-auto">
-                <div className="hidden md:block">
+                <div className="ar-desktop-side-hud hidden md:block">
                   {!showModel3D && (
                     <motion.div
                       initial={{ opacity: 0, scale: 0.9 }}
@@ -1057,6 +1149,7 @@ export function ARMirrorPage() {
                       <BiomechanicalAngleDial
                         currentAngle={currentAngle}
                         targetAngle={presetTargetAngle}
+                        neutralAngle={presetNeutralAngle}
                         romPercent={poseData?.romPercent}
                         trafficLight={effectiveTrafficLight}
                         repPhase={poseData?.repPhase}
@@ -1069,6 +1162,7 @@ export function ARMirrorPage() {
                 <BiomechanicalROMIndicator
                   currentAngle={currentAngle}
                   targetAngle={presetTargetAngle}
+                  neutralAngle={presetNeutralAngle}
                   romPercent={poseData?.romPercent}
                   trafficLight={effectiveTrafficLight}
                   repPhase={poseData?.repPhase}
@@ -1107,7 +1201,7 @@ export function ARMirrorPage() {
             >
               <div
                 className={cn(
-                  'w-full px-4 py-2.5 rounded-2xl bg-slate-950/92 backdrop-blur-2xl border text-white shadow-2xl flex items-center gap-3 transition-colors duration-300',
+                  'ar-feedback-banner w-full px-4 py-2.5 rounded-2xl bg-slate-950/92 backdrop-blur-2xl border text-white shadow-2xl flex items-center gap-3 transition-colors duration-300',
                   trafficMeta.border
                 )}
               >
@@ -1136,7 +1230,7 @@ export function ARMirrorPage() {
                   ))}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-0.5">
+                  <div className="flex flex-wrap items-center gap-2 mb-0.5">
                     <span className="text-[10px] text-teal-300 font-bold uppercase tracking-wider">
                       {t('ar.aiClinicalAssistant')}
                     </span>
@@ -1148,10 +1242,18 @@ export function ARMirrorPage() {
                     >
                       {trafficMeta.label}
                     </span>
+                    <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-teal-500/15 border border-teal-400/30 text-teal-200 tabular-nums">
+                      {presetNeutralAngle}° → {presetTargetAngle}°
+                    </span>
                   </div>
                   <p className="text-xs sm:text-sm text-white font-medium truncate sm:whitespace-normal drop-shadow-sm">
-                    “{aiFeedback || t('ar.defaultFeedback')}”
+                    “{aiFeedback || trackingRule.instructionCue || t('ar.defaultFeedback')}”
                   </p>
+                  {trackingRule.instructionCue && (
+                    <p className="ar-feedback-subcue text-[10px] text-teal-200/75 truncate mt-0.5 hidden sm:block">
+                      {trackingRule.instructionCue}
+                    </p>
+                  )}
                 </div>
               </div>
             </motion.div>
@@ -1389,7 +1491,7 @@ export function ARMirrorPage() {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="glass-modal glass-panel rounded-3xl p-6 md:p-8 max-w-md w-full"
+              className="glass-modal glass-panel rounded-3xl p-5 sm:p-6 md:p-8 max-w-md w-full max-h-[90dvh] overflow-y-auto"
               style={{
                 background: 'rgba(255,255,255,0.1)',
                 backdropFilter: 'blur(32px)',
@@ -1510,7 +1612,7 @@ export function ARMirrorPage() {
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              className="glass-modal glass-panel rounded-3xl p-8 md:p-10 max-w-md text-center mx-4"
+              className="glass-modal glass-panel rounded-3xl p-6 sm:p-8 md:p-10 max-w-md w-full text-center mx-4 max-h-[90dvh] overflow-y-auto"
               style={{
                 background: 'rgba(255,255,255,0.1)',
                 backdropFilter: 'blur(32px)',

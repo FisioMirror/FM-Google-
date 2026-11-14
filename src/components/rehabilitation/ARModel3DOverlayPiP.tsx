@@ -178,7 +178,7 @@ export const ARModel3DOverlayPiP: React.FC<ARModel3DOverlayPiPProps> = ({
       animate={{ opacity: 1, scale: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.85 }}
       transition={{ type: 'spring', stiffness: 320, damping: 28 }}
-      className={`pointer-events-auto z-40 flex flex-col ${pipWidth} ${pipHeight} rounded-2xl overflow-hidden bg-slate-900 border border-white/20 dark:border-teal-500/35 shadow-2xl transition-all duration-300 select-none ${className}`}
+      className={`ar-pip-frame ${isExpanded ? 'ar-pip-expanded' : ''} pointer-events-auto z-40 flex flex-col ${pipWidth} ${pipHeight} rounded-2xl overflow-hidden bg-slate-900 border border-white/20 dark:border-teal-500/35 shadow-2xl transition-all duration-300 select-none ${className}`}
     >
       {/* Encabezado del PiP */}
       <div className="px-2.5 sm:px-3.5 py-1.5 sm:py-2 bg-slate-950/70 border-b border-white/10 flex items-center justify-between gap-1.5">

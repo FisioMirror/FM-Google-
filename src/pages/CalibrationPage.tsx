@@ -11,8 +11,10 @@ import {
   PoseConfidenceLiveIndicator,
 } from '../components/ui/RealTimeMetricsSuite';
 import { useTranslation } from 'react-i18next';
+import { buildArMirrorPath } from '../data/exercisePresets';
 
 type CalibState = 'idle' | 'detecting' | 'calibrating' | 'success' | 'error';
+type LightingStatus = 'optimal' | 'low' | 'backlit';
 
 const STORAGE_KEY = 'calibrationCompleted';
 const SKIP_KEY = 'calibrationSkipped';
@@ -24,11 +26,29 @@ export function CalibrationPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const toast = useToast();
-  const { videoRef, canvasRef, poseData, isReady, error, startCamera, isSimulated, reconnectCamera } = usePoseDetection();
+  const { videoRef, canvasRef, poseData, isReady, error, startCamera, isSimulated, reconnectCamera } = usePoseDetection({
+    enabled: false,
+    isMirrored: true,
+  });
   const vRef = videoRef as React.RefObject<HTMLVideoElement>;
   const cRef = canvasRef as React.RefObject<HTMLCanvasElement>;
 
-  const nextUrl = searchParams.get('next') || (searchParams.get('ejercicio') ? `/ar-mirror?ejercicio=${encodeURIComponent(searchParams.get('ejercicio')!)}` : '/ar-mirror');
+  const rawNext = searchParams.get('next');
+  const exParam = searchParams.get('ejercicio');
+  const nextUrl =
+    rawNext ||
+    (exParam
+      ? buildArMirrorPath({
+          ejercicio: exParam,
+          articulacion: searchParams.get('articulacion'),
+          angulo: searchParams.has('angulo') && searchParams.get('angulo') !== '' ? Number(searchParams.get('angulo')) : undefined,
+          lado: searchParams.get('lado'),
+          series: searchParams.get('series') ? Number(searchParams.get('series')) : undefined,
+          repeticiones: searchParams.get('repeticiones') ? Number(searchParams.get('repeticiones')) : undefined,
+          descanso: searchParams.get('descanso') ? Number(searchParams.get('descanso')) : undefined,
+          id: searchParams.get('id'),
+        })
+      : '/ar-mirror');
 
   const [state, setState] = useState<CalibState>('idle');
   const [countdown, setCountdown] = useState(COUNTDOWN_FROM);
@@ -36,6 +56,7 @@ export function CalibrationPage() {
   const [isPanelCollapsed, setIsPanelCollapsed] = useState(false);
   const [detectElapsed, setDetectElapsed] = useState(0);
   const [handRaisedDetected, setHandRaisedDetected] = useState(false);
+  const [lightingStatus, setLightingStatus] = useState<LightingStatus>('optimal');
 
   const detectStartRef = useRef<number>(0);
   const errorTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -43,6 +64,64 @@ export function CalibrationPage() {
   const isCountingDownRef = useRef<boolean>(false);
   const countdownValRef = useRef<number>(COUNTDOWN_FROM);
   const elapsedTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  // Medición real de luminancia y contraluz sobre el flujo de video
+  useEffect(() => {
+    if (!isReady || isSimulated || error || state === 'success') {
+      if (isSimulated) setLightingStatus('optimal');
+      return;
+    }
+
+    const sampleCanvas = document.createElement('canvas');
+    sampleCanvas.width = 32;
+    sampleCanvas.height = 24;
+    const sCtx = sampleCanvas.getContext('2d', { willReadFrequently: true });
+
+    const checkLighting = () => {
+      const vid = vRef.current;
+      if (!vid || !sCtx || vid.readyState < 2 || vid.videoWidth === 0) return;
+      try {
+        sCtx.drawImage(vid, 0, 0, 32, 24);
+        const data = sCtx.getImageData(0, 0, 32, 24).data;
+        let centerSum = 0;
+        let centerCount = 0;
+        let edgeSum = 0;
+        let edgeCount = 0;
+
+        for (let y = 0; y < 24; y++) {
+          for (let x = 0; x < 32; x++) {
+            const idx = (y * 32 + x) * 4;
+            const luma = 0.299 * data[idx] + 0.587 * data[idx + 1] + 0.114 * data[idx + 2];
+            const inCenter = x >= 8 && x < 24 && y >= 5 && y < 20;
+            if (inCenter) {
+              centerSum += luma;
+              centerCount++;
+            } else {
+              edgeSum += luma;
+              edgeCount++;
+            }
+          }
+        }
+
+        const avgCenter = centerCount > 0 ? centerSum / centerCount : 120;
+        const avgEdge = edgeCount > 0 ? edgeSum / edgeCount : 120;
+
+        if (avgCenter < 56) {
+          setLightingStatus('low');
+        } else if (avgEdge > 185 && avgCenter < 88) {
+          setLightingStatus('backlit');
+        } else {
+          setLightingStatus('optimal');
+        }
+      } catch {
+        /* ignore canvas security / transient errors */
+      }
+    };
+
+    checkLighting();
+    const interval = setInterval(checkLighting, 850);
+    return () => clearInterval(interval);
+  }, [isReady, isSimulated, error, state, vRef]);
 
   useEffect(() => {
     startCamera();
@@ -202,7 +281,7 @@ export function CalibrationPage() {
       <canvas ref={cRef} className="absolute inset-0 w-full h-full object-cover scale-x-[-1]" style={{ zIndex: 2 }} />
 
       {/* Header Compacto de Alto Contraste */}
-      <header className="relative z-30 flex items-center justify-between px-3.5 sm:px-6 py-2.5 sm:py-3.5 bg-slate-950/85 backdrop-blur-2xl border-b border-teal-500/30 shadow-xl">
+      <header className="relative z-30 flex items-center justify-between px-[max(0.875rem,env(safe-area-inset-left))] pr-[max(0.875rem,env(safe-area-inset-right))] pt-[max(0.625rem,env(safe-area-inset-top))] pb-2.5 sm:px-6 sm:py-3.5 bg-slate-950/85 backdrop-blur-2xl border-b border-teal-500/30 shadow-xl">
         <button
           onClick={() => navigate('/dashboard-paciente')}
           className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-slate-900/90 hover:bg-slate-800 text-white flex items-center justify-center border border-teal-500/30 transition-all shadow-md active:scale-95"
@@ -216,7 +295,8 @@ export function CalibrationPage() {
         </div>
         <div className="flex items-center gap-2">
           <PoseConfidenceLiveIndicator
-            confidencePercent={isReady && poseData?.isTracking ? 96 : 30}
+            confidencePercent={isReady && poseData ? (poseData.confidencePercent ?? (poseData.isTracking ? 88 : 25)) : 0}
+            visibleLandmarksCount={poseData?.visibleLandmarksCount ?? 0}
             className="bg-slate-900/90 border-teal-500/40 text-teal-200 text-[10px] sm:text-[11px] py-1 px-3 shadow-md"
           />
           <button
@@ -246,7 +326,7 @@ export function CalibrationPage() {
       <div className="absolute inset-0 z-10 pointer-events-none flex items-center justify-center">
         <svg
           viewBox="0 0 400 600"
-          className="w-full h-full max-w-[340px] sm:max-w-[420px] max-h-[85vh] transition-opacity duration-300"
+          className="cal-silhouette-svg w-full h-full max-w-[340px] sm:max-w-[420px] max-h-[85dvh] transition-opacity duration-300"
           style={{ opacity: poseData?.isTracking ? 0.45 : 0.75 }}
         >
           {/* Cabeza */}
@@ -309,13 +389,36 @@ export function CalibrationPage() {
         </svg>
       </div>
 
-      {/* Indicador Flotante Superior de Detección */}
+      {/* Indicadores Flotantes Superiores de Detección e Iluminación */}
       {isReady && !error && state !== 'idle' && state !== 'success' && (
-        <div className="absolute top-14 sm:top-18 left-3 sm:left-6 z-20 flex items-center gap-2.5 bg-slate-950/90 backdrop-blur-xl px-3.5 py-1.5 rounded-full border border-teal-500/35 shadow-xl">
-          <span className={`w-2.5 h-2.5 rounded-full ${poseData?.isTracking ? 'bg-emerald-400 animate-pulse shadow-[0_0_10px_rgba(52,211,153,0.8)]' : 'bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.6)]'}`} />
-          <span className="text-white text-[11px] sm:text-xs font-bold uppercase tracking-wider">
-            {poseData?.isTracking ? (isSimulated ? 'Simulación en vivo' : 'Cuerpo alineado') : 'Buscando postura...'}
-          </span>
+        <div className="absolute top-[max(3.75rem,calc(env(safe-area-inset-top)+3.25rem))] sm:top-[max(4.5rem,calc(env(safe-area-inset-top)+3.75rem))] left-[max(0.75rem,env(safe-area-inset-left))] sm:left-[max(1.5rem,env(safe-area-inset-left))] z-20 flex flex-wrap items-center gap-2">
+          <div className="flex items-center gap-2 bg-slate-950/90 backdrop-blur-xl px-3.5 py-1.5 rounded-full border border-teal-500/35 shadow-xl">
+            <span className={`w-2.5 h-2.5 rounded-full ${poseData?.isTracking ? 'bg-emerald-400 animate-pulse shadow-[0_0_10px_rgba(52,211,153,0.8)]' : 'bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.6)]'}`} />
+            <span className="text-white text-[11px] sm:text-xs font-bold uppercase tracking-wider">
+              {poseData?.isTracking ? (isSimulated ? t('cal.liveSim') : t('cal.bodyInFrame')) : t('cal.searching')}
+            </span>
+          </div>
+
+          <div
+            className={`flex items-center gap-1.5 backdrop-blur-xl px-3 py-1.5 rounded-full border shadow-xl text-[11px] font-bold ${
+              lightingStatus === 'optimal'
+                ? 'bg-slate-950/90 border-emerald-500/40 text-emerald-300'
+                : 'bg-amber-950/90 border-amber-400/60 text-amber-200'
+            }`}
+          >
+            <Icon
+              name={lightingStatus === 'optimal' ? 'wb_sunny' : 'brightness_low'}
+              size={14}
+              className={lightingStatus === 'optimal' ? 'text-emerald-400' : 'text-amber-300'}
+            />
+            <span>
+              {lightingStatus === 'low'
+                ? t('cal.lightingLow', 'Poca iluminación')
+                : lightingStatus === 'backlit'
+                ? t('cal.lightingBacklit', 'Evita contraluz')
+                : t('cal.lightingOk', 'Iluminación óptima')}
+            </span>
+          </div>
         </div>
       )}
 
@@ -333,9 +436,13 @@ export function CalibrationPage() {
         </div>
       )}
 
-      {/* Brújula y Sensor de Nivel Espacial (Desktop) */}
+      {/* Nivel Postural y Sensor de Alineación Espacial (Desktop) */}
       <div className="absolute top-18 right-6 z-20 pointer-events-auto hidden md:block">
-        <CalibrationCompass pitch={3} roll={-1} className="bg-slate-950/90 backdrop-blur-2xl border-teal-500/35 text-white shadow-2xl" />
+        <CalibrationCompass
+          pitch={poseData?.lateralLeanDeg ?? 0}
+          roll={poseData?.shoulderTiltDeg ?? 0}
+          className="bg-slate-950/90 backdrop-blur-2xl border-teal-500/35 text-white shadow-2xl"
+        />
       </div>
 
       {/* Gran Cuenta Regresiva Luminosa Central durante Calibración */}
@@ -390,27 +497,27 @@ export function CalibrationPage() {
           initial={{ y: 80, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-          className="fixed bottom-3 sm:bottom-6 left-3 right-3 sm:left-auto sm:right-6 sm:w-[420px] z-30 pointer-events-auto"
+          className="fixed bottom-[max(0.75rem,env(safe-area-inset-bottom))] sm:bottom-[max(1.5rem,env(safe-area-inset-bottom))] left-[max(0.75rem,env(safe-area-inset-left))] right-[max(0.75rem,env(safe-area-inset-right))] sm:left-auto sm:right-[max(1.5rem,env(safe-area-inset-right))] sm:w-[400px] z-30 pointer-events-auto"
         >
-          <div className="bg-slate-950/95 backdrop-blur-2xl border border-teal-500/40 rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden transition-all duration-300">
+          <div className="cal-floating-card bg-slate-950/95 backdrop-blur-2xl border border-teal-500/40 rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden transition-all duration-300 max-h-[calc(100dvh-5.5rem)] overflow-y-auto">
             {/* Cabecera de la tarjeta con botón colapsar */}
             <div
               onClick={() => setIsPanelCollapsed((prev) => !prev)}
               className="flex items-center justify-between px-4 py-3 cursor-pointer hover:bg-white/5 transition-colors border-b border-teal-500/20 select-none"
             >
               <div className="flex items-center gap-2.5">
-                <div className={`w-3 h-3 rounded-full ${poseData?.isTracking ? 'bg-teal-400 shadow-[0_0_10px_rgba(45,212,191,0.8)]' : 'bg-amber-400'}`} />
+                  <div className={`w-3 h-3 rounded-full ${poseData?.isTracking ? 'bg-teal-400 shadow-[0_0_10px_rgba(45,212,191,0.8)]' : 'bg-amber-400'}`} />
                 <span className="font-bold text-xs sm:text-sm text-white tracking-wide">
-                  {state === 'calibrating' ? 'Paso 2: Calibración Activa' : 'Paso 1: Encuadre Inicial'}
+                  {state === 'calibrating' ? t('cal.step2') : t('cal.step1')}
                 </span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-[10px] text-teal-300/80 font-semibold hidden xs:inline">
-                  {isPanelCollapsed ? 'Expandir' : 'Minimizar'}
+                  {isPanelCollapsed ? t('cal.expand') : t('cal.minimize')}
                 </span>
                 <button
                   type="button"
-                  aria-label={isPanelCollapsed ? 'Expandir guía de calibración' : 'Minimizar guía de calibración'}
+                  aria-label={isPanelCollapsed ? t('cal.expand') : t('cal.minimize')}
                   className="w-7 h-7 rounded-full bg-slate-900/90 border border-teal-500/30 flex items-center justify-center text-white/90 hover:bg-slate-800 transition-all"
                 >
                   <Icon name={isPanelCollapsed ? 'expand_less' : 'expand_more'} size={18} />
@@ -440,13 +547,35 @@ export function CalibrationPage() {
                         </div>
                       </div>
 
+                      {/* Recomendaciones de Iluminación y Encuadre */}
+                      <div className="cal-env-tips rounded-xl bg-slate-900/90 border border-white/10 p-2.5 space-y-1.5">
+                        <p className="text-[10px] font-bold uppercase tracking-wider text-teal-300 flex items-center gap-1.5">
+                          <Icon name="lightbulb" size={13} />
+                          <span>{t('cal.envRecommendationsTitle', 'Recomendaciones de iluminación y entorno')}</span>
+                        </p>
+                        <ul className="space-y-1 text-[11px] text-white/75 leading-snug">
+                          <li className={`flex items-start gap-1.5 ${lightingStatus !== 'optimal' ? 'text-amber-300 font-semibold' : ''}`}>
+                            <Icon name={lightingStatus === 'optimal' ? 'check_circle' : 'warning'} size={13} className="shrink-0 mt-0.5 text-teal-400" />
+                            <span>{t('cal.lightTip', 'Usa luz frontal uniforme; evita ventanas o focos intensos detrás de ti.')}</span>
+                          </li>
+                          <li className="flex items-start gap-1.5">
+                            <Icon name="straighten" size={13} className="shrink-0 mt-0.5 text-teal-400" />
+                            <span>{t('cal.distanceTip', 'Sitúate a 1.5 – 2.5 m mostrando hombros, caderas y la articulación del ejercicio.')}</span>
+                          </li>
+                          <li className="flex items-start gap-1.5">
+                            <Icon name="contrast" size={13} className="shrink-0 mt-0.5 text-teal-400" />
+                            <span>{t('cal.contrastTip', 'Usa ropa que contraste con el fondo y evita prendas muy holgadas.')}</span>
+                          </li>
+                        </ul>
+                      </div>
+
                       <div className="flex items-center justify-between pt-1 border-t border-white/10 text-[11px]">
-                        <span className="text-white/50">Tiempo: {detectElapsed}s / {DETECT_TIMEOUT}s</span>
+                        <span className="text-white/50 tabular-nums">{t('cal.time')} {detectElapsed}s / {DETECT_TIMEOUT}s</span>
                         <button
                           onClick={() => setShowSkipConfirm(true)}
                           className="text-teal-300 hover:text-teal-200 font-semibold transition-colors"
                         >
-                          Omitir paso
+                          {t('cal.skipStep')}
                         </button>
                       </div>
                     </>
@@ -462,18 +591,29 @@ export function CalibrationPage() {
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className={`text-xs sm:text-sm font-bold leading-snug ${handRaisedDetected ? 'text-teal-300' : 'text-white'}`}>
-                            {handRaisedDetected ? '¡Mano detectada! Mantén la posición...' : '¡Levanta tu mano por encima del hombro!'}
+                            {handRaisedDetected ? t('cal.handDetected') : t('cal.raiseOverShoulder')}
                           </p>
                           <p className="text-white/60 text-[11px] sm:text-xs mt-0.5 leading-relaxed">
                             {handRaisedDetected
-                              ? `Sostén la mano elevada durante ${countdown}s para calibrar los ángulos.`
-                              : 'Alza la mano derecha o izquierda para iniciar la calibración automática.'}
+                              ? t('cal.holdHand', { s: countdown })
+                              : t('cal.raiseHand')}
                           </p>
                         </div>
                       </div>
 
+                      {lightingStatus !== 'optimal' && (
+                        <div className="rounded-xl bg-amber-500/15 border border-amber-400/40 px-2.5 py-2 flex items-center gap-2 text-[11px] text-amber-200">
+                          <Icon name="brightness_low" size={15} className="shrink-0 text-amber-300" />
+                          <span>
+                            {lightingStatus === 'low'
+                              ? t('cal.lightingLowTip', 'Luz baja: enciende una luz frontal para estabilizar los puntos.')
+                              : t('cal.lightingBacklitTip', 'Contraluz detectado: evita luz fuerte detrás de tu silueta.')}
+                          </span>
+                        </div>
+                      )}
+
                       <div className="flex items-center justify-between pt-1 border-t border-white/10 text-[11px]">
-                        <span className="text-teal-300/80 font-medium">Cuenta regresiva: {countdown}s</span>
+                        <span className="text-teal-300/80 font-medium tabular-nums">{t('cal.countdown')} {countdown}s</span>
                         <button
                           onClick={() => setShowSkipConfirm(true)}
                           className="text-white/50 hover:text-white transition-colors"
@@ -486,10 +626,10 @@ export function CalibrationPage() {
                 <div className="px-4 py-2 flex items-center justify-between text-[11px] text-white/70">
                   <span className="truncate pr-2">
                     {state === 'calibrating'
-                      ? (handRaisedDetected ? `Sostén postura (${countdown}s)` : 'Levanta tu mano sobre el hombro')
-                      : 'Ubícate dentro del marco'}
+                      ? (handRaisedDetected ? t('cal.holdPose', { s: countdown }) : t('cal.raiseOverShoulder'))
+                      : t('cal.getInFrame')}
                   </span>
-                  <span className="text-teal-300 font-semibold shrink-0">
+                  <span className="text-teal-300 font-semibold shrink-0 tabular-nums">
                     {state === 'calibrating' ? `${countdown}s` : `${detectElapsed}s`}
                   </span>
                 </div>
@@ -506,7 +646,7 @@ export function CalibrationPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="absolute inset-0 z-40 flex flex-col items-center justify-center bg-slate-950/85 backdrop-blur-md gap-5 p-6 text-center select-none"
+            className="absolute inset-0 z-40 flex flex-col items-center justify-center bg-slate-950/85 backdrop-blur-md gap-4 p-6 text-center select-none overflow-y-auto"
           >
             <motion.div
               initial={{ scale: 0, rotate: -30 }}
@@ -570,7 +710,7 @@ export function CalibrationPage() {
       <AnimatePresence>
         {showSkipConfirm && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 z-[200] flex items-center justify-center bg-black/70 backdrop-blur-md p-4" onClick={() => setShowSkipConfirm(false)}>
-            <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} onClick={(e) => e.stopPropagation()} className="rounded-3xl p-6 max-w-md w-full text-center border border-white/10" style={{ background: 'rgba(22,35,34,0.95)', backdropFilter: 'blur(24px)' }}>
+            <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} onClick={(e) => e.stopPropagation()} className="rounded-3xl p-6 max-w-md w-full max-h-[90dvh] overflow-y-auto text-center border border-white/10" style={{ background: 'rgba(22,35,34,0.95)', backdropFilter: 'blur(24px)' }}>
               <div className="w-16 h-16 rounded-full bg-amber-500/20 flex items-center justify-center mx-auto mb-4">
                 <Icon name="warning" filled size={32} className="text-amber-400" />
               </div>

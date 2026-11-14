@@ -76,7 +76,7 @@ const NotFound = lazyPage(() => import('./pages/NotFound'), 'NotFound');
 
 function PageLoader() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-[65vh] gap-6" role="status" aria-label="Cargando aplicación">
+    <div className="flex flex-col items-center justify-center min-h-[65dvh] gap-6" role="status" aria-label="Cargando aplicación">
       {/* Halo and App Logo without confining square box */}
       <div className="relative flex items-center justify-center">
         <div
@@ -252,7 +252,7 @@ function Router() {
   return (
     <>
       <BrowserRouter>
-        <div id="app-root" className="min-h-screen">
+        <div id="app-root" className="min-h-[100dvh]">
           <AppRoutes />
           <ScrollToTop />
           <OfflineIndicator />

@@ -108,7 +108,7 @@ export function ModalContainer({ children, className }: { children: React.ReactN
   const { close } = useContext(ModalContext);
 
   return (
-    <div className={cn("min-h-screen px-4 flex items-center justify-center relative", className)}>
+    <div className={cn("min-h-[100dvh] px-4 flex items-center justify-center relative", className)}>
       {/* Backdrop overlay */}
       <motion.div
         initial={{ opacity: 0 }}
@@ -144,7 +144,7 @@ export function ModalDialog({
       onClick={(e) => e.stopPropagation()}
       className={cn(
         "relative w-full max-w-lg z-10 p-6 md:p-8 rounded-2xl md:rounded-3xl",
-        "max-h-[calc(100vh-3rem)] overflow-y-auto",
+        "max-h-[calc(100dvh-3rem)] overflow-y-auto",
         "bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl",
         "border border-slate-200/80 dark:border-slate-800/80",
         "shadow-2xl shadow-primary/10 dark:shadow-teal-950/40 text-foreground",

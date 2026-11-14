@@ -8,6 +8,7 @@ import type { RepPhase, TrafficLightState } from '@/hooks/usePoseDetection';
 export interface BiomechanicalAngleDialProps {
   currentAngle: number;
   targetAngle: number;
+  neutralAngle?: number;
   tolerance?: number;
   size?: number;
   trafficLight?: TrafficLightState;
@@ -19,6 +20,7 @@ export interface BiomechanicalAngleDialProps {
 export const BiomechanicalAngleDial: React.FC<BiomechanicalAngleDialProps> = ({
   currentAngle,
   targetAngle,
+  neutralAngle = 0,
   tolerance = 8,
   size = 220,
   trafficLight,
@@ -27,18 +29,21 @@ export const BiomechanicalAngleDial: React.FC<BiomechanicalAngleDialProps> = ({
   className,
 }) => {
   const { t } = useTranslation();
-  const safeTarget = Math.max(1, targetAngle);
+  const safeSpan = Math.max(1, Math.abs(targetAngle - neutralAngle));
   const roundedAngle = Math.round(currentAngle);
-  const isTargetAchieved =
-    Math.abs(currentAngle - targetAngle) <= tolerance || trafficLight === 'green';
+  const hasValidRom = typeof romPercent === 'number' && Number.isFinite(romPercent);
+  const computedPercent = hasValidRom
+    ? Math.min(105, Math.max(0, romPercent!))
+    : Math.min(105, Math.max(0, Math.round((Math.abs(currentAngle - neutralAngle) / safeSpan) * 100)));
 
-  // Arc calculation (2 * PI * radius) supporting both flexion (targetAngle > 0) and extension (targetAngle = 0)
+  const isTargetAchieved = hasValidRom
+    ? romPercent! >= 82
+    : computedPercent >= 82 || (Math.abs(currentAngle - targetAngle) <= tolerance && Math.abs(currentAngle - neutralAngle) >= 15);
+
+  // Arc calculation (2 * PI * radius) supporting both flexion (targetAngle > neutralAngle) and extension (targetAngle < neutralAngle)
   const radius = (size - 24) / 2;
   const circumference = 2 * Math.PI * radius;
-  const ratio =
-    typeof romPercent === 'number' && Number.isFinite(romPercent)
-      ? Math.min(1.05, Math.max(0, romPercent / 100))
-      : Math.min(1.2, Math.max(0, currentAngle / safeTarget));
+  const ratio = Math.min(1.05, Math.max(0, computedPercent / 100));
   const strokeDashoffset = circumference - ratio * (circumference * 0.75); // 270 degree sweep
 
   const strokeColor =

@@ -110,7 +110,7 @@ export default defineConfig({
         start_url: '/',
         scope: '/',
         lang: 'es-VE',
-        orientation: 'portrait-primary',
+        orientation: 'any',
         display: 'standalone',
         // Modos de visualización avanzados
         display_override: [
@@ -146,14 +146,10 @@ export default defineConfig({
           },
         ],
         icons: [
-          { src: '/64x64.png', sizes: '64x64', type: 'image/png' },
-          { src: '/192x192.png', sizes: '192x192', type: 'image/png' },
-          {
-            src: '/512x512.png',
-            sizes: '512x512',
-            type: 'image/png',
-            purpose: 'any maskable',
-          },
+          { src: '/64x64.png', sizes: '64x64', type: 'image/png', purpose: 'any' },
+          { src: '/192x192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
+          { src: '/512x512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
+          { src: '/512x512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
         ],
         // Protocolo personalizado web+fisiomirror
         protocol_handlers: [{ protocol: 'web+fisiomirror', url: '/%s' }],

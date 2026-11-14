@@ -133,7 +133,7 @@ const handleChange = (field: keyof PatientProfile, value: string | number | bool
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-      <div className="w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-surface rounded-3xl shadow-2xl border border-outline/10">
+      <div className="w-full max-w-4xl max-h-[90dvh] overflow-y-auto bg-surface rounded-3xl shadow-2xl border border-outline/10">
         <div className="sticky top-0 z-10 flex items-center justify-between p-6 bg-surface/95 backdrop-blur border-b border-outline/10">
           <div>
             <h2 className="text-xl font-bold text-on-surface">{t('pdp.editClinicalRecord') || 'Editar expediente clínico'}</h2>

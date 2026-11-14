@@ -17,7 +17,7 @@ export function ProtectedRoute({ children, role, requireEmailVerification = true
 
   if (!initialized) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background" role="status" aria-label="Cargando">
+      <div className="min-h-[100dvh] flex items-center justify-center bg-background" role="status" aria-label="Cargando">
         <div className="w-8 h-8 border-3 border-teal-500 border-t-transparent rounded-full animate-spin" />
       </div>
     );

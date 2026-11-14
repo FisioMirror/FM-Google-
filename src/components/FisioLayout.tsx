@@ -488,7 +488,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
               exit={{ x: '-100%' }}
               transition={{ type: 'spring', damping: 28, stiffness: 320 }}
               onClick={(e) => e.stopPropagation()}
-              className="h-full w-72 max-w-[85vw] flex flex-col bg-white dark:bg-slate-900 border-r border-slate-200/70 dark:border-slate-800 text-slate-900 dark:text-slate-100 rounded-r-3xl shadow-2xl overflow-hidden"
+              className="h-full w-72 max-w-[85vw] pl-[env(safe-area-inset-left,0px)] flex flex-col bg-white dark:bg-slate-900 border-r border-slate-200/70 dark:border-slate-800 text-slate-900 dark:text-slate-100 rounded-r-3xl shadow-2xl overflow-hidden"
             >
               <div className="p-4 flex items-center justify-between border-b border-sky-100/60 dark:border-slate-800">
                 <div className="flex items-center gap-3">
@@ -516,7 +516,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
 
       {/* Main content */}
       <main className="flex-1 min-w-0 flex flex-col h-full overflow-y-auto overflow-x-hidden overscroll-contain" data-scroll-root>
-        <header className="h-16 w-full min-w-0 shrink-0 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md sticky top-0 z-20 flex items-center justify-between px-3 sm:px-6 gap-2 sm:gap-4 border-b border-slate-200/80 dark:border-slate-800 shadow-xs">
+        <header className="h-16 w-full min-w-0 shrink-0 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md sticky top-0 z-20 flex items-center justify-between pl-[max(0.75rem,env(safe-area-inset-left))] pr-[max(0.75rem,env(safe-area-inset-right))] sm:pl-[max(1.5rem,env(safe-area-inset-left))] sm:pr-[max(1.5rem,env(safe-area-inset-right))] gap-2 sm:gap-4 border-b border-slate-200/80 dark:border-slate-800 shadow-xs">
           <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
             <button
               onClick={() => {
@@ -644,9 +644,9 @@ export function FisioLayout({ children }: FisioLayoutProps) {
         </header>
 
         {/* Main scrollable content with clean spacing */}
-        <div className="p-4 sm:p-6 lg:p-8 pb-8 flex-1 bg-teal-50/20 dark:bg-slate-950/20">{children}<ContextualFAQCard className="mt-8 w-full" /></div>
+        <div className="pl-[max(1rem,env(safe-area-inset-left))] pr-[max(1rem,env(safe-area-inset-right))] sm:pl-[max(1.5rem,env(safe-area-inset-left))] sm:pr-[max(1.5rem,env(safe-area-inset-right))] pt-4 pb-8 sm:pt-6 lg:py-8 lg:pl-8 lg:pr-[max(2rem,env(safe-area-inset-right))] flex-1 bg-teal-50/20 dark:bg-slate-950/20">{children}<ContextualFAQCard className="mt-8 w-full" /></div>
 
-        <footer className="pt-6 pb-6 px-4 sm:px-8 flex flex-col md:flex-row justify-between text-outline text-xs gap-4 border-t border-white/10">
+        <footer className="pt-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] pl-[max(1rem,env(safe-area-inset-left))] pr-[max(1rem,env(safe-area-inset-right))] sm:px-8 flex flex-col md:flex-row justify-between text-outline text-xs gap-4 border-t border-white/10">
           <span>{t('fl.rights')}</span>
           <div className="flex gap-4">
             <button onClick={() => setLegalModal('consent')} className="text-outline hover:text-primary transition-colors">{t('tr.consentimiento_informado')}</button>
@@ -660,7 +660,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
       <FloatingMenu
         items={quickActionItems}
         ariaLabel="Acciones del fisioterapeuta"
-        className="fab-anchor fixed bottom-[calc(1.5rem+env(safe-area-inset-bottom))] right-6 z-50"
+        className="fab-anchor fixed bottom-[calc(1.5rem+env(safe-area-inset-bottom))] right-[max(1.5rem,env(safe-area-inset-right))] z-50"
       />
 
       {/* Modal: selector de paciente para iniciar videollamada */}
@@ -678,7 +678,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               onClick={(e) => e.stopPropagation()}
-              className="glass-panel rounded-3xl p-6 max-w-sm w-full shadow-2xl max-h-[90vh] overflow-y-auto"
+              className="glass-panel rounded-3xl p-6 max-w-sm w-full shadow-2xl max-h-[90dvh] overflow-y-auto"
             >
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
@@ -747,7 +747,7 @@ export function FisioLayout({ children }: FisioLayoutProps) {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               onClick={(e) => e.stopPropagation()}
-              className="glass-panel rounded-3xl p-8 max-w-sm w-full mx-4 text-center max-h-[90vh] overflow-y-auto"
+              className="glass-panel rounded-3xl p-8 max-w-sm w-full mx-4 text-center max-h-[90dvh] overflow-y-auto"
             >
               <MascotAnimation type="goodbye" size="md" className="bg-error/10 mx-auto mb-4" />
               <h3 className="font-headline-lg text-headline-lg text-on-surface mb-2">{t('navigation.logoutConfirm', '¿Cerrar sesión?')}</h3>

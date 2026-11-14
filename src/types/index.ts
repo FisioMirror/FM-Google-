@@ -55,7 +55,7 @@ export interface Ejercicio {
   series: number;
   duracion_segundos: number;
   angulo_objetivo: number;
-  articulacion: 'hombro' | 'codo' | 'rodilla' | 'cadera' | 'tobillo';
+  articulacion: 'hombro' | 'codo' | 'rodilla' | 'cadera' | 'tobillo' | 'cervical' | 'escapula' | 'columna';
   lado: 'izquierdo' | 'derecho' | 'ambos';
   complejidad?: 'baja' | 'media' | 'alta';
 }

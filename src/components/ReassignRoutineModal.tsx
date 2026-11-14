@@ -23,24 +23,25 @@ interface ExerciseLibraryItem {
   descripcion: string;
   seriesDefault: number;
   repsDefault: number;
+  anguloObjetivo: number;
   lado: 'bilateral' | 'derecho' | 'izquierdo';
 }
 
 const EXERCISE_LIBRARY: ExerciseLibraryItem[] = [
-  { id: 'flx-hombro', nombre: 'Flexión de hombro', articulacion: 'hombro', seriesDefault: 3, repsDefault: 12, lado: 'bilateral', descripcion: 'Elevación del brazo hacia adelante hasta 120°.' },
-  { id: 'abd-hombro', nombre: 'Abducción de hombro', articulacion: 'hombro', seriesDefault: 3, repsDefault: 12, lado: 'bilateral', descripcion: 'Apertura del brazo hacia el lado hasta 90°.' },
-  { id: 'rot-ext-hombro', nombre: 'Rotación externa de hombro', articulacion: 'hombro', seriesDefault: 3, repsDefault: 15, lado: 'bilateral', descripcion: 'Rotación externa con codo fijo a 90°.' },
-  { id: 'circ-hombro', nombre: 'Circunducción de hombro', articulacion: 'hombro', seriesDefault: 2, repsDefault: 10, lado: 'bilateral', descripcion: 'Círculos completos del brazo con codo extendido.' },
-  { id: 'flx-codo', nombre: 'Flexión de codo', articulacion: 'codo', seriesDefault: 3, repsDefault: 12, lado: 'bilateral', descripcion: 'Curl de bíceps llevando la mano al hombro.' },
-  { id: 'ext-rodilla', nombre: 'Extensión de rodilla', articulacion: 'rodilla', seriesDefault: 3, repsDefault: 10, lado: 'bilateral', descripcion: 'Extensión completa de rodilla sentado.' },
-  { id: 'flx-rodilla-pie', nombre: 'Flexión de rodilla en pie', articulacion: 'rodilla', seriesDefault: 3, repsDefault: 12, lado: 'bilateral', descripcion: 'Lleva el talón al glúteo de pie.' },
-  { id: 'sentadilla', nombre: 'Sentadilla parcial', articulacion: 'rodilla', seriesDefault: 3, repsDefault: 10, lado: 'bilateral', descripcion: 'Sentadilla a 45° de flexión de rodilla.' },
-  { id: 'puente', nombre: 'Puente de glúteos', articulacion: 'cadera', seriesDefault: 3, repsDefault: 12, lado: 'bilateral', descripcion: 'Elevación de cadera desde supino.' },
-  { id: 'abd-cadera', nombre: 'Abducción de cadera', articulacion: 'cadera', seriesDefault: 3, repsDefault: 12, lado: 'bilateral', descripcion: 'Separa la pierna hacia el lado con control.' },
-  { id: 'dorsiflex-tobillo', nombre: 'Movilidad de tobillo', articulacion: 'tobillo', seriesDefault: 3, repsDefault: 15, lado: 'bilateral', descripcion: 'Dorsiflexión y flexión plantar alternantes.' },
-  { id: 'trap-estiramiento', nombre: 'Estiramiento de trapecio', articulacion: 'cervical', seriesDefault: 2, repsDefault: 4, lado: 'bilateral', descripcion: 'Inclinación cervical con tracción suave.' },
-  { id: 'mov-cervical', nombre: 'Movilidad cervical', articulacion: 'cervical', seriesDefault: 2, repsDefault: 10, lado: 'bilateral', descripcion: 'Rotación cervical suave hacia ambos lados.' },
-  { id: 'equilibrio', nombre: 'Equilibrio sobre una pierna', articulacion: 'rodilla', seriesDefault: 3, repsDefault: 3, lado: 'derecho', descripcion: 'Apoyo unipodal con leve flexión de rodilla.' },
+  { id: 'flx-hombro', nombre: 'Flexión de hombro', articulacion: 'hombro', seriesDefault: 3, repsDefault: 12, anguloObjetivo: 120, lado: 'bilateral', descripcion: 'Elevación del brazo hacia adelante hasta 120°.' },
+  { id: 'abd-hombro', nombre: 'Abducción de hombro', articulacion: 'hombro', seriesDefault: 3, repsDefault: 12, anguloObjetivo: 90, lado: 'bilateral', descripcion: 'Apertura del brazo hacia el lado hasta 90°.' },
+  { id: 'rot-ext-hombro', nombre: 'Rotación externa de hombro', articulacion: 'hombro', seriesDefault: 3, repsDefault: 15, anguloObjetivo: 45, lado: 'bilateral', descripcion: 'Rotación externa con codo fijo a 90°.' },
+  { id: 'circ-hombro', nombre: 'Circunducción de hombro', articulacion: 'hombro', seriesDefault: 2, repsDefault: 10, anguloObjetivo: 120, lado: 'bilateral', descripcion: 'Círculos completos del brazo con codo extendido.' },
+  { id: 'flx-codo', nombre: 'Flexión de codo', articulacion: 'codo', seriesDefault: 3, repsDefault: 12, anguloObjetivo: 120, lado: 'bilateral', descripcion: 'Curl de bíceps llevando la mano al hombro.' },
+  { id: 'ext-rodilla', nombre: 'Extensión de rodilla', articulacion: 'rodilla', seriesDefault: 3, repsDefault: 10, anguloObjetivo: 0, lado: 'bilateral', descripcion: 'Extensión completa de rodilla sentado.' },
+  { id: 'flx-rodilla-pie', nombre: 'Flexión de rodilla en pie', articulacion: 'rodilla', seriesDefault: 3, repsDefault: 12, anguloObjetivo: 120, lado: 'bilateral', descripcion: 'Lleva el talón al glúteo de pie.' },
+  { id: 'sentadilla', nombre: 'Sentadilla parcial', articulacion: 'rodilla', seriesDefault: 3, repsDefault: 10, anguloObjetivo: 45, lado: 'bilateral', descripcion: 'Sentadilla a 45° de flexión de rodilla.' },
+  { id: 'puente', nombre: 'Puente de glúteos', articulacion: 'cadera', seriesDefault: 3, repsDefault: 12, anguloObjetivo: 0, lado: 'bilateral', descripcion: 'Elevación de cadera desde supino.' },
+  { id: 'abd-cadera', nombre: 'Abducción de cadera', articulacion: 'cadera', seriesDefault: 3, repsDefault: 12, anguloObjetivo: 40, lado: 'bilateral', descripcion: 'Separa la pierna hacia el lado con control.' },
+  { id: 'dorsiflex-tobillo', nombre: 'Movilidad de tobillo', articulacion: 'tobillo', seriesDefault: 3, repsDefault: 15, anguloObjetivo: 20, lado: 'bilateral', descripcion: 'Dorsiflexión y flexión plantar alternantes.' },
+  { id: 'trap-estiramiento', nombre: 'Estiramiento de trapecio', articulacion: 'cervical', seriesDefault: 2, repsDefault: 4, anguloObjetivo: 35, lado: 'bilateral', descripcion: 'Inclinación cervical con tracción suave.' },
+  { id: 'mov-cervical', nombre: 'Movilidad cervical', articulacion: 'cervical', seriesDefault: 2, repsDefault: 10, anguloObjetivo: 45, lado: 'bilateral', descripcion: 'Rotación cervical suave hacia ambos lados.' },
+  { id: 'equilibrio', nombre: 'Equilibrio sobre una pierna', articulacion: 'rodilla', seriesDefault: 3, repsDefault: 3, anguloObjetivo: 45, lado: 'derecho', descripcion: 'Apoyo unipodal con leve flexión de rodilla.' },
 ];
 
 const ARTICULACION_LABELS: Record<ExerciseLibraryItem['articulacion'], string> = {
@@ -74,6 +75,7 @@ interface SelectedExercise {
   nombre: string;
   articulacion: ExerciseLibraryItem['articulacion'];
   lado: ExerciseLibraryItem['lado'];
+  anguloObjetivo: number;
   series: number;
   repeticiones: number;
 }
@@ -139,6 +141,7 @@ export function ReassignRoutineModal({
           nombre: item.nombre,
           articulacion: item.articulacion,
           lado: item.lado,
+          anguloObjetivo: item.anguloObjetivo,
           series: item.seriesDefault,
           repeticiones: item.repsDefault,
         },
@@ -213,6 +216,7 @@ export function ReassignRoutineModal({
         series: ex.series,
         repeticiones: ex.repeticiones,
         articulacion: ex.articulacion,
+        angulo_objetivo: ex.anguloObjetivo,
         lado: ex.lado,
       }));
 

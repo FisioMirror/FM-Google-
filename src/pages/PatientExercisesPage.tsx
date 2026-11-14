@@ -11,7 +11,12 @@ import { useTranslation } from 'react-i18next';
 import { ExerciseImage } from '../components/ui/ExerciseImage';
 import { getExerciseImage } from '../data/exerciseImages';
 import { SkeletonDemo } from '../components/rehabilitation/SkeletonDemo';
-import { buildExerciseDefinition, getExerciseDescription } from '../data/exercisePresets';
+import {
+  buildCalibrationToArPath,
+  buildExerciseDefinition,
+  getExerciseDescription,
+  lookupDefaultExerciseSpec,
+} from '../data/exercisePresets';
 import { saveExercises, getExercises } from '../lib/offlineDB';
 import { buildGoogleCalendarUrl, buildIcsFileContent, type CalendarExercise } from '../lib/calendarExport';
 import {
@@ -33,6 +38,9 @@ interface AssignedExercise {
   ejercicio_nombre: string | null;
   ejercicio_id: string | null;
   ejercicio_detailed_description: string | null;
+  articulacion?: string | null;
+  angulo_objetivo?: number | null;
+  lado?: string | null;
   series: number | null;
   repeticiones: number | null;
   frecuencia_semana: number | null;
@@ -47,7 +55,10 @@ const DEFAULT_FALLBACK_EXERCISES: AssignedExercise[] = [
     ejercicio_nombre: 'Flexión de hombro',
     ejercicio_id: 'flexion-hombro',
     ejercicio_detailed_description:
-      'Comienza de pie con los brazos a los lados y la espalda recta. Eleva lentamente el brazo hacia adelante hasta alcanzar los 90° (paralelo al suelo). Mantén la posición 3 segundos con control neuromuscular y desciende suavemente.',
+      'Comienza de pie con los brazos a los lados y la espalda recta. Eleva lentamente el brazo hacia adelante hasta alcanzar los 120°. Mantén la posición 3 segundos con control neuromuscular y desciende suavemente.',
+    articulacion: 'hombro',
+    angulo_objetivo: 120,
+    lado: 'bilateral',
     series: 3,
     repeticiones: 12,
     frecuencia_semana: 4,
@@ -61,6 +72,9 @@ const DEFAULT_FALLBACK_EXERCISES: AssignedExercise[] = [
     ejercicio_id: 'rotacion-externa',
     ejercicio_detailed_description:
       'Codo flexionado a 90° pegado al costado del tronco. Rota el antebrazo hacia afuera manteniendo el eje del codo alineado y sin arquear la zona lumbar.',
+    articulacion: 'hombro',
+    angulo_objetivo: 45,
+    lado: 'bilateral',
     series: 3,
     repeticiones: 15,
     frecuencia_semana: 4,
@@ -74,6 +88,9 @@ const DEFAULT_FALLBACK_EXERCISES: AssignedExercise[] = [
     ejercicio_id: 'circunduccion',
     ejercicio_detailed_description:
       'Realiza círculos controlados con ambos hombros hacia atrás y hacia adelante para mejorar la movilidad glenohumeral.',
+    articulacion: 'escapula',
+    angulo_objetivo: 45,
+    lado: 'bilateral',
     series: 2,
     repeticiones: 10,
     frecuencia_semana: 3,
@@ -87,6 +104,9 @@ const DEFAULT_FALLBACK_EXERCISES: AssignedExercise[] = [
     ejercicio_id: 'estiramiento-trapecio',
     ejercicio_detailed_description:
       'Inclina suavemente la cabeza hacia el lado opuesto y mantén la tensión durante 20 segundos acompañando con respiración profunda.',
+    articulacion: 'cervical',
+    angulo_objetivo: 35,
+    lado: 'bilateral',
     series: 2,
     repeticiones: 4,
     frecuencia_semana: 5,
@@ -163,7 +183,7 @@ export function PatientExercisesPage() {
 
       const { data, error: sbError } = await supabase
         .from('patient_exercises')
-        .select('id, ejercicio_nombre, ejercicio_id, series, repeticiones, frecuencia_semana, notas, activo, fecha_asignacion, ejercicio:exercises(detailed_description)')
+        .select('id, ejercicio_nombre, ejercicio_id, series, repeticiones, frecuencia_semana, notas, activo, fecha_asignacion, ejercicio:exercises(detailed_description, articulacion, angulo_objetivo, lado)')
         .eq('paciente_id', user.id)
         .eq('activo', true)
         .order('fecha_asignacion', { ascending: false });
@@ -172,10 +192,24 @@ export function PatientExercisesPage() {
         throw sbError;
       }
 
-      const normalized = (data || []).map((row: Record<string, unknown>) => ({
-        ...row,
-        ejercicio_detailed_description: (row.ejercicio as Record<string, unknown> | null)?.detailed_description ?? null,
-      })) as AssignedExercise[];
+      const normalized = (data || []).map((row: Record<string, unknown>) => {
+        const rawJoined = row.ejercicio as Record<string, unknown> | Record<string, unknown>[] | null;
+        const exMeta = Array.isArray(rawJoined) ? rawJoined[0] : rawJoined;
+        const fallbackSpec = lookupDefaultExerciseSpec(
+          row.ejercicio_nombre as string | null,
+          row.ejercicio_id as string | null
+        );
+        return {
+          ...row,
+          ejercicio_detailed_description: (exMeta?.detailed_description as string | null) ?? null,
+          articulacion: (exMeta?.articulacion as string | null) ?? fallbackSpec?.articulacion ?? null,
+          angulo_objetivo:
+            typeof exMeta?.angulo_objetivo === 'number'
+              ? exMeta.angulo_objetivo
+              : fallbackSpec?.angulo_objetivo ?? null,
+          lado: (exMeta?.lado as string | null) ?? fallbackSpec?.lado ?? 'bilateral',
+        };
+      }) as AssignedExercise[];
 
       if (normalized.length === 0) {
         // Fallback for new patients
@@ -457,7 +491,21 @@ export function PatientExercisesPage() {
                   <button
                     onClick={() => {
                       const name = ex.ejercicio_nombre || 'Ejercicio';
-                      navigate(`/calibration?ejercicio=${encodeURIComponent(name)}&next=${encodeURIComponent('/ar-mirror?ejercicio=' + name)}`);
+                      const fallback = lookupDefaultExerciseSpec(name, ex.ejercicio_id);
+                      navigate(
+                        buildCalibrationToArPath({
+                          ejercicio: name,
+                          articulacion: ex.articulacion ?? fallback?.articulacion,
+                          angulo:
+                            typeof ex.angulo_objetivo === 'number'
+                              ? ex.angulo_objetivo
+                              : fallback?.angulo_objetivo,
+                          lado: ex.lado ?? fallback?.lado,
+                          series: ex.series ?? fallback?.series,
+                          repeticiones: ex.repeticiones ?? fallback?.repeticiones,
+                          id: ex.ejercicio_id,
+                        })
+                      );
                     }}
                     className="w-full py-3 rounded-2xl bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs transition-all shadow-md shadow-teal-700/20 flex items-center justify-center gap-2 active:scale-[0.98]"
                   >
@@ -558,9 +606,11 @@ export function PatientExercisesPage() {
                   demo3DExercise.ejercicio_nombre || 'Ejercicio',
                   demo3DExercise.series ?? 3,
                   demo3DExercise.repeticiones ?? 10,
-                  undefined,
-                  undefined,
-                  undefined,
+                  demo3DExercise.articulacion ?? undefined,
+                  demo3DExercise.lado ?? undefined,
+                  typeof demo3DExercise.angulo_objetivo === 'number'
+                    ? demo3DExercise.angulo_objetivo
+                    : undefined,
                   demo3DExercise.ejercicio_detailed_description
                 )}
                 userRole="patient"

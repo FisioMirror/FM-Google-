@@ -21,7 +21,7 @@ export function SplashScreen() {
       />
 
       {/* Main content */}
-      <main className="relative z-20 flex flex-col items-center justify-center min-h-screen p-6">
+      <main className="relative z-20 flex flex-col items-center justify-center min-h-[100dvh] p-6">
         <div className="relative flex flex-col items-center">
           {/* Logo as loader centerpiece — larger */}
           <motion.div

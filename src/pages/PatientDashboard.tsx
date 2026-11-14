@@ -50,6 +50,7 @@ import {
 import { humanVoice, isHumanVoiceSpeaking, stopHumanVoice } from '../lib/humanVoice';
 import { staggerContainer, staggerItem, springTactile } from '../lib/motionVariants';
 import { useTranslation } from 'react-i18next';
+import { buildCalibrationToArPath, lookupDefaultExerciseSpec } from '../data/exercisePresets';
 import { currentLocale } from '../lib/format';
 
 interface PatientKpi {
@@ -63,9 +64,15 @@ const emptyKpi: PatientKpi = { streak: 0, totalSessions: 0, weeklyMinutes: 0, is
 
 interface AssignedExercise {
   id: string;
+  ejercicioId?: string;
   name: string;
   subtitle: string;
   icon: string;
+  articulacion?: string;
+  anguloObjetivo?: number;
+  lado?: string;
+  series?: number;
+  repeticiones?: number;
 }
 
 interface WeekActivity {
@@ -235,7 +242,7 @@ export function PatientDashboard() {
 
       const { data: patientExercises } = await supabase
         .from('patient_exercises')
-        .select('id, ejercicio_nombre, series, repeticiones')
+        .select('id, ejercicio_id, ejercicio_nombre, series, repeticiones, ejercicio:exercises(articulacion, angulo_objetivo, lado)')
         .eq('paciente_id', user.id);
 
       const { data: therapistLink } = await supabase
@@ -264,12 +271,30 @@ export function PatientDashboard() {
 
       if (patientExercises && patientExercises.length > 0) {
         setExercises(
-          patientExercises.map((ex) => ({
-            id: ex.id,
-            name: ex.ejercicio_nombre || 'Ejercicio de Rehabilitación',
-            subtitle: `${ex.series || 3} series · ${ex.repeticiones || 10} reps`,
-            icon: 'self_improvement',
-          }))
+          patientExercises.map((ex: any) => {
+            const exMeta = Array.isArray(ex.ejercicio) ? ex.ejercicio[0] : ex.ejercicio;
+            const fallbackSpec = lookupDefaultExerciseSpec(ex.ejercicio_nombre, ex.ejercicio_id);
+            const articulacion = exMeta?.articulacion ?? fallbackSpec?.articulacion;
+            const anguloObjetivo =
+              typeof exMeta?.angulo_objetivo === 'number'
+                ? exMeta.angulo_objetivo
+                : fallbackSpec?.angulo_objetivo;
+            const lado = exMeta?.lado ?? fallbackSpec?.lado;
+            return {
+              id: ex.id,
+              ejercicioId: ex.ejercicio_id ?? undefined,
+              name: ex.ejercicio_nombre || 'Ejercicio de Rehabilitación',
+              subtitle: `${ex.series || 3} series · ${ex.repeticiones || 10} reps${
+                typeof anguloObjetivo === 'number' ? ` · ${anguloObjetivo}°` : ''
+              }`,
+              icon: 'self_improvement',
+              articulacion,
+              anguloObjetivo,
+              lado,
+              series: ex.series || 3,
+              repeticiones: ex.repeticiones || 10,
+            };
+          })
         );
       }
 
@@ -292,12 +317,23 @@ export function PatientDashboard() {
           { day: 'D', minutes: 0 },
         ]);
         setExercises(
-          PRIMARY_DEMO_PATIENT.exercises.map((ex) => ({
-            id: ex.id,
-            name: ex.ejercicio_nombre,
-            subtitle: `${ex.series} series · ${ex.repeticiones} reps`,
-            icon: 'self_improvement',
-          }))
+          PRIMARY_DEMO_PATIENT.exercises.map((ex) => {
+            const spec = lookupDefaultExerciseSpec(ex.ejercicio_nombre, ex.ejercicio_id);
+            return {
+              id: ex.id,
+              ejercicioId: ex.ejercicio_id,
+              name: ex.ejercicio_nombre,
+              subtitle: `${ex.series} series · ${ex.repeticiones} reps${
+                spec ? ` · ${spec.angulo_objetivo}°` : ''
+              }`,
+              icon: 'self_improvement',
+              articulacion: spec?.articulacion,
+              anguloObjetivo: spec?.angulo_objetivo,
+              lado: spec?.lado ?? 'bilateral',
+              series: ex.series,
+              repeticiones: ex.repeticiones,
+            };
+          })
         );
         setAllSessionDates(PRIMARY_DEMO_PATIENT.sessions.map((s) => new Date(s.fecha)));
       } else if (isEmpty && !isDemo) {
@@ -541,8 +577,22 @@ export function PatientDashboard() {
 
               <PulsatingButton
                 onClick={() => {
-                  const exName = exercises[0]?.name || 'Sesión AR';
-                  navigate(`/calibration?ejercicio=${encodeURIComponent(exName)}&next=${encodeURIComponent('/ar-mirror?ejercicio=' + exName)}`);
+                  const firstEx = exercises[0];
+                  if (firstEx) {
+                    navigate(
+                      buildCalibrationToArPath({
+                        ejercicio: firstEx.name,
+                        articulacion: firstEx.articulacion,
+                        angulo: firstEx.anguloObjetivo,
+                        lado: firstEx.lado,
+                        series: firstEx.series,
+                        repeticiones: firstEx.repeticiones,
+                        id: firstEx.ejercicioId,
+                      })
+                    );
+                  } else {
+                    navigate(buildCalibrationToArPath({ ejercicio: 'Sesión AR' }));
+                  }
                 }}
                 variant="pulse"
                 pulseColor="rgba(13, 148, 136, 0.6)"
@@ -590,7 +640,19 @@ export function PatientDashboard() {
                     variants={staggerItem}
                     whileHover={{ y: -3, scale: 1.015, transition: springTactile }}
                     whileTap={{ scale: 0.98 }}
-                    onClick={() => navigate(`/calibration?ejercicio=${encodeURIComponent(ex.name)}&next=${encodeURIComponent('/ar-mirror?ejercicio=' + ex.name)}`)}
+                    onClick={() =>
+                      navigate(
+                        buildCalibrationToArPath({
+                          ejercicio: ex.name,
+                          articulacion: ex.articulacion,
+                          angulo: ex.anguloObjetivo,
+                          lado: ex.lado,
+                          series: ex.series,
+                          repeticiones: ex.repeticiones,
+                          id: ex.ejercicioId,
+                        })
+                      )
+                    }
                     className="p-4 rounded-2xl bg-surface/80 dark:bg-surface-container-low/60 border border-outline/10 hover:border-teal-500/40 transition-all cursor-pointer flex items-center justify-between gap-3 group"
                   >
                     <div className="flex items-center gap-3">

@@ -390,7 +390,7 @@ export function PatientLayout({ children }: PatientLayoutProps) {
               exit={{ x: '-100%' }}
               transition={{ type: 'spring', damping: 28, stiffness: 320 }}
               onClick={(e) => e.stopPropagation()}
-              className="h-full w-72 max-w-[85vw] flex flex-col bg-white dark:bg-slate-900 border-r border-slate-200/70 dark:border-slate-800 text-slate-900 dark:text-slate-100 rounded-r-3xl shadow-2xl overflow-hidden"
+              className="h-full w-72 max-w-[85vw] pl-[env(safe-area-inset-left,0px)] flex flex-col bg-white dark:bg-slate-900 border-r border-slate-200/70 dark:border-slate-800 text-slate-900 dark:text-slate-100 rounded-r-3xl shadow-2xl overflow-hidden"
             >
               <div className="p-4 flex items-center justify-between border-b border-teal-100/60 dark:border-slate-800">
                 <div className="flex items-center gap-3">
@@ -441,7 +441,7 @@ export function PatientLayout({ children }: PatientLayoutProps) {
       {/* Main content area with sticky header */}
       <main className="flex-1 min-w-0 flex flex-col w-full h-full overflow-hidden" data-scroll-root>
         {/* Sticky header — mobile (hamburger + title + actions) and desktop (breadcrumb + actions) */}
-        <header className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-md sticky top-0 z-20 w-full min-w-0 flex items-center justify-between px-3 sm:px-6 h-16 border-b border-slate-200/80 dark:border-slate-800 shadow-xs shrink-0 gap-2 sm:gap-4">
+        <header className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-md sticky top-0 z-20 w-full min-w-0 flex items-center justify-between pl-[max(0.75rem,env(safe-area-inset-left))] pr-[max(0.75rem,env(safe-area-inset-right))] sm:pl-[max(1.5rem,env(safe-area-inset-left))] sm:pr-[max(1.5rem,env(safe-area-inset-right))] h-16 border-b border-slate-200/80 dark:border-slate-800 shadow-xs shrink-0 gap-2 sm:gap-4">
           {/* Left: hamburger + back button + section title */}
           <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
             <button
@@ -524,7 +524,7 @@ export function PatientLayout({ children }: PatientLayoutProps) {
           </div>
         </header>
         {/* Scrollable content with clean spacing */}
-        <div data-scroll-body className="flex-1 w-full min-w-0 overflow-y-auto overflow-x-hidden overscroll-contain px-4 sm:px-6 pt-8 pb-24 space-y-8 lg:p-10 lg:pb-10 bg-teal-50/20 dark:bg-slate-950/20">{children}<ContextualFAQCard className="w-full" /></div>
+        <div data-scroll-body className="flex-1 w-full min-w-0 overflow-y-auto overflow-x-hidden overscroll-contain pl-[max(1rem,env(safe-area-inset-left))] pr-[max(1rem,env(safe-area-inset-right))] sm:pl-[max(1.5rem,env(safe-area-inset-left))] sm:pr-[max(1.5rem,env(safe-area-inset-right))] pt-5 sm:pt-7 pb-[max(5.5rem,calc(4.5rem+env(safe-area-inset-bottom)))] space-y-6 sm:space-y-8 lg:p-10 lg:pb-10 bg-teal-50/20 dark:bg-slate-950/20">{children}<ContextualFAQCard className="w-full" /></div>
 
         {/* Desktop footer */}
         <footer className="hidden lg:flex pt-6 pb-6 px-8 justify-between text-outline text-xs border-t divider-teal shrink-0">
@@ -542,7 +542,7 @@ export function PatientLayout({ children }: PatientLayoutProps) {
         <FloatingMenu
           items={quickActionItems}
           ariaLabel="Acciones del paciente"
-          className="fab-anchor fixed bottom-[calc(1.5rem+env(safe-area-inset-bottom))] right-6 z-40"
+          className="fab-anchor fixed bottom-[calc(1.5rem+env(safe-area-inset-bottom))] right-[max(1.5rem,env(safe-area-inset-right))] z-40"
         />,
         document.body
       )}
@@ -569,7 +569,7 @@ export function PatientLayout({ children }: PatientLayoutProps) {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               onClick={(e) => e.stopPropagation()}
-              className="glass-panel rounded-3xl p-8 max-w-sm w-full mx-4 text-center max-h-[90vh] overflow-y-auto"
+              className="glass-panel rounded-3xl p-8 max-w-sm w-full mx-4 text-center max-h-[90dvh] overflow-y-auto"
             >
               <MascotAnimation type="goodbye" size="md" className="mx-auto mb-4" />
               <h3 className="font-headline-lg text-headline-lg gradient-text-editorial mb-2">{t('navigation.logoutConfirm', '¿Cerrar sesión?')}</h3>

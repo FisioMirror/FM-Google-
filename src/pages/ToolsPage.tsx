@@ -963,8 +963,8 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
     <div
       className={
         isMobileDrawer
-          ? 'flex flex-col h-[70vh] rounded-3xl overflow-hidden bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border border-teal-500/25 shadow-2xl'
-          : 'hidden xl:flex flex-col w-[350px] 2xl:w-[390px] shrink-0 h-[calc(100vh-120px)] sticky top-[92px] rounded-3xl overflow-hidden bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border border-teal-500/25 shadow-xl'
+          ? 'flex flex-col h-[70dvh] rounded-3xl overflow-hidden bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border border-teal-500/25 shadow-2xl'
+          : 'hidden xl:flex flex-col w-[350px] 2xl:w-[390px] shrink-0 h-[calc(100dvh-120px)] sticky top-[92px] rounded-3xl overflow-hidden bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border border-teal-500/25 shadow-xl'
       }
     >
       {/* Header */}
@@ -1262,7 +1262,7 @@ Si un campo no es visible en el documento, déjalo como string vacío. Responde 
       {/* PDF Confirmation Modal */}
       {pdfModalOpen && (
         <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4" onClick={() => setPdfModalOpen(false)}>
-          <div className="glass-panel rounded-3xl p-5 sm:p-6 lg:p-8 max-w-full sm:max-w-md w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+          <div className="glass-panel rounded-3xl p-5 sm:p-6 lg:p-8 max-w-full sm:max-w-md w-full max-h-[90dvh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center gap-3 mb-4">
               <Icon name="picture_as_pdf" size={28} className="text-error" />
               <h3 className="font-title-md text-title-md">{t('tr.confirmar_reporte_pdf')}</h3>

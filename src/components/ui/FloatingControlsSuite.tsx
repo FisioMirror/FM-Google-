@@ -434,24 +434,28 @@ export interface CalibrationCompassProps {
 
 export const CalibrationCompass: React.FC<CalibrationCompassProps> = ({
   pitch = 0,
-  roll = 1,
+  roll = 0,
   className,
 }) => {
+  const { t } = useTranslation();
+  const isLevel = Math.abs(roll) <= 8 && Math.abs(pitch) <= 10;
+
   return (
     <motion.div
       whileHover={{ y: -2 }}
       className={cn(
-        "inline-flex items-center gap-3 p-2.5 px-4 rounded-2xl bg-gradient-to-r from-surface/90 via-surface-container/90 to-surface/90 dark:from-slate-800/90 dark:to-slate-900/90 border border-teal-500/30 text-xs shadow-md",
+        "inline-flex items-center gap-3 p-2.5 px-4 rounded-2xl bg-gradient-to-r from-surface/90 via-surface-container/90 to-surface/90 dark:from-slate-800/90 dark:to-slate-900/90 border text-xs shadow-md transition-colors",
+        isLevel ? "border-teal-500/35" : "border-amber-400/50",
         className
       )}
     >
-      <div className="relative p-1.5 rounded-xl bg-teal-500/20 text-teal-600 dark:text-teal-400">
-        <Compass className="w-5 h-5 animate-spin" style={{ animationDuration: '24s' }} />
+      <div className={cn("relative p-1.5 rounded-xl", isLevel ? "bg-teal-500/20 text-teal-400" : "bg-amber-500/20 text-amber-400")}>
+        <Compass className="w-5 h-5" />
       </div>
       <div>
-        <span className="font-bold text-slate-800 dark:text-white block">Giroscopio Sagital AR</span>
-        <span className="text-[10px] text-teal-600 dark:text-teal-400 font-mono font-bold">
-          Pitch: {pitch}° • Roll: {roll}° (Nivelado)
+        <span className="font-bold text-slate-800 dark:text-white block">{t('cal.posturalLevelTitle', 'Nivel Postural AR')}</span>
+        <span className={cn("text-[10px] font-mono font-bold tabular-nums", isLevel ? "text-teal-500 dark:text-teal-400" : "text-amber-400")}>
+          {t('cal.trunkLabel', 'Tronco')}: {pitch}° • {t('cal.shouldersLabel', 'Hombros')}: {roll}° ({isLevel ? t('cal.levelOk', 'Nivelado') : t('cal.levelAdjust', 'Ajustar nivel')})
         </span>
       </div>
     </motion.div>
